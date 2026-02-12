@@ -474,15 +474,15 @@ export default function HomeScreen() {
               <>
                 {/* Render rows of 3 items each */}
                 {Array.from({ length: Math.ceil(Math.min(allStations.length, 21) / 3) }).map((_, rowIndex) => (
-                  <View key={`all-row-${rowIndex}`} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: GRID_GAP, width: '100%' }}>
+                  <View key={`all-row-${rowIndex}`} style={{ flexDirection: 'row', gap: GRID_GAP, marginBottom: GRID_GAP, width: '100%' }}>
                     {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station) => (
                       <TouchableOpacity
                         key={station._id}
-                        style={{ width: GRID_ITEM_SIZE }}
+                        style={{ flex: 1 }}
                         onPress={() => handleStationPress(station)}
                       >
-                        <View style={{ width: GRID_ITEM_SIZE, height: GRID_ITEM_SIZE, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
-                          {renderStationLogo(station, GRID_ITEM_SIZE - 8)}
+                        <View style={{ width: '100%', aspectRatio: 1, borderRadius: 12, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
+                          {renderStationLogo(station, 120)}
                         </View>
                         <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
                         <Text style={styles.stationGridCountry} numberOfLines={1}>
@@ -493,7 +493,7 @@ export default function HomeScreen() {
                     {/* Fill empty slots if last row has less than 3 items */}
                     {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
                       Array.from({ length: 3 - allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                        <View key={`empty-${i}`} style={{ width: GRID_ITEM_SIZE }} />
+                        <View key={`empty-${i}`} style={{ flex: 1 }} />
                       ))
                     }
                   </View>
