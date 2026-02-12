@@ -549,10 +549,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  controlIconImage: {
-    width: 28,
-    height: 28,
-  },
   skipButton: {
     width: 60,
     height: 60,
@@ -562,10 +558,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 8,
   },
-  skipIconImage: {
-    width: 28,
-    height: 28,
-  },
   playPauseButton: {
     width: 80,
     height: 80,
@@ -574,10 +566,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 12,
-  },
-  playPauseIconImage: {
-    width: 36,
-    height: 36,
   },
 
   // Secondary Controls
