@@ -686,6 +686,42 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
+  // Station Grid Custom - 3 columns with exact dimensions
+  // Card: width: 100, height: 144
+  // Logo: width: 100, height: 100, border-radius: 10px
+  // Gap calculation: 138 - 15 - 100 = 23px between cards
+  stationGridCustom: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 15,
+    gap: 23,
+  },
+  stationGridItem: {
+    width: 100,
+    height: 144,
+  },
+  stationGridLogo: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  stationGridLogoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  stationGridName: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
+  },
+  stationGridCountry: {
+    fontSize: typography.sizes.xs,
+    color: colors.textSecondary,
+  },
+
   // Station Grid
   stationGrid: {
     flexDirection: 'row',
