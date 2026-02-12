@@ -660,13 +660,12 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
 
-  // Popular Stations List - Centered with fixed width
+  // Popular Stations List - Full width
   popularList: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
   },
   popularItem: {
-    width: CONTENT_WIDTH,
+    width: '100%',
     height: 80,
     flexDirection: 'row',
     alignItems: 'center',
