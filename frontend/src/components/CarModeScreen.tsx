@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
-  Platform,
+  StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
+import { Ionicons } from '@expo/vector-icons';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { usePopularStations } from '../hooks/useQueries';
@@ -19,35 +20,6 @@ import type { Station } from '../types';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH * 0.45;
 const CARD_HEIGHT = CARD_WIDTH * 0.8;
-
-// Custom SVG-like Icons as components
-const ShareIcon = ({ size = 24, color = '#888888' }) => (
-  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-    <View style={[styles.shareNode, { backgroundColor: color, width: size * 0.35, height: size * 0.35 }]} />
-    <View style={[styles.shareLine1, { backgroundColor: color, width: size * 0.4, height: 2 }]} />
-    <View style={[styles.shareNode2, { backgroundColor: color, width: size * 0.3, height: size * 0.3, top: -size * 0.15, right: -size * 0.1 }]} />
-    <View style={[styles.shareLine2, { backgroundColor: color, width: size * 0.4, height: 2 }]} />
-    <View style={[styles.shareNode3, { backgroundColor: color, width: size * 0.3, height: size * 0.3, bottom: -size * 0.15, right: -size * 0.1 }]} />
-  </View>
-);
-
-const BroadcastIcon = ({ size = 24, color = '#888888' }) => (
-  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-    <View style={[styles.broadcastOuter, { borderColor: color, width: size * 0.9, height: size * 0.5 }]} />
-    <View style={[styles.broadcastMiddle, { borderColor: color, width: size * 0.65, height: size * 0.35 }]} />
-    <View style={[styles.broadcastDot, { backgroundColor: color, width: size * 0.25, height: size * 0.25 }]} />
-    <View style={[styles.broadcastBase, { backgroundColor: color, width: size * 0.35, height: size * 0.25 }]} />
-  </View>
-);
-
-const LockIcon = ({ size = 24, color = '#888888' }) => (
-  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-    <View style={[styles.lockShackle, { borderColor: color, width: size * 0.6, height: size * 0.4 }]} />
-    <View style={[styles.lockBody, { backgroundColor: color, width: size * 0.75, height: size * 0.55 }]}>
-      <View style={[styles.lockHole, { width: size * 0.2, height: size * 0.2 }]} />
-    </View>
-  </View>
-);
 
 interface CarModeScreenProps {
   visible: boolean;
@@ -109,158 +81,151 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
     return 'Live Radio';
   };
 
-  const currentLogo = currentStation ? getLogoUrl(currentStation) : null;
+  // Don't render if not visible
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="fullScreen"
-      onRequestClose={onClose}
-    >
-      <View style={styles.container}>
-        <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Car Mode</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.overlay}>
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Car Mode</Text>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Ionicons name="close" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
 
-          {/* Station Carousel */}
-          <View style={styles.carouselContainer}>
-            <ScrollView
-              ref={scrollRef}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.carouselContent}
-              snapToInterval={CARD_WIDTH + 12}
-              decelerationRate="fast"
-            >
-              {stations.map((station, index) => {
-                const logo = getLogoUrl(station);
-                const isActive = currentStation?._id === station._id;
-                
-                return (
-                  <TouchableOpacity
-                    key={station._id}
-                    style={[
-                      styles.stationCard,
-                      isActive && styles.stationCardActive,
-                    ]}
-                    onPress={() => handleStationSelect(station)}
-                    activeOpacity={0.8}
-                  >
-                    {logo ? (
-                      <Image source={{ uri: logo }} style={styles.stationLogo} resizeMode="cover" />
-                    ) : (
-                      <View style={styles.stationLogoPlaceholder}>
-                        <Text style={styles.placeholderText}>{station.name.charAt(0)}</Text>
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
+        {/* Station Carousel */}
+        <View style={styles.carouselContainer}>
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.carouselContent}
+            snapToInterval={CARD_WIDTH + 12}
+            decelerationRate="fast"
+          >
+            {stations.map((station: Station) => {
+              const logo = getLogoUrl(station);
+              const isActive = currentStation?._id === station._id;
+              
+              return (
+                <TouchableOpacity
+                  key={station._id}
+                  style={[
+                    styles.stationCard,
+                    isActive && styles.stationCardActive,
+                  ]}
+                  onPress={() => handleStationSelect(station)}
+                  activeOpacity={0.8}
+                >
+                  {logo ? (
+                    <Image source={{ uri: logo }} style={styles.stationLogo} resizeMode="cover" />
+                  ) : (
+                    <View style={styles.stationLogoPlaceholder}>
+                      <Text style={styles.placeholderText}>{station.name.charAt(0)}</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
 
-          {/* Now Playing Info */}
-          <View style={styles.nowPlayingInfo}>
-            {/* Animated dots */}
-            <View style={styles.animatedDots}>
-              <View style={[styles.dot, styles.dotPink]} />
-              <View style={[styles.dot, styles.dotPink]} />
-              <View style={[styles.dot, styles.dotPink]} />
+        {/* Now Playing Info */}
+        <View style={styles.nowPlayingInfo}>
+          {/* Animated dots */}
+          <View style={styles.animatedDots}>
+            <View style={[styles.dot, styles.dotPink]} />
+            <View style={[styles.dot, styles.dotPink]} />
+            <View style={[styles.dot, styles.dotPink]} />
+          </View>
+          <Text style={styles.stationName}>{currentStation?.name || 'No Station'}</Text>
+          <Text style={styles.songInfo}>{getCurrentSongInfo()}</Text>
+        </View>
+
+        {/* Main Controls */}
+        <View style={styles.mainControls}>
+          {/* Previous */}
+          <TouchableOpacity style={styles.controlButton}>
+            <Ionicons name="play-skip-back" size={32} color="#FFFFFF" />
+          </TouchableOpacity>
+
+          {/* Play/Pause */}
+          <TouchableOpacity
+            style={styles.playPauseButton}
+            onPress={togglePlayPause}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Ionicons name="hourglass" size={36} color="#FFFFFF" />
+            ) : isPlaying ? (
+              <Ionicons name="pause" size={36} color="#FFFFFF" />
+            ) : (
+              <Ionicons name="play" size={36} color="#FFFFFF" />
+            )}
+          </TouchableOpacity>
+
+          {/* Next */}
+          <TouchableOpacity style={styles.controlButton}>
+            <Ionicons name="play-skip-forward" size={32} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Volume Controls */}
+        <View style={styles.volumeControls}>
+          {/* Mute Button */}
+          <TouchableOpacity style={styles.muteButton} onPress={handleMuteToggle}>
+            <Ionicons 
+              name={isMuted ? "volume-mute" : "volume-high"} 
+              size={28} 
+              color="#FFFFFF" 
+            />
+          </TouchableOpacity>
+
+          {/* Volume Slider */}
+          <View style={styles.volumeSliderContainer}>
+            <Ionicons name="volume-low" size={20} color="#888888" />
+            <Slider
+              style={styles.volumeSlider}
+              minimumValue={0}
+              maximumValue={1}
+              value={isMuted ? 0 : volume}
+              onValueChange={handleVolumeChange}
+              minimumTrackTintColor="#FF4D8D"
+              maximumTrackTintColor="#333333"
+              thumbTintColor="#FF4D8D"
+            />
+            <Ionicons name="volume-high" size={20} color="#888888" />
+          </View>
+        </View>
+
+        {/* REC Button */}
+        <View style={styles.recContainer}>
+          <TouchableOpacity style={styles.recButton}>
+            <View style={styles.recDotOuter}>
+              <View style={styles.recDotInner} />
             </View>
-            <Text style={styles.stationName}>{currentStation?.name || 'No Station'}</Text>
-            <Text style={styles.songInfo}>{getCurrentSongInfo()}</Text>
-          </View>
-
-          {/* Main Controls */}
-          <View style={styles.mainControls}>
-            {/* Previous */}
-            <TouchableOpacity style={styles.controlButton}>
-              <View style={styles.prevNextIcon}>
-                <View style={styles.prevBar} />
-                <View style={styles.prevTriangle} />
-              </View>
-            </TouchableOpacity>
-
-            {/* Play/Pause */}
-            <TouchableOpacity
-              style={styles.playPauseButton}
-              onPress={togglePlayPause}
-              disabled={isLoading}
-            >
-              {isPlaying ? (
-                <View style={styles.pauseIcon}>
-                  <View style={styles.pauseBar} />
-                  <View style={styles.pauseBar} />
-                </View>
-              ) : (
-                <View style={styles.playIcon} />
-              )}
-            </TouchableOpacity>
-
-            {/* Next */}
-            <TouchableOpacity style={styles.controlButton}>
-              <View style={styles.prevNextIcon}>
-                <View style={styles.nextTriangle} />
-                <View style={styles.nextBar} />
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Volume Controls */}
-          <View style={styles.volumeControls}>
-            {/* Mute Button */}
-            <TouchableOpacity style={styles.muteButton} onPress={handleMuteToggle}>
-              <View style={styles.muteIcon}>
-                <View style={styles.speakerBody} />
-                <View style={styles.speakerCone} />
-                {isMuted && <View style={styles.muteX} />}
-              </View>
-            </TouchableOpacity>
-
-            {/* Volume Slider */}
-            <View style={styles.volumeSliderContainer}>
-              <View style={styles.volumeIconSmall}>
-                <View style={styles.speakerBodySmall} />
-                <View style={styles.speakerConeSmall} />
-              </View>
-              <Slider
-                style={styles.volumeSlider}
-                minimumValue={0}
-                maximumValue={1}
-                value={isMuted ? 0 : volume}
-                onValueChange={handleVolumeChange}
-                minimumTrackTintColor="#FF4D8D"
-                maximumTrackTintColor="#333333"
-                thumbTintColor="#FF4D8D"
-              />
-            </View>
-          </View>
-
-          {/* REC Button */}
-          <View style={styles.recContainer}>
-            <TouchableOpacity style={styles.recButton}>
-              <View style={styles.recDotOuter}>
-                <View style={styles.recDotInner} />
-              </View>
-              <Text style={styles.recText}>REC</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </View>
-    </Modal>
+            <Text style={styles.recText}>REC</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: '#0D0D0D',
+    zIndex: 1000,
   },
   safeArea: {
     flex: 1,
@@ -279,14 +244,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     backgroundColor: '#2A2A2A',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    width: 40,
+    height: 40,
     borderRadius: 20,
-  },
-  closeText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // Carousel
@@ -306,12 +268,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1A1A1A',
   },
   stationCardActive: {
-    transform: [{ scale: 1.05 }],
-    shadowColor: '#FF4D8D',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
+    borderWidth: 2,
+    borderColor: '#FF4D8D',
   },
   stationLogo: {
     width: '100%',
@@ -386,62 +344,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  prevNextIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  prevBar: {
-    width: 4,
-    height: 24,
-    backgroundColor: '#FFFFFF',
-  },
-  prevTriangle: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 12,
-    borderBottomWidth: 12,
-    borderRightWidth: 20,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderRightColor: '#FFFFFF',
-  },
-  nextTriangle: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 12,
-    borderBottomWidth: 12,
-    borderLeftWidth: 20,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-  },
-  nextBar: {
-    width: 4,
-    height: 24,
-    backgroundColor: '#FFFFFF',
-  },
-  pauseIcon: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  pauseBar: {
-    width: 8,
-    height: 28,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
-  },
-  playIcon: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 14,
-    borderBottomWidth: 14,
-    borderLeftWidth: 24,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-    marginLeft: 4,
-  },
 
   // Volume Controls
   volumeControls: {
@@ -452,40 +354,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   muteButton: {
-    width: 100,
+    width: 80,
     height: 60,
     borderRadius: 16,
     backgroundColor: '#1A1A1A',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  muteIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  speakerBody: {
-    width: 12,
-    height: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
-  },
-  speakerCone: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 12,
-    borderBottomWidth: 12,
-    borderLeftWidth: 12,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-  },
-  muteX: {
-    position: 'absolute',
-    width: 24,
-    height: 2,
-    backgroundColor: '#FFFFFF',
-    transform: [{ rotate: '45deg' }],
-    right: -8,
   },
   volumeSliderContainer: {
     flex: 1,
@@ -496,30 +370,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 16,
   },
-  volumeIconSmall: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  speakerBodySmall: {
-    width: 8,
-    height: 10,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 1,
-  },
-  speakerConeSmall: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 8,
-    borderBottomWidth: 8,
-    borderLeftWidth: 8,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-  },
   volumeSlider: {
     flex: 1,
     height: 40,
+    marginHorizontal: 8,
   },
 
   // REC Button
@@ -551,71 +405,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
-
-  // Custom Icon Styles
-  shareNode: {
-    borderRadius: 100,
-    position: 'absolute',
-    left: 0,
-  },
-  shareLine1: {
-    position: 'absolute',
-    transform: [{ rotate: '-45deg' }],
-  },
-  shareNode2: {
-    borderRadius: 100,
-    position: 'absolute',
-  },
-  shareLine2: {
-    position: 'absolute',
-    transform: [{ rotate: '45deg' }],
-  },
-  shareNode3: {
-    borderRadius: 100,
-    position: 'absolute',
-  },
-  broadcastOuter: {
-    borderWidth: 2,
-    borderRadius: 100,
-    borderBottomWidth: 0,
-    position: 'absolute',
-    top: 0,
-  },
-  broadcastMiddle: {
-    borderWidth: 2,
-    borderRadius: 100,
-    borderBottomWidth: 0,
-    position: 'absolute',
-    top: '15%',
-  },
-  broadcastDot: {
-    borderRadius: 100,
-    position: 'absolute',
-  },
-  broadcastBase: {
-    position: 'absolute',
-    bottom: 0,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
-  lockShackle: {
-    borderWidth: 3,
-    borderBottomWidth: 0,
-    borderRadius: 100,
-    position: 'absolute',
-    top: 0,
-  },
-  lockBody: {
-    position: 'absolute',
-    bottom: 0,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lockHole: {
-    backgroundColor: '#0D0D0D',
-    borderRadius: 100,
   },
 });
 
