@@ -163,6 +163,51 @@ const BroadcastIcon = ({ size = 24, color = '#888888' }) => (
   </View>
 );
 
+// GridItem extracted OUTSIDE PlayerScreen to prevent unmount/remount on re-render
+const GridItem = React.memo(({
+  station,
+  onPress,
+  getLogoUrl,
+  itemWidth,
+}: {
+  station: Station;
+  onPress: (station: Station) => void;
+  getLogoUrl: (station: Station) => string | null;
+  itemWidth: number;
+}) => {
+  const stationLogo = getLogoUrl(station);
+
+  return (
+    <TouchableOpacity
+      style={[styles.gridItem, { width: itemWidth }]}
+      onPress={() => onPress(station)}
+      activeOpacity={0.7}
+      delayPressIn={0}
+      data-testid={`grid-item-${station._id}`}
+    >
+      <View style={[styles.gridImageWrapper, { width: itemWidth, height: itemWidth }]}>
+        {stationLogo ? (
+          <Image
+            source={{ uri: stationLogo }}
+            style={styles.gridImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={[styles.gridImage, styles.gridPlaceholder]}>
+            <Ionicons name="radio" size={24} color="#666" />
+          </View>
+        )}
+      </View>
+      <Text style={styles.gridStationName} numberOfLines={1}>
+        {station.name}
+      </Text>
+      <Text style={styles.gridStationLocation} numberOfLines={1}>
+        {station.country || 'Radio'}
+      </Text>
+    </TouchableOpacity>
+  );
+});
+
 export default function PlayerScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
