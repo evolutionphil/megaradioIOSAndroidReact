@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 180,
-    alignItems: 'center',
+    paddingHorizontal: 15,
   },
 
   // Header - Centered with fixed width
