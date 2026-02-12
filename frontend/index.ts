@@ -1,11 +1,13 @@
 // Entry point for TrackPlayer registration
 // This file registers the playback service before the app starts
-import { Platform, AppRegistry } from 'react-native';
-import TrackPlayer from 'react-native-track-player';
-import { playbackService } from './src/services/trackPlayerService';
+import { Platform } from 'react-native';
 
-// Register the playback service (native only)
+// Only register TrackPlayer on native platforms
+// Web uses expo-av fallback in useAudioPlayer hook
 if (Platform.OS !== 'web') {
+  // Dynamic import to avoid loading TrackPlayer on web
+  const TrackPlayer = require('react-native-track-player').default;
+  const { playbackService } = require('./src/services/trackPlayerService');
   TrackPlayer.registerPlaybackService(() => playbackService);
 }
 
