@@ -60,7 +60,7 @@ export default function HomeScreen() {
   
   // Calculate grid item size dynamically
   const GRID_ITEM_SIZE = getGridItemSize(screenWidth);
-  const GRID_GAP = 8;
+  const GRID_GAP = 6;
   
   // Calculate grid item width dynamically
   // For 375px screen: (375 - 30 - 16) / 3 = ~109px
