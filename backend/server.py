@@ -71,36 +71,40 @@ async def get_now_playing(station_id: str):
     Tries to fetch ICY metadata from the stream.
     """
     try:
-        # First, try to get station info from external API
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            # Try themegaradio API first
+        async with httpx.AsyncClient(timeout=10.0) as http_client:
+            # Try themegaradio API - correct endpoint is /api/station/ (singular)
             try:
-                response = await client.get(
-                    f"https://themegaradio.com/api/stations/{station_id}"
+                response = await http_client.get(
+                    f"https://themegaradio.com/api/station/{station_id}"
                 )
                 if response.status_code == 200:
                     station_data = response.json()
                     
-                    # Try to get stream metadata
-                    stream_url = station_data.get('url_resolved') or station_data.get('url')
+                    # Get station info
+                    station_name = station_data.get('name', 'Unknown Station')
+                    genres = station_data.get('genres', [])
+                    tags = station_data.get('tags', '')
+                    country = station_data.get('country', '')
+                    
+                    # Try to get stream metadata (ICY)
+                    stream_url = station_data.get('urlResolved') or station_data.get('url')
                     if stream_url:
                         metadata = await fetch_stream_metadata(stream_url)
-                        if metadata:
+                        if metadata and metadata.get('title'):
                             return NowPlayingResponse(
                                 station_id=station_id,
                                 title=metadata.get('title'),
-                                artist=metadata.get('artist'),
+                                artist=metadata.get('artist') or station_name,
                                 song=metadata.get('song'),
                             )
                     
-                    # Fallback to station genres/tags
-                    genres = station_data.get('genres', [])
-                    tags = station_data.get('tags', '')
+                    # Fallback to station genres/tags/country
+                    display_info = genres[0] if genres else (tags.split(',')[0].strip() if tags else country or 'Live Radio')
                     
                     return NowPlayingResponse(
                         station_id=station_id,
-                        title=genres[0] if genres else (tags.split(',')[0] if tags else 'Live Radio'),
-                        artist=station_data.get('name', 'Unknown Station'),
+                        title=display_info,
+                        artist=station_name,
                     )
             except Exception as e:
                 logger.error(f"Error fetching station data: {e}")
