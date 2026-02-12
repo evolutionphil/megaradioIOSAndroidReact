@@ -369,13 +369,13 @@ export default function HomeScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Radios Near You</Text>
             </View>
-            {/* Render rows of 3 items each */}
+            {/* Render rows of 3 items each - all rows use space-between */}
             {Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
-              <View key={`row-${rowIndex}`} style={{ flexDirection: 'row', justifyContent: rowIndex === Math.ceil(Math.min(popularStations.length, 12) / 3) - 1 && popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 ? 'flex-start' : 'space-between', marginBottom: 12, width: '100%' }}>
-                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, idx: number) => (
+              <View key={`row-${rowIndex}`} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, width: '100%' }}>
+                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station) => (
                   <TouchableOpacity
-                    key={`nearby-${station._id}-${rowIndex}-${idx}`}
-                    style={{ width: 100, marginRight: idx < 2 && popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length > idx + 1 ? 8 : 0 }}
+                    key={`nearby-${station._id}-${rowIndex}`}
+                    style={{ width: 100 }}
                     onPress={() => handleStationPress(station)}
                   >
                     <View style={{ width: 100, height: 100, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
@@ -391,6 +391,12 @@ export default function HomeScreen() {
                     </Text>
                   </TouchableOpacity>
                 ))}
+                {/* Fill empty slots if last row has less than 3 items */}
+                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
+                  Array.from({ length: 3 - popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
+                    <View key={`empty-nearby-${i}`} style={{ width: 100 }} />
+                  ))
+                }
               </View>
             ))}
             <TouchableOpacity style={styles.seeMoreButton}>
