@@ -226,10 +226,10 @@ export default function PlayerScreen() {
             {/* Spotify & YouTube icons */}
             <View style={styles.socialIcons}>
               <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
-                <Ionicons name="logo-spotify" size={16} color="#FFFFFF" />
+                <Ionicons name="musical-notes" size={16} color="#FFFFFF" />
               </TouchableOpacity>
               <TouchableOpacity style={[styles.socialButton, styles.youtubeButton]}>
-                <Ionicons name="logo-youtube" size={16} color="#FFFFFF" />
+                <Ionicons name="play-circle" size={16} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
           </View>
