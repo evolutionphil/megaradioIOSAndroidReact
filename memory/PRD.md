@@ -51,19 +51,24 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - `GET /api/community-favorites` - Community favorite stations
 
 ## Recent Changes (Feb 12, 2026)
-1. **Discoverable Genres Swiper:**
+1. **Grid Spacing Fix (Recently Played & Radios Near You):**
+   - All rows now use `justifyContent: 'space-between'` for consistent spacing
+   - Empty placeholder views added for incomplete rows to maintain alignment
+   
+2. **Discoverable Genre Banner:**
+   - Jazz banner now dynamically uses `/api/genres/discoverable` data
+   - Shows first genre from API with name and image
+   - Falls back to icon if image not available
+
+3. **Discoverable Genres Swiper:**
    - Replaced static "MegaRadio Premium" banner with horizontal swiper
    - Uses data from `/api/genres/discoverable` endpoint
    - Colorful gradient backgrounds for each genre
    - Shows genre name and station count
    
-2. **All Stations Logo Fix:**
+4. **All Stations Logo Fix:**
    - Logos now fill the entire card space (width: 100%, height: 100%)
    - Changed `resizeMode` from "contain" to "cover"
-   
-3. **Removed Old Discoverable Genres:**
-   - Deleted the bottom "Discoverable Genres" section
-   - Cleaned up unused styles
 
 ## Key Files
 - `/app/frontend/app/(tabs)/index.tsx` - Home Screen (updated with swiper)
