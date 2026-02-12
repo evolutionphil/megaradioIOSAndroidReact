@@ -8,22 +8,23 @@ import {
   ActivityIndicator,
   Dimensions,
   ScrollView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, gradients, spacing, borderRadius, typography, shadows } from '../src/constants/theme';
+import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
-import { useAddFavorite, useRemoveFavorite, useSimilarStations } from '../src/hooks/useQueries';
+import { useAddFavorite, useRemoveFavorite, useSimilarStations, useRecentlyPlayed, usePopularStations } from '../src/hooks/useQueries';
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
-import { StationCard } from '../src/components/StationCard';
 import type { Station } from '../src/types';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const ARTWORK_SIZE = Math.min(SCREEN_WIDTH - spacing.xl * 2, 300);
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const ARTWORK_SIZE = SCREEN_WIDTH - 80;
+const GRID_ITEM_WIDTH = (SCREEN_WIDTH - 60) / 3;
 
 export default function PlayerScreen() {
   const router = useRouter();
@@ -34,8 +35,10 @@ export default function PlayerScreen() {
     nowPlaying,
   } = usePlayerStore();
 
-  const { playStation, togglePlayPause, stopPlayback } = useAudioPlayer();
-  const { data: similarData } = useSimilarStations(currentStation?._id || '', 6);
+  const { playStation, togglePlayPause } = useAudioPlayer();
+  const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
+  const { data: recentlyPlayedData } = useRecentlyPlayed();
+  const { data: popularData } = usePopularStations(undefined, 9);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [checkingFavorite, setCheckingFavorite] = useState(false);
@@ -43,7 +46,6 @@ export default function PlayerScreen() {
   const addFavoriteMutation = useAddFavorite();
   const removeFavoriteMutation = useRemoveFavorite();
 
-  // Check if station is favorited
   useEffect(() => {
     if (isAuthenticated && currentStation) {
       checkFavoriteStatus();
@@ -56,7 +58,7 @@ export default function PlayerScreen() {
     try {
       const result = await userService.checkFavorite(currentStation._id);
       setIsFavorite(result.isFavorite);
-    } catch (error) {
+    } catch {
       // Ignore errors
     } finally {
       setCheckingFavorite(false);
@@ -86,28 +88,38 @@ export default function PlayerScreen() {
     }
   };
 
-  const handleSimilarStationPress = (station: Station) => {
+  const handleStationPress = (station: Station) => {
     playStation(station);
   };
 
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
   const isPlaying = playbackState === 'playing';
-  const hasError = playbackState === 'error';
 
-  const logoUrl = currentStation?.logoAssets?.webp384 ||
-    currentStation?.logoAssets?.webp192 ||
-    currentStation?.favicon ||
-    currentStation?.logo;
+  const getLogoUrl = (station: Station) => {
+    if (station.logoAssets?.webp192) {
+      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp192}`;
+    }
+    return station.favicon || station.logo || null;
+  };
 
+  const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
   const similarStations = similarData?.stations || [];
+  const recentStations = recentlyPlayedData || popularData?.stations || [];
+
+  // Get artist/song info
+  const getArtistInfo = () => {
+    if (nowPlaying?.artist) return nowPlaying.artist;
+    if (currentStation?.genres?.[0]) return currentStation.genres[0];
+    return currentStation?.country || 'Radio';
+  };
 
   if (!currentStation) {
     return (
-      <LinearGradient colors={gradients.background as any} style={styles.gradient}>
-        <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
           <View style={styles.emptyState}>
             <View style={styles.emptyIconContainer}>
-              <Ionicons name="radio-outline" size={64} color={colors.textMuted} />
+              <Ionicons name="radio-outline" size={64} color="#666" />
             </View>
             <Text style={styles.emptyTitle}>No station playing</Text>
             <Text style={styles.emptyText}>Select a station to start listening</Text>
@@ -116,13 +128,41 @@ export default function PlayerScreen() {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
-      </LinearGradient>
+      </View>
     );
   }
 
+  // Station Grid Item Component
+  const StationGridItem = ({ station }: { station: Station }) => {
+    const stationLogo = getLogoUrl(station);
+    return (
+      <TouchableOpacity
+        style={styles.gridItem}
+        onPress={() => handleStationPress(station)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.gridImageContainer}>
+          {stationLogo ? (
+            <Image source={{ uri: stationLogo }} style={styles.gridImage} resizeMode="cover" />
+          ) : (
+            <View style={styles.gridPlaceholder}>
+              <Ionicons name="radio" size={24} color="#666" />
+            </View>
+          )}
+        </View>
+        <Text style={styles.gridStationName} numberOfLines={1}>
+          {station.name}
+        </Text>
+        <Text style={styles.gridStationLocation} numberOfLines={1}>
+          {station.country || 'Unknown'}, {station.state || 'Istanbul'}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <LinearGradient colors={['#1A1725', '#0D0B14'] as any} style={styles.gradient}>
-      <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -131,15 +171,22 @@ export default function PlayerScreen() {
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
-              <Ionicons name="chevron-down" size={26} color={colors.text} />
+              <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             <View style={styles.headerCenter}>
-              <Text style={styles.headerLabel}>NOW PLAYING</Text>
+              <View style={styles.hdBadge}>
+                <Text style={styles.hdText}>HD</Text>
+              </View>
               <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
             </View>
-            <TouchableOpacity style={styles.headerButton}>
-              <Ionicons name="ellipsis-horizontal" size={22} color={colors.text} />
-            </TouchableOpacity>
+            <View style={styles.headerRight}>
+              <TouchableOpacity style={styles.headerIcon}>
+                <Ionicons name="car-outline" size={22} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.headerIcon}>
+                <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Album Art */}
@@ -153,229 +200,200 @@ export default function PlayerScreen() {
                 />
               ) : (
                 <View style={styles.artworkPlaceholder}>
-                  <Ionicons name="radio" size={80} color={colors.textMuted} />
+                  <Ionicons name="radio" size={80} color="#666" />
                 </View>
               )}
-              {isPlaying && (
-                <View style={styles.playingOverlay}>
-                  <View style={styles.equalizer}>
-                    <View style={[styles.eqBar, styles.eqBar1]} />
-                    <View style={[styles.eqBar, styles.eqBar2]} />
-                    <View style={[styles.eqBar, styles.eqBar3]} />
-                    <View style={[styles.eqBar, styles.eqBar4]} />
-                    <View style={[styles.eqBar, styles.eqBar5]} />
-                  </View>
-                </View>
-              )}
-            </View>
-          </View>
-
-          {/* Station Info */}
-          <View style={styles.infoContainer}>
-            <Text style={styles.stationName} numberOfLines={2}>
-              {currentStation.name}
-            </Text>
-            <Text style={styles.stationMeta}>
-              {currentStation.country || currentStation.countrycode}
-              {currentStation.genres?.[0] && ` • ${currentStation.genres[0]}`}
-            </Text>
-            {nowPlaying?.title && (
-              <View style={styles.nowPlayingContainer}>
-                <Ionicons name="musical-notes" size={14} color={colors.primary} />
-                <Text style={styles.nowPlayingText} numberOfLines={1}>
-                  {nowPlaying.title}
-                </Text>
+              {/* Live indicator */}
+              <View style={styles.liveIndicator}>
+                <View style={styles.liveIndicatorBar} />
               </View>
-            )}
+            </View>
           </View>
 
-          {/* Error Message */}
-          {hasError && (
-            <View style={styles.errorContainer}>
-              <Ionicons name="warning" size={18} color={colors.error} />
-              <Text style={styles.errorText}>Unable to play this station</Text>
+          {/* Now Playing Info */}
+          <View style={styles.nowPlayingSection}>
+            {/* Animated dots */}
+            <View style={styles.animatedDots}>
+              <View style={[styles.dot, styles.dotPink]} />
+              <View style={[styles.dot, styles.dotPink]} />
+              <View style={[styles.dot, styles.dotPink]} />
             </View>
-          )}
+            <Text style={styles.stationName}>{currentStation.name}</Text>
+            <Text style={styles.artistName}>{getArtistInfo()}</Text>
+            {/* Spotify & YouTube icons */}
+            <View style={styles.socialIcons}>
+              <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
+                <Ionicons name="logo-spotify" size={16} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.socialButton, styles.youtubeButton]}>
+                <Ionicons name="logo-youtube" size={16} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {/* Main Controls */}
-          <View style={styles.controls}>
-            <TouchableOpacity style={styles.secondaryControl}>
-              <Ionicons name="shuffle" size={24} color={colors.textSecondary} />
+          <View style={styles.mainControls}>
+            <TouchableOpacity style={styles.controlButton}>
+              <Ionicons name="time-outline" size={26} color="#AAAAAA" />
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.skipControl}>
-              <Ionicons name="play-skip-back" size={28} color={colors.text} />
+            <TouchableOpacity style={styles.controlButton}>
+              <Ionicons name="play-skip-back" size={32} color="#FFFFFF" />
             </TouchableOpacity>
-
             <TouchableOpacity
               style={styles.playPauseButton}
               onPress={togglePlayPause}
               disabled={isLoading}
             >
-              <LinearGradient
-                colors={[colors.primary, colors.primaryDark] as any}
-                style={styles.playPauseGradient}
-              >
-                {isLoading ? (
-                  <ActivityIndicator size="large" color={colors.text} />
-                ) : (
-                  <Ionicons
-                    name={isPlaying ? 'pause' : 'play'}
-                    size={36}
-                    color={colors.text}
-                    style={!isPlaying && { marginLeft: 4 }}
-                  />
-                )}
-              </LinearGradient>
+              {isLoading ? (
+                <ActivityIndicator size="large" color="#FFFFFF" />
+              ) : (
+                <Ionicons
+                  name={isPlaying ? 'pause' : 'play'}
+                  size={36}
+                  color="#FFFFFF"
+                  style={!isPlaying ? { marginLeft: 4 } : undefined}
+                />
+              )}
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.skipControl}>
-              <Ionicons name="play-skip-forward" size={28} color={colors.text} />
+            <TouchableOpacity style={styles.controlButton}>
+              <Ionicons name="play-skip-forward" size={32} color="#FFFFFF" />
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.secondaryControl}>
-              <Ionicons name="repeat" size={24} color={colors.textSecondary} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.actionButtons}>
             <TouchableOpacity
-              style={styles.actionButton}
+              style={styles.controlButton}
               onPress={handleToggleFavorite}
               disabled={checkingFavorite}
             >
               {checkingFavorite ? (
-                <ActivityIndicator size="small" color={colors.text} />
+                <ActivityIndicator size="small" color="#AAAAAA" />
               ) : (
-                <>
-                  <Ionicons
-                    name={isFavorite ? 'heart' : 'heart-outline'}
-                    size={22}
-                    color={isFavorite ? colors.accent : colors.text}
-                  />
-                  <Text style={styles.actionButtonText}>
-                    {isFavorite ? 'Saved' : 'Save'}
-                  </Text>
-                </>
+                <Ionicons
+                  name={isFavorite ? 'heart' : 'heart-outline'}
+                  size={26}
+                  color={isFavorite ? '#FF4757' : '#AAAAAA'}
+                />
               )}
             </TouchableOpacity>
+          </View>
 
-            <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="share-outline" size={22} color={colors.text} />
-              <Text style={styles.actionButtonText}>Share</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="download-outline" size={22} color={colors.text} />
-              <Text style={styles.actionButtonText}>Record</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="timer-outline" size={22} color={colors.text} />
-              <Text style={styles.actionButtonText}>Sleep</Text>
+          {/* Secondary Controls */}
+          <View style={styles.secondaryControls}>
+            <View style={styles.leftSecondaryControls}>
+              <TouchableOpacity style={styles.secondaryButton}>
+                <Ionicons name="share-social-outline" size={24} color="#AAAAAA" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.secondaryButton}>
+                <Ionicons name="headset-outline" size={24} color="#AAAAAA" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.secondaryButton}>
+                <Ionicons name="radio-outline" size={24} color="#AAAAAA" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.recButton}>
+              <View style={styles.recDot} />
+              <Text style={styles.recText}>REC</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Station Details */}
-          <View style={styles.detailsContainer}>
-            {currentStation.bitrate && (
-              <View style={styles.detailChip}>
-                <Ionicons name="speedometer-outline" size={14} color={colors.textSecondary} />
-                <Text style={styles.detailText}>{currentStation.bitrate} kbps</Text>
-              </View>
-            )}
-            {currentStation.codec && (
-              <View style={styles.detailChip}>
-                <Ionicons name="disc-outline" size={14} color={colors.textSecondary} />
-                <Text style={styles.detailText}>{currentStation.codec}</Text>
-              </View>
-            )}
-            {currentStation.language && (
-              <View style={styles.detailChip}>
-                <Ionicons name="language-outline" size={14} color={colors.textSecondary} />
-                <Text style={styles.detailText}>{currentStation.language}</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Similar Stations */}
-          {similarStations.length > 0 && (
-            <View style={styles.similarSection}>
-              <Text style={styles.similarTitle}>Similar Stations</Text>
-              {similarStations.slice(0, 4).map((station) => (
-                <StationCard
-                  key={station._id}
-                  station={station}
-                  onPress={handleSimilarStationPress}
-                  isPlaying={currentStation._id === station._id && isPlaying}
-                  isLoading={currentStation._id === station._id && isLoading}
-                />
+          {/* Recently Played Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recently Played</Text>
+            <View style={styles.stationGrid}>
+              {recentStations.slice(0, 6).map((station: Station, index: number) => (
+                <StationGridItem key={`recent-${station._id}-${index}`} station={station} />
               ))}
             </View>
-          )}
+          </View>
+
+          {/* Similar Radios Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Similar Radios</Text>
+            <View style={styles.stationGrid}>
+              {(similarStations.length > 0 ? similarStations : recentStations).slice(0, 9).map((station: Station, index: number) => (
+                <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
+              ))}
+            </View>
+          </View>
         </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   container: {
+    flex: 1,
+    backgroundColor: '#0A1A1F',
+  },
+  safeArea: {
     flex: 1,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.xxl,
+    paddingBottom: 40,
   },
-  
+
   // Header
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   headerButton: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerCenter: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
-  headerLabel: {
-    fontSize: typography.sizes.xs,
-    fontWeight: typography.weights.semibold,
-    color: colors.primary,
-    letterSpacing: 1,
+  hdBadge: {
+    backgroundColor: '#FFD700',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  hdText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#000000',
   },
   headerTitle: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
-    marginTop: 2,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
-  
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerIcon: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   // Artwork
   artworkContainer: {
     alignItems: 'center',
-    marginTop: spacing.lg,
-    marginBottom: spacing.xl,
+    marginTop: 8,
+    marginBottom: 16,
   },
   artworkWrapper: {
     width: ARTWORK_SIZE,
-    height: ARTWORK_SIZE,
-    borderRadius: borderRadius.xl,
+    height: ARTWORK_SIZE * 0.65,
+    borderRadius: 20,
     overflow: 'hidden',
-    ...shadows.lg,
+    backgroundColor: '#1E1E1E',
   },
   artwork: {
     width: '100%',
@@ -384,210 +402,216 @@ const styles = StyleSheet.create({
   artworkPlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: colors.surface,
+    backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  playingOverlay: {
+  liveIndicator: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    bottom: 16,
+    right: 16,
   },
-  equalizer: {
+  liveIndicatorBar: {
+    width: 40,
+    height: 6,
+    backgroundColor: '#FF3B30',
+    borderRadius: 3,
+  },
+
+  // Now Playing
+  nowPlayingSection: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  animatedDots: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    height: 30,
     gap: 4,
+    marginBottom: 8,
   },
-  eqBar: {
-    width: 4,
-    backgroundColor: colors.primary,
-    borderRadius: 2,
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
-  eqBar1: { height: 12 },
-  eqBar2: { height: 24 },
-  eqBar3: { height: 18 },
-  eqBar4: { height: 28 },
-  eqBar5: { height: 16 },
-  
-  // Info
-  infoContainer: {
-    alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.lg,
+  dotPink: {
+    backgroundColor: '#FF69B4',
   },
   stationName: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
   },
-  stationMeta: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
+  artistName: {
+    fontSize: 16,
+    color: '#AAAAAA',
+    marginBottom: 12,
   },
-  nowPlayingContainer: {
+  socialIcons: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing.md,
-    backgroundColor: colors.surface,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full,
-    gap: spacing.xs,
+    gap: 12,
   },
-  nowPlayingText: {
-    fontSize: typography.sizes.sm,
-    color: colors.text,
-    maxWidth: 200,
-  },
-  
-  // Error
-  errorContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    marginHorizontal: spacing.xl,
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.lg,
-    gap: spacing.sm,
-  },
-  errorText: {
-    fontSize: typography.sizes.sm,
-    color: colors.error,
-  },
-  
-  // Controls
-  controls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: spacing.lg,
-    paddingHorizontal: spacing.lg,
-  },
-  secondaryControl: {
-    width: 44,
-    height: 44,
+  socialButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  skipControl: {
+  spotifyButton: {
+    backgroundColor: '#1DB954',
+  },
+  youtubeButton: {
+    backgroundColor: '#FF0000',
+  },
+
+  // Main Controls
+  mainControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+  controlButton: {
     width: 56,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center',
   },
   playPauseButton: {
-    marginHorizontal: spacing.lg,
-    borderRadius: borderRadius.full,
-    overflow: 'hidden',
-    ...shadows.glow,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: '#3A3A3C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 16,
   },
-  playPauseGradient: {
-    width: 72,
-    height: 72,
-    borderRadius: borderRadius.full,
+
+  // Secondary Controls
+  secondaryControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    marginBottom: 28,
+  },
+  leftSecondaryControls: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+  secondaryButton: {
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  // Action Buttons
-  actionButtons: {
+  recButton: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.lg,
-  },
-  actionButton: {
     alignItems: 'center',
-    padding: spacing.sm,
+    gap: 6,
   },
-  actionButtonText: {
-    fontSize: typography.sizes.xs,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
+  recDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#FF3B30',
   },
-  
-  // Details
-  detailsContainer: {
+  recText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+
+  // Sections
+  section: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 16,
+    fontStyle: 'italic',
+  },
+  stationGrid: {
     flexDirection: 'row',
-    justifyContent: 'center',
     flexWrap: 'wrap',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
+    gap: 12,
   },
-  detailChip: {
-    flexDirection: 'row',
+
+  // Grid Items
+  gridItem: {
+    width: GRID_ITEM_WIDTH,
+  },
+  gridImageContainer: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#1E1E1E',
+    marginBottom: 8,
+  },
+  gridImage: {
+    width: '100%',
+    height: '100%',
+  },
+  gridPlaceholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
-    borderRadius: borderRadius.full,
-    gap: spacing.xs,
+    backgroundColor: '#2A2A2A',
   },
-  detailText: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
+  gridStationName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 2,
   },
-  
-  // Similar Stations
-  similarSection: {
-    paddingHorizontal: spacing.md,
-    marginTop: spacing.lg,
+  gridStationLocation: {
+    fontSize: 12,
+    color: '#888888',
   },
-  similarTitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  
+
   // Empty State
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: spacing.xl,
+    padding: 24,
   },
   emptyIconContainer: {
     width: 120,
     height: 120,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
+    borderRadius: 60,
+    backgroundColor: '#1E1E1E',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: 24,
   },
   emptyTitle: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    marginBottom: spacing.sm,
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 8,
   },
   emptyText: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
-    marginBottom: spacing.xl,
+    fontSize: 16,
+    color: '#888888',
+    marginBottom: 24,
   },
   goBackButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.full,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    borderRadius: 24,
   },
   goBackButtonText: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
