@@ -349,22 +349,28 @@ export const useAudioPlayer = () => {
 
   // Fetch now playing metadata from our backend
   const fetchNowPlaying = useCallback(async (stationId: string) => {
+    const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+    
     try {
-      // Try our backend first
-      const response = await fetch(`/api/now-playing/${stationId}`);
+      // Try our local backend API first
+      const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
       if (response.ok) {
         const metadata = await response.json();
-        setNowPlaying(metadata);
-        return;
+        if (metadata && (metadata.title || metadata.artist)) {
+          setNowPlaying(metadata);
+          return;
+        }
       }
-    } catch {
-      // Fall through to external API
+    } catch (error) {
+      console.log('[useAudioPlayer] Local backend now-playing failed:', error);
     }
     
-    // Try external API
+    // Fall through to external API
     try {
       const metadata = await stationService.getNowPlaying(stationId);
-      setNowPlaying(metadata);
+      if (metadata) {
+        setNowPlaying(metadata);
+      }
     } catch {
       console.log('[useAudioPlayer] Now playing metadata not available');
     }
