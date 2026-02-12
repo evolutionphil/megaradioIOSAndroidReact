@@ -333,6 +333,12 @@ export default function HomeScreen() {
                       </Text>
                     </TouchableOpacity>
                   ))}
+                  {/* Fill empty slots if row has less than 3 items */}
+                  {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).length < 3 && 
+                    Array.from({ length: 3 - (recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).length }).map((_, i) => (
+                      <View key={`empty-recent-1-${i}`} style={{ width: 100 }} />
+                    ))
+                  }
                 </View>
                 {/* Row 2 - next 3 items if available */}
                 {(recentStations.length > 0 ? recentStations : popularStations).length > 3 && (
@@ -356,6 +362,12 @@ export default function HomeScreen() {
                         </Text>
                       </TouchableOpacity>
                     ))}
+                    {/* Fill empty slots if row has less than 3 items */}
+                    {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).length < 3 && 
+                      Array.from({ length: 3 - (recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).length }).map((_, i) => (
+                        <View key={`empty-recent-2-${i}`} style={{ width: 100 }} />
+                      ))
+                    }
                   </View>
                 )}
               </>
