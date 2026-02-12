@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   
-  // Background Gradient Blur
+  // Background Gradient Blur - Simulated with multiple layers
   bgGradientContainer: {
     position: 'absolute',
     top: -131,
@@ -417,20 +417,25 @@ const styles = StyleSheet.create({
     width: 434,
     height: 434,
     zIndex: 0,
-    overflow: 'hidden',
-    borderRadius: 217,
   },
-  bgBlur: {
+  bgGradientInner: {
     width: '100%',
     height: '100%',
-    borderRadius: 217,
-    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   bgGradient: {
-    width: '100%',
-    height: '100%',
+    width: 434,
+    height: 434,
     borderRadius: 217,
-    backgroundColor: '#3300FF4D', // #3300FF with 30% opacity
+    backgroundColor: '#3300FF',
+    opacity: 0.3,
+    // Simulating blur with shadow
+    shadowColor: '#3300FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 205,
+    elevation: 50,
   },
   
   safeArea: {
