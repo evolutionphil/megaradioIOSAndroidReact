@@ -95,12 +95,31 @@ export default function HomeScreen() {
     return null;
   };
 
-  // Genre background images
+  // Genre background images for cards
   const genreBackgrounds = [
     'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/eq61xd6w_e1b96e395dad3206b244b757c3f6d02f9e3e20ce.jpg',
     'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/e61i1gbp_ede84cfacb60b98a308517cb867870085cd29e3b.jpg',
     'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/uecu522z_b82ff8a8cf723ff0d4bca7a3dc526141e276b0eb.jpg',
   ];
+
+  // Fallback images for discoverable genres banner (CORS-safe)
+  const genreBannerImages: { [key: string]: string } = {
+    'folk-music': 'https://images.unsplash.com/photo-1598901704027-18db7e0e8c60?w=200&h=200&fit=crop',
+    'jazz': 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=200&h=200&fit=crop',
+    'rock': 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=200&h=200&fit=crop',
+    'pop': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&h=200&fit=crop',
+    'classical': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=200&h=200&fit=crop',
+    'electronic': 'https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?w=200&h=200&fit=crop',
+  };
+
+  const getGenreBannerImage = (genre: any) => {
+    // First try slug-based fallback
+    if (genre.slug && genreBannerImages[genre.slug]) {
+      return genreBannerImages[genre.slug];
+    }
+    // Default fallback
+    return 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=200&h=200&fit=crop';
+  };
 
   const getGenreBackground = (index: number) => {
     return genreBackgrounds[index % genreBackgrounds.length];
