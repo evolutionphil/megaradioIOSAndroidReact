@@ -37,7 +37,6 @@ export default function RootLayout() {
                 animation: 'slide_from_bottom',
               }}
             />
-            <Stack.Screen name="station/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="search" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="signup" options={{ headerShown: false }} />
