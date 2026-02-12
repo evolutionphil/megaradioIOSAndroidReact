@@ -732,20 +732,20 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - Full width with gap
+  // Station Grid Custom - 3 columns with space between
   stationGridCustom: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: GRID_GAP,
+    justifyContent: 'space-between',
+    rowGap: 15,
   },
   stationGridItem: {
-    width: GRID_ITEM_WIDTH,
-    height: GRID_ITEM_WIDTH + 44,
+    width: '31%',
   },
   stationGridLogo: {
-    width: GRID_ITEM_WIDTH,
-    height: GRID_ITEM_WIDTH,
+    width: '100%',
+    aspectRatio: 1,
     borderRadius: 10,
     backgroundColor: colors.surface,
     overflow: 'hidden',
