@@ -627,10 +627,9 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Genres - Centered with fixed width
+  // Genres - Fixed width
   genresContainer: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     height: 45,
     overflow: 'hidden',
   },
