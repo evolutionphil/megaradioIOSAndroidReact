@@ -68,11 +68,11 @@ async def get_status_checks():
 async def get_now_playing(station_id: str):
     """
     Get now playing information for a station.
-    Tries to fetch ICY metadata from the stream.
+    Returns station genre/tags as title since ICY metadata is complex.
     """
     try:
-        async with httpx.AsyncClient(timeout=10.0) as http_client:
-            # Try themegaradio API - correct endpoint is /api/station/ (singular)
+        async with httpx.AsyncClient(timeout=5.0) as http_client:
+            # Get station data from themegaradio API
             try:
                 response = await http_client.get(
                     f"https://themegaradio.com/api/station/{station_id}"
@@ -86,20 +86,15 @@ async def get_now_playing(station_id: str):
                     tags = station_data.get('tags', '')
                     country = station_data.get('country', '')
                     
-                    # Try to get stream metadata (ICY)
-                    stream_url = station_data.get('urlResolved') or station_data.get('url')
-                    if stream_url:
-                        metadata = await fetch_stream_metadata(stream_url)
-                        if metadata and metadata.get('title'):
-                            return NowPlayingResponse(
-                                station_id=station_id,
-                                title=metadata.get('title'),
-                                artist=metadata.get('artist') or station_name,
-                                song=metadata.get('song'),
-                            )
-                    
-                    # Fallback to station genres/tags/country
-                    display_info = genres[0] if genres else (tags.split(',')[0].strip() if tags else country or 'Live Radio')
+                    # Build display info from genres/tags
+                    if genres:
+                        display_info = genres[0]
+                    elif tags:
+                        display_info = tags.split(',')[0].strip()
+                    elif country:
+                        display_info = country
+                    else:
+                        display_info = 'Live Radio'
                     
                     return NowPlayingResponse(
                         station_id=station_id,
