@@ -1,5 +1,6 @@
 // useAudioPlayer - Audio playback with GUARANTEED stop before play
 // Uses a singleton pattern to ensure only ONE sound plays at a time
+// CRITICAL: This singleton MUST be shared across ALL components
 
 import { useCallback, useRef, useEffect } from 'react';
 import { Audio, AVPlaybackStatus } from 'expo-av';
@@ -8,13 +9,19 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
 
-// SINGLETON: Global sound instance - ensures only ONE sound exists
+// Global state to track initialization
+let audioModeConfigured = false;
+
+// SINGLETON: Global sound instance - ensures only ONE sound exists across the entire app
 class AudioManager {
   private static instance: AudioManager;
   private sound: Audio.Sound | null = null;
-  private isPlaying: boolean = false;
+  private currentStationId: string | null = null;
+  private statusCallback: ((status: AVPlaybackStatus) => void) | null = null;
 
-  private constructor() {}
+  private constructor() {
+    console.log('[AudioManager] Singleton instance created');
+  }
 
   static getInstance(): AudioManager {
     if (!AudioManager.instance) {
@@ -23,14 +30,35 @@ class AudioManager {
     return AudioManager.instance;
   }
 
+  getCurrentStationId(): string | null {
+    return this.currentStationId;
+  }
+
+  setStatusCallback(callback: (status: AVPlaybackStatus) => void): void {
+    this.statusCallback = callback;
+  }
+
+  private onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+    if (this.statusCallback) {
+      this.statusCallback(status);
+    }
+  };
+
   async stopAndUnload(): Promise<void> {
-    console.log('[AudioManager] stopAndUnload called');
+    console.log('[AudioManager] stopAndUnload called, current sound:', this.sound ? 'exists' : 'null');
+    
     if (this.sound) {
+      const soundToUnload = this.sound;
+      // Clear references FIRST to prevent race conditions
+      this.sound = null;
+      this.currentStationId = null;
+      
       try {
-        const status = await this.sound.getStatusAsync();
+        console.log('[AudioManager] Getting status...');
+        const status = await soundToUnload.getStatusAsync();
         if (status.isLoaded) {
           console.log('[AudioManager] Stopping sound...');
-          await this.sound.stopAsync();
+          await soundToUnload.stopAsync();
         }
       } catch (e) {
         console.log('[AudioManager] Stop error (ignored):', e);
@@ -38,67 +66,104 @@ class AudioManager {
       
       try {
         console.log('[AudioManager] Unloading sound...');
-        await this.sound.unloadAsync();
+        await soundToUnload.unloadAsync();
+        console.log('[AudioManager] Sound unloaded successfully');
       } catch (e) {
         console.log('[AudioManager] Unload error (ignored):', e);
       }
-      
-      this.sound = null;
-      this.isPlaying = false;
-      console.log('[AudioManager] Sound stopped and unloaded');
     }
   }
 
-  async play(
-    url: string, 
-    onStatusUpdate: (status: AVPlaybackStatus) => void
-  ): Promise<void> {
-    // ALWAYS stop current sound first
+  async play(url: string, stationId: string): Promise<void> {
+    console.log('[AudioManager] play() called for station:', stationId);
+    console.log('[AudioManager] Current station:', this.currentStationId);
+    
+    // If same station, don't restart
+    if (this.currentStationId === stationId && this.sound) {
+      console.log('[AudioManager] Same station already playing, resuming if needed');
+      try {
+        const status = await this.sound.getStatusAsync();
+        if (status.isLoaded && !status.isPlaying) {
+          await this.sound.playAsync();
+        }
+      } catch (e) {
+        console.log('[AudioManager] Resume error:', e);
+      }
+      return;
+    }
+    
+    // CRITICAL: Stop any existing sound FIRST
+    console.log('[AudioManager] Stopping existing sound before playing new one...');
     await this.stopAndUnload();
     
-    console.log('[AudioManager] Creating new sound for:', url);
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: url },
-      { shouldPlay: true, volume: 1.0 },
-      onStatusUpdate
-    );
+    // Small delay to ensure cleanup is complete
+    await new Promise(resolve => setTimeout(resolve, 100));
     
-    this.sound = sound;
-    this.isPlaying = true;
-    console.log('[AudioManager] New sound created and playing');
+    console.log('[AudioManager] Creating new sound for:', url.substring(0, 50) + '...');
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: url },
+        { shouldPlay: true, volume: 1.0 },
+        this.onPlaybackStatusUpdate
+      );
+      
+      this.sound = sound;
+      this.currentStationId = stationId;
+      console.log('[AudioManager] New sound created and playing for station:', stationId);
+    } catch (error) {
+      console.error('[AudioManager] Failed to create sound:', error);
+      throw error;
+    }
   }
 
   async pause(): Promise<void> {
     if (this.sound) {
-      await this.sound.pauseAsync();
-      this.isPlaying = false;
+      try {
+        await this.sound.pauseAsync();
+        console.log('[AudioManager] Paused');
+      } catch (e) {
+        console.log('[AudioManager] Pause error:', e);
+      }
     }
   }
 
   async resume(): Promise<void> {
     if (this.sound) {
-      await this.sound.playAsync();
-      this.isPlaying = true;
+      try {
+        await this.sound.playAsync();
+        console.log('[AudioManager] Resumed');
+      } catch (e) {
+        console.log('[AudioManager] Resume error:', e);
+      }
     }
   }
 
   async setVolume(volume: number): Promise<void> {
     if (this.sound) {
-      await this.sound.setVolumeAsync(volume);
+      try {
+        await this.sound.setVolumeAsync(volume);
+      } catch (e) {
+        console.log('[AudioManager] Volume error:', e);
+      }
     }
   }
 
-  getIsPlaying(): boolean {
-    return this.isPlaying;
+  async getIsPlaying(): Promise<boolean> {
+    if (!this.sound) return false;
+    try {
+      const status = await this.sound.getStatusAsync();
+      return status.isLoaded && status.isPlaying;
+    } catch {
+      return false;
+    }
   }
 }
 
-// Get singleton instance
+// Get singleton instance - MUST be called once at module level
 const audioManager = AudioManager.getInstance();
 
 export const useAudioPlayer = () => {
   const listeningStartRef = useRef<Date | null>(null);
-  const currentStationIdRef = useRef<string | null>(null);
 
   const {
     currentStation,
@@ -113,9 +178,15 @@ export const useAudioPlayer = () => {
     reset,
   } = usePlayerStore();
 
-  // Set up audio mode on mount
+  // Set up audio mode ONCE globally (not per hook instance)
   useEffect(() => {
     const setupAudio = async () => {
+      // Only configure once across all hook instances
+      if (audioModeConfigured) {
+        console.log('[useAudioPlayer] Audio mode already configured, skipping');
+        return;
+      }
+      
       try {
         await Audio.setAudioModeAsync({
           staysActiveInBackground: true,
@@ -124,17 +195,19 @@ export const useAudioPlayer = () => {
           playThroughEarpieceAndroid: false,
           allowsRecordingIOS: false,
         });
-        console.log('[useAudioPlayer] Audio mode configured');
+        audioModeConfigured = true;
+        console.log('[useAudioPlayer] Audio mode configured (first time)');
       } catch (error) {
         console.error('[useAudioPlayer] Failed to set audio mode:', error);
       }
     };
     setupAudio();
 
-    // Cleanup on unmount
-    return () => {
-      audioManager.stopAndUnload();
-    };
+    // Set up the status callback for this hook instance
+    audioManager.setStatusCallback(onPlaybackStatusUpdate);
+
+    // NOTE: We do NOT cleanup on unmount because the singleton should persist
+    // Only cleanup when app is fully closed (handled by AppState listener if needed)
   }, []);
 
   // Handle playback state changes
