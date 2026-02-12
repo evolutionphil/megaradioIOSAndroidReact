@@ -266,13 +266,13 @@ export default function HomeScreen() {
             </View>
             {recentStations.length > 0 ? (
               <View style={styles.stationGridCustom}>
-                {recentStations.slice(0, 6).map((station: Station) => (
+                {recentStations.slice(0, 6).map((station: Station, index: number) => (
                   <TouchableOpacity
                     key={station._id}
-                    style={styles.stationGridItem}
+                    style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={styles.stationGridLogo}>
+                    <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
                       <Image 
                         source={{ uri: getLogoUrl(station) || undefined }} 
                         style={styles.stationGridLogoImage} 
@@ -288,13 +288,13 @@ export default function HomeScreen() {
               </View>
             ) : popularStations.length > 0 ? (
               <View style={styles.stationGridCustom}>
-                {popularStations.slice(0, 6).map((station: Station) => (
+                {popularStations.slice(0, 6).map((station: Station, index: number) => (
                   <TouchableOpacity
                     key={station._id}
-                    style={styles.stationGridItem}
+                    style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={styles.stationGridLogo}>
+                    <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
                       <Image 
                         source={{ uri: getLogoUrl(station) || undefined }} 
                         style={styles.stationGridLogoImage} 
@@ -322,10 +322,10 @@ export default function HomeScreen() {
               {popularStations.slice(0, 12).map((station: Station, index: number) => (
                 <TouchableOpacity
                   key={`nearby-${station._id}-${index}`}
-                  style={styles.stationGridItem}
+                  style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
                   onPress={() => handleStationPress(station)}
                 >
-                  <View style={styles.stationGridLogo}>
+                  <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
                     <Image 
                       source={{ uri: getLogoUrl(station) || undefined }} 
                       style={styles.stationGridLogoImage} 
