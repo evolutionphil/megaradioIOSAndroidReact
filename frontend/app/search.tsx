@@ -191,14 +191,17 @@ export default function SearchScreen() {
                 <Text style={styles.suggestionsTitle}>Popular Searches</Text>
                 <View style={styles.suggestionChips}>
                   {popularSearches.map((term) => (
-                    <TouchableOpacity
+                    <Pressable
                       key={term}
                       style={styles.suggestionChip}
-                      onPress={() => setQuery(term)}
+                      onPress={() => {
+                        console.log('Chip pressed:', term);
+                        setQuery(term);
+                      }}
                     >
                       <Ionicons name="trending-up" size={14} color={colors.primary} />
                       <Text style={styles.suggestionChipText}>{term}</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </View>
               </View>
