@@ -126,7 +126,12 @@ export const stationService = {
     const response = await api.get(API_ENDPOINTS.discover.top100, {
       params: { country },
     });
-    return response.data;
+    // API returns { results: [...], cached: boolean }
+    const data = response.data;
+    if (data && data.results) {
+      return data.results;
+    }
+    return Array.isArray(data) ? data : [];
   },
 
   // Get station stats
