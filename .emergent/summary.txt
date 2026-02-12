@@ -3,10 +3,10 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 
 **PRODUCT REQUIREMENTS:**
 - **Role:** Senior React Native + Expo Architect.
-- **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, , , .
+- **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
 - **Core Features:**
     - **UI:** A pixel-perfect implementation of provided Figma designs, delivered through iterative feedback.
-    - **Streaming:** Robust background playback with lock screen and notification controls.
+    - **Streaming:** Robust playback within the app. Background playback and lock-screen controls were initially requested but are on hold as  is incompatible with the user's Expo Go testing environment.
     - **Authentication:** Cookie-based sessions with Signup, Login, and Google OAuth.
     - **Station Discovery:** Popular stations, nearby stations, search, and genre filtering.
     - **User Features:** Favorites, recently played.
@@ -14,147 +14,163 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application has a functional, multi-tab interface.
-- **Home Screen ():** Displays grids of radio stations (Recently Played, Popular, etc.). The layout was recently adjusted to have larger station cards and less spacing, optimized for larger phone screens.
-- **Search Screen ():** A fully functional unified search page that queries radios, genres, and profiles simultaneously. It includes filter chips, handles no results scenarios, and displays results correctly.
-- **Navigation ():** A custom tab bar is implemented using user-provided PNG icons for Discover, Favorites, Profile, and a new Records tab.
-- **Mini Player ():** A sticky player component appears above the tab bar when a radio station is played. It's styled to match the user's Figma design.
+The application is a multi-tab React Native app built with Expo. It features a home screen with station grids, a functional search page, and a custom tab bar. A sticky  appears when a station is played. A full-screen player page () has been extensively developed to match user-provided Figma designs. A singleton  has been implemented in  to manage audio playback and prevent multiple streams. A new, but non-functional, backend endpoint () has been added to fetch song metadata.
 
 **Last working item**:
-- **Last item agent was working**: The user has requested to start the integration of  and also to investigate why glow and blur effects are not working correctly in the Expo Go app. The agent has not started implementing these new requirements.
-- **Status**: NOT STARTED
-- **Agent Testing Done**: N
-- **Which testing method agent to use?**: For , use  due to the complexity of background audio. For the visual effects, the agent should implement the code fix and then rely on user verification via the Expo Go app, as it cannot be tested in the web preview.
-- **User Testing Done**: N
+- **Last item agent was working**: The agent was working on two critical issues raised by the user:
+    1.  **Now Playing Song Title:** A backend endpoint () was created in  to fetch the current song title from the radio stream. However, this endpoint is timing out and failing, causing the player to show Unknown Artist.
+    2.  **Multiple Audio Streams:** The user reported that selecting a new station does not stop the currently playing one. The agent refactored  with a singleton  to fix this. Console logs indicate the fix is working, but the user reported the issue persists.
+- **Status**: IN PROGRESS
+- **Agent Testing Done**: Y (for the multi-stream fix via console logs, which showed the correct stop/play sequence. The backend API fix was not successfully tested.)
+- **Which testing method agent to use?**: Backend testing for the  API endpoint. Use  to debug the timeout. For the multi-stream issue, the code needs to be re-verified, and then the user must test on Expo Go.
+- **User Testing Done**: Y (User reported that the multi-stream issue is not fixed).
 
 **All Pending/In progress Issue list**:
-- **Issue 1 (P0)**: Integrate  for background audio.
-- **Issue 2 (P1)**: Glow and blur effects are not working in the Expo Go app.
-- **Issue 3 (P2)**: Images from the backend API are blocked by CORS in the web preview.
+-   **Issue 1 (P0): Now Playing API is broken.**
+-   **Issue 2 (P0): Multiple audio streams play simultaneously when changing stations.**
+-   **Issue 3 (P1): Grid item layout is broken in the web preview.**
+-   **Issue 4 (P2): Custom icons and fonts are not consistently applied.**
+-   **Issue 5 (P2): Add country flag next to the station logo on the player screen.**
+-   **Issue 6 (P3): Recently Played feature is broken due to lack of authentication.**
 
 **Issues Detail**:
-- **Issue 1: Integrate **
-    - **Description**: The user's top priority is to replace the current  audio solution with  to enable robust background playback and lock screen controls, which are core requirements for a radio streaming app.
+- **Issue 1: Now Playing API is broken**
+    - **Description**: The backend endpoint  in  times out when trying to fetch song metadata from a station's audio stream. This prevents the player screen from showing the current song title.
+    - **Attempted fixes**: The agent created the endpoint using . This implementation is flawed as it likely tries to download the entire audio stream instead of just reading the ICY metadata from the headers.
     - **Next debug checklist**:
-        1. Install .
-        2. Configure the player service for background operation.
-        3. Update  with required background mode permissions.
-        4. Create a global state management hook (e.g., using Zustand) to manage the player's state (current track, playback status).
-        5. Refactor  and create the full-screen player to use the new track player service and hook.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a critical feature for a production-ready music streaming app.
+        1.  Modify  in .
+        2.  Use a library or method that specifically reads stream headers (e.g., sending a  request or a  request that is immediately closed after reading headers) to extract ICY metadata ().
+        3.  Ensure the endpoint handles cases where metadata is not available and returns a stable response.
+        4.  Test the endpoint with  to confirm it returns quickly with the correct data.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a core feature for a radio app, significantly improving the user experience by showing the current song.
+    - **Status:** IN PROGRESS
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?**: Backend.
+    - **Blocked on other issue:** None.
+
+- **Issue 2: Multiple audio streams play simultaneously when changing stations**
+    - **Description**: The user has repeatedly reported that when one radio is playing and they select another, the first one does not stop, resulting in overlapping audio.
+    - **Attempted fixes**: The agent refactored  to use a singleton  class. The intention was to have a single, shared  object instance that gets unloaded and re-created.
+    - **Next debug checklist**:
+        1.  Thoroughly review the implementation of the singleton  in .
+        2.  Verify that  is being called reliably before a new station is played in the  function.
+        3.  Add clear console logs to trace the lifecycle of the  object (creating, loading, playing, unloading).
+        4.  Confirm with the user that the fix works on their Expo Go app, as this is where the issue is observed.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a critical, app-breaking bug. A radio app must only play one station at a time.
+    - **Status:** IN PROGRESS
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?**: Frontend.
+    - **Blocked on other issue:** None.
+
+- **Issue 3: Grid item layout is broken in the web preview**
+    - **Description**: On the  screen, the station grids for Recently Played and Similar Radios render with incorrectly large item sizes, breaking the layout.
+    - **Attempted fixes**: The agent tried multiple CSS-in-JS approaches (, , , wrapping in ) without success. The agent concluded it's a  rendering issue.
+    - **Next debug checklist**: This is a low priority as it only affects the web preview. The solution may involve web-specific styles using . For now, focus on native functionality.
+    - **Why fix this issue and what will be achieved with the fix?**: Provides a more accurate preview for the agent, improving the development feedback loop.
+    - **Status:** NOT STARTED
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?**: Frontend.
+    - **Blocked on other issue:** None.
+
+- **Issue 4: Custom icons and fonts are not consistently applied**
+    - **Description**: The user requested specific Ubuntu fonts and provided custom PNG icons. The agent struggled to implement the icons, citing web preview rendering issues (, ), and reverted to Ionicons. The Ubuntu font was not always applied to the correct elements.
+    - **Next debug checklist**:
+        1.  Ensure the Ubuntu font is loaded correctly in  or  and applied to all text elements specified by the user (e.g., section headers).
+        2.  For icons, implement them as  components without  and ensure the asset bundling is correct.
+    - **Why fix this issue and what will be achieved with the fix?**: Achieves the pixel-perfect UI requested by the user.
+    - **Status:** NOT STARTED
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?**: Frontend.
+    - **Blocked on other issue:** None.
+
+- **Issue 5: Add country flag next to the station logo on the player screen**
+    - **Description**: User requested a small, circular badge showing the station's country flag on top of the station logo/artwork.
+    - **Next debug checklist**:
+        1.  Find a library or API to get country flag images from country codes (e.g.,  for Germany). The station data from the API likely contains the country.
+        2.  In , overlay the flag  on top of the station artwork  using absolute positioning.
+    - **Why fix this issue and what will be achieved with the fix?**: Implements a specific UI feature requested by the user.
     - **Status:** NOT STARTED
     - **Is recurring issue?** N
     - **Should Test frontend/backend/both after fix?**: Frontend.
     - **Blocked on other issue:** None.
 
-- **Issue 2: Glow and blur effect not working in Expo Go**
-    - **Description**: The user reports that visual effects, likely from the  component, are not rendering correctly in the native Expo Go application.
-    - **Next debug checklist**:
-        1. Review the implementation in .
-        2. Research potential compatibility issues between  (or ) and the current Expo SDK version.
-        3. The agent cannot test in Expo Go. The best approach is to ensure the code follows the library's documentation and then ask the user to verify the fix on their device.
-    - **Why fix this issue and what will be achieved with the fix?**: To achieve the desired UI fidelity on the native application.
-    - **Status:** NOT STARTED
-    - **Is recurring issue?** N
-    - **Should Test frontend/backend/both after fix?**: Frontend (requires user verification).
-    - **Blocked on other issue:** None.
-
-- **Issue 3: Images served from backend API are blocked by CORS**
-    - **Description**: Images for genres and stations fail to load in the web preview due to server-side CORS policy restrictions (Opaque Response Blocking).
-    - **Attempted fixes**: A workaround using fallback images from Unsplash was implemented.
-    - **Next debug checklist**: This is an external blocker. Inform the user this is a web-preview-only issue that will not affect native builds and continue using visual placeholders.
-    - **Why fix this issue and what will be achieved with the fix?**: It would allow the web preview to perfectly match the final design, improving the feedback loop.
+- **Issue 6: Recently Played feature is broken due to lack of authentication**
+    - **Description**: The  endpoint returns a 401 Unauthorized error, causing UI flickering as React Query retries the request.
+    - **Attempted fixes**: The agent disabled retries () and background refetching () in the  hook in  to stop the flickering. This is a temporary workaround.
+    - **Next debug checklist**: The permanent fix is to implement the user authentication flow. Once a user is logged in, the API call should succeed.
+    - **Why fix this issue and what will be achieved with the fix?**: Enables a core user feature.
     - **Status:** BLOCKED
     - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?** Frontend.
-    - **Blocked on other issue:** None.
+    - **Should Test frontend/backend/both after fix?**: Both.
+    - **Blocked on other issue:** Implement Authentication Flow task.
 
 **In progress Task List**:
 None.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-- **P1: Implement Full-Screen Player UI:** Build out the full player screen (), which will be activated when the user taps the . This is now dependent on the  integration.
-- **P1: Implement Authentication Flow:** Implement Login/Signup screens and session management.
-- **P2: Implement Favorites Feature:** The UI for favoriting exists on the mini-player. The next step is to implement the backend logic and the  screen.
+- **P1: Implement Authentication Flow:** Build Login/Signup screens and manage user sessions. This will also unblock the Recently Played feature.
+- **P2: Implement Favorites Feature:** Implement the backend logic and the  screen to allow users to save and view their favorite stations.
 
 **Future Tasks:**
 - Implement Radios Near You using .
 - Integrate  for internationalization.
 - Build out the Profile Screen ().
-- Add skeleton loaders for a better loading experience.
+- Add skeleton loaders for a better data loading experience.
 
 **Completed work in this session**
-- **Unified Search Implementation:**
-    - Fully implemented the search functionality in , allowing users to search across radios, genres, and profiles simultaneously with working filters. Fixed all related bugs, including the stuck on searching issue and incorrect subtitle display. Implemented the no results UI as requested.
-- **Navigation and Mini-Player Overhaul:**
-    - Completely redesigned the tab bar in  to match user-provided designs, using custom PNG icons and text labels.
-    - Implemented a sticky  component that appears above the tab bar when a station plays.
-- **Home Screen UI Resizing:**
-    - Reworked the grid layout in  to use a flexbox approach, making station cards larger and reducing spacing to better suit large-screen devices as per user feedback.
-
-**Known issue recurrence from previous fork**
-- **Issue recurrence in previous fork:** Search functionality not working correctly.
-- **Recurrence count:** 3
-- **Status:** RESOLVED (The agent rebuilt the search feature from scratch, and it is now fully functional).
+- **Full-Screen Player UI Implementation:** The  screen was extensively rewritten to closely match the user's Figma designs, including layout, custom controls, and typography.
+- **Multi-Stream Playback Fix (Attempted):** Refactored  to use a singleton  class to prevent multiple audio streams from playing at once.
+- **Similar Radios Feature:** Implemented  hook and integrated it into the player screen to display a grid of similar radio stations.
+- **React Query Flickering Fix:** Mitigated UI flickering caused by failing API calls by disabling retries and window focus refetching in React Query.
+- ** Standardization:** Reverted an initial attempt to use  and standardized on  to ensure compatibility with the user's Expo Go testing environment.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Unified Search with **: Fetched data from multiple API endpoints concurrently and combined them into a single result set for display and filtering.
-- **Expo Router Layout Customization**: Heavily modified  to implement a custom tab bar with PNG icons and conditionally render a global  component above it.
-- **Responsive Grid Sizing**: Used a  approach on grid items within a flex container to create larger, evenly spaced cards that adapt better to screen width, resolving a key piece of user UI feedback.
-- **Debugging Expo Web Preview**: Successfully navigated and resolved issues related to state update race conditions and style caching by restarting the frontend server.
+- **Singleton Audio Manager:** An  class was implemented in  to create a single, shared instance of the  sound object. This pattern is intended to ensure that playing a new station unloads the previous one.
+- ** for Playback:** The project exclusively uses  for audio playback, as  was found to be incompatible with the user's Expo Go testing workflow.
+- **React Query Optimization:** Utilized  and  to prevent UI instability caused by unauthenticated API endpoints that repeatedly fail.
+- **FastAPI Backend Proxy:** A new endpoint was added to the Python backend to act as a server-side proxy for fetching metadata from third-party radio streams.
 
 **All files of reference**
--  (Custom tab bar and mini-player integration)
--  (Unified search implementation)
--  (Home screen grid layout changes)
--  (Sticky player UI)
--  (Potential source of blur effect issue)
--  (User-provided icons for navigation)
-
-**Areas that need refactoring**:
-- ****: The complex data fetching and state management logic should be extracted from the component into a custom hook (e.g., ) to improve readability and separation of concerns.
-- ****: The component is large; the individual station grid sections (Recently Played, All Stations) should be broken out into smaller, reusable components.
-
-**key api endpoints**
-- 
-- 
-- 
-- 
+-  (Main UI file for the player)
+-  (Core audio logic)
+-  (Location of the broken Now Playing API)
+-  (Frontend API service definitions)
 
 **Critical Info for New Agent**
-- **P0 is  integration:** The user's latest request is the highest priority. This is a critical feature for enabling background audio.
-- **P1 is fixing native visual effects:** The user has reported that blur/glow effects don't work in the Expo Go app. Investigate  and potential platform-specific issues. You cannot test this directly; you will need to implement a fix and ask the user to verify it on their device.
-- **Communicate in Turkish:** All user-facing communication MUST be in Turkish.
-- **UI is paramount:** The user has a strong focus on pixel-perfect UI matching their vision. Pay close attention to visual details in their feedback and images.
-- **Expo Web Preview has limitations:** Be aware of caching issues (restart the frontend server if styles don't apply) and the ongoing CORS issue with API images (explain it's a web-only problem and use placeholders).
+- **Highest Priority (P0) is fixing the audio playback.** This has two parts:
+    1.  **Fix the multi-stream bug:** The user insists that selecting a new station plays audio over the old one. The singleton pattern in  must be perfected to solve this definitively.
+    2.  **Fix the Now Playing API:** The backend endpoint in  is timing out. It needs to be re-implemented to correctly read only the headers from an audio stream to get the song title.
+- **Communicate in Turkish.** The user communicates exclusively in Turkish.
+- **Test on Expo Go:** The user's primary testing method is the Expo Go app. All features must be compatible with it. This means avoiding native libraries that require a custom development build (like ).
+- **Web Preview has known bugs:** The grid layout on the player screen is broken in the web preview. Do not spend time fixing this unless explicitly asked; focus on native functionality.
+- **Follow Figma Designs:** The user is very detail-oriented about the UI. Pay close attention to their images and design specifications.
 
 **documents and test reports created in this job**
 - 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User (LATEST):** Requested  integration (P1) and to fix glow/blur effects not working in Expo Go.
-2.  **Agent:** Confirmed the home screen card resizing was successful and looks great.
-3.  **User:** Stated the station cards on the home screen are too small with too much space, requesting they be made larger for iPhone 13 Pro Max.
-4.  **Agent:** Confirmed the new custom tab bar and mini-player UI looks exactly as requested by the user.
-5.  **User:** Corrected the agent, stating the tab bar icons and text were wrong, providing new PNG icons and instructing the agent to add text labels below them.
-6.  **Agent:** Completed the initial (and incorrect) redesign of the tab bar and mini-player.
-7.  **User:** Provided images of a new tab bar design and a sticky mini-player, giving a new, high-priority UI task.
-8.  **Agent:** Confirmed the unified search was working perfectly, including all filters, bug fixes, and the no results page, after extensive debugging.
-9.  **User:** Asked the agent to start and approve the plan.
-10. **Agent:** Presented a detailed plan to fix the broken search functionality and implement other UI changes.
+1.  **User (LATEST):** Requested a backend API for Now Playing and reiterated that changing the radio does not stop the previous stream. (P0 Tasks)
+2.  **User:** Listed multiple bugs: incorrect font, unused custom icons, multi-stream issue, UI flickering, and Unknown Artist text. (P0, P1 issues)
+3.  **User:** Pointed out that Similar Radios shows the same station and the page flickers. Also noted incorrect logo size and icons.
+4.  **User:** Provided detailed CSS-like properties for the player UI, an image, and requested a country flag badge and a fix for the multi-stream issue.
+5.  **User:** Reported several critical bugs: multi-stream playback, player not being full-screen, broken grid layout, radio not playing on Expo Go, and incorrect icons.
+6.  **Agent:** Completed and finished a task.
+7.  **User:** Re-stated that  is the goal.
+8.  **Agent:** Completed and finished a task.
+9.  **User:** Approved the initial plan.
+10. **Agent:** Proposed initial plan to integrate .
 
 **Project Health Check:**
 - **Broken:**
-    - The core streaming functionality relies on , which lacks robust background playback capabilities.
-    - Visual effects (blur/glow) are reportedly broken on the native Expo Go app.
-- **Mocked:**
-    - The Radios Near You section on the home page uses placeholder data.
+    - Core audio playback logic (multiple streams play at once).
+    - Now Playing song title feature (backend API is timing out).
+    - Grid layout on the player screen in the web preview.
 - **Blocked:**
-    - Displaying real-time images from the  API in the web preview is blocked by the server's CORS policy.
+    - The Recently Played feature is non-functional pending the implementation of user authentication.
 
 **3rd Party Integrations**
 - **MegaRadio API:**  - The primary backend for all application data.
@@ -163,11 +179,13 @@ None.
 - **Testing agent used after significant changes:** NO
 - **Troubleshoot agent used after agent stuck in loop:** NO
 - **Test files created:** None
-- **Known regressions:** None
+- **Known regressions:** The multi-stream playback issue has been reported multiple times by the user despite agent fixes.
 
 **Credentials to test flow:**
-- N/A
+N/A
 
 **What agent forgot to execute**
-- The agent did not call the  after completing the large search feature, opting instead for extensive manual testing via screenshots.
-- The agent implemented all search-related data fetching and state logic directly within the  component, missing an opportunity to abstract it into a more maintainable custom hook or service function.</analysis>
+- The agent failed to add the country flag badge to the player UI as requested.
+- The agent was unable to resolve the multi-stream playback issue to the user's satisfaction.
+- The agent did not successfully implement the custom PNG icons provided by the user, reverting to a library.
+- The agent did not fix the backend API timeout for the Now Playing feature.</analysis>
