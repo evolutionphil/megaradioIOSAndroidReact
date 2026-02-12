@@ -350,17 +350,17 @@ export default function HomeScreen() {
             </View>
             {/* Render rows of 3 items each */}
             {Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
-              <View key={`row-${rowIndex}`} style={{ flexDirection: 'row', gap: GRID_GAP, marginBottom: GRID_GAP, width: '100%' }}>
-                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station) => (
+              <View key={`row-${rowIndex}`} style={styles.gridRow}>
+                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
                   <TouchableOpacity
                     key={`nearby-${station._id}-${rowIndex}`}
-                    style={{ flex: 1 }}
+                    style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={{ width: '100%', aspectRatio: 1, borderRadius: 12, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
+                    <View style={styles.gridImageContainer}>
                       <Image 
                         source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={{ width: '100%', height: '100%' }} 
+                        style={styles.gridImage} 
                         resizeMode="cover" 
                       />
                     </View>
@@ -373,7 +373,7 @@ export default function HomeScreen() {
                 {/* Fill empty slots if last row has less than 3 items */}
                 {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
                   Array.from({ length: 3 - popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                    <View key={`empty-nearby-${i}`} style={{ flex: 1 }} />
+                    <View key={`empty-nearby-${i}`} style={styles.gridItem} />
                   ))
                 }
               </View>
