@@ -807,9 +807,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
+    gap: 12,
+  },
+  discoverableBannerImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 8,
   },
   discoverableBannerContent: {
     flex: 1,
@@ -823,11 +828,6 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 4,
-  },
-  discoverableBannerImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 8,
   },
 
   // Users List - Full width with specified dimensions
