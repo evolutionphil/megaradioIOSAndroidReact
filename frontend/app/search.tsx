@@ -32,6 +32,8 @@ export default function SearchScreen() {
 
   // Debounced search with better error handling
   useEffect(() => {
+    console.log('Query changed:', query);
+    
     if (query.length < 2) {
       setResults([]);
       setHasSearched(false);
@@ -41,22 +43,23 @@ export default function SearchScreen() {
 
     setIsSearching(true);
     const timer = setTimeout(async () => {
+      console.log('Timer fired, searching for:', query);
       try {
-        console.log('Searching for:', query);
         const data = await stationService.searchStations(query, 30);
-        console.log('Search results:', data?.length || 0);
+        console.log('Search results received:', data?.length || 0);
         setResults(data || []);
         setHasSearched(true);
-      } catch (error) {
-        console.error('Search error:', error);
+      } catch (error: any) {
+        console.error('Search error:', error?.message || error);
         setResults([]);
         setHasSearched(true);
       } finally {
         setIsSearching(false);
       }
-    }, 500);
+    }, 800); // Increased from 500ms
 
     return () => {
+      console.log('Cleanup timer for query:', query);
       clearTimeout(timer);
     };
   }, [query]);
