@@ -144,15 +144,15 @@ export default function PlayerScreen() {
     const stationLogo = getLogoUrl(station);
     return (
       <TouchableOpacity
-        style={styles.gridItem}
+        style={{ width: 110, marginRight: 12, marginBottom: 16 }}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
       >
-        <View style={styles.gridImageContainer}>
+        <View style={{ width: 110, height: 110, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1E1E1E', marginBottom: 8 }}>
           {stationLogo ? (
-            <Image source={{ uri: stationLogo }} style={styles.gridImage} resizeMode="cover" />
+            <Image source={{ uri: stationLogo }} style={{ width: 110, height: 110 }} resizeMode="cover" />
           ) : (
-            <View style={styles.gridPlaceholder}>
+            <View style={{ width: 110, height: 110, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2A2A2A' }}>
               <Ionicons name="radio" size={24} color="#666" />
             </View>
           )}
