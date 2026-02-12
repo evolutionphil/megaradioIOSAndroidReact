@@ -825,11 +825,11 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Jazz Banner
+  // Jazz Banner - Symmetric margin
   jazzBanner: {
-    marginHorizontal: spacing.md,
+    marginHorizontal: HORIZONTAL_PADDING,
     marginBottom: spacing.lg,
-    borderRadius: borderRadius.lg,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   jazzGradient: {
@@ -853,9 +853,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 
-  // Users List
+  // Users List - Symmetric padding
   usersList: {
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: HORIZONTAL_PADDING,
   },
   userItem: {
     flexDirection: 'row',
