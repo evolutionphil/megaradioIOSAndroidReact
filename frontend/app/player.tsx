@@ -99,9 +99,14 @@ export default function PlayerScreen() {
 
   // Handle station press - ALWAYS stops current and plays new
   const handleStationPress = useCallback(async (station: Station) => {
-    console.log('[Player] Station pressed:', station.name);
-    // Always call playStation - it handles stopping internally
-    playStation(station);
+    console.log('[Player] Station pressed:', station.name, 'ID:', station._id);
+    try {
+      // Always call playStation - it handles stopping internally
+      await playStation(station);
+      console.log('[Player] playStation completed for:', station.name);
+    } catch (error) {
+      console.error('[Player] Failed to play station:', error);
+    }
   }, [playStation]);
 
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
