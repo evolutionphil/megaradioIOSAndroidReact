@@ -38,8 +38,7 @@ export default function PlayerScreen() {
 
   const { playStation, togglePlayPause } = useAudioPlayer();
   const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
-  const { data: recentlyPlayedData } = useRecentlyPlayed();
-  const { data: popularData } = usePopularStations(undefined, 9);
+  const { data: popularData } = usePopularStations(undefined, 12);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [checkingFavorite, setCheckingFavorite] = useState(false);
