@@ -117,9 +117,13 @@ export default function HomeScreen() {
   const renderStationLogo = (station: Station, size: number = 100) => {
     const logoUrl = getLogoUrl(station);
     return logoUrl ? (
-      <Image source={{ uri: logoUrl }} style={{ width: size, height: size * 0.6, borderRadius: borderRadius.sm }} resizeMode="contain" />
+      <Image 
+        source={{ uri: logoUrl }} 
+        style={{ width: '100%', height: '100%' }} 
+        resizeMode="cover" 
+      />
     ) : (
-      <View style={[styles.logoPlaceholder, { width: size, height: size * 0.6 }]}>
+      <View style={[styles.logoPlaceholder, { width: '100%', height: '100%' }]}>
         <Ionicons name="radio" size={24} color={colors.textMuted} />
       </View>
     );
