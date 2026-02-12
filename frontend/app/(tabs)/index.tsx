@@ -416,18 +416,18 @@ export default function HomeScreen() {
               <ActivityIndicator size="large" color={colors.primary} />
             ) : (
               <>
-                <View style={styles.stationGrid}>
-                  {allStations.slice(0, 21).map((station: Station) => (
+                <View style={styles.stationGridCustom}>
+                  {allStations.slice(0, 21).map((station: Station, index: number) => (
                     <TouchableOpacity
                       key={station._id}
-                      style={styles.gridItem}
+                      style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
                       onPress={() => handleStationPress(station)}
                     >
-                      <View style={styles.gridLogo}>
-                        {renderStationLogo(station, GRID_ITEM_WIDTH - 8)}
+                      <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
+                        {renderStationLogo(station, gridItemWidth - 8)}
                       </View>
-                      <Text style={styles.gridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.gridCountry} numberOfLines={1}>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
                         {station.country || 'Radio'}
                       </Text>
                     </TouchableOpacity>
