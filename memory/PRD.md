@@ -4,12 +4,12 @@
 Build a production-ready mobile radio streaming app called "MegaRadio" using React Native with Expo. The primary requirement is pixel-perfect implementation of Figma designs. Backend API available at `https://themegaradio.com`.
 
 ## Tech Stack
-- **Framework:** React Native with Expo SDK
+- **Framework:** React Native with Expo SDK 54
 - **Language:** TypeScript
 - **Navigation:** Expo Router
 - **State Management:** Zustand
 - **Data Fetching:** React Query with Axios
-- **Audio:** expo-av (migrating to react-native-track-player)
+- **Audio:** react-native-track-player (native) + expo-av fallback (web)
 - **SVG Icons:** react-native-svg
 - **Styling:** React Native StyleSheet with Flexbox
 
@@ -17,35 +17,37 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ### Implemented (P0)
 - [x] Home Screen with multiple sections
-  - **Discoverable Genres Swiper** (horizontal carousel, replaced Premium Banner)
+  - Discoverable Genres Swiper (horizontal carousel)
   - Genres (horizontal scroll)
   - Popular Stations (list view)
-  - Recently Played (3-column grid, 100px items)
-  - Radios Near You (3-column grid, 100px items)
-  - Jazz Banner
-  - **Favorites From Users (Real API data, 345x60 cards, border-radius: 10px)**
-  - **All Stations (3-column grid, logos fill cards fully)**
+  - Recently Played (3-column grid)
+  - Radios Near You (3-column grid)
+  - Favorites From Users (Real API data)
+  - All Stations (3-column grid)
 - [x] 3-Column Grid Layout (responsive, works on 375px+)
-- [x] **Unified Search Functionality** (Feb 12, 2026)
+- [x] **Unified Search Functionality**
   - Search across radios, genres, AND profiles simultaneously
   - Filter chips: All, Radios, Genres, Profiles
-  - Fixed subtitle bug (was showing single char, now shows full genre)
   - "No results" UI with image and message
 - [x] Platform-aware BlurView component (web + native)
-- [x] Station playback with expo-av
-- [x] **Custom Tab Bar Design** (Feb 12, 2026)
+- [x] **Custom Tab Bar Design**
   - 4 tabs: Discover, Favorites, Profile, Records
-  - Custom SVG icons matching Figma design
+  - Custom PNG icons
   - Dark theme (#1B1C1E background)
-- [x] **Sticky Mini Player** (Feb 12, 2026)
+- [x] **Sticky Mini Player**
   - Positioned above navigation bar
   - Chevron up icon, logo, station name, genre
   - Play/Pause and Favorite buttons
   - Black background (#000000)
+- [x] **react-native-track-player Integration** (Feb 12, 2026)
+  - Background audio playback support
+  - Lock screen and notification controls (native)
+  - Playback service for remote events
+  - Web fallback using expo-av
+  - iOS background audio mode configured
 
 ### In Progress (P1)
-- [ ] Migrate to react-native-track-player for background audio
-- [ ] Full-screen Player UI
+- [ ] Full-screen Player UI improvements
 - [ ] Authentication Flow (Login/Signup)
 
 ### Backlog (P2)
@@ -59,34 +61,48 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 ## API Endpoints Used
 - `GET /api/stations/popular` - Popular stations
 - `GET /api/genres` - Genres list
-- `GET /api/genres/discoverable` - Discoverable genres (used in swiper and search)
+- `GET /api/genres/discoverable` - Discoverable genres
 - `GET /api/stations?search={query}` - Search stations
 - `GET /api/discover/top100` - Top 100 stations
-- `GET /api/public-profiles` - Public user profiles for search and Favorites From Users
+- `GET /api/public-profiles` - Public user profiles
 - `GET /api/community-favorites` - Community favorite stations
 
 ## Recent Changes (Feb 12, 2026)
-1. **Discoverable Genres Swiper (Birleştirildi):**
-   - Genre banner ve discoverable API tek bir yatay swiper olarak birleştirildi
-   - `/api/genres/discoverable` endpoint'inden tüm genre'ları çekiyor
-   - Her genre için farklı gradient renkleri
-   - Unsplash fallback görselleri ile
-   - "Favorites From Users" bölümünün hemen üzerinde konumlandı
+1. **react-native-track-player Integration:**
+   - Installed react-native-track-player v4.1.2
+   - Created `/src/services/trackPlayerService.ts` with playback service
+   - Created `/src/hooks/useTrackPlayer.ts` for player state management
+   - Updated `app.json` with iOS background audio mode (UIBackgroundModes: ["audio"])
+   - Set newArchEnabled: false for compatibility
+   - Web uses expo-av fallback, native uses TrackPlayer
+   - MiniPlayer updated with TrackPlayer controls
 
-2. **Grid Spacing Fix (Recently Played & Radios Near You):**
-   - All rows now use `justifyContent: 'space-between'` for consistent spacing
-   - Empty placeholder views added for incomplete rows
-   
-3. **All Stations Logo Fix:**
-   - Logos now fill the entire card space
+2. **BlurView Improvements:**
+   - Updated `/src/components/common/BlurView.tsx`
+   - Added `experimentalBlurMethod="dimezisBlurView"` for better native blur
+   - Added GlowView component for native glow effects
+   - Web uses backdrop-filter for better performance
 
 ## Key Files
-- `/app/frontend/app/(tabs)/index.tsx` - Home Screen (updated with swiper)
-- `/app/frontend/src/services/stationService.ts` - API services
-- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
+- `/app/frontend/index.ts` - Entry point with TrackPlayer registration
+- `/app/frontend/src/services/trackPlayerService.ts` - Playback service
+- `/app/frontend/src/hooks/useTrackPlayer.ts` - TrackPlayer hook
+- `/app/frontend/src/hooks/useAudioPlayer.ts` - Web fallback hook
+- `/app/frontend/src/components/MiniPlayer.tsx` - Mini player UI
+- `/app/frontend/src/components/common/BlurView.tsx` - Platform blur component
+- `/app/frontend/app.json` - App configuration with background audio
 
 ## Known Issues
-- **CORS on Web Preview:** Genre images from `themegaradio.com` are blocked due to ORB (Opaque Response Blocking). This is a web-only issue and won't affect native builds.
+- **CORS on Web Preview:** Images from `themegaradio.com` blocked due to ORB. Web-only issue.
+- **TrackPlayer requires Development Build:** Won't work in Expo Go app, needs EAS Build.
+
+## Development Build Required
+react-native-track-player requires a custom development build:
+```bash
+npx expo install expo-dev-client
+eas build --platform ios --profile development
+eas build --platform android --profile development
+```
 
 ## User Preferences
 - Language: Turkish
