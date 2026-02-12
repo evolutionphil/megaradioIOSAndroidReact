@@ -651,6 +651,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  // Recently Played - Updated with exact dimensions
+  recentlyPlayedScroll: {
+    paddingLeft: 15,
+    gap: 10,
+  },
+  recentlyPlayedItem: {
+    width: 100,
+    height: 144,
+  },
+  recentlyPlayedLogo: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  recentlyPlayedLogoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  recentlyPlayedName: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
+  },
+  recentlyPlayedCountry: {
+    fontSize: typography.sizes.xs,
+    color: colors.textSecondary,
+  },
+
   // Station Grid
   stationGrid: {
     flexDirection: 'row',
