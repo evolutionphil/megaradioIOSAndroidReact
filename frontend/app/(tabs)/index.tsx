@@ -41,12 +41,12 @@ const HORIZONTAL_PADDING = 0; // Padding inside sections (already handled by Scr
 
 // Calculate grid item size based on screen width
 // iPhone 13 Pro Max: 428px width
-// 3 items per row with small gap
+// 3 items per row with minimal gap
 const getGridItemSize = (screenWidth: number) => {
   const availableWidth = screenWidth - (SIDE_PADDING * 2);
-  const gap = 8; // Small gap between items
+  const gap = 6; // Minimal gap between items
   const itemWidth = Math.floor((availableWidth - (gap * 2)) / 3);
-  return Math.max(itemWidth, 110); // Minimum 110px
+  return Math.max(itemWidth, 125); // Minimum 125px for larger phones
 };
 
 export default function HomeScreen() {
