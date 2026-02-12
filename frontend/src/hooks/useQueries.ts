@@ -118,7 +118,14 @@ export const useFavorites = () => {
 export const useRecentlyPlayed = () => {
   return useQuery({
     queryKey: queryKeys.recentlyPlayed,
-    queryFn: () => userService.getRecentlyPlayed(),
+    queryFn: () => stationService.getRecentlyPlayed(),
+  });
+};
+
+export const useCommunityFavorites = (limit: number = 20) => {
+  return useQuery({
+    queryKey: [...queryKeys.communityFavorites, limit],
+    queryFn: () => stationService.getCommunityFavorites(limit),
   });
 };
 
