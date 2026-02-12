@@ -306,9 +306,9 @@ export default function PlayerScreen() {
           </View>
 
           {/* Recently Played Section */}
-          <View style={styles.section}>
+          <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
             <Text style={styles.sectionTitle}>Recently Played</Text>
-            <View style={styles.stationGrid}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
               {recentStations.slice(0, 6).map((station: Station, index: number) => (
                 <StationGridItem key={`recent-${station._id}-${index}`} station={station} />
               ))}
@@ -316,9 +316,9 @@ export default function PlayerScreen() {
           </View>
 
           {/* Similar Radios Section */}
-          <View style={styles.section}>
+          <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
             <Text style={styles.sectionTitle}>Similar Radios</Text>
-            <View style={styles.stationGrid}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
               {(similarStations.length > 0 ? similarStations : recentStations).slice(0, 9).map((station: Station, index: number) => (
                 <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
               ))}
