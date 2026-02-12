@@ -546,16 +546,18 @@ const styles = StyleSheet.create({
   stationGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'flex-start',
     gap: 12,
   },
 
   // Grid Items
   gridItem: {
-    width: GRID_ITEM_WIDTH,
+    width: 110,
+    maxWidth: 110,
   },
   gridImageContainer: {
-    width: '100%',
-    aspectRatio: 1,
+    width: 110,
+    height: 110,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
