@@ -272,18 +272,18 @@ export default function HomeScreen() {
             </View>
             {recentStations.length > 0 || popularStations.length > 0 ? (
               <>
-                {/* Row 1 - 3 items with fixed width calculation */}
+                {/* Row 1 - 3 items with HARDCODED 100px width */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, width: '100%' }}>
                   {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).map((station: Station) => (
                     <TouchableOpacity
                       key={station._id}
-                      style={{ width: gridItemWidth }}
+                      style={{ width: 100 }}
                       onPress={() => handleStationPress(station)}
                     >
-                      <View style={{ width: gridItemWidth, height: gridItemWidth, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                      <View style={{ width: 100, height: 100, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
                         <Image 
                           source={{ uri: getLogoUrl(station) || undefined }} 
-                          style={{ width: gridItemWidth, height: gridItemWidth }} 
+                          style={{ width: 100, height: 100 }} 
                           resizeMode="cover" 
                         />
                       </View>
@@ -300,13 +300,13 @@ export default function HomeScreen() {
                     {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station, idx: number) => (
                       <TouchableOpacity
                         key={station._id}
-                        style={{ width: gridItemWidth, marginRight: idx < 2 ? gridGap : 0 }}
+                        style={{ width: 100, marginRight: idx < 2 ? 8 : 0 }}
                         onPress={() => handleStationPress(station)}
                       >
-                        <View style={{ width: gridItemWidth, height: gridItemWidth, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                        <View style={{ width: 100, height: 100, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
                           <Image 
                             source={{ uri: getLogoUrl(station) || undefined }} 
-                            style={{ width: gridItemWidth, height: gridItemWidth }} 
+                            style={{ width: 100, height: 100 }} 
                             resizeMode="cover" 
                           />
                         </View>
