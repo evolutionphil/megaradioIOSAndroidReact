@@ -10,8 +10,6 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - **State Management:** Zustand
 - **Data Fetching:** React Query with Axios
 - **Audio:** react-native-track-player (native) + expo-av fallback (web)
-- **SVG Icons:** react-native-svg
-- **Styling:** React Native StyleSheet with Flexbox
 
 ## Core Features
 
@@ -22,20 +20,31 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Platform-aware BlurView component
 - [x] **Custom Tab Bar Design**
 - [x] **Sticky Mini Player**
-- [x] **react-native-track-player Integration** (Feb 12, 2026)
+- [x] **react-native-track-player Integration**
 - [x] **Full-Screen Player UI** (Feb 12, 2026)
-  - Header: chevron down, HD badge, station name, car icon, menu
-  - Album artwork display
+  - Header with blur effect (backdrop-filter: blur(25px))
+  - Header background: rgba(0, 0, 0, 0.15), opacity: 0.9
+  - Album artwork: 190x190px
+  - Country flag badge on artwork
   - Now playing section with animated dots
-  - Station name and genre display
-  - Spotify & YouTube social buttons
-  - Main controls: sleep timer, prev, play/pause, next, heart/favorite
-  - Secondary controls: share, headset, radio, REC button
-  - Recently Played section with station grid
-  - Similar Radios section with station grid
+  - Divider line (border: 1px solid #2D2D2D) between social icons and controls
+  - Main controls: sleep timer, prev, play/pause, next, heart
+  - Secondary controls: share, headset, radio, REC
+  - Recently Played & Similar Radios sections
+  - Section titles: Ubuntu font, 18px, weight 700
+  - Grid items with country flag badges
+
+### Recent Changes (Feb 12, 2026)
+1. **Header Blur Effect**: Added backdrop-filter blur and semi-transparent background
+2. **Station Logo**: Updated to 190x190px
+3. **Divider Line**: Added 1px solid #2D2D2D divider between social icons and controls
+4. **Country Flag Badges**: Added to station logos (both artwork and grid items)
+5. **Section Title Fonts**: Updated to Ubuntu, 18px, 700 weight
+6. **Stop Previous Audio**: Fixed multiple audio playing issue - now stops previous station before playing new one
+7. **Country Flag Mapping**: Added emoji flag mapping for common country codes
 
 ### In Progress (P1)
-- [ ] Grid item sizing fix for web preview
+- [ ] Grid item sizing fix for web preview (works on native)
 - [ ] Authentication Flow (Login/Signup)
 
 ### Backlog (P2)
@@ -45,47 +54,15 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [ ] Profile Screen content
 - [ ] Records Screen content
 
-## API Endpoints Used
-- `GET /api/stations/popular` - Popular stations
-- `GET /api/stations/similar/{id}` - Similar stations
-- `GET /api/genres` - Genres list
-- `GET /api/stations?search={query}` - Search stations
-
-## Recent Changes (Feb 12, 2026)
-
-### Full-Screen Player UI
-- Created pixel-perfect player screen based on Figma design
-- Components: Header, Artwork, Now Playing, Main Controls, Secondary Controls
-- Data fetching: usePopularStations for Recently Played, useSimilarStations for Similar Radios
-- Grid layout for station cards (3 columns)
-
-### react-native-track-player Integration
-- Playback service for background audio
-- Lock screen and notification controls
-- Web fallback using expo-av
-
-### BlurView Improvements
-- Added experimentalBlurMethod for better native blur
-- GlowView component for native glow effects
-
 ## Key Files
 - `/app/frontend/app/player.tsx` - Full-screen player UI
 - `/app/frontend/src/services/trackPlayerService.ts` - Playback service
-- `/app/frontend/src/hooks/useTrackPlayer.ts` - TrackPlayer hook
+- `/app/frontend/src/hooks/useAudioPlayer.ts` - Audio player hook with stopPlayback
 - `/app/frontend/src/components/MiniPlayer.tsx` - Mini player UI
-- `/app/frontend/src/components/common/BlurView.tsx` - Blur component
 
 ## Known Issues
-- **Grid items too large on web preview**: Image sizing in React Native for Web needs different handling. Works correctly on native.
-- **CORS on Web Preview**: Images blocked due to ORB.
-- **TrackPlayer requires Development Build**: Won't work in Expo Go.
-
-## Development Build Required
-```bash
-npx expo install expo-dev-client
-eas build --platform ios --profile development
-eas build --platform android --profile development
-```
+- **Grid items too large on web preview**: Works correctly on native devices
+- **CORS on Web Preview**: Images blocked due to ORB policy
 
 ## User Preferences
 - Language: Turkish
