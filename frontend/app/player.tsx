@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
+import { colors, gradients, spacing, borderRadius, typography, shadows } from '../src/constants/theme';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations } from '../src/hooks/useQueries';
@@ -23,6 +23,7 @@ import { StationCard } from '../src/components/StationCard';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const ARTWORK_SIZE = Math.min(SCREEN_WIDTH - spacing.xl * 2, 300);
 
 export default function PlayerScreen() {
   const router = useRouter();
@@ -102,13 +103,16 @@ export default function PlayerScreen() {
 
   if (!currentStation) {
     return (
-      <LinearGradient colors={gradients.background} style={styles.gradient}>
+      <LinearGradient colors={gradients.background as any} style={styles.gradient}>
         <SafeAreaView style={styles.container}>
           <View style={styles.emptyState}>
-            <Ionicons name="radio-outline" size={80} color={colors.textMuted} />
-            <Text style={styles.emptyText}>No station playing</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-              <Text style={styles.closeButtonText}>Go Back</Text>
+            <View style={styles.emptyIconContainer}>
+              <Ionicons name="radio-outline" size={64} color={colors.textMuted} />
+            </View>
+            <Text style={styles.emptyTitle}>No station playing</Text>
+            <Text style={styles.emptyText}>Select a station to start listening</Text>
+            <TouchableOpacity style={styles.goBackButton} onPress={handleClose}>
+              <Text style={styles.goBackButtonText}>Go Back</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -117,7 +121,7 @@ export default function PlayerScreen() {
   }
 
   return (
-    <LinearGradient colors={gradients.player} style={styles.gradient}>
+    <LinearGradient colors={['#1A1725', '#0D0B14'] as any} style={styles.gradient}>
       <SafeAreaView style={styles.container}>
         <ScrollView
           style={styles.scrollView}
@@ -127,34 +131,43 @@ export default function PlayerScreen() {
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
-              <Ionicons name="chevron-down" size={28} color={colors.text} />
+              <Ionicons name="chevron-down" size={26} color={colors.text} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Now Playing</Text>
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerLabel}>NOW PLAYING</Text>
+              <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
+            </View>
             <TouchableOpacity style={styles.headerButton}>
-              <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
+              <Ionicons name="ellipsis-horizontal" size={22} color={colors.text} />
             </TouchableOpacity>
           </View>
 
           {/* Album Art */}
           <View style={styles.artworkContainer}>
-            {logoUrl ? (
-              <Image
-                source={{ uri: logoUrl }}
-                style={styles.artwork}
-                resizeMode="cover"
-              />
-            ) : (
-              <View style={styles.artworkPlaceholder}>
-                <Ionicons name="radio" size={80} color={colors.textMuted} />
-              </View>
-            )}
-            {isPlaying && (
-              <View style={styles.playingIndicator}>
-                <View style={styles.equalizerBar} />
-                <View style={[styles.equalizerBar, styles.equalizerBar2]} />
-                <View style={[styles.equalizerBar, styles.equalizerBar3]} />
-              </View>
-            )}
+            <View style={styles.artworkWrapper}>
+              {logoUrl ? (
+                <Image
+                  source={{ uri: logoUrl }}
+                  style={styles.artwork}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.artworkPlaceholder}>
+                  <Ionicons name="radio" size={80} color={colors.textMuted} />
+                </View>
+              )}
+              {isPlaying && (
+                <View style={styles.playingOverlay}>
+                  <View style={styles.equalizer}>
+                    <View style={[styles.eqBar, styles.eqBar1]} />
+                    <View style={[styles.eqBar, styles.eqBar2]} />
+                    <View style={[styles.eqBar, styles.eqBar3]} />
+                    <View style={[styles.eqBar, styles.eqBar4]} />
+                    <View style={[styles.eqBar, styles.eqBar5]} />
+                  </View>
+                </View>
+              )}
+            </View>
           </View>
 
           {/* Station Info */}
@@ -168,7 +181,7 @@ export default function PlayerScreen() {
             </Text>
             {nowPlaying?.title && (
               <View style={styles.nowPlayingContainer}>
-                <Ionicons name="musical-notes" size={16} color={colors.primary} />
+                <Ionicons name="musical-notes" size={14} color={colors.primary} />
                 <Text style={styles.nowPlayingText} numberOfLines={1}>
                   {nowPlaying.title}
                 </Text>
@@ -179,27 +192,19 @@ export default function PlayerScreen() {
           {/* Error Message */}
           {hasError && (
             <View style={styles.errorContainer}>
-              <Ionicons name="warning" size={20} color={colors.error} />
+              <Ionicons name="warning" size={18} color={colors.error} />
               <Text style={styles.errorText}>Unable to play this station</Text>
             </View>
           )}
 
-          {/* Controls */}
+          {/* Main Controls */}
           <View style={styles.controls}>
-            <TouchableOpacity
-              style={styles.controlButton}
-              onPress={handleToggleFavorite}
-              disabled={checkingFavorite}
-            >
-              {checkingFavorite ? (
-                <ActivityIndicator size="small" color={colors.text} />
-              ) : (
-                <Ionicons
-                  name={isFavorite ? 'heart' : 'heart-outline'}
-                  size={28}
-                  color={isFavorite ? colors.accent : colors.text}
-                />
-              )}
+            <TouchableOpacity style={styles.secondaryControl}>
+              <Ionicons name="shuffle" size={24} color={colors.textSecondary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.skipControl}>
+              <Ionicons name="play-skip-back" size={28} color={colors.text} />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -207,39 +212,88 @@ export default function PlayerScreen() {
               onPress={togglePlayPause}
               disabled={isLoading}
             >
-              {isLoading ? (
-                <ActivityIndicator size="large" color={colors.text} />
+              <LinearGradient
+                colors={[colors.primary, colors.primaryDark] as any}
+                style={styles.playPauseGradient}
+              >
+                {isLoading ? (
+                  <ActivityIndicator size="large" color={colors.text} />
+                ) : (
+                  <Ionicons
+                    name={isPlaying ? 'pause' : 'play'}
+                    size={36}
+                    color={colors.text}
+                    style={!isPlaying && { marginLeft: 4 }}
+                  />
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.skipControl}>
+              <Ionicons name="play-skip-forward" size={28} color={colors.text} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.secondaryControl}>
+              <Ionicons name="repeat" size={24} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionButtons}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleToggleFavorite}
+              disabled={checkingFavorite}
+            >
+              {checkingFavorite ? (
+                <ActivityIndicator size="small" color={colors.text} />
               ) : (
-                <Ionicons
-                  name={isPlaying ? 'pause' : 'play'}
-                  size={40}
-                  color={colors.text}
-                />
+                <>
+                  <Ionicons
+                    name={isFavorite ? 'heart' : 'heart-outline'}
+                    size={22}
+                    color={isFavorite ? colors.accent : colors.text}
+                  />
+                  <Text style={styles.actionButtonText}>
+                    {isFavorite ? 'Saved' : 'Save'}
+                  </Text>
+                </>
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="share-outline" size={28} color={colors.text} />
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="share-outline" size={22} color={colors.text} />
+              <Text style={styles.actionButtonText}>Share</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="download-outline" size={22} color={colors.text} />
+              <Text style={styles.actionButtonText}>Record</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="timer-outline" size={22} color={colors.text} />
+              <Text style={styles.actionButtonText}>Sleep</Text>
             </TouchableOpacity>
           </View>
 
           {/* Station Details */}
           <View style={styles.detailsContainer}>
             {currentStation.bitrate && (
-              <View style={styles.detailItem}>
-                <Ionicons name="speedometer-outline" size={16} color={colors.textSecondary} />
+              <View style={styles.detailChip}>
+                <Ionicons name="speedometer-outline" size={14} color={colors.textSecondary} />
                 <Text style={styles.detailText}>{currentStation.bitrate} kbps</Text>
               </View>
             )}
             {currentStation.codec && (
-              <View style={styles.detailItem}>
-                <Ionicons name="disc-outline" size={16} color={colors.textSecondary} />
+              <View style={styles.detailChip}>
+                <Ionicons name="disc-outline" size={14} color={colors.textSecondary} />
                 <Text style={styles.detailText}>{currentStation.codec}</Text>
               </View>
             )}
             {currentStation.language && (
-              <View style={styles.detailItem}>
-                <Ionicons name="language-outline" size={16} color={colors.textSecondary} />
+              <View style={styles.detailChip}>
+                <Ionicons name="language-outline" size={14} color={colors.textSecondary} />
                 <Text style={styles.detailText}>{currentStation.language}</Text>
               </View>
             )}
@@ -249,7 +303,7 @@ export default function PlayerScreen() {
           {similarStations.length > 0 && (
             <View style={styles.similarSection}>
               <Text style={styles.similarTitle}>Similar Stations</Text>
-              {similarStations.map((station) => (
+              {similarStations.slice(0, 4).map((station) => (
                 <StationCard
                   key={station._id}
                   station={station}
@@ -279,6 +333,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: spacing.xxl,
   },
+  
+  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -292,56 +348,74 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.medium,
-    color: colors.textSecondary,
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
   },
+  headerLabel: {
+    fontSize: typography.sizes.xs,
+    fontWeight: typography.weights.semibold,
+    color: colors.primary,
+    letterSpacing: 1,
+  },
+  headerTitle: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  
+  // Artwork
   artworkContainer: {
     alignItems: 'center',
     marginTop: spacing.lg,
     marginBottom: spacing.xl,
   },
+  artworkWrapper: {
+    width: ARTWORK_SIZE,
+    height: ARTWORK_SIZE,
+    borderRadius: borderRadius.xl,
+    overflow: 'hidden',
+    ...shadows.lg,
+  },
   artwork: {
-    width: SCREEN_WIDTH - spacing.xl * 2,
-    height: SCREEN_WIDTH - spacing.xl * 2,
-    maxWidth: 320,
-    maxHeight: 320,
-    borderRadius: borderRadius.lg,
+    width: '100%',
+    height: '100%',
   },
   artworkPlaceholder: {
-    width: SCREEN_WIDTH - spacing.xl * 2,
-    height: SCREEN_WIDTH - spacing.xl * 2,
-    maxWidth: 320,
-    maxHeight: 320,
-    borderRadius: borderRadius.lg,
+    width: '100%',
+    height: '100%',
     backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  playingIndicator: {
+  playingOverlay: {
     position: 'absolute',
-    bottom: spacing.md,
-    right: spacing.md,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  equalizer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: colors.overlay,
-    borderRadius: borderRadius.sm,
-    padding: spacing.xs,
+    height: 30,
+    gap: 4,
   },
-  equalizerBar: {
+  eqBar: {
     width: 4,
-    height: 16,
     backgroundColor: colors.primary,
     borderRadius: 2,
-    marginHorizontal: 2,
   },
-  equalizerBar2: {
-    height: 24,
-  },
-  equalizerBar3: {
-    height: 12,
-  },
+  eqBar1: { height: 12 },
+  eqBar2: { height: 24 },
+  eqBar3: { height: 18 },
+  eqBar4: { height: 28 },
+  eqBar5: { height: 16 },
+  
+  // Info
   infoContainer: {
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
@@ -366,73 +440,107 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: borderRadius.full,
+    gap: spacing.xs,
   },
   nowPlayingText: {
-    marginLeft: spacing.xs,
     fontSize: typography.sizes.sm,
     color: colors.text,
     maxWidth: 200,
   },
+  
+  // Error
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     marginHorizontal: spacing.xl,
     borderRadius: borderRadius.md,
     marginBottom: spacing.lg,
+    gap: spacing.sm,
   },
   errorText: {
-    marginLeft: spacing.sm,
     fontSize: typography.sizes.sm,
     color: colors.error,
   },
+  
+  // Controls
   controls: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: spacing.lg,
-    gap: spacing.xl,
+    paddingHorizontal: spacing.lg,
   },
-  controlButton: {
+  secondaryControl: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  skipControl: {
     width: 56,
     height: 56,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
   playPauseButton: {
-    width: 80,
-    height: 80,
+    marginHorizontal: spacing.lg,
     borderRadius: borderRadius.full,
-    backgroundColor: colors.primary,
+    overflow: 'hidden',
+    ...shadows.glow,
+  },
+  playPauseGradient: {
+    width: 72,
+    height: 72,
+    borderRadius: borderRadius.full,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  
+  // Action Buttons
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: spacing.xl,
+    marginBottom: spacing.lg,
+  },
+  actionButton: {
+    alignItems: 'center',
+    padding: spacing.sm,
+  },
+  actionButtonText: {
+    fontSize: typography.sizes.xs,
+    color: colors.textSecondary,
+    marginTop: spacing.xs,
+  },
+  
+  // Details
   detailsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    gap: spacing.md,
+    gap: spacing.sm,
     paddingHorizontal: spacing.xl,
     marginBottom: spacing.xl,
   },
-  detailItem: {
+  detailChip: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
+    paddingVertical: spacing.xs + 2,
     borderRadius: borderRadius.full,
+    gap: spacing.xs,
   },
   detailText: {
-    marginLeft: spacing.xs,
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
   },
+  
+  // Similar Stations
   similarSection: {
     paddingHorizontal: spacing.md,
     marginTop: spacing.lg,
@@ -443,24 +551,41 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: spacing.md,
   },
+  
+  // Empty State
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: spacing.xl,
+  },
+  emptyIconContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
+  emptyTitle: {
+    fontSize: typography.sizes.xxl,
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginBottom: spacing.sm,
   },
   emptyText: {
-    marginTop: spacing.md,
-    fontSize: typography.sizes.lg,
+    fontSize: typography.sizes.md,
     color: colors.textSecondary,
+    marginBottom: spacing.xl,
   },
-  closeButton: {
-    marginTop: spacing.lg,
+  goBackButton: {
     backgroundColor: colors.primary,
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: borderRadius.full,
   },
-  closeButtonText: {
+  goBackButtonText: {
     fontSize: typography.sizes.md,
     fontWeight: typography.weights.semibold,
     color: colors.text,
