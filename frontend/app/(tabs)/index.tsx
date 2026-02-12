@@ -82,8 +82,16 @@ export default function HomeScreen() {
     return genreColors[key] || colors.primary;
   };
 
+  const getLogoUrl = (station: Station) => {
+    // Try logoAssets first with full URL construction
+    if (station.logoAssets?.webp96) {
+      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
+    }
+    return station.favicon || station.logo || null;
+  };
+
   const renderStationLogo = (station: Station, size: number = 100) => {
-    const logoUrl = station.logoAssets?.webp96 || station.favicon || station.logo;
+    const logoUrl = getLogoUrl(station);
     return logoUrl ? (
       <Image source={{ uri: logoUrl }} style={{ width: size, height: size * 0.6, borderRadius: borderRadius.sm }} resizeMode="contain" />
     ) : (
