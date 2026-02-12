@@ -554,7 +554,6 @@ const styles = StyleSheet.create({
   controlIconImage: {
     width: 28,
     height: 28,
-    tintColor: '#888888',
   },
   skipButton: {
     width: 60,
@@ -568,7 +567,6 @@ const styles = StyleSheet.create({
   skipIconImage: {
     width: 28,
     height: 28,
-    tintColor: '#FFFFFF',
   },
   playPauseButton: {
     width: 80,
@@ -582,7 +580,6 @@ const styles = StyleSheet.create({
   playPauseIconImage: {
     width: 36,
     height: 36,
-    tintColor: '#FFFFFF',
   },
 
   // Secondary Controls
@@ -606,7 +603,6 @@ const styles = StyleSheet.create({
   secondaryIconImage: {
     width: 24,
     height: 24,
-    tintColor: '#888888',
   },
   recButton: {
     flexDirection: 'row',
