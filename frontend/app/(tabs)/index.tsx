@@ -199,7 +199,11 @@ export default function HomeScreen() {
                     onPress={() => handleStationPress(station)}
                   >
                     <View style={styles.popularLogo}>
-                      {renderStationLogo(station, 60)}
+                      <Image 
+                        source={{ uri: station.favicon || station.logo || `https://themegaradio.com/station-logos/${station.logoAssets?.folder}/${station.logoAssets?.webp96}` }} 
+                        style={styles.popularLogoImage} 
+                        resizeMode="contain" 
+                      />
                     </View>
                     <View style={styles.popularInfo}>
                       <Text style={styles.popularName} numberOfLines={1}>{station.name}</Text>
