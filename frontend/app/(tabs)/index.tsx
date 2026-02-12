@@ -41,6 +41,12 @@ export default function HomeScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuthStore();
+  const { width: screenWidth } = useWindowDimensions();
+  
+  // Calculate grid item width dynamically
+  const contentWidth = screenWidth - (SIDE_PADDING * 2);
+  const gridGap = 8;
+  const gridItemWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
 
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
