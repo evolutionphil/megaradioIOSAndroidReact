@@ -108,9 +108,6 @@ export default function PlayerScreen() {
   const stationsArray = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
   const similarStations = similarData?.stations || (Array.isArray(similarData) ? similarData : stationsArray);
   const recentStations = stationsArray;
-  
-  // Debug
-  console.log('[Player] recentStations count:', recentStations.length);
 
   // Get artist/song info
   const getArtistInfo = () => {
