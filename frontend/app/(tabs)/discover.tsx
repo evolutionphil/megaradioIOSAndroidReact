@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -67,18 +68,24 @@ export default function DiscoverScreen() {
   const stations = stationsData?.stations || [];
 
   return (
-    <LinearGradient colors={gradients.background as any} style={styles.gradient}>
-      <SafeAreaView style={styles.container} edges={['top']}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.title}>Discover</Text>
-            <Text style={styles.subtitle}>Explore the world of radio</Text>
+    <View style={styles.mainContainer}>
+      {/* Background Glow Effect - Top Left */}
+      <View style={styles.bgGlowContainer}>
+        <View style={styles.bgGlow} />
+      </View>
+      
+      <LinearGradient colors={gradients.background as any} style={styles.gradient}>
+        <SafeAreaView style={styles.container} edges={['top']}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View>
+              <Text style={styles.title}>Discover</Text>
+              <Text style={styles.subtitle}>Explore the world of radio</Text>
+            </View>
+            <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
+              <Ionicons name="search" size={22} color={colors.text} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
-            <Ionicons name="search" size={22} color={colors.text} />
-          </TouchableOpacity>
-        </View>
 
         <ScrollView
           style={styles.scrollView}
@@ -199,6 +206,7 @@ export default function DiscoverScreen() {
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
+    </View>
   );
 }
 
