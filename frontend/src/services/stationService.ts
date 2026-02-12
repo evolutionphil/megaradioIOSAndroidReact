@@ -1,5 +1,5 @@
 import api from './api';
-import { API_ENDPOINTS } from '../constants/api';
+import { API_ENDPOINTS, API_BASE_URL } from '../constants/api';
 import type { Station } from '../types';
 
 export interface StationQueryParams {
