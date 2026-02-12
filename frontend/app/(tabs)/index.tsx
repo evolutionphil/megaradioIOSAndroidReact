@@ -409,7 +409,7 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* All Stations - 3 Column Grid */}
+          {/* All Stations - 3 Column Grid with specified dimensions (100x144) */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>All Stations</Text>
@@ -418,23 +418,32 @@ export default function HomeScreen() {
               <ActivityIndicator size="large" color={colors.primary} />
             ) : (
               <>
-                <View style={styles.stationGridCustom}>
-                  {allStations.slice(0, 21).map((station: Station, index: number) => (
-                    <TouchableOpacity
-                      key={station._id}
-                      style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
-                      onPress={() => handleStationPress(station)}
-                    >
-                      <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
-                        {renderStationLogo(station, gridItemWidth - 8)}
-                      </View>
-                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.stationGridCountry} numberOfLines={1}>
-                        {station.country || 'Radio'}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                {/* Render rows of 3 items each */}
+                {Array.from({ length: Math.ceil(Math.min(allStations.length, 21) / 3) }).map((_, rowIndex) => (
+                  <View key={`all-row-${rowIndex}`} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, width: '100%' }}>
+                    {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station) => (
+                      <TouchableOpacity
+                        key={station._id}
+                        style={{ width: 100 }}
+                        onPress={() => handleStationPress(station)}
+                      >
+                        <View style={{ width: 100, height: 100, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                          {renderStationLogo(station, 92)}
+                        </View>
+                        <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                        <Text style={styles.stationGridCountry} numberOfLines={1}>
+                          {station.country || 'Radio'}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                    {/* Fill empty slots if last row has less than 3 items */}
+                    {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
+                      Array.from({ length: 3 - allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
+                        <View key={`empty-${i}`} style={{ width: 100 }} />
+                      ))
+                    }
+                  </View>
+                ))}
                 <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push('/discover')}>
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
