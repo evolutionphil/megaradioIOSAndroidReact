@@ -324,32 +324,35 @@ export default function HomeScreen() {
             )}
           </View>
 
-          {/* Radios Near You - 3 Column Grid, 12 stations */}
+          {/* Radios Near You - 3 Column Grid, multiple rows */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Radios Near You</Text>
             </View>
-            <View style={styles.stationGridCustom}>
-              {popularStations.slice(0, 12).map((station: Station, index: number) => (
-                <TouchableOpacity
-                  key={`nearby-${station._id}-${index}`}
-                  style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
-                  onPress={() => handleStationPress(station)}
-                >
-                  <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
-                    <Image 
-                      source={{ uri: getLogoUrl(station) || undefined }} 
-                      style={styles.stationGridLogoImage} 
-                      resizeMode="cover" 
-                    />
-                  </View>
-                  <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                  <Text style={styles.stationGridCountry} numberOfLines={1}>
-                    {station.country || 'Radio'}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {/* Render rows of 3 items each */}
+            {Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
+              <View key={`row-${rowIndex}`} style={{ flexDirection: 'row', justifyContent: rowIndex === Math.ceil(Math.min(popularStations.length, 12) / 3) - 1 && popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 ? 'flex-start' : 'space-between', marginBottom: 12, width: '100%' }}>
+                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, idx: number) => (
+                  <TouchableOpacity
+                    key={`nearby-${station._id}-${rowIndex}-${idx}`}
+                    style={{ width: 100, marginRight: idx < 2 && popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length > idx + 1 ? 8 : 0 }}
+                    onPress={() => handleStationPress(station)}
+                  >
+                    <View style={{ width: 100, height: 100, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                      <Image 
+                        source={{ uri: getLogoUrl(station) || undefined }} 
+                        style={{ width: 100, height: 100 }} 
+                        resizeMode="cover" 
+                      />
+                    </View>
+                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                    <Text style={styles.stationGridCountry} numberOfLines={1}>
+                      {station.country || 'Radio'}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ))}
             <TouchableOpacity style={styles.seeMoreButton}>
               <Text style={styles.seeMoreText}>See More</Text>
             </TouchableOpacity>
