@@ -75,12 +75,14 @@ class AudioManager {
   }
 
   async play(url: string, stationId: string): Promise<void> {
-    console.log('[AudioManager] play() called for station:', stationId);
+    console.log('[AudioManager] ======== PLAY CALLED ========');
+    console.log('[AudioManager] New station:', stationId);
     console.log('[AudioManager] Current station:', this.currentStationId);
+    console.log('[AudioManager] Has existing sound:', this.sound !== null);
     
-    // If same station, don't restart
+    // If same station, don't restart - just resume
     if (this.currentStationId === stationId && this.sound) {
-      console.log('[AudioManager] Same station already playing, resuming if needed');
+      console.log('[AudioManager] Same station already loaded, resuming if paused');
       try {
         const status = await this.sound.getStatusAsync();
         if (status.isLoaded && !status.isPlaying) {
@@ -92,14 +94,48 @@ class AudioManager {
       return;
     }
     
-    // CRITICAL: Stop any existing sound FIRST
-    console.log('[AudioManager] Stopping existing sound before playing new one...');
-    await this.stopAndUnload();
+    // ============================================================
+    // CRITICAL FIX: ATOMIC STOP-THEN-PLAY
+    // Must fully stop and unload BEFORE creating new sound
+    // ============================================================
     
-    // Small delay to ensure cleanup is complete
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Step 1: Capture existing sound reference IMMEDIATELY
+    const existingSound = this.sound;
+    const existingStationId = this.currentStationId;
     
-    console.log('[AudioManager] Creating new sound for:', url.substring(0, 50) + '...');
+    // Step 2: Clear references FIRST to prevent any race conditions
+    this.sound = null;
+    this.currentStationId = null;
+    
+    // Step 3: Force stop and unload the captured sound
+    if (existingSound) {
+      console.log('[AudioManager] STOPPING existing stream for station:', existingStationId);
+      try {
+        // Get status first to check if loaded
+        const status = await existingSound.getStatusAsync();
+        if (status.isLoaded) {
+          console.log('[AudioManager] Stream is loaded, calling stopAsync...');
+          await existingSound.stopAsync();
+          console.log('[AudioManager] stopAsync completed');
+        }
+      } catch (e) {
+        console.log('[AudioManager] Stop error (continuing):', e);
+      }
+      
+      try {
+        console.log('[AudioManager] Calling unloadAsync...');
+        await existingSound.unloadAsync();
+        console.log('[AudioManager] unloadAsync completed - OLD STREAM FULLY STOPPED');
+      } catch (e) {
+        console.log('[AudioManager] Unload error (continuing):', e);
+      }
+    }
+    
+    // Step 4: Small delay to ensure audio system is ready
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // Step 5: NOW create the new sound
+    console.log('[AudioManager] Creating NEW sound for:', url.substring(0, 60) + '...');
     try {
       const { sound } = await Audio.Sound.createAsync(
         { uri: url },
@@ -109,7 +145,8 @@ class AudioManager {
       
       this.sound = sound;
       this.currentStationId = stationId;
-      console.log('[AudioManager] New sound created and playing for station:', stationId);
+      console.log('[AudioManager] ======== NEW STREAM PLAYING ========');
+      console.log('[AudioManager] Station:', stationId);
     } catch (error) {
       console.error('[AudioManager] Failed to create sound:', error);
       throw error;

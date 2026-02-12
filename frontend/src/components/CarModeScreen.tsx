@@ -42,7 +42,7 @@ interface CarModeScreenProps {
 }
 
 // ─── Custom Carousel ────────────────────────────────────
-const StationCarousel = React.memo(({
+const StationCarousel = ({
   stations,
   currentIndex,
   onIndexChange,
@@ -53,43 +53,55 @@ const StationCarousel = React.memo(({
   onIndexChange: (idx: number) => void;
   getLogoUrl: (s: Station) => string | null;
 }) => {
+  // Use refs to access latest values in PanResponder callbacks
   const currentIndexRef = useRef(currentIndex);
-  useEffect(() => { currentIndexRef.current = currentIndex; }, [currentIndex]);
   const stationsRef = useRef(stations);
+  const onIndexChangeRef = useRef(onIndexChange);
+  
+  // Update refs when props change
+  useEffect(() => { currentIndexRef.current = currentIndex; }, [currentIndex]);
   useEffect(() => { stationsRef.current = stations; }, [stations]);
+  useEffect(() => { onIndexChangeRef.current = onIndexChange; }, [onIndexChange]);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, { dx }) => Math.abs(dx) > 15,
-      onPanResponderRelease: (_, { dx, vx }) => {
-        const idx = currentIndexRef.current;
-        const len = stationsRef.current.length;
-        if (len === 0) return;
-        if (dx < -40 || vx < -0.5) {
-          onIndexChange((idx + 1) % len);
-        } else if (dx > 40 || vx > 0.5) {
-          onIndexChange((idx - 1 + len) % len);
-        }
-      },
-    })
-  ).current;
+  const panResponder = useMemo(() => PanResponder.create({
+    onMoveShouldSetPanResponder: (_, { dx }) => Math.abs(dx) > 15,
+    onPanResponderRelease: (_, { dx, vx }) => {
+      const idx = currentIndexRef.current;
+      const len = stationsRef.current.length;
+      if (len === 0) return;
+      if (dx < -40 || vx < -0.5) {
+        onIndexChangeRef.current((idx + 1) % len);
+      } else if (dx > 40 || vx > 0.5) {
+        onIndexChangeRef.current((idx - 1 + len) % len);
+      }
+    },
+  }), []);
 
   if (stations.length === 0) return null;
+
+  // Calculate which stations to show at each position
+  const getStationAtPosition = (positionIndex: number): Station | null => {
+    const offset = positionIndex - 2; // -2, -1, 0, 1, 2 for 5 positions
+    const stationIndex = ((currentIndex + offset) % stations.length + stations.length) % stations.length;
+    return stations[stationIndex] || null;
+  };
 
   return (
     <View style={carouselStyles.container} {...panResponder.panHandlers}>
       {CARD_CONFIGS.map((cfg, posIdx) => {
-        const offset = posIdx - 2; // -2, -1, 0, 1, 2
-        const stIdx = ((currentIndex + offset) % stations.length + stations.length) % stations.length;
-        const station = stations[stIdx];
+        const station = getStationAtPosition(posIdx);
         if (!station) return null;
 
-        const logo = getLogoUrl(station);
+        // Get the logo URL for THIS specific station
+        const logoUrl = getLogoUrl(station);
         const isCenter = posIdx === 2;
+        
+        // Debug log to verify each position gets different station
+        // console.log(`[Carousel] Position ${posIdx}: ${station.name} - Logo: ${logoUrl?.substring(0, 50)}`);
 
         return (
           <View
-            key={`pos-${posIdx}`}
+            key={`carousel-pos-${posIdx}-station-${station._id}`}
             style={[
               carouselStyles.cardOuter,
               {
@@ -124,9 +136,10 @@ const StationCarousel = React.memo(({
               } : {},
             ]}
           >
-            {logo ? (
+            {logoUrl ? (
               <Image
-                source={{ uri: logo }}
+                key={`img-${station._id}`}
+                source={{ uri: logoUrl }}
                 style={[carouselStyles.cardImage, { borderRadius: cfg.radius }]}
                 resizeMode="cover"
               />
@@ -142,7 +155,7 @@ const StationCarousel = React.memo(({
       })}
     </View>
   );
-});
+};
 
 const carouselStyles = StyleSheet.create({
   container: {
