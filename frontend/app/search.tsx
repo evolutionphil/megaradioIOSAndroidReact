@@ -134,12 +134,39 @@ export default function SearchScreen() {
     try {
       const lowerQuery = searchQuery.toLowerCase();
       
-      // Fetch all data in parallel
-      const [stationsResponse, genresResponse, profilesResponse] = await Promise.all([
-        stationService.searchStations(searchQuery, 30).catch(() => []),
-        api.get(API_ENDPOINTS.genres.discoverable).then(res => res.data || []).catch(() => []),
-        api.get(API_ENDPOINTS.publicProfiles, { params: { limit: 50 } }).then(res => res.data?.data || res.data || []).catch(() => []),
-      ]);
+      console.log('Starting API calls...');
+      
+      // Fetch stations
+      let stationsResponse: Station[] = [];
+      try {
+        console.log('Fetching stations...');
+        stationsResponse = await stationService.searchStations(searchQuery, 30);
+        console.log('Stations fetched:', stationsResponse?.length || 0);
+      } catch (err) {
+        console.error('Stations fetch error:', err);
+      }
+      
+      // Fetch genres
+      let genresResponse: SearchGenre[] = [];
+      try {
+        console.log('Fetching genres...');
+        const genreRes = await api.get(API_ENDPOINTS.genres.discoverable);
+        genresResponse = genreRes.data || [];
+        console.log('Genres fetched:', genresResponse?.length || 0);
+      } catch (err) {
+        console.error('Genres fetch error:', err);
+      }
+      
+      // Fetch profiles
+      let profilesResponse: PublicProfile[] = [];
+      try {
+        console.log('Fetching profiles...');
+        const profileRes = await api.get(API_ENDPOINTS.publicProfiles, { params: { limit: 50 } });
+        profilesResponse = profileRes.data?.data || profileRes.data || [];
+        console.log('Profiles fetched:', profilesResponse?.length || 0);
+      } catch (err) {
+        console.error('Profiles fetch error:', err);
+      }
 
       console.log('API responses - Stations:', stationsResponse?.length, 'Genres:', genresResponse?.length, 'Profiles:', profilesResponse?.length);
 
