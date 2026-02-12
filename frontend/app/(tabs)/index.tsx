@@ -595,34 +595,47 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
 
-  // Premium Banner - Full width
-  premiumBanner: {
-    width: '100%',
-    height: 54,
-    borderRadius: 5,
-    overflow: 'hidden',
-    marginBottom: spacing.md,
+  // Genre Swiper (Horizontal Carousel)
+  genreSwiperContainer: {
+    paddingVertical: spacing.sm,
+    gap: 12,
   },
-  premiumGradient: {
+  genreSwiperItem: {
+    width: 280,
+    height: 70,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  genreSwiperGradient: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
   },
-  premiumIconImage: {
-    width: 36,
-    height: 36,
-    marginRight: 10,
+  genreSwiperImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 6,
+    marginRight: 12,
   },
-  premiumContent: {
+  genreSwiperIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  genreSwiperContent: {
     flex: 1,
   },
-  premiumTitle: {
-    fontSize: typography.sizes.md,
+  genreSwiperTitle: {
+    fontSize: typography.sizes.lg,
     fontWeight: typography.weights.bold,
     color: colors.text,
   },
-  premiumSubtitle: {
+  genreSwiperSubtitle: {
     fontSize: typography.sizes.sm,
     color: 'rgba(255,255,255,0.8)',
   },
