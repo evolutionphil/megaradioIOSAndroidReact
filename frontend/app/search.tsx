@@ -35,6 +35,7 @@ export default function SearchScreen() {
 
   // Manual search function
   const performSearch = useCallback(async (searchQuery: string) => {
+    console.log('performSearch called with:', searchQuery);
     if (searchQuery.length < 2) {
       setResults([]);
       setHasSearched(false);
@@ -44,7 +45,9 @@ export default function SearchScreen() {
 
     setIsSearching(true);
     try {
+      console.log('Calling API for:', searchQuery);
       const data = await stationService.searchStations(searchQuery, 30);
+      console.log('API response:', data?.length, 'stations');
       setResults(data || []);
       setHasSearched(true);
     } catch (error: any) {
