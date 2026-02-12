@@ -106,9 +106,9 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Background Gradient Blur */}
       <View style={styles.bgGradientContainer}>
-        <BlurView intensity={100} tint="dark" style={styles.bgBlur}>
+        <View style={styles.bgGradientInner}>
           <View style={styles.bgGradient} />
-        </BlurView>
+        </View>
       </View>
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
