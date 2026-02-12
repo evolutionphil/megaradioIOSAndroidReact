@@ -568,10 +568,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
 
-  // Premium Banner - Updated with exact dimensions
+  // Premium Banner - Centered with fixed width
   premiumBanner: {
-    marginLeft: 15,
-    width: 345,
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     height: 54,
     borderRadius: 5,
     overflow: 'hidden',
@@ -601,11 +601,13 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
   },
 
-  // Section - Symmetric padding
+  // Section - Centered content
   section: {
     marginBottom: spacing.lg,
   },
   sectionHeader: {
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
