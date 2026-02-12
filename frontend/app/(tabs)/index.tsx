@@ -832,9 +832,10 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Jazz Banner - Symmetric margin
+  // Jazz Banner - Centered with fixed width
   jazzBanner: {
-    marginHorizontal: HORIZONTAL_PADDING,
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     marginBottom: spacing.lg,
     borderRadius: 5,
     overflow: 'hidden',
@@ -860,9 +861,10 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 
-  // Users List - Symmetric padding
+  // Users List - Centered with fixed width
   usersList: {
-    paddingHorizontal: HORIZONTAL_PADDING,
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
   },
   userItem: {
     flexDirection: 'row',
