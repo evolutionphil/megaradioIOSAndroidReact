@@ -136,6 +136,13 @@ export const useCommunityFavorites = (limit: number = 20) => {
   });
 };
 
+export const usePublicProfiles = (limit: number = 10) => {
+  return useQuery({
+    queryKey: ['publicProfiles', limit],
+    queryFn: () => stationService.getPublicProfiles(limit),
+  });
+};
+
 // Mutations
 export const useAddFavorite = () => {
   const queryClient = useQueryClient();
