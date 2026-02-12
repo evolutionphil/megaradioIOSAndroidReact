@@ -626,11 +626,12 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Genres - Updated with exact dimensions from user
+  // Genres - Centered with fixed width
   genresContainer: {
-    marginLeft: 15,
-    width: 410,
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     height: 45,
+    overflow: 'hidden',
   },
   genresScroll: {
     gap: 10,
@@ -659,12 +660,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
 
-  // Popular Stations List - Updated with exact dimensions
+  // Popular Stations List - Centered with fixed width
   popularList: {
-    paddingHorizontal: 15,
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
   },
   popularItem: {
-    width: 345,
+    width: CONTENT_WIDTH,
     height: 80,
     flexDirection: 'row',
     alignItems: 'center',
