@@ -181,7 +181,7 @@ export default function PlayerScreen() {
           {stationLogo ? (
             <Image 
               source={{ uri: stationLogo }} 
-              style={styles.gridImage}
+              style={[styles.gridImage, Platform.OS === 'web' && { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}
               resizeMode="cover" 
             />
           ) : (
