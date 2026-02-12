@@ -231,77 +231,81 @@ export default function HomeScreen() {
             )}
           </View>
 
-          {/* Recently Played */}
+          {/* Recently Played - 3 Column Grid, 6 stations */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Recently Played</Text>
             </View>
             {recentStations.length > 0 ? (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recentlyPlayedScroll}>
-                {recentStations.slice(0, 12).map((station: Station) => (
+              <View style={styles.stationGridCustom}>
+                {recentStations.slice(0, 6).map((station: Station) => (
                   <TouchableOpacity
                     key={station._id}
-                    style={styles.recentlyPlayedItem}
+                    style={styles.stationGridItem}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={styles.recentlyPlayedLogo}>
+                    <View style={styles.stationGridLogo}>
                       <Image 
                         source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={styles.recentlyPlayedLogoImage} 
+                        style={styles.stationGridLogoImage} 
                         resizeMode="cover" 
                       />
                     </View>
-                    <Text style={styles.recentlyPlayedName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.recentlyPlayedCountry} numberOfLines={1}>
+                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                    <Text style={styles.stationGridCountry} numberOfLines={1}>
                       {station.country || 'Radio'}
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </ScrollView>
+              </View>
             ) : popularStations.length > 0 ? (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recentlyPlayedScroll}>
-                {popularStations.slice(0, 12).map((station: Station) => (
+              <View style={styles.stationGridCustom}>
+                {popularStations.slice(0, 6).map((station: Station) => (
                   <TouchableOpacity
                     key={station._id}
-                    style={styles.recentlyPlayedItem}
+                    style={styles.stationGridItem}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={styles.recentlyPlayedLogo}>
+                    <View style={styles.stationGridLogo}>
                       <Image 
                         source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={styles.recentlyPlayedLogoImage} 
+                        style={styles.stationGridLogoImage} 
                         resizeMode="cover" 
                       />
                     </View>
-                    <Text style={styles.recentlyPlayedName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.recentlyPlayedCountry} numberOfLines={1}>
+                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                    <Text style={styles.stationGridCountry} numberOfLines={1}>
                       {station.country || 'Radio'}
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </ScrollView>
+              </View>
             ) : (
               <Text style={styles.emptyText}>No recently played stations</Text>
             )}
           </View>
 
-          {/* Radios Near You - 3 Column Grid */}
+          {/* Radios Near You - 3 Column Grid, 12 stations */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Radios Near You</Text>
             </View>
-            <View style={styles.stationGrid}>
+            <View style={styles.stationGridCustom}>
               {popularStations.slice(0, 12).map((station: Station, index: number) => (
                 <TouchableOpacity
                   key={`nearby-${station._id}-${index}`}
-                  style={styles.gridItem}
+                  style={styles.stationGridItem}
                   onPress={() => handleStationPress(station)}
                 >
-                  <View style={styles.gridLogo}>
-                    {renderStationLogo(station, GRID_ITEM_WIDTH - 8)}
+                  <View style={styles.stationGridLogo}>
+                    <Image 
+                      source={{ uri: getLogoUrl(station) || undefined }} 
+                      style={styles.stationGridLogoImage} 
+                      resizeMode="cover" 
+                    />
                   </View>
-                  <Text style={styles.gridName} numberOfLines={1}>{station.name}</Text>
-                  <Text style={styles.gridCountry} numberOfLines={1}>
+                  <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                  <Text style={styles.stationGridCountry} numberOfLines={1}>
                     {station.country || 'Radio'}
                   </Text>
                 </TouchableOpacity>
