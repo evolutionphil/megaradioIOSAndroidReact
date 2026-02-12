@@ -16,15 +16,14 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ### Implemented (P0)
 - [x] Home Screen with multiple sections
-  - Premium Banner
+  - **Discoverable Genres Swiper** (horizontal carousel, replaced Premium Banner)
   - Genres (horizontal scroll)
   - Popular Stations (list view)
   - Recently Played (3-column grid, 100px items)
   - Radios Near You (3-column grid, 100px items)
   - Jazz Banner
   - **Favorites From Users (Real API data, 345x60 cards, border-radius: 10px)**
-  - **All Stations (3-column grid, 100x144 items)**
-  - Discoverable Genres
+  - **All Stations (3-column grid, logos fill cards fully)**
 - [x] 3-Column Grid Layout (responsive, works on 375px+)
 - [x] Search Functionality with debounce
 - [x] Platform-aware BlurView component (web + native)
@@ -45,28 +44,34 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 ## API Endpoints Used
 - `GET /api/stations/popular` - Popular stations
 - `GET /api/genres` - Genres list
-- `GET /api/genres/discoverable` - Discoverable genres
+- `GET /api/genres/discoverable` - Discoverable genres (used in swiper)
 - `GET /api/stations?search={query}` - Search stations
 - `GET /api/discover/top100` - Top 100 stations
-- `GET /api/public-profiles` - **NEW: Public user profiles for Favorites From Users**
+- `GET /api/public-profiles` - Public user profiles for Favorites From Users
 - `GET /api/community-favorites` - Community favorite stations
 
 ## Recent Changes (Feb 12, 2026)
-1. **Favorites From Users section:**
-   - Connected to `/api/public-profiles` API
-   - Card dimensions: width: 100% (345px with padding), height: 60px
-   - border-radius: 10px
-   - Shows real user data: name, profile photo, favorites count
-
-2. **All Stations section:**
-   - 3-column grid layout
-   - Item dimensions: width: 100px, height: ~144px (100px image + text)
-   - Row-based rendering for consistent layout
+1. **Discoverable Genres Swiper:**
+   - Replaced static "MegaRadio Premium" banner with horizontal swiper
+   - Uses data from `/api/genres/discoverable` endpoint
+   - Colorful gradient backgrounds for each genre
+   - Shows genre name and station count
+   
+2. **All Stations Logo Fix:**
+   - Logos now fill the entire card space (width: 100%, height: 100%)
+   - Changed `resizeMode` from "contain" to "cover"
+   
+3. **Removed Old Discoverable Genres:**
+   - Deleted the bottom "Discoverable Genres" section
+   - Cleaned up unused styles
 
 ## Key Files
-- `/app/frontend/app/(tabs)/index.tsx` - Home Screen
-- `/app/frontend/src/services/stationService.ts` - API services (added `getPublicProfiles`)
-- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks (added `usePublicProfiles`)
+- `/app/frontend/app/(tabs)/index.tsx` - Home Screen (updated with swiper)
+- `/app/frontend/src/services/stationService.ts` - API services
+- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
+
+## Known Issues
+- **CORS on Web Preview:** Genre images from `themegaradio.com` are blocked due to ORB (Opaque Response Blocking). This is a web-only issue and won't affect native builds.
 
 ## User Preferences
 - Language: Turkish
