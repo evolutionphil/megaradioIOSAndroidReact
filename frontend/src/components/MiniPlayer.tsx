@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, borderRadius, spacing, typography } from '../constants/theme';
 import { usePlayerStore } from '../store/playerStore';
+import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { ChevronUpIcon, HeartOutlineIcon, PauseIcon, PlayIcon } from './TabBarIcons';
 
 // Check if we're on web
@@ -28,8 +29,10 @@ export const MiniPlayer: React.FC = () => {
     playbackState,
     nowPlaying,
     isMiniPlayerVisible,
-    setPlaybackState,
   } = usePlayerStore();
+  
+  // Use the shared audio player hook
+  const { pause, resume } = useAudioPlayer();
 
   if (!isMiniPlayerVisible || !currentStation) {
     return null;
@@ -65,18 +68,9 @@ export const MiniPlayer: React.FC = () => {
   const handlePlayPause = async () => {
     try {
       if (isPlaying) {
-        // Native only - use TrackPlayer
-        if (!isWeb) {
-          const TrackPlayer = require('react-native-track-player').default;
-          await TrackPlayer.pause();
-        }
-        setPlaybackState('paused');
+        await pause();
       } else if (playbackState === 'paused') {
-        if (!isWeb) {
-          const TrackPlayer = require('react-native-track-player').default;
-          await TrackPlayer.play();
-        }
-        setPlaybackState('playing');
+        await resume();
       }
     } catch (error) {
       console.error('[MiniPlayer] Play/Pause error:', error);
