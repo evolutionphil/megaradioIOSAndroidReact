@@ -60,7 +60,7 @@ export default function SearchScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       performSearch(query);
-    }, 600);
+    }, 400);
 
     return () => clearTimeout(timer);
   }, [query, performSearch]);
