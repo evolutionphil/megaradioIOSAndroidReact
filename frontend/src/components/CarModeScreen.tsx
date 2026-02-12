@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,23 +8,212 @@ import {
   Dimensions,
   ScrollView,
   StatusBar,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import { Ionicons } from '@expo/vector-icons';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { usePopularStations } from '../hooks/useQueries';
 import type { Station } from '../types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const CARD_WIDTH = SCREEN_WIDTH * 0.45;
-const CARD_HEIGHT = CARD_WIDTH * 0.8;
+
+// Card sizes based on Figma specs
+const CENTER_CARD_SIZE = 177;
+const SIDE_CARD_SIZE = 140;
+const CARD_GAP = 12;
+
+// Control button size
+const CONTROL_BUTTON_SIZE = 100;
 
 interface CarModeScreenProps {
   visible: boolean;
   onClose: () => void;
 }
+
+// Custom Play Icon with bar
+const PrevIcon = () => (
+  <View style={iconStyles.container}>
+    <View style={iconStyles.prevBar} />
+    <View style={iconStyles.prevTriangle} />
+  </View>
+);
+
+// Custom Pause Icon
+const PauseIcon = () => (
+  <View style={iconStyles.pauseContainer}>
+    <View style={iconStyles.pauseBar} />
+    <View style={iconStyles.pauseBar} />
+  </View>
+);
+
+// Custom Play Icon
+const PlayIcon = () => (
+  <View style={iconStyles.playTriangle} />
+);
+
+// Custom Next Icon with bar
+const NextIcon = () => (
+  <View style={iconStyles.container}>
+    <View style={iconStyles.nextTriangle} />
+    <View style={iconStyles.nextBar} />
+  </View>
+);
+
+// Mute Icon
+const MuteIcon = () => (
+  <View style={iconStyles.muteContainer}>
+    <View style={iconStyles.speakerBody} />
+    <View style={iconStyles.speakerCone} />
+    <Text style={iconStyles.muteX}>×</Text>
+  </View>
+);
+
+// Volume Icon
+const VolumeIcon = () => (
+  <View style={iconStyles.volumeContainer}>
+    <View style={iconStyles.speakerBodySmall} />
+    <View style={iconStyles.speakerConeSmall} />
+    <View style={iconStyles.soundWaves}>
+      <View style={iconStyles.soundWave1} />
+      <View style={iconStyles.soundWave2} />
+    </View>
+  </View>
+);
+
+const iconStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  prevBar: {
+    width: 6,
+    height: 40,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+    marginRight: 8,
+  },
+  prevTriangle: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 22,
+    borderBottomWidth: 22,
+    borderRightWidth: 36,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: '#FFFFFF',
+  },
+  pauseContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  pauseBar: {
+    width: 14,
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+  },
+  playTriangle: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 25,
+    borderBottomWidth: 25,
+    borderLeftWidth: 42,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+    marginLeft: 8,
+  },
+  nextTriangle: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 22,
+    borderBottomWidth: 22,
+    borderLeftWidth: 36,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+  },
+  nextBar: {
+    width: 6,
+    height: 40,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+    marginLeft: 8,
+  },
+  muteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  speakerBody: {
+    width: 14,
+    height: 18,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 2,
+  },
+  speakerCone: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 14,
+    borderBottomWidth: 14,
+    borderLeftWidth: 14,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+  },
+  muteX: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '300',
+    marginLeft: 4,
+  },
+  volumeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  speakerBodySmall: {
+    width: 10,
+    height: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 1,
+  },
+  speakerConeSmall: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 10,
+    borderBottomWidth: 10,
+    borderLeftWidth: 10,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+  },
+  soundWaves: {
+    marginLeft: 4,
+  },
+  soundWave1: {
+    width: 6,
+    height: 14,
+    borderWidth: 2,
+    borderLeftWidth: 0,
+    borderColor: '#FFFFFF',
+    borderRadius: 10,
+    marginBottom: 2,
+  },
+  soundWave2: {
+    width: 10,
+    height: 20,
+    borderWidth: 2,
+    borderLeftWidth: 0,
+    borderColor: '#FFFFFF',
+    borderRadius: 12,
+    position: 'absolute',
+    left: 2,
+    top: -3,
+  },
+});
 
 export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }) => {
   const { currentStation, playbackState, nowPlaying } = usePlayerStore();
@@ -32,12 +221,26 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
   const { data: popularData } = usePopularStations(undefined, 10);
   const [volume, setVolumeState] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
 
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
 
-  const stations = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
+  const stations = useMemo(() => {
+    const data = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
+    return data.slice(0, 10);
+  }, [popularData]);
+
+  // Find current station index in list
+  useEffect(() => {
+    if (currentStation && stations.length > 0) {
+      const idx = stations.findIndex(s => s._id === currentStation._id);
+      if (idx !== -1) {
+        setCurrentIndex(idx);
+      }
+    }
+  }, [currentStation, stations]);
 
   const getLogoUrl = useCallback((station: Station) => {
     if (station.logoAssets?.webp192) {
@@ -63,16 +266,29 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
     }
   };
 
-  const handleStationSelect = async (station: Station) => {
+  const handleStationSelect = async (station: Station, index: number) => {
     try {
+      setCurrentIndex(index);
       await playStation(station);
     } catch (error) {
       console.error('[CarMode] Failed to play station:', error);
     }
   };
 
+  const handlePrev = async () => {
+    if (stations.length === 0) return;
+    const newIndex = currentIndex > 0 ? currentIndex - 1 : stations.length - 1;
+    await handleStationSelect(stations[newIndex], newIndex);
+  };
+
+  const handleNext = async () => {
+    if (stations.length === 0) return;
+    const newIndex = currentIndex < stations.length - 1 ? currentIndex + 1 : 0;
+    await handleStationSelect(stations[newIndex], newIndex);
+  };
+
   const getCurrentSongInfo = () => {
-    if (nowPlaying?.title && nowPlaying?.artist) {
+    if (nowPlaying?.artist && nowPlaying?.title) {
       return `${nowPlaying.artist} - ${nowPlaying.title}`;
     }
     if (nowPlaying?.title) return nowPlaying.title;
@@ -86,63 +302,93 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
     return null;
   }
 
+  // Get visible stations (prev, current, next)
+  const getVisibleStations = () => {
+    if (stations.length === 0) return [];
+    
+    const result = [];
+    const prevIdx = currentIndex > 0 ? currentIndex - 1 : stations.length - 1;
+    const nextIdx = currentIndex < stations.length - 1 ? currentIndex + 1 : 0;
+    
+    // Add more stations for scrolling effect
+    const prevPrevIdx = prevIdx > 0 ? prevIdx - 1 : stations.length - 1;
+    const nextNextIdx = nextIdx < stations.length - 1 ? nextIdx + 1 : 0;
+    
+    result.push({ station: stations[prevPrevIdx], position: 'far-left', index: prevPrevIdx });
+    result.push({ station: stations[prevIdx], position: 'left', index: prevIdx });
+    result.push({ station: stations[currentIndex], position: 'center', index: currentIndex });
+    result.push({ station: stations[nextIdx], position: 'right', index: nextIdx });
+    result.push({ station: stations[nextNextIdx], position: 'far-right', index: nextNextIdx });
+    
+    return result;
+  };
+
+  const visibleStations = getVisibleStations();
+
   return (
     <View style={styles.overlay}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor="#0D0D0D" />
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Car Mode</Text>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Ionicons name="close" size={24} color="#FFFFFF" />
+            <Text style={styles.closeText}>Close</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Station Carousel */}
+        {/* Station Carousel - Center current with prev/next visible */}
         <View style={styles.carouselContainer}>
-          <ScrollView
-            ref={scrollRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.carouselContent}
-            snapToInterval={CARD_WIDTH + 12}
-            decelerationRate="fast"
-          >
-            {stations.map((station: Station) => {
-              const logo = getLogoUrl(station);
-              const isActive = currentStation?._id === station._id;
+          <View style={styles.carouselInner}>
+            {visibleStations.map((item, idx) => {
+              const logo = getLogoUrl(item.station);
+              const isCenter = item.position === 'center';
+              const isSide = item.position === 'left' || item.position === 'right';
+              const isFar = item.position === 'far-left' || item.position === 'far-right';
+              
+              const cardSize = isCenter ? CENTER_CARD_SIZE : SIDE_CARD_SIZE;
+              const opacity = isFar ? 0.3 : isSide ? 0.7 : 1;
+              const scale = isCenter ? 1 : isSide ? 0.85 : 0.7;
               
               return (
                 <TouchableOpacity
-                  key={station._id}
+                  key={`${item.station._id}-${idx}`}
                   style={[
                     styles.stationCard,
-                    isActive && styles.stationCardActive,
+                    {
+                      width: cardSize,
+                      height: cardSize,
+                      opacity,
+                      transform: [{ scale }],
+                      zIndex: isCenter ? 10 : isSide ? 5 : 1,
+                    },
+                    isCenter && styles.centerCard,
                   ]}
-                  onPress={() => handleStationSelect(station)}
-                  activeOpacity={0.8}
+                  onPress={() => handleStationSelect(item.station, item.index)}
+                  activeOpacity={0.9}
                 >
                   {logo ? (
                     <Image source={{ uri: logo }} style={styles.stationLogo} resizeMode="cover" />
                   ) : (
                     <View style={styles.stationLogoPlaceholder}>
-                      <Text style={styles.placeholderText}>{station.name.charAt(0)}</Text>
+                      <Text style={styles.placeholderText}>{item.station.name.charAt(0)}</Text>
                     </View>
                   )}
                 </TouchableOpacity>
               );
             })}
-          </ScrollView>
+          </View>
+        </View>
+
+        {/* Animated Playing Indicator */}
+        <View style={styles.playingIndicator}>
+          <View style={[styles.indicatorBar, styles.bar1]} />
+          <View style={[styles.indicatorBar, styles.bar2]} />
+          <View style={[styles.indicatorBar, styles.bar3]} />
         </View>
 
         {/* Now Playing Info */}
         <View style={styles.nowPlayingInfo}>
-          {/* Animated dots */}
-          <View style={styles.animatedDots}>
-            <View style={[styles.dot, styles.dotPink]} />
-            <View style={[styles.dot, styles.dotPink]} />
-            <View style={[styles.dot, styles.dotPink]} />
-          </View>
           <Text style={styles.stationName}>{currentStation?.name || 'No Station'}</Text>
           <Text style={styles.songInfo}>{getCurrentSongInfo()}</Text>
         </View>
@@ -150,28 +396,22 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
         {/* Main Controls */}
         <View style={styles.mainControls}>
           {/* Previous */}
-          <TouchableOpacity style={styles.controlButton}>
-            <Ionicons name="play-skip-back" size={32} color="#FFFFFF" />
+          <TouchableOpacity style={styles.controlButton} onPress={handlePrev}>
+            <PrevIcon />
           </TouchableOpacity>
 
           {/* Play/Pause */}
           <TouchableOpacity
-            style={styles.playPauseButton}
+            style={styles.controlButton}
             onPress={togglePlayPause}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <Ionicons name="hourglass" size={36} color="#FFFFFF" />
-            ) : isPlaying ? (
-              <Ionicons name="pause" size={36} color="#FFFFFF" />
-            ) : (
-              <Ionicons name="play" size={36} color="#FFFFFF" />
-            )}
+            {isPlaying ? <PauseIcon /> : <PlayIcon />}
           </TouchableOpacity>
 
           {/* Next */}
-          <TouchableOpacity style={styles.controlButton}>
-            <Ionicons name="play-skip-forward" size={32} color="#FFFFFF" />
+          <TouchableOpacity style={styles.controlButton} onPress={handleNext}>
+            <NextIcon />
           </TouchableOpacity>
         </View>
 
@@ -179,16 +419,12 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
         <View style={styles.volumeControls}>
           {/* Mute Button */}
           <TouchableOpacity style={styles.muteButton} onPress={handleMuteToggle}>
-            <Ionicons 
-              name={isMuted ? "volume-mute" : "volume-high"} 
-              size={28} 
-              color="#FFFFFF" 
-            />
+            <MuteIcon />
           </TouchableOpacity>
 
           {/* Volume Slider */}
           <View style={styles.volumeSliderContainer}>
-            <Ionicons name="volume-low" size={20} color="#888888" />
+            <VolumeIcon />
             <Slider
               style={styles.volumeSlider}
               minimumValue={0}
@@ -199,7 +435,6 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
               maximumTrackTintColor="#333333"
               thumbTintColor="#FF4D8D"
             />
-            <Ionicons name="volume-high" size={20} color="#888888" />
           </View>
         </View>
 
@@ -234,42 +469,57 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingVertical: 16,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '600',
     color: '#FFFFFF',
   },
   closeButton: {
     backgroundColor: '#2A2A2A',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 24,
+  },
+  closeText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#FFFFFF',
   },
 
-  // Carousel
+  // Carousel with centered current station
   carouselContainer: {
-    marginTop: 20,
-    height: CARD_HEIGHT + 20,
+    marginTop: 30,
+    height: CENTER_CARD_SIZE + 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  carouselContent: {
-    paddingHorizontal: (SCREEN_WIDTH - CARD_WIDTH) / 2 - 20,
-    gap: 12,
+  carouselInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   stationCard: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 16,
+    borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: '#1A1A1A',
+    marginHorizontal: 6,
   },
-  stationCardActive: {
-    borderWidth: 2,
-    borderColor: '#FF4D8D',
+  centerCard: {
+    // Purple glow shadow - Figma: box-shadow: 0px 21.71px 81.43px 14.11px #7B61FF4D
+    ...Platform.select({
+      ios: {
+        shadowColor: '#7B61FF',
+        shadowOffset: { width: 0, height: 22 },
+        shadowOpacity: 0.3,
+        shadowRadius: 40,
+      },
+      android: {
+        elevation: 20,
+      },
+    }),
   },
   stationLogo: {
     width: '100%',
@@ -283,29 +533,40 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A2A2A',
   },
   placeholderText: {
-    fontSize: 40,
+    fontSize: 48,
     fontWeight: '700',
     color: '#666',
+  },
+
+  // Playing indicator bars
+  playingIndicator: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginTop: 24,
+    height: 24,
+    gap: 4,
+  },
+  indicatorBar: {
+    width: 6,
+    backgroundColor: '#FF4D8D',
+    borderRadius: 3,
+  },
+  bar1: {
+    height: 12,
+  },
+  bar2: {
+    height: 20,
+  },
+  bar3: {
+    height: 14,
   },
 
   // Now Playing
   nowPlayingInfo: {
     alignItems: 'center',
-    marginTop: 24,
-    paddingHorizontal: 20,
-  },
-  animatedDots: {
-    flexDirection: 'row',
-    gap: 6,
-    marginBottom: 12,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  dotPink: {
-    backgroundColor: '#FF4D8D',
+    marginTop: 16,
+    paddingHorizontal: 24,
   },
   stationName: {
     fontSize: 28,
@@ -316,7 +577,7 @@ const styles = StyleSheet.create({
   songInfo: {
     fontSize: 16,
     color: '#888888',
-    marginTop: 4,
+    marginTop: 6,
     textAlign: 'center',
   },
 
@@ -325,22 +586,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
-    gap: 20,
+    marginTop: 36,
+    gap: 16,
+    paddingHorizontal: 20,
   },
   controlButton: {
-    width: 100,
-    height: 80,
-    borderRadius: 16,
-    backgroundColor: '#1A1A1A',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  playPauseButton: {
-    width: 100,
-    height: 80,
-    borderRadius: 16,
-    backgroundColor: '#1A1A1A',
+    width: CONTROL_BUTTON_SIZE,
+    height: 85,
+    borderRadius: 20,
+    backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -349,15 +603,15 @@ const styles = StyleSheet.create({
   volumeControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 40,
-    paddingHorizontal: 20,
+    marginTop: 28,
+    paddingHorizontal: 24,
     gap: 12,
   },
   muteButton: {
-    width: 80,
-    height: 60,
-    borderRadius: 16,
-    backgroundColor: '#1A1A1A',
+    width: 100,
+    height: 65,
+    borderRadius: 20,
+    backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -365,44 +619,44 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
-    backgroundColor: '#1A1A1A',
-    borderRadius: 16,
-    paddingHorizontal: 16,
+    height: 65,
+    backgroundColor: '#2A2A2A',
+    borderRadius: 20,
+    paddingHorizontal: 20,
   },
   volumeSlider: {
     flex: 1,
     height: 40,
-    marginHorizontal: 8,
+    marginLeft: 12,
   },
 
   // REC Button
   recContainer: {
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 36,
   },
   recButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
   recDotOuter: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 2,
     borderColor: '#FF6B6B',
     justifyContent: 'center',
     alignItems: 'center',
   },
   recDotInner: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: '#FF6B6B',
   },
   recText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: '#FFFFFF',
   },
