@@ -10,6 +10,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - **State Management:** Zustand
 - **Data Fetching:** React Query with Axios
 - **Audio:** expo-av (migrating to react-native-track-player)
+- **SVG Icons:** react-native-svg
 - **Styling:** React Native StyleSheet with Flexbox
 
 ## Core Features
@@ -25,9 +26,22 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
   - **Favorites From Users (Real API data, 345x60 cards, border-radius: 10px)**
   - **All Stations (3-column grid, logos fill cards fully)**
 - [x] 3-Column Grid Layout (responsive, works on 375px+)
-- [x] Search Functionality with debounce
+- [x] **Unified Search Functionality** (Feb 12, 2026)
+  - Search across radios, genres, AND profiles simultaneously
+  - Filter chips: All, Radios, Genres, Profiles
+  - Fixed subtitle bug (was showing single char, now shows full genre)
+  - "No results" UI with image and message
 - [x] Platform-aware BlurView component (web + native)
 - [x] Station playback with expo-av
+- [x] **Custom Tab Bar Design** (Feb 12, 2026)
+  - 4 tabs: Discover, Favorites, Profile, Records
+  - Custom SVG icons matching Figma design
+  - Dark theme (#1B1C1E background)
+- [x] **Sticky Mini Player** (Feb 12, 2026)
+  - Positioned above navigation bar
+  - Chevron up icon, logo, station name, genre
+  - Play/Pause and Favorite buttons
+  - Black background (#000000)
 
 ### In Progress (P1)
 - [ ] Migrate to react-native-track-player for background audio
@@ -35,19 +49,20 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [ ] Authentication Flow (Login/Signup)
 
 ### Backlog (P2)
-- [ ] Favorites Feature
+- [ ] Favorites Feature (add/remove stations)
 - [ ] expo-location integration for nearby stations
 - [ ] Internationalization (i18n)
-- [ ] Profile Screen
+- [ ] Profile Screen content
+- [ ] Records Screen content (listening history)
 - [ ] Skeleton loaders
 
 ## API Endpoints Used
 - `GET /api/stations/popular` - Popular stations
 - `GET /api/genres` - Genres list
-- `GET /api/genres/discoverable` - Discoverable genres (used in swiper)
+- `GET /api/genres/discoverable` - Discoverable genres (used in swiper and search)
 - `GET /api/stations?search={query}` - Search stations
 - `GET /api/discover/top100` - Top 100 stations
-- `GET /api/public-profiles` - Public user profiles for Favorites From Users
+- `GET /api/public-profiles` - Public user profiles for search and Favorites From Users
 - `GET /api/community-favorites` - Community favorite stations
 
 ## Recent Changes (Feb 12, 2026)
