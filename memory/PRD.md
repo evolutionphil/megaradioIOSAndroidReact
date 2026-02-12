@@ -59,11 +59,21 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
    - Changed keys from `pos-${posIdx}` to `carousel-pos-${posIdx}-station-${station._id}`
    - Verified: 3 different station logos now show (mangoradio.de, wdr.de, radioarabella.de)
 
-3. **SafeAreaView Fix (P1)**: Already properly implemented
-   - `player.tsx`: Line 363 - `<SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>`
-   - `CarModeScreen.tsx`: Line 303 - `<SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>`
+3. **Car Mode SafeAreaView/Status Bar Fix (P1)**: Rewrote layout
+   - Removed SafeAreaView, using manual `paddingTop: statusBarHeight` (54px on iOS)
+   - Added `paddingBottom` for home indicator safe area
+   - Header "Car Mode" text and "Close" button now visible below status bar
+   - Added purple glow effect (`centerGlow` style) behind center carousel card
 
-4. **Single-Click Play**: Verified working correctly
+4. **Home Screen Glow Fix (P2)**: Updated background glow
+   - Changed size and position for better visibility
+   - Added proper iOS shadow for native glow effect
+   - Purple (#6B4EFF) with blur on web, shadowRadius on iOS
+
+5. **Stream Proxy Fix (P0)**: Updated `resolveStreamUrl` in useAudioPlayer
+   - Now proxies all streams except known working HTTPS sources
+   - Fixes iOS NSURLErrorDomain -1013 error from HTTPS→HTTP redirects
+   - Uses themegaradio.com proxy for HTTP and problematic HTTPS streams
 
 ### Known Deprecation Warnings
 - expo-av deprecation warning (SDK 54 will remove it) - consider expo-audio migration
