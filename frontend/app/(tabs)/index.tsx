@@ -521,10 +521,10 @@ const styles = StyleSheet.create({
   // Background Gradient Blur - Using CSS filter for web
   bgGradientContainer: {
     position: 'absolute',
-    top: -131,
-    left: -164,
-    width: 434,
-    height: 434,
+    top: -100,
+    left: -100,
+    width: 350,
+    height: 350,
     zIndex: 0,
   },
   bgGradientInner: {
@@ -534,17 +534,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bgGradient: {
-    width: 434,
-    height: 434,
-    borderRadius: 217,
-    backgroundColor: '#3300FF4D',
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    backgroundColor: '#6B4EFF',
+    opacity: 0.5,
     ...(Platform.OS === 'web' ? {
-      filter: 'blur(205px)',
+      // @ts-ignore
+      filter: 'blur(80px)',
     } : {
-      shadowColor: '#3300FF',
+      // iOS native glow using shadow
+      shadowColor: '#6B4EFF',
       shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.8,
-      shadowRadius: 150,
+      shadowOpacity: 1,
+      shadowRadius: 80,
     }),
   },
   
