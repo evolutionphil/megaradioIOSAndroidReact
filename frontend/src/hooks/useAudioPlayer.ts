@@ -18,6 +18,7 @@ class AudioManager {
   private sound: Audio.Sound | null = null;
   private currentStationId: string | null = null;
   private statusCallback: ((status: AVPlaybackStatus) => void) | null = null;
+  private _playId = 0; // Monotonic counter for race condition prevention
 
   private constructor() {
     console.log('[AudioManager] Singleton instance created');
@@ -45,19 +46,18 @@ class AudioManager {
   };
 
   async stopAndUnload(): Promise<void> {
-    console.log('[AudioManager] stopAndUnload called, current sound:', this.sound ? 'exists' : 'null');
+    // Increment playId to cancel any in-progress play operations
+    this._playId++;
+    console.log('[AudioManager] stopAndUnload called, playId now:', this._playId);
     
     if (this.sound) {
       const soundToUnload = this.sound;
-      // Clear references FIRST to prevent race conditions
       this.sound = null;
       this.currentStationId = null;
       
       try {
-        console.log('[AudioManager] Getting status...');
         const status = await soundToUnload.getStatusAsync();
         if (status.isLoaded) {
-          console.log('[AudioManager] Stopping sound...');
           await soundToUnload.stopAsync();
         }
       } catch (e) {
@@ -65,7 +65,6 @@ class AudioManager {
       }
       
       try {
-        console.log('[AudioManager] Unloading sound...');
         await soundToUnload.unloadAsync();
         console.log('[AudioManager] Sound unloaded successfully');
       } catch (e) {
@@ -76,13 +75,11 @@ class AudioManager {
 
   async play(url: string, stationId: string): Promise<void> {
     console.log('[AudioManager] ======== PLAY CALLED ========');
-    console.log('[AudioManager] New station:', stationId);
-    console.log('[AudioManager] Current station:', this.currentStationId);
-    console.log('[AudioManager] Has existing sound:', this.sound !== null);
+    console.log('[AudioManager] New station:', stationId, '| Current:', this.currentStationId);
     
     // If same station, don't restart - just resume
     if (this.currentStationId === stationId && this.sound) {
-      console.log('[AudioManager] Same station already loaded, resuming if paused');
+      console.log('[AudioManager] Same station, resuming if paused');
       try {
         const status = await this.sound.getStatusAsync();
         if (status.isLoaded && !status.isPlaying) {
@@ -95,47 +92,47 @@ class AudioManager {
     }
     
     // ============================================================
-    // CRITICAL FIX: ATOMIC STOP-THEN-PLAY
-    // Must fully stop and unload BEFORE creating new sound
+    // RACE CONDITION FIX: Monotonic play ID ensures latest-wins
+    // If a newer play() is called while this one is in progress,
+    // this call detects it's stale and bails out cleanly.
     // ============================================================
+    const myPlayId = ++this._playId;
+    console.log('[AudioManager] PlayID:', myPlayId, '- Starting');
     
-    // Step 1: Capture existing sound reference IMMEDIATELY
+    // SYNCHRONOUSLY capture and clear existing sound reference.
+    // JS is single-threaded: between ++_playId and the first await,
+    // no other play() can run, so only ONE caller captures the sound.
     const existingSound = this.sound;
-    const existingStationId = this.currentStationId;
-    
-    // Step 2: Clear references FIRST to prevent any race conditions
     this.sound = null;
     this.currentStationId = null;
     
-    // Step 3: Force stop and unload the captured sound
+    // Stop and unload the captured sound (async - may yield control to other play() calls)
     if (existingSound) {
-      console.log('[AudioManager] STOPPING existing stream for station:', existingStationId);
+      console.log('[AudioManager] PlayID', myPlayId, '- Stopping existing stream');
       try {
-        // Get status first to check if loaded
         const status = await existingSound.getStatusAsync();
         if (status.isLoaded) {
-          console.log('[AudioManager] Stream is loaded, calling stopAsync...');
           await existingSound.stopAsync();
-          console.log('[AudioManager] stopAsync completed');
         }
       } catch (e) {
-        console.log('[AudioManager] Stop error (continuing):', e);
+        console.log('[AudioManager] Stop error (ignored):', e);
       }
-      
       try {
-        console.log('[AudioManager] Calling unloadAsync...');
         await existingSound.unloadAsync();
-        console.log('[AudioManager] unloadAsync completed - OLD STREAM FULLY STOPPED');
+        console.log('[AudioManager] PlayID', myPlayId, '- Old stream unloaded');
       } catch (e) {
-        console.log('[AudioManager] Unload error (continuing):', e);
+        console.log('[AudioManager] Unload error (ignored):', e);
       }
     }
     
-    // Step 4: Small delay to ensure audio system is ready
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // STALE CHECK: A newer play() was called while we were stopping
+    if (this._playId !== myPlayId) {
+      console.log('[AudioManager] PlayID', myPlayId, '- STALE (latest:', this._playId, '), aborting');
+      return;
+    }
     
-    // Step 5: NOW create the new sound
-    console.log('[AudioManager] Creating NEW sound for:', url.substring(0, 60) + '...');
+    // Create new sound
+    console.log('[AudioManager] PlayID', myPlayId, '- Creating new sound');
     try {
       const { sound } = await Audio.Sound.createAsync(
         { uri: url },
@@ -143,12 +140,19 @@ class AudioManager {
         this.onPlaybackStatusUpdate
       );
       
+      // STALE CHECK: A newer play() was called while creating the sound
+      if (this._playId !== myPlayId) {
+        console.log('[AudioManager] PlayID', myPlayId, '- STALE after create, cleaning up orphan');
+        try { await sound.stopAsync(); } catch {}
+        try { await sound.unloadAsync(); } catch {}
+        return;
+      }
+      
       this.sound = sound;
       this.currentStationId = stationId;
-      console.log('[AudioManager] ======== NEW STREAM PLAYING ========');
-      console.log('[AudioManager] Station:', stationId);
+      console.log('[AudioManager] PlayID', myPlayId, '- NOW PLAYING:', stationId);
     } catch (error) {
-      console.error('[AudioManager] Failed to create sound:', error);
+      console.error('[AudioManager] PlayID', myPlayId, '- Create failed:', error);
       throw error;
     }
   }

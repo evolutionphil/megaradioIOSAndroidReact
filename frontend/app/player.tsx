@@ -10,7 +10,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -212,6 +212,7 @@ export default function PlayerScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
   const [showCarMode, setShowCarMode] = useState(false);
+  const insets = useSafeAreaInsets();
   
   // Load Ubuntu font
   const [fontsLoaded] = useFonts({
@@ -360,7 +361,7 @@ export default function PlayerScreen() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      <View style={[styles.safeArea, { paddingTop: insets.top }]}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -548,7 +549,7 @@ export default function PlayerScreen() {
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
       
       {/* Car Mode Modal */}
       <CarModeScreen

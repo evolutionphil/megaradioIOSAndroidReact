@@ -242,10 +242,22 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
 
-  // Use stations passed from player (already loaded, no extra fetch)
-  const stations = useMemo(() => {
-    return propStations.length > 0 ? propStations : [];
-  }, [propStations]);
+  // CRITICAL: Freeze station list when Car Mode opens.
+  // This prevents the list from re-ordering when a new station is played (which
+  // triggers a similar-stations refetch in player.tsx, changing the prop).
+  const [stations, setStations] = useState<Station[]>([]);
+  const stationsInitRef = useRef(false);
+
+  useEffect(() => {
+    if (visible && propStations.length > 0 && !stationsInitRef.current) {
+      stationsInitRef.current = true;
+      setStations([...propStations]);
+    }
+    if (!visible) {
+      stationsInitRef.current = false;
+      setStations([]);
+    }
+  }, [visible, propStations]);
 
   const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -307,6 +319,9 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
 
   if (!visible) return null;
 
+  // Use carousel index to determine displayed station (matches the visual carousel card)
+  const displayedStation = stations.length > 0 ? stations[carouselIndex] : currentStation;
+
   const ub = fontsLoaded ? { fontFamily: 'Ubuntu-Bold' } : { fontWeight: '700' as const };
 
   // Get iOS status bar height for proper safe area
@@ -352,7 +367,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
             numberOfLines={1}
             data-testid="car-mode-station-name"
           >
-            {currentStation?.name || 'No Station'}
+            {displayedStation?.name || 'No Station'}
           </Text>
           <Text style={styles.songInfo} numberOfLines={1}>
             {getCurrentSongInfo()}
