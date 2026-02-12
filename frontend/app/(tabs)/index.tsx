@@ -66,21 +66,15 @@ export default function HomeScreen() {
   const recentStations = recentlyPlayedData || [];
   const allStations = allStationsData?.stations || [];
 
-  // Genre chip colors
-  const genreColors: Record<string, string> = {
-    'folk': colors.genreOrange,
-    'slow': colors.genreCyan,
-    'jazz': colors.genrePurple,
-    'rock': colors.genreRed,
-    'pop': colors.genrePink,
-    'classical': colors.genreGreen,
-    'electronic': colors.genreBlue,
-    'news': colors.genreYellow,
-  };
+  // Genre background images
+  const genreBackgrounds = [
+    'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/eq61xd6w_e1b96e395dad3206b244b757c3f6d02f9e3e20ce.jpg',
+    'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/e61i1gbp_ede84cfacb60b98a308517cb867870085cd29e3b.jpg',
+    'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/uecu522z_b82ff8a8cf723ff0d4bca7a3dc526141e276b0eb.jpg',
+  ];
 
-  const getGenreColor = (slug: string) => {
-    const key = slug.toLowerCase();
-    return genreColors[key] || colors.primary;
+  const getGenreBackground = (index: number) => {
+    return genreBackgrounds[index % genreBackgrounds.length];
   };
 
   const getLogoUrl = (station: Station) => {
