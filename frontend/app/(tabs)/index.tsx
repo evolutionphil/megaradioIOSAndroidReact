@@ -909,10 +909,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 12,
     position: 'relative',
+    backgroundColor: colors.surface,
   },
   discoverableGenreImage: {
     width: '100%',
     height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
   discoverableGenrePlaceholder: {
     width: '100%',
@@ -927,7 +931,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 12,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   discoverableGenreName: {
     fontSize: typography.sizes.lg,
