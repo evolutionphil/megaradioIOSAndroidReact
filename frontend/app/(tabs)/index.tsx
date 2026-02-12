@@ -740,19 +740,21 @@ const styles = StyleSheet.create({
   // Card: width: 100, height: 144
   // Logo: width: 100, height: 100, border-radius: 10px
   // Gap calculation: 138 - 15 - 100 = 23px between cards
+  // Total: 3 * 100 + 2 * 22.5 = 345px
   stationGridCustom: {
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: 15,
-    gap: 23,
+    gap: GRID_GAP,
   },
   stationGridItem: {
-    width: 100,
+    width: GRID_ITEM_WIDTH,
     height: 144,
   },
   stationGridLogo: {
-    width: 100,
-    height: 100,
+    width: GRID_ITEM_WIDTH,
+    height: GRID_ITEM_WIDTH,
     borderRadius: 10,
     backgroundColor: colors.surface,
     overflow: 'hidden',
@@ -772,11 +774,12 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid - Symmetric padding
+  // Station Grid - Centered with fixed width
   stationGrid: {
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: HORIZONTAL_PADDING,
     gap: spacing.sm,
   },
   gridItem: {
