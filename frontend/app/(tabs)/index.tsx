@@ -32,10 +32,13 @@ import { useAuthStore } from '../../src/store/authStore';
 import type { Station, Genre } from '../../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const GRID_ITEM_WIDTH = (SCREEN_WIDTH - spacing.md * 2 - spacing.sm * 2) / 3;
-// Symmetric horizontal padding
-const HORIZONTAL_PADDING = 15;
+// Content width is fixed at 345px
 const CONTENT_WIDTH = 345;
+// Calculate symmetric padding to center content
+const HORIZONTAL_PADDING = (SCREEN_WIDTH - CONTENT_WIDTH) / 2;
+// Grid item width: 3 items with 23px gaps = 100px each
+const GRID_ITEM_WIDTH = 100;
+const GRID_GAP = 23;
 
 export default function HomeScreen() {
   const router = useRouter();
