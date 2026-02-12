@@ -63,109 +63,136 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
-# Now Playing API - Fetches metadata from radio stream
+# Now Playing API - Fetches ICY metadata from radio stream
 @api_router.get("/now-playing/{station_id}", response_model=NowPlayingResponse)
 async def get_now_playing(station_id: str):
     """
     Get now playing information for a station.
-    Returns station genre/tags as title since ICY metadata is complex.
+    1. Fetches station info from themegaradio API to get stream URL
+    2. Connects to stream with Icy-MetaData header to get real song title
+    3. Falls back to genre/tags if ICY metadata unavailable
     """
+    station_name = "Unknown Station"
+    fallback_title = "Live Radio"
+    stream_url = None
+
     try:
         async with httpx.AsyncClient(timeout=5.0) as http_client:
-            # Get station data from themegaradio API
+            # Step 1: Get station data from themegaradio API
             try:
                 response = await http_client.get(
                     f"https://themegaradio.com/api/station/{station_id}"
                 )
                 if response.status_code == 200:
                     station_data = response.json()
-                    
-                    # Get station info
                     station_name = station_data.get('name', 'Unknown Station')
+                    stream_url = station_data.get('url_resolved') or station_data.get('url')
                     genres = station_data.get('genres', [])
                     tags = station_data.get('tags', '')
                     country = station_data.get('country', '')
-                    
-                    # Build display info from genres/tags
+
                     if genres:
-                        display_info = genres[0]
+                        fallback_title = genres[0]
                     elif tags:
-                        display_info = tags.split(',')[0].strip()
+                        fallback_title = tags.split(',')[0].strip()
                     elif country:
-                        display_info = country
-                    else:
-                        display_info = 'Live Radio'
-                    
-                    return NowPlayingResponse(
-                        station_id=station_id,
-                        title=display_info,
-                        artist=station_name,
-                    )
+                        fallback_title = country
             except Exception as e:
                 logger.error(f"Error fetching station data: {e}")
-        
-        # Return default response
+
+        # Step 2: Try to fetch ICY metadata from the stream
+        if stream_url:
+            icy_result = await fetch_icy_stream_title(stream_url)
+            if icy_result:
+                return NowPlayingResponse(
+                    station_id=station_id,
+                    title=icy_result.get('title', fallback_title),
+                    artist=icy_result.get('artist', station_name),
+                    song=icy_result.get('song'),
+                )
+
+        # Step 3: Fallback to genre/station info
         return NowPlayingResponse(
             station_id=station_id,
-            title="Live Radio",
-            artist="Unknown Artist",
+            title=fallback_title,
+            artist=station_name,
         )
-        
+
     except Exception as e:
         logger.error(f"Error in get_now_playing: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-async def fetch_stream_metadata(stream_url: str) -> Optional[dict]:
+
+async def fetch_icy_stream_title(stream_url: str) -> Optional[dict]:
     """
-    Attempt to fetch ICY metadata from a stream URL.
-    Only fetches headers, doesn't download the stream.
+    Connect to a radio stream with Icy-MetaData:1 header,
+    read enough bytes to extract the StreamTitle from ICY metadata.
     """
     try:
-        async with httpx.AsyncClient(timeout=3.0) as http_client:
-            # Use HEAD request first to avoid downloading stream
-            try:
-                response = await http_client.head(
-                    stream_url,
-                    headers={
-                        'Icy-MetaData': '1',
-                        'User-Agent': 'MegaRadio/1.0'
-                    },
-                    follow_redirects=True
-                )
-            except:
-                # Some servers don't support HEAD, try GET with stream
-                response = await http_client.get(
-                    stream_url,
-                    headers={
-                        'Icy-MetaData': '1',
-                        'User-Agent': 'MegaRadio/1.0',
-                        'Range': 'bytes=0-0'  # Only request first byte
-                    },
-                    follow_redirects=True
-                )
-            
-            # Check for ICY headers
-            icy_name = response.headers.get('icy-name')
-            icy_genre = response.headers.get('icy-genre')
-            icy_title = response.headers.get('icy-title')
-            
-            if icy_title:
-                # Parse "Artist - Song" format
-                parts = icy_title.split(' - ', 1)
-                if len(parts) == 2:
-                    return {
-                        'artist': parts[0].strip(),
-                        'song': parts[1].strip(),
-                        'title': icy_title
-                    }
-                return {'title': icy_title}
-            
-            if icy_name:
-                return {'title': icy_name, 'artist': icy_genre or 'Radio'}
-                
+        async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as http_client:
+            async with http_client.stream(
+                'GET',
+                stream_url,
+                headers={
+                    'Icy-MetaData': '1',
+                    'User-Agent': 'MegaRadio/1.0',
+                }
+            ) as response:
+                # Get the ICY metadata interval
+                metaint_str = response.headers.get('icy-metaint')
+                if not metaint_str:
+                    logger.debug(f"No icy-metaint header for {stream_url}")
+                    return None
+
+                metaint = int(metaint_str)
+                if metaint <= 0:
+                    return None
+
+                # Read metaint bytes of audio data + metadata block
+                buffer = b''
+                async for chunk in response.aiter_bytes(chunk_size=4096):
+                    buffer += chunk
+                    # We need metaint + 1 (length byte) + up to 4080 (max meta)
+                    if len(buffer) > metaint + 256:
+                        break
+
+                if len(buffer) <= metaint:
+                    return None
+
+                # The metadata starts right after metaint bytes of audio
+                meta_length_byte = buffer[metaint]
+                meta_length = meta_length_byte * 16
+
+                if meta_length == 0:
+                    return None
+
+                meta_start = metaint + 1
+                meta_end = meta_start + meta_length
+
+                if len(buffer) < meta_end:
+                    return None
+
+                metadata = buffer[meta_start:meta_end]
+                meta_str = metadata.decode('utf-8', errors='ignore').strip('\0')
+
+                # Parse StreamTitle='Artist - Title';
+                match = re.search(r"StreamTitle='([^']*)'", meta_str)
+                if match:
+                    stream_title = match.group(1).strip()
+                    if stream_title:
+                        # Try to split "Artist - Song"
+                        parts = stream_title.split(' - ', 1)
+                        if len(parts) == 2:
+                            return {
+                                'artist': parts[0].strip(),
+                                'song': parts[1].strip(),
+                                'title': stream_title,
+                            }
+                        return {'title': stream_title}
+
     except Exception as e:
-        logger.debug(f"Could not fetch stream metadata: {e}")
-    
+        logger.debug(f"ICY metadata fetch failed for {stream_url}: {e}")
+
     return None
 
 # Include the router in the main app
