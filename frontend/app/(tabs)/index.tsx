@@ -348,19 +348,19 @@ export default function HomeScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Radios Near You</Text>
             </View>
-            {/* Render rows of 3 items each - all rows use space-between */}
+            {/* Render rows of 3 items each */}
             {Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
-              <View key={`row-${rowIndex}`} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: GRID_GAP, width: '100%' }}>
+              <View key={`row-${rowIndex}`} style={{ flexDirection: 'row', gap: GRID_GAP, marginBottom: GRID_GAP, width: '100%' }}>
                 {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station) => (
                   <TouchableOpacity
                     key={`nearby-${station._id}-${rowIndex}`}
-                    style={{ width: GRID_ITEM_SIZE }}
+                    style={{ flex: 1 }}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={{ width: GRID_ITEM_SIZE, height: GRID_ITEM_SIZE, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
+                    <View style={{ width: '100%', aspectRatio: 1, borderRadius: 12, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
                       <Image 
                         source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={{ width: GRID_ITEM_SIZE, height: GRID_ITEM_SIZE }} 
+                        style={{ width: '100%', height: '100%' }} 
                         resizeMode="cover" 
                       />
                     </View>
@@ -373,7 +373,7 @@ export default function HomeScreen() {
                 {/* Fill empty slots if last row has less than 3 items */}
                 {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
                   Array.from({ length: 3 - popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                    <View key={`empty-nearby-${i}`} style={{ width: GRID_ITEM_SIZE }} />
+                    <View key={`empty-nearby-${i}`} style={{ flex: 1 }} />
                   ))
                 }
               </View>
