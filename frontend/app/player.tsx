@@ -104,8 +104,15 @@ export default function PlayerScreen() {
   };
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
-  const similarStations = similarData?.stations || similarData || [];
-  const recentStations = recentlyPlayedData || popularData || [];
+  
+  // Debug data
+  console.log('[Player] similarData:', similarData);
+  console.log('[Player] recentlyPlayedData:', recentlyPlayedData);
+  console.log('[Player] popularData:', popularData);
+  
+  const similarStations = similarData?.stations || (Array.isArray(similarData) ? similarData : []);
+  const recentStations = Array.isArray(recentlyPlayedData) ? recentlyPlayedData : 
+                         (popularData?.stations || (Array.isArray(popularData) ? popularData : []));
 
   // Get artist/song info
   const getArtistInfo = () => {
