@@ -199,54 +199,6 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Discoverable Genres Swiper */}
-          {discoverableGenresList.length > 0 && (
-            <FlatList
-              horizontal
-              data={discoverableGenresList}
-              keyExtractor={(item: any) => item._id}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.genreSwiperContainer}
-              renderItem={({ item: genre, index }) => {
-                // Color gradients for swiper items
-                const swiperGradients = [
-                  ['#5C27F4', '#9F3FFF'],
-                  ['#0066FF', '#00BFFF'],
-                  ['#FF6B6B', '#FF8E53'],
-                  ['#11998e', '#38ef7d'],
-                  ['#FC466B', '#3F5EFB'],
-                  ['#f953c6', '#b91d73'],
-                ];
-                const gradientColors = swiperGradients[index % swiperGradients.length];
-                
-                return (
-                  <TouchableOpacity 
-                    style={styles.genreSwiperItem}
-                    onPress={() => handleGenrePress(genre)}
-                  >
-                    <LinearGradient
-                      colors={gradientColors as any}
-                      start={{ x: 1, y: 0.5 }}
-                      end={{ x: 0, y: 0.5 }}
-                      style={styles.genreSwiperGradient}
-                    >
-                      <Image 
-                        source={{ uri: getGenreBannerImage(genre) }} 
-                        style={styles.genreSwiperImage}
-                        resizeMode="cover"
-                      />
-                      <View style={styles.genreSwiperContent}>
-                        <Text style={styles.genreSwiperTitle}>{genre.name}</Text>
-                        <Text style={styles.genreSwiperSubtitle}>{genre.stationCount || 0} stations</Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={24} color={colors.text} />
-                    </LinearGradient>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          )}
-
           {/* Genres Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
