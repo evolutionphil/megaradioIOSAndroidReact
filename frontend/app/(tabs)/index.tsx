@@ -44,10 +44,14 @@ export default function HomeScreen() {
   const { width: screenWidth } = useWindowDimensions();
   
   // Calculate grid item width dynamically with fallback
-  const effectiveScreenWidth = screenWidth > 0 ? screenWidth : 375; // Default to iPhone SE width
+  // For 375px screen: (375 - 30 - 16) / 3 = ~109px
+  const effectiveScreenWidth = screenWidth > 100 ? screenWidth : 375;
   const contentWidth = effectiveScreenWidth - (SIDE_PADDING * 2);
   const gridGap = 8;
   const gridItemWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
+  
+  // Debug: Log values
+  console.log('Screen Width:', screenWidth, 'Effective:', effectiveScreenWidth, 'Grid Item Width:', gridItemWidth);
 
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
