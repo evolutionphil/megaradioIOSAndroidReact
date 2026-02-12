@@ -30,11 +30,9 @@ export default function SearchScreen() {
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
-  // Debounced search with better error handling
-  useEffect(() => {
-    console.log('Query changed:', query);
-    
-    if (query.length < 2) {
+  // Manual search function
+  const performSearch = useCallback(async (searchQuery: string) => {
+    if (searchQuery.length < 2) {
       setResults([]);
       setHasSearched(false);
       setIsSearching(false);
@@ -42,27 +40,27 @@ export default function SearchScreen() {
     }
 
     setIsSearching(true);
-    const timer = setTimeout(async () => {
-      console.log('Timer fired, searching for:', query);
-      try {
-        const data = await stationService.searchStations(query, 30);
-        console.log('Search results received:', data?.length || 0);
-        setResults(data || []);
-        setHasSearched(true);
-      } catch (error: any) {
-        console.error('Search error:', error?.message || error);
-        setResults([]);
-        setHasSearched(true);
-      } finally {
-        setIsSearching(false);
-      }
-    }, 800); // Increased from 500ms
+    try {
+      const data = await stationService.searchStations(searchQuery, 30);
+      setResults(data || []);
+      setHasSearched(true);
+    } catch (error: any) {
+      console.error('Search error:', error?.message || error);
+      setResults([]);
+      setHasSearched(true);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
 
-    return () => {
-      console.log('Cleanup timer for query:', query);
-      clearTimeout(timer);
-    };
-  }, [query]);
+  // Handle query change with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      performSearch(query);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [query, performSearch]);
 
   const handleStationPress = (station: Station) => {
     playStation(station);
