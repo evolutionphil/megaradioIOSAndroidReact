@@ -827,16 +827,19 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 
-  // Users List - Full width
+  // Users List - Full width with specified dimensions
   usersList: {
     width: '100%',
   },
   userItem: {
+    width: '100%', // Will be 345px with 15px padding on each side from parent
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 8,
   },
   userAvatar: {
     width: 40,
