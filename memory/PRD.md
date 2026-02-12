@@ -22,72 +22,38 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Sticky Mini Player
 - [x] expo-av Audio Playback (Expo Go compatible, singleton AudioManager)
 - [x] Full-Screen Player UI (fullScreenModal presentation)
-  - Header: chevron down, HD badge, station name, car icon, menu
-  - Artwork: 190x190px with live indicator bar
-  - Now playing: animated dots, station name, genre/country info
-  - Spotify & YouTube buttons
-  - Main controls: timer, prev, play/pause, next, heart
-  - Secondary controls: share, headset, broadcast, REC button
-  - Recently Played section (Ubuntu-Bold font)
-  - Similar Radios section (from API)
 - [x] Car Mode Screen with Custom Carousel
-  - Custom-built carousel with PanResponder + absolute positioning (pixel-perfect Figma match)
-  - 5 overlapping cards: center 150px, adjacent 126px, far 96px (scaled to screen width)
-  - Purple glow shadow on cards (iOS: shadowColor #7B61FF, web: boxShadow)
-  - Z-ordering: center on top (zIndex: 10), adjacent behind (5), far (1)
-  - Auto-play on swipe via PanResponder gesture detection
-  - Animated equalizer bars (3 pink bars with height animation)
-  - Large control buttons (100px): Previous, Pause/Play, Next
-  - Volume: Mute button + Slider with pink (#FF4199) track
-  - REC button with red dot indicator
-  - Close button, Car Mode title (Ubuntu-Bold)
 - [x] Now Playing API with ICY Metadata
-  - Backend fetches actual song title from radio stream ICY metadata
-  - Fallback to genre/station info if ICY unavailable
-  - Parses StreamTitle='Artist - Song' format
+- [x] API Key Integration (X-API-Key header on all requests)
+- [x] Simulated Glow Effect (multi-layer View components for iOS blur simulation)
 
-### Session 3 Bug Fixes (Dec 2025)
-1. **Audio Atomicity Fix (P0)**: Completely rewrote `AudioManager.play()` method
-   - Now captures existing sound reference FIRST
-   - Clears internal references to prevent race conditions
-   - Calls stopAsync() and unloadAsync() on captured reference
-   - Only then creates new sound
-   - Verified: Console logs show "STOPPING existing stream → stopAsync completed → unloadAsync completed → Creating NEW sound"
+### Session 4 Bug Fixes (Feb 2026)
+1. **Audio Race Condition Fix (P0)**: Added `_playId` monotonic counter to `AudioManager.play()`.
+   - Each play() call increments `_playId` and checks it at two points: after stopping old sound, and after creating new sound.
+   - If a newer play() was called in the meantime, stale calls bail out and clean up orphaned sounds.
+   - Eliminates the multiple simultaneous streams bug.
 
-2. **Car Mode Carousel Logo Fix (P0)**: Fixed `StationCarousel` component
-   - Added `getStationAtPosition()` function to properly calculate station index for each carousel position
-   - Changed keys from `pos-${posIdx}` to `carousel-pos-${posIdx}-station-${station._id}`
-   - Verified: 3 different station logos now show (mangoradio.de, wdr.de, radioarabella.de)
+2. **Car Mode Frozen Station List (P0)**: Replaced `useMemo` with `useState` + `useRef` in `CarModeScreen.tsx`.
+   - Station list is frozen when Car Mode opens (`stationsInitRef` flag).
+   - Prevents re-ordering when playing a new station triggers similar-stations refetch.
+   - `displayedStation` computed from `stations[carouselIndex]` instead of global `currentStation`.
 
-3. **Car Mode SafeAreaView/Status Bar Fix (P1)**: Rewrote layout
-   - Removed SafeAreaView, using manual `paddingTop: statusBarHeight` (54px on iOS)
-   - Added `paddingBottom` for home indicator safe area
-   - Header "Car Mode" text and "Close" button now visible below status bar
-   - Added purple glow effect (`centerGlow` style) behind center carousel card
+3. **Player SafeArea Fix (P1)**: Replaced `SafeAreaView` with `useSafeAreaInsets()` in `player.tsx`.
+   - Applied `paddingTop: insets.top` to container View.
+   - Fixes content being hidden behind iOS status bar in fullScreenModal presentation.
 
-4. **Home Screen Glow Fix (P2)**: Updated background glow
-   - Changed size and position for better visibility
-   - Added proper iOS shadow for native glow effect
-   - Purple (#6B4EFF) with blur on web, shadowRadius on iOS
-
-5. **Stream Proxy Fix (P0)**: Updated `resolveStreamUrl` in useAudioPlayer
-   - Now proxies all streams except known working HTTPS sources
-   - Fixes iOS NSURLErrorDomain -1013 error from HTTPS→HTTP redirects
-   - Uses themegaradio.com proxy for HTTP and problematic HTTPS streams
-
-### Known Deprecation Warnings
-- expo-av deprecation warning (SDK 54 will remove it) - consider expo-audio migration
-- shadow* style props deprecation (use boxShadow)
-- textShadow* style props deprecation
-- props.pointerEvents deprecated (use style.pointerEvents)
-- Image tintColor deprecated (use props.tintColor)
+4. **Glow Effect Enlarged (P2)**: Increased glow container from 450px to 650px.
+   - 8 layered circles with opacity 0.04 to 0.17.
+   - Applied to both Home (`index.tsx`) and Discover (`discover.tsx`) screens.
 
 ## Key Files
-- `/app/frontend/app/player.tsx` - Full-screen player with extracted GridItem
-- `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with custom PanResponder carousel
-- `/app/frontend/src/hooks/useAudioPlayer.ts` - expo-av with singleton AudioManager (atomic playback)
+- `/app/frontend/src/hooks/useAudioPlayer.ts` - Audio singleton with race condition fix
+- `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with frozen station list
+- `/app/frontend/app/player.tsx` - Player with useSafeAreaInsets
+- `/app/frontend/app/(tabs)/index.tsx` - Home screen with enlarged glow
+- `/app/frontend/app/(tabs)/discover.tsx` - Discover with enlarged glow
+- `/app/frontend/src/services/api.ts` - Global Axios with X-API-Key
 - `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
-- `/app/frontend/app/_layout.tsx` - Root layout with fullScreenModal player
 - `/app/backend/server.py` - Now Playing API with ICY metadata
 
 ## API Endpoints
@@ -95,6 +61,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - `GET /api/stations/similar/{id}` - Similar stations
 - `POST /api/resolve-stream` - Resolve stream URL
 - `GET /api/now-playing/{station_id}` - Real ICY metadata from stream
+- **Note**: All endpoints require `X-API-Key: mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw` header
 
 ## Pending Tasks (P1)
 - [ ] Authentication flow (Login/Signup)
@@ -107,9 +74,14 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [ ] Skeleton loaders
 - [ ] i18n (i18next)
 
+## Known Issues
+- Web preview has CORS blocking (themegaradio.com doesn't allow preview domain). Not an issue on Expo Go.
+- expo-av deprecation warning (SDK 54 will remove it)
+- Recently Played blocked on auth implementation
+
 ## User Preferences
 - Language: Turkish
 - Priority: Pixel-perfect Figma design
 
 ## Last Updated
-December 2025 - Session 3
+February 2026 - Session 4
