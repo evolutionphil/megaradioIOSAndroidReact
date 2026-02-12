@@ -148,24 +148,29 @@ export default function PlayerScreen() {
     const stationLogo = getLogoUrl(station);
     return (
       <TouchableOpacity
-        style={{ width: 110, marginRight: 12, marginBottom: 16 }}
+        style={{ 
+          width: 110,
+          marginRight: 8,
+          marginBottom: 16,
+        }}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
       >
-        <View style={{ width: 110, height: 110, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1E1E1E', marginBottom: 8 }}>
-          {stationLogo ? (
-            <Image source={{ uri: stationLogo }} style={{ width: 110, height: 110 }} resizeMode="cover" />
-          ) : (
-            <View style={{ width: 110, height: 110, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2A2A2A' }}>
-              <Ionicons name="radio" size={24} color="#666" />
-            </View>
-          )}
-        </View>
-        <Text style={styles.gridStationName} numberOfLines={1}>
+        <Image 
+          source={{ uri: stationLogo || 'https://via.placeholder.com/110' }} 
+          style={{ 
+            width: 110, 
+            height: 110, 
+            borderRadius: 12,
+            backgroundColor: '#1E1E1E',
+          }} 
+          resizeMode="cover" 
+        />
+        <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF', marginTop: 6 }} numberOfLines={1}>
           {station.name}
         </Text>
-        <Text style={styles.gridStationLocation} numberOfLines={1}>
-          {station.country || 'Unknown'}, {station.state || 'Istanbul'}
+        <Text style={{ fontSize: 10, color: '#888888' }} numberOfLines={1}>
+          {station.country || 'Unknown'}
         </Text>
       </TouchableOpacity>
     );
