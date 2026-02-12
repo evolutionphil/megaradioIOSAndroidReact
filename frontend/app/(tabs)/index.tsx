@@ -404,23 +404,36 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Jazz Banner */}
-          <TouchableOpacity style={styles.jazzBanner} onPress={() => router.push('/discover?genre=jazz')}>
-            <LinearGradient
-              colors={['#0066FF', '#00BFFF'] as any}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.jazzGradient}
+          {/* Discoverable Genre Banner - Dynamic from API */}
+          {discoverableGenresList.length > 0 && (
+            <TouchableOpacity 
+              style={styles.jazzBanner} 
+              onPress={() => handleGenrePress(discoverableGenresList[0])}
             >
-              <View style={styles.jazzContent}>
-                <Text style={styles.jazzTitle}>Jazz</Text>
-                <Text style={styles.jazzSubtitle}>Discover all the stations</Text>
-              </View>
-              <View style={styles.jazzImage}>
-                <Ionicons name="musical-notes" size={40} color="rgba(255,255,255,0.5)" />
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+              <LinearGradient
+                colors={['#0066FF', '#00BFFF'] as any}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.jazzGradient}
+              >
+                <View style={styles.jazzContent}>
+                  <Text style={styles.jazzTitle}>{discoverableGenresList[0]?.name || 'Jazz'}</Text>
+                  <Text style={styles.jazzSubtitle}>Discover all the stations</Text>
+                </View>
+                {discoverableGenresList[0]?.discoverableImage ? (
+                  <Image 
+                    source={{ uri: `https://themegaradio.com${discoverableGenresList[0].discoverableImage}` }}
+                    style={styles.jazzBannerImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={styles.jazzImage}>
+                    <Ionicons name="musical-notes" size={40} color="rgba(255,255,255,0.5)" />
+                  </View>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
 
           {/* Favorites From Users - Real API data with specified dimensions */}
           <View style={styles.section}>
