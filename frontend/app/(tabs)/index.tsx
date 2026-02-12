@@ -737,15 +737,15 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - 3 columns using flexBasis
+  // Station Grid Custom - 3 columns with exact pixel calculation
   stationGridCustom: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   stationGridItem: {
-    flexBasis: '33.33%',
-    paddingRight: 8,
+    width: GRID_ITEM_WIDTH,
     marginBottom: 12,
   },
   stationGridLogo: {
