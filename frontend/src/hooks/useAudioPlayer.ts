@@ -1,18 +1,19 @@
 // useAudioPlayer - Uses expo-av for audio playback
 // Works in both Expo Go and web
+// IMPORTANT: Always stops current playback before starting new one
 
 import { useCallback, useRef, useEffect } from 'react';
-import { Platform } from 'react-native';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
 
+// Global sound reference to ensure only one sound plays at a time
+let globalSound: Audio.Sound | null = null;
+
 export const useAudioPlayer = () => {
-  const soundRef = useRef<Audio.Sound | null>(null);
   const listeningStartRef = useRef<Date | null>(null);
-  const isPlayingRef = useRef<boolean>(false);
 
   const {
     currentStation,
@@ -47,8 +48,9 @@ export const useAudioPlayer = () => {
 
     return () => {
       // Cleanup on unmount
-      if (soundRef.current) {
-        soundRef.current.unloadAsync().catch(() => {});
+      if (globalSound) {
+        globalSound.unloadAsync().catch(() => {});
+        globalSound = null;
       }
     };
   }, []);
@@ -68,11 +70,8 @@ export const useAudioPlayer = () => {
       setPlaybackState('buffering');
     } else if (status.isPlaying) {
       setPlaybackState('playing');
-      isPlayingRef.current = true;
     } else {
-      if (isPlayingRef.current) {
-        setPlaybackState('paused');
-      }
+      setPlaybackState('paused');
     }
   }, [setPlaybackState, setError]);
 
@@ -100,16 +99,25 @@ export const useAudioPlayer = () => {
     }
   }, []);
 
-  // Stop current playback
+  // STOP current playback - MUST be called before playing new station
   const stopPlayback = useCallback(async () => {
-    console.log('[useAudioPlayer] Stopping playback');
+    console.log('[useAudioPlayer] ===== STOPPING PLAYBACK =====');
     try {
-      if (soundRef.current) {
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
+      if (globalSound) {
+        console.log('[useAudioPlayer] Stopping and unloading current sound...');
+        try {
+          await globalSound.stopAsync();
+        } catch (e) {
+          console.log('[useAudioPlayer] Stop error (ignored):', e);
+        }
+        try {
+          await globalSound.unloadAsync();
+        } catch (e) {
+          console.log('[useAudioPlayer] Unload error (ignored):', e);
+        }
+        globalSound = null;
+        console.log('[useAudioPlayer] Sound stopped and unloaded');
       }
-      isPlayingRef.current = false;
 
       // Record listening time
       if (listeningStartRef.current && currentStation) {
@@ -131,26 +139,36 @@ export const useAudioPlayer = () => {
       }
 
       setPlaybackState('idle');
-      setMiniPlayerVisible(false);
     } catch (error) {
       console.error('[useAudioPlayer] Error stopping playback:', error);
     }
-  }, [currentStation, setPlaybackState, setMiniPlayerVisible]);
+  }, [currentStation, setPlaybackState]);
 
-  // Play a station
+  // Play a station - ALWAYS stops current playback first
   const playStation = useCallback(async (station: Station) => {
-    console.log('[useAudioPlayer] Playing station:', station.name);
+    console.log('[useAudioPlayer] ===== PLAYING NEW STATION =====');
+    console.log('[useAudioPlayer] Station:', station.name);
+    
     try {
-      // Stop current playback first
-      if (soundRef.current) {
-        console.log('[useAudioPlayer] Stopping previous playback');
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
+      // STEP 1: ALWAYS stop current playback first
+      console.log('[useAudioPlayer] Step 1: Stopping any current playback...');
+      if (globalSound) {
+        try {
+          await globalSound.stopAsync();
+        } catch (e) {
+          // Ignore
+        }
+        try {
+          await globalSound.unloadAsync();
+        } catch (e) {
+          // Ignore
+        }
+        globalSound = null;
       }
-      isPlayingRef.current = false;
+      console.log('[useAudioPlayer] Current playback stopped');
 
-      // Set station and loading state
+      // STEP 2: Set new station and loading state
+      console.log('[useAudioPlayer] Step 2: Setting up new station...');
       setCurrentStation(station);
       setPlaybackState('loading');
       setError(null);
@@ -163,7 +181,8 @@ export const useAudioPlayer = () => {
         // Non-critical
       }
 
-      // Resolve stream URL
+      // STEP 3: Resolve stream URL
+      console.log('[useAudioPlayer] Step 3: Resolving stream URL...');
       const url = await resolveStreamUrl(station);
       if (!url) {
         throw new Error('Could not resolve stream URL');
@@ -171,17 +190,17 @@ export const useAudioPlayer = () => {
       console.log('[useAudioPlayer] Stream URL:', url);
       setStreamUrl(url);
 
-      // Create and load sound
-      console.log('[useAudioPlayer] Creating sound...');
+      // STEP 4: Create and load NEW sound
+      console.log('[useAudioPlayer] Step 4: Creating new sound...');
       const { sound } = await Audio.Sound.createAsync(
         { uri: url },
         { shouldPlay: true, volume: 1.0 },
         onPlaybackStatusUpdate
       );
       
-      soundRef.current = sound;
+      globalSound = sound;
       listeningStartRef.current = new Date();
-      console.log('[useAudioPlayer] Sound created and playing');
+      console.log('[useAudioPlayer] ===== NEW STATION PLAYING =====');
 
       // Record recently played
       try {
@@ -213,10 +232,9 @@ export const useAudioPlayer = () => {
   // Pause playback
   const pause = useCallback(async () => {
     try {
-      if (soundRef.current) {
-        await soundRef.current.pauseAsync();
+      if (globalSound) {
+        await globalSound.pauseAsync();
         setPlaybackState('paused');
-        isPlayingRef.current = false;
       }
     } catch (error) {
       console.error('[useAudioPlayer] Error pausing:', error);
@@ -226,10 +244,9 @@ export const useAudioPlayer = () => {
   // Resume playback
   const resume = useCallback(async () => {
     try {
-      if (soundRef.current) {
-        await soundRef.current.playAsync();
+      if (globalSound) {
+        await globalSound.playAsync();
         setPlaybackState('playing');
-        isPlayingRef.current = true;
       }
     } catch (error) {
       console.error('[useAudioPlayer] Error resuming:', error);
@@ -248,8 +265,8 @@ export const useAudioPlayer = () => {
   // Set volume
   const setVolume = useCallback(async (volume: number) => {
     try {
-      if (soundRef.current) {
-        await soundRef.current.setVolumeAsync(volume);
+      if (globalSound) {
+        await globalSound.setVolumeAsync(volume);
       }
     } catch (error) {
       console.error('[useAudioPlayer] Error setting volume:', error);
