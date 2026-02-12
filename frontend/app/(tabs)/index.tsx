@@ -757,6 +757,32 @@ const styles = StyleSheet.create({
   stationGridItem: {
     marginBottom: 12,
   },
+  
+  // New Grid styles for larger cards and smaller gaps
+  gridRow: {
+    flexDirection: 'row',
+    width: '100%',
+    marginBottom: 8,
+  },
+  gridItem: {
+    flex: 1,
+  },
+  gridItemMargin: {
+    marginRight: 8,
+  },
+  gridImageContainer: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+    marginBottom: 6,
+  },
+  gridImage: {
+    width: '100%',
+    height: '100%',
+  },
+  
   stationGridLogo: {
     borderRadius: 10,
     backgroundColor: colors.surface,
