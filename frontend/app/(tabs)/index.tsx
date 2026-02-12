@@ -231,47 +231,55 @@ export default function HomeScreen() {
             )}
           </View>
 
-          {/* Recently Played - 3 Column Grid */}
+          {/* Recently Played */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Recently Played</Text>
             </View>
             {recentStations.length > 0 ? (
-              <View style={styles.stationGrid}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recentlyPlayedScroll}>
                 {recentStations.slice(0, 12).map((station: Station) => (
                   <TouchableOpacity
                     key={station._id}
-                    style={styles.gridItem}
+                    style={styles.recentlyPlayedItem}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={styles.gridLogo}>
-                      {renderStationLogo(station, GRID_ITEM_WIDTH - 8)}
+                    <View style={styles.recentlyPlayedLogo}>
+                      <Image 
+                        source={{ uri: getLogoUrl(station) || undefined }} 
+                        style={styles.recentlyPlayedLogoImage} 
+                        resizeMode="cover" 
+                      />
                     </View>
-                    <Text style={styles.gridName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.gridCountry} numberOfLines={1}>
+                    <Text style={styles.recentlyPlayedName} numberOfLines={1}>{station.name}</Text>
+                    <Text style={styles.recentlyPlayedCountry} numberOfLines={1}>
                       {station.country || 'Radio'}
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </View>
+              </ScrollView>
             ) : popularStations.length > 0 ? (
-              <View style={styles.stationGrid}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recentlyPlayedScroll}>
                 {popularStations.slice(0, 12).map((station: Station) => (
                   <TouchableOpacity
                     key={station._id}
-                    style={styles.gridItem}
+                    style={styles.recentlyPlayedItem}
                     onPress={() => handleStationPress(station)}
                   >
-                    <View style={styles.gridLogo}>
-                      {renderStationLogo(station, GRID_ITEM_WIDTH - 8)}
+                    <View style={styles.recentlyPlayedLogo}>
+                      <Image 
+                        source={{ uri: getLogoUrl(station) || undefined }} 
+                        style={styles.recentlyPlayedLogoImage} 
+                        resizeMode="cover" 
+                      />
                     </View>
-                    <Text style={styles.gridName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.gridCountry} numberOfLines={1}>
+                    <Text style={styles.recentlyPlayedName} numberOfLines={1}>{station.name}</Text>
+                    <Text style={styles.recentlyPlayedCountry} numberOfLines={1}>
                       {station.country || 'Radio'}
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </View>
+              </ScrollView>
             ) : (
               <Text style={styles.emptyText}>No recently played stations</Text>
             )}
