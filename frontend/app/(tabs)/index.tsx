@@ -749,11 +749,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    gap: GRID_GAP,
   },
   stationGridItem: {
-    width: '31%',
+    width: '32%',
+    marginRight: '2%',
     marginBottom: 12,
   },
   stationGridLogo: {
