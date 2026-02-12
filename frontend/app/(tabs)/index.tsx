@@ -269,50 +269,26 @@ export default function HomeScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Recently Played</Text>
             </View>
-            {recentStations.length > 0 ? (
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%' }}>
-                {recentStations.slice(0, 6).map((station: Station, index: number) => (
-                  <View
+            {recentStations.length > 0 || popularStations.length > 0 ? (
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 6).map((station: Station) => (
+                  <TouchableOpacity
                     key={station._id}
-                    style={{ width: 109, marginRight: (index + 1) % 3 !== 0 ? 8 : 0, marginBottom: 12 }}
+                    style={{ width: '31%', marginBottom: 12 }}
+                    onPress={() => handleStationPress(station)}
                   >
-                    <TouchableOpacity onPress={() => handleStationPress(station)}>
-                      <View style={{ width: 109, height: 109, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
-                        <Image 
-                          source={{ uri: getLogoUrl(station) || undefined }} 
-                          style={{ width: '100%', height: '100%' }} 
-                          resizeMode="cover" 
-                        />
-                      </View>
-                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.stationGridCountry} numberOfLines={1}>
-                        {station.country || 'Radio'}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-            ) : popularStations.length > 0 ? (
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%' }}>
-                {popularStations.slice(0, 6).map((station: Station, index: number) => (
-                  <View
-                    key={station._id}
-                    style={{ width: 109, marginRight: (index + 1) % 3 !== 0 ? 8 : 0, marginBottom: 12 }}
-                  >
-                    <TouchableOpacity onPress={() => handleStationPress(station)}>
-                      <View style={{ width: 109, height: 109, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
-                        <Image 
-                          source={{ uri: getLogoUrl(station) || undefined }} 
-                          style={{ width: '100%', height: '100%' }} 
-                          resizeMode="cover" 
-                        />
-                      </View>
-                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.stationGridCountry} numberOfLines={1}>
-                        {station.country || 'Radio'}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                    <View style={{ width: '100%', aspectRatio: 1, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                      <Image 
+                        source={{ uri: getLogoUrl(station) || undefined }} 
+                        style={{ width: '100%', height: '100%' }} 
+                        resizeMode="cover" 
+                      />
+                    </View>
+                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                    <Text style={styles.stationGridCountry} numberOfLines={1}>
+                      {station.country || 'Radio'}
+                    </Text>
+                  </TouchableOpacity>
                 ))}
               </View>
             ) : (
