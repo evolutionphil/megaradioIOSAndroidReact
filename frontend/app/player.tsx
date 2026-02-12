@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
@@ -24,7 +23,10 @@ import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_SIZE = 190;
-const GRID_ITEM_SIZE = 100;
+// Calculate grid item width for 3 columns with proper spacing
+const GRID_PADDING = 16;
+const GRID_GAP = 12;
+const GRID_ITEM_WIDTH = Math.floor((SCREEN_WIDTH - (GRID_PADDING * 2) - (GRID_GAP * 2)) / 3);
 
 // Country code to flag emoji mapping
 const getCountryFlag = (countryCode?: string): string => {
@@ -34,13 +36,10 @@ const getCountryFlag = (countryCode?: string): string => {
     'DE': '🇩🇪', 'TR': '🇹🇷', 'US': '🇺🇸', 'GB': '🇬🇧', 'FR': '🇫🇷',
     'ES': '🇪🇸', 'IT': '🇮🇹', 'NL': '🇳🇱', 'BE': '🇧🇪', 'AT': '🇦🇹',
     'CH': '🇨🇭', 'PL': '🇵🇱', 'RU': '🇷🇺', 'JP': '🇯🇵', 'KR': '🇰🇷',
-    'CN': '🇨🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'CA': '🇨🇦', 'AU': '🇦🇺',
-    'IN': '🇮🇳', 'SA': '🇸🇦', 'AE': '🇦🇪', 'EG': '🇪🇬', 'ZA': '🇿🇦',
     'GERMANY': '🇩🇪', 'TURKEY': '🇹🇷', 'UNITED STATES': '🇺🇸',
-    'UNITED KINGDOM': '🇬🇧', 'FRANCE': '🇫🇷', 'SPAIN': '🇪🇸',
     'HUNGARY': '🇭🇺', 'HU': '🇭🇺',
   };
-  return flags[code] || flags[countryCode.toUpperCase()] || '🌍';
+  return flags[code] || '🌍';
 };
 
 export default function PlayerScreen() {
@@ -52,16 +51,11 @@ export default function PlayerScreen() {
     nowPlaying,
   } = usePlayerStore();
 
-  const { playStation, togglePlayPause } = useAudioPlayer();
+  const { playStation, togglePlayPause, stopPlayback } = useAudioPlayer();
   
   // Fetch similar stations based on current station ID
-  const { data: similarData, isLoading: similarLoading } = useSimilarStations(
-    currentStation?._id || '', 
-    9
-  );
-  
-  // Fetch popular stations as fallback
-  const { data: popularData, isLoading: popularLoading } = usePopularStations(undefined, 12);
+  const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
+  const { data: popularData } = usePopularStations(undefined, 12);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [checkingFavorite, setCheckingFavorite] = useState(false);
@@ -111,47 +105,47 @@ export default function PlayerScreen() {
     }
   };
 
-  // Handle station press without causing re-renders
-  const handleStationPress = (station: Station) => {
+  // Handle station press - stop current and play new
+  const handleStationPress = useCallback(async (station: Station) => {
     if (station._id !== currentStation?._id) {
+      // Stop current playback first
+      await stopPlayback();
+      // Play new station
       playStation(station);
     }
-  };
+  }, [currentStation?._id, stopPlayback, playStation]);
 
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
   const isPlaying = playbackState === 'playing';
 
-  const getLogoUrl = (station: Station) => {
+  const getLogoUrl = useCallback((station: Station) => {
     if (station.logoAssets?.webp192) {
       return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp192}`;
     }
     return station.favicon || station.logo || null;
-  };
+  }, []);
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
   
-  // Memoize stations to prevent unnecessary re-renders
+  // Memoize stations
   const popularStations = useMemo(() => {
     return popularData?.stations || (Array.isArray(popularData) ? popularData : []);
   }, [popularData]);
   
   const similarStations = useMemo(() => {
     const similar = similarData?.stations || (Array.isArray(similarData) ? similarData : []);
-    // Filter out current station from similar
     return similar.filter((s: Station) => s._id !== currentStation?._id);
   }, [similarData, currentStation?._id]);
   
-  // Use similar stations if available, otherwise use popular
   const displaySimilarStations = useMemo(() => {
     if (similarStations.length > 0) return similarStations;
     return popularStations.filter((s: Station) => s._id !== currentStation?._id);
   }, [similarStations, popularStations, currentStation?._id]);
 
-  // Get artist/song info
   const getArtistInfo = () => {
     if (nowPlaying?.artist) return nowPlaying.artist;
     if (currentStation?.genres?.[0]) return currentStation.genres[0];
-    return currentStation?.country || 'Radio';
+    return 'Unknown Artist';
   };
 
   if (!currentStation) {
@@ -173,48 +167,48 @@ export default function PlayerScreen() {
     );
   }
 
-  // Station Grid Item Component - Memoized to prevent re-renders
+  // Station Grid Item Component
   const StationGridItem = React.memo(({ station }: { station: Station }) => {
     const stationLogo = getLogoUrl(station);
-    const flag = getCountryFlag(station.countrycode || station.country);
     
     return (
-      <View style={styles.gridItemContainer}>
-        <TouchableOpacity
-          onPress={() => handleStationPress(station)}
-          activeOpacity={0.7}
-        >
-          <View style={styles.gridImageWrapper}>
+      <TouchableOpacity
+        style={styles.gridItem}
+        onPress={() => handleStationPress(station)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.gridImageWrapper}>
+          {stationLogo ? (
             <Image 
-              source={{ uri: stationLogo || 'https://via.placeholder.com/100' }} 
+              source={{ uri: stationLogo }} 
               style={styles.gridImage}
               resizeMode="cover" 
             />
-            {/* Country flag badge */}
-            <View style={styles.flagBadge}>
-              <Text style={styles.flagText}>{flag}</Text>
+          ) : (
+            <View style={[styles.gridImage, styles.gridPlaceholder]}>
+              <Ionicons name="radio" size={24} color="#666" />
             </View>
-          </View>
-          <Text style={styles.gridStationName} numberOfLines={1}>
-            {station.name}
-          </Text>
-          <Text style={styles.gridStationLocation} numberOfLines={1}>
-            {station.country || 'Unknown'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+          )}
+        </View>
+        <Text style={styles.gridStationName} numberOfLines={1}>
+          {station.name}
+        </Text>
+        <Text style={styles.gridStationLocation} numberOfLines={1}>
+          Turkey, Istanbul
+        </Text>
+      </TouchableOpacity>
     );
   });
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header with blur */}
+          {/* Header */}
           <View style={styles.headerContainer}>
             {Platform.OS !== 'web' ? (
               <BlurView intensity={25} tint="dark" style={styles.headerBlur}>
@@ -263,7 +257,7 @@ export default function PlayerScreen() {
             )}
           </View>
 
-          {/* Album Art with Country Flag - Fixed 190x190 */}
+          {/* Album Art */}
           <View style={styles.artworkContainer}>
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
@@ -277,11 +271,9 @@ export default function PlayerScreen() {
                   <Ionicons name="radio" size={80} color="#666" />
                 </View>
               )}
-              {/* Country flag badge on artwork */}
-              <View style={styles.artworkFlagBadge}>
-                <Text style={styles.artworkFlagText}>
-                  {getCountryFlag(currentStation.countrycode || currentStation.country)}
-                </Text>
+              {/* Live indicator bar */}
+              <View style={styles.liveIndicator}>
+                <View style={styles.liveIndicatorBar} />
               </View>
             </View>
           </View>
@@ -300,30 +292,27 @@ export default function PlayerScreen() {
             {/* Spotify & YouTube icons */}
             <View style={styles.socialIcons}>
               <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
-                <Ionicons name="musical-notes" size={16} color="#FFFFFF" />
+                <Ionicons name="logo-spotify" size={18} color="#FFFFFF" />
               </TouchableOpacity>
               <TouchableOpacity style={[styles.socialButton, styles.youtubeButton]}>
-                <Ionicons name="play-circle" size={16} color="#FFFFFF" />
+                <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
-            
-            {/* Divider line */}
-            <View style={styles.divider} />
           </View>
 
           {/* Main Controls */}
           <View style={styles.mainControls}>
             {/* Timer */}
             <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="time-outline" size={28} color="#AAAAAA" />
+              <Ionicons name="time-outline" size={28} color="#888888" />
             </TouchableOpacity>
             
             {/* Previous */}
             <TouchableOpacity style={styles.skipButton}>
-              <Ionicons name="play-skip-back" size={28} color="#FFFFFF" />
+              <Ionicons name="play-skip-back" size={24} color="#FFFFFF" />
             </TouchableOpacity>
             
-            {/* Play/Pause */}
+            {/* Play/Pause - Large button */}
             <TouchableOpacity
               style={styles.playPauseButton}
               onPress={togglePlayPause}
@@ -332,15 +321,15 @@ export default function PlayerScreen() {
               {isLoading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
               ) : isPlaying ? (
-                <Ionicons name="pause" size={36} color="#FFFFFF" />
+                <Ionicons name="pause" size={40} color="#FFFFFF" />
               ) : (
-                <Ionicons name="play" size={36} color="#FFFFFF" style={{ marginLeft: 4 }} />
+                <Ionicons name="play" size={40} color="#FFFFFF" style={{ marginLeft: 4 }} />
               )}
             </TouchableOpacity>
             
             {/* Next */}
             <TouchableOpacity style={styles.skipButton}>
-              <Ionicons name="play-skip-forward" size={28} color="#FFFFFF" />
+              <Ionicons name="play-skip-forward" size={24} color="#FFFFFF" />
             </TouchableOpacity>
             
             {/* Heart */}
@@ -349,33 +338,37 @@ export default function PlayerScreen() {
               onPress={handleToggleFavorite}
               disabled={checkingFavorite}
             >
-              {checkingFavorite ? (
-                <ActivityIndicator size="small" color="#AAAAAA" />
-              ) : (
-                <Ionicons 
-                  name={isFavorite ? 'heart' : 'heart-outline'} 
-                  size={28} 
-                  color={isFavorite ? '#FF4757' : '#AAAAAA'} 
-                />
-              )}
+              <Ionicons 
+                name={isFavorite ? 'heart' : 'heart-outline'} 
+                size={28} 
+                color={isFavorite ? '#FF4757' : '#888888'} 
+              />
             </TouchableOpacity>
           </View>
 
           {/* Secondary Controls */}
           <View style={styles.secondaryControls}>
             <View style={styles.leftSecondaryControls}>
+              {/* Share */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="share-social-outline" size={24} color="#AAAAAA" />
+                <Ionicons name="share-social-outline" size={24} color="#888888" />
               </TouchableOpacity>
+              {/* Headset/Lock */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="headset-outline" size={24} color="#AAAAAA" />
+                <Ionicons name="lock-closed-outline" size={24} color="#888888" />
               </TouchableOpacity>
+              {/* Broadcast */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="radio-outline" size={24} color="#AAAAAA" />
+                <Ionicons name="radio-outline" size={24} color="#888888" />
               </TouchableOpacity>
             </View>
+            {/* REC Button */}
             <TouchableOpacity style={styles.recButton}>
-              <View style={styles.recDot} />
+              <View style={styles.recIconWrapper}>
+                <View style={styles.recDotOuter}>
+                  <View style={styles.recDotInner} />
+                </View>
+              </View>
               <Text style={styles.recText}>REC</Text>
             </TouchableOpacity>
           </View>
@@ -393,15 +386,11 @@ export default function PlayerScreen() {
           {/* Similar Radios Section */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Similar Radios</Text>
-            {similarLoading ? (
-              <ActivityIndicator size="small" color="#FFFFFF" style={{ marginTop: 20 }} />
-            ) : (
-              <View style={styles.stationGrid}>
-                {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
-                  <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
-                ))}
-              </View>
-            )}
+            <View style={styles.stationGrid}>
+              {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
+                <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
+              ))}
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -412,7 +401,7 @@ export default function PlayerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A1A1F',
+    backgroundColor: '#0D1B1E',
   },
   safeArea: {
     flex: 1,
@@ -424,11 +413,10 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  // Header with blur
+  // Header
   headerContainer: {
     width: '100%',
-    height: 107,
-    marginBottom: 8,
+    height: 60,
   },
   headerBlur: {
     flex: 1,
@@ -447,7 +435,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    opacity: 0.9,
   },
   headerButton: {
     width: 40,
@@ -481,7 +468,7 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
   },
   headerIcon: {
     width: 36,
@@ -490,16 +477,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // Artwork - Fixed 190x190
+  // Artwork
   artworkContainer: {
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 20,
     marginBottom: 16,
   },
   artworkWrapper: {
     width: LOGO_SIZE,
     height: LOGO_SIZE,
-    borderRadius: 20,
+    borderRadius: 16,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
     position: 'relative',
@@ -515,42 +502,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  artworkFlagBadge: {
+  liveIndicator: {
     position: 'absolute',
-    bottom: 8,
-    right: 8,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    bottom: 12,
+    right: 12,
   },
-  artworkFlagText: {
-    fontSize: 18,
+  liveIndicatorBar: {
+    width: 40,
+    height: 6,
+    backgroundColor: '#FF3B30',
+    borderRadius: 3,
   },
 
   // Now Playing
   nowPlayingSection: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
     paddingHorizontal: 20,
   },
   animatedDots: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 6,
     marginBottom: 8,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   dotPink: {
-    backgroundColor: '#FF69B4',
+    backgroundColor: '#FF4D8D',
   },
   stationName: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 4,
@@ -558,18 +542,18 @@ const styles = StyleSheet.create({
   },
   artistName: {
     fontSize: 16,
-    color: '#AAAAAA',
-    marginBottom: 12,
+    color: '#888888',
+    marginBottom: 16,
     textAlign: 'center',
   },
   socialIcons: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 16,
   },
   socialButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -579,56 +563,38 @@ const styles = StyleSheet.create({
   youtubeButton: {
     backgroundColor: '#FF0000',
   },
-  divider: {
-    width: '80%',
-    height: 1,
-    backgroundColor: '#2D2D2D',
-    marginTop: 16,
-  },
 
   // Main Controls
   mainControls: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginVertical: 16,
+    paddingHorizontal: 24,
+    marginBottom: 20,
   },
   controlButton: {
-    width: 50,
-    height: 50,
+    width: 56,
+    height: 56,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  controlIcon: {
-    width: 28,
-    height: 28,
   },
   skipButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#3A3A3C',
+    backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 8,
-  },
-  skipIcon: {
-    width: 32,
-    height: 32,
   },
   playPauseButton: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    backgroundColor: '#3A3A3C',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#3A3A3A',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 8,
-  },
-  playPauseIcon: {
-    width: 40,
-    height: 40,
+    marginHorizontal: 12,
   },
 
   // Secondary Controls
@@ -637,11 +603,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginBottom: 28,
+    marginBottom: 32,
   },
   leftSecondaryControls: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 24,
   },
   secondaryButton: {
     width: 44,
@@ -652,77 +618,80 @@ const styles = StyleSheet.create({
   recButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
-  recDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#FF3B30',
+  recIconWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  recDotOuter: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#FF6B6B',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  recDotInner: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#FF6B6B',
   },
   recText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
   },
 
   // Sections
   section: {
-    paddingHorizontal: 16,
+    paddingHorizontal: GRID_PADDING,
     marginBottom: 24,
   },
   sectionTitle: {
-    fontFamily: Platform.OS === 'ios' ? 'Ubuntu' : 'sans-serif',
     fontSize: 18,
     fontWeight: '700',
+    fontStyle: 'italic',
     color: '#FFFFFF',
     marginBottom: 16,
   },
   stationGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
 
   // Grid Items
-  gridItemContainer: {
-    width: GRID_ITEM_SIZE,
-    marginRight: 10,
+  gridItem: {
+    width: GRID_ITEM_WIDTH,
     marginBottom: 16,
   },
   gridImageWrapper: {
-    width: GRID_ITEM_SIZE,
-    height: GRID_ITEM_SIZE,
+    width: GRID_ITEM_WIDTH,
+    height: GRID_ITEM_WIDTH,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
     marginBottom: 8,
-    position: 'relative',
   },
   gridImage: {
-    width: GRID_ITEM_SIZE,
-    height: GRID_ITEM_SIZE,
+    width: '100%',
+    height: '100%',
   },
-  flagBadge: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+  gridPlaceholder: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  flagText: {
-    fontSize: 12,
+    backgroundColor: '#2A2A2A',
   },
   gridStationName: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
   },
   gridStationLocation: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#888888',
     marginTop: 2,
   },
