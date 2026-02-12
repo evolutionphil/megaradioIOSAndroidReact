@@ -381,29 +381,48 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Discoverable Genre Banner - Dynamic from API */}
+          {/* Discoverable Genres Swiper - Horizontal Carousel */}
           {discoverableGenresList.length > 0 && (
-            <TouchableOpacity 
-              style={styles.jazzBanner} 
-              onPress={() => handleGenrePress(discoverableGenresList[0])}
-            >
-              <LinearGradient
-                colors={['#0066FF', '#00BFFF'] as any}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.jazzGradient}
-              >
-                <View style={styles.jazzContent}>
-                  <Text style={styles.jazzTitle}>{discoverableGenresList[0]?.name || 'Jazz'}</Text>
-                  <Text style={styles.jazzSubtitle}>Discover all the stations</Text>
-                </View>
-                <Image 
-                  source={{ uri: getGenreBannerImage(discoverableGenresList[0]) }}
-                  style={styles.jazzBannerImage}
-                  resizeMode="cover"
-                />
-              </LinearGradient>
-            </TouchableOpacity>
+            <FlatList
+              horizontal
+              data={discoverableGenresList}
+              keyExtractor={(item: any) => item._id}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING, gap: 12, marginBottom: spacing.lg }}
+              renderItem={({ item: genre, index }) => {
+                const gradientColors = [
+                  ['#0066FF', '#00BFFF'],
+                  ['#5C27F4', '#9F3FFF'],
+                  ['#FF6B6B', '#FF8E53'],
+                  ['#11998e', '#38ef7d'],
+                  ['#FC466B', '#3F5EFB'],
+                ][index % 5];
+                
+                return (
+                  <TouchableOpacity 
+                    style={styles.discoverableBannerItem}
+                    onPress={() => handleGenrePress(genre)}
+                  >
+                    <LinearGradient
+                      colors={gradientColors as any}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.discoverableBannerGradient}
+                    >
+                      <View style={styles.discoverableBannerContent}>
+                        <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
+                        <Text style={styles.discoverableBannerSubtitle}>Discover all the stations</Text>
+                      </View>
+                      <Image 
+                        source={{ uri: getGenreBannerImage(genre) }}
+                        style={styles.discoverableBannerImage}
+                        resizeMode="cover"
+                      />
+                    </LinearGradient>
+                  </TouchableOpacity>
+                );
+              }}
+            />
           )}
 
           {/* Favorites From Users - Real API data with specified dimensions */}
