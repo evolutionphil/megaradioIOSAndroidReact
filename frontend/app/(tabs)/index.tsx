@@ -115,11 +115,17 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background Gradient Blur */}
+      {/* Background Gradient Blur - Platform-aware implementation */}
       <View style={styles.bgGradientContainer}>
-        <View style={styles.bgGradientInner}>
+        <BlurView 
+          style={styles.bgGradientInner}
+          blurColor="#3300FF4D"
+          blurAmount={205}
+          intensity={80}
+          tint="dark"
+        >
           <View style={styles.bgGradient} />
-        </View>
+        </BlurView>
       </View>
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
