@@ -732,16 +732,15 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - 3 columns with space between
+  // Station Grid Custom - 3 columns with fixed gap
   stationGridCustom: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    rowGap: 15,
+    gap: 8,
   },
   stationGridItem: {
-    width: '31%',
+    width: '31.5%',
   },
   stationGridLogo: {
     width: '100%',
