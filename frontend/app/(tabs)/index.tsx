@@ -33,7 +33,6 @@ import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
 import type { Station, Genre } from '../../src/types';
-import { BlurView } from '../../src/components/common/BlurView';
 
 // Fixed padding for all elements - same as Jazz banner
 const SIDE_PADDING = 15;
