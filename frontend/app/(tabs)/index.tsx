@@ -898,13 +898,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
   },
 
-  // Discoverable Genres - Centered with fixed width
+  // Discoverable Genres - Full width
   discoverableGenresContainer: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
   },
   discoverableGenreCard: {
-    width: CONTENT_WIDTH,
+    width: '100%',
     height: 119,
     borderRadius: 5,
     overflow: 'hidden',
