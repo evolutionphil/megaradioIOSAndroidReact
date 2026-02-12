@@ -12,6 +12,7 @@ import {
   Animated,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
@@ -405,18 +406,14 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
         {/* ── Volume: Mute | Slider ────── */}
         <View style={styles.volumeRow}>
           <TouchableOpacity style={styles.muteBtn} onPress={handleMuteToggle} data-testid="car-mode-mute-btn">
-            <View style={styles.speakerGroup}>
-              <View style={styles.speakerRect} />
-              <View style={styles.speakerCone} />
-              {isMuted && <Text style={styles.muteX}>x</Text>}
-            </View>
+            <Ionicons
+              name={isMuted ? 'volume-mute' : 'volume-off'}
+              size={28 * S}
+              color="#FFF"
+            />
           </TouchableOpacity>
           <View style={styles.volumeBox}>
-            <View style={styles.speakerGroupSm}>
-              <View style={styles.speakerRectSm} />
-              <View style={styles.speakerConeSm} />
-              <View style={styles.soundWave} />
-            </View>
+            <Ionicons name="volume-high" size={20 * S} color="#FFF" />
             <Slider
               style={styles.slider}
               minimumValue={0}
@@ -544,14 +541,7 @@ const styles = StyleSheet.create({
   volumeBox: { flex: 1, height: 56 * S, borderRadius: BR, backgroundColor: '#282828', flexDirection: 'row', alignItems: 'center', paddingLeft: 10 * S, paddingRight: 6 * S },
   slider: { flex: 1, height: 40 * S, marginLeft: 4 * S },
 
-  speakerGroup: { flexDirection: 'row', alignItems: 'center' },
-  speakerRect: { width: 10 * S, height: 12 * S, backgroundColor: '#FFF', borderRadius: 1 },
-  speakerCone: { width: 0, height: 0, borderTopWidth: 10 * S, borderBottomWidth: 10 * S, borderLeftWidth: 10 * S, borderTopColor: 'transparent', borderBottomColor: 'transparent', borderLeftColor: '#FFF' },
-  muteX: { color: '#FFF', fontSize: 14 * S, fontWeight: '700', marginLeft: 2 },
-  speakerGroupSm: { flexDirection: 'row', alignItems: 'center' },
-  speakerRectSm: { width: 8 * S, height: 10 * S, backgroundColor: '#FFF', borderRadius: 1 },
-  speakerConeSm: { width: 0, height: 0, borderTopWidth: 7 * S, borderBottomWidth: 7 * S, borderLeftWidth: 7 * S, borderTopColor: 'transparent', borderBottomColor: 'transparent', borderLeftColor: '#FFF' },
-  soundWave: { width: 5 * S, height: 10 * S, borderWidth: 2, borderLeftWidth: 0, borderColor: '#FFF', borderTopRightRadius: 6, borderBottomRightRadius: 6, marginLeft: 2 * S },
+  // Speaker icon styles removed - using Ionicons instead
 
   recRow: { alignItems: 'center', paddingBottom: 8 * S },
   recBtn: { flexDirection: 'row', alignItems: 'center', gap: 10 * S },
