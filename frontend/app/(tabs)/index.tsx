@@ -897,4 +897,45 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: spacing.lg,
   },
+
+  // Discoverable Genres - width: 345, height: 119, border-radius: 5px
+  discoverableGenresContainer: {
+    paddingHorizontal: HORIZONTAL_PADDING,
+  },
+  discoverableGenreCard: {
+    width: CONTENT_WIDTH,
+    height: 119,
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginBottom: 12,
+    position: 'relative',
+  },
+  discoverableGenreImage: {
+    width: '100%',
+    height: '100%',
+  },
+  discoverableGenrePlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  discoverableGenreOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 12,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  discoverableGenreName: {
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+  },
+  discoverableGenreCount: {
+    fontSize: typography.sizes.sm,
+    color: 'rgba(255,255,255,0.8)',
+  },
 });
