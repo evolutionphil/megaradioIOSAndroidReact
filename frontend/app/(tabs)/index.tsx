@@ -103,6 +103,11 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Background Gradient Blur */}
+      <View style={styles.bgGradientContainer}>
+        <View style={styles.bgGradient} />
+      </View>
+      
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <ScrollView
           style={styles.scrollView}
