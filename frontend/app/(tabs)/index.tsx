@@ -518,27 +518,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
 
-  // Premium Banner
+  // Premium Banner - Updated with exact dimensions
   premiumBanner: {
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.md,
-    borderRadius: borderRadius.lg,
+    marginLeft: 15,
+    width: 345,
+    height: 54,
+    borderRadius: 5,
     overflow: 'hidden',
+    marginBottom: spacing.md,
   },
   premiumGradient: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 12,
   },
-  premiumIcon: {
+  premiumIconImage: {
     width: 36,
     height: 36,
-    borderRadius: borderRadius.sm,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.sm,
+    marginRight: 10,
   },
   premiumContent: {
     flex: 1,
