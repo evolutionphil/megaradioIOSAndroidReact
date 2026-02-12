@@ -161,16 +161,26 @@ export default function PlayerScreen() {
     const stationLogo = getLogoUrl(station);
     const flag = getCountryFlag(station.countrycode || station.country);
     
+    const gridImageStyle = Platform.OS === 'web' ? {
+      width: '100px',
+      height: '100px',
+      objectFit: 'cover' as const,
+    } : {
+      width: 100,
+      height: 100,
+    };
+    
     return (
-      <View style={{ width: 100, maxWidth: 100, marginRight: 10, marginBottom: 16 }}>
+      <View style={{ width: 100, marginRight: 10, marginBottom: 16, flexShrink: 0, flexGrow: 0 }}>
         <TouchableOpacity
           onPress={() => handleStationPress(station)}
           activeOpacity={0.7}
         >
-          <View style={{ width: 100, height: 100, maxWidth: 100, maxHeight: 100, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1E1E1E', marginBottom: 8, position: 'relative' }}>
+          <View style={{ width: 100, height: 100, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1E1E1E', marginBottom: 8, position: 'relative' }}>
             <Image 
               source={{ uri: stationLogo || 'https://via.placeholder.com/100' }} 
-              style={{ width: 100, height: 100, maxWidth: 100, maxHeight: 100 }}
+              // @ts-ignore - web specific styles
+              style={gridImageStyle}
               resizeMode="cover" 
             />
             {/* Country flag badge */}
