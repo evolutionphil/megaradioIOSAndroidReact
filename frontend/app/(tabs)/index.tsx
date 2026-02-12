@@ -744,15 +744,16 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - 3 columns with exact pixel calculation
+  // Station Grid Custom - 3 columns with percentage-based width for reliability
   stationGridCustom: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: GRID_GAP,
   },
   stationGridItem: {
-    width: GRID_ITEM_WIDTH,
+    width: '31%',
     marginBottom: 12,
   },
   stationGridLogo: {
