@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, borderRadius, spacing, typography, shadows } from '../constants/theme';
+import { colors, borderRadius, spacing, typography, shadows, gradients } from '../constants/theme';
 import type { Station } from '../types';
 
 interface StationCardProps {
@@ -10,6 +11,7 @@ interface StationCardProps {
   isPlaying?: boolean;
   isLoading?: boolean;
   style?: object;
+  variant?: 'default' | 'compact' | 'large';
 }
 
 export const StationCard: React.FC<StationCardProps> = ({
@@ -18,8 +20,73 @@ export const StationCard: React.FC<StationCardProps> = ({
   isPlaying = false,
   isLoading = false,
   style,
+  variant = 'default',
 }) => {
   const logoUrl = station.logoAssets?.webp96 || station.favicon || station.logo;
+
+  if (variant === 'large') {
+    return (
+      <TouchableOpacity
+        style={[styles.largeContainer, style]}
+        onPress={() => onPress(station)}
+        activeOpacity={0.8}
+      >
+        <LinearGradient
+          colors={gradients.cardElevated as any}
+          style={styles.largeGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
+          <View style={styles.largeLogo}>
+            {logoUrl ? (
+              <Image source={{ uri: logoUrl }} style={styles.largeLogoImage} resizeMode="cover" />
+            ) : (
+              <View style={styles.largePlaceholder}>
+                <Ionicons name="radio" size={40} color={colors.textMuted} />
+              </View>
+            )}
+            {isPlaying && !isLoading && (
+              <View style={styles.largePlayingIndicator}>
+                <Ionicons name="volume-high" size={16} color={colors.text} />
+              </View>
+            )}
+          </View>
+          <Text style={styles.largeName} numberOfLines={1}>{station.name}</Text>
+          <Text style={styles.largeCountry} numberOfLines={1}>
+            {station.country || 'Radio'}
+          </Text>
+          <TouchableOpacity style={[styles.largePlayBtn, isPlaying && styles.playBtnActive]}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color={colors.text} />
+            ) : (
+              <Ionicons name={isPlaying ? 'pause' : 'play'} size={18} color={colors.text} />
+            )}
+          </TouchableOpacity>
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  }
+
+  if (variant === 'compact') {
+    return (
+      <TouchableOpacity
+        style={[styles.compactContainer, isPlaying && styles.compactActive, style]}
+        onPress={() => onPress(station)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.compactLogo}>
+          {logoUrl ? (
+            <Image source={{ uri: logoUrl }} style={styles.compactLogoImage} resizeMode="cover" />
+          ) : (
+            <View style={styles.compactPlaceholder}>
+              <Ionicons name="radio" size={16} color={colors.textMuted} />
+            </View>
+          )}
+        </View>
+        <Text style={styles.compactName} numberOfLines={1}>{station.name}</Text>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <TouchableOpacity
@@ -36,12 +103,16 @@ export const StationCard: React.FC<StationCardProps> = ({
           />
         ) : (
           <View style={styles.placeholderLogo}>
-            <Ionicons name="radio" size={28} color={colors.textMuted} />
+            <Ionicons name="radio" size={24} color={colors.textMuted} />
           </View>
         )}
         {isPlaying && !isLoading && (
-          <View style={styles.playingIndicator}>
-            <Ionicons name="musical-notes" size={14} color={colors.text} />
+          <View style={styles.playingBadge}>
+            <View style={styles.equalizerContainer}>
+              <View style={[styles.eqBar, styles.eqBar1]} />
+              <View style={[styles.eqBar, styles.eqBar2]} />
+              <View style={[styles.eqBar, styles.eqBar3]} />
+            </View>
           </View>
         )}
         {isLoading && (
@@ -55,44 +126,51 @@ export const StationCard: React.FC<StationCardProps> = ({
         <Text style={styles.name} numberOfLines={1}>
           {station.name}
         </Text>
-        <Text style={styles.country} numberOfLines={1}>
+        <Text style={styles.meta} numberOfLines={1}>
           {station.country || station.countrycode || 'Unknown'}
-          {station.genre && ` • ${station.genres?.[0] || ''}`}
+          {station.genres?.[0] && ` • ${station.genres[0]}`}
         </Text>
       </View>
 
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.playButton}>
+      <TouchableOpacity 
+        style={[styles.playButton, isPlaying && styles.playButtonActive]}
+        onPress={() => onPress(station)}
+      >
+        {isLoading ? (
+          <ActivityIndicator size="small" color={colors.text} />
+        ) : (
           <Ionicons
-            name={isPlaying && !isLoading ? 'pause' : 'play'}
-            size={18}
+            name={isPlaying ? 'pause' : 'play'}
+            size={16}
             color={colors.text}
           />
-        </TouchableOpacity>
-      </View>
+        )}
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  // Default variant
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.backgroundCard,
-    borderRadius: borderRadius.md,
-    padding: spacing.sm,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
     marginBottom: spacing.sm,
-    ...shadows.sm,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   containerPlaying: {
     backgroundColor: colors.backgroundCardHover,
-    borderWidth: 1,
     borderColor: colors.primary,
+    ...shadows.glow,
   },
   logoContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: borderRadius.sm,
+    width: 52,
+    height: 52,
+    borderRadius: borderRadius.md,
     overflow: 'hidden',
     backgroundColor: colors.surface,
   },
@@ -105,19 +183,31 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceLight,
   },
-  playingIndicator: {
+  playingBadge: {
     position: 'absolute',
-    bottom: 2,
-    right: 2,
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: colors.primary,
-    borderRadius: borderRadius.full,
-    width: 22,
-    height: 22,
-    justifyContent: 'center',
+    paddingVertical: 2,
     alignItems: 'center',
   },
+  equalizerContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: 10,
+    gap: 2,
+  },
+  eqBar: {
+    width: 3,
+    backgroundColor: colors.text,
+    borderRadius: 1,
+  },
+  eqBar1: { height: 4 },
+  eqBar2: { height: 8 },
+  eqBar3: { height: 5 },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: colors.overlay,
@@ -126,7 +216,7 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
-    marginLeft: spacing.sm,
+    marginLeft: spacing.md,
     marginRight: spacing.sm,
   },
   name: {
@@ -135,13 +225,9 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: 2,
   },
-  country: {
+  meta: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
-  },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   playButton: {
     width: 36,
@@ -150,6 +236,114 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  playButtonActive: {
+    backgroundColor: colors.accent,
+  },
+  
+  // Large variant
+  largeContainer: {
+    width: 150,
+    marginRight: spacing.md,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+  },
+  largeGradient: {
+    padding: spacing.md,
+    alignItems: 'center',
+  },
+  largeLogo: {
+    width: 80,
+    height: 80,
+    borderRadius: borderRadius.md,
+    overflow: 'hidden',
+    backgroundColor: colors.surface,
+    marginBottom: spacing.sm,
+  },
+  largeLogoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  largePlaceholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.surfaceLight,
+  },
+  largePlayingIndicator: {
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    backgroundColor: colors.primary,
+    borderRadius: borderRadius.full,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  largeName: {
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
+    textAlign: 'center',
+  },
+  largeCountry: {
+    fontSize: typography.sizes.xs,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  largePlayBtn: {
+    marginTop: spacing.sm,
+    width: 32,
+    height: 32,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playBtnActive: {
+    backgroundColor: colors.accent,
+  },
+  
+  // Compact variant
+  compactContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCard,
+    borderRadius: borderRadius.md,
+    padding: spacing.sm,
+    marginRight: spacing.sm,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  compactActive: {
+    borderColor: colors.primary,
+    backgroundColor: colors.backgroundCardHover,
+  },
+  compactLogo: {
+    width: 32,
+    height: 32,
+    borderRadius: borderRadius.sm,
+    overflow: 'hidden',
+    backgroundColor: colors.surface,
+  },
+  compactLogoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  compactPlaceholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  compactName: {
+    marginLeft: spacing.sm,
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.medium,
+    color: colors.text,
+    maxWidth: 100,
   },
 });
 
