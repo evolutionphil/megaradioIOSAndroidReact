@@ -180,26 +180,59 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Premium Banner */}
-          <TouchableOpacity style={styles.premiumBanner}>
-            <LinearGradient
-              colors={['#5C27F4', '#9F3FFF'] as any}
-              start={{ x: 1, y: 0.5 }}
-              end={{ x: 0, y: 0.5 }}
-              style={styles.premiumGradient}
-            >
-              <Image 
-                source={{ uri: 'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/afi7gbdc_image.png' }} 
-                style={styles.premiumIconImage}
-                resizeMode="contain"
-              />
-              <View style={styles.premiumContent}>
-                <Text style={styles.premiumTitle}>MegaRadio Premium</Text>
-                <Text style={styles.premiumSubtitle}>Unlock Amazing Features</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={24} color={colors.text} />
-            </LinearGradient>
-          </TouchableOpacity>
+          {/* Discoverable Genres Swiper */}
+          {discoverableGenresList.length > 0 && (
+            <FlatList
+              horizontal
+              data={discoverableGenresList}
+              keyExtractor={(item: any) => item._id}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.genreSwiperContainer}
+              renderItem={({ item: genre, index }) => {
+                // Color gradients for swiper items
+                const swiperGradients = [
+                  ['#5C27F4', '#9F3FFF'],
+                  ['#0066FF', '#00BFFF'],
+                  ['#FF6B6B', '#FF8E53'],
+                  ['#11998e', '#38ef7d'],
+                  ['#FC466B', '#3F5EFB'],
+                  ['#f953c6', '#b91d73'],
+                ];
+                const gradientColors = swiperGradients[index % swiperGradients.length];
+                
+                return (
+                  <TouchableOpacity 
+                    style={styles.genreSwiperItem}
+                    onPress={() => handleGenrePress(genre)}
+                  >
+                    <LinearGradient
+                      colors={gradientColors as any}
+                      start={{ x: 1, y: 0.5 }}
+                      end={{ x: 0, y: 0.5 }}
+                      style={styles.genreSwiperGradient}
+                    >
+                      {genre.discoverableImage ? (
+                        <Image 
+                          source={{ uri: `https://themegaradio.com${genre.discoverableImage}` }} 
+                          style={styles.genreSwiperImage}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View style={styles.genreSwiperIconContainer}>
+                          <Ionicons name="musical-notes" size={28} color="rgba(255,255,255,0.6)" />
+                        </View>
+                      )}
+                      <View style={styles.genreSwiperContent}>
+                        <Text style={styles.genreSwiperTitle}>{genre.name}</Text>
+                        <Text style={styles.genreSwiperSubtitle}>{genre.stationCount || 0} stations</Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={24} color={colors.text} />
+                    </LinearGradient>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          )}
 
           {/* Genres Section */}
           <View style={styles.section}>
