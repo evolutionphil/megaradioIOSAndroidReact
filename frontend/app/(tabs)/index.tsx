@@ -746,7 +746,8 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: GRID_GAP,
+    rowGap: 12,
+    columnGap: GRID_GAP,
   },
   stationGridItem: {
     width: GRID_ITEM_WIDTH,
