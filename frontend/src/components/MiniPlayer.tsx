@@ -116,9 +116,9 @@ export const MiniPlayer: React.FC = () => {
             {isLoading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : isPlaying ? (
-              <PauseIcon color="#FFFFFF" size={22} />
+              <PauseIcon color="#FFFFFF" size={18} />
             ) : (
-              <PlayIcon color="#FFFFFF" size={22} />
+              <PlayIcon color="#FFFFFF" size={18} />
             )}
           </TouchableOpacity>
 
@@ -127,7 +127,7 @@ export const MiniPlayer: React.FC = () => {
             style={styles.controlButton}
             onPress={handleFavorite}
           >
-            <HeartOutlineIcon color="#FFFFFF" size={22} />
+            <HeartOutlineIcon color="#FFFFFF" size={18} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
