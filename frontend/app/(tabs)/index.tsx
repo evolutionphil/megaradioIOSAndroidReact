@@ -268,45 +268,47 @@ export default function HomeScreen() {
             {recentStations.length > 0 ? (
               <View style={styles.stationGridCustom}>
                 {recentStations.slice(0, 6).map((station: Station, index: number) => (
-                  <TouchableOpacity
+                  <View
                     key={station._id}
-                    style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
-                    onPress={() => handleStationPress(station)}
+                    style={{ width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0, marginBottom: 12 }}
                   >
-                    <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
-                      <Image 
-                        source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={styles.stationGridLogoImage} 
-                        resizeMode="cover" 
-                      />
-                    </View>
-                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.stationGridCountry} numberOfLines={1}>
-                      {station.country || 'Radio'}
-                    </Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleStationPress(station)}>
+                      <View style={{ width: gridItemWidth, height: gridItemWidth, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                        <Image 
+                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          style={{ width: '100%', height: '100%' }} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
+                        {station.country || 'Radio'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 ))}
               </View>
             ) : popularStations.length > 0 ? (
               <View style={styles.stationGridCustom}>
                 {popularStations.slice(0, 6).map((station: Station, index: number) => (
-                  <TouchableOpacity
+                  <View
                     key={station._id}
-                    style={[styles.stationGridItem, { width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0 }]}
-                    onPress={() => handleStationPress(station)}
+                    style={{ width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0, marginBottom: 12 }}
                   >
-                    <View style={[styles.stationGridLogo, { width: gridItemWidth, height: gridItemWidth }]}>
-                      <Image 
-                        source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={styles.stationGridLogoImage} 
-                        resizeMode="cover" 
-                      />
-                    </View>
-                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.stationGridCountry} numberOfLines={1}>
-                      {station.country || 'Radio'}
-                    </Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleStationPress(station)}>
+                      <View style={{ width: gridItemWidth, height: gridItemWidth, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                        <Image 
+                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          style={{ width: '100%', height: '100%' }} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
+                        {station.country || 'Radio'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 ))}
               </View>
             ) : (
