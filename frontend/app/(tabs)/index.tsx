@@ -603,13 +603,13 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
   },
 
-  // Section - Centered content
+  // Section - Full width with centered content
   section: {
+    width: CONTENT_WIDTH,
     marginBottom: spacing.lg,
   },
   sectionHeader: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
