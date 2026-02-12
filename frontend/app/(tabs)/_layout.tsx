@@ -1,38 +1,51 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, borderRadius, spacing } from '../../src/constants/theme';
+import { colors, typography } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
+import { usePlayerStore } from '../../src/store/playerStore';
+import {
+  DiscoverIcon,
+  FavoritesIcon,
+  ProfileIcon,
+  RecordsIcon,
+} from '../../src/components/TabBarIcons';
+
+// Tab bar height constant for MiniPlayer positioning
+export const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
 
 export default function TabLayout() {
+  const { isMiniPlayerVisible, currentStation } = usePlayerStore();
+  const showMiniPlayer = isMiniPlayerVisible && currentStation;
+
   return (
     <View style={styles.container}>
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.tabBarInactive,
+          tabBarStyle: [
+            styles.tabBar,
+            showMiniPlayer && styles.tabBarWithPlayer,
+          ],
+          tabBarActiveTintColor: '#FFFFFF',
+          tabBarInactiveTintColor: '#FFFFFF',
           tabBarLabelStyle: styles.tabBarLabel,
         }}
       >
+        {/* Discover - Main/Home tab renamed to Discover */}
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Home',
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
+            title: 'Discover',
+            tabBarIcon: ({ color }) => (
+              <DiscoverIcon color={color} size={28} />
             ),
           }}
         />
         <Tabs.Screen
           name="discover"
           options={{
-            title: 'Discover',
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'compass' : 'compass-outline'} size={24} color={color} />
-            ),
+            href: null, // Hide from tab bar
           }}
         />
         <Tabs.Screen
@@ -40,7 +53,7 @@ export default function TabLayout() {
           options={{
             title: 'Favorites',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={color} />
+              <FavoritesIcon color={color} size={28} focused={focused} />
             ),
           }}
         />
@@ -48,8 +61,8 @@ export default function TabLayout() {
           name="profile"
           options={{
             title: 'Profile',
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
+            tabBarIcon: ({ color }) => (
+              <ProfileIcon color={color} size={28} />
             ),
           }}
         />
@@ -65,15 +78,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   tabBar: {
-    backgroundColor: colors.background,
-    borderTopColor: colors.border,
-    borderTopWidth: 1,
-    height: Platform.OS === 'ios' ? 88 : 68,
-    paddingBottom: Platform.OS === 'ios' ? 28 : 10,
-    paddingTop: 10,
+    backgroundColor: '#1B1C1E',
+    borderTopWidth: 0,
+    height: TAB_BAR_HEIGHT,
+    paddingBottom: Platform.OS === 'ios' ? 25 : 8,
+    paddingTop: 12,
+    paddingHorizontal: 20,
+  },
+  tabBarWithPlayer: {
+    // No change needed, MiniPlayer sits above
   },
   tabBarLabel: {
-    fontSize: typography.sizes.xs,
-    fontWeight: typography.weights.medium,
+    fontSize: 12,
+    fontWeight: '400',
+    marginTop: 4,
   },
 });
