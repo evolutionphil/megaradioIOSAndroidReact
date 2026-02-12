@@ -17,7 +17,8 @@ export const queryKeys = {
   precomputedGenres: (country?: string) => ['genres', 'precomputed', country] as const,
   genreStations: (slug: string) => ['genres', slug, 'stations'] as const,
   favorites: ['user', 'favorites'] as const,
-  recentlyPlayed: ['user', 'recentlyPlayed'] as const,
+  recentlyPlayed: ['recentlyPlayed'] as const,
+  communityFavorites: ['communityFavorites'] as const,
 };
 
 // Station hooks
