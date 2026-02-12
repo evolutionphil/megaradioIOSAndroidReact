@@ -607,9 +607,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  recIconImage: {
+  recDotOuter: {
     width: 28,
     height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#FF6B6B',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  recDotInner: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#FF6B6B',
   },
   recText: {
     fontSize: 16,
