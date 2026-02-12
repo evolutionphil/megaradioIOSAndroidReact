@@ -444,21 +444,17 @@ export default function HomeScreen() {
                     style={styles.discoverableGenreCard}
                     onPress={() => handleGenrePress(genre)}
                   >
-                    {getDiscoverableGenreImage(genre) ? (
-                      <Image
-                        source={{ uri: getDiscoverableGenreImage(genre)! }}
-                        style={styles.discoverableGenreImage}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View style={styles.discoverableGenrePlaceholder}>
-                        <Ionicons name="musical-notes" size={24} color={colors.textMuted} />
+                    <ImageBackground
+                      source={{ uri: getDiscoverableGenreImage(genre) || undefined }}
+                      style={styles.discoverableGenreImageBg}
+                      imageStyle={styles.discoverableGenreImageStyle}
+                      resizeMode="cover"
+                    >
+                      <View style={styles.discoverableGenreOverlay}>
+                        <Text style={styles.discoverableGenreName}>{genre.name}</Text>
+                        <Text style={styles.discoverableGenreCount}>{genre.stationCount} stations</Text>
                       </View>
-                    )}
-                    <View style={styles.discoverableGenreOverlay}>
-                      <Text style={styles.discoverableGenreName}>{genre.name}</Text>
-                      <Text style={styles.discoverableGenreCount}>{genre.stationCount} stations</Text>
-                    </View>
+                    </ImageBackground>
                   </TouchableOpacity>
                 ))}
               </View>
