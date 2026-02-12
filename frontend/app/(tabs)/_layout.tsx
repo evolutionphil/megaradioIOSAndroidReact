@@ -66,6 +66,15 @@ export default function TabLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="records"
+          options={{
+            title: 'Records',
+            tabBarIcon: ({ color }) => (
+              <RecordsIcon color={color} size={28} />
+            ),
+          }}
+        />
       </Tabs>
       <MiniPlayer />
     </View>
