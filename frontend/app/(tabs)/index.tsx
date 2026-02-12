@@ -561,21 +561,37 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Genres
+  // Genres - Updated with exact dimensions from user
+  genresContainer: {
+    marginLeft: 15,
+    width: 410,
+    height: 45,
+  },
   genresScroll: {
-    paddingHorizontal: spacing.md,
-    gap: spacing.sm,
+    gap: 10,
   },
-  genreChip: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full,
-    marginRight: spacing.sm,
+  genreCard: {
+    width: 130,
+    height: 45,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
-  genreChipText: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
+  genreCardBackground: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  genreCardImage: {
+    borderRadius: 5,
+  },
+  genreCardText: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.bold,
     color: colors.text,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
 
   // Popular Stations List
