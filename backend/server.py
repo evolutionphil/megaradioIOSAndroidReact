@@ -123,18 +123,31 @@ async def get_now_playing(station_id: str):
 async def fetch_stream_metadata(stream_url: str) -> Optional[dict]:
     """
     Attempt to fetch ICY metadata from a stream URL.
+    Only fetches headers, doesn't download the stream.
     """
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            # Request with ICY metadata header
-            response = await client.get(
-                stream_url,
-                headers={
-                    'Icy-MetaData': '1',
-                    'User-Agent': 'MegaRadio/1.0'
-                },
-                follow_redirects=True
-            )
+        async with httpx.AsyncClient(timeout=3.0) as http_client:
+            # Use HEAD request first to avoid downloading stream
+            try:
+                response = await http_client.head(
+                    stream_url,
+                    headers={
+                        'Icy-MetaData': '1',
+                        'User-Agent': 'MegaRadio/1.0'
+                    },
+                    follow_redirects=True
+                )
+            except:
+                # Some servers don't support HEAD, try GET with stream
+                response = await http_client.get(
+                    stream_url,
+                    headers={
+                        'Icy-MetaData': '1',
+                        'User-Agent': 'MegaRadio/1.0',
+                        'Range': 'bytes=0-0'  # Only request first byte
+                    },
+                    follow_redirects=True
+                )
             
             # Check for ICY headers
             icy_name = response.headers.get('icy-name')
