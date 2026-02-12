@@ -166,15 +166,12 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Background Gradient Blur - Platform-aware implementation */}
       <View style={styles.bgGradientContainer}>
-        <BlurView 
-          style={styles.bgGradientInner}
-          blurColor="#3300FF4D"
-          blurAmount={205}
-          intensity={80}
-          tint="dark"
-        >
-          <View style={styles.bgGradient} />
-        </BlurView>
+        {/* Multiple layered circles for blur effect on iOS */}
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer1]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer2]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer3]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer4]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer5]} />
       </View>
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
