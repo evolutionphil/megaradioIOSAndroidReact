@@ -779,37 +779,6 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.xs,
     color: colors.textSecondary,
   },
-
-  // Station Grid - Full width
-  stationGrid: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  gridItem: {
-    width: GRID_ITEM_WIDTH,
-    marginBottom: spacing.sm,
-  },
-  gridLogo: {
-    width: '100%',
-    aspectRatio: 1.5,
-    borderRadius: borderRadius.md,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
-  gridName: {
-    fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
-  },
-  gridCountry: {
-    fontSize: typography.sizes.xs,
-    color: colors.textSecondary,
-  },
   logoPlaceholder: {
     backgroundColor: colors.surface,
     justifyContent: 'center',
