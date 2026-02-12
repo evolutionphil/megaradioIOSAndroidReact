@@ -586,10 +586,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  secondaryIconImage: {
-    width: 24,
-    height: 24,
-  },
   recButton: {
     flexDirection: 'row',
     alignItems: 'center',
