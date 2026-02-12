@@ -64,7 +64,9 @@ export const useSimilarStations = (stationId: string, limit: number = 12) => {
     queryKey: queryKeys.similarStations(stationId),
     queryFn: () => stationService.getSimilarStations(stationId, limit),
     enabled: !!stationId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     retry: 1,
   });
 };
