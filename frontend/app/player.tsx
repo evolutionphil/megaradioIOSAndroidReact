@@ -367,7 +367,7 @@ export default function PlayerScreen() {
                 <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
               <View style={styles.headerRight}>
-                <TouchableOpacity style={styles.headerIcon}>
+                <TouchableOpacity style={styles.headerIcon} onPress={() => setShowCarMode(true)}>
                   <Ionicons name="car-outline" size={22} color="#FFFFFF" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.headerIcon}>
