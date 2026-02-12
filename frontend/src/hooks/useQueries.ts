@@ -107,6 +107,13 @@ export const useGenreStations = (
   });
 };
 
+export const useDiscoverableGenres = () => {
+  return useQuery({
+    queryKey: ['genres', 'discoverable'],
+    queryFn: () => genreService.getDiscoverableGenres(),
+  });
+};
+
 // User hooks
 export const useFavorites = () => {
   return useQuery({
