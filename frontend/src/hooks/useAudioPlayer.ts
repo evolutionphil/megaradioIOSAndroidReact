@@ -267,7 +267,7 @@ export const useAudioPlayer = () => {
     }
   }, [setPlaybackState, setError]);
 
-  // Resolve stream URL
+  // Resolve stream URL - follows redirects and handles HTTP/HTTPS
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
     try {
       const streamData = await stationService.resolveStream(station.url);
@@ -275,17 +275,34 @@ export const useAudioPlayer = () => {
       if (streamData.candidates && streamData.candidates.length > 0) {
         let resolvedUrl = streamData.candidates[0];
 
+        // iOS AVPlayer doesn't handle HTTP well, always proxy HTTP streams
         if (resolvedUrl.startsWith('http://')) {
+          console.log('[useAudioPlayer] HTTP stream detected, using proxy');
           resolvedUrl = stationService.getProxyUrl(resolvedUrl);
         }
 
         return resolvedUrl;
       }
 
-      return station.url_resolved || station.url;
+      // Fallback to url_resolved or original url
+      let fallbackUrl = station.url_resolved || station.url;
+      
+      // Proxy HTTP fallback URLs too
+      if (fallbackUrl.startsWith('http://')) {
+        console.log('[useAudioPlayer] Fallback HTTP URL, using proxy');
+        fallbackUrl = stationService.getProxyUrl(fallbackUrl);
+      }
+
+      return fallbackUrl;
     } catch (error) {
       console.error('[useAudioPlayer] Failed to resolve stream:', error);
-      return station.url_resolved || station.url;
+      
+      // Final fallback
+      let fallbackUrl = station.url_resolved || station.url;
+      if (fallbackUrl.startsWith('http://')) {
+        fallbackUrl = stationService.getProxyUrl(fallbackUrl);
+      }
+      return fallbackUrl;
     }
   }, []);
 
