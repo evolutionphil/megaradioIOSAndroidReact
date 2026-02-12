@@ -275,34 +275,32 @@ export const useAudioPlayer = () => {
       if (streamData.candidates && streamData.candidates.length > 0) {
         let resolvedUrl = streamData.candidates[0];
 
-        // iOS AVPlayer doesn't handle HTTP well, always proxy HTTP streams
-        if (resolvedUrl.startsWith('http://')) {
-          console.log('[useAudioPlayer] HTTP stream detected, using proxy');
+        // iOS AVPlayer has problems with HTTP and certain redirects
+        // Always proxy through themegaradio for reliability
+        // Only HTTPS URLs that are known to work directly should skip proxy
+        const isKnownWorkingHttps = resolvedUrl.includes('stream.laut.fm') || 
+                                     resolvedUrl.includes('radiohost.de') ||
+                                     resolvedUrl.includes('streamtheworld.com');
+        
+        if (resolvedUrl.startsWith('http://') || !isKnownWorkingHttps) {
+          console.log('[useAudioPlayer] Using proxy for stream:', resolvedUrl.substring(0, 50));
           resolvedUrl = stationService.getProxyUrl(resolvedUrl);
         }
 
         return resolvedUrl;
       }
 
-      // Fallback to url_resolved or original url
+      // Fallback to url_resolved or original url - always proxy
       let fallbackUrl = station.url_resolved || station.url;
+      console.log('[useAudioPlayer] Using fallback URL with proxy:', fallbackUrl.substring(0, 50));
+      return stationService.getProxyUrl(fallbackUrl);
       
-      // Proxy HTTP fallback URLs too
-      if (fallbackUrl.startsWith('http://')) {
-        console.log('[useAudioPlayer] Fallback HTTP URL, using proxy');
-        fallbackUrl = stationService.getProxyUrl(fallbackUrl);
-      }
-
-      return fallbackUrl;
     } catch (error) {
       console.error('[useAudioPlayer] Failed to resolve stream:', error);
       
-      // Final fallback
+      // Final fallback - always proxy
       let fallbackUrl = station.url_resolved || station.url;
-      if (fallbackUrl.startsWith('http://')) {
-        fallbackUrl = stationService.getProxyUrl(fallbackUrl);
-      }
-      return fallbackUrl;
+      return stationService.getProxyUrl(fallbackUrl);
     }
   }, []);
 
