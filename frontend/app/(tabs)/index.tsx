@@ -31,8 +31,6 @@ import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
 import type { Station, Genre } from '../../src/types';
 
-import { Dimensions } from 'react-native';
-
 // Fixed padding for all elements - same as Jazz banner
 const SIDE_PADDING = 15;
 const HORIZONTAL_PADDING = 0; // Padding inside sections (already handled by ScrollView)
