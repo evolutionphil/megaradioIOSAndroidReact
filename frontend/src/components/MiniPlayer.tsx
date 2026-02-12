@@ -8,13 +8,14 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, borderRadius, spacing, typography, shadows } from '../constants/theme';
-import { usePlayerStore, PlaybackState } from '../store/playerStore';
+import { colors, borderRadius, spacing, typography, shadows, gradients } from '../constants/theme';
+import { usePlayerStore } from '../store/playerStore';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const MINI_PLAYER_HEIGHT = 64;
+const MINI_PLAYER_HEIGHT = 72;
 
 export const MiniPlayer: React.FC = () => {
   const router = useRouter();
@@ -54,52 +55,71 @@ export const MiniPlayer: React.FC = () => {
     <TouchableOpacity
       style={styles.container}
       onPress={handlePress}
-      activeOpacity={0.9}
+      activeOpacity={0.95}
     >
-      {/* Progress bar */}
-      {isPlaying && <View style={styles.progressBar} />}
+      <LinearGradient
+        colors={['#1A1725', '#13111C'] as any}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradient}
+      >
+        {/* Progress Indicator */}
+        {isPlaying && <View style={styles.progressBar} />}
 
-      <View style={styles.content}>
-        {/* Station Logo */}
-        <View style={styles.logoContainer}>
-          {logoUrl ? (
-            <Image source={{ uri: logoUrl }} style={styles.logo} resizeMode="cover" />
-          ) : (
-            <View style={styles.placeholderLogo}>
-              <Ionicons name="radio" size={24} color={colors.textMuted} />
-            </View>
-          )}
-        </View>
-
-        {/* Station Info */}
-        <View style={styles.info}>
-          <Text style={styles.stationName} numberOfLines={1}>
-            {currentStation.name}
-          </Text>
-          <Text style={styles.nowPlaying} numberOfLines={1}>
-            {nowPlaying?.title || currentStation.country || 'Streaming...'}
-          </Text>
-        </View>
-
-        {/* Controls */}
-        <View style={styles.controls}>
-          <TouchableOpacity
-            style={styles.playButton}
-            onPress={handlePlayPause}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color={colors.text} />
+        <View style={styles.content}>
+          {/* Station Logo */}
+          <View style={styles.logoContainer}>
+            {logoUrl ? (
+              <Image source={{ uri: logoUrl }} style={styles.logo} resizeMode="cover" />
             ) : (
-              <Ionicons
-                name={isPlaying ? 'pause' : 'play'}
-                size={24}
-                color={colors.text}
-              />
+              <View style={styles.placeholderLogo}>
+                <Ionicons name="radio" size={22} color={colors.textMuted} />
+              </View>
             )}
-          </TouchableOpacity>
+            {isPlaying && (
+              <View style={styles.liveIndicator}>
+                <View style={styles.liveDot} />
+              </View>
+            )}
+          </View>
+
+          {/* Station Info */}
+          <View style={styles.info}>
+            <Text style={styles.stationName} numberOfLines={1}>
+              {currentStation.name}
+            </Text>
+            <Text style={styles.nowPlaying} numberOfLines={1}>
+              {nowPlaying?.title || currentStation.country || 'Now Streaming'}
+            </Text>
+          </View>
+
+          {/* Controls */}
+          <View style={styles.controls}>
+            <TouchableOpacity
+              style={styles.favoriteButton}
+              onPress={() => {}}
+            >
+              <Ionicons name="heart-outline" size={22} color={colors.textSecondary} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.playButton}
+              onPress={handlePlayPause}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator size="small" color={colors.text} />
+              ) : (
+                <Ionicons
+                  name={isPlaying ? 'pause' : 'play'}
+                  size={22}
+                  color={colors.text}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 };
@@ -107,22 +127,27 @@ export const MiniPlayer: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 80, // Above tab bar
-    left: 0,
-    right: 0,
+    bottom: 85, // Above tab bar
+    left: spacing.md,
+    right: spacing.md,
     height: MINI_PLAYER_HEIGHT,
-    backgroundColor: colors.playerBackground,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    ...shadows.md,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    ...shadows.lg,
+  },
+  gradient: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: borderRadius.lg,
   },
   progressBar: {
     position: 'absolute',
     top: 0,
     left: 0,
+    right: 0,
     height: 2,
-    width: '100%',
-    backgroundColor: colors.playerProgress,
+    backgroundColor: colors.primary,
   },
   content: {
     flex: 1,
@@ -133,7 +158,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     width: 48,
     height: 48,
-    borderRadius: borderRadius.sm,
+    borderRadius: borderRadius.md,
     overflow: 'hidden',
     backgroundColor: colors.surface,
   },
@@ -146,10 +171,22 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.surfaceLight,
+  },
+  liveIndicator: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.accent,
   },
   info: {
     flex: 1,
-    marginLeft: spacing.sm,
+    marginLeft: spacing.md,
     marginRight: spacing.sm,
   },
   stationName: {
@@ -164,6 +201,13 @@ const styles = StyleSheet.create({
   },
   controls: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  favoriteButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   playButton: {
