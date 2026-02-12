@@ -65,15 +65,7 @@ export default function DiscoverScreen() {
   };
 
   const genres = genresData?.data || [];
-  const stations = topStations || [];
-
-  // Filter stations by genre if selected
-  const filteredStations = selectedGenre
-    ? stations.filter(s => 
-        s.genres?.some(g => g.toLowerCase().includes(selectedGenre.toLowerCase())) ||
-        s.tags?.toLowerCase().includes(selectedGenre.toLowerCase())
-      )
-    : stations;
+  const stations = stationsData?.stations || [];
 
   return (
     <LinearGradient colors={gradients.background} style={styles.gradient}>
