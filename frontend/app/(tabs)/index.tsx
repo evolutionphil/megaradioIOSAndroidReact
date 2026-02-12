@@ -31,14 +31,8 @@ import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
 import type { Station, Genre } from '../../src/types';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-// Calculate content width based on screen (with 15px padding each side)
-const CONTENT_PADDING = 15;
-const CONTENT_WIDTH = SCREEN_WIDTH - (CONTENT_PADDING * 2);
-// Grid calculations: 3 items per row
-const GRID_GAP = 10;
-// Item width = (contentWidth - 2 gaps) / 3
-const GRID_ITEM_WIDTH = (CONTENT_WIDTH - (GRID_GAP * 2)) / 3;
+// Fixed padding for all elements - same as Jazz banner
+const SIDE_PADDING = 15;
 
 export default function HomeScreen() {
   const router = useRouter();
