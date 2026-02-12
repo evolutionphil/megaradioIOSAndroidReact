@@ -732,16 +732,15 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - 3 columns using margin
+  // Station Grid Custom - 3 columns using flexBasis
   stationGridCustom: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: -4,
   },
   stationGridItem: {
-    width: '33.33%',
-    paddingHorizontal: 4,
+    flexBasis: '33.33%',
+    paddingRight: 8,
     marginBottom: 12,
   },
   stationGridLogo: {
