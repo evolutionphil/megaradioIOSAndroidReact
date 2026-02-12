@@ -741,13 +741,13 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - Full width
+  // Station Grid Custom - Full width with space between
   stationGridCustom: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
     rowGap: 12,
-    columnGap: GRID_GAP,
   },
   stationGridItem: {
     width: '30%',
