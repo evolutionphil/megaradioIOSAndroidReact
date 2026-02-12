@@ -358,45 +358,6 @@ export default function PlayerScreen() {
     );
   }
 
-  // Grid Item Component - NOT memoized to ensure fresh handleStationPress
-  const GridItem = ({ station }: { station: Station }) => {
-    const stationLogo = getLogoUrl(station);
-    
-    const onPress = useCallback(() => {
-      console.log('[GridItem] Pressed:', station.name);
-      handleStationPress(station);
-    }, [station]);
-    
-    return (
-      <TouchableOpacity
-        style={styles.gridItem}
-        onPress={onPress}
-        activeOpacity={0.7}
-        delayPressIn={0}
-      >
-        <View style={styles.gridImageWrapper}>
-          {stationLogo ? (
-            <Image 
-              source={{ uri: stationLogo }} 
-              style={styles.gridImage}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={[styles.gridImage, styles.gridPlaceholder]}>
-              <Ionicons name="radio" size={24} color="#666" />
-            </View>
-          )}
-        </View>
-        <Text style={styles.gridStationName} numberOfLines={1}>
-          {station.name}
-        </Text>
-        <Text style={styles.gridStationLocation} numberOfLines={1}>
-          {station.country || 'Radio'}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
@@ -558,7 +519,13 @@ export default function PlayerScreen() {
             </Text>
             <View style={styles.stationGrid}>
               {popularStations.slice(0, 6).map((station: Station, index: number) => (
-                <GridItem key={`recent-${station._id}-${index}`} station={station} />
+                <GridItem
+                  key={`recent-${station._id}-${index}`}
+                  station={station}
+                  onPress={handleStationPress}
+                  getLogoUrl={getLogoUrl}
+                  itemWidth={GRID_ITEM_WIDTH}
+                />
               ))}
             </View>
           </View>
@@ -570,7 +537,13 @@ export default function PlayerScreen() {
             </Text>
             <View style={styles.stationGrid}>
               {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
-                <GridItem key={`similar-${station._id}-${index}`} station={station} />
+                <GridItem
+                  key={`similar-${station._id}-${index}`}
+                  station={station}
+                  onPress={handleStationPress}
+                  getLogoUrl={getLogoUrl}
+                  itemWidth={GRID_ITEM_WIDTH}
+                />
               ))}
             </View>
           </View>
