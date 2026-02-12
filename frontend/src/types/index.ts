@@ -1,0 +1,130 @@
+// Station Types
+export interface Station {
+  _id: string;
+  name: string;
+  url: string;
+  url_resolved?: string;
+  homepage?: string;
+  favicon?: string;
+  logo?: string;
+  logoAssets?: {
+    webp96?: string;
+    webp192?: string;
+    webp384?: string;
+  };
+  tags?: string;
+  country?: string;
+  countrycode?: string;
+  state?: string;
+  language?: string;
+  languagecodes?: string;
+  votes?: number;
+  clickCount?: number;
+  lastCheckOk?: boolean;
+  lastCheckTime?: string;
+  codec?: string;
+  bitrate?: number;
+  hls?: boolean;
+  genres?: string[];
+  slug?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StationResponse {
+  stations: Station[];
+  totalCount: number;
+  count: number;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+
+export interface PrecomputedStationResponse {
+  success: boolean;
+  data: Station[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+// User Types
+export interface User {
+  _id: string;
+  email: string;
+  name: string;
+  profilePhoto?: string | null;
+  isPublicProfile?: boolean;
+  favoriteStations?: string[];
+  recentlyPlayedStations?: string[];
+  totalListeningTime?: number;
+  followers?: number;
+  following?: number;
+  createdAt?: string;
+}
+
+export interface AuthResponse {
+  message: string;
+  user: User;
+}
+
+export interface AuthCheckResponse {
+  user: User | null;
+  authenticated: boolean;
+}
+
+// Genre Types
+export interface Genre {
+  _id: string;
+  name: string;
+  slug: string;
+  stationCount?: number;
+  icon?: string;
+  color?: string;
+}
+
+export interface GenreResponse {
+  data: Genre[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+// Stream Types
+export interface StreamResolveResponse {
+  originalUrl: string;
+  playlistType: 'direct' | 'm3u' | 'pls' | 'hls';
+  candidates: string[];
+  resolvedAt: number;
+}
+
+// Metadata Types
+export interface NowPlayingMetadata {
+  title: string;
+  station: string;
+  timestamp: number;
+}
+
+// Location Types
+export interface UserLocation {
+  country: string;
+  countryCode: string;
+  city: string;
+  lat: number;
+  lon: number;
+}
+
+export interface LocationResponse {
+  location: UserLocation;
+}
+
+// Favorites Types
+export interface FavoritesResponse {
+  favorites: Station[];
+  count: number;
+}
