@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { StationCard } from '../../src/components/StationCard';
-import { usePrecomputedGenres, useTop100 } from '../../src/hooks/useQueries';
+import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import type { Station, Genre } from '../../src/types';
@@ -26,7 +26,13 @@ export default function DiscoverScreen() {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(params.genre as string || null);
 
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
-  const { data: topStations, isLoading: stationsLoading, refetch: refetchStations } = useTop100();
+  // Use stations API with vote sorting for discovery
+  const { data: stationsData, isLoading: stationsLoading, refetch: refetchStations } = useStations({
+    sort: 'votes',
+    order: 'desc',
+    limit: 50,
+    genre: selectedGenre || undefined,
+  });
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
