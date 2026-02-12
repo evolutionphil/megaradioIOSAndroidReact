@@ -54,7 +54,7 @@ export default function HomeScreen() {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetchPopular(), refetchGenres(), refetchRecent(), refetchCommunity(), refetchAll()]);
+    await Promise.all([refetchPopular(), refetchGenres(), refetchDiscoverable(), refetchRecent(), refetchCommunity(), refetchAll()]);
     setRefreshing(false);
   }, []);
 
@@ -70,6 +70,15 @@ export default function HomeScreen() {
   const popularStations = popularData?.stations || [];
   const recentStations = recentlyPlayedData || [];
   const allStations = allStationsData?.stations || [];
+  const discoverableGenresList = discoverableGenres || [];
+
+  // Get discoverable genre image URL
+  const getDiscoverableGenreImage = (genre: any) => {
+    if (genre.discoverableImage) {
+      return `https://themegaradio.com${genre.discoverableImage}`;
+    }
+    return null;
+  };
 
   // Genre background images
   const genreBackgrounds = [
