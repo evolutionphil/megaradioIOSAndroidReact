@@ -117,6 +117,12 @@ export const stationService = {
     }
   },
 
+  // Get proxy URL for HTTP streams (to bypass mixed content issues)
+  getProxyUrl(url: string): string {
+    const encodedUrl = encodeURIComponent(url);
+    return `${API_BASE_URL}${API_ENDPOINTS.stream.proxy(encodedUrl)}`;
+  },
+
   // Resolve stream
   async resolveStream(url: string) {
     const response = await api.get(API_ENDPOINTS.stream.resolve, {
