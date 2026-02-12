@@ -292,17 +292,17 @@ export default function HomeScreen() {
             {recentStations.length > 0 || popularStations.length > 0 ? (
               <>
                 {/* Row 1 - 3 items */}
-                <View style={{ flexDirection: 'row', gap: GRID_GAP, marginBottom: GRID_GAP, width: '100%' }}>
-                  {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).map((station: Station) => (
+                <View style={styles.gridRow}>
+                  {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).map((station: Station, index: number) => (
                     <TouchableOpacity
                       key={station._id}
-                      style={{ flex: 1 }}
+                      style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
                       onPress={() => handleStationPress(station)}
                     >
-                      <View style={{ width: '100%', aspectRatio: 1, borderRadius: 12, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
+                      <View style={styles.gridImageContainer}>
                         <Image 
                           source={{ uri: getLogoUrl(station) || undefined }} 
-                          style={{ width: '100%', height: '100%' }} 
+                          style={styles.gridImage} 
                           resizeMode="cover" 
                         />
                       </View>
@@ -315,17 +315,17 @@ export default function HomeScreen() {
                 </View>
                 {/* Row 2 - next 3 items if available */}
                 {(recentStations.length > 0 ? recentStations : popularStations).length > 3 && (
-                  <View style={{ flexDirection: 'row', gap: GRID_GAP, marginBottom: GRID_GAP, width: '100%' }}>
-                    {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station) => (
+                  <View style={styles.gridRow}>
+                    {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station, index: number) => (
                       <TouchableOpacity
                         key={station._id}
-                        style={{ flex: 1 }}
+                        style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
                         onPress={() => handleStationPress(station)}
                       >
-                        <View style={{ width: '100%', aspectRatio: 1, borderRadius: 12, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
+                        <View style={styles.gridImageContainer}>
                           <Image 
                             source={{ uri: getLogoUrl(station) || undefined }} 
-                            style={{ width: '100%', height: '100%' }} 
+                            style={styles.gridImage} 
                             resizeMode="cover" 
                           />
                         </View>
