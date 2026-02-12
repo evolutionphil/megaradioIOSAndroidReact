@@ -144,18 +144,25 @@ export default function PlayerScreen() {
 
   // Get current song name - from nowPlaying metadata
   const getCurrentSongInfo = () => {
+    // First try nowPlaying data
     if (nowPlaying?.title) {
       return nowPlaying.title;
     }
-    if (nowPlaying?.artist && nowPlaying?.song) {
-      return `${nowPlaying.artist} - ${nowPlaying.song}`;
+    if (nowPlaying?.song) {
+      if (nowPlaying?.artist) {
+        return `${nowPlaying.artist} - ${nowPlaying.song}`;
+      }
+      return nowPlaying.song;
     }
     if (nowPlaying?.artist) {
       return nowPlaying.artist;
     }
-    // Fallback to genre if no song info
+    // Fallback to genre/country
     if (currentStation?.genres?.[0]) {
       return currentStation.genres[0];
+    }
+    if (currentStation?.country) {
+      return currentStation.country;
     }
     return 'Live Radio';
   };
