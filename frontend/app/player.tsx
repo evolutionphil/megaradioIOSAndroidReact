@@ -17,7 +17,7 @@ import { useRouter } from 'expo-router';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
-import { useAddFavorite, useRemoveFavorite, useSimilarStations, useRecentlyPlayed, usePopularStations } from '../src/hooks/useQueries';
+import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import type { Station } from '../src/types';
