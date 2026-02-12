@@ -282,14 +282,14 @@ export default function PlayerScreen() {
 
           {/* Main Controls */}
           <View style={styles.mainControls}>
-            {/* Timer - Custom Icon */}
+            {/* Timer */}
             <TouchableOpacity style={styles.controlButton}>
-              <Image source={TimerIcon} style={styles.controlIconImage} resizeMode="contain" />
+              <Ionicons name="time-outline" size={28} color="#888888" />
             </TouchableOpacity>
             
-            {/* Previous - Custom Icon */}
+            {/* Previous */}
             <TouchableOpacity style={styles.skipButton}>
-              <Image source={PrevIcon} style={styles.skipIconImage} resizeMode="contain" />
+              <Ionicons name="play-skip-back" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
             {/* Play/Pause */}
@@ -301,50 +301,52 @@ export default function PlayerScreen() {
               {isLoading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
               ) : isPlaying ? (
-                <Image source={PauseIcon} style={styles.playPauseIconImage} resizeMode="contain" />
+                <Ionicons name="pause" size={40} color="#FFFFFF" />
               ) : (
                 <Ionicons name="play" size={40} color="#FFFFFF" style={{ marginLeft: 4 }} />
               )}
             </TouchableOpacity>
             
-            {/* Next - Custom Icon */}
+            {/* Next */}
             <TouchableOpacity style={styles.skipButton}>
-              <Image source={NextIcon} style={styles.skipIconImage} resizeMode="contain" />
+              <Ionicons name="play-skip-forward" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
-            {/* Heart - Custom Icon */}
+            {/* Heart */}
             <TouchableOpacity
               style={styles.controlButton}
               onPress={handleToggleFavorite}
               disabled={checkingFavorite}
             >
-              {isFavorite ? (
-                <Ionicons name="heart" size={28} color="#FF4757" />
-              ) : (
-                <Image source={HeartIcon} style={styles.controlIconImage} resizeMode="contain" />
-              )}
+              <Ionicons 
+                name={isFavorite ? 'heart' : 'heart-outline'} 
+                size={28} 
+                color={isFavorite ? '#FF4757' : '#888888'} 
+              />
             </TouchableOpacity>
           </View>
 
-          {/* Secondary Controls - Custom Icons */}
+          {/* Secondary Controls */}
           <View style={styles.secondaryControls}>
             <View style={styles.leftSecondaryControls}>
               {/* Share */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Image source={ShareIcon} style={styles.secondaryIconImage} resizeMode="contain" />
+                <Ionicons name="share-social-outline" size={24} color="#888888" />
               </TouchableOpacity>
               {/* Headset */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Image source={HeadsetIcon} style={styles.secondaryIconImage} resizeMode="contain" />
+                <Ionicons name="headset-outline" size={24} color="#888888" />
               </TouchableOpacity>
               {/* Broadcast */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Image source={BroadcastIcon} style={styles.secondaryIconImage} resizeMode="contain" />
+                <Ionicons name="radio-outline" size={24} color="#888888" />
               </TouchableOpacity>
             </View>
-            {/* REC Button - Custom Icon */}
+            {/* REC Button */}
             <TouchableOpacity style={styles.recButton}>
-              <Image source={RecIcon} style={styles.recIconImage} resizeMode="contain" />
+              <View style={styles.recDotOuter}>
+                <View style={styles.recDotInner} />
+              </View>
               <Text style={styles.recText}>REC</Text>
             </TouchableOpacity>
           </View>
