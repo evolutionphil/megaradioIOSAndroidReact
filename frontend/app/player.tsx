@@ -311,16 +311,16 @@ export default function PlayerScreen() {
             <View style={styles.divider} />
           </View>
 
-          {/* Main Controls with Custom Icons */}
+          {/* Main Controls */}
           <View style={styles.mainControls}>
             {/* Timer */}
             <TouchableOpacity style={styles.controlButton}>
-              <Image source={TimerIcon} style={styles.controlIcon} resizeMode="contain" />
+              <Ionicons name="time-outline" size={28} color="#AAAAAA" />
             </TouchableOpacity>
             
             {/* Previous */}
             <TouchableOpacity style={styles.skipButton}>
-              <Image source={PrevIcon} style={styles.skipIcon} resizeMode="contain" />
+              <Ionicons name="play-skip-back" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
             {/* Play/Pause */}
@@ -332,7 +332,7 @@ export default function PlayerScreen() {
               {isLoading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
               ) : isPlaying ? (
-                <Image source={PauseIcon} style={styles.playPauseIcon} resizeMode="contain" />
+                <Ionicons name="pause" size={36} color="#FFFFFF" />
               ) : (
                 <Ionicons name="play" size={36} color="#FFFFFF" style={{ marginLeft: 4 }} />
               )}
@@ -340,7 +340,7 @@ export default function PlayerScreen() {
             
             {/* Next */}
             <TouchableOpacity style={styles.skipButton}>
-              <Image source={NextIcon} style={styles.skipIcon} resizeMode="contain" />
+              <Ionicons name="play-skip-forward" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
             {/* Heart */}
@@ -351,10 +351,12 @@ export default function PlayerScreen() {
             >
               {checkingFavorite ? (
                 <ActivityIndicator size="small" color="#AAAAAA" />
-              ) : isFavorite ? (
-                <Ionicons name="heart" size={26} color="#FF4757" />
               ) : (
-                <Image source={HeartIcon} style={styles.controlIcon} resizeMode="contain" />
+                <Ionicons 
+                  name={isFavorite ? 'heart' : 'heart-outline'} 
+                  size={28} 
+                  color={isFavorite ? '#FF4757' : '#AAAAAA'} 
+                />
               )}
             </TouchableOpacity>
           </View>
