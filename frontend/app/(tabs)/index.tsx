@@ -60,6 +60,7 @@ export default function HomeScreen() {
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
+  const { data: publicProfiles, refetch: refetchProfiles } = usePublicProfiles(10);
   const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21 });
 
   const { playStation } = useAudioPlayer();
@@ -67,7 +68,7 @@ export default function HomeScreen() {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetchPopular(), refetchGenres(), refetchDiscoverable(), refetchRecent(), refetchCommunity(), refetchAll()]);
+    await Promise.all([refetchPopular(), refetchGenres(), refetchDiscoverable(), refetchRecent(), refetchCommunity(), refetchProfiles(), refetchAll()]);
     setRefreshing(false);
   }, []);
 
