@@ -451,17 +451,11 @@ export default function HomeScreen() {
                   <Text style={styles.jazzTitle}>{discoverableGenresList[0]?.name || 'Jazz'}</Text>
                   <Text style={styles.jazzSubtitle}>Discover all the stations</Text>
                 </View>
-                {discoverableGenresList[0]?.discoverableImage ? (
-                  <Image 
-                    source={{ uri: `https://themegaradio.com${discoverableGenresList[0].discoverableImage}` }}
-                    style={styles.jazzBannerImage}
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View style={styles.jazzImage}>
-                    <Ionicons name="musical-notes" size={40} color="rgba(255,255,255,0.5)" />
-                  </View>
-                )}
+                <Image 
+                  source={{ uri: getGenreBannerImage(discoverableGenresList[0]) }}
+                  style={styles.jazzBannerImage}
+                  resizeMode="cover"
+                />
               </LinearGradient>
             </TouchableOpacity>
           )}
