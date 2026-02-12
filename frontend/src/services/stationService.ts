@@ -115,13 +115,14 @@ export const stationService = {
     query: string,
     limit: number = 20
   ): Promise<Station[]> {
-    const response = await api.get(API_ENDPOINTS.discover.search, {
-      params: { q: query, limit },
+    // Use the stations endpoint with search parameter for radio stations
+    const response = await api.get(API_ENDPOINTS.stations.list, {
+      params: { search: query, limit },
     });
-    // API returns { results: [...], cached, total, query, type }
+    // API returns { stations: [...], ... }
     const data = response.data;
-    if (data && data.results) {
-      return data.results;
+    if (data && data.stations) {
+      return data.stations;
     }
     return Array.isArray(data) ? data : [];
   },
