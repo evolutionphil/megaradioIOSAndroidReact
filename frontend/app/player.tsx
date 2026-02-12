@@ -313,22 +313,29 @@ export default function PlayerScreen() {
     );
   }
 
-  // Grid Item Component
-  const GridItem = React.memo(({ station }: { station: Station }) => {
+  // Grid Item Component - NOT memoized to ensure fresh handleStationPress
+  const GridItem = ({ station }: { station: Station }) => {
     const stationLogo = getLogoUrl(station);
+    
+    const onPress = useCallback(() => {
+      console.log('[GridItem] Pressed:', station.name);
+      handleStationPress(station);
+    }, [station]);
     
     return (
       <TouchableOpacity
         style={styles.gridItem}
-        onPress={() => handleStationPress(station)}
+        onPress={onPress}
         activeOpacity={0.7}
+        delayPressIn={0}
       >
         <View style={styles.gridImageWrapper}>
           {stationLogo ? (
             <Image 
               source={{ uri: stationLogo }} 
               style={styles.gridImage}
-              resizeMode="cover" 
+              resizeMode="cover"
+              defaultSource={require('../src/assets/placeholder.png')}
             />
           ) : (
             <View style={[styles.gridImage, styles.gridPlaceholder]}>
@@ -340,11 +347,11 @@ export default function PlayerScreen() {
           {station.name}
         </Text>
         <Text style={styles.gridStationLocation} numberOfLines={1}>
-          Turkey, Istanbul
+          {station.country || 'Radio'}
         </Text>
       </TouchableOpacity>
     );
-  });
+  };
 
   return (
     <View style={styles.container}>
