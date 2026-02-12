@@ -11,7 +11,6 @@ import {
   PanResponder,
   Animated,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import { useFonts } from 'expo-font';
 import { usePlayerStore } from '../store/playerStore';
