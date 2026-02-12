@@ -36,10 +36,10 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CONTENT_WIDTH = 345;
 // Calculate symmetric padding to center content
 const HORIZONTAL_PADDING = (SCREEN_WIDTH - CONTENT_WIDTH) / 2;
-// Grid item width: 3 items with 22.5px gaps = 100px each
-// 3 * 100 + 2 * 22.5 = 345px
+// Grid item width: 3 items with 22px gaps = 100px each
+// 3 * 100 + 2 * 22 = 344px (within 345px)
 const GRID_ITEM_WIDTH = 100;
-const GRID_GAP = 22.5;
+const GRID_GAP = 22;
 
 export default function HomeScreen() {
   const router = useRouter();
