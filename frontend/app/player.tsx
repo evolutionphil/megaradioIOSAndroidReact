@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,13 @@ import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStatio
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import type { Station } from '../src/types';
+
+// Custom player icons
+const PrevIcon = require('../src/assets/player-icons/prev.png');
+const PauseIcon = require('../src/assets/player-icons/pause.png');
+const NextIcon = require('../src/assets/player-icons/next.png');
+const TimerIcon = require('../src/assets/player-icons/timer.png');
+const HeartIcon = require('../src/assets/player-icons/heart.png');
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_SIZE = 190;
@@ -52,9 +59,16 @@ export default function PlayerScreen() {
     nowPlaying,
   } = usePlayerStore();
 
-  const { playStation, togglePlayPause, stopPlayback } = useAudioPlayer();
-  const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
-  const { data: popularData } = usePopularStations(undefined, 12);
+  const { playStation, togglePlayPause } = useAudioPlayer();
+  
+  // Fetch similar stations based on current station ID
+  const { data: similarData, isLoading: similarLoading } = useSimilarStations(
+    currentStation?._id || '', 
+    9
+  );
+  
+  // Fetch popular stations as fallback
+  const { data: popularData, isLoading: popularLoading } = usePopularStations(undefined, 12);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [checkingFavorite, setCheckingFavorite] = useState(false);
@@ -66,7 +80,7 @@ export default function PlayerScreen() {
     if (isAuthenticated && currentStation) {
       checkFavoriteStatus();
     }
-  }, [isAuthenticated, currentStation]);
+  }, [isAuthenticated, currentStation?._id]);
 
   const checkFavoriteStatus = async () => {
     if (!currentStation) return;
@@ -104,13 +118,11 @@ export default function PlayerScreen() {
     }
   };
 
-  const handleStationPress = async (station: Station) => {
-    // Stop current playback before playing new station
-    await stopPlayback();
-    // Small delay to ensure cleanup
-    setTimeout(() => {
+  // Handle station press without causing re-renders
+  const handleStationPress = (station: Station) => {
+    if (station._id !== currentStation?._id) {
       playStation(station);
-    }, 100);
+    }
   };
 
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
@@ -125,10 +137,22 @@ export default function PlayerScreen() {
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
   
-  // Get stations for grids
-  const stationsArray = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
-  const similarStations = similarData?.stations || (Array.isArray(similarData) ? similarData : stationsArray);
-  const recentStations = stationsArray;
+  // Memoize stations to prevent unnecessary re-renders
+  const popularStations = useMemo(() => {
+    return popularData?.stations || (Array.isArray(popularData) ? popularData : []);
+  }, [popularData]);
+  
+  const similarStations = useMemo(() => {
+    const similar = similarData?.stations || (Array.isArray(similarData) ? similarData : []);
+    // Filter out current station from similar
+    return similar.filter((s: Station) => s._id !== currentStation?._id);
+  }, [similarData, currentStation?._id]);
+  
+  // Use similar stations if available, otherwise use popular
+  const displaySimilarStations = useMemo(() => {
+    if (similarStations.length > 0) return similarStations;
+    return popularStations.filter((s: Station) => s._id !== currentStation?._id);
+  }, [similarStations, popularStations, currentStation?._id]);
 
   // Get artist/song info
   const getArtistInfo = () => {
@@ -156,85 +180,38 @@ export default function PlayerScreen() {
     );
   }
 
-  // Station Grid Item Component
-  const StationGridItem = ({ station }: { station: Station }) => {
+  // Station Grid Item Component - Memoized to prevent re-renders
+  const StationGridItem = React.memo(({ station }: { station: Station }) => {
     const stationLogo = getLogoUrl(station);
     const flag = getCountryFlag(station.countrycode || station.country);
     
-    const gridImageStyle = Platform.OS === 'web' ? {
-      width: '100px',
-      height: '100px',
-      objectFit: 'cover' as const,
-    } : {
-      width: 100,
-      height: 100,
-    };
-    
     return (
-      <View style={{ width: 100, marginRight: 10, marginBottom: 16, flexShrink: 0, flexGrow: 0 }}>
+      <View style={styles.gridItemContainer}>
         <TouchableOpacity
           onPress={() => handleStationPress(station)}
           activeOpacity={0.7}
         >
-          <View style={{ width: 100, height: 100, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1E1E1E', marginBottom: 8, position: 'relative' }}>
+          <View style={styles.gridImageWrapper}>
             <Image 
               source={{ uri: stationLogo || 'https://via.placeholder.com/100' }} 
-              // @ts-ignore - web specific styles
-              style={gridImageStyle}
+              style={styles.gridImage}
               resizeMode="cover" 
             />
             {/* Country flag badge */}
-            <View style={{ position: 'absolute', bottom: 4, right: 4, width: 20, height: 20, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 12 }}>{flag}</Text>
+            <View style={styles.flagBadge}>
+              <Text style={styles.flagText}>{flag}</Text>
             </View>
           </View>
-          <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF' }} numberOfLines={1}>
+          <Text style={styles.gridStationName} numberOfLines={1}>
             {station.name}
           </Text>
-          <Text style={{ fontSize: 10, color: '#888888', marginTop: 2 }} numberOfLines={1}>
+          <Text style={styles.gridStationLocation} numberOfLines={1}>
             {station.country || 'Unknown'}
           </Text>
         </TouchableOpacity>
       </View>
     );
-  };
-
-  // Header with blur effect
-  const HeaderBlur = () => (
-    <View style={styles.headerContainer}>
-      {Platform.OS !== 'web' ? (
-        <BlurView intensity={25} tint="dark" style={styles.headerBlur}>
-          <HeaderContent />
-        </BlurView>
-      ) : (
-        <View style={styles.headerBlurWeb}>
-          <HeaderContent />
-        </View>
-      )}
-    </View>
-  );
-
-  const HeaderContent = () => (
-    <View style={styles.header}>
-      <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
-        <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
-      </TouchableOpacity>
-      <View style={styles.headerCenter}>
-        <View style={styles.hdBadge}>
-          <Text style={styles.hdText}>HD</Text>
-        </View>
-        <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
-      </View>
-      <View style={styles.headerRight}>
-        <TouchableOpacity style={styles.headerIcon}>
-          <Ionicons name="car-outline" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.headerIcon}>
-          <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  });
 
   return (
     <View style={styles.container}>
@@ -245,9 +222,55 @@ export default function PlayerScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Header with blur */}
-          <HeaderBlur />
+          <View style={styles.headerContainer}>
+            {Platform.OS !== 'web' ? (
+              <BlurView intensity={25} tint="dark" style={styles.headerBlur}>
+                <View style={styles.header}>
+                  <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
+                    <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
+                  </TouchableOpacity>
+                  <View style={styles.headerCenter}>
+                    <View style={styles.hdBadge}>
+                      <Text style={styles.hdText}>HD</Text>
+                    </View>
+                    <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
+                  </View>
+                  <View style={styles.headerRight}>
+                    <TouchableOpacity style={styles.headerIcon}>
+                      <Ionicons name="car-outline" size={22} color="#FFFFFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.headerIcon}>
+                      <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </BlurView>
+            ) : (
+              <View style={styles.headerBlurWeb}>
+                <View style={styles.header}>
+                  <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
+                    <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
+                  </TouchableOpacity>
+                  <View style={styles.headerCenter}>
+                    <View style={styles.hdBadge}>
+                      <Text style={styles.hdText}>HD</Text>
+                    </View>
+                    <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
+                  </View>
+                  <View style={styles.headerRight}>
+                    <TouchableOpacity style={styles.headerIcon}>
+                      <Ionicons name="car-outline" size={22} color="#FFFFFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.headerIcon}>
+                      <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            )}
+          </View>
 
-          {/* Album Art with Country Flag */}
+          {/* Album Art with Country Flag - Fixed 190x190 */}
           <View style={styles.artworkContainer}>
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
@@ -291,18 +314,23 @@ export default function PlayerScreen() {
               </TouchableOpacity>
             </View>
             
-            {/* Divider line between social icons and controls */}
+            {/* Divider line */}
             <View style={styles.divider} />
           </View>
 
-          {/* Main Controls */}
+          {/* Main Controls with Custom Icons */}
           <View style={styles.mainControls}>
+            {/* Timer */}
             <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="time-outline" size={26} color="#AAAAAA" />
+              <Image source={TimerIcon} style={styles.controlIcon} resizeMode="contain" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="play-skip-back" size={32} color="#FFFFFF" />
+            
+            {/* Previous */}
+            <TouchableOpacity style={styles.skipButton}>
+              <Image source={PrevIcon} style={styles.skipIcon} resizeMode="contain" />
             </TouchableOpacity>
+            
+            {/* Play/Pause */}
             <TouchableOpacity
               style={styles.playPauseButton}
               onPress={togglePlayPause}
@@ -310,18 +338,19 @@ export default function PlayerScreen() {
             >
               {isLoading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
+              ) : isPlaying ? (
+                <Image source={PauseIcon} style={styles.playPauseIcon} resizeMode="contain" />
               ) : (
-                <Ionicons
-                  name={isPlaying ? 'pause' : 'play'}
-                  size={36}
-                  color="#FFFFFF"
-                  style={!isPlaying ? { marginLeft: 4 } : undefined}
-                />
+                <Ionicons name="play" size={36} color="#FFFFFF" style={{ marginLeft: 4 }} />
               )}
             </TouchableOpacity>
-            <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="play-skip-forward" size={32} color="#FFFFFF" />
+            
+            {/* Next */}
+            <TouchableOpacity style={styles.skipButton}>
+              <Image source={NextIcon} style={styles.skipIcon} resizeMode="contain" />
             </TouchableOpacity>
+            
+            {/* Heart */}
             <TouchableOpacity
               style={styles.controlButton}
               onPress={handleToggleFavorite}
@@ -329,12 +358,10 @@ export default function PlayerScreen() {
             >
               {checkingFavorite ? (
                 <ActivityIndicator size="small" color="#AAAAAA" />
+              ) : isFavorite ? (
+                <Ionicons name="heart" size={26} color="#FF4757" />
               ) : (
-                <Ionicons
-                  name={isFavorite ? 'heart' : 'heart-outline'}
-                  size={26}
-                  color={isFavorite ? '#FF4757' : '#AAAAAA'}
-                />
+                <Image source={HeartIcon} style={styles.controlIcon} resizeMode="contain" />
               )}
             </TouchableOpacity>
           </View>
@@ -362,7 +389,7 @@ export default function PlayerScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Recently Played</Text>
             <View style={styles.stationGrid}>
-              {recentStations.slice(0, 6).map((station: Station, index: number) => (
+              {popularStations.slice(0, 6).map((station: Station, index: number) => (
                 <StationGridItem key={`recent-${station._id}-${index}`} station={station} />
               ))}
             </View>
@@ -371,11 +398,15 @@ export default function PlayerScreen() {
           {/* Similar Radios Section */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Similar Radios</Text>
-            <View style={styles.stationGrid}>
-              {(similarStations.length > 0 ? similarStations : recentStations).slice(0, 9).map((station: Station, index: number) => (
-                <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
-              ))}
-            </View>
+            {similarLoading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" style={{ marginTop: 20 }} />
+            ) : (
+              <View style={styles.stationGrid}>
+                {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
+                  <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
+                ))}
+              </View>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -464,7 +495,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // Artwork
+  // Artwork - Fixed 190x190
   artworkContainer: {
     alignItems: 'center',
     marginTop: 8,
@@ -536,12 +567,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
   },
-  divider: {
-    width: '80%',
-    height: 1,
-    backgroundColor: '#2D2D2D',
-    marginVertical: 12,
-  },
   socialIcons: {
     flexDirection: 'row',
     gap: 12,
@@ -559,6 +584,12 @@ const styles = StyleSheet.create({
   youtubeButton: {
     backgroundColor: '#FF0000',
   },
+  divider: {
+    width: '80%',
+    height: 1,
+    backgroundColor: '#2D2D2D',
+    marginTop: 16,
+  },
 
   // Main Controls
   mainControls: {
@@ -566,13 +597,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginBottom: 16,
+    marginVertical: 16,
   },
   controlButton: {
-    width: 56,
-    height: 56,
+    width: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  controlIcon: {
+    width: 28,
+    height: 28,
+  },
+  skipButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#3A3A3C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  skipIcon: {
+    width: 32,
+    height: 32,
   },
   playPauseButton: {
     width: 76,
@@ -581,7 +629,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#3A3A3C',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 16,
+    marginHorizontal: 8,
+  },
+  playPauseIcon: {
+    width: 40,
+    height: 40,
   },
 
   // Secondary Controls
@@ -637,7 +689,7 @@ const styles = StyleSheet.create({
   },
 
   // Grid Items
-  gridItem: {
+  gridItemContainer: {
     width: GRID_ITEM_SIZE,
     marginRight: 10,
     marginBottom: 16,
