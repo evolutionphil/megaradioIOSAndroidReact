@@ -405,6 +405,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  
+  // Background Gradient Blur
+  bgGradientContainer: {
+    position: 'absolute',
+    top: -131,
+    left: -164,
+    width: 434,
+    height: 434,
+    zIndex: 0,
+  },
+  bgGradient: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 217,
+    backgroundColor: 'rgba(51, 0, 255, 0.3)',
+  },
+  
   safeArea: {
     flex: 1,
   },
