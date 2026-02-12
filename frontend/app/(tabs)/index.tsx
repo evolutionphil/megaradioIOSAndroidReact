@@ -35,10 +35,6 @@ import { BlurView } from '../../src/components/common/BlurView';
 // Fixed padding for all elements - same as Jazz banner
 const SIDE_PADDING = 15;
 const HORIZONTAL_PADDING = 0; // Padding inside sections (already handled by ScrollView)
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const CONTENT_WIDTH = SCREEN_WIDTH - (SIDE_PADDING * 2);
-const GRID_GAP = 8;
-const GRID_ITEM_WIDTH = (CONTENT_WIDTH - (GRID_GAP * 2)) / 3;
 
 export default function HomeScreen() {
   const router = useRouter();
