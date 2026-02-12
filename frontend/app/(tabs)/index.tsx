@@ -26,6 +26,7 @@ import {
   useRecentlyPlayed,
   useCommunityFavorites,
   useStations,
+  usePublicProfiles,
 } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
