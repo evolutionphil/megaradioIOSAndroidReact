@@ -270,27 +270,52 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Recently Played</Text>
             </View>
             {recentStations.length > 0 || popularStations.length > 0 ? (
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 6).map((station: Station) => (
-                  <TouchableOpacity
-                    key={station._id}
-                    style={{ width: '31%', marginBottom: 12 }}
-                    onPress={() => handleStationPress(station)}
-                  >
-                    <View style={{ width: '100%', aspectRatio: 1, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
-                      <Image 
-                        source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={{ width: '100%', height: '100%' }} 
-                        resizeMode="cover" 
-                      />
-                    </View>
-                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.stationGridCountry} numberOfLines={1}>
-                      {station.country || 'Radio'}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <>
+                {/* Row 1 */}
+                <View style={{ flexDirection: 'row', marginBottom: 12 }}>
+                  {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).map((station: Station, idx: number) => (
+                    <TouchableOpacity
+                      key={station._id}
+                      style={{ flex: 1, marginRight: idx < 2 ? 8 : 0 }}
+                      onPress={() => handleStationPress(station)}
+                    >
+                      <View style={{ aspectRatio: 1, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                        <Image 
+                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          style={{ width: '100%', height: '100%' }} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
+                        {station.country || 'Radio'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {/* Row 2 */}
+                <View style={{ flexDirection: 'row', marginBottom: 12 }}>
+                  {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station, idx: number) => (
+                    <TouchableOpacity
+                      key={station._id}
+                      style={{ flex: 1, marginRight: idx < 2 ? 8 : 0 }}
+                      onPress={() => handleStationPress(station)}
+                    >
+                      <View style={{ aspectRatio: 1, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                        <Image 
+                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          style={{ width: '100%', height: '100%' }} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
+                        {station.country || 'Radio'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </>
             ) : (
               <Text style={styles.emptyText}>No recently played stations</Text>
             )}
