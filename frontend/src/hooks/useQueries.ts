@@ -126,6 +126,8 @@ export const useRecentlyPlayed = () => {
   return useQuery({
     queryKey: queryKeys.recentlyPlayed,
     queryFn: () => stationService.getRecentlyPlayed(),
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
