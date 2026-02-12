@@ -853,10 +853,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 
-  // Users List - Centered with fixed width
+  // Users List - Full width
   usersList: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
   },
   userItem: {
     flexDirection: 'row',
