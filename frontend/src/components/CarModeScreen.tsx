@@ -6,247 +6,186 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  ScrollView,
   StatusBar,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Carousel from 'react-native-reanimated-carousel';
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  Extrapolation,
+} from 'react-native-reanimated';
 import Slider from '@react-native-community/slider';
+import { useFonts } from 'expo-font';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { usePopularStations } from '../hooks/useQueries';
 import type { Station } from '../types';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Card sizes based on Figma specs
-const CENTER_CARD_SIZE = 177;
-const SIDE_CARD_SIZE = 140;
-const CARD_GAP = 12;
-
-// Control button size
-const CONTROL_BUTTON_SIZE = 100;
+// Carousel layout constants (from Figma: center card 150px, adjacent 126px, far 96px)
+const CAROUSEL_ITEM_WIDTH = 80;
+const CARD_SIZE = 150;
+const CARD_RADIUS = 15;
 
 interface CarModeScreenProps {
   visible: boolean;
   onClose: () => void;
 }
 
-// Custom Play Icon with bar
-const PrevIcon = () => (
-  <View style={iconStyles.container}>
-    <View style={iconStyles.prevBar} />
-    <View style={iconStyles.prevTriangle} />
-  </View>
-);
+// Animated carousel item - each item gets an animationValue from the carousel
+const CarouselStationItem = React.memo(({
+  station,
+  animationValue,
+  getLogoUrl,
+}: {
+  station: Station;
+  animationValue: any;
+  getLogoUrl: (s: Station) => string | null;
+}) => {
+  const logo = getLogoUrl(station);
 
-// Custom Pause Icon
-const PauseIcon = () => (
-  <View style={iconStyles.pauseContainer}>
-    <View style={iconStyles.pauseBar} />
-    <View style={iconStyles.pauseBar} />
-  </View>
-);
+  const animatedStyle = useAnimatedStyle(() => {
+    const scale = interpolate(
+      animationValue.value,
+      [-2, -1, 0, 1, 2],
+      [0.64, 0.84, 1.0, 0.84, 0.64],
+      Extrapolation.CLAMP
+    );
+    const opacity = interpolate(
+      animationValue.value,
+      [-2, -1, 0, 1, 2],
+      [0.8, 1.0, 1.0, 1.0, 0.8],
+      Extrapolation.CLAMP
+    );
+    const zIdx = interpolate(
+      animationValue.value,
+      [-2, -1, 0, 1, 2],
+      [1, 5, 10, 5, 1],
+      Extrapolation.CLAMP
+    );
+    return {
+      transform: [{ scale }],
+      opacity,
+      zIndex: Math.round(zIdx),
+    };
+  });
 
-// Custom Play Icon
-const PlayIcon = () => (
-  <View style={iconStyles.playTriangle} />
-);
-
-// Custom Next Icon with bar
-const NextIcon = () => (
-  <View style={iconStyles.container}>
-    <View style={iconStyles.nextTriangle} />
-    <View style={iconStyles.nextBar} />
-  </View>
-);
-
-// Mute Icon
-const MuteIcon = () => (
-  <View style={iconStyles.muteContainer}>
-    <View style={iconStyles.speakerBody} />
-    <View style={iconStyles.speakerCone} />
-    <Text style={iconStyles.muteX}>×</Text>
-  </View>
-);
-
-// Volume Icon
-const VolumeIcon = () => (
-  <View style={iconStyles.volumeContainer}>
-    <View style={iconStyles.speakerBodySmall} />
-    <View style={iconStyles.speakerConeSmall} />
-    <View style={iconStyles.soundWaves}>
-      <View style={iconStyles.soundWave1} />
-      <View style={iconStyles.soundWave2} />
+  return (
+    <View style={itemStyles.container}>
+      <Animated.View style={[itemStyles.card, animatedStyle]}>
+        {logo ? (
+          <Image source={{ uri: logo }} style={itemStyles.logo} resizeMode="cover" />
+        ) : (
+          <View style={itemStyles.placeholder}>
+            <Text style={itemStyles.placeholderText}>
+              {station.name?.charAt(0) || '?'}
+            </Text>
+          </View>
+        )}
+      </Animated.View>
     </View>
-  </View>
-);
+  );
+});
 
-const iconStyles = StyleSheet.create({
+const itemStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: CAROUSEL_ITEM_WIDTH,
+    height: CARD_SIZE + 40,
     justifyContent: 'center',
-  },
-  prevBar: {
-    width: 6,
-    height: 40,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 3,
-    marginRight: 8,
-  },
-  prevTriangle: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 22,
-    borderBottomWidth: 22,
-    borderRightWidth: 36,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderRightColor: '#FFFFFF',
-  },
-  pauseContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    overflow: 'visible',
   },
-  pauseBar: {
-    width: 14,
-    height: 50,
+  card: {
+    width: CARD_SIZE,
+    height: CARD_SIZE,
+    borderRadius: CARD_RADIUS,
+    overflow: 'hidden',
     backgroundColor: '#FFFFFF',
-    borderRadius: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#7B61FF',
+        shadowOffset: { width: 0, height: 22 },
+        shadowOpacity: 0.3,
+        shadowRadius: 40,
+      },
+      android: {
+        elevation: 15,
+      },
+    }),
   },
-  playTriangle: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 25,
-    borderBottomWidth: 25,
-    borderLeftWidth: 42,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-    marginLeft: 8,
+  logo: {
+    width: '100%',
+    height: '100%',
   },
-  nextTriangle: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 22,
-    borderBottomWidth: 22,
-    borderLeftWidth: 36,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-  },
-  nextBar: {
-    width: 6,
-    height: 40,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 3,
-    marginLeft: 8,
-  },
-  muteContainer: {
-    flexDirection: 'row',
+  placeholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#2A2A2A',
   },
-  speakerBody: {
-    width: 14,
-    height: 18,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
-  },
-  speakerCone: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 14,
-    borderBottomWidth: 14,
-    borderLeftWidth: 14,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-  },
-  muteX: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '300',
-    marginLeft: 4,
-  },
-  volumeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  speakerBodySmall: {
-    width: 10,
-    height: 12,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 1,
-  },
-  speakerConeSmall: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 10,
-    borderBottomWidth: 10,
-    borderLeftWidth: 10,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: '#FFFFFF',
-  },
-  soundWaves: {
-    marginLeft: 4,
-  },
-  soundWave1: {
-    width: 6,
-    height: 14,
-    borderWidth: 2,
-    borderLeftWidth: 0,
-    borderColor: '#FFFFFF',
-    borderRadius: 10,
-    marginBottom: 2,
-  },
-  soundWave2: {
-    width: 10,
-    height: 20,
-    borderWidth: 2,
-    borderLeftWidth: 0,
-    borderColor: '#FFFFFF',
-    borderRadius: 12,
-    position: 'absolute',
-    left: 2,
-    top: -3,
+  placeholderText: {
+    fontSize: 48,
+    fontWeight: '700',
+    color: '#666',
   },
 });
 
 export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }) => {
   const { currentStation, playbackState, nowPlaying } = usePlayerStore();
   const { playStation, togglePlayPause, setVolume } = useAudioPlayer();
-  const { data: popularData } = usePopularStations(undefined, 10);
+  const { data: popularData } = usePopularStations(undefined, 15);
   const [volume, setVolumeState] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollRef = useRef<ScrollView>(null);
+  const carouselRef = useRef<any>(null);
+
+  const [fontsLoaded] = useFonts({
+    'Ubuntu-Bold': require('../../assets/fonts/Ubuntu-Bold.ttf'),
+  });
 
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
 
   const stations = useMemo(() => {
     const data = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
-    return data.slice(0, 10);
+    return data.slice(0, 15);
   }, [popularData]);
 
-  // Find current station index in list
+  // Scroll carousel to current station when data loads
   useEffect(() => {
-    if (currentStation && stations.length > 0) {
-      const idx = stations.findIndex(s => s._id === currentStation._id);
+    if (visible && currentStation && stations.length > 0 && carouselRef.current) {
+      const idx = stations.findIndex((s: Station) => s._id === currentStation._id);
       if (idx !== -1) {
-        setCurrentIndex(idx);
+        setTimeout(() => {
+          carouselRef.current?.scrollTo({ index: idx, animated: false });
+        }, 100);
       }
     }
-  }, [currentStation, stations]);
+  }, [visible, stations, currentStation]);
 
   const getLogoUrl = useCallback((station: Station) => {
     if (station.logoAssets?.webp192) {
-      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp192}`;
+      return `https://themegaradio.com/station-logos/${(station.logoAssets as any).folder}/${station.logoAssets.webp192}`;
     }
     return station.favicon || station.logo || null;
+  }, []);
+
+  const handleSnapToItem = useCallback((index: number) => {
+    const station = stations[index];
+    if (station && station._id !== currentStation?._id) {
+      playStation(station);
+    }
+  }, [stations, currentStation, playStation]);
+
+  const handlePrev = useCallback(() => {
+    carouselRef.current?.prev();
+  }, []);
+
+  const handleNext = useCallback(() => {
+    carouselRef.current?.next();
   }, []);
 
   const handleVolumeChange = async (value: number) => {
@@ -266,181 +205,170 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose }
     }
   };
 
-  const handleStationSelect = async (station: Station, index: number) => {
-    try {
-      setCurrentIndex(index);
-      await playStation(station);
-    } catch (error) {
-      console.error('[CarMode] Failed to play station:', error);
-    }
-  };
-
-  const handlePrev = async () => {
-    if (stations.length === 0) return;
-    const newIndex = currentIndex > 0 ? currentIndex - 1 : stations.length - 1;
-    await handleStationSelect(stations[newIndex], newIndex);
-  };
-
-  const handleNext = async () => {
-    if (stations.length === 0) return;
-    const newIndex = currentIndex < stations.length - 1 ? currentIndex + 1 : 0;
-    await handleStationSelect(stations[newIndex], newIndex);
-  };
-
   const getCurrentSongInfo = () => {
-    if (nowPlaying?.artist && nowPlaying?.title) {
-      return `${nowPlaying.artist} - ${nowPlaying.title}`;
+    if (nowPlaying?.title && nowPlaying?.station) {
+      return `${nowPlaying.title}`;
     }
     if (nowPlaying?.title) return nowPlaying.title;
-    if (nowPlaying?.song) return nowPlaying.song;
     if (currentStation?.genres?.[0]) return currentStation.genres[0];
     return 'Live Radio';
   };
 
-  // Don't render if not visible
-  if (!visible) {
-    return null;
-  }
+  if (!visible) return null;
 
-  // Get visible stations (prev, current, next)
-  const getVisibleStations = () => {
-    if (stations.length === 0) return [];
-    
-    const result = [];
-    const prevIdx = currentIndex > 0 ? currentIndex - 1 : stations.length - 1;
-    const nextIdx = currentIndex < stations.length - 1 ? currentIndex + 1 : 0;
-    
-    // Add more stations for scrolling effect
-    const prevPrevIdx = prevIdx > 0 ? prevIdx - 1 : stations.length - 1;
-    const nextNextIdx = nextIdx < stations.length - 1 ? nextIdx + 1 : 0;
-    
-    result.push({ station: stations[prevPrevIdx], position: 'far-left', index: prevPrevIdx });
-    result.push({ station: stations[prevIdx], position: 'left', index: prevIdx });
-    result.push({ station: stations[currentIndex], position: 'center', index: currentIndex });
-    result.push({ station: stations[nextIdx], position: 'right', index: nextIdx });
-    result.push({ station: stations[nextNextIdx], position: 'far-right', index: nextNextIdx });
-    
-    return result;
-  };
-
-  const visibleStations = getVisibleStations();
+  const initialIndex = (() => {
+    if (currentStation && stations.length > 0) {
+      const idx = stations.findIndex((s: Station) => s._id === currentStation._id);
+      return idx !== -1 ? idx : 0;
+    }
+    return 0;
+  })();
 
   return (
-    <View style={styles.overlay}>
-      <StatusBar barStyle="light-content" backgroundColor="#0D0D0D" />
+    <View style={styles.overlay} data-testid="car-mode-screen">
+      <StatusBar barStyle="light-content" backgroundColor="#1B1C1E" />
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Car Mode</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Station Carousel - Center current with prev/next visible */}
-        <View style={styles.carouselContainer}>
-          <View style={styles.carouselInner}>
-            {visibleStations.map((item, idx) => {
-              const logo = getLogoUrl(item.station);
-              const isCenter = item.position === 'center';
-              const isSide = item.position === 'left' || item.position === 'right';
-              const isFar = item.position === 'far-left' || item.position === 'far-right';
-              
-              const cardSize = isCenter ? CENTER_CARD_SIZE : SIDE_CARD_SIZE;
-              const opacity = isFar ? 0.3 : isSide ? 0.7 : 1;
-              const scale = isCenter ? 1 : isSide ? 0.85 : 0.7;
-              
-              return (
-                <TouchableOpacity
-                  key={`${item.station._id}-${idx}`}
-                  style={[
-                    styles.stationCard,
-                    {
-                      width: cardSize,
-                      height: cardSize,
-                      opacity,
-                      transform: [{ scale }],
-                      zIndex: isCenter ? 10 : isSide ? 5 : 1,
-                    },
-                    isCenter && styles.centerCard,
-                  ]}
-                  onPress={() => handleStationSelect(item.station, item.index)}
-                  activeOpacity={0.9}
-                >
-                  {logo ? (
-                    <Image source={{ uri: logo }} style={styles.stationLogo} resizeMode="cover" />
-                  ) : (
-                    <View style={styles.stationLogoPlaceholder}>
-                      <Text style={styles.placeholderText}>{item.station.name.charAt(0)}</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-
-        {/* Animated Playing Indicator */}
-        <View style={styles.playingIndicator}>
-          <View style={[styles.indicatorBar, styles.bar1]} />
-          <View style={[styles.indicatorBar, styles.bar2]} />
-          <View style={[styles.indicatorBar, styles.bar3]} />
-        </View>
-
-        {/* Now Playing Info */}
-        <View style={styles.nowPlayingInfo}>
-          <Text style={styles.stationName}>{currentStation?.name || 'No Station'}</Text>
-          <Text style={styles.songInfo}>{getCurrentSongInfo()}</Text>
-        </View>
-
-        {/* Main Controls */}
-        <View style={styles.mainControls}>
-          {/* Previous */}
-          <TouchableOpacity style={styles.controlButton} onPress={handlePrev}>
-            <PrevIcon />
-          </TouchableOpacity>
-
-          {/* Play/Pause */}
+          <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}>
+            Car Mode
+          </Text>
           <TouchableOpacity
-            style={styles.controlButton}
+            style={styles.closeButton}
+            onPress={onClose}
+            data-testid="car-mode-close-btn"
+          >
+            <Text style={[styles.closeText, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}>
+              Close
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Station Carousel */}
+        {stations.length > 0 ? (
+          <View style={styles.carouselWrapper}>
+            <Carousel
+              ref={carouselRef}
+              width={CAROUSEL_ITEM_WIDTH}
+              height={CARD_SIZE + 40}
+              data={stations}
+              loop
+              defaultIndex={initialIndex}
+              style={styles.carousel}
+              onSnapToItem={handleSnapToItem}
+              renderItem={({ item, animationValue }: any) => (
+                <CarouselStationItem
+                  station={item}
+                  animationValue={animationValue}
+                  getLogoUrl={getLogoUrl}
+                />
+              )}
+            />
+          </View>
+        ) : (
+          <View style={styles.carouselPlaceholder}>
+            <Text style={styles.loadingText}>Loading stations...</Text>
+          </View>
+        )}
+
+        {/* Equalizer bars */}
+        <View style={styles.equalizer}>
+          <View style={[styles.eqBar, { height: 20 }]} />
+          <View style={[styles.eqBar, { height: 14 }]} />
+          <View style={[styles.eqBar, { height: 17 }]} />
+        </View>
+
+        {/* Station name + Song info */}
+        <View style={styles.nowPlaying}>
+          <Text
+            style={[styles.stationName, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}
+            numberOfLines={1}
+            data-testid="car-mode-station-name"
+          >
+            {currentStation?.name || 'No Station'}
+          </Text>
+          <Text style={styles.songInfo} numberOfLines={1}>
+            {getCurrentSongInfo()}
+          </Text>
+        </View>
+
+        {/* Main Controls: Prev | Play/Pause | Next */}
+        <View style={styles.controls}>
+          <TouchableOpacity
+            style={styles.controlBtn}
+            onPress={handlePrev}
+            data-testid="car-mode-prev-btn"
+          >
+            <View style={styles.iconRow}>
+              <View style={styles.prevBar} />
+              <View style={styles.prevTriangle} />
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.controlBtn}
             onPress={togglePlayPause}
             disabled={isLoading}
+            data-testid="car-mode-playpause-btn"
           >
-            {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            {isPlaying ? (
+              <View style={styles.pauseIconRow}>
+                <View style={styles.pauseBar} />
+                <View style={styles.pauseBar} />
+              </View>
+            ) : (
+              <View style={styles.playTriangle} />
+            )}
           </TouchableOpacity>
 
-          {/* Next */}
-          <TouchableOpacity style={styles.controlButton} onPress={handleNext}>
-            <NextIcon />
+          <TouchableOpacity
+            style={styles.controlBtn}
+            onPress={handleNext}
+            data-testid="car-mode-next-btn"
+          >
+            <View style={styles.iconRow}>
+              <View style={styles.nextTriangle} />
+              <View style={styles.nextBar} />
+            </View>
           </TouchableOpacity>
         </View>
 
-        {/* Volume Controls */}
-        <View style={styles.volumeControls}>
-          {/* Mute Button */}
-          <TouchableOpacity style={styles.muteButton} onPress={handleMuteToggle}>
-            <MuteIcon />
+        {/* Volume: Mute | Slider */}
+        <View style={styles.volumeRow}>
+          <TouchableOpacity
+            style={styles.muteBtn}
+            onPress={handleMuteToggle}
+            data-testid="car-mode-mute-btn"
+          >
+            <View style={styles.speakerIcon}>
+              <View style={styles.speakerBody} />
+              <View style={styles.speakerCone} />
+              {isMuted && <Text style={styles.muteX}>x</Text>}
+            </View>
           </TouchableOpacity>
 
-          {/* Volume Slider */}
-          <View style={styles.volumeSliderContainer}>
-            <VolumeIcon />
+          <View style={styles.volumeSliderBox}>
+            <View style={styles.speakerIconSmall}>
+              <View style={styles.speakerBodySmall} />
+              <View style={styles.speakerConeSmall} />
+              <View style={styles.soundWave} />
+            </View>
             <Slider
               style={styles.volumeSlider}
               minimumValue={0}
               maximumValue={1}
               value={isMuted ? 0 : volume}
               onValueChange={handleVolumeChange}
-              minimumTrackTintColor="#FF4D8D"
-              maximumTrackTintColor="#333333"
-              thumbTintColor="#FF4D8D"
+              minimumTrackTintColor="#FF4199"
+              maximumTrackTintColor="#373737"
+              thumbTintColor="#FF4199"
             />
           </View>
         </View>
 
         {/* REC Button */}
         <View style={styles.recContainer}>
-          <TouchableOpacity style={styles.recButton}>
+          <TouchableOpacity style={styles.recButton} data-testid="car-mode-rec-btn">
             <View style={styles.recDotOuter}>
               <View style={styles.recDotInner} />
             </View>
@@ -459,205 +387,297 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#0D0D0D',
+    backgroundColor: '#1B1C1E',
     zIndex: 1000,
   },
   safeArea: {
     flex: 1,
   },
+
+  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 16,
+    paddingHorizontal: 15,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#FFFFFF',
   },
   closeButton: {
-    backgroundColor: '#2A2A2A',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 24,
+    backgroundColor: '#2F2F2F',
+    paddingHorizontal: 21,
+    paddingVertical: 14,
+    borderRadius: 25,
   },
   closeText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#FFFFFF',
-  },
-
-  // Carousel with centered current station
-  carouselContainer: {
-    marginTop: 30,
-    height: CENTER_CARD_SIZE + 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  carouselInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stationCard: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    backgroundColor: '#1A1A1A',
-    marginHorizontal: 6,
-  },
-  centerCard: {
-    // Purple glow shadow - Figma: box-shadow: 0px 21.71px 81.43px 14.11px #7B61FF4D
-    ...Platform.select({
-      ios: {
-        shadowColor: '#7B61FF',
-        shadowOffset: { width: 0, height: 22 },
-        shadowOpacity: 0.3,
-        shadowRadius: 40,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-  },
-  stationLogo: {
-    width: '100%',
-    height: '100%',
-  },
-  stationLogoPlaceholder: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2A2A2A',
-  },
-  placeholderText: {
-    fontSize: 48,
+    fontSize: 15,
     fontWeight: '700',
-    color: '#666',
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 
-  // Playing indicator bars
-  playingIndicator: {
+  // Carousel
+  carouselWrapper: {
+    marginTop: 20,
+    height: CARD_SIZE + 40,
+    alignItems: 'center',
+    overflow: 'visible',
+  },
+  carousel: {
+    width: SCREEN_WIDTH,
+    overflow: 'visible',
+  },
+  carouselPlaceholder: {
+    height: CARD_SIZE + 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#888',
+  },
+
+  // Equalizer
+  equalizer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginTop: 24,
-    height: 24,
-    gap: 4,
-  },
-  indicatorBar: {
-    width: 6,
-    backgroundColor: '#FF4D8D',
-    borderRadius: 3,
-  },
-  bar1: {
-    height: 12,
-  },
-  bar2: {
+    marginTop: 16,
     height: 20,
+    gap: 2,
   },
-  bar3: {
-    height: 14,
+  eqBar: {
+    width: 5,
+    backgroundColor: '#FF4199',
+    borderRadius: 10,
   },
 
   // Now Playing
-  nowPlayingInfo: {
+  nowPlaying: {
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 8,
     paddingHorizontal: 24,
   },
   stationName: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: '700',
     color: '#FFFFFF',
     textAlign: 'center',
   },
   songInfo: {
-    fontSize: 16,
-    color: '#888888',
-    marginTop: 6,
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#FFFFFF',
+    marginTop: 3,
     textAlign: 'center',
   },
 
   // Main Controls
-  mainControls: {
+  controls: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 36,
-    gap: 16,
-    paddingHorizontal: 20,
+    marginTop: 28,
+    paddingHorizontal: 15,
+    gap: 19,
   },
-  controlButton: {
-    width: CONTROL_BUTTON_SIZE,
-    height: 85,
-    borderRadius: 20,
-    backgroundColor: '#2A2A2A',
+  controlBtn: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: '#282828',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  // Volume Controls
-  volumeControls: {
+  // Prev/Next icons (60x60 inner area)
+  iconRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 28,
-    paddingHorizontal: 24,
-    gap: 12,
+    justifyContent: 'center',
   },
-  muteButton: {
+  prevBar: {
+    width: 6,
+    height: 35,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+    marginRight: 6,
+  },
+  prevTriangle: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 18,
+    borderBottomWidth: 18,
+    borderRightWidth: 30,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: '#FFFFFF',
+  },
+  nextTriangle: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 18,
+    borderBottomWidth: 18,
+    borderLeftWidth: 30,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+  },
+  nextBar: {
+    width: 6,
+    height: 35,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+    marginLeft: 6,
+  },
+
+  // Pause icon
+  pauseIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  pauseBar: {
+    width: 12,
+    height: 42,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+  },
+
+  // Play icon
+  playTriangle: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 22,
+    borderBottomWidth: 22,
+    borderLeftWidth: 36,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+    marginLeft: 6,
+  },
+
+  // Volume Row
+  volumeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 22,
+    paddingHorizontal: 15,
+    gap: 19,
+  },
+  muteBtn: {
     width: 100,
-    height: 65,
-    borderRadius: 20,
-    backgroundColor: '#2A2A2A',
+    height: 56,
+    borderRadius: 10,
+    backgroundColor: '#282828',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  volumeSliderContainer: {
+  volumeSliderBox: {
     flex: 1,
+    height: 56,
+    borderRadius: 10,
+    backgroundColor: '#282828',
     flexDirection: 'row',
     alignItems: 'center',
-    height: 65,
-    backgroundColor: '#2A2A2A',
-    borderRadius: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   volumeSlider: {
     flex: 1,
     height: 40,
-    marginLeft: 12,
+    marginLeft: 6,
   },
 
-  // REC Button
+  // Speaker icons
+  speakerIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  speakerBody: {
+    width: 12,
+    height: 14,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 2,
+  },
+  speakerCone: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 11,
+    borderBottomWidth: 11,
+    borderLeftWidth: 11,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+  },
+  muteX: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 2,
+  },
+  speakerIconSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  speakerBodySmall: {
+    width: 9,
+    height: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 1,
+  },
+  speakerConeSmall: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 8,
+    borderBottomWidth: 8,
+    borderLeftWidth: 8,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: '#FFFFFF',
+  },
+  soundWave: {
+    width: 6,
+    height: 12,
+    borderWidth: 2,
+    borderLeftWidth: 0,
+    borderColor: '#FFFFFF',
+    borderRadius: 8,
+    marginLeft: 3,
+  },
+
+  // REC
   recContainer: {
     alignItems: 'center',
-    marginTop: 36,
+    marginTop: 32,
   },
   recButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   recDotOuter: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 25,
+    height: 25,
+    borderRadius: 13,
     borderWidth: 2,
-    borderColor: '#FF6B6B',
+    borderColor: '#FF6161',
     justifyContent: 'center',
     alignItems: 'center',
   },
   recDotInner: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FF6B6B',
+    width: 17,
+    height: 17,
+    borderRadius: 9,
+    backgroundColor: '#FF6161',
   },
   recText: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '400',
     color: '#FFFFFF',
   },
 });
