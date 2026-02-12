@@ -873,6 +873,12 @@ const styles = StyleSheet.create({
   jazzImage: {
     opacity: 0.5,
   },
+  jazzBannerImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    opacity: 0.8,
+  },
 
   // Users List - Full width with specified dimensions
   usersList: {
