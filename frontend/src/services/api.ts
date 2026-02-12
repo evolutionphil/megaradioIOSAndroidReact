@@ -1,5 +1,10 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import { Platform } from 'react-native';
 import { API_BASE_URL } from '../constants/api';
+
+// For web preview, we cannot use credentials due to CORS
+// Native apps will handle cookies differently
+const isWeb = Platform.OS === 'web';
 
 // Create axios instance with cookie support
 const api: AxiosInstance = axios.create({
@@ -8,7 +13,8 @@ const api: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Important for cookie-based auth
+  // Only use credentials on native platforms where CORS isn't an issue
+  withCredentials: !isWeb,
 });
 
 // Request interceptor
