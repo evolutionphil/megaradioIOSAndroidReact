@@ -398,6 +398,11 @@ export default function HomeScreen() {
                   ['#FC466B', '#3F5EFB'],
                 ][index % 5];
                 
+                // Use API image
+                const imageUrl = genre.discoverableImage 
+                  ? `https://themegaradio.com${genre.discoverableImage}`
+                  : getGenreBannerImage(genre);
+                
                 return (
                   <TouchableOpacity 
                     style={styles.discoverableBannerItem}
@@ -409,15 +414,15 @@ export default function HomeScreen() {
                       end={{ x: 1, y: 0 }}
                       style={styles.discoverableBannerGradient}
                     >
+                      <Image 
+                        source={{ uri: imageUrl }}
+                        style={styles.discoverableBannerImage}
+                        resizeMode="cover"
+                      />
                       <View style={styles.discoverableBannerContent}>
                         <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
                         <Text style={styles.discoverableBannerSubtitle}>Discover all the stations</Text>
                       </View>
-                      <Image 
-                        source={{ uri: getGenreBannerImage(genre) }}
-                        style={styles.discoverableBannerImage}
-                        resizeMode="cover"
-                      />
                     </LinearGradient>
                   </TouchableOpacity>
                 );
