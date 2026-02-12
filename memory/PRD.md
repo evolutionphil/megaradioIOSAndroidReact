@@ -30,14 +30,16 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
   - Secondary controls: share, headset, broadcast, REC button
   - Recently Played section (Ubuntu-Bold font)
   - Similar Radios section (from API)
-- [x] Car Mode Screen with Swiper UI
-  - react-native-reanimated-carousel with custom scale/opacity animations
-  - Center card 150px with purple glow shadow
-  - Adjacent cards 126px, far cards 96px (via scale interpolation)
-  - Auto-play on swipe (onSnapToItem)
-  - Prev/Pause/Next control buttons (100x100, #282828)
-  - Volume mute + slider controls
-  - REC button
+- [x] Car Mode Screen with Custom Carousel
+  - Custom-built carousel with PanResponder + absolute positioning (pixel-perfect Figma match)
+  - 5 overlapping cards: center 150px, adjacent 126px, far 96px (scaled to screen width)
+  - Purple glow shadow on cards (iOS: shadowColor #7B61FF, web: boxShadow)
+  - Z-ordering: center on top (zIndex: 10), adjacent behind (5), far (1)
+  - Auto-play on swipe via PanResponder gesture detection
+  - Animated equalizer bars (3 pink bars with height animation)
+  - Large control buttons (100px): Previous, Pause/Play, Next
+  - Volume: Mute button + Slider with pink (#FF4199) track
+  - REC button with red dot indicator
   - Close button, Car Mode title (Ubuntu-Bold)
 - [x] Now Playing API with ICY Metadata
   - Backend fetches actual song title from radio stream ICY metadata
