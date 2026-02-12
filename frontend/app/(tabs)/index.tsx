@@ -270,14 +270,14 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Recently Played</Text>
             </View>
             {recentStations.length > 0 ? (
-              <View style={styles.stationGridCustom}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%' }}>
                 {recentStations.slice(0, 6).map((station: Station, index: number) => (
                   <View
                     key={station._id}
-                    style={{ width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0, marginBottom: 12 }}
+                    style={{ width: 109, marginRight: (index + 1) % 3 !== 0 ? 8 : 0, marginBottom: 12 }}
                   >
                     <TouchableOpacity onPress={() => handleStationPress(station)}>
-                      <View style={{ width: gridItemWidth, height: gridItemWidth, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                      <View style={{ width: 109, height: 109, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
                         <Image 
                           source={{ uri: getLogoUrl(station) || undefined }} 
                           style={{ width: '100%', height: '100%' }} 
@@ -293,14 +293,14 @@ export default function HomeScreen() {
                 ))}
               </View>
             ) : popularStations.length > 0 ? (
-              <View style={styles.stationGridCustom}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%' }}>
                 {popularStations.slice(0, 6).map((station: Station, index: number) => (
                   <View
                     key={station._id}
-                    style={{ width: gridItemWidth, marginRight: (index + 1) % 3 !== 0 ? gridGap : 0, marginBottom: 12 }}
+                    style={{ width: 109, marginRight: (index + 1) % 3 !== 0 ? 8 : 0, marginBottom: 12 }}
                   >
                     <TouchableOpacity onPress={() => handleStationPress(station)}>
-                      <View style={{ width: gridItemWidth, height: gridItemWidth, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
+                      <View style={{ width: 109, height: 109, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
                         <Image 
                           source={{ uri: getLogoUrl(station) || undefined }} 
                           style={{ width: '100%', height: '100%' }} 
