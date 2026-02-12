@@ -118,7 +118,12 @@ export const stationService = {
     const response = await api.get(API_ENDPOINTS.discover.search, {
       params: { q: query, limit },
     });
-    return response.data;
+    // API returns { results: [...], cached, total, query, type }
+    const data = response.data;
+    if (data && data.results) {
+      return data.results;
+    }
+    return Array.isArray(data) ? data : [];
   },
 
   // Get top 100 stations
