@@ -58,6 +58,10 @@ export default function HomeScreen() {
   // Use window width if available, otherwise use Dimensions API
   const screenWidth = windowWidth > 0 ? windowWidth : Dimensions.get('window').width || 375;
   
+  // Calculate grid item size dynamically
+  const GRID_ITEM_SIZE = getGridItemSize(screenWidth);
+  const GRID_GAP = 8;
+  
   // Calculate grid item width dynamically
   // For 375px screen: (375 - 30 - 16) / 3 = ~109px
   const contentWidth = screenWidth - (SIDE_PADDING * 2);
