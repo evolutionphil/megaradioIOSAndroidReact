@@ -20,6 +20,7 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
+import { CarModeScreen } from '../src/components/CarModeScreen';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -29,9 +30,143 @@ const GRID_PADDING = 16;
 const GRID_GAP = 12;
 const GRID_ITEM_WIDTH = Math.floor((SCREEN_WIDTH - (GRID_PADDING * 2) - (GRID_GAP * 2)) / 3);
 
+// Custom Icon Components
+const ShareIcon = ({ size = 24, color = '#888888' }) => (
+  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ 
+      width: size * 0.35, 
+      height: size * 0.35, 
+      backgroundColor: color, 
+      borderRadius: size,
+      position: 'absolute',
+      left: 0,
+      top: '50%',
+      marginTop: -size * 0.175,
+    }} />
+    <View style={{ 
+      width: size * 0.3, 
+      height: size * 0.3, 
+      backgroundColor: color, 
+      borderRadius: size,
+      position: 'absolute',
+      right: 0,
+      top: size * 0.1,
+    }} />
+    <View style={{ 
+      width: size * 0.3, 
+      height: size * 0.3, 
+      backgroundColor: color, 
+      borderRadius: size,
+      position: 'absolute',
+      right: 0,
+      bottom: size * 0.1,
+    }} />
+    <View style={{ 
+      width: size * 0.4, 
+      height: 2, 
+      backgroundColor: color, 
+      position: 'absolute',
+      transform: [{ rotate: '-35deg' }],
+      left: size * 0.2,
+      top: size * 0.3,
+    }} />
+    <View style={{ 
+      width: size * 0.4, 
+      height: 2, 
+      backgroundColor: color, 
+      position: 'absolute',
+      transform: [{ rotate: '35deg' }],
+      left: size * 0.2,
+      bottom: size * 0.3,
+    }} />
+  </View>
+);
+
+const LockRadioIcon = ({ size = 24, color = '#888888' }) => (
+  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+    {/* Lock shackle */}
+    <View style={{ 
+      width: size * 0.5, 
+      height: size * 0.35, 
+      borderWidth: 2.5, 
+      borderBottomWidth: 0,
+      borderColor: color, 
+      borderRadius: size * 0.25,
+      position: 'absolute',
+      top: 0,
+    }} />
+    {/* Lock body */}
+    <View style={{ 
+      width: size * 0.7, 
+      height: size * 0.5, 
+      backgroundColor: color, 
+      borderRadius: 4,
+      position: 'absolute',
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
+      {/* Lock hole */}
+      <View style={{ 
+        width: size * 0.15, 
+        height: size * 0.15, 
+        backgroundColor: '#0D1B1E', 
+        borderRadius: size,
+      }} />
+    </View>
+  </View>
+);
+
+const BroadcastIcon = ({ size = 24, color = '#888888' }) => (
+  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+    {/* Outer arc */}
+    <View style={{ 
+      width: size * 0.9, 
+      height: size * 0.5, 
+      borderWidth: 2, 
+      borderBottomWidth: 0,
+      borderColor: color, 
+      borderRadius: size * 0.45,
+      position: 'absolute',
+      top: size * 0.05,
+    }} />
+    {/* Middle arc */}
+    <View style={{ 
+      width: size * 0.6, 
+      height: size * 0.35, 
+      borderWidth: 2, 
+      borderBottomWidth: 0,
+      borderColor: color, 
+      borderRadius: size * 0.3,
+      position: 'absolute',
+      top: size * 0.2,
+    }} />
+    {/* Center dot */}
+    <View style={{ 
+      width: size * 0.2, 
+      height: size * 0.2, 
+      backgroundColor: color, 
+      borderRadius: size,
+      position: 'absolute',
+      top: size * 0.4,
+    }} />
+    {/* Base */}
+    <View style={{ 
+      width: size * 0.35, 
+      height: size * 0.25, 
+      backgroundColor: color, 
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 4,
+      position: 'absolute',
+      bottom: 0,
+    }} />
+  </View>
+);
+
 export default function PlayerScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
+  const [showCarMode, setShowCarMode] = useState(false);
   
   // Load Ubuntu font
   const [fontsLoaded] = useFonts({
