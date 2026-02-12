@@ -20,6 +20,7 @@ import { colors, gradients, spacing, borderRadius, typography } from '../../src/
 import {
   usePopularStations,
   usePrecomputedGenres,
+  useDiscoverableGenres,
   useTop100,
   useRecentlyPlayed,
   useCommunityFavorites,
@@ -32,6 +33,9 @@ import type { Station, Genre } from '../../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const GRID_ITEM_WIDTH = (SCREEN_WIDTH - spacing.md * 2 - spacing.sm * 2) / 3;
+// Symmetric horizontal padding
+const HORIZONTAL_PADDING = 15;
+const CONTENT_WIDTH = 345;
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -40,6 +44,7 @@ export default function HomeScreen() {
 
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
+  const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
   const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21 });
