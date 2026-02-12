@@ -335,7 +335,6 @@ export default function PlayerScreen() {
               source={{ uri: stationLogo }} 
               style={styles.gridImage}
               resizeMode="cover"
-              defaultSource={require('../src/assets/placeholder.png')}
             />
           ) : (
             <View style={[styles.gridImage, styles.gridPlaceholder]}>
