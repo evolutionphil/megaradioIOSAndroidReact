@@ -471,15 +471,15 @@ export default function PlayerScreen() {
             <View style={styles.leftSecondaryControls}>
               {/* Share */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="share-social-outline" size={24} color="#888888" />
+                <ShareIcon size={24} color="#888888" />
               </TouchableOpacity>
-              {/* Headset */}
+              {/* Lock Radio */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="headset-outline" size={24} color="#888888" />
+                <LockRadioIcon size={24} color="#888888" />
               </TouchableOpacity>
               {/* Broadcast */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="radio-outline" size={24} color="#888888" />
+                <BroadcastIcon size={24} color="#888888" />
               </TouchableOpacity>
             </View>
             {/* REC Button */}
@@ -516,6 +516,9 @@ export default function PlayerScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
+      
+      {/* Car Mode Modal */}
+      <CarModeScreen visible={showCarMode} onClose={() => setShowCarMode(false)} />
     </View>
   );
 }
