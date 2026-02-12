@@ -310,10 +310,15 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
 
   const ub = fontsLoaded ? { fontFamily: 'Ubuntu-Bold' } : { fontWeight: '700' as const };
 
+  // Get iOS status bar height for proper safe area
+  const statusBarHeight = Platform.OS === 'ios' ? 54 : StatusBar.currentHeight || 0;
+
   return (
     <View style={styles.overlay} data-testid="car-mode-screen">
       <StatusBar barStyle="light-content" backgroundColor="#1B1C1E" />
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      
+      {/* Main content with manual safe area padding */}
+      <View style={[styles.contentContainer, { paddingTop: statusBarHeight }]}>
         {/* ── Header ─────────────────── */}
         <View style={styles.header}>
           <Text style={[styles.headerTitle, ub]}>Car Mode</Text>
@@ -328,6 +333,8 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
 
         {/* ── Station Carousel ────────── */}
         <View style={styles.carouselSection}>
+          {/* Purple glow behind center card */}
+          <View style={styles.centerGlow} />
           <StationCarousel
             stations={stations}
             currentIndex={carouselIndex}
@@ -418,7 +425,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
             <Text style={styles.recText}>REC</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     </View>
   );
 };
@@ -435,7 +442,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B1C1E',
     zIndex: 1000,
   },
-  safeArea: { flex: 1, justifyContent: 'space-between' },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20, // Home indicator safe area
+  },
 
   header: {
     flexDirection: 'row',
@@ -453,7 +464,28 @@ const styles = StyleSheet.create({
   },
   closeBtnText: { fontSize: 15 * S, color: '#FFF', textAlign: 'center' },
 
-  carouselSection: { alignItems: 'center' },
+  carouselSection: { 
+    alignItems: 'center',
+    position: 'relative',
+  },
+  
+  // Purple glow effect behind center card
+  centerGlow: {
+    position: 'absolute',
+    top: -20 * S,
+    left: SCREEN_WIDTH / 2 - 100 * S,
+    width: 200 * S,
+    height: 200 * S,
+    borderRadius: 100 * S,
+    backgroundColor: '#7B61FF',
+    opacity: 0.4,
+    ...(Platform.OS === 'web' ? {
+      // @ts-ignore
+      filter: 'blur(60px)',
+    } : {
+      // iOS/Android: Use shadow for glow effect
+    }),
+  },
 
   infoSection: { alignItems: 'center', paddingHorizontal: 20 * S },
   stationName: { fontSize: 20 * S, color: '#FFF', textAlign: 'center' },
