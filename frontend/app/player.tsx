@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useFonts } from 'expo-font';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
@@ -21,30 +22,33 @@ import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import type { Station } from '../src/types';
 
+// Custom player icons
+const ShareIcon = require('../src/assets/player-icons/share.png');
+const HeadsetIcon = require('../src/assets/player-icons/headset.png');
+const BroadcastIcon = require('../src/assets/player-icons/broadcast.png');
+const RecIcon = require('../src/assets/player-icons/rec.png');
+const PrevIcon = require('../src/assets/player-icons/prev.png');
+const NextIcon = require('../src/assets/player-icons/next.png');
+const PauseIcon = require('../src/assets/player-icons/pause.png');
+const TimerIcon = require('../src/assets/player-icons/timer.png');
+const HeartIcon = require('../src/assets/player-icons/heart.png');
+
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_SIZE = 190;
-// Calculate grid item width for 3 columns with proper spacing
+// 3 column grid calculation
 const GRID_PADDING = 16;
 const GRID_GAP = 12;
 const GRID_ITEM_WIDTH = Math.floor((SCREEN_WIDTH - (GRID_PADDING * 2) - (GRID_GAP * 2)) / 3);
 
-// Country code to flag emoji mapping
-const getCountryFlag = (countryCode?: string): string => {
-  if (!countryCode) return '🌍';
-  const code = countryCode.toUpperCase();
-  const flags: Record<string, string> = {
-    'DE': '🇩🇪', 'TR': '🇹🇷', 'US': '🇺🇸', 'GB': '🇬🇧', 'FR': '🇫🇷',
-    'ES': '🇪🇸', 'IT': '🇮🇹', 'NL': '🇳🇱', 'BE': '🇧🇪', 'AT': '🇦🇹',
-    'CH': '🇨🇭', 'PL': '🇵🇱', 'RU': '🇷🇺', 'JP': '🇯🇵', 'KR': '🇰🇷',
-    'GERMANY': '🇩🇪', 'TURKEY': '🇹🇷', 'UNITED STATES': '🇺🇸',
-    'HUNGARY': '🇭🇺', 'HU': '🇭🇺',
-  };
-  return flags[code] || '🌍';
-};
-
 export default function PlayerScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
+  
+  // Load Ubuntu font
+  const [fontsLoaded] = useFonts({
+    'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
+  });
+  
   const {
     currentStation,
     playbackState,
@@ -53,7 +57,7 @@ export default function PlayerScreen() {
 
   const { playStation, togglePlayPause, stopPlayback } = useAudioPlayer();
   
-  // Fetch similar stations based on current station ID
+  // Fetch data with refetchOnWindowFocus disabled to prevent flickering
   const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
   const { data: popularData } = usePopularStations(undefined, 12);
 
@@ -76,7 +80,7 @@ export default function PlayerScreen() {
       const result = await userService.checkFavorite(currentStation._id);
       setIsFavorite(result.isFavorite);
     } catch {
-      // Ignore errors
+      // Ignore
     } finally {
       setCheckingFavorite(false);
     }
@@ -91,7 +95,6 @@ export default function PlayerScreen() {
       router.push('/login');
       return;
     }
-
     try {
       if (isFavorite) {
         await removeFavoriteMutation.mutateAsync(currentStation._id);
@@ -105,15 +108,12 @@ export default function PlayerScreen() {
     }
   };
 
-  // Handle station press - stop current and play new
+  // Handle station press - ALWAYS stops current and plays new
   const handleStationPress = useCallback(async (station: Station) => {
-    if (station._id !== currentStation?._id) {
-      // Stop current playback first
-      await stopPlayback();
-      // Play new station
-      playStation(station);
-    }
-  }, [currentStation?._id, stopPlayback, playStation]);
+    console.log('[Player] Station pressed:', station.name);
+    // Always call playStation - it handles stopping internally
+    playStation(station);
+  }, [playStation]);
 
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
   const isPlaying = playbackState === 'playing';
@@ -127,7 +127,7 @@ export default function PlayerScreen() {
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
   
-  // Memoize stations
+  // Memoize stations to prevent re-renders
   const popularStations = useMemo(() => {
     return popularData?.stations || (Array.isArray(popularData) ? popularData : []);
   }, [popularData]);
@@ -142,10 +142,22 @@ export default function PlayerScreen() {
     return popularStations.filter((s: Station) => s._id !== currentStation?._id);
   }, [similarStations, popularStations, currentStation?._id]);
 
-  const getArtistInfo = () => {
-    if (nowPlaying?.artist) return nowPlaying.artist;
-    if (currentStation?.genres?.[0]) return currentStation.genres[0];
-    return 'Unknown Artist';
+  // Get current song name - from nowPlaying metadata
+  const getCurrentSongInfo = () => {
+    if (nowPlaying?.title) {
+      return nowPlaying.title;
+    }
+    if (nowPlaying?.artist && nowPlaying?.song) {
+      return `${nowPlaying.artist} - ${nowPlaying.song}`;
+    }
+    if (nowPlaying?.artist) {
+      return nowPlaying.artist;
+    }
+    // Fallback to genre if no song info
+    if (currentStation?.genres?.[0]) {
+      return currentStation.genres[0];
+    }
+    return 'Live Radio';
   };
 
   if (!currentStation) {
@@ -153,9 +165,7 @@ export default function PlayerScreen() {
       <View style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.emptyState}>
-            <View style={styles.emptyIconContainer}>
-              <Ionicons name="radio-outline" size={64} color="#666" />
-            </View>
+            <Ionicons name="radio-outline" size={64} color="#666" />
             <Text style={styles.emptyTitle}>No station playing</Text>
             <Text style={styles.emptyText}>Select a station to start listening</Text>
             <TouchableOpacity style={styles.goBackButton} onPress={handleClose}>
@@ -167,8 +177,8 @@ export default function PlayerScreen() {
     );
   }
 
-  // Station Grid Item Component
-  const StationGridItem = React.memo(({ station }: { station: Station }) => {
+  // Grid Item Component
+  const GridItem = React.memo(({ station }: { station: Station }) => {
     const stationLogo = getLogoUrl(station);
     
     return (
@@ -181,7 +191,7 @@ export default function PlayerScreen() {
           {stationLogo ? (
             <Image 
               source={{ uri: stationLogo }} 
-              style={[styles.gridImage, Platform.OS === 'web' && { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}
+              style={styles.gridImage}
               resizeMode="cover" 
             />
           ) : (
@@ -210,51 +220,25 @@ export default function PlayerScreen() {
         >
           {/* Header */}
           <View style={styles.headerContainer}>
-            {Platform.OS !== 'web' ? (
-              <BlurView intensity={25} tint="dark" style={styles.headerBlur}>
-                <View style={styles.header}>
-                  <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
-                    <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <View style={styles.headerCenter}>
-                    <View style={styles.hdBadge}>
-                      <Text style={styles.hdText}>HD</Text>
-                    </View>
-                    <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
-                  </View>
-                  <View style={styles.headerRight}>
-                    <TouchableOpacity style={styles.headerIcon}>
-                      <Ionicons name="car-outline" size={22} color="#FFFFFF" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.headerIcon}>
-                      <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
-                    </TouchableOpacity>
-                  </View>
+            <View style={styles.header}>
+              <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
+                <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
+              </TouchableOpacity>
+              <View style={styles.headerCenter}>
+                <View style={styles.hdBadge}>
+                  <Text style={styles.hdText}>HD</Text>
                 </View>
-              </BlurView>
-            ) : (
-              <View style={styles.headerBlurWeb}>
-                <View style={styles.header}>
-                  <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
-                    <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <View style={styles.headerCenter}>
-                    <View style={styles.hdBadge}>
-                      <Text style={styles.hdText}>HD</Text>
-                    </View>
-                    <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
-                  </View>
-                  <View style={styles.headerRight}>
-                    <TouchableOpacity style={styles.headerIcon}>
-                      <Ionicons name="car-outline" size={22} color="#FFFFFF" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.headerIcon}>
-                      <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
-            )}
+              <View style={styles.headerRight}>
+                <TouchableOpacity style={styles.headerIcon}>
+                  <Ionicons name="car-outline" size={22} color="#FFFFFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.headerIcon}>
+                  <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
 
           {/* Album Art */}
@@ -287,32 +271,32 @@ export default function PlayerScreen() {
               <View style={[styles.dot, styles.dotPink]} />
             </View>
             <Text style={styles.stationName}>{currentStation.name}</Text>
-            <Text style={styles.artistName}>{getArtistInfo()}</Text>
+            <Text style={styles.artistName}>{getCurrentSongInfo()}</Text>
             
             {/* Spotify & YouTube icons */}
             <View style={styles.socialIcons}>
               <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
-                <Ionicons name="logo-spotify" size={18} color="#FFFFFF" />
+                <Ionicons name="musical-notes" size={18} color="#FFFFFF" />
               </TouchableOpacity>
               <TouchableOpacity style={[styles.socialButton, styles.youtubeButton]}>
-                <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
+                <Ionicons name="play-circle" size={18} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
           </View>
 
           {/* Main Controls */}
           <View style={styles.mainControls}>
-            {/* Timer */}
+            {/* Timer - Custom Icon */}
             <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="time-outline" size={28} color="#888888" />
+              <Image source={TimerIcon} style={styles.controlIconImage} resizeMode="contain" />
             </TouchableOpacity>
             
-            {/* Previous */}
+            {/* Previous - Custom Icon */}
             <TouchableOpacity style={styles.skipButton}>
-              <Ionicons name="play-skip-back" size={24} color="#FFFFFF" />
+              <Image source={PrevIcon} style={styles.skipIconImage} resizeMode="contain" />
             </TouchableOpacity>
             
-            {/* Play/Pause - Large button */}
+            {/* Play/Pause */}
             <TouchableOpacity
               style={styles.playPauseButton}
               onPress={togglePlayPause}
@@ -321,74 +305,74 @@ export default function PlayerScreen() {
               {isLoading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
               ) : isPlaying ? (
-                <Ionicons name="pause" size={40} color="#FFFFFF" />
+                <Image source={PauseIcon} style={styles.playPauseIconImage} resizeMode="contain" />
               ) : (
                 <Ionicons name="play" size={40} color="#FFFFFF" style={{ marginLeft: 4 }} />
               )}
             </TouchableOpacity>
             
-            {/* Next */}
+            {/* Next - Custom Icon */}
             <TouchableOpacity style={styles.skipButton}>
-              <Ionicons name="play-skip-forward" size={24} color="#FFFFFF" />
+              <Image source={NextIcon} style={styles.skipIconImage} resizeMode="contain" />
             </TouchableOpacity>
             
-            {/* Heart */}
+            {/* Heart - Custom Icon */}
             <TouchableOpacity
               style={styles.controlButton}
               onPress={handleToggleFavorite}
               disabled={checkingFavorite}
             >
-              <Ionicons 
-                name={isFavorite ? 'heart' : 'heart-outline'} 
-                size={28} 
-                color={isFavorite ? '#FF4757' : '#888888'} 
-              />
+              {isFavorite ? (
+                <Ionicons name="heart" size={28} color="#FF4757" />
+              ) : (
+                <Image source={HeartIcon} style={styles.controlIconImage} resizeMode="contain" />
+              )}
             </TouchableOpacity>
           </View>
 
-          {/* Secondary Controls */}
+          {/* Secondary Controls - Custom Icons */}
           <View style={styles.secondaryControls}>
             <View style={styles.leftSecondaryControls}>
               {/* Share */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="share-social-outline" size={24} color="#888888" />
+                <Image source={ShareIcon} style={styles.secondaryIconImage} resizeMode="contain" />
               </TouchableOpacity>
-              {/* Headset/Lock */}
+              {/* Headset */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="lock-closed-outline" size={24} color="#888888" />
+                <Image source={HeadsetIcon} style={styles.secondaryIconImage} resizeMode="contain" />
               </TouchableOpacity>
               {/* Broadcast */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <Ionicons name="radio-outline" size={24} color="#888888" />
+                <Image source={BroadcastIcon} style={styles.secondaryIconImage} resizeMode="contain" />
               </TouchableOpacity>
             </View>
-            {/* REC Button */}
+            {/* REC Button - Custom Icon */}
             <TouchableOpacity style={styles.recButton}>
-              <View style={styles.recIconWrapper}>
-                <View style={styles.recDotOuter}>
-                  <View style={styles.recDotInner} />
-                </View>
-              </View>
+              <Image source={RecIcon} style={styles.recIconImage} resizeMode="contain" />
               <Text style={styles.recText}>REC</Text>
             </TouchableOpacity>
           </View>
 
           {/* Recently Played Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Recently Played</Text>
+            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}>
+              Recently Played
+            </Text>
             <View style={styles.stationGrid}>
               {popularStations.slice(0, 6).map((station: Station, index: number) => (
-                <StationGridItem key={`recent-${station._id}-${index}`} station={station} />
+                <GridItem key={`recent-${station._id}-${index}`} station={station} />
               ))}
             </View>
           </View>
 
           {/* Similar Radios Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Similar Radios</Text>
+            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}>
+              Similar Radios
+            </Text>
             <View style={styles.stationGrid}>
               {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
-                <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
+                <GridItem key={`similar-${station._id}-${index}`} station={station} />
               ))}
             </View>
           </View>
@@ -417,18 +401,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
     height: 60,
-  },
-  headerBlur: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
-  },
-  headerBlurWeb: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
-    ...(Platform.OS === 'web' ? {
-      backdropFilter: 'blur(25px)',
-      WebkitBackdropFilter: 'blur(25px)',
-    } : {}),
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   header: {
     flex: 1,
@@ -578,6 +551,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  controlIconImage: {
+    width: 28,
+    height: 28,
+    tintColor: '#888888',
+  },
   skipButton: {
     width: 60,
     height: 60,
@@ -587,6 +565,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 8,
   },
+  skipIconImage: {
+    width: 28,
+    height: 28,
+    tintColor: '#FFFFFF',
+  },
   playPauseButton: {
     width: 80,
     height: 80,
@@ -595,6 +578,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 12,
+  },
+  playPauseIconImage: {
+    width: 36,
+    height: 36,
+    tintColor: '#FFFFFF',
   },
 
   // Secondary Controls
@@ -615,29 +603,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  secondaryIconImage: {
+    width: 24,
+    height: 24,
+    tintColor: '#888888',
+  },
   recButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
-  recIconWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  recDotOuter: {
+  recIconImage: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: '#FF6B6B',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  recDotInner: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#FF6B6B',
   },
   recText: {
     fontSize: 16,
@@ -703,19 +681,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
-  emptyIconContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#1E1E1E',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
   emptyTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
+    marginTop: 16,
     marginBottom: 8,
   },
   emptyText: {
