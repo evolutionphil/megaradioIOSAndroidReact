@@ -2,7 +2,6 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { colors, typography, borderRadius, spacing } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
 
@@ -16,8 +15,6 @@ export default function TabLayout() {
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.tabBarInactive,
           tabBarLabelStyle: styles.tabBarLabel,
-          tabBarIconStyle: styles.tabBarIcon,
-          tabBarItemStyle: styles.tabBarItem,
         }}
       >
         <Tabs.Screen
@@ -25,9 +22,7 @@ export default function TabLayout() {
           options={{
             title: 'Home',
             tabBarIcon: ({ color, focused }) => (
-              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
-                <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />
-              </View>
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
             ),
           }}
         />
@@ -36,9 +31,7 @@ export default function TabLayout() {
           options={{
             title: 'Discover',
             tabBarIcon: ({ color, focused }) => (
-              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
-                <Ionicons name={focused ? 'compass' : 'compass-outline'} size={22} color={color} />
-              </View>
+              <Ionicons name={focused ? 'compass' : 'compass-outline'} size={24} color={color} />
             ),
           }}
         />
@@ -47,9 +40,7 @@ export default function TabLayout() {
           options={{
             title: 'Favorites',
             tabBarIcon: ({ color, focused }) => (
-              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
-                <Ionicons name={focused ? 'heart' : 'heart-outline'} size={22} color={color} />
-              </View>
+              <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={color} />
             ),
           }}
         />
@@ -58,9 +49,7 @@ export default function TabLayout() {
           options={{
             title: 'Profile',
             tabBarIcon: ({ color, focused }) => (
-              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
-                <Ionicons name={focused ? 'person' : 'person-outline'} size={22} color={color} />
-              </View>
+              <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
             ),
           }}
         />
@@ -82,27 +71,9 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 88 : 68,
     paddingBottom: Platform.OS === 'ios' ? 28 : 10,
     paddingTop: 10,
-    paddingHorizontal: spacing.sm,
   },
   tabBarLabel: {
     fontSize: typography.sizes.xs,
     fontWeight: typography.weights.medium,
-    marginTop: 4,
-  },
-  tabBarIcon: {
-    marginBottom: -2,
-  },
-  tabBarItem: {
-    paddingVertical: 4,
-  },
-  iconWrapper: {
-    width: 40,
-    height: 32,
-    borderRadius: borderRadius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconWrapperActive: {
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
   },
 });
