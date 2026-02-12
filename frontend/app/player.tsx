@@ -104,8 +104,8 @@ export default function PlayerScreen() {
   };
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
-  const similarStations = similarData?.stations || [];
-  const recentStations = recentlyPlayedData || popularData?.stations || [];
+  const similarStations = similarData?.stations || similarData || [];
+  const recentStations = recentlyPlayedData || popularData || [];
 
   // Get artist/song info
   const getArtistInfo = () => {
