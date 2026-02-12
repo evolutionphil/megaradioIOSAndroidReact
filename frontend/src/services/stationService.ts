@@ -105,6 +105,18 @@ export const stationService = {
     }
   },
 
+  // Get public profiles (users with favorites)
+  async getPublicProfiles(limit: number = 10): Promise<any[]> {
+    try {
+      const response = await api.get(API_ENDPOINTS.publicProfiles, {
+        params: { limit },
+      });
+      return response.data?.data || response.data || [];
+    } catch {
+      return [];
+    }
+  },
+
   // Resolve stream
   async resolveStream(url: string) {
     const response = await api.get(API_ENDPOINTS.stream.resolve, {
