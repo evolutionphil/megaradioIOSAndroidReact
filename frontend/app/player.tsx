@@ -390,8 +390,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   artworkWrapper: {
-    width: ARTWORK_SIZE,
-    height: ARTWORK_SIZE * 0.65,
+    width: ARTWORK_WIDTH,
+    height: ARTWORK_HEIGHT,
     borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
