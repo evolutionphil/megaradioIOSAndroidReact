@@ -474,14 +474,14 @@ export default function HomeScreen() {
               <>
                 {/* Render rows of 3 items each */}
                 {Array.from({ length: Math.ceil(Math.min(allStations.length, 21) / 3) }).map((_, rowIndex) => (
-                  <View key={`all-row-${rowIndex}`} style={{ flexDirection: 'row', gap: GRID_GAP, marginBottom: GRID_GAP, width: '100%' }}>
-                    {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station) => (
+                  <View key={`all-row-${rowIndex}`} style={styles.gridRow}>
+                    {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
                       <TouchableOpacity
                         key={station._id}
-                        style={{ flex: 1 }}
+                        style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
                         onPress={() => handleStationPress(station)}
                       >
-                        <View style={{ width: '100%', aspectRatio: 1, borderRadius: 12, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 6 }}>
+                        <View style={styles.gridImageContainer}>
                           {renderStationLogo(station, 120)}
                         </View>
                         <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
@@ -493,7 +493,7 @@ export default function HomeScreen() {
                     {/* Fill empty slots if last row has less than 3 items */}
                     {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
                       Array.from({ length: 3 - allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                        <View key={`empty-${i}`} style={{ flex: 1 }} />
+                        <View key={`empty-${i}`} style={styles.gridItem} />
                       ))
                     }
                   </View>
