@@ -9,17 +9,18 @@ import {
   ActivityIndicator,
   Keyboard,
   FlatList,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, gradients, spacing, borderRadius, typography, shadows } from '../src/constants/theme';
-import { StationCard } from '../src/components/StationCard';
 import stationService from '../src/services/stationService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import type { Station } from '../src/types';
+
+// Filter types
+type FilterType = 'radios' | 'genres' | 'profiles';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function SearchScreen() {
   const [results, setResults] = useState<Station[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('radios');
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
@@ -68,7 +70,7 @@ export default function SearchScreen() {
     Keyboard.dismiss();
   };
 
-  const handleBack = () => {
+  const handleCancel = () => {
     router.back();
   };
 
@@ -82,361 +84,373 @@ export default function SearchScreen() {
     return currentStation?._id === station._id && playbackState === 'playing';
   };
 
-  const isStationLoading = (station: Station) => {
-    return currentStation?._id === station._id &&
-      (playbackState === 'loading' || playbackState === 'buffering');
+  // Get station logo URL
+  const getLogoUrl = (station: Station) => {
+    if (station.logoAssets?.logo96) {
+      const logo96 = station.logoAssets.logo96;
+      if (logo96.startsWith('http')) return logo96;
+      return `https://themegaradio.com${logo96}`;
+    }
+    if (station.favicon) {
+      if (station.favicon.startsWith('http')) return station.favicon;
+      return `https://themegaradio.com${station.favicon}`;
+    }
+    return null;
   };
 
-  const renderItem = useCallback(
-    ({ item }: { item: Station }) => (
-      <StationCard
-        station={item}
-        onPress={handleStationPress}
-        isPlaying={isStationPlaying(item)}
-        isLoading={isStationLoading(item)}
-      />
-    ),
-    [currentStation, playbackState]
-  );
+  // Render station card
+  const renderStationCard = ({ item }: { item: Station }) => {
+    const logoUrl = getLogoUrl(item);
+    const isPlaying = isStationPlaying(item);
 
-  const popularSearches = ['Jazz', 'Rock', 'News', 'Classical', 'Pop', 'Electronic', 'Country', 'Hip Hop'];
+    return (
+      <TouchableOpacity
+        style={styles.radioCard}
+        onPress={() => handleStationPress(item)}
+        activeOpacity={0.7}
+        data-testid={`station-card-${item._id}`}
+      >
+        {/* Logo */}
+        <View style={styles.radioLogo}>
+          {logoUrl ? (
+            <Image
+              source={{ uri: logoUrl }}
+              style={styles.radioLogoImage}
+              resizeMode="contain"
+            />
+          ) : (
+            <Ionicons name="radio" size={24} color="#5B5B5B" />
+          )}
+        </View>
+
+        {/* Info */}
+        <View style={styles.radioInfo}>
+          <Text style={styles.radioName} numberOfLines={1}>
+            {item.name}
+          </Text>
+          <Text style={styles.radioGenre} numberOfLines={1}>
+            {item.tags?.[0] || item.country || 'Radio'}
+          </Text>
+        </View>
+
+        {/* Heart Button */}
+        <TouchableOpacity style={styles.heartButton}>
+          <Ionicons
+            name={isPlaying ? 'heart' : 'heart-outline'}
+            size={24}
+            color="#FFFFFF"
+          />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    );
+  };
+
+  const filters: { key: FilterType; label: string }[] = [
+    { key: 'radios', label: 'Radios' },
+    { key: 'genres', label: 'Genres' },
+    { key: 'profiles', label: 'Profiles' },
+  ];
 
   return (
-    <LinearGradient colors={gradients.background as any} style={styles.gradient}>
-      <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
         {/* Search Header */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="arrow-back" size={24} color={colors.text} />
-          </TouchableOpacity>
-          
-          <View style={styles.searchInputContainer}>
-            <View style={styles.searchIconWrapper}>
-              <Ionicons name="search" size={18} color={colors.textMuted} />
-            </View>
+          {/* Search Box */}
+          <View style={styles.searchBox}>
+            <Ionicons name="search" size={24} color="#5B5B5B" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search stations, countries, genres..."
-              placeholderTextColor={colors.textMuted}
+              placeholder="Search radio, user"
+              placeholderTextColor="#5B5B5B"
               value={query}
               onChangeText={setQuery}
               autoFocus
               returnKeyType="search"
               autoCapitalize="none"
               autoCorrect={false}
+              data-testid="search-input"
             />
             {query.length > 0 && (
               <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
-                <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+                <View style={styles.clearButtonInner}>
+                  <Ionicons name="close" size={12} color="#787878" />
+                </View>
               </TouchableOpacity>
             )}
           </View>
+
+          {/* Cancel Button */}
+          <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Filter Chips */}
+        <View style={styles.filterContainer}>
+          {filters.map((filter) => (
+            <Pressable
+              key={filter.key}
+              style={[
+                styles.filterChip,
+                activeFilter === filter.key && styles.filterChipActive,
+              ]}
+              onPress={() => setActiveFilter(filter.key)}
+              data-testid={`filter-${filter.key}`}
+            >
+              <Text
+                style={[
+                  styles.filterChipText,
+                  activeFilter === filter.key && styles.filterChipTextActive,
+                ]}
+              >
+                {filter.label}
+              </Text>
+            </Pressable>
+          ))}
         </View>
 
         {/* Results */}
         <View style={styles.content}>
           {isSearching ? (
             <View style={styles.loadingContainer}>
-              <View style={styles.loadingIconWrapper}>
-                <ActivityIndicator size="large" color={colors.primary} />
-              </View>
+              <ActivityIndicator size="large" color="#FF4199" />
               <Text style={styles.loadingText}>Searching...</Text>
             </View>
           ) : results.length > 0 ? (
-            <>
-              <View style={styles.resultsHeader}>
-                <Text style={styles.resultsCount}>{results.length} stations found</Text>
-              </View>
-              <FlatList
-                data={results}
-                renderItem={renderItem}
-                keyExtractor={(item) => item._id}
-                contentContainerStyle={styles.resultsList}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-              />
-            </>
+            <FlatList
+              data={results}
+              renderItem={renderStationCard}
+              keyExtractor={(item) => item._id}
+              contentContainerStyle={styles.resultsList}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            />
           ) : hasSearched && query.length >= 2 ? (
             <View style={styles.emptyState}>
-              <View style={styles.emptyIconWrapper}>
-                <Ionicons name="search-outline" size={48} color={colors.textMuted} />
-              </View>
+              <Ionicons name="search-outline" size={48} color="#5B5B5B" />
               <Text style={styles.emptyTitle}>No Results Found</Text>
               <Text style={styles.emptyText}>
-                Try searching for a different station, country, or genre
+                Try searching for a different station
               </Text>
-              <TouchableOpacity style={styles.tryAgainButton} onPress={handleClear}>
-                <Text style={styles.tryAgainText}>Clear Search</Text>
-              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.initialState}>
-              <View style={styles.initialIconWrapper}>
-                <LinearGradient
-                  colors={[colors.primary, colors.accent] as any}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.initialIconGradient}
-                >
-                  <Ionicons name="radio" size={48} color={colors.text} />
-                </LinearGradient>
-              </View>
-              <Text style={styles.initialTitle}>Search 40,000+ Stations</Text>
+              <Ionicons name="radio-outline" size={64} color="#5B5B5B" />
+              <Text style={styles.initialTitle}>Search Stations</Text>
               <Text style={styles.initialText}>
-                Find stations by name, country, language, or genre
+                Find your favorite radio stations
               </Text>
-              
-              {/* Quick search suggestions */}
-              <View style={styles.suggestions}>
-                <Text style={styles.suggestionsTitle}>Popular Searches</Text>
-                <View style={styles.suggestionChips}>
-                  {popularSearches.map((term) => (
-                    <Pressable
-                      key={term}
-                      style={styles.suggestionChip}
-                      onPress={() => {
-                        console.log('Chip pressed:', term);
-                        setQuery(term);
-                      }}
-                    >
-                      <Ionicons name="trending-up" size={14} color={colors.primary} />
-                      <Text style={styles.suggestionChipText}>{term}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-
-              {/* Recent Searches Placeholder */}
-              <View style={styles.recentSection}>
-                <Text style={styles.recentTitle}>Recent Searches</Text>
-                <View style={styles.recentEmpty}>
-                  <Ionicons name="time-outline" size={20} color={colors.textMuted} />
-                  <Text style={styles.recentEmptyText}>No recent searches</Text>
-                </View>
-              </View>
             </View>
           )}
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   container: {
     flex: 1,
+    backgroundColor: '#1B1C1E',
   },
+  safeArea: {
+    flex: 1,
+  },
+
+  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: 15,
+    paddingTop: 37,
+    gap: 11,
   },
-  backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.sm,
-  },
-  searchInputContainer: {
+
+  // Search Box
+  searchBox: {
     flex: 1,
+    height: 45,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
-    paddingRight: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
+    paddingHorizontal: 15,
   },
-  searchIconWrapper: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
+  searchIcon: {
+    marginRight: 15,
   },
   searchInput: {
     flex: 1,
-    fontSize: typography.sizes.md,
-    color: colors.text,
-    paddingVertical: spacing.sm,
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#000000',
+    fontFamily: 'System',
   },
   clearButton: {
-    padding: spacing.xs,
+    marginLeft: 10,
   },
+  clearButtonInner: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(91, 91, 91, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Cancel Button
+  cancelButton: {
+    paddingVertical: 10,
+  },
+  cancelText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#FFFFFF',
+    fontFamily: 'System',
+  },
+
+  // Filter Chips
+  filterContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingTop: 20,
+    gap: 16,
+  },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    backgroundColor: '#2F2F2F',
+    borderRadius: 25,
+  },
+  filterChipActive: {
+    backgroundColor: '#FF4199',
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontFamily: 'System',
+  },
+  filterChipTextActive: {
+    color: '#FFFFFF',
+  },
+
+  // Content
   content: {
     flex: 1,
+    paddingTop: 28,
   },
-  
+
+  // Results List
+  resultsList: {
+    paddingHorizontal: 15,
+    paddingBottom: 100,
+    gap: 15,
+  },
+
+  // Radio Card
+  radioCard: {
+    width: '100%',
+    height: 80,
+    backgroundColor: '#282828',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+  },
+  radioLogo: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  radioLogoImage: {
+    width: 46,
+    height: 46,
+  },
+  radioInfo: {
+    flex: 1,
+    marginLeft: 15,
+  },
+  radioName: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#FFFFFF',
+    fontFamily: 'System',
+    marginBottom: 6,
+  },
+  radioGenre: {
+    fontSize: 14,
+    fontWeight: '300',
+    color: '#FFFFFF',
+    fontFamily: 'System',
+  },
+  heartButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#1E1E1E',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   // Loading
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  loadingIconWrapper: {
-    width: 80,
-    height: 80,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
+    gap: 16,
   },
   loadingText: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
+    fontSize: 15,
+    color: '#5B5B5B',
+    fontFamily: 'System',
   },
-  
-  // Results
-  resultsHeader: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  resultsCount: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
-  },
-  resultsList: {
-    paddingHorizontal: spacing.md,
-    paddingBottom: 100,
-  },
-  
+
   // Empty State
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  emptyIconWrapper: {
-    width: 100,
-    height: 100,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.lg,
+    paddingHorizontal: 40,
+    gap: 12,
   },
   emptyTitle: {
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    marginBottom: spacing.sm,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    fontFamily: 'System',
   },
   emptyText: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
+    fontSize: 14,
+    color: '#5B5B5B',
     textAlign: 'center',
-    marginBottom: spacing.lg,
+    fontFamily: 'System',
   },
-  tryAgainButton: {
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  tryAgainText: {
-    fontSize: typography.sizes.md,
-    color: colors.text,
-    fontWeight: typography.weights.medium,
-  },
-  
+
   // Initial State
   initialState: {
     flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xxl,
-  },
-  initialIconWrapper: {
-    marginBottom: spacing.lg,
-  },
-  initialIconGradient: {
-    width: 100,
-    height: 100,
-    borderRadius: borderRadius.full,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 40,
+    gap: 12,
   },
   initialTitle: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    marginBottom: spacing.sm,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    fontFamily: 'System',
   },
   initialText: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
+    fontSize: 14,
+    color: '#5B5B5B',
     textAlign: 'center',
-    marginBottom: spacing.xl,
-  },
-  
-  // Suggestions
-  suggestions: {
-    width: '100%',
-    marginBottom: spacing.xl,
-  },
-  suggestionsTitle: {
-    fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.semibold,
-    color: colors.textMuted,
-    marginBottom: spacing.md,
-    textAlign: 'center',
-  },
-  suggestionChips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: spacing.sm,
-  },
-  suggestionChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.xs,
-  },
-  suggestionChipText: {
-    fontSize: typography.sizes.sm,
-    color: colors.text,
-    fontWeight: typography.weights.medium,
-  },
-  
-  // Recent Searches
-  recentSection: {
-    width: '100%',
-  },
-  recentTitle: {
-    fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.semibold,
-    color: colors.textMuted,
-    marginBottom: spacing.md,
-    textAlign: 'center',
-  },
-  recentEmpty: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.lg,
-    gap: spacing.sm,
-  },
-  recentEmptyText: {
-    fontSize: typography.sizes.sm,
-    color: colors.textMuted,
+    fontFamily: 'System',
   },
 });
