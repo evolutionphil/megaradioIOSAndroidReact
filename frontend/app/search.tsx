@@ -351,21 +351,24 @@ export default function SearchScreen() {
               <ActivityIndicator size="large" color="#FF4199" />
               <Text style={styles.loadingText}>Searching...</Text>
             </View>
-          ) : results.length > 0 ? (
+          ) : filteredResults.length > 0 ? (
             <FlatList
-              data={results}
-              renderItem={renderStationCard}
-              keyExtractor={(item) => item._id}
+              data={filteredResults}
+              renderItem={renderResultCard}
+              keyExtractor={(item) => `${item.type}-${item._id}`}
               contentContainerStyle={styles.resultsList}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             />
           ) : hasSearched && query.length >= 2 ? (
             <View style={styles.emptyState}>
-              <Ionicons name="search-outline" size={48} color="#5B5B5B" />
-              <Text style={styles.emptyTitle}>No Results Found</Text>
+              <Image 
+                source={{ uri: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=200&h=200&fit=crop' }}
+                style={styles.emptyImage}
+              />
+              <Text style={styles.emptyTitle}>We couldn't find any result!</Text>
               <Text style={styles.emptyText}>
-                Try searching for a different station
+                Try searching for something else
               </Text>
             </View>
           ) : (
@@ -373,7 +376,7 @@ export default function SearchScreen() {
               <Ionicons name="radio-outline" size={64} color="#5B5B5B" />
               <Text style={styles.initialTitle}>Search Stations</Text>
               <Text style={styles.initialText}>
-                Find your favorite radio stations
+                Find your favorite radio stations, genres, and users
               </Text>
             </View>
           )}
