@@ -551,7 +551,11 @@ export default function PlayerScreen() {
       </SafeAreaView>
       
       {/* Car Mode Modal */}
-      <CarModeScreen visible={showCarMode} onClose={() => setShowCarMode(false)} />
+      <CarModeScreen
+        visible={showCarMode}
+        onClose={() => setShowCarMode(false)}
+        stations={displaySimilarStations.length > 0 ? displaySimilarStations : popularStations}
+      />
     </View>
   );
 }
