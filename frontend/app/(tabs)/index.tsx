@@ -489,38 +489,6 @@ export default function HomeScreen() {
             )}
           </View>
 
-          {/* Discoverable Genres */}
-          {discoverableGenresList.length > 0 && (
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Discoverable Genres</Text>
-                <TouchableOpacity onPress={() => router.push('/discover')}>
-                  <Text style={styles.seeAllText}>See All</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.discoverableGenresContainer}>
-                {discoverableGenresList.map((genre: any) => (
-                  <TouchableOpacity
-                    key={genre._id}
-                    style={styles.discoverableGenreCard}
-                    onPress={() => handleGenrePress(genre)}
-                  >
-                    <ImageBackground
-                      source={{ uri: getDiscoverableGenreImage(genre) || undefined }}
-                      style={styles.discoverableGenreImageBg}
-                      imageStyle={styles.discoverableGenreImageStyle}
-                      resizeMode="cover"
-                    >
-                      <View style={styles.discoverableGenreOverlay}>
-                        <Text style={styles.discoverableGenreName}>{genre.name}</Text>
-                        <Text style={styles.discoverableGenreCount}>{genre.stationCount} stations</Text>
-                      </View>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          )}
 
         </ScrollView>
       </SafeAreaView>
