@@ -587,49 +587,6 @@ const styles = StyleSheet.create({
 
   // Genre Swiper (Horizontal Carousel)
   genreSwiperContainer: {
-    paddingVertical: spacing.sm,
-    gap: 12,
-  },
-  genreSwiperItem: {
-    width: 280,
-    height: 70,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  genreSwiperGradient: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 14,
-  },
-  genreSwiperImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 6,
-    marginRight: 12,
-  },
-  genreSwiperIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 6,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  genreSwiperContent: {
-    flex: 1,
-  },
-  genreSwiperTitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  genreSwiperSubtitle: {
-    fontSize: typography.sizes.sm,
-    color: 'rgba(255,255,255,0.8)',
-  },
-
   // Section - Full width
   section: {
     width: '100%',
