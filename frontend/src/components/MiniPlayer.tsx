@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import TrackPlayer from 'react-native-track-player';
 import { colors, borderRadius, spacing, typography } from '../constants/theme';
 import { usePlayerStore } from '../store/playerStore';
 import { ChevronUpIcon, HeartOutlineIcon, PauseIcon, PlayIcon } from './TabBarIcons';
@@ -66,12 +65,15 @@ export const MiniPlayer: React.FC = () => {
   const handlePlayPause = async () => {
     try {
       if (isPlaying) {
+        // Native only - use TrackPlayer
         if (!isWeb) {
+          const TrackPlayer = require('react-native-track-player').default;
           await TrackPlayer.pause();
         }
         setPlaybackState('paused');
       } else if (playbackState === 'paused') {
         if (!isWeb) {
+          const TrackPlayer = require('react-native-track-player').default;
           await TrackPlayer.play();
         }
         setPlaybackState('playing');
