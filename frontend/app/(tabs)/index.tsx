@@ -378,7 +378,7 @@ export default function HomeScreen() {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Favorites From Users */}
+          {/* Favorites From Users - Real API data with specified dimensions */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Favorites From Users</Text>
@@ -386,41 +386,27 @@ export default function HomeScreen() {
                 <Text style={styles.seeAllText}>See All</Text>
               </TouchableOpacity>
             </View>
-            {communityFavorites && communityFavorites.length > 0 ? (
-              <View style={styles.usersList}>
-                {communityFavorites.slice(0, 6).map((item: any, index: number) => (
-                  <TouchableOpacity key={item._id || index} style={styles.userItem}>
-                    <View style={styles.userAvatar}>
-                      {item.user?.profilePhoto ? (
-                        <Image source={{ uri: item.user.profilePhoto }} style={styles.userAvatarImage} />
-                      ) : (
-                        <Ionicons name="person" size={20} color={colors.textMuted} />
-                      )}
-                    </View>
-                    <View style={styles.userInfo}>
-                      <Text style={styles.userNameText}>{item.user?.name || 'User'}</Text>
-                      <Text style={styles.userRadioCount}>{item.count || 12} Radios</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-                  </TouchableOpacity>
-                ))}
-              </View>
-            ) : (
-              <View style={styles.usersList}>
-                {[1, 2, 3, 4, 5, 6].map((item) => (
-                  <TouchableOpacity key={item} style={styles.userItem}>
-                    <View style={styles.userAvatar}>
+            <View style={styles.usersList}>
+              {(publicProfiles && publicProfiles.length > 0 ? publicProfiles : []).slice(0, 6).map((user: any, index: number) => (
+                <TouchableOpacity 
+                  key={user._id || index} 
+                  style={styles.userItem}
+                >
+                  <View style={styles.userAvatar}>
+                    {user.profileImageUrl ? (
+                      <Image source={{ uri: user.profileImageUrl }} style={styles.userAvatarImage} />
+                    ) : (
                       <Ionicons name="person" size={20} color={colors.textMuted} />
-                    </View>
-                    <View style={styles.userInfo}>
-                      <Text style={styles.userNameText}>Steve Arnic</Text>
-                      <Text style={styles.userRadioCount}>12 Radios</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
+                    )}
+                  </View>
+                  <View style={styles.userInfo}>
+                    <Text style={styles.userNameText}>{user.name || 'User'}</Text>
+                    <Text style={styles.userRadioCount}>{user.favorites_count || 0} Radios</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
 
           {/* All Stations - 3 Column Grid */}
