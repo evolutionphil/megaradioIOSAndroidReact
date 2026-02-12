@@ -557,6 +557,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     gap: 12,
   },
+  emptyImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 16,
+    opacity: 0.8,
+  },
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600',
