@@ -791,38 +791,38 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Jazz Banner - Full width
-  jazzBanner: {
-    width: '100%',
-    marginBottom: spacing.lg,
-    borderRadius: 5,
+  // Discoverable Genres Banner Swiper
+  discoverableBannerItem: {
+    width: 300,
+    height: 100,
+    borderRadius: 12,
     overflow: 'hidden',
   },
-  jazzGradient: {
+  discoverableBannerGradient: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.lg,
+    paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
   },
-  jazzContent: {},
-  jazzTitle: {
-    fontSize: typography.sizes.xxxl,
+  discoverableBannerContent: {
+    flex: 1,
+  },
+  discoverableBannerTitle: {
+    fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
   },
-  jazzSubtitle: {
-    fontSize: typography.sizes.md,
+  discoverableBannerSubtitle: {
+    fontSize: typography.sizes.sm,
     color: 'rgba(255,255,255,0.8)',
+    marginTop: 4,
   },
-  jazzImage: {
-    opacity: 0.5,
-  },
-  jazzBannerImage: {
-    width: 80,
-    height: 80,
+  discoverableBannerImage: {
+    width: 70,
+    height: 70,
     borderRadius: 8,
-    opacity: 0.8,
   },
 
   // Users List - Full width with specified dimensions
