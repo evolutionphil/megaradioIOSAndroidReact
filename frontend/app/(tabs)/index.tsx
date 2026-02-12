@@ -773,11 +773,11 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid
+  // Station Grid - Symmetric padding
   stationGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: HORIZONTAL_PADDING,
     gap: spacing.sm,
   },
   gridItem: {
