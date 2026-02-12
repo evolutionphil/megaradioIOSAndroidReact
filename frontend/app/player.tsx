@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
@@ -23,9 +23,25 @@ import { useAuthStore } from '../src/store/authStore';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const ARTWORK_WIDTH = Math.min(SCREEN_WIDTH - 80, 350);
-const ARTWORK_HEIGHT = 200;
-const GRID_ITEM_WIDTH = Math.min((SCREEN_WIDTH - 60) / 3, 110);
+const LOGO_SIZE = 190;
+const GRID_ITEM_SIZE = 100;
+
+// Country code to flag emoji mapping
+const getCountryFlag = (countryCode?: string): string => {
+  if (!countryCode) return '🌍';
+  const code = countryCode.toUpperCase();
+  const flags: Record<string, string> = {
+    'DE': '🇩🇪', 'TR': '🇹🇷', 'US': '🇺🇸', 'GB': '🇬🇧', 'FR': '🇫🇷',
+    'ES': '🇪🇸', 'IT': '🇮🇹', 'NL': '🇳🇱', 'BE': '🇧🇪', 'AT': '🇦🇹',
+    'CH': '🇨🇭', 'PL': '🇵🇱', 'RU': '🇷🇺', 'JP': '🇯🇵', 'KR': '🇰🇷',
+    'CN': '🇨🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'CA': '🇨🇦', 'AU': '🇦🇺',
+    'IN': '🇮🇳', 'SA': '🇸🇦', 'AE': '🇦🇪', 'EG': '🇪🇬', 'ZA': '🇿🇦',
+    'GERMANY': '🇩🇪', 'TURKEY': '🇹🇷', 'UNITED STATES': '🇺🇸',
+    'UNITED KINGDOM': '🇬🇧', 'FRANCE': '🇫🇷', 'SPAIN': '🇪🇸',
+    'HUNGARY': '🇭🇺', 'HU': '🇭🇺',
+  };
+  return flags[code] || flags[countryCode.toUpperCase()] || '🌍';
+};
 
 export default function PlayerScreen() {
   const router = useRouter();
@@ -36,9 +52,9 @@ export default function PlayerScreen() {
     nowPlaying,
   } = usePlayerStore();
 
-  const { playStation, togglePlayPause } = useAudioPlayer();
-  const { data: similarData, isLoading: similarLoading } = useSimilarStations(currentStation?._id || '', 9);
-  const { data: popularData, isLoading: popularLoading } = usePopularStations(undefined, 12);
+  const { playStation, togglePlayPause, stopPlayback } = useAudioPlayer();
+  const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
+  const { data: popularData } = usePopularStations(undefined, 12);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [checkingFavorite, setCheckingFavorite] = useState(false);
@@ -88,8 +104,13 @@ export default function PlayerScreen() {
     }
   };
 
-  const handleStationPress = (station: Station) => {
-    playStation(station);
+  const handleStationPress = async (station: Station) => {
+    // Stop current playback before playing new station
+    await stopPlayback();
+    // Small delay to ensure cleanup
+    setTimeout(() => {
+      playStation(station);
+    }, 100);
   };
 
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
@@ -104,7 +125,7 @@ export default function PlayerScreen() {
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
   
-  // Get stations for grids - use popularData as main source
+  // Get stations for grids
   const stationsArray = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
   const similarStations = similarData?.stations || (Array.isArray(similarData) ? similarData : stationsArray);
   const recentStations = stationsArray;
@@ -138,35 +159,71 @@ export default function PlayerScreen() {
   // Station Grid Item Component
   const StationGridItem = ({ station }: { station: Station }) => {
     const stationLogo = getLogoUrl(station);
+    const flag = getCountryFlag(station.countrycode || station.country);
+    
     return (
       <TouchableOpacity
-        style={{ 
-          width: 110,
-          marginRight: 8,
-          marginBottom: 16,
-        }}
+        style={styles.gridItem}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
       >
-        <Image 
-          source={{ uri: stationLogo || 'https://via.placeholder.com/110' }} 
-          style={{ 
-            width: 110, 
-            height: 110, 
-            borderRadius: 12,
-            backgroundColor: '#1E1E1E',
-          }} 
-          resizeMode="cover" 
-        />
-        <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF', marginTop: 6 }} numberOfLines={1}>
+        <View style={styles.gridImageWrapper}>
+          <Image 
+            source={{ uri: stationLogo || 'https://via.placeholder.com/100' }} 
+            style={styles.gridImage}
+            resizeMode="cover" 
+          />
+          {/* Country flag badge */}
+          <View style={styles.flagBadge}>
+            <Text style={styles.flagText}>{flag}</Text>
+          </View>
+        </View>
+        <Text style={styles.gridStationName} numberOfLines={1}>
           {station.name}
         </Text>
-        <Text style={{ fontSize: 10, color: '#888888' }} numberOfLines={1}>
+        <Text style={styles.gridStationLocation} numberOfLines={1}>
           {station.country || 'Unknown'}
         </Text>
       </TouchableOpacity>
     );
   };
+
+  // Header with blur effect
+  const HeaderBlur = () => (
+    <View style={styles.headerContainer}>
+      {Platform.OS !== 'web' ? (
+        <BlurView intensity={25} tint="dark" style={styles.headerBlur}>
+          <HeaderContent />
+        </BlurView>
+      ) : (
+        <View style={styles.headerBlurWeb}>
+          <HeaderContent />
+        </View>
+      )}
+    </View>
+  );
+
+  const HeaderContent = () => (
+    <View style={styles.header}>
+      <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
+        <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
+      </TouchableOpacity>
+      <View style={styles.headerCenter}>
+        <View style={styles.hdBadge}>
+          <Text style={styles.hdText}>HD</Text>
+        </View>
+        <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
+      </View>
+      <View style={styles.headerRight}>
+        <TouchableOpacity style={styles.headerIcon}>
+          <Ionicons name="car-outline" size={22} color="#FFFFFF" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.headerIcon}>
+          <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -176,28 +233,10 @@ export default function PlayerScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
-              <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
-            </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <View style={styles.hdBadge}>
-                <Text style={styles.hdText}>HD</Text>
-              </View>
-              <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
-            </View>
-            <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.headerIcon}>
-                <Ionicons name="car-outline" size={22} color="#FFFFFF" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.headerIcon}>
-                <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
-              </TouchableOpacity>
-            </View>
-          </View>
+          {/* Header with blur */}
+          <HeaderBlur />
 
-          {/* Album Art */}
+          {/* Album Art with Country Flag */}
           <View style={styles.artworkContainer}>
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
@@ -211,9 +250,11 @@ export default function PlayerScreen() {
                   <Ionicons name="radio" size={80} color="#666" />
                 </View>
               )}
-              {/* Live indicator */}
-              <View style={styles.liveIndicator}>
-                <View style={styles.liveIndicatorBar} />
+              {/* Country flag badge on artwork */}
+              <View style={styles.artworkFlagBadge}>
+                <Text style={styles.artworkFlagText}>
+                  {getCountryFlag(currentStation.countrycode || currentStation.country)}
+                </Text>
               </View>
             </View>
           </View>
@@ -228,6 +269,10 @@ export default function PlayerScreen() {
             </View>
             <Text style={styles.stationName}>{currentStation.name}</Text>
             <Text style={styles.artistName}>{getArtistInfo()}</Text>
+            
+            {/* Divider line */}
+            <View style={styles.divider} />
+            
             {/* Spotify & YouTube icons */}
             <View style={styles.socialIcons}>
               <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
@@ -303,9 +348,9 @@ export default function PlayerScreen() {
           </View>
 
           {/* Recently Played Section */}
-          <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
+          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Recently Played</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={styles.stationGrid}>
               {recentStations.slice(0, 6).map((station: Station, index: number) => (
                 <StationGridItem key={`recent-${station._id}-${index}`} station={station} />
               ))}
@@ -313,9 +358,9 @@ export default function PlayerScreen() {
           </View>
 
           {/* Similar Radios Section */}
-          <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
+          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Similar Radios</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={styles.stationGrid}>
               {(similarStations.length > 0 ? similarStations : recentStations).slice(0, 9).map((station: Station, index: number) => (
                 <StationGridItem key={`similar-${station._id}-${index}`} station={station} />
               ))}
@@ -342,12 +387,30 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  // Header
+  // Header with blur
+  headerContainer: {
+    width: '100%',
+    height: 107,
+    marginBottom: 8,
+  },
+  headerBlur: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+  },
+  headerBlurWeb: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    ...(Platform.OS === 'web' ? {
+      backdropFilter: 'blur(25px)',
+      WebkitBackdropFilter: 'blur(25px)',
+    } : {}),
+  },
   header: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    opacity: 0.9,
   },
   headerButton: {
     width: 40,
@@ -397,39 +460,44 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   artworkWrapper: {
-    width: ARTWORK_WIDTH,
-    height: ARTWORK_HEIGHT,
+    width: LOGO_SIZE,
+    height: LOGO_SIZE,
     borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
+    position: 'relative',
   },
   artwork: {
-    width: '100%',
-    height: '100%',
+    width: LOGO_SIZE,
+    height: LOGO_SIZE,
   },
   artworkPlaceholder: {
-    width: '100%',
-    height: '100%',
+    width: LOGO_SIZE,
+    height: LOGO_SIZE,
     backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  liveIndicator: {
+  artworkFlagBadge: {
     position: 'absolute',
-    bottom: 16,
-    right: 16,
+    bottom: 8,
+    right: 8,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  liveIndicatorBar: {
-    width: 40,
-    height: 6,
-    backgroundColor: '#FF3B30',
-    borderRadius: 3,
+  artworkFlagText: {
+    fontSize: 18,
   },
 
   // Now Playing
   nowPlayingSection: {
     alignItems: 'center',
     marginBottom: 20,
+    paddingHorizontal: 20,
   },
   animatedDots: {
     flexDirection: 'row',
@@ -449,11 +517,19 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 4,
+    textAlign: 'center',
   },
   artistName: {
     fontSize: 16,
     color: '#AAAAAA',
     marginBottom: 12,
+    textAlign: 'center',
+  },
+  divider: {
+    width: '80%',
+    height: 1,
+    backgroundColor: '#2D2D2D',
+    marginVertical: 12,
   },
   socialIcons: {
     flexDirection: 'row',
@@ -538,52 +614,59 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontFamily: Platform.OS === 'ios' ? 'Ubuntu' : 'sans-serif',
+    fontSize: 18,
     fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 16,
-    fontStyle: 'italic',
   },
   stationGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    gap: 12,
   },
 
   // Grid Items
   gridItem: {
-    width: 110,
-    maxWidth: 110,
+    width: GRID_ITEM_SIZE,
+    marginRight: 10,
+    marginBottom: 16,
   },
-  gridImageContainer: {
-    width: 110,
-    height: 110,
+  gridImageWrapper: {
+    width: GRID_ITEM_SIZE,
+    height: GRID_ITEM_SIZE,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
     marginBottom: 8,
+    position: 'relative',
   },
   gridImage: {
-    width: '100%',
-    height: '100%',
+    width: GRID_ITEM_SIZE,
+    height: GRID_ITEM_SIZE,
   },
-  gridPlaceholder: {
-    width: '100%',
-    height: '100%',
+  flagBadge: {
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2A2A2A',
+  },
+  flagText: {
+    fontSize: 12,
   },
   gridStationName: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 2,
   },
   gridStationLocation: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#888888',
+    marginTop: 2,
   },
 
   // Empty State
