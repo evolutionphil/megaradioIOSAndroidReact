@@ -740,14 +740,9 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid Custom - 3 columns with exact dimensions
-  // Card: width: 100, height: 144
-  // Logo: width: 100, height: 100, border-radius: 10px
-  // Gap calculation: 138 - 15 - 100 = 23px between cards
-  // Total: 3 * 100 + 2 * 22.5 = 345px
+  // Station Grid Custom - Full width
   stationGridCustom: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: GRID_GAP,
