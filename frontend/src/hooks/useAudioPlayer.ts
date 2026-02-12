@@ -1,6 +1,5 @@
-// useAudioPlayer - Now wraps useTrackPlayer for backward compatibility
-// This hook provides the same interface as before but uses react-native-track-player
-// under the hood for native platforms, with expo-av fallback for web
+// useAudioPlayer - Uses expo-av for audio playback
+// Works in both Expo Go and web
 
 import { useCallback, useRef, useEffect } from 'react';
 import { Platform } from 'react-native';
@@ -10,14 +9,10 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
 
-// Check if we're on web
-const isWeb = Platform.OS === 'web';
-
-// For native, we'll use TrackPlayer via useTrackPlayer hook
-// This hook maintains backward compatibility while using TrackPlayer on native
 export const useAudioPlayer = () => {
   const soundRef = useRef<Audio.Sound | null>(null);
   const listeningStartRef = useRef<Date | null>(null);
+  const isPlayingRef = useRef<boolean>(false);
 
   const {
     currentStation,
@@ -32,10 +27,8 @@ export const useAudioPlayer = () => {
     reset,
   } = usePlayerStore();
 
-  // Set up audio mode on mount (web only - native uses TrackPlayer)
+  // Set up audio mode on mount
   useEffect(() => {
-    if (!isWeb) return;
-
     const setupAudio = async () => {
       try {
         await Audio.setAudioModeAsync({
@@ -43,24 +36,30 @@ export const useAudioPlayer = () => {
           playsInSilentModeIOS: true,
           shouldDuckAndroid: true,
           playThroughEarpieceAndroid: false,
+          allowsRecordingIOS: false,
         });
+        console.log('[useAudioPlayer] Audio mode set');
       } catch (error) {
-        console.error('Failed to set audio mode:', error);
+        console.error('[useAudioPlayer] Failed to set audio mode:', error);
       }
     };
     setupAudio();
 
     return () => {
-      stopPlayback();
+      // Cleanup on unmount
+      if (soundRef.current) {
+        soundRef.current.unloadAsync().catch(() => {});
+      }
     };
   }, []);
 
-  // Handle playback state changes (web only)
+  // Handle playback state changes
   const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
     if (!status.isLoaded) {
       if (status.error) {
-        console.error('Playback error:', status.error);
+        console.error('[useAudioPlayer] Playback error:', status.error);
         setError(`Playback error: ${status.error}`);
+        setPlaybackState('error');
       }
       return;
     }
@@ -69,8 +68,11 @@ export const useAudioPlayer = () => {
       setPlaybackState('buffering');
     } else if (status.isPlaying) {
       setPlaybackState('playing');
+      isPlayingRef.current = true;
     } else {
-      setPlaybackState('paused');
+      if (isPlayingRef.current) {
+        setPlaybackState('paused');
+      }
     }
   }, [setPlaybackState, setError]);
 
@@ -80,101 +82,34 @@ export const useAudioPlayer = () => {
       const streamData = await stationService.resolveStream(station.url);
 
       if (streamData.candidates && streamData.candidates.length > 0) {
-        let streamUrl = streamData.candidates[0];
+        let resolvedUrl = streamData.candidates[0];
 
         // If HTTP stream, use proxy
-        if (streamUrl.startsWith('http://')) {
-          streamUrl = stationService.getProxyUrl(streamUrl);
+        if (resolvedUrl.startsWith('http://')) {
+          resolvedUrl = stationService.getProxyUrl(resolvedUrl);
         }
 
-        return streamUrl;
+        return resolvedUrl;
       }
 
       // Fallback to original URL
       return station.url_resolved || station.url;
     } catch (error) {
-      console.error('Failed to resolve stream:', error);
+      console.error('[useAudioPlayer] Failed to resolve stream:', error);
       return station.url_resolved || station.url;
     }
   }, []);
 
-  // Play a station
-  const playStation = useCallback(async (station: Station) => {
-    try {
-      // Stop current playback
-      await stopPlayback();
-
-      // Set station and loading state
-      setCurrentStation(station);
-      setPlaybackState('loading');
-      setError(null);
-      setMiniPlayerVisible(true);
-
-      // Record click
-      try {
-        await stationService.recordClick(station._id);
-      } catch {
-        // Non-critical
-      }
-
-      // Resolve stream URL
-      const url = await resolveStreamUrl(station);
-      if (!url) {
-        throw new Error('Could not resolve stream URL');
-      }
-      setStreamUrl(url);
-
-      // Web uses expo-av
-      if (isWeb) {
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: url },
-          { shouldPlay: true, volume: 1.0 },
-          onPlaybackStatusUpdate
-        );
-
-        soundRef.current = sound;
-      } else {
-        // Native - TrackPlayer is handled by useTrackPlayer hook
-        // Just update state here for consistency
-        setPlaybackState('playing');
-      }
-
-      listeningStartRef.current = new Date();
-
-      // Record recently played
-      try {
-        await userService.recordRecentlyPlayed(station._id);
-      } catch {
-        // Non-critical
-      }
-
-      // Fetch now playing metadata
-      fetchNowPlaying(station._id);
-    } catch (error) {
-      console.error('Failed to play station:', error);
-      setError(error instanceof Error ? error.message : 'Failed to play station');
-      setPlaybackState('error');
-    }
-  }, [resolveStreamUrl, onPlaybackStatusUpdate, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible]);
-
-  // Fetch now playing metadata
-  const fetchNowPlaying = useCallback(async (stationId: string) => {
-    try {
-      const metadata = await stationService.getNowPlaying(stationId);
-      setNowPlaying(metadata);
-    } catch {
-      console.log('Now playing metadata not available');
-    }
-  }, [setNowPlaying]);
-
-  // Stop playback
+  // Stop current playback
   const stopPlayback = useCallback(async () => {
+    console.log('[useAudioPlayer] Stopping playback');
     try {
-      if (isWeb && soundRef.current) {
+      if (soundRef.current) {
         await soundRef.current.stopAsync();
         await soundRef.current.unloadAsync();
         soundRef.current = null;
       }
+      isPlayingRef.current = false;
 
       // Record listening time
       if (listeningStartRef.current && currentStation) {
@@ -196,32 +131,108 @@ export const useAudioPlayer = () => {
       }
 
       setPlaybackState('idle');
+      setMiniPlayerVisible(false);
     } catch (error) {
-      console.error('Error stopping playback:', error);
+      console.error('[useAudioPlayer] Error stopping playback:', error);
     }
-  }, [currentStation, setPlaybackState]);
+  }, [currentStation, setPlaybackState, setMiniPlayerVisible]);
+
+  // Play a station
+  const playStation = useCallback(async (station: Station) => {
+    console.log('[useAudioPlayer] Playing station:', station.name);
+    try {
+      // Stop current playback first
+      if (soundRef.current) {
+        console.log('[useAudioPlayer] Stopping previous playback');
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
+      }
+      isPlayingRef.current = false;
+
+      // Set station and loading state
+      setCurrentStation(station);
+      setPlaybackState('loading');
+      setError(null);
+      setMiniPlayerVisible(true);
+
+      // Record click
+      try {
+        await stationService.recordClick(station._id);
+      } catch {
+        // Non-critical
+      }
+
+      // Resolve stream URL
+      const url = await resolveStreamUrl(station);
+      if (!url) {
+        throw new Error('Could not resolve stream URL');
+      }
+      console.log('[useAudioPlayer] Stream URL:', url);
+      setStreamUrl(url);
+
+      // Create and load sound
+      console.log('[useAudioPlayer] Creating sound...');
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: url },
+        { shouldPlay: true, volume: 1.0 },
+        onPlaybackStatusUpdate
+      );
+      
+      soundRef.current = sound;
+      listeningStartRef.current = new Date();
+      console.log('[useAudioPlayer] Sound created and playing');
+
+      // Record recently played
+      try {
+        await userService.recordRecentlyPlayed(station._id);
+      } catch {
+        // Non-critical
+      }
+
+      // Fetch now playing metadata
+      fetchNowPlaying(station._id);
+
+    } catch (error) {
+      console.error('[useAudioPlayer] Failed to play station:', error);
+      setError(error instanceof Error ? error.message : 'Failed to play station');
+      setPlaybackState('error');
+    }
+  }, [resolveStreamUrl, onPlaybackStatusUpdate, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible]);
+
+  // Fetch now playing metadata
+  const fetchNowPlaying = useCallback(async (stationId: string) => {
+    try {
+      const metadata = await stationService.getNowPlaying(stationId);
+      setNowPlaying(metadata);
+    } catch {
+      console.log('[useAudioPlayer] Now playing metadata not available');
+    }
+  }, [setNowPlaying]);
 
   // Pause playback
   const pause = useCallback(async () => {
     try {
-      if (isWeb && soundRef.current) {
+      if (soundRef.current) {
         await soundRef.current.pauseAsync();
+        setPlaybackState('paused');
+        isPlayingRef.current = false;
       }
-      setPlaybackState('paused');
     } catch (error) {
-      console.error('Error pausing:', error);
+      console.error('[useAudioPlayer] Error pausing:', error);
     }
   }, [setPlaybackState]);
 
   // Resume playback
   const resume = useCallback(async () => {
     try {
-      if (isWeb && soundRef.current) {
+      if (soundRef.current) {
         await soundRef.current.playAsync();
+        setPlaybackState('playing');
+        isPlayingRef.current = true;
       }
-      setPlaybackState('playing');
     } catch (error) {
-      console.error('Error resuming:', error);
+      console.error('[useAudioPlayer] Error resuming:', error);
     }
   }, [setPlaybackState]);
 
@@ -237,11 +248,11 @@ export const useAudioPlayer = () => {
   // Set volume
   const setVolume = useCallback(async (volume: number) => {
     try {
-      if (isWeb && soundRef.current) {
+      if (soundRef.current) {
         await soundRef.current.setVolumeAsync(volume);
       }
     } catch (error) {
-      console.error('Error setting volume:', error);
+      console.error('[useAudioPlayer] Error setting volume:', error);
     }
   }, []);
 
