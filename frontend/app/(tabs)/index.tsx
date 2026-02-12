@@ -750,12 +750,12 @@ const styles = StyleSheet.create({
     columnGap: GRID_GAP,
   },
   stationGridItem: {
-    width: GRID_ITEM_WIDTH,
+    width: '30%',
     height: 144,
   },
   stationGridLogo: {
-    width: GRID_ITEM_WIDTH,
-    height: GRID_ITEM_WIDTH,
+    width: '100%',
+    aspectRatio: 1,
     borderRadius: 10,
     backgroundColor: colors.surface,
     overflow: 'hidden',
