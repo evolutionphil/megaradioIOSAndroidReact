@@ -2,7 +2,8 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography } from '../../src/constants/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { colors, typography, borderRadius, spacing } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
 
 export default function TabLayout() {
@@ -12,18 +13,21 @@ export default function TabLayout() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: colors.tabBarActive,
+          tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.tabBarInactive,
           tabBarLabelStyle: styles.tabBarLabel,
           tabBarIconStyle: styles.tabBarIcon,
+          tabBarItemStyle: styles.tabBarItem,
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
             title: 'Home',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home" size={size} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+                <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />
+              </View>
             ),
           }}
         />
@@ -31,8 +35,10 @@ export default function TabLayout() {
           name="discover"
           options={{
             title: 'Discover',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="compass" size={size} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+                <Ionicons name={focused ? 'compass' : 'compass-outline'} size={22} color={color} />
+              </View>
             ),
           }}
         />
@@ -40,8 +46,10 @@ export default function TabLayout() {
           name="favorites"
           options={{
             title: 'Favorites',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="heart" size={size} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+                <Ionicons name={focused ? 'heart' : 'heart-outline'} size={22} color={color} />
+              </View>
             ),
           }}
         />
@@ -49,8 +57,10 @@ export default function TabLayout() {
           name="profile"
           options={{
             title: 'Profile',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person" size={size} color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+                <Ionicons name={focused ? 'person' : 'person-outline'} size={22} color={color} />
+              </View>
             ),
           }}
         />
@@ -66,18 +76,33 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   tabBar: {
-    backgroundColor: colors.tabBarBackground,
+    backgroundColor: colors.background,
     borderTopColor: colors.border,
     borderTopWidth: 1,
-    height: Platform.OS === 'ios' ? 85 : 65,
-    paddingBottom: Platform.OS === 'ios' ? 25 : 8,
-    paddingTop: 8,
+    height: Platform.OS === 'ios' ? 88 : 68,
+    paddingBottom: Platform.OS === 'ios' ? 28 : 10,
+    paddingTop: 10,
+    paddingHorizontal: spacing.sm,
   },
   tabBarLabel: {
     fontSize: typography.sizes.xs,
     fontWeight: typography.weights.medium,
+    marginTop: 4,
   },
   tabBarIcon: {
-    marginTop: 4,
+    marginBottom: -2,
+  },
+  tabBarItem: {
+    paddingVertical: 4,
+  },
+  iconWrapper: {
+    width: 40,
+    height: 32,
+    borderRadius: borderRadius.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconWrapperActive: {
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
   },
 });

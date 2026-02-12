@@ -13,7 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
-import { StationCard } from '../../src/components/StationCard';
+import { StationCard, GenreCard, SectionHeader } from '../../src/components';
 import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
@@ -26,7 +26,6 @@ export default function DiscoverScreen() {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(params.genre as string || null);
 
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
-  // Use stations API with vote sorting for discovery
   const { data: stationsData, isLoading: stationsLoading, refetch: refetchStations } = useStations({
     sort: 'votes',
     order: 'desc',
@@ -68,12 +67,16 @@ export default function DiscoverScreen() {
   const stations = stationsData?.stations || [];
 
   return (
-    <LinearGradient colors={gradients.background} style={styles.gradient}>
+    <LinearGradient colors={gradients.background as any} style={styles.gradient}>
       <SafeAreaView style={styles.container} edges={['top']}>
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Discover</Text>
+          <View>
+            <Text style={styles.title}>Discover</Text>
+            <Text style={styles.subtitle}>Explore the world of radio</Text>
+          </View>
           <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
-            <Ionicons name="search" size={24} color={colors.text} />
+            <Ionicons name="search" size={22} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -89,9 +92,8 @@ export default function DiscoverScreen() {
           }
           showsVerticalScrollIndicator={false}
         >
-          {/* Genre Chips */}
+          {/* Genre Filter Section */}
           <View style={styles.genreSection}>
-            <Text style={styles.sectionTitle}>Genres</Text>
             {genresLoading ? (
               <ActivityIndicator size="small" color={colors.primary} style={styles.loader} />
             ) : (
@@ -107,6 +109,11 @@ export default function DiscoverScreen() {
                   ]}
                   onPress={() => handleGenreSelect(null)}
                 >
+                  <Ionicons 
+                    name="radio" 
+                    size={16} 
+                    color={!selectedGenre ? colors.text : colors.textSecondary} 
+                  />
                   <Text
                     style={[
                       styles.genreChipText,
@@ -139,16 +146,37 @@ export default function DiscoverScreen() {
             )}
           </View>
 
-          {/* Top Stations */}
+          {/* Browse All Genres */}
+          <View style={styles.section}>
+            <SectionHeader 
+              title="Browse Genres" 
+              showSeeAll={false}
+            />
+            <View style={styles.genresGrid}>
+              {genres.slice(0, 8).map((genre) => (
+                <GenreCard
+                  key={genre._id}
+                  genre={genre}
+                  onPress={(g) => handleGenreSelect(g)}
+                  size="small"
+                  style={styles.genreGridItem}
+                />
+              ))}
+            </View>
+          </View>
+
+          {/* Stations List */}
           <View style={styles.stationsSection}>
-            <Text style={styles.sectionTitle}>
-              {selectedGenre ? `${selectedGenre} Stations` : 'Top Stations'}
-            </Text>
+            <SectionHeader 
+              title={selectedGenre ? `${selectedGenre.charAt(0).toUpperCase() + selectedGenre.slice(1)} Stations` : 'Top Stations'}
+              subtitle={`${stations.length} stations`}
+              showSeeAll={false}
+            />
             {stationsLoading ? (
               <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
             ) : stations.length > 0 ? (
               <View style={styles.stationsList}>
-                {stations.slice(0, 50).map((station) => (
+                {stations.slice(0, 30).map((station) => (
                   <StationCard
                     key={station._id}
                     station={station}
@@ -160,9 +188,11 @@ export default function DiscoverScreen() {
               </View>
             ) : (
               <View style={styles.emptyState}>
-                <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
-                <Text style={styles.emptyText}>No stations found</Text>
-                <Text style={styles.emptySubtext}>Try selecting a different genre</Text>
+                <View style={styles.emptyIcon}>
+                  <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
+                </View>
+                <Text style={styles.emptyTitle}>No stations found</Text>
+                <Text style={styles.emptyText}>Try selecting a different genre</Text>
               </View>
             )}
           </View>
@@ -192,6 +222,11 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.bold,
     color: colors.text,
   },
+  subtitle: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
   searchButton: {
     width: 44,
     height: 44,
@@ -204,23 +239,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 150,
+    paddingBottom: 180,
   },
+  
+  // Genre Chips
   genreSection: {
     marginBottom: spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,
   },
   genreChips: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
+    gap: spacing.sm,
   },
   genreChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: borderRadius.full,
@@ -228,6 +261,7 @@ const styles = StyleSheet.create({
     marginRight: spacing.sm,
     borderWidth: 1,
     borderColor: colors.border,
+    gap: spacing.xs,
   },
   genreChipActive: {
     backgroundColor: colors.primary,
@@ -241,29 +275,62 @@ const styles = StyleSheet.create({
   genreChipTextActive: {
     color: colors.text,
   },
+  
+  // Section
+  section: {
+    marginBottom: spacing.lg,
+  },
+  
+  // Genres Grid
+  genresGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
+  },
+  genreGridItem: {
+    width: '48%',
+    marginBottom: 0,
+  },
+  
+  // Stations
   stationsSection: {
     flex: 1,
   },
   stationsList: {
     paddingHorizontal: spacing.md,
   },
+  
+  // Loader
   loader: {
     paddingVertical: spacing.xl,
   },
+  
+  // Empty State
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: spacing.xxl,
+    paddingHorizontal: spacing.xl,
+  },
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  emptyTitle: {
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
   emptyText: {
-    marginTop: spacing.sm,
-    fontSize: typography.sizes.lg,
-    color: colors.text,
-    fontWeight: typography.weights.medium,
-  },
-  emptySubtext: {
-    marginTop: spacing.xs,
     fontSize: typography.sizes.md,
     color: colors.textMuted,
+    textAlign: 'center',
   },
 });
