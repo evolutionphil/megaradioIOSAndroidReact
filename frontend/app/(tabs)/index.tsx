@@ -754,13 +754,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   stationGridItem: {
-    width: '32%',
-    marginRight: '2%',
     marginBottom: 12,
   },
   stationGridLogo: {
-    width: '100%',
-    aspectRatio: 1,
     borderRadius: 10,
     backgroundColor: colors.surface,
     overflow: 'hidden',
