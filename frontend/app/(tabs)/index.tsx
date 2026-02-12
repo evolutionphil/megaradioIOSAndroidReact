@@ -516,12 +516,13 @@ const styles = StyleSheet.create({
     paddingBottom: 180,
   },
 
-  // Header - Symmetric padding
+  // Header - Centered with fixed width
   header: {
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: HORIZONTAL_PADDING,
     paddingVertical: spacing.md,
   },
   headerLeft: {
