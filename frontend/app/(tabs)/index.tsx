@@ -144,14 +144,16 @@ export default function HomeScreen() {
           {/* Premium Banner */}
           <TouchableOpacity style={styles.premiumBanner}>
             <LinearGradient
-              colors={['#4B30BE', '#8B5CF6', '#C084FC'] as any}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              colors={['#5C27F4', '#9F3FFF'] as any}
+              start={{ x: 1, y: 0.5 }}
+              end={{ x: 0, y: 0.5 }}
               style={styles.premiumGradient}
             >
-              <View style={styles.premiumIcon}>
-                <Ionicons name="radio" size={18} color={colors.text} />
-              </View>
+              <Image 
+                source={{ uri: 'https://customer-assets.emergentagent.com/job_fe201e1e-49a8-4b50-87cb-181e2f73a46f/artifacts/afi7gbdc_image.png' }} 
+                style={styles.premiumIconImage}
+                resizeMode="contain"
+              />
               <View style={styles.premiumContent}>
                 <Text style={styles.premiumTitle}>MegaRadio Premium</Text>
                 <Text style={styles.premiumSubtitle}>Unlock Amazing Features</Text>
