@@ -115,7 +115,6 @@ export default function PlayerScreen() {
   
   // Debug
   console.log('[Player] recentStations count:', recentStations.length);
-  console.log('[Player] stationsArray[0]:', stationsArray[0]?.name);
 
   // Get artist/song info
   const getArtistInfo = () => {
