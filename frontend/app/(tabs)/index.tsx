@@ -104,12 +104,12 @@ export default function HomeScreen() {
 
   // Fallback images for discoverable genres banner (CORS-safe)
   const genreBannerImages: { [key: string]: string } = {
-    'folk-music': 'https://images.unsplash.com/photo-1598901704027-18db7e0e8c60?w=200&h=200&fit=crop',
-    'jazz': 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=200&h=200&fit=crop',
-    'rock': 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=200&h=200&fit=crop',
-    'pop': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&h=200&fit=crop',
-    'classical': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=200&h=200&fit=crop',
-    'electronic': 'https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?w=200&h=200&fit=crop',
+    'folk-music': 'https://images.unsplash.com/photo-1598901704027-18db7e0e8c60?crop=entropy&cs=srgb&fm=jpg&q=85&w=200',
+    'jazz': 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?crop=entropy&cs=srgb&fm=jpg&q=85&w=200',
+    'rock': 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?crop=entropy&cs=srgb&fm=jpg&q=85&w=200',
+    'pop': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?crop=entropy&cs=srgb&fm=jpg&q=85&w=200',
+    'classical': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?crop=entropy&cs=srgb&fm=jpg&q=85&w=200',
+    'electronic': 'https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?crop=entropy&cs=srgb&fm=jpg&q=85&w=200',
   };
 
   const getGenreBannerImage = (genre: any) => {
@@ -117,8 +117,8 @@ export default function HomeScreen() {
     if (genre.slug && genreBannerImages[genre.slug]) {
       return genreBannerImages[genre.slug];
     }
-    // Default fallback
-    return 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=200&h=200&fit=crop';
+    // Default fallback - music related image
+    return 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?crop=entropy&cs=srgb&fm=jpg&q=85&w=200';
   };
 
   const getGenreBackground = (index: number) => {
