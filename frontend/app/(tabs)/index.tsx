@@ -312,7 +312,7 @@ export default function HomeScreen() {
             </View>
             {recentStations.length > 0 || popularStations.length > 0 ? (
               <>
-                {/* Row 1 - 3 items with HARDCODED 100px width */}
+                {/* Row 1 - 3 items */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, width: '100%' }}>
                   {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).map((station: Station) => (
                     <TouchableOpacity
@@ -336,11 +336,11 @@ export default function HomeScreen() {
                 </View>
                 {/* Row 2 - next 3 items if available */}
                 {(recentStations.length > 0 ? recentStations : popularStations).length > 3 && (
-                  <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 12, width: '100%' }}>
-                    {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station, idx: number) => (
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, width: '100%' }}>
+                    {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station) => (
                       <TouchableOpacity
                         key={station._id}
-                        style={{ width: 100, marginRight: idx < 2 ? 8 : 0 }}
+                        style={{ width: 100 }}
                         onPress={() => handleStationPress(station)}
                       >
                         <View style={{ width: 100, height: 100, borderRadius: 10, backgroundColor: colors.surface, overflow: 'hidden', marginBottom: 8 }}>
