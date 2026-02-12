@@ -270,9 +270,6 @@ export default function PlayerScreen() {
             <Text style={styles.stationName}>{currentStation.name}</Text>
             <Text style={styles.artistName}>{getArtistInfo()}</Text>
             
-            {/* Divider line */}
-            <View style={styles.divider} />
-            
             {/* Spotify & YouTube icons */}
             <View style={styles.socialIcons}>
               <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
@@ -282,6 +279,9 @@ export default function PlayerScreen() {
                 <Ionicons name="play-circle" size={16} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
+            
+            {/* Divider line between social icons and controls */}
+            <View style={styles.divider} />
           </View>
 
           {/* Main Controls */}
