@@ -22,13 +22,6 @@ import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import type { Station } from '../src/types';
 
-// Custom player icons
-const PrevIcon = require('../src/assets/player-icons/prev.png');
-const PauseIcon = require('../src/assets/player-icons/pause.png');
-const NextIcon = require('../src/assets/player-icons/next.png');
-const TimerIcon = require('../src/assets/player-icons/timer.png');
-const HeartIcon = require('../src/assets/player-icons/heart.png');
-
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_SIZE = 190;
 const GRID_ITEM_SIZE = 100;
