@@ -52,7 +52,12 @@ export const stationService = {
     const response = await api.get(API_ENDPOINTS.stations.popular, {
       params: { country, limit, excludeBroken: true },
     });
-    return response.data;
+    // API returns an array directly, we need to wrap it
+    const data = response.data;
+    if (Array.isArray(data)) {
+      return { stations: data, count: data.length };
+    }
+    return data;
   },
 
   // Get single station by slug or ID
