@@ -904,8 +904,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: 'hidden',
     marginBottom: 12,
-    position: 'relative',
+  },
+  discoverableGenreImageBg: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
     backgroundColor: colors.surface,
+  },
+  discoverableGenreImageStyle: {
+    borderRadius: 5,
   },
   discoverableGenreImage: {
     width: '100%',
@@ -922,10 +929,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   discoverableGenreOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: 12,
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
