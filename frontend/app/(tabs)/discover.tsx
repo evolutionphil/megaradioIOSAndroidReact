@@ -211,6 +211,36 @@ export default function DiscoverScreen() {
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  // Background Glow Effect - Top Left
+  bgGlowContainer: {
+    position: 'absolute',
+    top: -100,
+    left: -100,
+    width: 350,
+    height: 350,
+    zIndex: 0,
+  },
+  bgGlow: {
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    backgroundColor: '#6B4EFF',
+    opacity: 0.5,
+    ...(Platform.OS === 'web' ? {
+      // @ts-ignore
+      filter: 'blur(80px)',
+    } : {
+      // iOS native glow using shadow
+      shadowColor: '#6B4EFF',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 1,
+      shadowRadius: 80,
+    }),
+  },
   gradient: {
     flex: 1,
   },
