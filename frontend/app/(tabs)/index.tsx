@@ -825,10 +825,9 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.medium,
   },
 
-  // Jazz Banner - Centered with fixed width
+  // Jazz Banner - Full width
   jazzBanner: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     marginBottom: spacing.lg,
     borderRadius: 5,
     overflow: 'hidden',
