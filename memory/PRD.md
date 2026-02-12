@@ -10,7 +10,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - Zustand (State Management)
 - React Query (Data Fetching)
 - expo-av for audio playback
-- react-native-reanimated-carousel for Car Mode swiper
+- Custom carousel with PanResponder for Car Mode
 
 ## Core Features
 
@@ -46,22 +46,36 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
   - Fallback to genre/station info if ICY unavailable
   - Parses StreamTitle='Artist - Song' format
 
-### Recent Changes (Feb 12, 2026 - Session 2)
-1. **Car Mode Swiper**: Complete rewrite using react-native-reanimated-carousel v4
-2. **Double-Click Bug Fix**: Extracted GridItem outside PlayerScreen to prevent unmount/remount
-3. **Fullscreen Player**: Changed presentation from 'modal' to 'fullScreenModal'
-4. **Now Playing API**: Rewrote with real ICY metadata extraction from radio streams
-5. **Route Cleanup**: Removed non-existent station/[id] route from _layout.tsx
+### Session 3 Bug Fixes (Dec 2025)
+1. **Audio Atomicity Fix (P0)**: Completely rewrote `AudioManager.play()` method
+   - Now captures existing sound reference FIRST
+   - Clears internal references to prevent race conditions
+   - Calls stopAsync() and unloadAsync() on captured reference
+   - Only then creates new sound
+   - Verified: Console logs show "STOPPING existing stream → stopAsync completed → unloadAsync completed → Creating NEW sound"
 
-### Known Issues
-- expo-av deprecation warning (SDK 54 will remove it)
+2. **Car Mode Carousel Logo Fix (P0)**: Fixed `StationCarousel` component
+   - Added `getStationAtPosition()` function to properly calculate station index for each carousel position
+   - Changed keys from `pos-${posIdx}` to `carousel-pos-${posIdx}-station-${station._id}`
+   - Verified: 3 different station logos now show (mangoradio.de, wdr.de, radioarabella.de)
+
+3. **SafeAreaView Fix (P1)**: Already properly implemented
+   - `player.tsx`: Line 363 - `<SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>`
+   - `CarModeScreen.tsx`: Line 303 - `<SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>`
+
+4. **Single-Click Play**: Verified working correctly
+
+### Known Deprecation Warnings
+- expo-av deprecation warning (SDK 54 will remove it) - consider expo-audio migration
 - shadow* style props deprecation (use boxShadow)
-- Authentication not yet implemented (Recently Played shows popular stations as fallback)
+- textShadow* style props deprecation
+- props.pointerEvents deprecated (use style.pointerEvents)
+- Image tintColor deprecated (use props.tintColor)
 
 ## Key Files
 - `/app/frontend/app/player.tsx` - Full-screen player with extracted GridItem
-- `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with reanimated carousel
-- `/app/frontend/src/hooks/useAudioPlayer.ts` - expo-av with singleton AudioManager
+- `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with custom PanResponder carousel
+- `/app/frontend/src/hooks/useAudioPlayer.ts` - expo-av with singleton AudioManager (atomic playback)
 - `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
 - `/app/frontend/app/_layout.tsx` - Root layout with fullScreenModal player
 - `/app/backend/server.py` - Now Playing API with ICY metadata
@@ -72,10 +86,12 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - `POST /api/resolve-stream` - Resolve stream URL
 - `GET /api/now-playing/{station_id}` - Real ICY metadata from stream
 
-## Pending Tasks (P2)
-- [ ] Country flag badge on station logos
+## Pending Tasks (P1)
 - [ ] Authentication flow (Login/Signup)
 - [ ] Favorites feature
+
+## Pending Tasks (P2)
+- [ ] Country flag badge on station logos
 - [ ] Radios Near You (expo-location)
 - [ ] Profile screen
 - [ ] Skeleton loaders
@@ -86,4 +102,4 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - Priority: Pixel-perfect Figma design
 
 ## Last Updated
-February 12, 2026 - Session 2
+December 2025 - Session 3
