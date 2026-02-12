@@ -230,17 +230,11 @@ export default function HomeScreen() {
                       end={{ x: 0, y: 0.5 }}
                       style={styles.genreSwiperGradient}
                     >
-                      {genre.discoverableImage ? (
-                        <Image 
-                          source={{ uri: `https://themegaradio.com${genre.discoverableImage}` }} 
-                          style={styles.genreSwiperImage}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <View style={styles.genreSwiperIconContainer}>
-                          <Ionicons name="musical-notes" size={28} color="rgba(255,255,255,0.6)" />
-                        </View>
-                      )}
+                      <Image 
+                        source={{ uri: getGenreBannerImage(genre) }} 
+                        style={styles.genreSwiperImage}
+                        resizeMode="cover"
+                      />
                       <View style={styles.genreSwiperContent}>
                         <Text style={styles.genreSwiperTitle}>{genre.name}</Text>
                         <Text style={styles.genreSwiperSubtitle}>{genre.stationCount || 0} stations</Text>
