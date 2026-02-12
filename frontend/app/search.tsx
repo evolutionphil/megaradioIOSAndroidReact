@@ -188,14 +188,16 @@ export default function SearchScreen() {
       // Combine all results
       const combined = [...stationResults, ...genreResults, ...profileResults];
       console.log('Combined results:', combined.length);
+      console.log('Setting state: allResults, hasSearched, isSearching...');
       
       setAllResults(combined);
       setHasSearched(true);
+      setIsSearching(false);
+      console.log('State updated successfully');
     } catch (error: any) {
       console.error('Search error:', error?.message || error);
       setAllResults([]);
       setHasSearched(true);
-    } finally {
       setIsSearching(false);
     }
   }, []);
