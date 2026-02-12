@@ -12,8 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
-import { StationCard } from '../../src/components/StationCard';
+import { colors, gradients, spacing, borderRadius, typography, shadows } from '../../src/constants/theme';
+import { StationCard, SectionHeader } from '../../src/components';
 import { useFavorites } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
@@ -58,19 +58,35 @@ export default function FavoritesScreen() {
   // Show login prompt if not authenticated
   if (!isAuthenticated) {
     return (
-      <LinearGradient colors={gradients.background} style={styles.gradient}>
+      <LinearGradient colors={gradients.background as any} style={styles.gradient}>
         <SafeAreaView style={styles.container} edges={['top']}>
           <View style={styles.header}>
             <Text style={styles.title}>Favorites</Text>
           </View>
           <View style={styles.loginPrompt}>
-            <Ionicons name="heart" size={64} color={colors.primary} />
+            <View style={styles.loginIconContainer}>
+              <LinearGradient
+                colors={[colors.primary, colors.accent] as any}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.loginIconGradient}
+              >
+                <Ionicons name="heart" size={48} color={colors.text} />
+              </LinearGradient>
+            </View>
             <Text style={styles.loginTitle}>Save Your Favorites</Text>
             <Text style={styles.loginText}>
-              Sign in to save your favorite stations and access them anywhere
+              Sign in to save your favorite stations and access them anywhere on any device
             </Text>
             <TouchableOpacity style={styles.loginButton} onPress={handleLoginPress}>
-              <Text style={styles.loginButtonText}>Sign In</Text>
+              <LinearGradient
+                colors={[colors.primary, colors.primaryDark] as any}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.loginButtonGradient}
+              >
+                <Text style={styles.loginButtonText}>Sign In</Text>
+              </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.signupLink} 
@@ -87,13 +103,18 @@ export default function FavoritesScreen() {
   }
 
   return (
-    <LinearGradient colors={gradients.background} style={styles.gradient}>
+    <LinearGradient colors={gradients.background as any} style={styles.gradient}>
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
-          <Text style={styles.title}>Favorites</Text>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{favorites.length}</Text>
+          <View>
+            <Text style={styles.title}>Favorites</Text>
+            <Text style={styles.subtitle}>{favorites.length} saved stations</Text>
           </View>
+          {favorites.length > 0 && (
+            <TouchableOpacity style={styles.shuffleButton}>
+              <Ionicons name="shuffle" size={20} color={colors.text} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView
@@ -109,7 +130,9 @@ export default function FavoritesScreen() {
           showsVerticalScrollIndicator={false}
         >
           {isLoading ? (
-            <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
           ) : favorites.length > 0 ? (
             <View style={styles.stationsList}>
               {favorites.map((station) => (
@@ -124,7 +147,9 @@ export default function FavoritesScreen() {
             </View>
           ) : (
             <View style={styles.emptyState}>
-              <Ionicons name="heart-outline" size={80} color={colors.textMuted} />
+              <View style={styles.emptyIconContainer}>
+                <Ionicons name="heart-outline" size={64} color={colors.textMuted} />
+              </View>
               <Text style={styles.emptyTitle}>No Favorites Yet</Text>
               <Text style={styles.emptyText}>
                 Start exploring and tap the heart icon to save your favorite stations
@@ -133,7 +158,15 @@ export default function FavoritesScreen() {
                 style={styles.exploreButton}
                 onPress={() => router.push('/discover')}
               >
-                <Text style={styles.exploreButtonText}>Explore Stations</Text>
+                <LinearGradient
+                  colors={[colors.primary, colors.primaryDark] as any}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.exploreButtonGradient}
+                >
+                  <Ionicons name="compass" size={18} color={colors.text} />
+                  <Text style={styles.exploreButtonText}>Explore Stations</Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
           )}
@@ -152,6 +185,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: spacing.md,
     paddingTop: spacing.sm,
@@ -162,32 +196,36 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.bold,
     color: colors.text,
   },
-  badge: {
-    marginLeft: spacing.sm,
-    backgroundColor: colors.primary,
-    borderRadius: borderRadius.full,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    minWidth: 28,
-    alignItems: 'center',
-  },
-  badgeText: {
+  subtitle: {
     fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  shuffleButton: {
+    width: 44,
+    height: 44,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.glow,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 150,
+    paddingBottom: 180,
   },
   stationsList: {
     paddingHorizontal: spacing.md,
   },
-  loader: {
-    paddingVertical: spacing.xxl,
+  
+  // Loader
+  loaderContainer: {
+    paddingVertical: spacing.xxl * 2,
   },
+  
+  // Empty State
   emptyState: {
     flex: 1,
     alignItems: 'center',
@@ -195,59 +233,85 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.xxl * 2,
   },
+  emptyIconContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
   emptyTitle: {
-    marginTop: spacing.lg,
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
     textAlign: 'center',
+    marginBottom: spacing.sm,
   },
   emptyText: {
-    marginTop: spacing.sm,
     fontSize: typography.sizes.md,
     color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: spacing.lg,
   },
   exploreButton: {
-    marginTop: spacing.lg,
-    backgroundColor: colors.primary,
+    borderRadius: borderRadius.full,
+    overflow: 'hidden',
+  },
+  exploreButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
-    borderRadius: borderRadius.full,
+    gap: spacing.sm,
   },
   exploreButtonText: {
     fontSize: typography.sizes.md,
     fontWeight: typography.weights.semibold,
     color: colors.text,
   },
+  
+  // Login Prompt
   loginPrompt: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.xl,
   },
+  loginIconContainer: {
+    marginBottom: spacing.lg,
+  },
+  loginIconGradient: {
+    width: 100,
+    height: 100,
+    borderRadius: borderRadius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   loginTitle: {
-    marginTop: spacing.lg,
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
     textAlign: 'center',
+    marginBottom: spacing.sm,
   },
   loginText: {
-    marginTop: spacing.sm,
     fontSize: typography.sizes.md,
     color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: spacing.xl,
   },
   loginButton: {
-    marginTop: spacing.xl,
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xxl,
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.full,
     width: '100%',
+    borderRadius: borderRadius.full,
+    overflow: 'hidden',
+    marginBottom: spacing.md,
+  },
+  loginButtonGradient: {
+    paddingVertical: spacing.md + 2,
     alignItems: 'center',
   },
   loginButtonText: {
@@ -256,7 +320,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   signupLink: {
-    marginTop: spacing.md,
+    paddingVertical: spacing.sm,
   },
   signupLinkText: {
     fontSize: typography.sizes.md,
