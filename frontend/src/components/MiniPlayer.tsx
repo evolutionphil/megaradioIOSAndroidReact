@@ -6,11 +6,17 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, borderRadius, spacing, typography } from '../constants/theme';
 import { usePlayerStore } from '../store/playerStore';
+import { ChevronUpIcon, HeartOutlineIcon, PauseIcon, PlayIcon } from './TabBarIcons';
+
+// Tab bar height - must match _layout.tsx
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
+const MINI_PLAYER_HEIGHT = 70;
 
 export const MiniPlayer: React.FC = () => {
   const router = useRouter();
@@ -26,13 +32,28 @@ export const MiniPlayer: React.FC = () => {
     return null;
   }
 
-  const logoUrl =
-    currentStation.logoAssets?.webp96 ||
-    currentStation.favicon ||
-    currentStation.logo;
+  // Get logo URL
+  const getLogoUrl = () => {
+    if (currentStation.logoAssets?.webp96) {
+      return `https://themegaradio.com/station-logos/${currentStation.logoAssets.folder}/${currentStation.logoAssets.webp96}`;
+    }
+    return currentStation.favicon || currentStation.logo || null;
+  };
 
+  const logoUrl = getLogoUrl();
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
+
+  // Get genre/category from station
+  const getGenre = () => {
+    if (currentStation.tags && typeof currentStation.tags === 'string') {
+      return currentStation.tags.split(',')[0].trim();
+    }
+    if (currentStation.genres && Array.isArray(currentStation.genres) && currentStation.genres.length > 0) {
+      return currentStation.genres[0];
+    }
+    return currentStation.country || 'Radio';
+  };
 
   const handlePress = () => {
     router.push('/player');
@@ -46,20 +67,30 @@ export const MiniPlayer: React.FC = () => {
     }
   };
 
+  const handleFavorite = () => {
+    // TODO: Implement favorite toggle
+    console.log('Toggle favorite');
+  };
+
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={handlePress}
-      activeOpacity={0.95}
-    >
-      <View style={styles.content}>
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.content}
+        onPress={handlePress}
+        activeOpacity={0.95}
+      >
+        {/* Chevron Up Button */}
+        <TouchableOpacity style={styles.chevronButton} onPress={handlePress}>
+          <ChevronUpIcon color="#FFFFFF" size={32} />
+        </TouchableOpacity>
+
         {/* Station Logo */}
         <View style={styles.logoContainer}>
           {logoUrl ? (
             <Image source={{ uri: logoUrl }} style={styles.logo} resizeMode="cover" />
           ) : (
             <View style={styles.placeholderLogo}>
-              <Ionicons name="radio" size={20} color={colors.textMuted} />
+              <Ionicons name="radio" size={24} color="#FFFFFF" />
             </View>
           )}
         </View>
@@ -69,58 +100,70 @@ export const MiniPlayer: React.FC = () => {
           <Text style={styles.stationName} numberOfLines={1}>
             {currentStation.name}
           </Text>
-          <Text style={styles.nowPlaying} numberOfLines={1}>
-            {nowPlaying?.title || currentStation.country || 'Now Streaming'}
+          <Text style={styles.genreText} numberOfLines={1}>
+            {getGenre()}
           </Text>
         </View>
 
         {/* Controls */}
         <View style={styles.controls}>
+          {/* Play/Pause Button */}
           <TouchableOpacity
-            style={styles.playButton}
+            style={styles.controlButton}
             onPress={handlePlayPause}
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color={colors.text} />
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : isPlaying ? (
+              <PauseIcon color="#FFFFFF" size={22} />
             ) : (
-              <Ionicons
-                name={isPlaying ? 'pause' : 'play'}
-                size={20}
-                color={colors.text}
-              />
+              <PlayIcon color="#FFFFFF" size={22} />
             )}
           </TouchableOpacity>
+
+          {/* Favorite Button */}
+          <TouchableOpacity
+            style={styles.controlButton}
+            onPress={handleFavorite}
+          >
+            <HeartOutlineIcon color="#FFFFFF" size={22} />
+          </TouchableOpacity>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 85,
-    left: spacing.md,
-    right: spacing.md,
-    height: 64,
-    backgroundColor: colors.backgroundSecondary,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
+    bottom: TAB_BAR_HEIGHT,
+    left: 0,
+    right: 0,
+    height: MINI_PLAYER_HEIGHT,
+    backgroundColor: '#000000',
+    borderTopWidth: 0,
   },
   content: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: 12,
+  },
+  chevronButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
   },
   logoContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: borderRadius.sm,
+    width: 50,
+    height: 50,
+    borderRadius: 8,
     overflow: 'hidden',
-    backgroundColor: colors.surface,
+    backgroundColor: '#2F2F2F',
   },
   logo: {
     width: '100%',
@@ -131,32 +174,33 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: '#2F2F2F',
   },
   info: {
     flex: 1,
-    marginLeft: spacing.sm,
-    marginRight: spacing.sm,
+    marginLeft: 12,
+    marginRight: 12,
   },
   stationName: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
-  nowPlaying: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
+  genreText: {
+    fontSize: 14,
+    color: '#AAAAAA',
     marginTop: 2,
   },
   controls: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
-  playButton: {
-    width: 40,
-    height: 40,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.primary,
+  controlButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#2F2F2F',
     justifyContent: 'center',
     alignItems: 'center',
   },
