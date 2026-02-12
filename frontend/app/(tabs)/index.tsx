@@ -594,22 +594,24 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
 
-  // Popular Stations List
+  // Popular Stations List - Updated with exact dimensions
   popularList: {
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 15,
   },
   popularItem: {
+    width: 345,
+    height: 80,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.backgroundSecondary,
-    borderRadius: borderRadius.md,
-    padding: spacing.sm,
+    borderRadius: 10,
+    paddingHorizontal: 15,
     marginBottom: spacing.sm,
   },
   popularLogo: {
-    width: 60,
-    height: 40,
-    borderRadius: borderRadius.sm,
+    width: 50,
+    height: 50,
+    borderRadius: 5,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
@@ -621,7 +623,7 @@ const styles = StyleSheet.create({
   },
   popularInfo: {
     flex: 1,
-    marginLeft: spacing.md,
+    marginLeft: 15,
   },
   popularName: {
     fontSize: typography.sizes.md,
