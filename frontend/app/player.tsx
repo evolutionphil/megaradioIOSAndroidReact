@@ -23,7 +23,8 @@ import { useAuthStore } from '../src/store/authStore';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const ARTWORK_SIZE = SCREEN_WIDTH - 80;
+const ARTWORK_WIDTH = SCREEN_WIDTH - 80;
+const ARTWORK_HEIGHT = 200;
 const GRID_ITEM_WIDTH = (SCREEN_WIDTH - 60) / 3;
 
 export default function PlayerScreen() {
