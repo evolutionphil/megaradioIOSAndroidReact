@@ -17,27 +17,114 @@ import { useRouter } from 'expo-router';
 import stationService from '../src/services/stationService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
-import type { Station } from '../src/types';
+import type { Station, Genre } from '../src/types';
+import api from '../src/services/api';
+import { API_ENDPOINTS } from '../src/constants/api';
 
 // Filter types
-type FilterType = 'radios' | 'genres' | 'profiles';
+type FilterType = 'all' | 'radios' | 'genres' | 'profiles';
+
+// Result item types
+interface SearchResultItem {
+  _id: string;
+  type: 'radio' | 'genre' | 'profile';
+  name: string;
+  subtitle: string;
+  imageUrl: string | null;
+  data: any;
+}
+
+// Profile type
+interface PublicProfile {
+  _id: string;
+  name: string;
+  profileImageUrl?: string;
+  favorites_count: number;
+  slug?: string;
+}
+
+// Genre type for search
+interface SearchGenre {
+  _id: string;
+  name: string;
+  slug: string;
+  stationCount?: number;
+  discoverableImage?: string;
+}
 
 export default function SearchScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Station[]>([]);
+  const [allResults, setAllResults] = useState<SearchResultItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<FilterType>('radios');
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
-  // Manual search function
+  // Convert station to search result
+  const stationToResult = (station: Station): SearchResultItem => {
+    let imageUrl = null;
+    if (station.logoAssets?.webp96) {
+      imageUrl = `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
+    } else if (station.favicon) {
+      imageUrl = station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`;
+    }
+    
+    // Get proper genre/tag for subtitle
+    let subtitle = 'Radio';
+    if (station.tags && typeof station.tags === 'string' && station.tags.length > 0) {
+      subtitle = station.tags.split(',')[0].trim();
+    } else if (station.genres && Array.isArray(station.genres) && station.genres.length > 0) {
+      subtitle = station.genres[0];
+    } else if (station.country) {
+      subtitle = station.country;
+    }
+    
+    return {
+      _id: station._id,
+      type: 'radio',
+      name: station.name,
+      subtitle,
+      imageUrl,
+      data: station,
+    };
+  };
+
+  // Convert genre to search result
+  const genreToResult = (genre: SearchGenre): SearchResultItem => {
+    const imageUrl = genre.discoverableImage 
+      ? `https://themegaradio.com${genre.discoverableImage}`
+      : null;
+    
+    return {
+      _id: genre._id,
+      type: 'genre',
+      name: genre.name,
+      subtitle: `${genre.stationCount || 0} Stations`,
+      imageUrl,
+      data: genre,
+    };
+  };
+
+  // Convert profile to search result
+  const profileToResult = (profile: PublicProfile): SearchResultItem => {
+    return {
+      _id: profile._id,
+      type: 'profile',
+      name: profile.name,
+      subtitle: `${profile.favorites_count || 0} Radios`,
+      imageUrl: profile.profileImageUrl || null,
+      data: profile,
+    };
+  };
+
+  // Unified search function
   const performSearch = useCallback(async (searchQuery: string) => {
     console.log('performSearch called with:', searchQuery);
     if (searchQuery.length < 2) {
-      setResults([]);
+      setAllResults([]);
       setHasSearched(false);
       setIsSearching(false);
       return;
@@ -45,14 +132,41 @@ export default function SearchScreen() {
 
     setIsSearching(true);
     try {
-      console.log('Calling API for:', searchQuery);
-      const data = await stationService.searchStations(searchQuery, 30);
-      console.log('API response:', data?.length, 'stations');
-      setResults(data || []);
+      const lowerQuery = searchQuery.toLowerCase();
+      
+      // Fetch all data in parallel
+      const [stationsResponse, genresResponse, profilesResponse] = await Promise.all([
+        stationService.searchStations(searchQuery, 30).catch(() => []),
+        api.get(API_ENDPOINTS.genres.discoverable).then(res => res.data || []).catch(() => []),
+        api.get(API_ENDPOINTS.publicProfiles, { params: { limit: 50 } }).then(res => res.data?.data || res.data || []).catch(() => []),
+      ]);
+
+      console.log('API responses - Stations:', stationsResponse?.length, 'Genres:', genresResponse?.length, 'Profiles:', profilesResponse?.length);
+
+      // Convert stations to results
+      const stationResults = (stationsResponse || []).map(stationToResult);
+
+      // Filter genres by name
+      const filteredGenres = (genresResponse || []).filter((g: SearchGenre) => 
+        g.name?.toLowerCase().includes(lowerQuery)
+      );
+      const genreResults = filteredGenres.map(genreToResult);
+
+      // Filter profiles by name
+      const filteredProfiles = (profilesResponse || []).filter((p: PublicProfile) => 
+        p.name?.toLowerCase().includes(lowerQuery)
+      );
+      const profileResults = filteredProfiles.map(profileToResult);
+
+      // Combine all results
+      const combined = [...stationResults, ...genreResults, ...profileResults];
+      console.log('Combined results:', combined.length);
+      
+      setAllResults(combined);
       setHasSearched(true);
     } catch (error: any) {
       console.error('Search error:', error?.message || error);
-      setResults([]);
+      setAllResults([]);
       setHasSearched(true);
     } finally {
       setIsSearching(false);
@@ -68,9 +182,26 @@ export default function SearchScreen() {
     return () => clearTimeout(timer);
   }, [query, performSearch]);
 
-  const handleStationPress = (station: Station) => {
-    playStation(station);
+  // Filter results based on active filter
+  const filteredResults = activeFilter === 'all' 
+    ? allResults 
+    : allResults.filter(item => {
+        if (activeFilter === 'radios') return item.type === 'radio';
+        if (activeFilter === 'genres') return item.type === 'genre';
+        if (activeFilter === 'profiles') return item.type === 'profile';
+        return true;
+      });
+
+  const handleItemPress = (item: SearchResultItem) => {
     Keyboard.dismiss();
+    if (item.type === 'radio') {
+      playStation(item.data as Station);
+    } else if (item.type === 'genre') {
+      router.push(`/discover?genre=${item.data.slug}`);
+    } else if (item.type === 'profile') {
+      // Navigate to profile page (future implementation)
+      console.log('Navigate to profile:', item.data.slug);
+    }
   };
 
   const handleCancel = () => {
@@ -79,7 +210,7 @@ export default function SearchScreen() {
 
   const handleClear = () => {
     setQuery('');
-    setResults([]);
+    setAllResults([]);
     setHasSearched(false);
   };
 
@@ -87,42 +218,37 @@ export default function SearchScreen() {
     return currentStation?._id === station._id && playbackState === 'playing';
   };
 
-  // Get station logo URL
-  const getLogoUrl = (station: Station) => {
-    if (station.logoAssets?.logo96) {
-      const logo96 = station.logoAssets.logo96;
-      if (logo96.startsWith('http')) return logo96;
-      return `https://themegaradio.com${logo96}`;
+  // Get icon for result type
+  const getResultIcon = (type: string) => {
+    switch (type) {
+      case 'radio': return 'radio';
+      case 'genre': return 'musical-notes';
+      case 'profile': return 'person';
+      default: return 'radio';
     }
-    if (station.favicon) {
-      if (station.favicon.startsWith('http')) return station.favicon;
-      return `https://themegaradio.com${station.favicon}`;
-    }
-    return null;
   };
 
-  // Render station card
-  const renderStationCard = ({ item }: { item: Station }) => {
-    const logoUrl = getLogoUrl(item);
-    const isPlaying = isStationPlaying(item);
+  // Render search result card
+  const renderResultCard = ({ item }: { item: SearchResultItem }) => {
+    const isPlaying = item.type === 'radio' && isStationPlaying(item.data);
 
     return (
       <TouchableOpacity
         style={styles.radioCard}
-        onPress={() => handleStationPress(item)}
+        onPress={() => handleItemPress(item)}
         activeOpacity={0.7}
-        data-testid={`station-card-${item._id}`}
+        data-testid={`search-result-${item._id}`}
       >
         {/* Logo */}
         <View style={styles.radioLogo}>
-          {logoUrl ? (
+          {item.imageUrl ? (
             <Image
-              source={{ uri: logoUrl }}
+              source={{ uri: item.imageUrl }}
               style={styles.radioLogoImage}
-              resizeMode="contain"
+              resizeMode="cover"
             />
           ) : (
-            <Ionicons name="radio" size={24} color="#5B5B5B" />
+            <Ionicons name={getResultIcon(item.type)} size={24} color="#5B5B5B" />
           )}
         </View>
 
@@ -132,23 +258,28 @@ export default function SearchScreen() {
             {item.name}
           </Text>
           <Text style={styles.radioGenre} numberOfLines={1}>
-            {item.tags?.[0] || item.country || 'Radio'}
+            {item.subtitle}
           </Text>
         </View>
 
-        {/* Heart Button */}
+        {/* Action Button */}
         <TouchableOpacity style={styles.heartButton}>
-          <Ionicons
-            name={isPlaying ? 'heart' : 'heart-outline'}
-            size={24}
-            color="#FFFFFF"
-          />
+          {item.type === 'radio' ? (
+            <Ionicons
+              name={isPlaying ? 'heart' : 'heart-outline'}
+              size={24}
+              color="#FFFFFF"
+            />
+          ) : (
+            <Ionicons name="chevron-forward" size={24} color="#FFFFFF" />
+          )}
         </TouchableOpacity>
       </TouchableOpacity>
     );
   };
 
   const filters: { key: FilterType; label: string }[] = [
+    { key: 'all', label: 'All' },
     { key: 'radios', label: 'Radios' },
     { key: 'genres', label: 'Genres' },
     { key: 'profiles', label: 'Profiles' },
