@@ -19,11 +19,12 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
   - Premium Banner
   - Genres (horizontal scroll)
   - Popular Stations (list view)
-  - Recently Played (3-column grid)
-  - Radios Near You (3-column grid)
+  - Recently Played (3-column grid, 100px items)
+  - Radios Near You (3-column grid, 100px items)
   - Jazz Banner
-  - Favorites From Users
-  - All Stations (3-column grid)
+  - **Favorites From Users (Real API data, 345x60 cards, border-radius: 10px)**
+  - **All Stations (3-column grid, 100x144 items)**
+  - Discoverable Genres
 - [x] 3-Column Grid Layout (responsive, works on 375px+)
 - [x] Search Functionality with debounce
 - [x] Platform-aware BlurView component (web + native)
@@ -41,55 +42,35 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [ ] Profile Screen
 - [ ] Skeleton loaders
 
-## Known Issues
-
-### Resolved
-1. **Grid Layout (P0):** Fixed - 3 columns now display correctly on all screen sizes
-2. **Search (P2):** Fixed - Debounce working, results displaying properly
-3. **BlurView (P1):** Fixed - Platform-aware implementation created
-
-### Open
-1. **CORS Images (P2):** "Discoverable Genres" images blocked on web preview (backend CORS policy issue)
-
-## Key Files
-
-### Main Components
-- `/app/frontend/app/(tabs)/index.tsx` - Home Screen (heavily modified)
-- `/app/frontend/app/search.tsx` - Search Screen
-- `/app/frontend/src/components/common/BlurView.tsx` - Platform-aware blur component
-
-### Services
-- `/app/frontend/src/services/stationService.ts` - Station API service
-- `/app/frontend/src/services/api.ts` - Axios instance
-
-### Hooks
-- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
-- `/app/frontend/src/hooks/useAudioPlayer.ts` - Audio playback hook
-
 ## API Endpoints Used
 - `GET /api/stations/popular` - Popular stations
 - `GET /api/genres` - Genres list
 - `GET /api/genres/discoverable` - Discoverable genres
 - `GET /api/stations?search={query}` - Search stations
 - `GET /api/discover/top100` - Top 100 stations
+- `GET /api/public-profiles` - **NEW: Public user profiles for Favorites From Users**
+- `GET /api/community-favorites` - Community favorite stations
 
-## Technical Notes
+## Recent Changes (Feb 12, 2026)
+1. **Favorites From Users section:**
+   - Connected to `/api/public-profiles` API
+   - Card dimensions: width: 100% (345px with padding), height: 60px
+   - border-radius: 10px
+   - Shows real user data: name, profile photo, favorites count
 
-### Grid Layout Strategy
-- Uses `useWindowDimensions()` for dynamic width calculation
-- Fallback to `Dimensions.get('window').width` for SSR
-- Fixed 100px item width for consistent 3-column layout
-- Row-based rendering to avoid flexWrap issues in React Native Web
+2. **All Stations section:**
+   - 3-column grid layout
+   - Item dimensions: width: 100px, height: ~144px (100px image + text)
+   - Row-based rendering for consistent layout
 
-### BlurView Implementation
-- Web: CSS filter blur
-- Native: expo-blur component
-- Platform detection via `Platform.OS`
+## Key Files
+- `/app/frontend/app/(tabs)/index.tsx` - Home Screen
+- `/app/frontend/src/services/stationService.ts` - API services (added `getPublicProfiles`)
+- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks (added `usePublicProfiles`)
 
 ## User Preferences
 - Language: Turkish
 - Priority: Pixel-perfect UI matching Figma designs
-- Screen alignment: 15px padding on left and right (Jazz Banner reference)
 
 ## Last Updated
 February 12, 2026
