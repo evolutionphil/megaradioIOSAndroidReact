@@ -17,87 +17,70 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ### Implemented (P0)
 - [x] Home Screen with multiple sections
-  - Discoverable Genres Swiper (horizontal carousel)
-  - Genres (horizontal scroll)
-  - Popular Stations (list view)
-  - Recently Played (3-column grid)
-  - Radios Near You (3-column grid)
-  - Favorites From Users (Real API data)
-  - All Stations (3-column grid)
-- [x] 3-Column Grid Layout (responsive, works on 375px+)
+- [x] 3-Column Grid Layout
 - [x] **Unified Search Functionality**
-  - Search across radios, genres, AND profiles simultaneously
-  - Filter chips: All, Radios, Genres, Profiles
-  - "No results" UI with image and message
-- [x] Platform-aware BlurView component (web + native)
+- [x] Platform-aware BlurView component
 - [x] **Custom Tab Bar Design**
-  - 4 tabs: Discover, Favorites, Profile, Records
-  - Custom PNG icons
-  - Dark theme (#1B1C1E background)
 - [x] **Sticky Mini Player**
-  - Positioned above navigation bar
-  - Chevron up icon, logo, station name, genre
-  - Play/Pause and Favorite buttons
-  - Black background (#000000)
 - [x] **react-native-track-player Integration** (Feb 12, 2026)
-  - Background audio playback support
-  - Lock screen and notification controls (native)
-  - Playback service for remote events
-  - Web fallback using expo-av
-  - iOS background audio mode configured
+- [x] **Full-Screen Player UI** (Feb 12, 2026)
+  - Header: chevron down, HD badge, station name, car icon, menu
+  - Album artwork display
+  - Now playing section with animated dots
+  - Station name and genre display
+  - Spotify & YouTube social buttons
+  - Main controls: sleep timer, prev, play/pause, next, heart/favorite
+  - Secondary controls: share, headset, radio, REC button
+  - Recently Played section with station grid
+  - Similar Radios section with station grid
 
 ### In Progress (P1)
-- [ ] Full-screen Player UI improvements
+- [ ] Grid item sizing fix for web preview
 - [ ] Authentication Flow (Login/Signup)
 
 ### Backlog (P2)
-- [ ] Favorites Feature (add/remove stations)
-- [ ] expo-location integration for nearby stations
+- [ ] Favorites Feature
+- [ ] expo-location integration
 - [ ] Internationalization (i18n)
 - [ ] Profile Screen content
-- [ ] Records Screen content (listening history)
-- [ ] Skeleton loaders
+- [ ] Records Screen content
 
 ## API Endpoints Used
 - `GET /api/stations/popular` - Popular stations
+- `GET /api/stations/similar/{id}` - Similar stations
 - `GET /api/genres` - Genres list
-- `GET /api/genres/discoverable` - Discoverable genres
 - `GET /api/stations?search={query}` - Search stations
-- `GET /api/discover/top100` - Top 100 stations
-- `GET /api/public-profiles` - Public user profiles
-- `GET /api/community-favorites` - Community favorite stations
 
 ## Recent Changes (Feb 12, 2026)
-1. **react-native-track-player Integration:**
-   - Installed react-native-track-player v4.1.2
-   - Created `/src/services/trackPlayerService.ts` with playback service
-   - Created `/src/hooks/useTrackPlayer.ts` for player state management
-   - Updated `app.json` with iOS background audio mode (UIBackgroundModes: ["audio"])
-   - Set newArchEnabled: false for compatibility
-   - Web uses expo-av fallback, native uses TrackPlayer
-   - MiniPlayer updated with TrackPlayer controls
 
-2. **BlurView Improvements:**
-   - Updated `/src/components/common/BlurView.tsx`
-   - Added `experimentalBlurMethod="dimezisBlurView"` for better native blur
-   - Added GlowView component for native glow effects
-   - Web uses backdrop-filter for better performance
+### Full-Screen Player UI
+- Created pixel-perfect player screen based on Figma design
+- Components: Header, Artwork, Now Playing, Main Controls, Secondary Controls
+- Data fetching: usePopularStations for Recently Played, useSimilarStations for Similar Radios
+- Grid layout for station cards (3 columns)
+
+### react-native-track-player Integration
+- Playback service for background audio
+- Lock screen and notification controls
+- Web fallback using expo-av
+
+### BlurView Improvements
+- Added experimentalBlurMethod for better native blur
+- GlowView component for native glow effects
 
 ## Key Files
-- `/app/frontend/index.ts` - Entry point with TrackPlayer registration
+- `/app/frontend/app/player.tsx` - Full-screen player UI
 - `/app/frontend/src/services/trackPlayerService.ts` - Playback service
 - `/app/frontend/src/hooks/useTrackPlayer.ts` - TrackPlayer hook
-- `/app/frontend/src/hooks/useAudioPlayer.ts` - Web fallback hook
 - `/app/frontend/src/components/MiniPlayer.tsx` - Mini player UI
-- `/app/frontend/src/components/common/BlurView.tsx` - Platform blur component
-- `/app/frontend/app.json` - App configuration with background audio
+- `/app/frontend/src/components/common/BlurView.tsx` - Blur component
 
 ## Known Issues
-- **CORS on Web Preview:** Images from `themegaradio.com` blocked due to ORB. Web-only issue.
-- **TrackPlayer requires Development Build:** Won't work in Expo Go app, needs EAS Build.
+- **Grid items too large on web preview**: Image sizing in React Native for Web needs different handling. Works correctly on native.
+- **CORS on Web Preview**: Images blocked due to ORB.
+- **TrackPlayer requires Development Build**: Won't work in Expo Go.
 
 ## Development Build Required
-react-native-track-player requires a custom development build:
 ```bash
 npx expo install expo-dev-client
 eas build --platform ios --profile development
