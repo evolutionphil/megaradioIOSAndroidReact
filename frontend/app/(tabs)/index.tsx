@@ -517,12 +517,12 @@ const styles = StyleSheet.create({
     paddingBottom: 180,
   },
 
-  // Header
+  // Header - Symmetric padding
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: HORIZONTAL_PADDING,
     paddingVertical: spacing.md,
   },
   headerLeft: {
