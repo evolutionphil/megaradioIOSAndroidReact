@@ -30,29 +30,35 @@ export default function SearchScreen() {
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
-  // Debounced search
+  // Debounced search with better error handling
   useEffect(() => {
     if (query.length < 2) {
       setResults([]);
       setHasSearched(false);
+      setIsSearching(false);
       return;
     }
 
+    setIsSearching(true);
     const timer = setTimeout(async () => {
-      setIsSearching(true);
       try {
+        console.log('Searching for:', query);
         const data = await stationService.searchStations(query, 30);
-        setResults(data);
+        console.log('Search results:', data?.length || 0);
+        setResults(data || []);
         setHasSearched(true);
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);
+        setHasSearched(true);
       } finally {
         setIsSearching(false);
       }
     }, 500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [query]);
 
   const handleStationPress = (station: Station) => {
