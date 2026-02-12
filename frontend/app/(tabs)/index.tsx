@@ -41,17 +41,18 @@ export default function HomeScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuthStore();
-  const { width: screenWidth } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
   
-  // Calculate grid item width dynamically with fallback
+  // Use window width if available, otherwise use Dimensions API
+  const screenWidth = windowWidth > 0 ? windowWidth : Dimensions.get('window').width || 375;
+  
+  // Calculate grid item width dynamically
   // For 375px screen: (375 - 30 - 16) / 3 = ~109px
-  const effectiveScreenWidth = screenWidth > 100 ? screenWidth : 375;
-  const contentWidth = effectiveScreenWidth - (SIDE_PADDING * 2);
+  const contentWidth = screenWidth - (SIDE_PADDING * 2);
   const gridGap = 8;
-  const gridItemWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
-  
-  // Debug: Log values
-  console.log('Screen Width:', screenWidth, 'Effective:', effectiveScreenWidth, 'Grid Item Width:', gridItemWidth);
+  // Ensure minimum of 80px and maximum of 150px per item
+  const calculatedWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
+  const gridItemWidth = Math.max(80, Math.min(150, calculatedWidth));
 
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
