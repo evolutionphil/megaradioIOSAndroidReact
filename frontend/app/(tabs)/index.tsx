@@ -595,9 +595,9 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
   },
 
-  // Section - Full width with centered content
+  // Section - Full width
   section: {
-    width: CONTENT_WIDTH,
+    width: '100%',
     marginBottom: spacing.lg,
   },
   sectionHeader: {
