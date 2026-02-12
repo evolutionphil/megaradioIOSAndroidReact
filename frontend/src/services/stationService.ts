@@ -130,6 +130,23 @@ export const stationService = {
     const response = await api.post(API_ENDPOINTS.stations.click(stationId));
     return response.data;
   },
+
+  // Get now playing metadata
+  async getNowPlaying(stationId: string) {
+    try {
+      // Try our local backend first
+      const response = await api.get(`/now-playing/${stationId}`);
+      return response.data;
+    } catch {
+      // Fallback to external API
+      try {
+        const response = await api.get(API_ENDPOINTS.stations.nowPlaying(stationId));
+        return response.data;
+      } catch {
+        return null;
+      }
+    }
+  },
 };
 
 export default stationService;
