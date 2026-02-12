@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
   },
 
-  // Section
+  // Section - Symmetric padding
   section: {
     marginBottom: spacing.lg,
   },
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: HORIZONTAL_PADDING,
     marginBottom: spacing.sm,
   },
   sectionTitle: {
