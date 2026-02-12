@@ -907,9 +907,10 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
   },
 
-  // Discoverable Genres - width: 345, height: 119, border-radius: 5px
+  // Discoverable Genres - Centered with fixed width
   discoverableGenresContainer: {
-    paddingHorizontal: HORIZONTAL_PADDING,
+    width: CONTENT_WIDTH,
+    alignSelf: 'center',
   },
   discoverableGenreCard: {
     width: CONTENT_WIDTH,
