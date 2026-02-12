@@ -69,9 +69,13 @@ export default function DiscoverScreen() {
 
   return (
     <View style={styles.mainContainer}>
-      {/* Background Glow Effect - Top Left */}
+      {/* Background Glow Effect - Multiple layered circles for blur effect on iOS */}
       <View style={styles.bgGlowContainer}>
-        <View style={styles.bgGlow} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer1]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer2]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer3]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer4]} />
+        <View style={[styles.bgGlowLayer, styles.bgGlowLayer5]} />
       </View>
       
       <LinearGradient colors={gradients.background as any} style={styles.gradient}>
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  // Background Glow Effect - Top Left
+  // Background Glow Effect - Multiple layered circles for blur on iOS
   bgGlowContainer: {
     position: 'absolute',
     top: -100,
@@ -224,22 +228,44 @@ const styles = StyleSheet.create({
     height: 350,
     zIndex: 0,
   },
-  bgGlow: {
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: '#6B4EFF',
-    opacity: 0.5,
-    ...(Platform.OS === 'web' ? {
-      // @ts-ignore
-      filter: 'blur(80px)',
-    } : {
-      // iOS native glow using shadow
-      shadowColor: '#6B4EFF',
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 1,
-      shadowRadius: 80,
-    }),
+  bgGlowLayer: {
+    position: 'absolute',
+    borderRadius: 999,
+  },
+  bgGlowLayer1: {
+    top: 0,
+    left: 0,
+    width: 350,
+    height: 350,
+    backgroundColor: 'rgba(107, 78, 255, 0.08)',
+  },
+  bgGlowLayer2: {
+    top: 30,
+    left: 30,
+    width: 290,
+    height: 290,
+    backgroundColor: 'rgba(107, 78, 255, 0.12)',
+  },
+  bgGlowLayer3: {
+    top: 60,
+    left: 60,
+    width: 230,
+    height: 230,
+    backgroundColor: 'rgba(107, 78, 255, 0.18)',
+  },
+  bgGlowLayer4: {
+    top: 90,
+    left: 90,
+    width: 170,
+    height: 170,
+    backgroundColor: 'rgba(107, 78, 255, 0.25)',
+  },
+  bgGlowLayer5: {
+    top: 120,
+    left: 120,
+    width: 110,
+    height: 110,
+    backgroundColor: 'rgba(107, 78, 255, 0.35)',
   },
   gradient: {
     flex: 1,
