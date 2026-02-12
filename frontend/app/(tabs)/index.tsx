@@ -43,8 +43,9 @@ export default function HomeScreen() {
   const { user } = useAuthStore();
   const { width: screenWidth } = useWindowDimensions();
   
-  // Calculate grid item width dynamically
-  const contentWidth = screenWidth - (SIDE_PADDING * 2);
+  // Calculate grid item width dynamically with fallback
+  const effectiveScreenWidth = screenWidth > 0 ? screenWidth : 375; // Default to iPhone SE width
+  const contentWidth = effectiveScreenWidth - (SIDE_PADDING * 2);
   const gridGap = 8;
   const gridItemWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
 
