@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 
 # Backend URL from environment - DO NOT add default
-BASE_URL = os.environ.get('EXPO_PUBLIC_BACKEND_URL', 'https://megradio-preview.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('EXPO_PUBLIC_BACKEND_URL', 'https://audio-ui-hotfix.preview.emergentagent.com').rstrip('/')
 
 # Sample station IDs for testing
 SAMPLE_STATION_IDS = [
