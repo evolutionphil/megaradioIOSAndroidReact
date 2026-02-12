@@ -194,13 +194,13 @@ const styles = StyleSheet.create({
   controls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
   },
   controlButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#2F2F2F',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#3A3A3C',
     justifyContent: 'center',
     alignItems: 'center',
   },
