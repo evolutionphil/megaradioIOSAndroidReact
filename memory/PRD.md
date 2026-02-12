@@ -9,7 +9,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - Expo Router
 - Zustand (State Management)
 - React Query (Data Fetching)
-- react-native-track-player (native audio)
+- **expo-av** for audio playback (works in Expo Go)
 
 ## Core Features
 
@@ -19,22 +19,25 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Unified Search Functionality
 - [x] Custom Tab Bar Design
 - [x] Sticky Mini Player
-- [x] react-native-track-player Integration
+- [x] **expo-av Audio Playback** (Expo Go compatible)
 - [x] Full-Screen Player UI
-  - Header with blur effect (backdrop-filter: blur(25px))
-  - Album artwork: 190x190px
-  - Country flag badges
-  - Divider line (1px solid #2D2D2D)
-  - Main controls with Ionicons
+  - Header: chevron down, HD badge, station name, car icon, menu
+  - Artwork: 190x190px with live indicator bar
+  - Now playing: animated dots, station name, artist
+  - Spotify & YouTube buttons (Ionicons)
+  - Main controls: timer, prev, play/pause, next, heart
+  - Secondary controls: share, lock, broadcast, REC button
   - Recently Played section
-  - Similar Radios section (API: /api/stations/similar/{id})
+  - Similar Radios section (from API)
 
 ### Recent Changes (Feb 12, 2026)
-1. **Similar Radios API Integration**: Now fetches from `/api/stations/similar/{id}`
-2. **Reduced Page Flickering**: Added staleTime (5 min) and retry limits to queries
-3. **React.memo for Grid Items**: Prevents unnecessary re-renders
-4. **useMemo for Station Lists**: Optimizes re-rendering
-5. **Control Icons**: Using Ionicons (time-outline, play-skip-back, pause/play, play-skip-forward, heart-outline)
+1. **Audio Playback Fixed**: Switched to expo-av for Expo Go compatibility
+2. **Stop Previous Station**: Now stops current playback before playing new station
+3. **Full-Screen Player**: No tab bar visible, proper modal presentation
+4. **Grid Layout**: 3-column grid with proper spacing (GRID_ITEM_WIDTH calculated)
+5. **REC Button**: Custom styled with outer ring and inner dot
+6. **Similar Radios API**: Now fetches from `/api/stations/similar/{id}`
+7. **React Query Optimization**: Added staleTime to prevent refetching
 
 ### Known Issues (Web Preview Only)
 - Grid item Image sizing incorrect on web (works on native)
@@ -42,13 +45,19 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ## Key Files
 - `/app/frontend/app/player.tsx` - Full-screen player
+- `/app/frontend/src/hooks/useAudioPlayer.ts` - expo-av audio hook
 - `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
-- `/app/frontend/src/services/stationService.ts` - API services
+
+## Audio Playback
+Uses **expo-av** which works in:
+- ✅ Expo Go app
+- ✅ Web browser
+- ✅ Development builds
 
 ## API Endpoints
 - `GET /api/stations/popular` - Popular stations
 - `GET /api/stations/similar/{id}` - Similar stations
-- `GET /api/recently-played` - Recently played (requires auth)
+- `POST /api/resolve-stream` - Resolve stream URL
 
 ## User Preferences
 - Language: Turkish
