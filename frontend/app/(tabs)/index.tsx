@@ -39,6 +39,16 @@ import { BlurView } from '../../src/components/common/BlurView';
 const SIDE_PADDING = 15;
 const HORIZONTAL_PADDING = 0; // Padding inside sections (already handled by ScrollView)
 
+// Calculate grid item size based on screen width
+// iPhone 13 Pro Max: 428px width
+// 3 items per row with small gap
+const getGridItemSize = (screenWidth: number) => {
+  const availableWidth = screenWidth - (SIDE_PADDING * 2);
+  const gap = 8; // Small gap between items
+  const itemWidth = Math.floor((availableWidth - (gap * 2)) / 3);
+  return Math.max(itemWidth, 110); // Minimum 110px
+};
+
 export default function HomeScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
