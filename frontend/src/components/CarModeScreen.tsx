@@ -6,9 +6,8 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  Modal,
   ScrollView,
-  Animated,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
@@ -17,7 +16,7 @@ import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { usePopularStations } from '../hooks/useQueries';
 import type { Station } from '../types';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH * 0.45;
 const CARD_HEIGHT = CARD_WIDTH * 0.8;
 
