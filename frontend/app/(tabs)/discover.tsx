@@ -139,16 +139,16 @@ export default function DiscoverScreen() {
             )}
           </View>
 
-          {/* Top 100 Stations */}
+          {/* Top Stations */}
           <View style={styles.stationsSection}>
             <Text style={styles.sectionTitle}>
-              {selectedGenre ? `${selectedGenre} Stations` : 'Top 100 Stations'}
+              {selectedGenre ? `${selectedGenre} Stations` : 'Top Stations'}
             </Text>
             {stationsLoading ? (
               <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
-            ) : filteredStations.length > 0 ? (
+            ) : stations.length > 0 ? (
               <View style={styles.stationsList}>
-                {filteredStations.slice(0, 50).map((station) => (
+                {stations.slice(0, 50).map((station) => (
                   <StationCard
                     key={station._id}
                     station={station}
