@@ -367,10 +367,19 @@ export default function PlayerScreen() {
                 <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
               <View style={styles.headerRight}>
-                <TouchableOpacity style={styles.headerIcon} onPress={() => setShowCarMode(true)} data-testid="car-mode-button">
+                <TouchableOpacity 
+                  style={styles.headerIcon} 
+                  onPress={() => {
+                    console.log('[Player] Car Mode button pressed');
+                    setShowCarMode(true);
+                  }}
+                  accessibilityLabel="Car Mode"
+                  accessibilityRole="button"
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
                   <Ionicons name="car-outline" size={22} color="#FFFFFF" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.headerIcon} data-testid="menu-button">
+                <TouchableOpacity style={styles.headerIcon}>
                   <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
                 </TouchableOpacity>
               </View>
