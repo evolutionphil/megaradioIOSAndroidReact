@@ -585,8 +585,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
 
-  // Genre Swiper (Horizontal Carousel)
-  genreSwiperContainer: {
   // Section - Full width
   section: {
     width: '100%',
