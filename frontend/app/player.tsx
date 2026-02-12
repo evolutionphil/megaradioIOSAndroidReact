@@ -162,29 +162,30 @@ export default function PlayerScreen() {
     const flag = getCountryFlag(station.countrycode || station.country);
     
     return (
-      <TouchableOpacity
-        style={styles.gridItem}
-        onPress={() => handleStationPress(station)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.gridImageWrapper}>
-          <Image 
-            source={{ uri: stationLogo || 'https://via.placeholder.com/100' }} 
-            style={styles.gridImage}
-            resizeMode="cover" 
-          />
-          {/* Country flag badge */}
-          <View style={styles.flagBadge}>
-            <Text style={styles.flagText}>{flag}</Text>
+      <View style={{ width: 100, maxWidth: 100, marginRight: 10, marginBottom: 16 }}>
+        <TouchableOpacity
+          onPress={() => handleStationPress(station)}
+          activeOpacity={0.7}
+        >
+          <View style={{ width: 100, height: 100, maxWidth: 100, maxHeight: 100, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1E1E1E', marginBottom: 8, position: 'relative' }}>
+            <Image 
+              source={{ uri: stationLogo || 'https://via.placeholder.com/100' }} 
+              style={{ width: 100, height: 100, maxWidth: 100, maxHeight: 100 }}
+              resizeMode="cover" 
+            />
+            {/* Country flag badge */}
+            <View style={{ position: 'absolute', bottom: 4, right: 4, width: 20, height: 20, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 12 }}>{flag}</Text>
+            </View>
           </View>
-        </View>
-        <Text style={styles.gridStationName} numberOfLines={1}>
-          {station.name}
-        </Text>
-        <Text style={styles.gridStationLocation} numberOfLines={1}>
-          {station.country || 'Unknown'}
-        </Text>
-      </TouchableOpacity>
+          <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF' }} numberOfLines={1}>
+            {station.name}
+          </Text>
+          <Text style={{ fontSize: 10, color: '#888888', marginTop: 2 }} numberOfLines={1}>
+            {station.country || 'Unknown'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
