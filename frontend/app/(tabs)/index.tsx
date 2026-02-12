@@ -563,10 +563,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
 
-  // Premium Banner - Centered with fixed width
+  // Premium Banner - Full width
   premiumBanner: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     height: 54,
     borderRadius: 5,
     overflow: 'hidden',
