@@ -256,15 +256,17 @@ export const useAudioPlayer = () => {
   const stopPlayback = useCallback(async () => {
     console.log('[useAudioPlayer] ========== STOP PLAYBACK ==========');
     
+    const currentStationId = audioManager.getCurrentStationId();
+    
     // Record listening time if there was a previous station
-    if (listeningStartRef.current && currentStationIdRef.current) {
+    if (listeningStartRef.current && currentStationId) {
       const duration = Math.floor(
         (new Date().getTime() - listeningStartRef.current.getTime()) / 1000
       );
       if (duration > 5) {
         try {
           await userService.recordListening(
-            currentStationIdRef.current,
+            currentStationId,
             duration,
             listeningStartRef.current.toISOString()
           );
@@ -278,7 +280,6 @@ export const useAudioPlayer = () => {
     await audioManager.stopAndUnload();
     setPlaybackState('idle');
     setMiniPlayerVisible(false);
-    currentStationIdRef.current = null;
     
     console.log('[useAudioPlayer] ========== STOPPED ==========');
   }, [setPlaybackState, setMiniPlayerVisible]);
@@ -288,10 +289,13 @@ export const useAudioPlayer = () => {
     console.log('[useAudioPlayer] ========== PLAY STATION ==========');
     console.log('[useAudioPlayer] Station:', station.name, 'ID:', station._id);
     
-    // Check if same station
-    if (currentStationIdRef.current === station._id) {
+    const currentStationId = audioManager.getCurrentStationId();
+    
+    // Check if same station - toggle play/pause
+    if (currentStationId === station._id) {
       console.log('[useAudioPlayer] Same station, toggling play/pause');
-      if (audioManager.getIsPlaying()) {
+      const isPlaying = await audioManager.getIsPlaying();
+      if (isPlaying) {
         await audioManager.pause();
         setPlaybackState('paused');
       } else {
@@ -306,56 +310,42 @@ export const useAudioPlayer = () => {
       setPlaybackState('loading');
       setError(null);
       
-      // STEP 2: STOP any current playback
-      console.log('[useAudioPlayer] Step 1: Stopping current playback...');
-      await audioManager.stopAndUnload();
-      
-      // STEP 3: Update station state
-      console.log('[useAudioPlayer] Step 2: Setting new station...');
+      // STEP 2: Update station state BEFORE stopping (for immediate UI feedback)
+      console.log('[useAudioPlayer] Step 1: Setting new station...');
       setCurrentStation(station);
       setMiniPlayerVisible(true);
-      currentStationIdRef.current = station._id;
 
-      // Record click
-      try {
-        await stationService.recordClick(station._id);
-      } catch {
-        // Non-critical
-      }
+      // Record click (non-blocking)
+      stationService.recordClick(station._id).catch(() => {});
 
-      // STEP 4: Resolve stream URL
-      console.log('[useAudioPlayer] Step 3: Resolving stream URL...');
+      // STEP 3: Resolve stream URL
+      console.log('[useAudioPlayer] Step 2: Resolving stream URL...');
       const url = await resolveStreamUrl(station);
       if (!url) {
         throw new Error('Could not resolve stream URL');
       }
-      console.log('[useAudioPlayer] Stream URL:', url);
+      console.log('[useAudioPlayer] Stream URL:', url.substring(0, 80) + '...');
       setStreamUrl(url);
 
-      // STEP 5: Create and play NEW sound
-      console.log('[useAudioPlayer] Step 4: Playing new sound...');
-      await audioManager.play(url, onPlaybackStatusUpdate);
+      // STEP 4: Play new sound (AudioManager handles stopping internally)
+      console.log('[useAudioPlayer] Step 3: Playing new sound...');
+      await audioManager.play(url, station._id);
       
       listeningStartRef.current = new Date();
       console.log('[useAudioPlayer] ========== NOW PLAYING ==========');
 
-      // Record recently played
-      try {
-        await userService.recordRecentlyPlayed(station._id);
-      } catch {
-        // Non-critical
-      }
+      // Record recently played (non-blocking)
+      userService.recordRecentlyPlayed(station._id).catch(() => {});
 
-      // Fetch now playing metadata
+      // Fetch now playing metadata (non-blocking)
       fetchNowPlaying(station._id);
 
     } catch (error) {
       console.error('[useAudioPlayer] Failed to play station:', error);
       setError(error instanceof Error ? error.message : 'Failed to play station');
       setPlaybackState('error');
-      currentStationIdRef.current = null;
     }
-  }, [resolveStreamUrl, onPlaybackStatusUpdate, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible]);
+  }, [resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible]);
 
   // Fetch now playing metadata from our backend
   const fetchNowPlaying = useCallback(async (stationId: string) => {
