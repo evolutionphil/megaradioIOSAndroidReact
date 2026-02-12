@@ -171,17 +171,26 @@ export default function HomeScreen() {
             {genresLoading ? (
               <ActivityIndicator size="small" color={colors.primary} />
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.genresScroll}>
-                {genres.map((genre) => (
-                  <TouchableOpacity
-                    key={genre._id}
-                    style={[styles.genreChip, { backgroundColor: getGenreColor(genre.slug) }]}
-                    onPress={() => handleGenrePress(genre)}
-                  >
-                    <Text style={styles.genreChipText}>{genre.name}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+              <View style={styles.genresContainer}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.genresScroll}>
+                  {genres.map((genre, index) => (
+                    <TouchableOpacity
+                      key={genre._id}
+                      style={styles.genreCard}
+                      onPress={() => handleGenrePress(genre)}
+                    >
+                      <ImageBackground
+                        source={{ uri: getGenreBackground(index) }}
+                        style={styles.genreCardBackground}
+                        imageStyle={styles.genreCardImage}
+                        resizeMode="cover"
+                      >
+                        <Text style={styles.genreCardText}>{genre.name}</Text>
+                      </ImageBackground>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
             )}
           </View>
 
