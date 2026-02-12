@@ -10,10 +10,10 @@ import {
   Image,
   Dimensions,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
