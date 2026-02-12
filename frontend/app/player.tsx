@@ -104,14 +104,10 @@ export default function PlayerScreen() {
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
   
-  // Debug data
-  console.log('[Player] similarData:', similarData);
-  console.log('[Player] recentlyPlayedData:', recentlyPlayedData);
-  console.log('[Player] popularData:', popularData);
-  
-  const similarStations = similarData?.stations || (Array.isArray(similarData) ? similarData : []);
-  const recentStations = Array.isArray(recentlyPlayedData) ? recentlyPlayedData : 
-                         (popularData?.stations || (Array.isArray(popularData) ? popularData : []));
+  // Get stations for grids - use popularData as main source
+  const stationsArray = popularData?.stations || (Array.isArray(popularData) ? popularData : []);
+  const similarStations = similarData?.stations || (Array.isArray(similarData) ? similarData : stationsArray);
+  const recentStations = stationsArray;
 
   // Get artist/song info
   const getArtistInfo = () => {
