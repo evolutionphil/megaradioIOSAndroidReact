@@ -417,12 +417,20 @@ const styles = StyleSheet.create({
     width: 434,
     height: 434,
     zIndex: 0,
+    overflow: 'hidden',
+    borderRadius: 217,
+  },
+  bgBlur: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 217,
+    overflow: 'hidden',
   },
   bgGradient: {
     width: '100%',
     height: '100%',
     borderRadius: 217,
-    backgroundColor: 'rgba(51, 0, 255, 0.3)',
+    backgroundColor: '#3300FF4D', // #3300FF with 30% opacity
   },
   
   safeArea: {
