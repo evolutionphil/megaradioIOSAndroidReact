@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
+import { colors, gradients, spacing, borderRadius, typography, shadows } from '../src/constants/theme';
 import { StationCard } from '../src/components/StationCard';
 import stationService from '../src/services/stationService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
@@ -91,8 +91,10 @@ export default function SearchScreen() {
     [currentStation, playbackState]
   );
 
+  const popularSearches = ['Jazz', 'Rock', 'News', 'Classical', 'Pop', 'Electronic', 'Country', 'Hip Hop'];
+
   return (
-    <LinearGradient colors={gradients.background} style={styles.gradient}>
+    <LinearGradient colors={gradients.background as any} style={styles.gradient}>
       <SafeAreaView style={styles.container} edges={['top']}>
         {/* Search Header */}
         <View style={styles.header}>
@@ -101,7 +103,9 @@ export default function SearchScreen() {
           </TouchableOpacity>
           
           <View style={styles.searchInputContainer}>
-            <Ionicons name="search" size={20} color={colors.textMuted} />
+            <View style={styles.searchIconWrapper}>
+              <Ionicons name="search" size={18} color={colors.textMuted} />
+            </View>
             <TextInput
               style={styles.searchInput}
               placeholder="Search stations, countries, genres..."
@@ -114,7 +118,7 @@ export default function SearchScreen() {
               autoCorrect={false}
             />
             {query.length > 0 && (
-              <TouchableOpacity onPress={handleClear}>
+              <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
                 <Ionicons name="close-circle" size={20} color={colors.textMuted} />
               </TouchableOpacity>
             )}
@@ -125,29 +129,50 @@ export default function SearchScreen() {
         <View style={styles.content}>
           {isSearching ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={colors.primary} />
+              <View style={styles.loadingIconWrapper}>
+                <ActivityIndicator size="large" color={colors.primary} />
+              </View>
               <Text style={styles.loadingText}>Searching...</Text>
             </View>
           ) : results.length > 0 ? (
-            <FlatList
-              data={results}
-              renderItem={renderItem}
-              keyExtractor={(item) => item._id}
-              contentContainerStyle={styles.resultsList}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-            />
+            <>
+              <View style={styles.resultsHeader}>
+                <Text style={styles.resultsCount}>{results.length} stations found</Text>
+              </View>
+              <FlatList
+                data={results}
+                renderItem={renderItem}
+                keyExtractor={(item) => item._id}
+                contentContainerStyle={styles.resultsList}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              />
+            </>
           ) : hasSearched && query.length >= 2 ? (
             <View style={styles.emptyState}>
-              <Ionicons name="search-outline" size={64} color={colors.textMuted} />
+              <View style={styles.emptyIconWrapper}>
+                <Ionicons name="search-outline" size={48} color={colors.textMuted} />
+              </View>
               <Text style={styles.emptyTitle}>No Results Found</Text>
               <Text style={styles.emptyText}>
                 Try searching for a different station, country, or genre
               </Text>
+              <TouchableOpacity style={styles.tryAgainButton} onPress={handleClear}>
+                <Text style={styles.tryAgainText}>Clear Search</Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.initialState}>
-              <Ionicons name="radio" size={64} color={colors.primary} />
+              <View style={styles.initialIconWrapper}>
+                <LinearGradient
+                  colors={[colors.primary, colors.accent] as any}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.initialIconGradient}
+                >
+                  <Ionicons name="radio" size={48} color={colors.text} />
+                </LinearGradient>
+              </View>
               <Text style={styles.initialTitle}>Search 40,000+ Stations</Text>
               <Text style={styles.initialText}>
                 Find stations by name, country, language, or genre
@@ -157,15 +182,25 @@ export default function SearchScreen() {
               <View style={styles.suggestions}>
                 <Text style={styles.suggestionsTitle}>Popular Searches</Text>
                 <View style={styles.suggestionChips}>
-                  {['Jazz', 'Rock', 'News', 'Classical', 'Pop', 'Hip Hop'].map((term) => (
+                  {popularSearches.map((term) => (
                     <TouchableOpacity
                       key={term}
                       style={styles.suggestionChip}
                       onPress={() => setQuery(term)}
                     >
+                      <Ionicons name="trending-up" size={14} color={colors.primary} />
                       <Text style={styles.suggestionChipText}>{term}</Text>
                     </TouchableOpacity>
                   ))}
+                </View>
+              </View>
+
+              {/* Recent Searches Placeholder */}
+              <View style={styles.recentSection}>
+                <Text style={styles.recentTitle}>Recent Searches</Text>
+                <View style={styles.recentEmpty}>
+                  <Ionicons name="time-outline" size={20} color={colors.textMuted} />
+                  <Text style={styles.recentEmptyText}>No recent searches</Text>
                 </View>
               </View>
             </View>
@@ -193,6 +228,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.sm,
@@ -202,79 +238,146 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.lg,
+    paddingRight: spacing.md,
     borderWidth: 1,
     borderColor: colors.border,
   },
+  searchIconWrapper: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   searchInput: {
     flex: 1,
-    marginLeft: spacing.sm,
     fontSize: typography.sizes.md,
     color: colors.text,
+    paddingVertical: spacing.sm,
+  },
+  clearButton: {
+    padding: spacing.xs,
   },
   content: {
     flex: 1,
   },
+  
+  // Loading
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingIconWrapper: {
+    width: 80,
+    height: 80,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
   loadingText: {
-    marginTop: spacing.md,
     fontSize: typography.sizes.md,
+    color: colors.textSecondary,
+  },
+  
+  // Results
+  resultsHeader: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  resultsCount: {
+    fontSize: typography.sizes.sm,
     color: colors.textSecondary,
   },
   resultsList: {
     paddingHorizontal: spacing.md,
     paddingBottom: 100,
   },
+  
+  // Empty State
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
   },
-  emptyTitle: {
-    marginTop: spacing.lg,
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  emptyText: {
-    marginTop: spacing.sm,
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  initialState: {
-    flex: 1,
+  emptyIconWrapper: {
+    width: 100,
+    height: 100,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
+    marginBottom: spacing.lg,
   },
-  initialTitle: {
-    marginTop: spacing.lg,
+  emptyTitle: {
     fontSize: typography.sizes.xl,
     fontWeight: typography.weights.bold,
     color: colors.text,
+    marginBottom: spacing.sm,
   },
-  initialText: {
-    marginTop: spacing.sm,
+  emptyText: {
     fontSize: typography.sizes.md,
     color: colors.textSecondary,
     textAlign: 'center',
+    marginBottom: spacing.lg,
   },
+  tryAgainButton: {
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  tryAgainText: {
+    fontSize: typography.sizes.md,
+    color: colors.text,
+    fontWeight: typography.weights.medium,
+  },
+  
+  // Initial State
+  initialState: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xxl,
+  },
+  initialIconWrapper: {
+    marginBottom: spacing.lg,
+  },
+  initialIconGradient: {
+    width: 100,
+    height: 100,
+    borderRadius: borderRadius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  initialTitle: {
+    fontSize: typography.sizes.xxl,
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginBottom: spacing.sm,
+  },
+  initialText: {
+    fontSize: typography.sizes.md,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.xl,
+  },
+  
+  // Suggestions
   suggestions: {
-    marginTop: spacing.xl,
     width: '100%',
+    marginBottom: spacing.xl,
   },
   suggestionsTitle: {
     fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
     color: colors.textMuted,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
     textAlign: 'center',
   },
   suggestionChips: {
@@ -284,15 +387,45 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   suggestionChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     backgroundColor: colors.surface,
     borderRadius: borderRadius.full,
     borderWidth: 1,
     borderColor: colors.border,
+    gap: spacing.xs,
   },
   suggestionChipText: {
     fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
+    color: colors.text,
+    fontWeight: typography.weights.medium,
+  },
+  
+  // Recent Searches
+  recentSection: {
+    width: '100%',
+  },
+  recentTitle: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: colors.textMuted,
+    marginBottom: spacing.md,
+    textAlign: 'center',
+  },
+  recentEmpty: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.lg,
+    gap: spacing.sm,
+  },
+  recentEmptyText: {
+    fontSize: typography.sizes.sm,
+    color: colors.textMuted,
   },
 });
