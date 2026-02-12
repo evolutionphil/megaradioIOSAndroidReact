@@ -773,10 +773,9 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
 
-  // Station Grid - Centered with fixed width
+  // Station Grid - Full width
   stationGrid: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
