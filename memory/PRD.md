@@ -51,29 +51,19 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - `GET /api/community-favorites` - Community favorite stations
 
 ## Recent Changes (Feb 12, 2026)
-1. **Grid Spacing Fix (Recently Played & Radios Near You):**
+1. **Discoverable Genres Swiper (Birleştirildi):**
+   - Genre banner ve discoverable API tek bir yatay swiper olarak birleştirildi
+   - `/api/genres/discoverable` endpoint'inden tüm genre'ları çekiyor
+   - Her genre için farklı gradient renkleri
+   - Unsplash fallback görselleri ile
+   - "Favorites From Users" bölümünün hemen üzerinde konumlandı
+
+2. **Grid Spacing Fix (Recently Played & Radios Near You):**
    - All rows now use `justifyContent: 'space-between'` for consistent spacing
-   - Empty placeholder views added for incomplete rows to maintain alignment
+   - Empty placeholder views added for incomplete rows
    
-2. **Genre Images with Unsplash Fallbacks:**
-   - Added fallback images from Unsplash for genre banners and swiper
-   - Fixes CORS issue with themegaradio.com images in web preview
-   - Slug-based mapping for folk-music, jazz, rock, pop, classical, electronic
-
-3. **Discoverable Genre Banner:**
-   - Banner now dynamically uses `/api/genres/discoverable` data
-   - Shows first genre from API with name and image
-   - Image sourced from Unsplash fallback
-
-4. **Discoverable Genres Swiper:**
-   - Replaced static "MegaRadio Premium" banner with horizontal swiper
-   - Uses data from `/api/genres/discoverable` endpoint
-   - Colorful gradient backgrounds for each genre
-   - Shows genre name, station count, and image
-   
-5. **All Stations Logo Fix:**
-   - Logos now fill the entire card space (width: 100%, height: 100%)
-   - Changed `resizeMode` from "contain" to "cover"
+3. **All Stations Logo Fix:**
+   - Logos now fill the entire card space
 
 ## Key Files
 - `/app/frontend/app/(tabs)/index.tsx` - Home Screen (updated with swiper)
