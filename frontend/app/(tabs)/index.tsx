@@ -508,13 +508,12 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 180,
-    paddingHorizontal: 15,
+    paddingHorizontal: SIDE_PADDING,
   },
 
-  // Header - Centered with fixed width
+  // Header - Full width
   header: {
-    width: CONTENT_WIDTH,
-    alignSelf: 'center',
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
