@@ -10,9 +10,13 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import TrackPlayer from 'react-native-track-player';
 import { colors, borderRadius, spacing, typography } from '../constants/theme';
 import { usePlayerStore } from '../store/playerStore';
 import { ChevronUpIcon, HeartOutlineIcon, PauseIcon, PlayIcon } from './TabBarIcons';
+
+// Check if we're on web
+const isWeb = Platform.OS === 'web';
 
 // Tab bar height - must match _layout.tsx
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
@@ -59,11 +63,21 @@ export const MiniPlayer: React.FC = () => {
     router.push('/player');
   };
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      setPlaybackState('paused');
-    } else if (playbackState === 'paused') {
-      setPlaybackState('playing');
+  const handlePlayPause = async () => {
+    try {
+      if (isPlaying) {
+        if (!isWeb) {
+          await TrackPlayer.pause();
+        }
+        setPlaybackState('paused');
+      } else if (playbackState === 'paused') {
+        if (!isWeb) {
+          await TrackPlayer.play();
+        }
+        setPlaybackState('playing');
+      }
+    } catch (error) {
+      console.error('[MiniPlayer] Play/Pause error:', error);
     }
   };
 
@@ -112,6 +126,7 @@ export const MiniPlayer: React.FC = () => {
             style={styles.controlButton}
             onPress={handlePlayPause}
             disabled={isLoading}
+            data-testid="mini-player-play-pause"
           >
             {isLoading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
@@ -126,6 +141,7 @@ export const MiniPlayer: React.FC = () => {
           <TouchableOpacity
             style={styles.controlButton}
             onPress={handleFavorite}
+            data-testid="mini-player-favorite"
           >
             <HeartOutlineIcon color="#FFFFFF" size={18} />
           </TouchableOpacity>
