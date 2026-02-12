@@ -55,18 +55,23 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
    - All rows now use `justifyContent: 'space-between'` for consistent spacing
    - Empty placeholder views added for incomplete rows to maintain alignment
    
-2. **Discoverable Genre Banner:**
-   - Jazz banner now dynamically uses `/api/genres/discoverable` data
-   - Shows first genre from API with name and image
-   - Falls back to icon if image not available
+2. **Genre Images with Unsplash Fallbacks:**
+   - Added fallback images from Unsplash for genre banners and swiper
+   - Fixes CORS issue with themegaradio.com images in web preview
+   - Slug-based mapping for folk-music, jazz, rock, pop, classical, electronic
 
-3. **Discoverable Genres Swiper:**
+3. **Discoverable Genre Banner:**
+   - Banner now dynamically uses `/api/genres/discoverable` data
+   - Shows first genre from API with name and image
+   - Image sourced from Unsplash fallback
+
+4. **Discoverable Genres Swiper:**
    - Replaced static "MegaRadio Premium" banner with horizontal swiper
    - Uses data from `/api/genres/discoverable` endpoint
    - Colorful gradient backgrounds for each genre
-   - Shows genre name and station count
+   - Shows genre name, station count, and image
    
-4. **All Stations Logo Fix:**
+5. **All Stations Logo Fix:**
    - Logos now fill the entire card space (width: 100%, height: 100%)
    - Changed `resizeMode` from "contain" to "cover"
 
