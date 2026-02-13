@@ -29,6 +29,8 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
+  const [showSplash, setShowSplash] = useState(true);
+  
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
     'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
@@ -38,6 +40,16 @@ export default function RootLayout() {
     'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
+
+  // Hide splash after 2.5 seconds once fonts are loaded
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [fontsLoaded, fontError]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
