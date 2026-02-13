@@ -70,6 +70,8 @@ export default function RootLayout() {
             <Stack.Screen name="search" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="signup" options={{ headerShown: false }} />
+            <Stack.Screen name="statistics" options={{ headerShown: false }} />
+            <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
           </Stack>
           <RadioErrorModal />
         </View>
