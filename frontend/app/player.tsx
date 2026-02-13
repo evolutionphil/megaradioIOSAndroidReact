@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
+import { useRecentlyPlayedStore } from '../src/store/recentlyPlayedStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
