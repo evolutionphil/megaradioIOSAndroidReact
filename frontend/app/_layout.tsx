@@ -81,21 +81,16 @@ export default function RootLayout() {
     }
   }, [appState, isMounted]);
 
+  // Font loading check is now optional - app works without fonts loaded
+  const fontsReady = fontsLoaded || fontError || isMounted;
+
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
+    if (fontsReady) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsReady]);
 
-  if (!fontsLoaded && !fontError) {
-    return (
-      <View style={[styles.container, styles.loading]}>
-        <ActivityIndicator size="large" color="#8B5CF6" />
-      </View>
-    );
-  }
-
-  // Show animated custom splash screen
+  // Always render splash first on mount, then proceed
   if (appState === 'splash') {
     return <AnimatedSplash onAnimationEnd={() => setAppState('onboarding_check')} />;
   }
