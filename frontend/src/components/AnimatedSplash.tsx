@@ -90,18 +90,18 @@ export const AnimatedSplash: React.FC<AnimatedSplashProps> = ({ onAnimationEnd }
       ])
     ).start();
 
-    // Dots slide up and fade in
+    // Dots slide up and fade in - start immediately
     Animated.parallel([
       Animated.timing(dotsOpacity, {
         toValue: 1,
-        duration: 800,
-        delay: 300,
+        duration: 500,
+        delay: 0,
         useNativeDriver: true,
       }),
       Animated.timing(dotsTranslateY, {
         toValue: 0,
-        duration: 800,
-        delay: 300,
+        duration: 500,
+        delay: 0,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
