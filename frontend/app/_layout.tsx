@@ -12,6 +12,7 @@ import { RadioErrorModal } from '../src/components/RadioErrorModal';
 const { width, height } = Dimensions.get('window');
 
 // Splash screen assets
+const SPLASH_FULL = require('../assets/images/splash-full.png');
 const SPLASH_LOGO = require('../assets/images/splash-logo.png');
 const SPLASH_DOTS = require('../assets/images/splash-dots.png');
 
