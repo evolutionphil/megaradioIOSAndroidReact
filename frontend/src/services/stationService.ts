@@ -22,7 +22,7 @@ export const stationService = {
   // Get popular stations
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
     const response = await api.get(API_ENDPOINTS.stations.popular, {
-      params: { country, limit, excludeBroken: true },
+      params: { countrycode: country, limit, excludeBroken: true },
     });
     const data = response.data;
     if (Array.isArray(data)) {
