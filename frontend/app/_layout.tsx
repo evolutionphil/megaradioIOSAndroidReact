@@ -140,25 +140,22 @@ const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
     backgroundColor: '#000000',
-  },
-  splashFullImage: {
-    width: width,
-    height: height,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   splashLogo: {
-    width: width * 0.45,
-    height: width * 0.45,
+    width: 250,
+    height: 250,
   },
   dotsPattern: {
     position: 'absolute',
     bottom: 0,
     left: 0,
-    width: width,
-    height: height * 0.35,
-    opacity: 0.9,
+    width: width * 0.6,
+    height: height * 0.25,
   },
 });
