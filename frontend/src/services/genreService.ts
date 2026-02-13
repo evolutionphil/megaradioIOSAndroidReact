@@ -14,7 +14,7 @@ export const genreService = {
   // Get precomputed genres (faster, cached)
   async getPrecomputedGenres(country?: string): Promise<{ success: boolean; data: Genre[] }> {
     const response = await api.get(API_ENDPOINTS.genres.precomputed, {
-      params: { country },
+      params: { countrycode: country, tv: 1 },
     });
     return response.data;
   },
