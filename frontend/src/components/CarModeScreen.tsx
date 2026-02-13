@@ -346,8 +346,9 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
         <View style={styles.carouselSection}>
           {/* Purple glow behind center card */}
           <View style={styles.centerGlow}>
-            <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(123, 97, 255, 0.5)' }} />
-            <BlurView intensity={80} tint="dark" style={StyleSheet.absoluteFill} />
+            <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(120, 60, 255, 0.35)' }} />
+            <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
+            <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
           </View>
           <StationCarousel
             stations={stations}

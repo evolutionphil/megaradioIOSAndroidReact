@@ -128,7 +128,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <View style={styles.artworkSection}>
             <View style={styles.glowWrap}>
               <View style={styles.glowPurple} />
-              <BlurView intensity={80} tint="dark" style={StyleSheet.absoluteFill} />
+              <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
+              <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
             </View>
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
