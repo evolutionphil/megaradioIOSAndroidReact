@@ -29,6 +29,7 @@ import {
   useCommunityFavorites,
   useStations,
   usePublicProfiles,
+  useNearbyStations,
 } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
@@ -55,7 +56,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
-  const { countryCode, country, fetchLocation } = useLocationStore();
+  const { countryCode, country, latitude, longitude, fetchLocation } = useLocationStore();
 
   // Fetch location on mount
   useEffect(() => {
