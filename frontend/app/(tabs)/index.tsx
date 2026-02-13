@@ -295,11 +295,11 @@ export default function HomeScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Recently Played</Text>
             </View>
-            {recentStations.length > 0 || popularStations.length > 0 ? (
+            {recentStations.length > 0 ? (
               <>
                 {/* Row 1 - 3 items */}
                 <View style={styles.gridRow}>
-                  {(recentStations.length > 0 ? recentStations : popularStations).slice(0, 3).map((station: Station, index: number) => (
+                  {recentStations.slice(0, 3).map((station: Station, index: number) => (
                     <TouchableOpacity
                       key={station._id}
                       style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
@@ -320,9 +320,9 @@ export default function HomeScreen() {
                   ))}
                 </View>
                 {/* Row 2 - next 3 items if available */}
-                {(recentStations.length > 0 ? recentStations : popularStations).length > 3 && (
+                {recentStations.length > 3 && (
                   <View style={styles.gridRow}>
-                    {(recentStations.length > 0 ? recentStations : popularStations).slice(3, 6).map((station: Station, index: number) => (
+                    {recentStations.slice(3, 6).map((station: Station, index: number) => (
                       <TouchableOpacity
                         key={station._id}
                         style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
