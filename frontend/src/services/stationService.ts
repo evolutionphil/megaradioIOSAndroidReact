@@ -19,16 +19,20 @@ export const stationService = {
     return response.data;
   },
 
-  // Get popular stations - API expects country NAME (e.g., "Austria"), not code
+  // Get popular stations - API expects country NAME in English (e.g., "Turkey"), not native name
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
     const response = await api.get(API_ENDPOINTS.stations.popular, {
       params: { country, limit, excludeBroken: true, tv: 1 },
     });
     const data = response.data;
+    // API returns array directly, not wrapped in { stations: [] }
     if (Array.isArray(data)) {
       return { stations: data, count: data.length };
     }
-    return data;
+    // Handle both { stations: [] } and { data: [] } response formats
+    if (data?.stations) return { stations: data.stations, count: data.stations.length };
+    if (data?.data) return { stations: data.data, count: data.data.length };
+    return { stations: [], count: 0 };
   },
 
   // Get precomputed stations
