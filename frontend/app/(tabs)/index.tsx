@@ -58,7 +58,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
-  const { countryCode, country, latitude, longitude, fetchLocation } = useLocationStore();
+  const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
 
   // Fetch location on mount
   useEffect(() => {
