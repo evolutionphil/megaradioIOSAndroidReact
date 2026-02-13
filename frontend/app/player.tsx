@@ -502,17 +502,30 @@ export default function PlayerScreen() {
 
           {/* Main Controls */}
           <View style={styles.mainControls}>
-            {/* Timer */}
+            {/* Timer - different behavior based on timer state */}
             <TouchableOpacity
               style={styles.controlButton}
-              onPress={() => setShowSleepTimer(true)}
+              onPress={() => {
+                if (sleepTimerActive) {
+                  setShowSleepCounter(true);
+                } else {
+                  setShowSleepTimer(true);
+                }
+              }}
               data-testid="player-sleep-timer-btn"
             >
-              <Ionicons
-                name="time-outline"
-                size={28}
-                color={sleepTimerActive ? '#FF4199' : '#888888'}
-              />
+              <View>
+                <Ionicons
+                  name="time-outline"
+                  size={28}
+                  color={sleepTimerActive ? '#FFFFFF' : '#888888'}
+                />
+                {sleepTimerActive && (
+                  <View style={styles.timerOnBadge}>
+                    <Text style={styles.timerOnText}>ON</Text>
+                  </View>
+                )}
+              </View>
             </TouchableOpacity>
             
             {/* Previous */}
