@@ -3,18 +3,12 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, ActivityIndicator, Image, ImageBackground, Dimensions } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
-
-const { width, height } = Dimensions.get('window');
-
-// Splash screen assets
-const SPLASH_FULL = require('../assets/images/splash-full.png');
-const SPLASH_LOGO = require('../assets/images/splash-logo.png');
-const SPLASH_DOTS = require('../assets/images/splash-dots.png');
+import { AnimatedSplash } from '../src/components/AnimatedSplash';
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
