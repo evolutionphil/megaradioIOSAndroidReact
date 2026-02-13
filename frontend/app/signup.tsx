@@ -249,10 +249,11 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Ubuntu-Bold',
     fontSize: 24,
-    lineHeight: 24,
+    lineHeight: 28,
     letterSpacing: 0,
     color: colors.text,
     marginBottom: spacing.lg,
+    fontWeight: '700',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -292,6 +293,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: spacing.md,
     marginTop: -spacing.xs,
+    paddingLeft: 56,
   },
   signupButton: {
     height: 56,
