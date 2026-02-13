@@ -352,36 +352,63 @@ export default function HomeScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Radios Near You{country ? ` - ${country}` : ''}</Text>
             </View>
-            {/* Render rows of 3 items each */}
-            {Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
-              <View key={`row-${rowIndex}`} style={styles.gridRow}>
-                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
-                  <TouchableOpacity
-                    key={`nearby-${station._id}-${rowIndex}`}
-                    style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
-                    onPress={() => handleStationPress(station)}
-                  >
-                    <View style={styles.gridImageContainer}>
-                      <Image 
-                        source={{ uri: getLogoUrl(station) || undefined }} 
-                        style={styles.gridImage} 
-                        resizeMode="cover" 
-                      />
-                    </View>
-                    <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                    <Text style={styles.stationGridCountry} numberOfLines={1}>
-                      {station.country || 'Radio'}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-                {/* Fill empty slots if last row has less than 3 items */}
-                {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
-                  Array.from({ length: 3 - popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                    <View key={`empty-nearby-${i}`} style={styles.gridItem} />
-                  ))
-                }
-              </View>
-            ))}
+            {/* Render rows of 3 items each - use nearby GPS stations */}
+            {nearbyStations.length > 0 ? (
+              Array.from({ length: Math.ceil(Math.min(nearbyStations.length, 12) / 3) }).map((_, rowIndex) => (
+                <View key={`row-${rowIndex}`} style={styles.gridRow}>
+                  {nearbyStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
+                    <TouchableOpacity
+                      key={`nearby-${station._id}-${rowIndex}`}
+                      style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
+                      onPress={() => handleStationPress(station)}
+                    >
+                      <View style={styles.gridImageContainer}>
+                        <Image 
+                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          style={styles.gridImage} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
+                        {station.country || 'Radio'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                  {nearbyStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
+                    Array.from({ length: 3 - nearbyStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
+                      <View key={`empty-nearby-${i}`} style={styles.gridItem} />
+                    ))
+                  }
+                </View>
+              ))
+            ) : popularStations.length > 0 ? (
+              Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
+                <View key={`row-${rowIndex}`} style={styles.gridRow}>
+                  {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
+                    <TouchableOpacity
+                      key={`nearby-${station._id}-${rowIndex}`}
+                      style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
+                      onPress={() => handleStationPress(station)}
+                    >
+                      <View style={styles.gridImageContainer}>
+                        <Image 
+                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          style={styles.gridImage} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+                      <Text style={styles.stationGridCountry} numberOfLines={1}>
+                        {station.country || 'Radio'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ))
+            ) : (
+              <Text style={styles.emptyText}>Enable location to see nearby stations</Text>
+            )}
             <TouchableOpacity style={styles.seeMoreButton}>
               <Text style={styles.seeMoreText}>See More</Text>
             </TouchableOpacity>
