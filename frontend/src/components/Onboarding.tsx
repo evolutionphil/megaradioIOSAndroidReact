@@ -239,7 +239,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 // Check if onboarding has been completed
 export const checkOnboardingComplete = async (): Promise<boolean> => {
   try {
-    const value = await AsyncStorage.getItem(ONBOARDING_COMPLETE_KEY);
+    const value = await storage.getItem(ONBOARDING_COMPLETE_KEY);
     return value === 'true';
   } catch (error) {
     console.error('Error reading onboarding status:', error);
@@ -250,7 +250,7 @@ export const checkOnboardingComplete = async (): Promise<boolean> => {
 // Reset onboarding (for testing)
 export const resetOnboarding = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(ONBOARDING_COMPLETE_KEY);
+    await storage.removeItem(ONBOARDING_COMPLETE_KEY);
   } catch (error) {
     console.error('Error resetting onboarding:', error);
   }
