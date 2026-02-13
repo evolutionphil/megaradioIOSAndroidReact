@@ -292,10 +292,10 @@ export default function ProfileScreen() {
         {/* Settings */}
         <Text style={s.sectionLabel}>Settings</Text>
         {[
-          { title: 'Play at Login', sub: 'Last Played', onPress: undefined },
+          { title: 'Play at Login', sub: 'Last Played', onPress: () => router.push('/play-at-login') },
           { title: 'Country', sub: country || 'Not set', onPress: () => setCurrentPage('country') },
           { title: 'Language', sub: 'English', onPress: undefined },
-          { title: 'Statistics', onPress: undefined },
+          { title: 'Statistics', onPress: () => router.push('/statistics') },
           { title: 'Account', onPress: () => setCurrentPage('account') },
         ].map((item, i) => (
           <React.Fragment key={i}>
