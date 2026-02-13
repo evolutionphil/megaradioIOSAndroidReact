@@ -56,7 +56,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   },
 
   setCountryManual: (countryName: string) => {
-    set({ country: countryName, countryCode: null });
+    set({ country: countryName, countryCode: null, loading: false, error: null });
   },
 }));
 
