@@ -83,8 +83,6 @@ const secureStorage = {
 
 const getDeviceInfo = () => {
   // Basic device detection
-  const userAgent = Platform.OS === 'web' ? navigator.userAgent : '';
-  
   let deviceType: 'mobile' | 'tablet' | 'tv' = 'mobile';
   let deviceName = 'Unknown Device';
   
@@ -95,6 +93,8 @@ const getDeviceInfo = () => {
     deviceName = 'Android Device';
     deviceType = 'mobile';
   } else if (Platform.OS === 'web') {
+    // Safe check for navigator (SSR compatibility)
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
     deviceName = userAgent.includes('Mobile') ? 'Mobile Browser' : 'Desktop Browser';
     deviceType = userAgent.includes('Mobile') ? 'mobile' : 'tablet';
   }

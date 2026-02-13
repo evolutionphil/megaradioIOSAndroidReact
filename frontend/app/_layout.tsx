@@ -76,6 +76,8 @@ export default function RootLayout() {
             <Stack.Screen name="follows" options={{ headerShown: false }} />
             <Stack.Screen name="user-profile" options={{ headerShown: false }} />
             <Stack.Screen name="languages" options={{ headerShown: false }} />
+            <Stack.Screen name="auth-options" options={{ headerShown: false, presentation: 'modal' }} />
+            <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
           </Stack>
           <RadioErrorModal />
         </View>
