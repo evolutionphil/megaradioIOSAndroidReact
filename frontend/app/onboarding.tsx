@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   contentContainer: {
-    flex: 0.45,
+    height: '50%',
     backgroundColor: '#000000',
     alignItems: 'center',
     paddingTop: 40,
