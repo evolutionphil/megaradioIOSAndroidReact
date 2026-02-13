@@ -11,6 +11,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -19,8 +20,6 @@ import Animated, {
   withTiming,
   interpolate,
   Extrapolation,
-  FadeIn,
-  FadeOut,
 } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
@@ -156,74 +155,77 @@ export default function OnboardingScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
       
-      {/* Image section - top half */}
-      <View style={styles.imageSection}>
-        <Animated.View 
-          key={currentItem.id}
-          entering={FadeIn.duration(300)}
-          style={styles.imageWrapper}
-        >
-          <Image source={currentItem.image} style={styles.image} resizeMode="cover" />
-        </Animated.View>
-        
-        {/* Skip button */}
-        <TouchableOpacity
-          style={styles.skipButton}
-          onPress={handleSkip}
-          activeOpacity={0.7}
-          data-testid="onboarding-skip-btn"
-        >
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Full screen background image */}
+      <Image 
+        source={currentItem.image} 
+        style={styles.backgroundImage} 
+        resizeMode="cover" 
+      />
+      
+      {/* Skip button - positioned at top right */}
+      <TouchableOpacity
+        style={styles.skipButton}
+        onPress={handleSkip}
+        activeOpacity={0.7}
+        data-testid="onboarding-skip-btn"
+      >
+        <Text style={styles.skipText}>Skip</Text>
+      </TouchableOpacity>
 
-      {/* Content section - bottom half */}
-      <View style={styles.contentSection}>
-        {/* Title */}
-        <Text style={styles.title}>{currentItem.title}</Text>
-        
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>{currentItem.subtitle}</Text>
-        
-        {/* Pagination Dots */}
-        <View style={styles.dotsContainer}>
-          {ONBOARDING_DATA.map((_, i) => (
-            <View
-              key={i}
-              style={[
-                styles.dot,
-                i === currentIndex ? styles.dotActive : styles.dotInactive,
-              ]}
-            />
-          ))}
-        </View>
+      {/* Gradient overlay at bottom */}
+      <LinearGradient
+        colors={['rgba(0, 0, 0, 0)', '#000000']}
+        locations={[0, 0.2942]}
+        style={styles.gradientOverlay}
+      >
+        {/* Content section */}
+        <View style={styles.contentSection}>
+          {/* Title */}
+          <Text style={styles.title}>{currentItem.title}</Text>
+          
+          {/* Subtitle */}
+          <Text style={styles.subtitle}>{currentItem.subtitle}</Text>
+          
+          {/* Pagination Dots */}
+          <View style={styles.dotsContainer}>
+            {ONBOARDING_DATA.map((_, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.dot,
+                  i === currentIndex ? styles.dotActive : styles.dotInactive,
+                ]}
+              />
+            ))}
+          </View>
 
-        {/* Button */}
-        <View style={styles.buttonWrapper}>
-          {currentItem.isLast ? (
-            <TouchableOpacity
-              style={styles.getStartedButton}
-              onPress={handleNext}
-              activeOpacity={0.8}
-              data-testid="onboarding-getstarted-btn"
-            >
-              <Text style={styles.getStartedText}>Get Started</Text>
-            </TouchableOpacity>
-          ) : (
-            <>
-              <Animated.View style={[styles.buttonGlow, glowAnimatedStyle]} />
+          {/* Button */}
+          <View style={styles.buttonWrapper}>
+            {currentItem.isLast ? (
               <TouchableOpacity
-                style={styles.nextButton}
+                style={styles.getStartedButton}
                 onPress={handleNext}
                 activeOpacity={0.8}
-                data-testid="onboarding-next-btn"
+                data-testid="onboarding-getstarted-btn"
               >
-                <Image source={NEXT_BUTTON} style={styles.nextButtonImage} resizeMode="contain" />
+                <Text style={styles.getStartedText}>Get Started</Text>
               </TouchableOpacity>
-            </>
-          )}
+            ) : (
+              <>
+                <Animated.View style={[styles.buttonGlow, glowAnimatedStyle]} />
+                <TouchableOpacity
+                  style={styles.nextButton}
+                  onPress={handleNext}
+                  activeOpacity={0.8}
+                  data-testid="onboarding-next-btn"
+                >
+                  <Image source={NEXT_BUTTON} style={styles.nextButtonImage} resizeMode="contain" />
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </LinearGradient>
     </View>
   );
 }
@@ -257,18 +259,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
-  imageSection: {
-    height: '50%',
-    width: '100%',
-    position: 'relative',
-    backgroundColor: '#1a1a1a',
-    overflow: 'hidden',
-  },
-  imageWrapper: {
-    width: '100%',
-    height: '100%',
-  },
-  image: {
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
     height: '100%',
   },
@@ -287,13 +281,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  gradientOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '55%',
+    justifyContent: 'flex-end',
+  },
   contentSection: {
-    height: '50%',
-    width: '100%',
-    backgroundColor: '#000000',
     alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 20,
+    paddingBottom: Platform.OS === 'ios' ? 60 : 40,
   },
   title: {
     fontFamily: 'Ubuntu-BoldItalic',
