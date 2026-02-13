@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
 import * as Clipboard from 'expo-clipboard';
 import type { Station } from '../types';
 
@@ -125,11 +126,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <View style={styles.content}>
           {/* Artwork with glow */}
           <View style={styles.artworkSection}>
-            {/* Multi-layer glow for blur effect */}
-            <View style={[styles.glowLayer, styles.glow1]} />
-            <View style={[styles.glowLayer, styles.glow2]} />
-            <View style={[styles.glowLayer, styles.glow3]} />
-            <View style={[styles.glowLayer, styles.glow4]} />
+            <View style={styles.glowWrap}>
+              <BlurView intensity={60} tint="dark" style={styles.glowBlur}>
+                <View style={styles.glowPurple} />
+              </BlurView>
+            </View>
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
                 <Image
@@ -248,35 +249,25 @@ const styles = StyleSheet.create({
 
   // Artwork with multi-layer glow (simulates blur on iOS)
   artworkSection: {
-    width: ARTWORK_SIZE + 120,
-    height: ARTWORK_SIZE + 120,
+    width: ARTWORK_SIZE + 80,
+    height: ARTWORK_SIZE + 80,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
   },
-  glowLayer: {
+  glowWrap: {
     position: 'absolute',
-    borderRadius: 999,
+    width: ARTWORK_SIZE + 80,
+    height: ARTWORK_SIZE + 80,
+    borderRadius: (ARTWORK_SIZE + 80) / 2,
+    overflow: 'hidden',
   },
-  glow1: {
-    width: ARTWORK_SIZE + 140,
-    height: ARTWORK_SIZE + 140,
-    backgroundColor: 'rgba(123, 97, 255, 0.06)',
+  glowBlur: {
+    flex: 1,
   },
-  glow2: {
-    width: ARTWORK_SIZE + 100,
-    height: ARTWORK_SIZE + 100,
-    backgroundColor: 'rgba(123, 97, 255, 0.10)',
-  },
-  glow3: {
-    width: ARTWORK_SIZE + 60,
-    height: ARTWORK_SIZE + 60,
-    backgroundColor: 'rgba(123, 97, 255, 0.15)',
-  },
-  glow4: {
-    width: ARTWORK_SIZE + 30,
-    height: ARTWORK_SIZE + 30,
-    backgroundColor: 'rgba(123, 97, 255, 0.20)',
+  glowPurple: {
+    flex: 1,
+    backgroundColor: 'rgba(123, 97, 255, 0.4)',
   },
   artworkWrapper: {
     width: ARTWORK_SIZE,
