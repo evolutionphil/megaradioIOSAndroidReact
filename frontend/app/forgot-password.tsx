@@ -112,7 +112,7 @@ export default function ForgotPasswordScreen() {
             {/* Title */}
             <Text style={styles.title}>Forgot your password?</Text>
             <Text style={styles.subtitle}>
-              Enter you email we will send you verification mail.
+              Enter your email we will send you verification mail.
             </Text>
 
             {/* Email Input */}
