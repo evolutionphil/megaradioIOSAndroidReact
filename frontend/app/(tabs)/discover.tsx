@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
+import { GlowEffect } from '../../src/components/GlowEffect';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
@@ -73,12 +74,8 @@ export default function DiscoverScreen() {
 
   return (
     <View style={styles.mainContainer}>
-      {/* Background Glow - Large purple radial, top-left corner */}
-      <View style={styles.bgGlowContainer} pointerEvents="none">
-        <View style={styles.bgGlowColor} />
-        <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-        <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-      </View>
+      {/* Background Glow - SVG RadialGradient */}
+      <GlowEffect size={430} top={-130} left={-160} opacity={0.35} />
       
       <LinearGradient colors={gradients.background as any} style={styles.gradient}>
         <SafeAreaView style={styles.container} edges={['top']}>

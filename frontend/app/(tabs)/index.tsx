@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { GlowEffect } from '../../src/components/GlowEffect';
 import { useRouter } from 'expo-router';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import {
@@ -179,12 +180,8 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background Glow - Large purple radial, top-left corner */}
-      <View style={styles.bgGradientContainer} pointerEvents="none">
-        <View style={styles.bgGlowColor} />
-        <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-        <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-      </View>
+      {/* Background Glow - SVG RadialGradient for real soft glow */}
+      <GlowEffect size={430} top={-130} left={-160} opacity={0.35} />
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <ScrollView
