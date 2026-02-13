@@ -81,17 +81,17 @@ export default function RootLayout() {
   }
 
   // Show animated custom splash screen
-  if (showSplash) {
-    return <AnimatedSplash onAnimationEnd={() => setShowSplash(false)} />;
+  if (appState === 'splash') {
+    return <AnimatedSplash onAnimationEnd={() => setAppState('onboarding_check')} />;
   }
 
-  // Show onboarding if needed (and check is complete)
-  if (showOnboarding === true) {
-    return <Onboarding onComplete={() => setShowOnboarding(false)} />;
+  // Show onboarding if needed
+  if (appState === 'onboarding') {
+    return <Onboarding onComplete={() => setAppState('ready')} />;
   }
 
   // Still checking onboarding status
-  if (showOnboarding === null) {
+  if (appState === 'onboarding_check') {
     return (
       <View style={[styles.container, styles.loading]}>
         <ActivityIndicator size="large" color="#FF1493" />
