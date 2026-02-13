@@ -310,13 +310,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#FFF',
-    fontStyle: 'italic',
   },
   closeText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFF',
-    fontStyle: 'italic',
   },
 
   // Picker

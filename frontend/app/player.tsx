@@ -566,7 +566,7 @@ export default function PlayerScreen() {
 
           {/* Recently Played Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { fontFamily: 'Ubuntu-BoldItalic' }]}>
+            <Text style={styles.sectionTitle}>
               Recently Played
             </Text>
             <View style={styles.stationGrid}>
@@ -584,7 +584,7 @@ export default function PlayerScreen() {
 
           {/* Similar Radios Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { fontFamily: 'Ubuntu-BoldItalic' }]}>
+            <Text style={styles.sectionTitle}>
               Similar Radios
             </Text>
             <View style={styles.stationGrid}>
@@ -870,9 +870,10 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
+    fontWeight: '700',
+    fontStyle: 'italic',
     color: '#FFFFFF',
     marginBottom: 16,
-    lineHeight: 18,
   },
   stationGrid: {
     flexDirection: 'row',

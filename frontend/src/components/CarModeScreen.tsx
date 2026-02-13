@@ -318,7 +318,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   // Use carousel index to determine displayed station (matches the visual carousel card)
   const displayedStation = stations.length > 0 ? stations[carouselIndex] : currentStation;
 
-  const ub = { fontFamily: 'Ubuntu-Bold' };
+  const ub = { fontWeight: '700' as const };
 
   // Get iOS status bar height for proper safe area
   const statusBarHeight = Platform.OS === 'ios' ? 54 : StatusBar.currentHeight || 0;
