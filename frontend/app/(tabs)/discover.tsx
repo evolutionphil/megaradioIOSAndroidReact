@@ -218,26 +218,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  // Background Glow - larger container allows blur edges to be soft
-  bgGlowContainer: {
-    position: 'absolute',
-    top: -230,
-    left: -260,
-    width: 630,
-    height: 630,
-    zIndex: 0,
-    borderRadius: 315,
-    overflow: 'hidden',
-  },
-  bgGlowColor: {
-    position: 'absolute',
-    top: 100,
-    left: 100,
-    width: 430,
-    height: 430,
-    backgroundColor: 'rgba(120, 60, 255, 0.30)',
-    borderRadius: 215,
-  },
+  // Glow removed - using GlowEffect SVG component
   gradient: {
     flex: 1,
   },
