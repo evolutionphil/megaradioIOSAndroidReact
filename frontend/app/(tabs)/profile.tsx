@@ -80,6 +80,16 @@ const FLAG_MAP: Record<string, string> = {
 };
 const getFlag = (name: string) => FLAG_MAP[name] || '🌍';
 
+// Country type for rich format
+interface CountryData {
+  name: string;
+  nativeName: string;
+  code: string;
+  flag: string;
+  flagUrl: string;
+  stationCount: number;
+}
+
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout: clearAuth } = useAuthStore();
