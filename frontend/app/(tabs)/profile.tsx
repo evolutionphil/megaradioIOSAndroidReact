@@ -276,6 +276,35 @@ export default function ProfileScreen() {
   }
 
   // ── MAIN PROFILE ──
+  // If not authenticated, show login prompt
+  if (!user) {
+    return (
+      <SafeAreaView style={s.container} edges={['top']}>
+        <View style={s.guestContainer}>
+          <View style={s.guestAvatar}>
+            <Ionicons name="person" size={48} color="#888" />
+          </View>
+          <Text style={s.guestTitle}>Welcome to MegaRadio</Text>
+          <Text style={s.guestSubtitle}>Sign in to access your profile, favorites, and more</Text>
+          <TouchableOpacity 
+            style={s.loginBtn} 
+            onPress={() => router.push('/auth-options')}
+            data-testid="profile-login-btn"
+          >
+            <Text style={s.loginBtnText}>Sign In</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={s.skipBtn} 
+            onPress={() => router.push('/auth-options')}
+            data-testid="profile-signup-btn"
+          >
+            <Text style={s.skipBtnText}>Create Account</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={s.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false}>
