@@ -574,12 +574,13 @@ export default function PlayerScreen() {
           </View>
 
           {/* Recently Played Section */}
+          {recentStations.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>
               Recently Played
             </Text>
             <View style={styles.stationGrid}>
-              {popularStations.slice(0, 6).map((station: Station, index: number) => (
+              {recentStations.slice(0, 6).map((station: Station, index: number) => (
                 <GridItem
                   key={`recent-${station._id}-${index}`}
                   station={station}
@@ -590,6 +591,7 @@ export default function PlayerScreen() {
               ))}
             </View>
           </View>
+          )}
 
           {/* Similar Radios Section */}
           <View style={styles.section}>
