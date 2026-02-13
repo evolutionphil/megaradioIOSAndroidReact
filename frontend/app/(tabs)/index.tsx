@@ -174,10 +174,11 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background Glow - colored circle with blur overlay */}
-      <View style={styles.bgGradientContainer}>
+      {/* Background Glow - Large purple radial, top-left corner */}
+      <View style={styles.bgGradientContainer} pointerEvents="none">
         <View style={styles.bgGlowColor} />
-        <BlurView intensity={100} tint="dark" style={styles.bgBlurOverlay} />
+        <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
       </View>
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
