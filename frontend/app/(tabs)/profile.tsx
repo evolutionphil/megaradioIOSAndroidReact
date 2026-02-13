@@ -490,6 +490,8 @@ const s = StyleSheet.create({
   countryRowActive: { borderWidth: 1, borderColor: '#FF4199' },
   flagEmoji: { fontSize: 28, width: 40, textAlign: 'center' },
   countryName: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  countryNative: { fontSize: 13, color: '#888', marginTop: 2 },
+  stationCount: { fontSize: 13, color: '#888', marginRight: 12 },
   radioCircle: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: '#FF4199', justifyContent: 'center', alignItems: 'center' },
   radioCircleActive: { borderColor: '#FF4199' },
   radioCircleFill: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#FF4199' },
