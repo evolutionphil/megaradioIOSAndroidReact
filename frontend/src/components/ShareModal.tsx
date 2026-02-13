@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
+import { GlowEffect } from './GlowEffect';
 import * as Clipboard from 'expo-clipboard';
 import type { Station } from '../types';
 
@@ -126,11 +126,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <View style={styles.content}>
           {/* Artwork with glow */}
           <View style={styles.artworkSection}>
-            <View style={styles.glowWrap}>
-              <View style={styles.glowPurple} />
-              <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-              <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-            </View>
+            <GlowEffect size={ARTWORK_SIZE + 80} top={0} left={0} opacity={0.40} />
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
                 <Image
@@ -254,17 +250,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
-  },
-  glowWrap: {
-    position: 'absolute',
-    width: ARTWORK_SIZE + 80,
-    height: ARTWORK_SIZE + 80,
-    borderRadius: (ARTWORK_SIZE + 80) / 2,
-    overflow: 'hidden',
-  },
-  glowPurple: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(123, 97, 255, 0.5)',
   },
   artworkWrapper: {
     width: ARTWORK_SIZE,
