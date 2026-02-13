@@ -319,6 +319,13 @@ export default function PlayerScreen() {
   };
 
   // Handle station press - ALWAYS stops current and plays new
+  // Add to recently played when a station starts playing
+  useEffect(() => {
+    if (currentStation && playbackState === 'playing') {
+      addRecentStation(currentStation);
+    }
+  }, [currentStation?._id, playbackState]);
+
   const handleStationPress = useCallback(async (station: Station) => {
     console.log('[Player] Station pressed:', station.name, 'ID:', station._id);
     try {
