@@ -304,7 +304,7 @@ export default function HomeScreen() {
                     >
                       <View style={styles.gridImageContainer}>
                         <Image 
-                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          source={getLogoUrl(station) ? { uri: getLogoUrl(station) } : FALLBACK_LOGO} 
                           style={styles.gridImage} 
                           resizeMode="cover" 
                         />
@@ -327,7 +327,7 @@ export default function HomeScreen() {
                       >
                         <View style={styles.gridImageContainer}>
                           <Image 
-                            source={{ uri: getLogoUrl(station) || undefined }} 
+                            source={getLogoUrl(station) ? { uri: getLogoUrl(station) } : FALLBACK_LOGO} 
                             style={styles.gridImage} 
                             resizeMode="cover" 
                           />
@@ -363,7 +363,7 @@ export default function HomeScreen() {
                     >
                       <View style={styles.gridImageContainer}>
                         <Image 
-                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          source={getLogoUrl(station) ? { uri: getLogoUrl(station) } : FALLBACK_LOGO} 
                           style={styles.gridImage} 
                           resizeMode="cover" 
                         />
@@ -392,7 +392,7 @@ export default function HomeScreen() {
                     >
                       <View style={styles.gridImageContainer}>
                         <Image 
-                          source={{ uri: getLogoUrl(station) || undefined }} 
+                          source={getLogoUrl(station) ? { uri: getLogoUrl(station) } : FALLBACK_LOGO} 
                           style={styles.gridImage} 
                           resizeMode="cover" 
                         />
