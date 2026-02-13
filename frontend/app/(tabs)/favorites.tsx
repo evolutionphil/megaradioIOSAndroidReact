@@ -72,12 +72,20 @@ export default function FavoritesScreen() {
   // Get sorted favorites
   const sortedFavorites = getSortedFavorites();
 
-  // Filter by search
+  // Helper to get genre display
+const getGenreDisplay = (station: Station): string => {
+  if (station.genres && station.genres.length > 0) {
+    return station.genres[0];
+  }
+  return 'Radio';
+};
+
+// Filter by search
   const filteredFavorites = searchQuery
     ? sortedFavorites.filter(
         (s) =>
           s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.genre?.toLowerCase().includes(searchQuery.toLowerCase())
+          getGenreDisplay(s).toLowerCase().includes(searchQuery.toLowerCase())
       )
     : sortedFavorites;
 
