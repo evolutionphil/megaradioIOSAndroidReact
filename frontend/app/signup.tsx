@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,11 @@ import { useRouter } from 'expo-router';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import authService from '../src/services/authService';
 import { useAuthStore } from '../src/store/authStore';
+
+// Input icons
+const EMAIL_ICON = require('../assets/icons/email-input.png');
+const PASSWORD_ICON = require('../assets/icons/password-input.png');
+const PERSON_ICON = require('../assets/icons/person-input.png');
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -59,7 +65,6 @@ export default function SignupScreen() {
 
     setIsLoading(true);
     try {
-      // Use mobile register endpoint
       const response = await authService.mobileRegister(email.trim(), password, name.trim());
       
       if (response.success && response.token && response.user) {
@@ -112,13 +117,13 @@ export default function SignupScreen() {
 
             {/* Content */}
             <View style={styles.content}>
-              {/* Title */}
+              {/* Title - Ubuntu Bold 24px */}
               <Text style={styles.title}>Signup</Text>
 
               {/* Name Input */}
               <View style={[styles.inputContainer, hasError && styles.inputError]}>
                 <View style={styles.inputIconContainer}>
-                  <Ionicons name="person" size={20} color={colors.inputIcon} />
+                  <Image source={PERSON_ICON} style={styles.inputIcon} resizeMode="contain" />
                 </View>
                 <TextInput
                   style={styles.input}
@@ -138,7 +143,7 @@ export default function SignupScreen() {
               {/* Email Input */}
               <View style={[styles.inputContainer, hasError && styles.inputError]}>
                 <View style={styles.inputIconContainer}>
-                  <Ionicons name="mail" size={20} color={colors.inputIcon} />
+                  <Image source={EMAIL_ICON} style={styles.inputIcon} resizeMode="contain" />
                 </View>
                 <TextInput
                   style={styles.input}
@@ -160,7 +165,7 @@ export default function SignupScreen() {
               {/* Password Input */}
               <View style={[styles.inputContainer, hasError && styles.inputError]}>
                 <View style={styles.inputIconContainer}>
-                  <Ionicons name="lock-closed" size={20} color={colors.inputIcon} />
+                  <Image source={PASSWORD_ICON} style={styles.inputIcon} resizeMode="contain" />
                 </View>
                 <TextInput
                   style={styles.input}
@@ -233,7 +238,7 @@ const styles = StyleSheet.create({
   },
   errorToastText: {
     fontSize: typography.sizes.md,
-    fontWeight: typography.weights.medium,
+    fontWeight: '500',
     color: colors.text,
   },
   content: {
@@ -242,9 +247,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    fontStyle: 'italic',
+    fontFamily: 'Ubuntu-Bold',
+    fontSize: 24,
+    lineHeight: 24,
+    letterSpacing: 0,
     color: colors.text,
     marginBottom: spacing.lg,
   },
@@ -270,6 +276,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  inputIcon: {
+    width: 20,
+    height: 20,
+  },
   input: {
     flex: 1,
     marginLeft: spacing.md,
@@ -279,7 +289,7 @@ const styles = StyleSheet.create({
   passwordHint: {
     fontSize: typography.sizes.sm,
     color: colors.text,
-    fontWeight: typography.weights.medium,
+    fontWeight: '500',
     marginBottom: spacing.md,
     marginTop: -spacing.xs,
   },
@@ -296,7 +306,7 @@ const styles = StyleSheet.create({
   },
   signupButtonText: {
     fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.semibold,
+    fontWeight: '600',
     color: colors.text,
   },
 });
