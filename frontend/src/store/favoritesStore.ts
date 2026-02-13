@@ -21,6 +21,7 @@ interface FavoritesState {
   
   // Actions
   loadFavorites: () => Promise<void>;
+  loadFromLocal: () => Promise<void>;
   addFavorite: (station: Station) => Promise<void>;
   removeFavorite: (stationId: string) => Promise<void>;
   isFavorite: (stationId: string) => boolean;
