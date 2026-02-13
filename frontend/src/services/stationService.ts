@@ -19,10 +19,10 @@ export const stationService = {
     return response.data;
   },
 
-  // Get popular stations
+  // Get popular stations - API expects country NAME (e.g., "Austria"), not code
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
     const response = await api.get(API_ENDPOINTS.stations.popular, {
-      params: { countrycode: country, limit, excludeBroken: true, tv: 1 },
+      params: { country, limit, excludeBroken: true, tv: 1 },
     });
     const data = response.data;
     if (Array.isArray(data)) {
