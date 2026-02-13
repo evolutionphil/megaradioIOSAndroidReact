@@ -481,4 +481,13 @@ const s = StyleSheet.create({
   checkCircle: { width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: '#FF4199', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
   pwRow: { width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#2A2A2A', borderRadius: 12, paddingHorizontal: 16, height: 48, marginBottom: 12 },
   pwInput: { flex: 1, fontSize: 16, color: '#FFF' },
+  // Guest state
+  guestContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },
+  guestAvatar: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#1A1A1D', justifyContent: 'center', alignItems: 'center', marginBottom: 24 },
+  guestTitle: { fontSize: 24, fontWeight: '700', color: '#FFF', marginBottom: 8, textAlign: 'center' },
+  guestSubtitle: { fontSize: 15, color: '#888', textAlign: 'center', marginBottom: 32, lineHeight: 22 },
+  loginBtn: { width: '100%', height: 56, borderRadius: 28, backgroundColor: '#FF4B8C', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
+  loginBtnText: { fontSize: 17, fontWeight: '600', color: '#FFF' },
+  skipBtn: { width: '100%', height: 56, borderRadius: 28, borderWidth: 1, borderColor: '#3A3A3D', justifyContent: 'center', alignItems: 'center' },
+  skipBtnText: { fontSize: 17, fontWeight: '600', color: '#FFF' },
 });
