@@ -55,6 +55,8 @@ export default function RootLayout() {
     'FontAwesome5_Brands': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf'),
     'FontAwesome5_Regular': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf'),
     'FontAwesome5_Solid': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf'),
+    'Ubuntu-Regular': require('../assets/fonts/Ubuntu-Regular.ttf'),
+    'Ubuntu-Medium': require('../assets/fonts/Ubuntu-Medium.ttf'),
     'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
