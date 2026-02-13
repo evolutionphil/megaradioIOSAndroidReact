@@ -23,7 +23,7 @@ import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import { CarModeScreen } from '../src/components/CarModeScreen';
 import { ShareModal } from '../src/components/ShareModal';
-import { SleepTimerModal } from '../src/components/SleepTimerModal';
+import { SleepTimerModal, SleepCounterModal } from '../src/components/SleepTimerModal';
 import { GlowEffect } from '../src/components/GlowEffect';
 import type { Station } from '../src/types';
 
