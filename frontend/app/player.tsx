@@ -661,6 +661,14 @@ export default function PlayerScreen() {
         remainingSeconds={sleepTimerRemaining}
         onCancel={cancelSleepTimer}
       />
+
+      {/* Sleep Counter Modal (when timer is active) */}
+      <SleepCounterModal
+        visible={showSleepCounter}
+        onClose={() => setShowSleepCounter(false)}
+        remainingSeconds={sleepTimerRemaining}
+        onStop={cancelSleepTimer}
+      />
     </View>
   );
 }
