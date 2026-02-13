@@ -482,11 +482,11 @@ const styles = StyleSheet.create({
   // Purple glow effect behind center card
   centerGlow: {
     position: 'absolute',
-    top: -30 * S,
-    left: SCREEN_WIDTH / 2 - 110 * S,
-    width: 220 * S,
-    height: 220 * S,
-    borderRadius: 110 * S,
+    top: -40 * S,
+    left: SCREEN_WIDTH / 2 - 130 * S,
+    width: 260 * S,
+    height: 260 * S,
+    borderRadius: 130 * S,
     overflow: 'hidden',
   },
 
