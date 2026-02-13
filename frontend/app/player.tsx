@@ -165,6 +165,36 @@ const BroadcastIcon = ({ size = 24, color = '#888888' }) => (
   </View>
 );
 
+// Animated Equalizer Bars component
+const EqualizerBars = React.memo(() => {
+  const bar1 = useRef(new Animated.Value(6)).current;
+  const bar2 = useRef(new Animated.Value(12)).current;
+  const bar3 = useRef(new Animated.Value(8)).current;
+
+  useEffect(() => {
+    const animate = (val: Animated.Value, min: number, max: number, dur: number) => {
+      const loop = () => {
+        Animated.sequence([
+          Animated.timing(val, { toValue: max, duration: dur, useNativeDriver: false }),
+          Animated.timing(val, { toValue: min, duration: dur * 0.8, useNativeDriver: false }),
+        ]).start(loop);
+      };
+      loop();
+    };
+    animate(bar1, 4, 16, 400);
+    animate(bar2, 6, 20, 350);
+    animate(bar3, 3, 14, 450);
+  }, []);
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 3, height: 20, marginBottom: 6 }}>
+      <Animated.View style={{ width: 4, backgroundColor: '#FF4199', borderRadius: 2, height: bar1 }} />
+      <Animated.View style={{ width: 4, backgroundColor: '#FF4199', borderRadius: 2, height: bar2 }} />
+      <Animated.View style={{ width: 4, backgroundColor: '#FF4199', borderRadius: 2, height: bar3 }} />
+    </View>
+  );
+});
+
 // GridItem extracted OUTSIDE PlayerScreen to prevent unmount/remount on re-render
 const GridItem = React.memo(({
   station,
