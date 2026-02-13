@@ -347,7 +347,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
         <View style={styles.carouselSection}>
           {/* Purple glow behind center card */}
           <View style={styles.centerGlow}>
-            <GlowEffect size={220 * S} top={0} left={0} opacity={0.45} />
+            <GlowEffect size={260 * S} top={0} left={0} opacity={0.50} />
           </View>
           <StationCarousel
             stations={stations}
