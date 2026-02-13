@@ -46,6 +46,10 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
    - 8 layered circles with opacity 0.04 to 0.17.
    - Applied to both Home (`index.tsx`) and Discover (`discover.tsx`) screens.
 
+5. **Car Mode Icons Fix**: Replaced View-based speaker icons with Ionicons (volume-mute, volume-high).
+
+6. **Share Modal (NEW)**: Created `ShareModal.tsx` with Facebook, Twitter, WhatsApp share, Copy Link, and native "More" share sheet.
+
 ## Key Files
 - `/app/frontend/src/hooks/useAudioPlayer.ts` - Audio singleton with race condition fix
 - `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with frozen station list
