@@ -431,12 +431,8 @@ export default function PlayerScreen() {
 
           {/* Now Playing Info */}
           <View style={styles.nowPlayingSection}>
-            {/* Animated dots */}
-            <View style={styles.animatedDots}>
-              <View style={[styles.dot, styles.dotPink]} />
-              <View style={[styles.dot, styles.dotPink]} />
-              <View style={[styles.dot, styles.dotPink]} />
-            </View>
+            {/* Animated Equalizer Bars */}
+            {isPlaying && <EqualizerBars />}
             <Text style={styles.stationName}>{currentStation.name}</Text>
             <Text style={styles.artistName}>{getCurrentSongInfo()}</Text>
             
