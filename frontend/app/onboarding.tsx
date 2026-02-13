@@ -143,6 +143,15 @@ export default function OnboardingScreen() {
     router.replace('/(tabs)');
   };
 
+  // Don't render anything while checking onboarding status
+  if (isChecking) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <StatusBar style="light" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
