@@ -25,7 +25,7 @@ const FALLBACK_LOGO = 'https://themegaradio.com/static/default-station.png';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const getLogoUrl = (station: Station): string => {
-  const logo = station.logo || station.image;
+  const logo = station.logo || station.favicon;
   if (!logo) return FALLBACK_LOGO;
   if (logo.startsWith('http')) return logo;
   return `https://themegaradio.com${logo.startsWith('/') ? '' : '/'}${logo}`;
