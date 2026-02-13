@@ -174,11 +174,10 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background Glow with BlurView */}
+      {/* Background Glow - colored circle with blur overlay */}
       <View style={styles.bgGradientContainer}>
-        <BlurView intensity={80} tint="dark" style={styles.bgBlurView}>
-          <View style={styles.bgGlowColor} />
-        </BlurView>
+        <View style={styles.bgGlowColor} />
+        <BlurView intensity={100} tint="dark" style={styles.bgBlurOverlay} />
       </View>
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -549,24 +548,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   
-  // Background Glow with BlurView
+  // Background Glow - color underneath, blur on top
   bgGradientContainer: {
     position: 'absolute',
-    top: -100,
-    left: -100,
-    width: 350,
-    height: 350,
+    top: -80,
+    left: -80,
+    width: 300,
+    height: 300,
     zIndex: 0,
-    borderRadius: 175,
+    borderRadius: 150,
     overflow: 'hidden',
   },
-  bgBlurView: {
-    flex: 1,
-  },
   bgGlowColor: {
-    flex: 1,
-    backgroundColor: 'rgba(107, 78, 255, 0.35)',
-    borderRadius: 175,
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(107, 78, 255, 0.5)',
+    borderRadius: 150,
+  },
+  bgBlurOverlay: {
+    ...StyleSheet.absoluteFillObject,
   },
   
   safeArea: {
