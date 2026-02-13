@@ -9,6 +9,7 @@ interface LocationState {
   loading: boolean;
   error: string | null;
   fetchLocation: () => Promise<void>;
+  setCountryManual: (country: string) => void;
 }
 
 export const useLocationStore = create<LocationState>((set, get) => ({
