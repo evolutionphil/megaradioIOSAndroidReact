@@ -75,6 +75,7 @@ export default function RootLayout() {
             <Stack.Screen name="followers" options={{ headerShown: false }} />
             <Stack.Screen name="follows" options={{ headerShown: false }} />
             <Stack.Screen name="user-profile" options={{ headerShown: false }} />
+            <Stack.Screen name="languages" options={{ headerShown: false }} />
           </Stack>
           <RadioErrorModal />
         </View>
