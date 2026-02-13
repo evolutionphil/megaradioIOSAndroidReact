@@ -8,65 +8,135 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import api from '../src/services/api';
+import { useAuthStore } from '../src/store/authStore';
 
 interface Following {
-  id: string;
-  name: string;
-  avatar: string;
+  _id: string;
+  username: string;
+  fullName: string;
+  avatar?: string;
+  slug?: string;
 }
 
-// Mock data - will be replaced with API calls
-const MOCK_FOLLOWING: Following[] = [
-  { id: '1', name: 'Talha Çay', avatar: 'https://i.pravatar.cc/100?img=11' },
-  { id: '2', name: 'Talha Çay', avatar: 'https://i.pravatar.cc/100?img=11' },
-  { id: '3', name: 'Talha Çay', avatar: 'https://i.pravatar.cc/100?img=11' },
-  { id: '4', name: 'Talha Çay', avatar: 'https://i.pravatar.cc/100?img=11' },
-  { id: '5', name: 'Talha Çay', avatar: 'https://i.pravatar.cc/100?img=11' },
-];
+const DEFAULT_AVATAR = 'https://themegaradio.com/images/default-avatar.png';
 
 export default function FollowsScreen() {
   const router = useRouter();
+  const { user, isAuthenticated } = useAuthStore();
   const [following, setFollowing] = useState<Following[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [unfollowing, setUnfollowing] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setFollowing(MOCK_FOLLOWING);
-      setLoading(false);
-    }, 500);
-  }, []);
+    fetchFollowing();
+  }, [user]);
 
-  const handleUnfollow = (id: string) => {
-    setFollowing(prev => prev.filter(f => f.id !== id));
-    // TODO: Call API to unfollow user
+  const fetchFollowing = async () => {
+    if (!user?._id) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // GET /api/users/:userId/following
+      const response = await api.get(`https://themegaradio.com/api/users/${user._id}/following`);
+      
+      // API may return { following: [...] } or directly [...]
+      const data = response.data.following || response.data || [];
+      setFollowing(data);
+    } catch (error: any) {
+      console.error('Error fetching following:', error);
+      setFollowing([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUnfollow = async (userId: string, userName: string) => {
+    if (!isAuthenticated) {
+      Alert.alert('Login Required', 'Please login to manage who you follow.');
+      return;
+    }
+
+    Alert.alert(
+      'Unfollow',
+      `Are you sure you want to unfollow ${userName}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Unfollow',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setUnfollowing(userId);
+              // POST /api/user-engagement/unfollow/:userId
+              await api.post(`https://themegaradio.com/api/user-engagement/unfollow/${userId}`);
+              setFollowing(prev => prev.filter(f => f._id !== userId));
+            } catch (error: any) {
+              console.error('Error unfollowing:', error);
+              Alert.alert('Error', 'Failed to unfollow. Please try again.');
+            } finally {
+              setUnfollowing(null);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const navigateToProfile = (user: Following) => {
+    router.push({
+      pathname: '/user-profile',
+      params: {
+        userId: user._id,
+        userName: user.fullName || user.username,
+        userAvatar: user.avatar || DEFAULT_AVATAR,
+      },
+    } as any);
   };
 
   const filteredFollowing = searchQuery
-    ? following.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? following.filter(f => 
+        (f.fullName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (f.username?.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
     : following;
 
   const renderItem = ({ item }: { item: Following }) => (
     <View style={styles.row}>
       <TouchableOpacity 
         style={styles.userInfo}
-        onPress={() => router.push({ pathname: '/user-profile', params: { userId: item.id, userName: item.name, userAvatar: item.avatar } })}
+        onPress={() => navigateToProfile(item)}
+        data-testid={`following-profile-${item._id}`}
       >
-        <Image source={{ uri: item.avatar }} style={styles.avatar} />
-        <Text style={styles.name}>{item.name}</Text>
+        <Image 
+          source={{ uri: item.avatar || DEFAULT_AVATAR }} 
+          style={styles.avatar} 
+        />
+        <Text style={styles.name} numberOfLines={1}>
+          {item.fullName || item.username}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.unfollowButton}
-        onPress={() => handleUnfollow(item.id)}
-        data-testid={`unfollow-${item.id}`}
+        onPress={() => handleUnfollow(item._id, item.fullName || item.username)}
+        disabled={unfollowing === item._id}
+        data-testid={`unfollow-${item._id}`}
       >
-        <Text style={styles.unfollowText}>Unfollow</Text>
+        {unfollowing === item._id ? (
+          <ActivityIndicator size="small" color="#FFFFFF" />
+        ) : (
+          <Text style={styles.unfollowText}>Unfollow</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -78,7 +148,7 @@ export default function FollowsScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} data-testid="follows-back-btn">
           <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Follows</Text>
+        <Text style={styles.headerTitle}>Following</Text>
         <TouchableOpacity onPress={() => setSearchVisible(!searchVisible)} style={styles.searchBtn} data-testid="follows-search-btn">
           <Ionicons name="search-outline" size={24} color="#FFFFFF" />
         </TouchableOpacity>
@@ -94,6 +164,7 @@ export default function FollowsScreen() {
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoFocus
+            data-testid="follows-search-input"
           />
         </View>
       )}
@@ -107,11 +178,16 @@ export default function FollowsScreen() {
         <FlatList
           data={filteredFollowing}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           ItemSeparatorComponent={() => <View style={styles.divider} />}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>Not following anyone</Text>
+            <View style={styles.emptyContainer}>
+              <Ionicons name="person-add-outline" size={60} color="#444" />
+              <Text style={styles.emptyText}>
+                {isAuthenticated ? 'Not following anyone yet' : 'Login to see who you follow'}
+              </Text>
+            </View>
           }
         />
       )}
@@ -167,6 +243,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 16,
+    paddingBottom: 20,
   },
   row: {
     flexDirection: 'row',
@@ -178,12 +255,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    marginRight: 12,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
     marginRight: 14,
+    backgroundColor: '#333',
   },
   name: {
     fontSize: 17,
@@ -196,6 +275,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 20,
+    minWidth: 100,
+    alignItems: 'center',
   },
   unfollowText: {
     fontSize: 15,
@@ -206,10 +287,16 @@ const styles = StyleSheet.create({
     height: 0.5,
     backgroundColor: '#333333',
   },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 80,
+  },
   emptyText: {
     fontSize: 16,
     color: '#888',
     textAlign: 'center',
-    marginTop: 40,
+    marginTop: 16,
   },
 });
