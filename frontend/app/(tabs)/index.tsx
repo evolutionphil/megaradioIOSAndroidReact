@@ -352,7 +352,7 @@ export default function HomeScreen() {
           {/* Radios Near You - 3 Column Grid, multiple rows */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Radios Near You</Text>
+              <Text style={styles.sectionTitle}>Radios Near You{country ? ` - ${country}` : ''}</Text>
             </View>
             {/* Render rows of 3 items each */}
             {Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
