@@ -5,60 +5,74 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Svg, { Path, Circle, Ellipse, RadialGradient, Defs, Stop } from 'react-native-svg';
+import Svg, { Path, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 
 const { width } = Dimensions.get('window');
 
-// MegaRadio Logo Component
+// MegaRadio Logo - Music note "M" shape
 const MegaRadioLogo = () => (
-  <Svg width={80} height={60} viewBox="0 0 80 60">
+  <Svg width={100} height={80} viewBox="0 0 100 80">
+    {/* Music note M shape */}
     <Path
-      d="M20 45 Q25 20 40 30 Q55 40 50 15"
+      d="M25 60 Q30 35 45 45 Q60 55 55 25"
       stroke="#FF4B8C"
-      strokeWidth={6}
+      strokeWidth={8}
       strokeLinecap="round"
+      strokeLinejoin="round"
       fill="none"
     />
-    <Circle cx="50" cy="15" r="4" fill="#FF4B8C" />
+    {/* Dot at the end */}
+    <Circle cx="55" cy="22" r="6" fill="#FF4B8C" />
   </Svg>
 );
 
-// Glow arc effect behind logo
-const GlowArc = () => (
-  <Svg width={width} height={200} style={styles.glowArc}>
-    <Defs>
-      <RadialGradient id="glowGrad" cx="50%" cy="100%" rx="60%" ry="60%">
-        <Stop offset="0%" stopColor="#FF4B8C" stopOpacity="0.15" />
-        <Stop offset="100%" stopColor="#FF4B8C" stopOpacity="0" />
-      </RadialGradient>
-    </Defs>
-    <Ellipse
-      cx={width / 2}
-      cy={180}
-      rx={width * 0.6}
-      ry={120}
-      fill="url(#glowGrad)"
-    />
-    {/* Arc lines */}
-    <Path
-      d={`M ${width * 0.15} 180 Q ${width / 2} 60 ${width * 0.85} 180`}
-      stroke="rgba(255, 75, 140, 0.15)"
-      strokeWidth={1}
-      fill="none"
-    />
-    <Path
-      d={`M ${width * 0.1} 200 Q ${width / 2} 40 ${width * 0.9} 200`}
-      stroke="rgba(255, 75, 140, 0.1)"
-      strokeWidth={1}
-      fill="none"
-    />
-  </Svg>
+// Arc lines behind logo - matching Figma design
+const GlowArcs = () => (
+  <View style={styles.arcsContainer}>
+    <Svg width={width} height={280} style={styles.arcsSvg}>
+      <Defs>
+        <LinearGradient id="arcGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <Stop offset="0%" stopColor="#4A1A2C" stopOpacity="0" />
+          <Stop offset="50%" stopColor="#4A1A2C" stopOpacity="0.8" />
+          <Stop offset="100%" stopColor="#4A1A2C" stopOpacity="0" />
+        </LinearGradient>
+        <LinearGradient id="arcGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <Stop offset="0%" stopColor="#3D1525" stopOpacity="0" />
+          <Stop offset="50%" stopColor="#3D1525" stopOpacity="0.6" />
+          <Stop offset="100%" stopColor="#3D1525" stopOpacity="0" />
+        </LinearGradient>
+      </Defs>
+      {/* Outer arc */}
+      <Path
+        d={`M ${width * 0.05} 260 Q ${width / 2} 30 ${width * 0.95} 260`}
+        stroke="url(#arcGrad2)"
+        strokeWidth={2}
+        fill="none"
+      />
+      {/* Inner arc */}
+      <Path
+        d={`M ${width * 0.12} 260 Q ${width / 2} 60 ${width * 0.88} 260`}
+        stroke="url(#arcGrad1)"
+        strokeWidth={2}
+        fill="none"
+      />
+    </Svg>
+  </View>
 );
+
+// Icon URLs
+const ICON_URLS = {
+  apple: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/91udnihb_image.png',
+  facebook: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/n91q8elv_image.png',
+  google: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/t0xw2p6m_image.png',
+  mail: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/us09lyak_image.png',
+};
 
 export default function AuthOptionsScreen() {
   const router = useRouter();
@@ -102,8 +116,8 @@ export default function AuthOptionsScreen() {
           <Ionicons name="close" size={24} color={colors.textSecondary} />
         </TouchableOpacity>
 
-        {/* Glow Effect */}
-        <GlowArc />
+        {/* Glow Arcs */}
+        <GlowArcs />
 
         {/* Logo */}
         <View style={styles.logoContainer}>
@@ -118,9 +132,11 @@ export default function AuthOptionsScreen() {
             onPress={handleAppleLogin}
             data-testid="login-apple-button"
           >
-            <View style={styles.iconContainer}>
-              <Ionicons name="logo-apple" size={22} color="#000000" />
-            </View>
+            <Image 
+              source={{ uri: ICON_URLS.apple }} 
+              style={styles.iconImage}
+              resizeMode="contain"
+            />
             <Text style={styles.authButtonText}>Login With Apple</Text>
           </TouchableOpacity>
 
@@ -130,9 +146,11 @@ export default function AuthOptionsScreen() {
             onPress={handleFacebookLogin}
             data-testid="login-facebook-button"
           >
-            <View style={[styles.iconContainer, styles.facebookIcon]}>
-              <Ionicons name="logo-facebook" size={20} color="#FFFFFF" />
-            </View>
+            <Image 
+              source={{ uri: ICON_URLS.facebook }} 
+              style={styles.iconImage}
+              resizeMode="contain"
+            />
             <Text style={styles.authButtonText}>Login With Facebook</Text>
           </TouchableOpacity>
 
@@ -142,26 +160,11 @@ export default function AuthOptionsScreen() {
             onPress={handleGoogleLogin}
             data-testid="login-google-button"
           >
-            <View style={styles.iconContainer}>
-              <Svg width={22} height={22} viewBox="0 0 24 24">
-                <Path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4"
-                />
-                <Path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="#34A853"
-                />
-                <Path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="#FBBC05"
-                />
-                <Path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="#EA4335"
-                />
-              </Svg>
-            </View>
+            <Image 
+              source={{ uri: ICON_URLS.google }} 
+              style={styles.iconImage}
+              resizeMode="contain"
+            />
             <Text style={styles.authButtonText}>Login With Google</Text>
           </TouchableOpacity>
 
@@ -171,9 +174,11 @@ export default function AuthOptionsScreen() {
             onPress={handleMailLogin}
             data-testid="login-mail-button"
           >
-            <View style={styles.iconContainer}>
-              <Ionicons name="mail" size={20} color="#5C6670" />
-            </View>
+            <Image 
+              source={{ uri: ICON_URLS.mail }} 
+              style={styles.iconImage}
+              resizeMode="contain"
+            />
             <Text style={styles.authButtonText}>Login With Mail</Text>
           </TouchableOpacity>
         </View>
@@ -212,18 +217,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 10,
   },
-  glowArc: {
+  arcsContainer: {
     position: 'absolute',
-    top: 80,
+    top: 60,
     left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  arcsSvg: {
+    // SVG positioning
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 160,
-    marginBottom: 80,
+    marginTop: 180,
+    marginBottom: 60,
   },
   buttonsContainer: {
-    gap: 16,
+    gap: 14,
   },
   authButton: {
     flexDirection: 'row',
@@ -232,18 +242,12 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.full,
     borderWidth: 1,
     borderColor: '#3A3A3D',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 8,
   },
-  iconContainer: {
+  iconImage: {
     width: 40,
     height: 40,
-    borderRadius: borderRadius.full,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  facebookIcon: {
-    backgroundColor: '#1877F2',
+    borderRadius: 20,
   },
   authButtonText: {
     flex: 1,
@@ -254,7 +258,7 @@ const styles = StyleSheet.create({
     marginRight: 40, // Offset for icon width to center text
   },
   continueButton: {
-    marginTop: 32,
+    marginTop: 28,
     alignItems: 'center',
     paddingVertical: spacing.md,
   },
