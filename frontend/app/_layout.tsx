@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   splashLogo: {
-    width: width * 0.55,
-    height: width * 0.55,
+    width: width * 0.45,
+    height: width * 0.45,
   },
   dotsPattern: {
     position: 'absolute',
