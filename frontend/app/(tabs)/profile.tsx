@@ -172,8 +172,8 @@ export default function ProfileScreen() {
     setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
   };
 
-  const handleCountrySelect = (c: string) => {
-    setCountryManual(c);
+  const handleCountrySelect = (countryData: CountryData) => {
+    setCountryManual(countryData.name);
     setCurrentPage('main');
   };
 
@@ -206,21 +206,28 @@ export default function ProfileScreen() {
         ) : (
           <FlatList
             data={filteredCountries}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[s.countryRow, item === country && s.countryRowActive]}
-                onPress={() => handleCountrySelect(item)}
-              >
-                <Text style={s.flagEmoji}>{getFlag(item)}</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={s.countryName}>{item}</Text>
-                </View>
-                <View style={[s.radioCircle, item === country && s.radioCircleActive]}>
-                  {item === country && <View style={s.radioCircleFill} />}
-                </View>
-              </TouchableOpacity>
-            )}
+            keyExtractor={(item) => item.code}
+            renderItem={({ item }) => {
+              const isSelected = item.name === country || item.nativeName === country;
+              return (
+                <TouchableOpacity
+                  style={[s.countryRow, isSelected && s.countryRowActive]}
+                  onPress={() => handleCountrySelect(item)}
+                >
+                  <Text style={s.flagEmoji}>{item.flag}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={s.countryName}>{item.name}</Text>
+                    {item.nativeName !== item.name && (
+                      <Text style={s.countryNative}>{item.nativeName}</Text>
+                    )}
+                  </View>
+                  <Text style={s.stationCount}>{item.stationCount}</Text>
+                  <View style={[s.radioCircle, isSelected && s.radioCircleActive]}>
+                    {isSelected && <View style={s.radioCircleFill} />}
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
           />
         )}
       </SafeAreaView>
