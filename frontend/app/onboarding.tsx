@@ -277,9 +277,9 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   skipText: {
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '500',
   },
   gradientOverlay: {
     position: 'absolute',
@@ -369,8 +369,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   getStartedText: {
+    fontFamily: 'Ubuntu-Bold',
     color: '#000000',
     fontSize: 18,
-    fontWeight: '600',
   },
 });
