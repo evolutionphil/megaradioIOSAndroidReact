@@ -276,9 +276,27 @@ export const SleepTimerModal: React.FC<SleepTimerModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  overlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  dummyFlex: {
+    flex: 1,
+  },
+  container: {
     backgroundColor: '#1B1C1E',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '65%',
+  },
+  dragHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#555',
+    alignSelf: 'center',
+    marginTop: 10,
+    marginBottom: 4,
   },
   header: {
     flexDirection: 'row',
