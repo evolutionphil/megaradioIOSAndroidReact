@@ -131,8 +131,10 @@ const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
     backgroundColor: '#000000',
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  splashFullImage: {
+    width: width,
+    height: height,
   },
   logoContainer: {
     justifyContent: 'center',
