@@ -473,6 +473,7 @@ export default function PlayerScreen() {
                 <View style={styles.liveIndicatorBar} />
               </View>
             </View>
+            </View>
           </View>
 
           {/* Now Playing Info */}
