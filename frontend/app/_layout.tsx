@@ -134,4 +134,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  splashContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  splashLogo: {
+    width: width * 0.7,
+    height: width * 0.7,
+  },
+  dotsPattern: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: width,
+    height: height * 0.35,
+    opacity: 0.9,
+  },
 });
