@@ -54,6 +54,10 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       set({ loading: false, error: 'Failed to get location' });
     }
   },
+
+  setCountryManual: (countryName: string) => {
+    set({ country: countryName, countryCode: null });
+  },
 }));
 
 export default useLocationStore;
