@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
-import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
+import Svg, { Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
 
 interface GlowProps {
   size?: number;
@@ -17,18 +17,36 @@ export const GlowEffect: React.FC<GlowProps> = ({
   color = '120, 60, 255',
   opacity = 0.35,
 }) => {
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = size / 2;
+
   return (
     <View style={[styles.container, { width: size, height: size, top, left }]} pointerEvents="none">
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <Defs>
-          <RadialGradient id="glow" cx="50%" cy="50%" rx="50%" ry="50%">
+          <RadialGradient 
+            id="softGlow" 
+            cx="50%" 
+            cy="50%" 
+            rx="50%" 
+            ry="50%"
+            gradientUnits="userSpaceOnUse"
+          >
+            {/* Center - most intense */}
             <Stop offset="0%" stopColor={`rgb(${color})`} stopOpacity={opacity} />
-            <Stop offset="40%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.6} />
-            <Stop offset="70%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.25} />
+            {/* Gradual fade with multiple stops for smooth blur effect */}
+            <Stop offset="15%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.85} />
+            <Stop offset="30%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.65} />
+            <Stop offset="45%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.45} />
+            <Stop offset="60%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.28} />
+            <Stop offset="75%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.12} />
+            <Stop offset="90%" stopColor={`rgb(${color})`} stopOpacity={opacity * 0.04} />
+            {/* Edge - fully transparent for soft blur */}
             <Stop offset="100%" stopColor={`rgb(${color})`} stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Rect x="0" y="0" width={size} height={size} fill="url(#glow)" />
+        <Circle cx={centerX} cy={centerY} r={radius} fill="url(#softGlow)" />
       </Svg>
     </View>
   );
