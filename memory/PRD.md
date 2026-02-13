@@ -10,125 +10,124 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - Zustand (State Management)
 - React Query (Data Fetching)
 - expo-av for audio playback
-- react-native-svg for UI effects
+- expo-secure-store for token storage
 
-## Core Features (Implemented)
+## Authentication System
 
-### Audio & Streaming
-- [x] expo-av Audio Playback (Expo Go compatible, singleton AudioManager)
-- [x] Full-Screen Player UI (fullScreenModal presentation)
-- [x] Now Playing API with ICY Metadata
-- [x] Sleep Timer with countdown functionality + ON badge + Sleep Counter Modal
-- [x] Car Mode Screen with Custom Carousel
+### Mobile Token-Based Auth (NEW)
+Token format: `mrt_` prefix + 64 character hex
+Token validity: 90 days
+Storage: SecureStore (iOS/Android) / localStorage (web)
 
-### UI/UX
-- [x] Home Screen with multiple sections
-- [x] 3-Column Grid Layout
-- [x] Unified Search Functionality
-- [x] Custom Tab Bar Design
-- [x] Sticky Mini Player
-- [x] Share Modal with native sharing
-- [x] Radio Error Modal for stream failures
+**Endpoints:**
+```
+POST /api/auth/mobile/login
+Body: { email, password, deviceType, deviceName }
+Response: { success, token, user }
 
-### Profile & Social
-- [x] Followers Screen
-- [x] Follows Screen  
-- [x] User Profile Screen
-- [x] Share User Modal
-- [x] Logout Modal
-- [x] Statistics Screen
-- [x] Play at Login Screen
+POST /api/auth/mobile/google  
+Body: { googleId, email, fullName, avatar, deviceType }
+Response: { success, token, user }
 
-### Session 6 Updates (Dec 2025)
-1. **Profile Page - Clickable Followers/Follows Stats**
-2. **Languages Page**
-3. **Favorites Page Redesign (Figma)**
+GET /api/auth/mobile/me
+Header: Authorization: Bearer mrt_xxx
+Response: { authenticated, user }
 
-### Session 7 Updates (Dec 2025)
-1. **Country Flags from API** ✅
-   - Updated to use `/api/countries?format=rich`
-   - Returns objects with: `name`, `nativeName`, `code`, `flag` (emoji), `flagUrl`, `stationCount`
-   - Removed hardcoded FLAG_MAP
-   - Country picker now shows flag emoji + name + nativeName + stationCount
+POST /api/auth/mobile/logout      → Single device
+POST /api/auth/mobile/logout-all  → All devices
+```
 
-2. **Favorites API Integration (Hybrid)** ✅
-   - **Authenticated users**: Fetches from `/api/user/favorites` API
-   - **Guest users**: Uses local AsyncStorage
-   - API endpoints updated:
-     - `GET /api/user/favorites` - List favorites
-     - `POST /api/user/favorites` - Add favorite
-     - `DELETE /api/user/favorites/:stationId` - Remove favorite
-     - `GET /api/user/favorites/check/:stationId` - Check if favorited
-   - Social API endpoints updated:
-     - `GET /api/users/:userId/followers` - Get followers
-     - `GET /api/users/:userId/following` - Get following
-     - `POST /api/user-engagement/follow/:userId` - Follow user
-     - `POST /api/user-engagement/unfollow/:userId` - Unfollow user
+### Implementation
+- `authStore.ts` - Token storage with SecureStore/localStorage
+- `authService.ts` - Mobile auth API methods
+- `api.ts` - Auto-attaches Bearer token to all requests
+- Token persists across app restarts
 
-## API Endpoints
+## API Integrations
 
-### Countries (Updated)
+### Countries API ✅
 ```
 GET /api/countries?format=rich
-Response: [
-  {
-    "name": "Turkey",
-    "nativeName": "Türkiye", 
-    "code": "TR",
-    "flag": "🇹🇷",
-    "flagUrl": "https://flagcdn.com/w160/tr.png",
-    "stationCount": 245
-  },
-  ...
-]
+Response: [{ name, nativeName, code, flag, flagUrl, stationCount }]
 ```
 
-### Favorites (Requires Auth)
+### Favorites API ✅ (Hybrid)
+- **Authenticated**: API endpoints
+- **Guest**: Local AsyncStorage
+
 ```
 GET /api/user/favorites
-POST /api/user/favorites { stationId: "xxx" }
+POST /api/user/favorites { stationId }
 DELETE /api/user/favorites/:stationId
 GET /api/user/favorites/check/:stationId
 ```
 
-### Social (Public read, Auth for write)
+### Social API ✅ (Connected)
 ```
-GET /api/users/:userId/followers (API Key)
-GET /api/users/:userId/following (API Key)
-POST /api/user-engagement/follow/:userId (Session)
-POST /api/user-engagement/unfollow/:userId (Session)
+GET /api/users/:userId/followers  (Public)
+GET /api/users/:userId/following  (Public)
+POST /api/user-engagement/follow/:userId (Auth)
+POST /api/user-engagement/unfollow/:userId (Auth)
+POST /api/user-engagement/remove-follower/:userId (Auth)
 ```
+
+## Session 7 Updates (Dec 2025)
+
+### 1. Country Flags from API ✅
+- Updated Country Picker to use `?format=rich`
+- Shows: flag emoji + name + nativeName + stationCount
+- Removed hardcoded FLAG_MAP
+
+### 2. Favorites API Integration ✅
+- Hybrid approach: API for authenticated, AsyncStorage for guests
+- Optimistic updates for fast UI
+- Auto-sync when user logs in
+
+### 3. Mobile Token Auth System ✅
+- New `authStore.ts` with SecureStore support
+- New `authService.ts` with mobile auth methods
+- Updated `api.ts` to auto-attach Bearer token
+- Cross-platform: native uses SecureStore, web uses localStorage
+
+### 4. Followers/Following Real API ✅
+- Updated `followers.tsx` - fetches from `/api/users/:userId/followers`
+- Updated `follows.tsx` - fetches from `/api/users/:userId/following`
+- Unfollow functionality with confirmation dialog
+- Empty states for logged-out users
 
 ## Key Files Updated This Session
-- `/app/frontend/app/(tabs)/profile.tsx` - Country picker with API flags
-- `/app/frontend/src/store/favoritesStore.ts` - Hybrid API/local storage
-- `/app/frontend/src/constants/api.ts` - Updated social endpoints
-
-## Authentication Status
-- **Current**: Session cookie-based (web only)
-- **Planned**: Token-based auth for mobile apps
-- **Impact**: Favorites API works for web, falls back to local storage for mobile until token auth is implemented
+- `/app/frontend/src/store/authStore.ts` - Mobile token auth
+- `/app/frontend/src/services/authService.ts` - Auth API methods
+- `/app/frontend/src/services/api.ts` - Auto Bearer token
+- `/app/frontend/app/(tabs)/profile.tsx` - Country flags API
+- `/app/frontend/app/followers.tsx` - Real API
+- `/app/frontend/app/follows.tsx` - Real API
 
 ## Pending Tasks
 
 ### P0 (Critical)
-- [ ] Token-based authentication for mobile (to enable Favorites API)
-- [ ] Login/Signup screens
+- [ ] Login/Signup screens (UI needs to be built)
+- [ ] Google Sign-In integration for mobile
 
 ### P1 (Important)
-- [ ] Connect Followers/Following to real API (currently mock data)
 - [ ] i18n integration using selected language
+- [ ] Profile page real data (currently some mock data)
 
 ### P2 (Nice to have)
 - [ ] Skeleton loaders
 - [ ] Animated equalizer enhancement
 - [ ] Sleep timer resume fix
 
-## Test Reports
-- `/app/test_reports/iteration_5.json` - All features passed
-
 ## Credentials
-- **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw` (X-API-Key header)
+- **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
+
+## Test Reports
+- `/app/test_reports/iteration_5.json`
+
+## Notes
+- Mobile auth endpoints (`/api/auth/mobile/*`) need to be deployed on backend
+- Session-based auth still works for web
+- Token auth is ready but waiting for backend deployment
 
 ## Last Updated
 December 2025 - Session 7
