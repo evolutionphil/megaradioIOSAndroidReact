@@ -40,21 +40,26 @@ export default function RootLayout() {
 
   // Mark component as mounted (client-side only)
   useEffect(() => {
+    console.log('[Layout] Component mounted');
     setIsMounted(true);
   }, []);
 
-  // Handle app state transitions
+  // Handle app state transitions - start splash timeout once mounted
   useEffect(() => {
+    console.log('[Layout] Effect triggered - isMounted:', isMounted, 'appState:', appState, 'fontsLoaded:', fontsLoaded, 'fontError:', fontError);
+    
     if (!isMounted) return;
     
-    if ((fontsLoaded || fontError) && appState === 'splash') {
-      // Start splash timeout
+    if (appState === 'splash') {
+      // Always start splash timeout after mounting, regardless of font status
+      console.log('[Layout] Starting splash timeout...');
       const timer = setTimeout(() => {
+        console.log('[Layout] Splash timeout finished, moving to onboarding_check');
         setAppState('onboarding_check');
       }, 2800);
       return () => clearTimeout(timer);
     }
-  }, [fontsLoaded, fontError, appState, isMounted]);
+  }, [isMounted, appState, fontsLoaded, fontError]);
 
   // Check onboarding status
   useEffect(() => {
