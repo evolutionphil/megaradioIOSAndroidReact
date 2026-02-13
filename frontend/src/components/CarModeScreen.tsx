@@ -249,7 +249,12 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   useEffect(() => {
     if (visible && propStations.length > 0 && !stationsInitRef.current) {
       stationsInitRef.current = true;
-      setStations([...propStations]);
+      // Ensure currentStation is in the list
+      let list = [...propStations];
+      if (currentStation && !list.find(s => s._id === currentStation._id)) {
+        list = [currentStation, ...list];
+      }
+      setStations(list);
     }
     if (!visible) {
       stationsInitRef.current = false;
@@ -263,11 +268,11 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   useEffect(() => {
     if (visible && currentStation && stations.length > 0) {
       const idx = stations.findIndex((s: Station) => s._id === currentStation._id);
-      if (idx !== -1) {
+      if (idx !== -1 && idx !== carouselIndex) {
         setCarouselIndex(idx);
       }
     }
-  }, [visible, currentStation?._id, stations]);
+  }, [visible, currentStation?._id, stations.length]);
 
   const getLogoUrl = useCallback((station: Station) => {
     if (station.logoAssets?.webp192) {
