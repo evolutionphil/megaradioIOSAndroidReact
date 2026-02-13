@@ -21,6 +21,7 @@ import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStatio
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import { CarModeScreen } from '../src/components/CarModeScreen';
+import { ShareModal } from '../src/components/ShareModal';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -212,6 +213,7 @@ export default function PlayerScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
   const [showCarMode, setShowCarMode] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const insets = useSafeAreaInsets();
   
   // Load Ubuntu font
@@ -492,7 +494,11 @@ export default function PlayerScreen() {
           <View style={styles.secondaryControls}>
             <View style={styles.leftSecondaryControls}>
               {/* Share */}
-              <TouchableOpacity style={styles.secondaryButton}>
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={() => setShowShareModal(true)}
+                data-testid="player-share-btn"
+              >
                 <ShareIcon size={24} color="#888888" />
               </TouchableOpacity>
               {/* Lock Radio */}
@@ -556,6 +562,15 @@ export default function PlayerScreen() {
         visible={showCarMode}
         onClose={() => setShowCarMode(false)}
         stations={displaySimilarStations.length > 0 ? displaySimilarStations : popularStations}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        visible={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        station={currentStation}
+        nowPlayingTitle={getCurrentSongInfo()}
+        getLogoUrl={getLogoUrl}
       />
     </View>
   );
