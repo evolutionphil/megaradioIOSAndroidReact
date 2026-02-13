@@ -137,8 +137,9 @@ export default function ProfileScreen() {
     : countries;
 
   const handleLogout = async () => {
+    setShowLogoutModal(false);
     clearAuth();
-    router.replace('/');
+    router.replace('/(tabs)');
   };
 
   const handleEmailSend = () => {
