@@ -127,9 +127,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           {/* Artwork with glow */}
           <View style={styles.artworkSection}>
             <View style={styles.glowWrap}>
-              <BlurView intensity={60} tint="dark" style={styles.glowBlur}>
-                <View style={styles.glowPurple} />
-              </BlurView>
+              <View style={styles.glowPurple} />
+              <BlurView intensity={80} tint="dark" style={StyleSheet.absoluteFill} />
             </View>
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
@@ -262,12 +261,9 @@ const styles = StyleSheet.create({
     borderRadius: (ARTWORK_SIZE + 80) / 2,
     overflow: 'hidden',
   },
-  glowBlur: {
-    flex: 1,
-  },
   glowPurple: {
-    flex: 1,
-    backgroundColor: 'rgba(123, 97, 255, 0.4)',
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(123, 97, 255, 0.5)',
   },
   artworkWrapper: {
     width: ARTWORK_SIZE,
