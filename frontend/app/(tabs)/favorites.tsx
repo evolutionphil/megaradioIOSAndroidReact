@@ -247,7 +247,7 @@ const getGenreDisplay = (station: Station): string => {
       <View style={styles.emptyIconContainer}>
         <Ionicons name="heart-outline" size={80} color="#4A4A4A" />
       </View>
-      <Text style={styles.emptyTitle}>You don' have any{'\n'}favorites yet</Text>
+      <Text style={styles.emptyTitle}>You don't have any{'\n'}favorites yet</Text>
       <TouchableOpacity
         style={styles.discoverLink}
         onPress={() => router.push('/(tabs)')}
