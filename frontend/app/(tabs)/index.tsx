@@ -85,13 +85,14 @@ export default function HomeScreen() {
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
   const { data: publicProfiles, refetch: refetchProfiles } = usePublicProfiles(10);
   const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: countryCode || undefined });
+  const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 150, 12);
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetchPopular(), refetchGenres(), refetchDiscoverable(), refetchRecent(), refetchCommunity(), refetchProfiles(), refetchAll()]);
+    await Promise.all([refetchPopular(), refetchGenres(), refetchDiscoverable(), refetchRecent(), refetchCommunity(), refetchProfiles(), refetchAll(), refetchNearby()]);
     setRefreshing(false);
   }, []);
 
