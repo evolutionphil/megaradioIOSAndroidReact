@@ -4,16 +4,12 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Svg, { Path, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
-
-const { width } = Dimensions.get('window');
 
 // Auth button icons from assets
 const APPLE_ICON = require('../assets/icons/apple.png');
@@ -21,52 +17,8 @@ const FACEBOOK_ICON = require('../assets/icons/facebook.png');
 const GOOGLE_ICON = require('../assets/icons/google.png');
 const MAIL_ICON = require('../assets/icons/mail.png');
 
-// MegaRadio Logo - Music note "M" shape
-const MegaRadioLogo = () => (
-  <Svg width={100} height={80} viewBox="0 0 100 80">
-    <Path
-      d="M25 60 Q30 35 45 45 Q60 55 55 25"
-      stroke="#FF4B8C"
-      strokeWidth={8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-    <Circle cx="55" cy="22" r="6" fill="#FF4B8C" />
-  </Svg>
-);
-
-// Arc lines behind logo
-const GlowArcs = () => (
-  <View style={styles.arcsContainer}>
-    <Svg width={width} height={280} style={styles.arcsSvg}>
-      <Defs>
-        <LinearGradient id="arcGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-          <Stop offset="0%" stopColor="#4A1A2C" stopOpacity="0" />
-          <Stop offset="50%" stopColor="#4A1A2C" stopOpacity="0.8" />
-          <Stop offset="100%" stopColor="#4A1A2C" stopOpacity="0" />
-        </LinearGradient>
-        <LinearGradient id="arcGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-          <Stop offset="0%" stopColor="#3D1525" stopOpacity="0" />
-          <Stop offset="50%" stopColor="#3D1525" stopOpacity="0.6" />
-          <Stop offset="100%" stopColor="#3D1525" stopOpacity="0" />
-        </LinearGradient>
-      </Defs>
-      <Path
-        d={`M ${width * 0.05} 260 Q ${width / 2} 30 ${width * 0.95} 260`}
-        stroke="url(#arcGrad2)"
-        strokeWidth={2}
-        fill="none"
-      />
-      <Path
-        d={`M ${width * 0.12} 260 Q ${width / 2} 60 ${width * 0.88} 260`}
-        stroke="url(#arcGrad1)"
-        strokeWidth={2}
-        fill="none"
-      />
-    </Svg>
-  </View>
-);
+// MegaRadio Logo with Arc - combined image from user
+const MEGA_LOGO_ARC = require('../assets/images/mega-logo-arc.png');
 
 export default function AuthOptionsScreen() {
   const router = useRouter();
