@@ -90,7 +90,17 @@ export default function RootLayout() {
     }
   }, [fontsReady]);
 
-  // Always render splash first on mount, then proceed
+  // SSR/Hydration: On server or before hydration, render loading state
+  // This prevents hydration mismatch errors
+  if (!isMounted) {
+    return (
+      <View style={[styles.container, styles.loading]}>
+        <ActivityIndicator size="large" color="#FF1493" />
+      </View>
+    );
+  }
+
+  // Client-side only: Show splash screen
   if (appState === 'splash') {
     return <AnimatedSplash onAnimationEnd={() => setAppState('onboarding_check')} />;
   }
