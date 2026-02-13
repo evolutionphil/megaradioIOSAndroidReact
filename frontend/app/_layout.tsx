@@ -37,29 +37,34 @@ export default function RootLayout() {
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
 
-  // Hide splash after 2.5 seconds once fonts are loaded
+  // Handle app state transitions
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    if ((fontsLoaded || fontError) && appState === 'splash') {
+      // Start splash timeout
       const timer = setTimeout(() => {
-        setShowSplash(false);
+        setAppState('onboarding_check');
       }, 2800);
       return () => clearTimeout(timer);
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, appState]);
 
-  // Check if onboarding needs to be shown (only after splash hides)
+  // Check onboarding status
   useEffect(() => {
-    if (!showSplash && showOnboarding === null) {
+    if (appState === 'onboarding_check') {
       console.log('[Layout] Checking onboarding status...');
       checkOnboardingComplete().then((completed) => {
         console.log('[Layout] Onboarding completed:', completed);
-        setShowOnboarding(!completed);
+        if (completed) {
+          setAppState('ready');
+        } else {
+          setAppState('onboarding');
+        }
       }).catch((err) => {
         console.error('[Layout] Error checking onboarding:', err);
-        setShowOnboarding(true); // Show onboarding on error
+        setAppState('onboarding'); // Show onboarding on error
       });
     }
-  }, [showSplash, showOnboarding]);
+  }, [appState]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
