@@ -454,8 +454,9 @@ export default function PlayerScreen() {
 
           {/* Album Art */}
           <View style={styles.artworkContainer}>
-            <GlowEffect size={320} top={-30} left={-30} opacity={0.40} />
-            <View style={styles.artworkWrapper}>
+            <View style={{ width: LOGO_SIZE, height: LOGO_SIZE }}>
+              <GlowEffect size={LOGO_SIZE + 80} top={-40} left={-40} opacity={0.40} />
+              <View style={styles.artworkWrapper}>
               {logoUrl ? (
                 <Image
                   source={{ uri: logoUrl }}
