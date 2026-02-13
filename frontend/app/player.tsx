@@ -28,8 +28,9 @@ import { GlowEffect } from '../src/components/GlowEffect';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const LOGO_SIZE = 190;
+const FALLBACK_LOGO = require('../assets/megaradio-icon.png');
 // 3 column grid calculation
+const LOGO_SIZE = 190;
 const GRID_PADDING = 16;
 const GRID_GAP = 12;
 const GRID_ITEM_WIDTH = Math.floor((SCREEN_WIDTH - (GRID_PADDING * 2) - (GRID_GAP * 2)) / 3);
@@ -464,9 +465,11 @@ export default function PlayerScreen() {
                   resizeMode="cover"
                 />
               ) : (
-                <View style={styles.artworkPlaceholder}>
-                  <Ionicons name="radio" size={80} color="#666" />
-                </View>
+                <Image
+                  source={FALLBACK_LOGO}
+                  style={styles.artwork}
+                  resizeMode="cover"
+                />
               )}
               {/* Live indicator bar */}
               <View style={styles.liveIndicator}>
