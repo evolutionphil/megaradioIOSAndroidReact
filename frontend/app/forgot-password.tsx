@@ -8,12 +8,16 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import authService from '../src/services/authService';
+
+// Input icons
+const EMAIL_ICON = require('../assets/icons/email-input.png');
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -109,7 +113,7 @@ export default function ForgotPasswordScreen() {
 
           {/* Content */}
           <View style={styles.content}>
-            {/* Title */}
+            {/* Title - Ubuntu Bold 24px */}
             <Text style={styles.title}>Forgot your password?</Text>
             <Text style={styles.subtitle}>
               Enter your email we will send you verification mail.
@@ -118,7 +122,7 @@ export default function ForgotPasswordScreen() {
             {/* Email Input */}
             <View style={[styles.inputContainer, error && styles.inputError]}>
               <View style={styles.inputIconContainer}>
-                <Ionicons name="mail" size={20} color={colors.inputIcon} />
+                <Image source={EMAIL_ICON} style={styles.inputIcon} resizeMode="contain" />
               </View>
               <TextInput
                 style={styles.input}
@@ -188,9 +192,10 @@ const styles = StyleSheet.create({
     marginTop: -80,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    fontStyle: 'italic',
+    fontFamily: 'Ubuntu-Bold',
+    fontSize: 24,
+    lineHeight: 24,
+    letterSpacing: 0,
     color: colors.text,
     marginBottom: spacing.xs,
   },
@@ -222,6 +227,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  inputIcon: {
+    width: 20,
+    height: 20,
+  },
   input: {
     flex: 1,
     marginLeft: spacing.md,
@@ -241,7 +250,7 @@ const styles = StyleSheet.create({
   },
   sendButtonText: {
     fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.semibold,
+    fontWeight: '600',
     color: colors.text,
   },
   footer: {
@@ -250,7 +259,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: typography.sizes.md,
-    fontWeight: typography.weights.medium,
+    fontWeight: '500',
     color: colors.text,
     textDecorationLine: 'underline',
   },
@@ -264,8 +273,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   successTitle: {
+    fontFamily: 'Ubuntu-Bold',
     fontSize: 28,
-    fontWeight: '700',
     color: colors.text,
     marginBottom: spacing.sm,
   },
