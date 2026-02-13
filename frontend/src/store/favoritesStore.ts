@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { userService } from '../services/userService';
+import { useAuthStore } from './authStore';
 import type { Station } from '../types';
 
 const FAVORITES_KEY = '@megaradio_favorites';
@@ -10,10 +12,12 @@ export type ViewMode = 'list' | 'grid';
 
 interface FavoritesState {
   favorites: Station[];
-  customOrder: string[]; // Array of station IDs for custom ordering
+  customOrder: string[];
   sortOption: SortOption;
   viewMode: ViewMode;
   isLoaded: boolean;
+  isLoading: boolean;
+  error: string | null;
   
   // Actions
   loadFavorites: () => Promise<void>;
@@ -25,7 +29,13 @@ interface FavoritesState {
   setViewMode: (mode: ViewMode) => void;
   updateCustomOrder: (orderedIds: string[]) => Promise<void>;
   getSortedFavorites: () => Station[];
+  syncWithServer: () => Promise<void>;
 }
+
+// Helper to check if user is authenticated
+const isAuthenticated = (): boolean => {
+  return useAuthStore.getState().isAuthenticated;
+};
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   favorites: [],
@@ -33,8 +43,41 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   sortOption: 'newest',
   viewMode: 'list',
   isLoaded: false,
+  isLoading: false,
+  error: null,
 
   loadFavorites: async () => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      if (isAuthenticated()) {
+        // Fetch from API for authenticated users
+        try {
+          const response = await userService.getFavorites();
+          const favorites = response.favorites || [];
+          
+          // Also load custom order from local storage
+          const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
+          const customOrder = orderJson ? JSON.parse(orderJson) : [];
+          
+          set({ favorites, customOrder, isLoaded: true, isLoading: false });
+        } catch (apiError: any) {
+          // If API fails (e.g., 401), fallback to local storage
+          console.log('API favorites failed, using local storage:', apiError.message);
+          await get().loadFromLocal();
+        }
+      } else {
+        // Use local storage for guests
+        await get().loadFromLocal();
+      }
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+      set({ isLoading: false, isLoaded: true, error: 'Failed to load favorites' });
+    }
+  },
+
+  // Helper to load from local storage
+  loadFromLocal: async () => {
     try {
       const [favoritesJson, orderJson] = await Promise.all([
         AsyncStorage.getItem(FAVORITES_KEY),
@@ -44,10 +87,10 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       const favorites = favoritesJson ? JSON.parse(favoritesJson) : [];
       const customOrder = orderJson ? JSON.parse(orderJson) : [];
       
-      set({ favorites, customOrder, isLoaded: true });
+      set({ favorites, customOrder, isLoaded: true, isLoading: false });
     } catch (error) {
-      console.error('Error loading favorites:', error);
-      set({ isLoaded: true });
+      console.error('Error loading from local storage:', error);
+      set({ isLoaded: true, isLoading: false });
     }
   },
 
@@ -59,37 +102,55 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       return;
     }
 
+    // Optimistic update
     const updatedFavorites = [
-      { ...station, addedAt: new Date().toISOString() },
+      { ...station, addedAt: new Date().toISOString() } as Station,
       ...favorites,
     ];
     const updatedOrder = [station._id, ...customOrder];
+    set({ favorites: updatedFavorites, customOrder: updatedOrder });
 
     try {
+      if (isAuthenticated()) {
+        // Add to server
+        await userService.addFavorite(station._id);
+      }
+      
+      // Always save to local storage as backup
       await Promise.all([
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
-      set({ favorites: updatedFavorites, customOrder: updatedOrder });
     } catch (error) {
       console.error('Error adding favorite:', error);
+      // Revert on error
+      set({ favorites, customOrder });
     }
   },
 
   removeFavorite: async (stationId: string) => {
     const { favorites, customOrder } = get();
     
+    // Optimistic update
     const updatedFavorites = favorites.filter(f => f._id !== stationId);
     const updatedOrder = customOrder.filter(id => id !== stationId);
+    set({ favorites: updatedFavorites, customOrder: updatedOrder });
 
     try {
+      if (isAuthenticated()) {
+        // Remove from server
+        await userService.removeFavorite(stationId);
+      }
+      
+      // Always update local storage
       await Promise.all([
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
-      set({ favorites: updatedFavorites, customOrder: updatedOrder });
     } catch (error) {
       console.error('Error removing favorite:', error);
+      // Revert on error
+      set({ favorites, customOrder });
     }
   },
 
@@ -153,12 +214,10 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         );
       
       case 'custom':
-        // Sort by custom order
         return [...favorites].sort((a, b) => {
           const indexA = customOrder.indexOf(a._id);
           const indexB = customOrder.indexOf(b._id);
           
-          // Items not in customOrder go to the end
           if (indexA === -1) return 1;
           if (indexB === -1) return -1;
           
@@ -167,6 +226,37 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       
       default:
         return favorites;
+    }
+  },
+
+  // Sync local favorites with server (for when user logs in)
+  syncWithServer: async () => {
+    if (!isAuthenticated()) return;
+    
+    const { favorites } = get();
+    
+    try {
+      // Get server favorites
+      const serverResponse = await userService.getFavorites();
+      const serverFavorites = serverResponse.favorites || [];
+      
+      // Merge: server + local (server takes priority for duplicates)
+      const serverIds = new Set(serverFavorites.map(f => f._id));
+      const localOnly = favorites.filter(f => !serverIds.has(f._id));
+      
+      // Add local-only favorites to server
+      for (const station of localOnly) {
+        try {
+          await userService.addFavorite(station._id);
+        } catch (e) {
+          // Ignore errors for individual stations
+        }
+      }
+      
+      // Reload to get merged list
+      await get().loadFavorites();
+    } catch (error) {
+      console.error('Error syncing favorites:', error);
     }
   },
 }));
