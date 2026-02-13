@@ -219,6 +219,7 @@ export default function PlayerScreen() {
   // Load Ubuntu font
   const [fontsLoaded] = useFonts({
     'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
+    'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
   
   const {
@@ -521,7 +522,7 @@ export default function PlayerScreen() {
 
           {/* Recently Played Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}>
+            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-BoldItalic' }]}>
               Recently Played
             </Text>
             <View style={styles.stationGrid}>
@@ -539,7 +540,7 @@ export default function PlayerScreen() {
 
           {/* Similar Radios Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-Bold' }]}>
+            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-BoldItalic' }]}>
               Similar Radios
             </Text>
             <View style={styles.stationGrid}>
