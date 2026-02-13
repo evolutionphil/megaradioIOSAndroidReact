@@ -8,6 +8,7 @@ import type { Station } from '../types';
 export const queryKeys = {
   stations: ['stations'] as const,
   popularStations: ['stations', 'popular'] as const,
+  nearbyStations: (lat: number, lng: number) => ['stations', 'nearby', lat, lng] as const,
   precomputedStations: (country?: string) => ['stations', 'precomputed', country] as const,
   station: (id: string) => ['station', id] as const,
   similarStations: (id: string) => ['stations', 'similar', id] as const,
