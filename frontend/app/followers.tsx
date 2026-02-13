@@ -8,65 +8,137 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import api from '../src/services/api';
+import { useAuthStore } from '../src/store/authStore';
 
 interface Follower {
-  id: string;
-  name: string;
-  avatar: string;
+  _id: string;
+  username: string;
+  fullName: string;
+  avatar?: string;
+  slug?: string;
 }
 
-// Mock data - will be replaced with API calls
-const MOCK_FOLLOWERS: Follower[] = [
-  { id: '1', name: 'Steve Annie', avatar: 'https://i.pravatar.cc/100?img=1' },
-  { id: '2', name: 'Mark Osama', avatar: 'https://i.pravatar.cc/100?img=2' },
-  { id: '3', name: 'Zehra Meryem Akış', avatar: 'https://i.pravatar.cc/100?img=3' },
-  { id: '4', name: 'Walter Williams', avatar: 'https://i.pravatar.cc/100?img=4' },
-  { id: '5', name: 'Maria Addeman', avatar: 'https://i.pravatar.cc/100?img=5' },
-];
+const DEFAULT_AVATAR = 'https://themegaradio.com/images/default-avatar.png';
 
 export default function FollowersScreen() {
   const router = useRouter();
+  const { user, isAuthenticated } = useAuthStore();
   const [followers, setFollowers] = useState<Follower[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [removing, setRemoving] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setFollowers(MOCK_FOLLOWERS);
-      setLoading(false);
-    }, 500);
-  }, []);
+    fetchFollowers();
+  }, [user]);
 
-  const handleRemove = (id: string) => {
-    setFollowers(prev => prev.filter(f => f.id !== id));
-    // TODO: Call API to remove follower
+  const fetchFollowers = async () => {
+    if (!user?._id) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // GET /api/users/:userId/followers
+      const response = await api.get(`https://themegaradio.com/api/users/${user._id}/followers`);
+      
+      // API may return { followers: [...] } or directly [...]
+      const data = response.data.followers || response.data || [];
+      setFollowers(data);
+    } catch (error: any) {
+      console.error('Error fetching followers:', error);
+      // If user not found or other error, show empty list
+      setFollowers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemove = async (followerId: string) => {
+    if (!isAuthenticated) {
+      Alert.alert('Login Required', 'Please login to manage your followers.');
+      return;
+    }
+
+    Alert.alert(
+      'Remove Follower',
+      'Are you sure you want to remove this follower?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setRemoving(followerId);
+              // Note: This endpoint may need to be implemented on backend
+              // POST /api/user-engagement/remove-follower/:userId
+              await api.post(`https://themegaradio.com/api/user-engagement/remove-follower/${followerId}`);
+              setFollowers(prev => prev.filter(f => f._id !== followerId));
+            } catch (error: any) {
+              console.error('Error removing follower:', error);
+              Alert.alert('Error', 'Failed to remove follower. Please try again.');
+            } finally {
+              setRemoving(null);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const navigateToProfile = (follower: Follower) => {
+    router.push({
+      pathname: '/user-profile',
+      params: {
+        userId: follower._id,
+        userName: follower.fullName || follower.username,
+        userAvatar: follower.avatar || DEFAULT_AVATAR,
+      },
+    } as any);
   };
 
   const filteredFollowers = searchQuery
-    ? followers.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? followers.filter(f => 
+        (f.fullName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (f.username?.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
     : followers;
 
   const renderItem = ({ item }: { item: Follower }) => (
     <View style={styles.row}>
       <TouchableOpacity 
         style={styles.userInfo}
-        onPress={() => router.push({ pathname: '/user-profile', params: { userId: item.id, userName: item.name, userAvatar: item.avatar } })}
+        onPress={() => navigateToProfile(item)}
+        data-testid={`follower-profile-${item._id}`}
       >
-        <Image source={{ uri: item.avatar }} style={styles.avatar} />
-        <Text style={styles.name}>{item.name}</Text>
+        <Image 
+          source={{ uri: item.avatar || DEFAULT_AVATAR }} 
+          style={styles.avatar} 
+        />
+        <Text style={styles.name} numberOfLines={1}>
+          {item.fullName || item.username}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.removeButton}
-        onPress={() => handleRemove(item.id)}
-        data-testid={`remove-follower-${item.id}`}
+        onPress={() => handleRemove(item._id)}
+        disabled={removing === item._id}
+        data-testid={`remove-follower-${item._id}`}
       >
-        <Text style={styles.removeText}>Remove</Text>
+        {removing === item._id ? (
+          <ActivityIndicator size="small" color="#FFFFFF" />
+        ) : (
+          <Text style={styles.removeText}>Remove</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -94,6 +166,7 @@ export default function FollowersScreen() {
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoFocus
+            data-testid="followers-search-input"
           />
         </View>
       )}
@@ -107,11 +180,16 @@ export default function FollowersScreen() {
         <FlatList
           data={filteredFollowers}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           ItemSeparatorComponent={() => <View style={styles.divider} />}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>No followers found</Text>
+            <View style={styles.emptyContainer}>
+              <Ionicons name="people-outline" size={60} color="#444" />
+              <Text style={styles.emptyText}>
+                {isAuthenticated ? 'No followers yet' : 'Login to see your followers'}
+              </Text>
+            </View>
           }
         />
       )}
@@ -167,6 +245,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 16,
+    paddingBottom: 20,
   },
   row: {
     flexDirection: 'row',
@@ -178,12 +257,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    marginRight: 12,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
     marginRight: 14,
+    backgroundColor: '#333',
   },
   name: {
     fontSize: 17,
@@ -196,6 +277,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
+    minWidth: 90,
+    alignItems: 'center',
   },
   removeText: {
     fontSize: 15,
@@ -206,10 +289,16 @@ const styles = StyleSheet.create({
     height: 0.5,
     backgroundColor: '#333333',
   },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 80,
+  },
   emptyText: {
     fontSize: 16,
     color: '#888',
     textAlign: 'center',
-    marginTop: 40,
+    marginTop: 16,
   },
 });
