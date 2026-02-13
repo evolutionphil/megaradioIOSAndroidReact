@@ -76,6 +76,20 @@ export default function RootLayout() {
     return <AnimatedSplash onAnimationEnd={() => setShowSplash(false)} />;
   }
 
+  // Show onboarding if needed (and check is complete)
+  if (showOnboarding === true) {
+    return <Onboarding onComplete={() => setShowOnboarding(false)} />;
+  }
+
+  // Still checking onboarding status
+  if (showOnboarding === null) {
+    return (
+      <View style={[styles.container, styles.loading]}>
+        <ActivityIndicator size="large" color="#FF1493" />
+      </View>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
       <QueryClientProvider client={queryClient}>
