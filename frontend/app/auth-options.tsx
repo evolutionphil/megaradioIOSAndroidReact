@@ -143,7 +143,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-apple-button"
           >
             <View style={[styles.iconContainer, styles.iconWhiteBg]}>
-              <FontAwesome5 name="apple" size={24} color="#000000" />
+              <FontAwesome5 name="apple" size={24} color="#000000" brand />
             </View>
             <Text style={styles.authButtonText}>Login With Apple</Text>
           </TouchableOpacity>
@@ -155,7 +155,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-facebook-button"
           >
             <View style={[styles.iconContainer, styles.facebookBg]}>
-              <FontAwesome5 name="facebook-f" size={20} color="#FFFFFF" />
+              <FontAwesome5 name="facebook-f" size={20} color="#FFFFFF" brand />
             </View>
             <Text style={styles.authButtonText}>Login With Facebook</Text>
           </TouchableOpacity>
