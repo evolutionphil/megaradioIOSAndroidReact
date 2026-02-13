@@ -10,6 +10,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - Zustand (State Management)
 - React Query (Data Fetching)
 - expo-av for audio playback
+- react-native-svg for UI effects
 - Custom carousel with PanResponder for Car Mode
 
 ## Core Features
@@ -25,66 +26,86 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Car Mode Screen with Custom Carousel
 - [x] Now Playing API with ICY Metadata
 - [x] API Key Integration (X-API-Key header on all requests)
-- [x] Simulated Glow Effect (multi-layer View components for iOS blur simulation)
+- [x] Sleep Timer with countdown functionality
+- [x] Share Modal with native sharing
+- [x] Radio Error Modal for stream failures
+- [x] Client-side Recently Played (AsyncStorage)
+- [x] Statistics Screen (Figma design - Total Listening, Radio Station count, Music Played)
+- [x] Play at Login Screen (Last Played, Random, Favorite, Off options)
+- [x] Country Picker with flag emojis and search
+- [x] Location-based content (GPS-based station discovery)
 
-### Session 4 Bug Fixes (Feb 2026)
-1. **Audio Race Condition Fix (P0)**: Added `_playId` monotonic counter to `AudioManager.play()`.
-   - Each play() call increments `_playId` and checks it at two points: after stopping old sound, and after creating new sound.
-   - If a newer play() was called in the meantime, stale calls bail out and clean up orphaned sounds.
-   - Eliminates the multiple simultaneous streams bug.
+### Session 5 Bug Fixes (Dec 2025)
+1. **Popular Stations Logo Fix (P0)**: Fixed logo URLs not loading for popular stations.
+   - Now using `getLogoUrl()` helper consistently across all station renders
+   - Handles relative URLs by prepending `https://themegaradio.com`
+   - Falls back to FALLBACK_LOGO when no image available
 
-2. **Car Mode Frozen Station List (P0)**: Replaced `useMemo` with `useState` + `useRef` in `CarModeScreen.tsx`.
-   - Station list is frozen when Car Mode opens (`stationsInitRef` flag).
-   - Prevents re-ordering when playing a new station triggers similar-stations refetch.
-   - `displayedStation` computed from `stations[carouselIndex]` instead of global `currentStation`.
+2. **API Country Parameter Consistency (P0)**: Fixed stations not loading after country change.
+   - Created country mapping in `locationStore.ts` for English vs Native names
+   - `/api/stations/popular` uses English names (e.g., "Turkey")
+   - `/api/stations` uses native names (e.g., "Türkiye")
+   - Store now tracks both `country` (native) and `countryEnglish`
 
-3. **Player SafeArea Fix (P1)**: Replaced `SafeAreaView` with `useSafeAreaInsets()` in `player.tsx`.
-   - Applied `paddingTop: insets.top` to container View.
-   - Fixes content being hidden behind iOS status bar in fullScreenModal presentation.
+3. **Car Mode Initial Station Fix (P0)**: Fixed carousel starting on wrong station.
+   - Added `initialIndexSetRef` to ensure index is only set once when CarMode opens
+   - Stations list is frozen on open to prevent re-ordering
 
-4. **Glow Effect Enlarged (P2)**: Increased glow container from 450px to 650px.
-   - 8 layered circles with opacity 0.04 to 0.17.
-   - Applied to both Home (`index.tsx`) and Discover (`discover.tsx`) screens.
+4. **GlowEffect Improvement (P1)**: Rewrote SVG RadialGradient for softer blur.
+   - Changed from Rect to Circle element
+   - Added 8 gradient stops (0%, 15%, 30%, 45%, 60%, 75%, 90%, 100%)
+   - Opacity smoothly fades to 0 at edges
 
-5. **Car Mode Icons Fix**: Replaced View-based speaker icons with Ionicons (volume-mute, volume-high).
+5. **Statistics Page (NEW)**: Created `/app/frontend/app/statistics.tsx`
+   - Cards: Total Listening (hours/minutes), Total Radio Station, Music Played
+   - Pink wave graph using SVG Path with LinearGradient
+   - Dark theme matching Figma (#121212 background, #1E1E1E cards)
 
-6. **Share Modal (NEW)**: Created `ShareModal.tsx` with Facebook, Twitter, WhatsApp share, Copy Link, and native "More" share sheet.
+6. **Play at Login Page (NEW)**: Created `/app/frontend/app/play-at-login.tsx`
+   - Options: Last Played, Random, Favorite, Off
+   - Pink radio buttons (#FF4081) matching Figma
+   - Persists selection to AsyncStorage
+
+7. **Country Picker Enhanced**: Extended FLAG_MAP with 100+ countries
+   - Supports both English and native country names
+   - Search functionality working
+   - Flag emojis display correctly
 
 ## Key Files
-- `/app/frontend/src/hooks/useAudioPlayer.ts` - Audio singleton with race condition fix
+- `/app/frontend/src/store/locationStore.ts` - Country handling with English/Native mapping
+- `/app/frontend/app/statistics.tsx` - Statistics screen (Figma design)
+- `/app/frontend/app/play-at-login.tsx` - Play at Login screen (Figma design)
+- `/app/frontend/app/(tabs)/profile.tsx` - Profile with navigation to sub-screens
+- `/app/frontend/src/components/GlowEffect.tsx` - SVG-based soft glow effect
 - `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with frozen station list
-- `/app/frontend/app/player.tsx` - Player with useSafeAreaInsets
-- `/app/frontend/app/(tabs)/index.tsx` - Home screen with enlarged glow
-- `/app/frontend/app/(tabs)/discover.tsx` - Discover with enlarged glow
-- `/app/frontend/src/services/api.ts` - Global Axios with X-API-Key
-- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
-- `/app/backend/server.py` - Now Playing API with ICY metadata
+- `/app/frontend/app/player.tsx` - Player with animated equalizer
+- `/app/frontend/app/(tabs)/index.tsx` - Home screen with fixed popular stations
 
 ## API Endpoints
-- `GET /api/stations/popular` - Popular stations (themegaradio.com)
-- `GET /api/stations/similar/{id}` - Similar stations
-- `POST /api/resolve-stream` - Resolve stream URL
-- `GET /api/now-playing/{station_id}` - Real ICY metadata from stream
+- `GET /api/stations/popular?country=Turkey` - Popular stations (English country name)
+- `GET /api/stations?country=Türkiye` - All stations (Native country name)
+- `GET /api/stations/nearby?lat=X&lng=Y` - Nearby stations
+- `GET /api/countries` - List of all countries
 - **Note**: All endpoints require `X-API-Key: mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw` header
 
 ## Pending Tasks (P1)
 - [ ] Authentication flow (Login/Signup)
-- [ ] Favorites feature
+- [ ] Favorites feature (API integration)
+- [ ] Profile background colors (Figma match)
 
 ## Pending Tasks (P2)
-- [ ] Country flag badge on station logos
-- [ ] Profile screen
-- [ ] Skeleton loaders
-- [ ] i18n (i18next)
+- [ ] Animated equalizer enhancement (more bars)
+- [ ] Sleep timer resume playback fix
+- [ ] Skeleton loaders for loading states
+- [ ] i18n (i18next) integration
 
 ## Known Issues
-- Web preview has CORS blocking (themegaradio.com doesn't allow preview domain). Not an issue on Expo Go.
-- expo-av deprecation warning (SDK 54 will remove it)
-- Recently Played blocked on auth implementation
+- Country search requires native name for some countries (e.g., "Tür" for Turkey)
+- Web preview has CORS blocking (use Expo Go for testing)
 
 ## User Preferences
 - Language: Turkish
 - Priority: Pixel-perfect Figma design
 
 ## Last Updated
-February 2026 - Session 4
+December 2025 - Session 5
