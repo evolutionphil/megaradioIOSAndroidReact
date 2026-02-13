@@ -15,6 +15,7 @@ import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { usePlayerStore } from '../store/playerStore';
+import { GlowEffect } from './GlowEffect';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
 
@@ -346,9 +347,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
         <View style={styles.carouselSection}>
           {/* Purple glow behind center card */}
           <View style={styles.centerGlow}>
-            <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(120, 60, 255, 0.35)' }} />
-            <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
-            <BlurView intensity={150} tint="dark" style={StyleSheet.absoluteFill} />
+            <GlowEffect size={220 * S} top={0} left={0} opacity={0.45} />
           </View>
           <StationCarousel
             stations={stations}
