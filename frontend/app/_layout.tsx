@@ -48,6 +48,15 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
+  // Check if onboarding needs to be shown (only after splash hides)
+  useEffect(() => {
+    if (!showSplash && showOnboarding === null) {
+      checkOnboardingComplete().then((completed) => {
+        setShowOnboarding(!completed);
+      });
+    }
+  }, [showSplash, showOnboarding]);
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
