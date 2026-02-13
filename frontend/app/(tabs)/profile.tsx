@@ -425,9 +425,12 @@ const s = StyleSheet.create({
   // Header
   header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center' },
+  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
+  avatarImage: { width: 56, height: 56, borderRadius: 28 },
   userName: { fontSize: 20, fontWeight: '700', color: '#FFF' },
-  userStats: { fontSize: 13, color: '#888', marginTop: 2 },
+  statsRow: { flexDirection: 'row', marginTop: 2 },
+  userStats: { fontSize: 13, color: '#888' },
+  statBold: { fontWeight: '700', color: '#FFF' },
   // Section
   sectionLabel: { fontSize: 18, fontWeight: '700', color: '#FFF', paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 },
   // Rows
