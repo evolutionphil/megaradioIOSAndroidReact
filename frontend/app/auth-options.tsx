@@ -59,12 +59,13 @@ export default function AuthOptionsScreen() {
           <Ionicons name="close" size={24} color={colors.textSecondary} />
         </TouchableOpacity>
 
-        {/* Glow Arcs */}
-        <GlowArcs />
-
-        {/* Logo */}
+        {/* MegaRadio Logo with Arc Effect */}
         <View style={styles.logoContainer}>
-          <MegaRadioLogo />
+          <Image 
+            source={MEGA_LOGO_ARC} 
+            style={styles.logoImage} 
+            resizeMode="contain" 
+          />
         </View>
 
         {/* Auth Buttons */}
