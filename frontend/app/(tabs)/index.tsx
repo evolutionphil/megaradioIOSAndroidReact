@@ -443,22 +443,15 @@ export default function HomeScreen() {
                     style={styles.discoverableBannerItem}
                     onPress={() => handleGenrePress(genre)}
                   >
-                    <LinearGradient
-                      colors={gradientColors as any}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.discoverableBannerGradient}
-                    >
-                      <Image 
-                        source={{ uri: imageUrl }}
-                        style={styles.discoverableBannerImage}
-                        resizeMode="cover"
-                      />
-                      <View style={styles.discoverableBannerContent}>
-                        <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
-                        <Text style={styles.discoverableBannerSubtitle}>Discover all the stations</Text>
-                      </View>
-                    </LinearGradient>
+                    <Image 
+                      source={{ uri: imageUrl }}
+                      style={StyleSheet.absoluteFill}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.discoverableBannerContent}>
+                      <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
+                      <Text style={styles.discoverableBannerSubtitle}>Discover all the stations</Text>
+                    </View>
                   </TouchableOpacity>
                 );
               }}
@@ -832,25 +825,14 @@ const styles = StyleSheet.create({
   // Discoverable Genres Banner Swiper
   discoverableBannerItem: {
     width: 300,
-    height: 100,
+    height: 160,
     borderRadius: 12,
     overflow: 'hidden',
   },
-  discoverableBannerGradient: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    gap: 12,
-  },
-  discoverableBannerImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 8,
-  },
   discoverableBannerContent: {
     flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
   },
   discoverableBannerTitle: {
     fontSize: typography.sizes.xxl,
