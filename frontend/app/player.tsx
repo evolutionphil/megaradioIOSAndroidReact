@@ -22,6 +22,7 @@ import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
 import { CarModeScreen } from '../src/components/CarModeScreen';
 import { ShareModal } from '../src/components/ShareModal';
+import { SleepTimerModal } from '../src/components/SleepTimerModal';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -214,6 +215,10 @@ export default function PlayerScreen() {
   const { isAuthenticated } = useAuthStore();
   const [showCarMode, setShowCarMode] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showSleepTimer, setShowSleepTimer] = useState(false);
+  const [sleepTimerActive, setSleepTimerActive] = useState(false);
+  const [sleepRemaining, setSleepRemaining] = useState(0);
+  const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
   // Load Ubuntu font
