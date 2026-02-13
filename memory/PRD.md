@@ -14,7 +14,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ## Authentication System
 
-### Mobile Token-Based Auth (NEW)
+### Mobile Token-Based Auth
 Token format: `mrt_` prefix + 64 character hex
 Token validity: 90 days
 Storage: SecureStore (iOS/Android) / localStorage (web)
@@ -23,6 +23,10 @@ Storage: SecureStore (iOS/Android) / localStorage (web)
 ```
 POST /api/auth/mobile/login
 Body: { email, password, deviceType, deviceName }
+Response: { success, token, user }
+
+POST /api/auth/mobile/register
+Body: { email, password, fullName, deviceType, deviceName }
 Response: { success, token, user }
 
 POST /api/auth/mobile/google  
@@ -37,9 +41,16 @@ POST /api/auth/mobile/logout      → Single device
 POST /api/auth/mobile/logout-all  → All devices
 ```
 
-### Implementation
+### Auth UI Screens (IMPLEMENTED - December 2025)
+- `/app/frontend/app/auth-options.tsx` - Main auth selection (Apple, Facebook, Google, Mail, Continue without login)
+- `/app/frontend/app/login.tsx` - Email/password login form with error toast
+- `/app/frontend/app/signup.tsx` - Registration form with name/email/password
+- `/app/frontend/app/forgot-password.tsx` - Password reset request
+- `/app/frontend/app/(tabs)/profile.tsx` - Guest state with Sign In/Create Account buttons
+
+### Implementation Files
 - `authStore.ts` - Token storage with SecureStore/localStorage
-- `authService.ts` - Mobile auth API methods
+- `authService.ts` - Mobile auth API methods (mobileLogin, mobileRegister, mobileCheckAuth, mobileLogout)
 - `api.ts` - Auto-attaches Bearer token to all requests
 - Token persists across app restarts
 
@@ -51,83 +62,97 @@ GET /api/countries?format=rich
 Response: [{ name, nativeName, code, flag, flagUrl, stationCount }]
 ```
 
-### Favorites API ✅ (Hybrid)
-- **Authenticated**: API endpoints
-- **Guest**: Local AsyncStorage
-
+### Users API ✅
 ```
-GET /api/user/favorites
-POST /api/user/favorites { stationId }
-DELETE /api/user/favorites/:stationId
-GET /api/user/favorites/check/:stationId
+GET /api/users/:userId/followers
+GET /api/users/:userId/following
+POST /api/user-engagement/follow/:userId (requires auth)
+POST /api/user-engagement/unfollow/:userId (requires auth)
 ```
 
-### Social API ✅ (Connected)
+### Favorites API ✅
 ```
-GET /api/users/:userId/followers  (Public)
-GET /api/users/:userId/following  (Public)
-POST /api/user-engagement/follow/:userId (Auth)
-POST /api/user-engagement/unfollow/:userId (Auth)
-POST /api/user-engagement/remove-follower/:userId (Auth)
+GET /api/user/favorites (requires auth)
+POST /api/user/favorites/:stationId (requires auth)
+DELETE /api/user/favorites/:stationId (requires auth)
 ```
 
-## Session 7 Updates (Dec 2025)
+### Languages API ✅
+```
+GET /api/translations/:lang
+```
 
-### 1. Country Flags from API ✅
-- Updated Country Picker to use `?format=rich`
-- Shows: flag emoji + name + nativeName + stationCount
-- Removed hardcoded FLAG_MAP
-
-### 2. Favorites API Integration ✅
-- Hybrid approach: API for authenticated, AsyncStorage for guests
-- Optimistic updates for fast UI
-- Auto-sync when user logs in
-
-### 3. Mobile Token Auth System ✅
-- New `authStore.ts` with SecureStore support
-- New `authService.ts` with mobile auth methods
-- Updated `api.ts` to auto-attach Bearer token
-- Cross-platform: native uses SecureStore, web uses localStorage
-
-### 4. Followers/Following Real API ✅
-- Updated `followers.tsx` - fetches from `/api/users/:userId/followers`
-- Updated `follows.tsx` - fetches from `/api/users/:userId/following`
-- Unfollow functionality with confirmation dialog
-- Empty states for logged-out users
-
-## Key Files Updated This Session
-- `/app/frontend/src/store/authStore.ts` - Mobile token auth
+## Key Files
+- `/app/frontend/src/store/authStore.ts` - Auth state & token persistence
+- `/app/frontend/src/store/favoritesStore.ts` - Hybrid favorites (API + local)
 - `/app/frontend/src/services/authService.ts` - Auth API methods
 - `/app/frontend/src/services/api.ts` - Auto Bearer token
-- `/app/frontend/app/(tabs)/profile.tsx` - Country flags API
+- `/app/frontend/app/(tabs)/profile.tsx` - Profile with guest state
+- `/app/frontend/app/auth-options.tsx` - Login options screen
+- `/app/frontend/app/login.tsx` - Email login screen
+- `/app/frontend/app/signup.tsx` - Registration screen
+- `/app/frontend/app/forgot-password.tsx` - Password reset screen
 - `/app/frontend/app/followers.tsx` - Real API
 - `/app/frontend/app/follows.tsx` - Real API
+- `/app/frontend/app/languages.tsx` - Languages list
+
+## Completed Tasks
+
+### December 2025 - Session 8
+- [x] Created auth-options.tsx (main login selection screen)
+- [x] Redesigned login.tsx per Figma (email/password form with error toast)
+- [x] Redesigned signup.tsx per Figma (name/email/password form)
+- [x] Created forgot-password.tsx (password reset request)
+- [x] Added guest state to profile.tsx with Sign In/Create Account buttons
+- [x] Connected login to mobileLogin API endpoint
+- [x] Connected signup to mobileRegister API endpoint
+- [x] Fixed navigator SSR error in authStore.ts
+- [x] Fixed typo in forgot-password.tsx
+- [x] Updated icons from FontAwesome5 to Ionicons for web compatibility
+
+### Previous Sessions
+- [x] Favorites page redesign with hybrid API/local storage
+- [x] Languages page creation
+- [x] Clickable followers/follows stats on profile
+- [x] Country flags from /api/countries?format=rich
+- [x] Connected followers.tsx and follows.tsx to real API
 
 ## Pending Tasks
 
 ### P0 (Critical)
-- [ ] Login/Signup screens (UI needs to be built)
 - [ ] Google Sign-In integration for mobile
+- [ ] Apple Sign-In integration
+- [ ] Facebook Sign-In integration
 
 ### P1 (Important)
+- [x] Login/Signup screens (DONE)
+- [ ] Follow/Unfollow functionality (buttons exist, API not connected)
 - [ ] i18n integration using selected language
-- [ ] Profile page real data (currently some mock data)
+- [ ] Profile page real data (some mock data remains)
 
 ### P2 (Nice to have)
+- [ ] Statistics page implementation
+- [ ] Play at Login preference
 - [ ] Skeleton loaders
+- [ ] Car Mode bug fix (station centering)
+- [ ] Glow Effect visual fix
 - [ ] Animated equalizer enhancement
 - [ ] Sleep timer resume fix
+
+## Known Issues
+- TouchableOpacity click handlers may not work in Playwright automation (React Native Web limitation)
+- Close button on auth-options may need accessibilityRole for better web accessibility
 
 ## Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
 
 ## Test Reports
-- `/app/test_reports/iteration_5.json`
+- `/app/test_reports/iteration_6.json` - Auth UI screens test (95% pass rate)
 
 ## Notes
-- Mobile auth endpoints (`/api/auth/mobile/*`) need to be deployed on backend
-- Session-based auth still works for web
-- Token auth is ready but waiting for backend deployment
+- Mobile auth endpoints are deployed and working
+- API returns 401 for invalid credentials (correct behavior)
+- All auth screens follow Figma design specifications
 
 ## Last Updated
-December 2025 - Session 7
+December 2025 - Session 8
