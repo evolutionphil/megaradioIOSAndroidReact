@@ -35,15 +35,22 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor with retry for 429
 api.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
+    const config = error.config;
+    // Retry on 429 (rate limit) - max 2 retries with delay
+    if (error.response?.status === 429 && (!config._retryCount || config._retryCount < 2)) {
+      config._retryCount = (config._retryCount || 0) + 1;
+      const delay = config._retryCount * 1500; // 1.5s, 3s
+      await new Promise(r => setTimeout(r, delay));
+      return api(config);
+    }
     // Handle 401 unauthorized globally
     if (error.response?.status === 401) {
-      // Clear local auth state if needed
       console.log('Unauthorized - session may have expired');
     }
     return Promise.reject(error);
