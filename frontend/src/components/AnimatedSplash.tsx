@@ -225,15 +225,16 @@ const styles = StyleSheet.create({
   },
   dotsContainer: {
     position: 'absolute',
-    bottom: -50,
-    left: -50,
-    width: width * 1.2,
-    height: height * 0.5,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: width,
+    height: height * 0.45,
+    overflow: 'hidden',
   },
   dots: {
     width: '100%',
     height: '100%',
-    opacity: 0.9,
   },
 });
 
