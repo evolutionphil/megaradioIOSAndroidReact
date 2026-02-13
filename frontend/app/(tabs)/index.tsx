@@ -549,8 +549,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   
-  // Background Glow - matches Figma CSS: 430x430, blur(100px)
-  // Container is larger than glow to allow blur to spread beyond edges
+  // Background Glow - larger container allows blur edges to be soft
   bgGradientContainer: {
     position: 'absolute',
     top: -230,
@@ -558,6 +557,7 @@ const styles = StyleSheet.create({
     width: 630,
     height: 630,
     zIndex: 0,
+    borderRadius: 315,
     overflow: 'hidden',
   },
   bgGlowColor: {

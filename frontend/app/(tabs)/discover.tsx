@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  // Background Glow - larger container allows blur to spread
+  // Background Glow - larger container allows blur edges to be soft
   bgGlowContainer: {
     position: 'absolute',
     top: -230,
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
     width: 630,
     height: 630,
     zIndex: 0,
+    borderRadius: 315,
     overflow: 'hidden',
   },
   bgGlowColor: {
