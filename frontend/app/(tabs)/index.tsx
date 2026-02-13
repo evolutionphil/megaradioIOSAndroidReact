@@ -155,8 +155,9 @@ export default function HomeScreen() {
     return genreBackgrounds[index % genreBackgrounds.length];
   };
 
+  const FALLBACK_LOGO = require('../../assets/megaradio-icon.png');
+  
   const getLogoUrl = (station: Station) => {
-    // Try logoAssets first with full URL construction
     if (station.logoAssets?.webp96) {
       return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
     }
