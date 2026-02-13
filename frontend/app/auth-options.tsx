@@ -146,13 +146,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   logoContainer: {
-    alignItems: 'center',
-    marginTop: 80,
-    marginBottom: 40,
+    position: 'absolute',
+    top: 122,
+    left: 25,
   },
   logoImage: {
-    width: 280,
-    height: 200,
+    width: 326,
+    height: 326,
   },
   buttonsContainer: {
     gap: 14,
