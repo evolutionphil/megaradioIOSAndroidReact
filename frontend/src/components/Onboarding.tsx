@@ -136,7 +136,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
   const completeOnboarding = async () => {
     try {
-      await AsyncStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+      await storage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
     } catch (error) {
       console.error('Error saving onboarding status:', error);
     }
