@@ -491,8 +491,16 @@ export default function PlayerScreen() {
           {/* Main Controls */}
           <View style={styles.mainControls}>
             {/* Timer */}
-            <TouchableOpacity style={styles.controlButton}>
-              <Ionicons name="time-outline" size={28} color="#888888" />
+            <TouchableOpacity
+              style={styles.controlButton}
+              onPress={() => setShowSleepTimer(true)}
+              data-testid="player-sleep-timer-btn"
+            >
+              <Ionicons
+                name="time-outline"
+                size={28}
+                color={sleepTimerActive ? '#FF4199' : '#888888'}
+              />
             </TouchableOpacity>
             
             {/* Previous */}
@@ -615,6 +623,16 @@ export default function PlayerScreen() {
         station={currentStation}
         nowPlayingTitle={getCurrentSongInfo()}
         getLogoUrl={getLogoUrl}
+      />
+
+      {/* Sleep Timer Modal */}
+      <SleepTimerModal
+        visible={showSleepTimer}
+        onClose={() => setShowSleepTimer(false)}
+        onStart={handleSleepTimerStart}
+        isTimerActive={sleepTimerActive}
+        remainingSeconds={sleepRemaining}
+        onCancel={handleSleepTimerCancel}
       />
     </View>
   );
