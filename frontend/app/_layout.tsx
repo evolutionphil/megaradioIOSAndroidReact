@@ -3,9 +3,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useFonts } from 'expo-font';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
@@ -24,12 +23,12 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
-  // Explicitly load ALL icon fonts + custom fonts
+  // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
-    // Vector icon fonts - MUST be preloaded for Expo Go
-    ...Ionicons.font,
-    ...FontAwesome5.font,
-    // Custom app fonts
+    'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+    'FontAwesome5_Brands': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf'),
+    'FontAwesome5_Regular': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf'),
+    'FontAwesome5_Solid': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf'),
     'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
@@ -40,7 +39,6 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // Show loading screen while fonts are loading
   if (!fontsLoaded && !fontError) {
     return (
       <View style={[styles.container, styles.loading]}>
