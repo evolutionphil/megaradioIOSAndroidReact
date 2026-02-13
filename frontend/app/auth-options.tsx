@@ -65,12 +65,12 @@ const GlowArcs = () => (
   </View>
 );
 
-// Apple Icon SVG
+// Apple Icon SVG - proper Apple logo
 const AppleIcon = () => (
   <View style={[styles.iconContainer, styles.iconWhiteBg]}>
-    <Svg width={22} height={26} viewBox="0 0 22 26">
+    <Svg width={20} height={24} viewBox="0 0 17 20">
       <Path
-        d="M17.5 13.5c0-3.5 2.5-4.5 2.5-4.5s-1.5-2-3.5-2.5c-2-.5-3.5 0.5-4 0.5s-2-1-3.5-0.5c-2 0.5-3.5 2.5-4 5s0.5 5 1.5 7c1 2 2 3.5 3.5 3.5s2-0.5 3.5-0.5 2 0.5 3.5 0.5 2.5-2 3.5-3.5c-2-1-3-2.5-3-5zM14 4c1-1 1.5-2.5 1.5-4-1.5 0-3 1-4 2.5-0.5 1-1 2.5-1 3.5 1.5 0 2.5-1 3.5-2z"
+        d="M8.5 3.5c1-1.2 2.5-2 3.5-2 0.1 1.5-0.4 3-1.4 4-0.9 1-2.4 1.7-3.4 1.6-0.2-1.4 0.4-2.8 1.3-3.6zM14.1 10.8c-0.1 2.8 2.4 4.2 2.4 4.2s-1.6 4.6-3.9 4.6c-1 0-1.8-0.7-2.9-0.7-1.1 0-2 0.7-3 0.7-2.1 0.1-5.2-4.4-5.2-8 0-3.4 2.2-5.3 4.2-5.3 1.1 0 2.2 0.8 2.9 0.8 0.7 0 1.9-0.9 3.2-0.8 0.5 0 2.1 0.2 3.1 1.7-2.6 1.6-2.8 4.8-0.8 2.8z"
         fill="#000000"
       />
     </Svg>
@@ -111,9 +111,19 @@ const GoogleIcon = () => (
 // Mail Icon
 const MailIcon = () => (
   <View style={[styles.iconContainer, styles.iconWhiteBg]}>
-    <View style={styles.mailIconInner}>
-      <Ionicons name="mail" size={18} color="#5C6670" />
-    </View>
+    <Svg width={22} height={18} viewBox="0 0 24 20">
+      <Path
+        d="M2 2h20c1.1 0 2 0.9 2 2v12c0 1.1-0.9 2-2 2H2c-1.1 0-2-0.9-2-2V4c0-1.1 0.9-2 2-2z"
+        fill="#5C6670"
+      />
+      <Path
+        d="M24 4l-12 7L0 4"
+        stroke="#FFFFFF"
+        strokeWidth={2}
+        strokeLinecap="round"
+        fill="none"
+      />
+    </Svg>
   </View>
 );
 
