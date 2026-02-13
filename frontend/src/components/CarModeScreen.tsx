@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
-import { useFonts } from 'expo-font';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
@@ -236,10 +235,6 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   const [volume, setVolumeState] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
 
-  const [fontsLoaded] = useFonts({
-    'Ubuntu-Bold': require('../../assets/fonts/Ubuntu-Bold.ttf'),
-  });
-
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
 
@@ -323,7 +318,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   // Use carousel index to determine displayed station (matches the visual carousel card)
   const displayedStation = stations.length > 0 ? stations[carouselIndex] : currentStation;
 
-  const ub = fontsLoaded ? { fontFamily: 'Ubuntu-Bold' } : { fontWeight: '700' as const };
+  const ub = { fontFamily: 'Ubuntu-Bold' };
 
   // Get iOS status bar height for proper safe area
   const statusBarHeight = Platform.OS === 'ios' ? 54 : StatusBar.currentHeight || 0;
