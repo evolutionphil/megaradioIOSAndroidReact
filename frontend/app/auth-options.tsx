@@ -145,18 +145,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 10,
   },
-  arcsContainer: {
-    position: 'absolute',
-    top: 60,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  arcsSvg: {},
   logoContainer: {
     alignItems: 'center',
-    marginTop: 180,
-    marginBottom: 60,
+    marginTop: 80,
+    marginBottom: 40,
+  },
+  logoImage: {
+    width: 280,
+    height: 200,
   },
   buttonsContainer: {
     gap: 14,
