@@ -26,6 +26,7 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [appState, setAppState] = useState<'splash' | 'onboarding_check' | 'onboarding' | 'ready'>('splash');
+  const [isMounted, setIsMounted] = useState(false);
   
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
