@@ -15,14 +15,14 @@ export interface StationQueryParams {
 export const stationService = {
   // Get list of stations
   async getStations(params: StationQueryParams = {}): Promise<{ stations: Station[]; totalCount: number }> {
-    const response = await api.get(API_ENDPOINTS.stations.list, { params });
+    const response = await api.get(API_ENDPOINTS.stations.list, { params: { ...params, tv: 1 } });
     return response.data;
   },
 
   // Get popular stations
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
     const response = await api.get(API_ENDPOINTS.stations.popular, {
-      params: { countrycode: country, limit, excludeBroken: true },
+      params: { countrycode: country, limit, excludeBroken: true, tv: 1 },
     });
     const data = response.data;
     if (Array.isArray(data)) {
@@ -42,7 +42,7 @@ export const stationService = {
   // Get nearby stations
   async getNearbyStations(lat: number, lng: number, radius: number = 100, limit: number = 20) {
     const response = await api.get(API_ENDPOINTS.stations.nearby, {
-      params: { lat, lng, radius, limit },
+      params: { lat, lng, radius, limit, tv: 1 },
     });
     return response.data;
   },
@@ -50,7 +50,7 @@ export const stationService = {
   // Get similar stations
   async getSimilarStations(stationId: string, limit: number = 12) {
     const response = await api.get(API_ENDPOINTS.stations.similar(stationId), {
-      params: { limit },
+      params: { limit, tv: 1 },
     });
     return response.data;
   },
