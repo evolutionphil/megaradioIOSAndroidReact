@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,500 +6,503 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Switch,
+  Modal,
+  TextInput,
+  Alert,
+  Linking,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, gradients, spacing, borderRadius, typography, shadows } from '../../src/constants/theme';
+import { colors, spacing, typography } from '../../src/constants/theme';
 import { useAuthStore } from '../../src/store/authStore';
-import authService from '../../src/services/authService';
+import { useLocationStore } from '../../src/store/locationStore';
+
+const COUNTRIES = [
+  'Austria', 'Germany', 'Turkey', 'United States', 'United Kingdom',
+  'France', 'Spain', 'Italy', 'Netherlands', 'Switzerland',
+  'Belgium', 'Sweden', 'Norway', 'Denmark', 'Poland',
+  'Czech Republic', 'Hungary', 'Romania', 'Greece', 'Portugal',
+  'Brazil', 'Canada', 'Australia', 'Japan', 'India',
+];
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, isAuthenticated, logout: clearAuth } = useAuthStore();
+  const { country, setCountryManual } = useLocationStore();
 
-  const handleLogin = () => {
-    router.push('/login');
-  };
+  const [notifications, setNotifications] = useState(true);
+  const [privateProfile, setPrivateProfile] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+
+  // Account modals
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const [showPasswordChanged, setShowPasswordChanged] = useState(false);
+
+  // Form values
+  const [nameValue, setNameValue] = useState(user?.name || 'Guest');
+  const [emailValue, setEmailValue] = useState(user?.email || '');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+
+  const userName = user?.name || 'Guest';
+  const userEmail = user?.email || 'guest@megaradio.com';
 
   const handleLogout = async () => {
-    try {
-      await authService.logout();
-    } catch (error) {
-      console.log('Logout error:', error);
-    } finally {
-      clearAuth();
-    }
+    clearAuth();
+    router.replace('/');
   };
 
-  const menuItems = [
-    { icon: 'time-outline', title: 'Listening History', screen: '/history', color: colors.primary },
-    { icon: 'settings-outline', title: 'Settings', screen: '/settings', color: colors.textSecondary },
-    { icon: 'language-outline', title: 'Language', screen: '/language', color: colors.textSecondary },
-    { icon: 'information-circle-outline', title: 'About', screen: '/about', color: colors.textSecondary },
-    { icon: 'help-circle-outline', title: 'Help & Support', screen: '/support', color: colors.textSecondary },
-  ];
+  const handleEmailSend = () => {
+    setShowEmailModal(false);
+    setShowVerificationPopup(true);
+    setTimeout(() => setShowVerificationPopup(false), 3000);
+  };
 
-  if (!isAuthenticated) {
+  const handlePasswordDone = () => {
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+    setShowPasswordModal(false);
+    setShowPasswordChanged(true);
+    setTimeout(() => setShowPasswordChanged(false), 3000);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+  };
+
+  const handleNameDone = () => {
+    setShowNameModal(false);
+  };
+
+  const handleCountrySelect = (c: string) => {
+    setCountryManual(c);
+    setShowCountryPicker(false);
+  };
+
+  // ── ACCOUNT SCREEN ──
+  if (showAccount) {
     return (
-      <LinearGradient colors={gradients.background as any} style={styles.gradient}>
-        <SafeAreaView style={styles.container} edges={['top']}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Profile</Text>
-          </View>
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.accountHeader}>
+          <TouchableOpacity onPress={() => setShowAccount(false)} data-testid="account-back">
+            <Ionicons name="chevron-back" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={styles.accountTitle}>Account</Text>
+          <View style={{ width: 24 }} />
+        </View>
 
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-          >
-            {/* Guest Banner */}
-            <View style={styles.guestBanner}>
-              <View style={styles.guestAvatarContainer}>
-                <LinearGradient
-                  colors={[colors.surface, colors.surfaceLight] as any}
-                  style={styles.guestAvatar}
-                >
-                  <Ionicons name="person" size={40} color={colors.textMuted} />
-                </LinearGradient>
-              </View>
-              <Text style={styles.guestTitle}>Welcome to MegaRadio</Text>
-              <Text style={styles.guestText}>
-                Sign in to sync your favorites, view listening history, and personalize your experience
-              </Text>
-              <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-                <LinearGradient
-                  colors={[colors.primary, colors.primaryDark] as any}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.signInButtonGradient}
-                >
-                  <Text style={styles.signInButtonText}>Sign In</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.signUpLink}
-                onPress={() => router.push('/signup')}
-              >
-                <Text style={styles.signUpLinkText}>
-                  Don't have an account?{' '}
-                  <Text style={styles.signUpLinkBold}>Create one</Text>
-                </Text>
-              </TouchableOpacity>
+        <View style={styles.accountList}>
+          <TouchableOpacity style={styles.accountRow} onPress={() => setShowNameModal(true)} data-testid="account-name">
+            <View>
+              <Text style={styles.accountLabel}>Name</Text>
+              <Text style={styles.accountValue}>{nameValue}</Text>
             </View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+          <View style={styles.divider} />
 
-            {/* Menu Items */}
-            <View style={styles.menuSection}>
-              {menuItems.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.menuItem,
-                    index === menuItems.length - 1 && styles.menuItemLast,
-                  ]}
-                  onPress={() => console.log('Navigate to:', item.screen)}
-                >
-                  <View style={[styles.menuIconContainer, { backgroundColor: colors.surfaceLight }]}>
-                    <Ionicons name={item.icon as any} size={20} color={item.color} />
-                  </View>
-                  <Text style={styles.menuItemText}>{item.title}</Text>
-                  <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+          <TouchableOpacity style={styles.accountRow} onPress={() => setShowEmailModal(true)} data-testid="account-email">
+            <View>
+              <Text style={styles.accountLabel}>Email</Text>
+              <Text style={styles.accountValue}>{userEmail}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+          <View style={styles.divider} />
+
+          <TouchableOpacity style={styles.accountRow} onPress={() => setShowPasswordModal(true)} data-testid="account-password">
+            <View>
+              <Text style={styles.accountLabel}>Password</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+          <View style={styles.divider} />
+        </View>
+
+        {/* Change Name Modal */}
+        <Modal visible={showNameModal} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <Text style={styles.modalTitle}>Change your name</Text>
+              <View style={styles.inputRow}>
+                <TextInput
+                  style={styles.modalInput}
+                  value={nameValue}
+                  onChangeText={setNameValue}
+                  placeholder="Enter name"
+                  placeholderTextColor="#666"
+                  autoFocus
+                />
+                {nameValue.length > 0 && (
+                  <TouchableOpacity onPress={() => setNameValue('')} style={styles.clearBtn}>
+                    <Ionicons name="close-circle" size={20} color="#999" />
+                  </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity onPress={() => setShowNameModal(false)}>
+                  <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* App Info */}
-            <View style={styles.appInfo}>
-              <View style={styles.appLogoContainer}>
-                <LinearGradient
-                  colors={[colors.primary, colors.accent] as any}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.appLogo}
-                >
-                  <Ionicons name="radio" size={20} color={colors.text} />
-                </LinearGradient>
+                <TouchableOpacity style={styles.pinkBtn} onPress={handleNameDone}>
+                  <Text style={styles.pinkBtnText}>Done</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.appName}>MegaRadio</Text>
-              <Text style={styles.appVersion}>Version 1.0.0</Text>
-              <Text style={styles.appCopyright}>40,000+ Radio Stations Worldwide</Text>
             </View>
-          </ScrollView>
-        </SafeAreaView>
-      </LinearGradient>
+          </View>
+        </Modal>
+
+        {/* Change Email Modal */}
+        <Modal visible={showEmailModal} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <Text style={styles.modalTitle}>Change your email</Text>
+              <View style={styles.inputRow}>
+                <TextInput
+                  style={styles.modalInput}
+                  value={emailValue}
+                  onChangeText={setEmailValue}
+                  placeholder="Enter email"
+                  placeholderTextColor="#666"
+                  keyboardType="email-address"
+                  autoFocus
+                />
+                {emailValue.length > 0 && (
+                  <TouchableOpacity onPress={() => setEmailValue('')} style={styles.clearBtn}>
+                    <Ionicons name="close-circle" size={20} color="#999" />
+                  </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity onPress={() => setShowEmailModal(false)}>
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.pinkBtn} onPress={handleEmailSend}>
+                  <Text style={styles.pinkBtnText}>Send</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Verification Sent Popup */}
+        <Modal visible={showVerificationPopup} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <View style={styles.checkCircle}>
+                <Ionicons name="checkmark" size={32} color="#FF4199" />
+              </View>
+              <Text style={styles.modalTitle}>We sent you{'\n'}a verification mail!</Text>
+              <Text style={styles.modalSubtitle}>Please check your mail</Text>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Change Password Modal */}
+        <Modal visible={showPasswordModal} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <Text style={styles.modalTitle}>Change your password</Text>
+              <View style={styles.pwRow}>
+                <TextInput
+                  style={styles.modalInputFull}
+                  value={currentPassword}
+                  onChangeText={setCurrentPassword}
+                  placeholder="Current password"
+                  placeholderTextColor="#666"
+                  secureTextEntry={!showCurrentPw}
+                />
+                <TouchableOpacity onPress={() => setShowCurrentPw(!showCurrentPw)} style={styles.eyeBtn}>
+                  <Ionicons name={showCurrentPw ? 'eye' : 'eye-off'} size={20} color="#999" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.pwRow}>
+                <TextInput
+                  style={styles.modalInputFull}
+                  value={newPassword}
+                  onChangeText={setNewPassword}
+                  placeholder="New password"
+                  placeholderTextColor="#666"
+                  secureTextEntry={!showNewPw}
+                />
+                <TouchableOpacity onPress={() => setShowNewPw(!showNewPw)} style={styles.eyeBtn}>
+                  <Ionicons name={showNewPw ? 'eye' : 'eye-off'} size={20} color="#999" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.pwRow}>
+                <TextInput
+                  style={styles.modalInputFull}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  placeholder="Confirm new password"
+                  placeholderTextColor="#666"
+                  secureTextEntry={!showConfirmPw}
+                />
+                <TouchableOpacity onPress={() => setShowConfirmPw(!showConfirmPw)} style={styles.eyeBtn}>
+                  <Ionicons name={showConfirmPw ? 'eye' : 'eye-off'} size={20} color="#999" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity onPress={() => setShowPasswordModal(false)}>
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.pinkBtn} onPress={handlePasswordDone}>
+                  <Text style={styles.pinkBtnText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Password Changed Popup */}
+        <Modal visible={showPasswordChanged} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <View style={styles.checkCircle}>
+                <Ionicons name="checkmark" size={32} color="#FF4199" />
+              </View>
+              <Text style={styles.modalTitle}>Your password{'\n'}was changed!</Text>
+            </View>
+          </View>
+        </Modal>
+      </SafeAreaView>
     );
   }
 
-  return (
-    <LinearGradient colors={gradients.background as any} style={styles.gradient}>
+  // ── COUNTRY PICKER ──
+  if (showCountryPicker) {
+    return (
       <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.accountHeader}>
+          <TouchableOpacity onPress={() => setShowCountryPicker(false)}>
+            <Ionicons name="chevron-back" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={styles.accountTitle}>Country</Text>
+          <View style={{ width: 24 }} />
+        </View>
+        <ScrollView>
+          {COUNTRIES.map((c) => (
+            <TouchableOpacity
+              key={c}
+              style={[styles.countryRow, c === country && styles.countryRowActive]}
+              onPress={() => handleCountrySelect(c)}
+            >
+              <Text style={[styles.countryText, c === country && { color: '#FF4199' }]}>{c}</Text>
+              {c === country && <Ionicons name="checkmark" size={20} color="#FF4199" />}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // ── MAIN PROFILE SCREEN ──
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header - User info */}
         <View style={styles.header}>
-          <Text style={styles.title}>Profile</Text>
-          <TouchableOpacity style={styles.settingsButton}>
-            <Ionicons name="settings-outline" size={22} color={colors.text} />
+          <View style={styles.avatarRow}>
+            <View style={styles.avatar}>
+              <Ionicons name="person" size={32} color="#888" />
+            </View>
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>{userName}</Text>
+              <Text style={styles.userStats}>Followers 0    Follows 0</Text>
+            </View>
+            <TouchableOpacity>
+              <Ionicons name="share-outline" size={22} color="#FFF" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Settings Section */}
+        <Text style={styles.sectionLabel}>Settings</Text>
+
+        <TouchableOpacity style={styles.row}>
+          <View>
+            <Text style={styles.rowTitle}>Play at Login</Text>
+            <Text style={styles.rowSubtitle}>Last Played</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <TouchableOpacity style={styles.row} onPress={() => setShowCountryPicker(true)} data-testid="profile-country">
+          <View>
+            <Text style={styles.rowTitle}>Country</Text>
+            <Text style={styles.rowSubtitle}>{country || 'Not set'}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <TouchableOpacity style={styles.row}>
+          <View>
+            <Text style={styles.rowTitle}>Language</Text>
+            <Text style={styles.rowSubtitle}>English</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <TouchableOpacity style={styles.row}>
+          <Text style={styles.rowTitle}>Statistics</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <TouchableOpacity style={styles.row} onPress={() => setShowAccount(true)} data-testid="profile-account">
+          <Text style={styles.rowTitle}>Account</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <View style={styles.row}>
+          <Text style={styles.rowTitle}>Notifications</Text>
+          <Switch
+            value={notifications}
+            onValueChange={setNotifications}
+            trackColor={{ false: '#333', true: '#FF4199' }}
+            thumbColor="#FFF"
+          />
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.row}>
+          <Text style={styles.rowTitle}>Private Profile</Text>
+          <Switch
+            value={privateProfile}
+            onValueChange={setPrivateProfile}
+            trackColor={{ false: '#333', true: '#FF4199' }}
+            thumbColor="#FFF"
+          />
+        </View>
+
+        {/* About Section */}
+        <Text style={styles.sectionLabel}>About</Text>
+
+        <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://themegaradio.com')}>
+          <Text style={styles.rowTitle}>Mega Radio</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://themegaradio.com/privacy')}>
+          <Text style={styles.rowTitle}>Privacy Policy</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+
+        <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://themegaradio.com/terms')}>
+          <Text style={styles.rowTitle}>Terms and Conditions</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+
+        {/* Rate Us */}
+        <View style={styles.rateSection}>
+          <Text style={{ fontSize: 28, marginBottom: 4 }}>{'*'}</Text>
+          <Text style={styles.rateText}>Rate Us On Store</Text>
+        </View>
+
+        {/* Social Media */}
+        <Text style={styles.socialTitle}>Social Media</Text>
+        <View style={styles.socialRow}>
+          <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#3b5998' }]} onPress={() => Linking.openURL('https://facebook.com/megaradio')}>
+            <FontAwesome5 name="facebook-f" size={22} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#C13584' }]} onPress={() => Linking.openURL('https://instagram.com/megaradio')}>
+            <FontAwesome5 name="instagram" size={22} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#1DA1F2' }]} onPress={() => Linking.openURL('https://twitter.com/megaradio')}>
+            <FontAwesome5 name="twitter" size={22} color="#FFF" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* User Profile Card */}
-          <View style={styles.profileCard}>
-            <View style={styles.avatarContainer}>
-              {user?.profilePhoto ? (
-                <Image source={{ uri: user.profilePhoto }} style={styles.avatar} />
-              ) : (
-                <LinearGradient
-                  colors={[colors.primary, colors.accent] as any}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.avatarPlaceholder}
-                >
-                  <Text style={styles.avatarInitial}>
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
-                  </Text>
-                </LinearGradient>
-              )}
-              <TouchableOpacity style={styles.editAvatarButton}>
-                <Ionicons name="camera" size={14} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.userName}>{user?.name || 'User'}</Text>
-            <Text style={styles.userEmail}>{user?.email}</Text>
+        {/* Log Out */}
+        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} data-testid="profile-logout">
+          <Text style={styles.logoutText}>Log Out</Text>
+        </TouchableOpacity>
 
-            {/* Stats */}
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>
-                  {Math.floor((user?.totalListeningTime || 0) / 3600)}
-                </Text>
-                <Text style={styles.statLabel}>Hours</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>
-                  {user?.favoriteStations?.length || 0}
-                </Text>
-                <Text style={styles.statLabel}>Favorites</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{user?.followers || 0}</Text>
-                <Text style={styles.statLabel}>Followers</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Menu Items */}
-          <View style={styles.menuSection}>
-            {menuItems.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.menuItem,
-                  index === menuItems.length - 1 && styles.menuItemLast,
-                ]}
-                onPress={() => console.log('Navigate to:', item.screen)}
-              >
-                <View style={[styles.menuIconContainer, { backgroundColor: colors.surfaceLight }]}>
-                  <Ionicons name={item.icon as any} size={20} color={item.color} />
-                </View>
-                <Text style={styles.menuItemText}>{item.title}</Text>
-                <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {/* Logout Button */}
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={22} color={colors.error} />
-            <Text style={styles.logoutText}>Sign Out</Text>
-          </TouchableOpacity>
-
-          {/* App Info */}
-          <View style={styles.appInfo}>
-            <View style={styles.appLogoContainer}>
-              <LinearGradient
-                colors={[colors.primary, colors.accent] as any}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.appLogo}
-              >
-                <Ionicons name="radio" size={20} color={colors.text} />
-              </LinearGradient>
-            </View>
-            <Text style={styles.appName}>MegaRadio</Text>
-            <Text style={styles.appVersion}>Version 1.0.0</Text>
-            <Text style={styles.appCopyright}>40,000+ Radio Stations Worldwide</Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
+        <View style={{ height: 80 }} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.md,
-  },
-  title: {
-    fontSize: typography.sizes.title,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  settingsButton: {
-    width: 44,
-    height: 44,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 180,
-    paddingHorizontal: spacing.md,
-  },
-  
-  // Guest Banner
-  guestBanner: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.xl,
-    padding: spacing.xl,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  guestAvatarContainer: {
-    marginBottom: spacing.md,
-  },
-  guestAvatar: {
-    width: 80,
-    height: 80,
-    borderRadius: borderRadius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  guestTitle: {
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    marginBottom: spacing.xs,
-  },
-  guestText: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
-    lineHeight: 22,
-  },
-  signInButton: {
-    width: '100%',
-    borderRadius: borderRadius.full,
-    overflow: 'hidden',
-    marginBottom: spacing.sm,
-  },
-  signInButtonGradient: {
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-  },
-  signInButtonText: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
-  },
-  signUpLink: {
-    paddingVertical: spacing.sm,
-  },
-  signUpLinkText: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
-  },
-  signUpLinkBold: {
-    color: colors.primary,
-    fontWeight: typography.weights.semibold,
-  },
-  
-  // Profile Card
-  profileCard: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.xl,
-    padding: spacing.xl,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  avatarContainer: {
-    marginBottom: spacing.md,
-    position: 'relative',
-  },
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: borderRadius.full,
-  },
-  avatarPlaceholder: {
-    width: 90,
-    height: 90,
-    borderRadius: borderRadius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarInitial: {
-    fontSize: 36,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  editAvatarButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 28,
-    height: 28,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.surface,
-  },
-  userName: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  userEmail: {
-    fontSize: typography.sizes.md,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: spacing.lg,
-    paddingTop: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  statItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  statValue: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  statLabel: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: colors.border,
-  },
-  
-  // Menu Section
-  menuSection: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.xl,
-    marginBottom: spacing.lg,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  menuItemLast: {
-    borderBottomWidth: 0,
-  },
-  menuIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: borderRadius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.md,
-  },
-  menuItemText: {
-    flex: 1,
-    fontSize: typography.sizes.md,
-    color: colors.text,
-    fontWeight: typography.weights.medium,
-  },
-  
-  // Logout Button
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.xl,
-    padding: spacing.md,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.sm,
-  },
-  logoutText: {
-    fontSize: typography.sizes.md,
-    color: colors.error,
-    fontWeight: typography.weights.medium,
-  },
-  
-  // App Info
-  appInfo: {
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-  },
-  appLogoContainer: {
-    marginBottom: spacing.sm,
-  },
-  appLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: borderRadius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  appName: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
-  },
-  appVersion: {
-    fontSize: typography.sizes.sm,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  appCopyright: {
-    fontSize: typography.sizes.xs,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
-  },
+  container: { flex: 1, backgroundColor: '#0D0D0F' },
+
+  // Header
+  header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
+  avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center' },
+  userInfo: { flex: 1 },
+  userName: { fontSize: 20, fontWeight: '700', color: '#FFF' },
+  userStats: { fontSize: 13, color: '#888', marginTop: 2 },
+
+  // Sections
+  sectionLabel: { fontSize: 18, fontWeight: '700', color: '#FFF', paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8, backgroundColor: '#1A1A1C' },
+
+  // Rows
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#0D0D0F' },
+  rowTitle: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  rowSubtitle: { fontSize: 13, color: '#888', marginTop: 2 },
+  divider: { height: 0.5, backgroundColor: '#333', marginHorizontal: 16 },
+
+  // Rate
+  rateSection: { alignItems: 'center', paddingVertical: 24 },
+  rateText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+
+  // Social
+  socialTitle: { fontSize: 16, fontWeight: '700', color: '#FFF', textAlign: 'center', marginBottom: 12 },
+  socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginBottom: 20 },
+  socialBtn: { width: 52, height: 52, borderRadius: 26, justifyContent: 'center', alignItems: 'center' },
+
+  // Logout
+  logoutBtn: { alignSelf: 'center', paddingHorizontal: 40, paddingVertical: 12, borderRadius: 20, backgroundColor: '#333', marginTop: 8 },
+  logoutText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+
+  // Account screen
+  accountHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 },
+  accountTitle: { fontSize: 18, fontWeight: '700', color: '#FFF' },
+  accountList: { paddingTop: 8 },
+  accountRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 16 },
+  accountLabel: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  accountValue: { fontSize: 14, color: '#888', marginTop: 2 },
+
+  // Country picker
+  countryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 0.5, borderBottomColor: '#333' },
+  countryRowActive: { backgroundColor: 'rgba(255,65,153,0.08)' },
+  countryText: { fontSize: 16, color: '#FFF' },
+
+  // Modals
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },
+  modalBox: { width: '100%', backgroundColor: '#1B1C1E', borderRadius: 16, padding: 24, alignItems: 'center' },
+  modalTitle: { fontSize: 18, fontWeight: '700', color: '#FFF', textAlign: 'center', marginBottom: 16 },
+  modalSubtitle: { fontSize: 14, color: '#888', textAlign: 'center', marginTop: 4 },
+  inputRow: { width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 24, paddingHorizontal: 16, height: 48, marginBottom: 16 },
+  modalInput: { flex: 1, fontSize: 16, color: '#000' },
+  clearBtn: { marginLeft: 8 },
+  modalActions: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 16 },
+  cancelText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  pinkBtn: { paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20, backgroundColor: '#FF4199' },
+  pinkBtnText: { fontSize: 16, fontWeight: '700', color: '#FFF' },
+  checkCircle: { width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: '#FF4199', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
+
+  // Password modal
+  pwRow: { width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#2A2A2A', borderRadius: 12, paddingHorizontal: 16, height: 48, marginBottom: 12 },
+  modalInputFull: { flex: 1, fontSize: 16, color: '#FFF' },
+  eyeBtn: { marginLeft: 8 },
 });
