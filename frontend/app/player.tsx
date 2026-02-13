@@ -260,6 +260,11 @@ export default function PlayerScreen() {
     cancelSleepTimer,
   } = usePlayerStore();
 
+  const { stations: recentStations, addStation: addRecentStation, loadFromStorage: loadRecent } = useRecentlyPlayedStore();
+
+  // Load recent stations on mount
+  useEffect(() => { loadRecent(); }, []);
+
   const { playStation, togglePlayPause, stopPlayback } = useAudioPlayer();
   
   // Fetch data with refetchOnWindowFocus disabled to prevent flickering
