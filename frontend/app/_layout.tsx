@@ -9,6 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
 import { AnimatedSplash } from '../src/components/AnimatedSplash';
+import { Onboarding, checkOnboardingComplete } from '../src/components/Onboarding';
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
