@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  ScrollView,
   Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -20,9 +19,11 @@ import Animated, {
   withTiming,
   interpolate,
   Extrapolation,
+  FadeIn,
+  FadeOut,
 } from 'react-native-reanimated';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 // Assets
 const GIRL_IMAGE = require('../assets/images/onboarding/girl.png');
@@ -82,89 +83,9 @@ const storage = {
   },
 };
 
-// Single onboarding slide component
-const OnboardingSlide = ({
-  item,
-  currentIndex,
-  onNext,
-  onSkip,
-  glowAnimatedStyle,
-}: {
-  item: typeof ONBOARDING_DATA[0];
-  currentIndex: number;
-  onNext: () => void;
-  onSkip: () => void;
-  glowAnimatedStyle: any;
-}) => (
-  <View style={styles.slide}>
-    {/* Image section - top half */}
-    <View style={styles.imageSection}>
-      <Image source={item.image} style={styles.image} resizeMode="cover" />
-      
-      {/* Skip button */}
-      <TouchableOpacity
-        style={styles.skipButton}
-        onPress={onSkip}
-        activeOpacity={0.7}
-        data-testid="onboarding-skip-btn"
-      >
-        <Text style={styles.skipText}>Skip</Text>
-      </TouchableOpacity>
-    </View>
-
-    {/* Content section - bottom half */}
-    <View style={styles.contentSection}>
-      {/* Title */}
-      <Text style={styles.title}>{item.title}</Text>
-      
-      {/* Subtitle */}
-      <Text style={styles.subtitle}>{item.subtitle}</Text>
-      
-      {/* Pagination Dots */}
-      <View style={styles.dotsContainer}>
-        {ONBOARDING_DATA.map((_, i) => (
-          <View
-            key={i}
-            style={[
-              styles.dot,
-              i === currentIndex ? styles.dotActive : styles.dotInactive,
-            ]}
-          />
-        ))}
-      </View>
-
-      {/* Button */}
-      <View style={styles.buttonWrapper}>
-        {item.isLast ? (
-          <TouchableOpacity
-            style={styles.getStartedButton}
-            onPress={onNext}
-            activeOpacity={0.8}
-            data-testid="onboarding-getstarted-btn"
-          >
-            <Text style={styles.getStartedText}>Get Started</Text>
-          </TouchableOpacity>
-        ) : (
-          <>
-            <Animated.View style={[styles.buttonGlow, glowAnimatedStyle]} />
-            <TouchableOpacity
-              style={styles.nextButton}
-              onPress={onNext}
-              activeOpacity={0.8}
-              data-testid="onboarding-next-btn"
-            >
-              <Image source={NEXT_BUTTON} style={styles.nextButtonImage} resizeMode="contain" />
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-    </View>
-  </View>
-);
-
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const currentItem = ONBOARDING_DATA[currentIndex];
   
   // Glow animation for next button
   const glowScale = useSharedValue(1);
@@ -187,9 +108,7 @@ export default function OnboardingScreen() {
 
   const handleNext = async () => {
     if (currentIndex < ONBOARDING_DATA.length - 1) {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-      scrollViewRef.current?.scrollTo({ x: nextIndex * width, animated: true });
+      setCurrentIndex(currentIndex + 1);
     } else {
       await completeOnboarding();
     }
@@ -208,39 +127,78 @@ export default function OnboardingScreen() {
     router.replace('/(tabs)');
   };
 
-  const handleScroll = (event: any) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / width);
-    if (index !== currentIndex && index >= 0 && index < ONBOARDING_DATA.length) {
-      setCurrentIndex(index);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        onMomentumScrollEnd={handleScroll}
-        scrollEventThrottle={16}
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {ONBOARDING_DATA.map((item, index) => (
-          <OnboardingSlide
-            key={item.id}
-            item={item}
-            currentIndex={currentIndex}
-            onNext={handleNext}
-            onSkip={handleSkip}
-            glowAnimatedStyle={glowAnimatedStyle}
-          />
-        ))}
-      </ScrollView>
+      
+      {/* Image section - top half */}
+      <View style={styles.imageSection}>
+        <Animated.View 
+          key={currentItem.id}
+          entering={FadeIn.duration(300)}
+          style={styles.imageWrapper}
+        >
+          <Image source={currentItem.image} style={styles.image} resizeMode="cover" />
+        </Animated.View>
+        
+        {/* Skip button */}
+        <TouchableOpacity
+          style={styles.skipButton}
+          onPress={handleSkip}
+          activeOpacity={0.7}
+          data-testid="onboarding-skip-btn"
+        >
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Content section - bottom half */}
+      <View style={styles.contentSection}>
+        {/* Title */}
+        <Text style={styles.title}>{currentItem.title}</Text>
+        
+        {/* Subtitle */}
+        <Text style={styles.subtitle}>{currentItem.subtitle}</Text>
+        
+        {/* Pagination Dots */}
+        <View style={styles.dotsContainer}>
+          {ONBOARDING_DATA.map((_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.dot,
+                i === currentIndex ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
+
+        {/* Button */}
+        <View style={styles.buttonWrapper}>
+          {currentItem.isLast ? (
+            <TouchableOpacity
+              style={styles.getStartedButton}
+              onPress={handleNext}
+              activeOpacity={0.8}
+              data-testid="onboarding-getstarted-btn"
+            >
+              <Text style={styles.getStartedText}>Get Started</Text>
+            </TouchableOpacity>
+          ) : (
+            <>
+              <Animated.View style={[styles.buttonGlow, glowAnimatedStyle]} />
+              <TouchableOpacity
+                style={styles.nextButton}
+                onPress={handleNext}
+                activeOpacity={0.8}
+                data-testid="onboarding-next-btn"
+              >
+                <Image source={NEXT_BUTTON} style={styles.nextButtonImage} resizeMode="contain" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
     </View>
   );
 }
@@ -274,21 +232,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  slide: {
-    width: width,
-    flex: 1,
-    flexDirection: 'column',
-  },
   imageSection: {
-    flex: 1,
+    height: '50%',
+    width: '100%',
     position: 'relative',
     backgroundColor: '#1a1a1a',
+    overflow: 'hidden',
+  },
+  imageWrapper: {
+    width: '100%',
+    height: '100%',
   },
   image: {
     width: '100%',
@@ -310,12 +263,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   contentSection: {
-    flex: 1,
+    height: '50%',
+    width: '100%',
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 30,
   },
   title: {
     fontFamily: 'Ubuntu-BoldItalic',
