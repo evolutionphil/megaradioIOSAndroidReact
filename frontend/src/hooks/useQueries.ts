@@ -40,6 +40,16 @@ export const usePopularStations = (country?: string, limit: number = 12) => {
   });
 };
 
+export const useNearbyStations = (lat: number | null, lng: number | null, radius: number = 150, limit: number = 12) => {
+  return useQuery({
+    queryKey: [...queryKeys.nearbyStations(lat || 0, lng || 0), radius, limit],
+    queryFn: () => stationService.getNearbyStations(lat!, lng!, radius, limit),
+    enabled: lat !== null && lng !== null,
+    staleTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const usePrecomputedStations = (
   country?: string,
   countryName?: string,
