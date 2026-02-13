@@ -38,8 +38,15 @@ export default function RootLayout() {
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
 
+  // Mark component as mounted (client-side only)
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Handle app state transitions
   useEffect(() => {
+    if (!isMounted) return;
+    
     if ((fontsLoaded || fontError) && appState === 'splash') {
       // Start splash timeout
       const timer = setTimeout(() => {
@@ -47,10 +54,12 @@ export default function RootLayout() {
       }, 2800);
       return () => clearTimeout(timer);
     }
-  }, [fontsLoaded, fontError, appState]);
+  }, [fontsLoaded, fontError, appState, isMounted]);
 
   // Check onboarding status
   useEffect(() => {
+    if (!isMounted) return;
+    
     if (appState === 'onboarding_check') {
       console.log('[Layout] Checking onboarding status...');
       checkOnboardingComplete().then((completed) => {
@@ -65,7 +74,7 @@ export default function RootLayout() {
         setAppState('onboarding'); // Show onboarding on error
       });
     }
-  }, [appState]);
+  }, [appState, isMounted]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
