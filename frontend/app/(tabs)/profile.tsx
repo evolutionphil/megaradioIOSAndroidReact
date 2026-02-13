@@ -333,12 +333,22 @@ export default function ProfileScreen() {
             <View style={{ flex: 1 }}>
               <Text style={s.userName}>{userName}</Text>
               <View style={s.statsRow}>
-                <TouchableOpacity onPress={() => router.push('/followers')} data-testid="profile-followers-btn">
-                  <Text style={s.userStats}>Followers <Text style={s.statBold}>{followersCount}</Text></Text>
+                <TouchableOpacity 
+                  style={s.statTouchable}
+                  onPress={() => router.push('/followers')} 
+                  data-testid="profile-followers-btn"
+                >
+                  <Text style={s.statNumber}>{followersCount}</Text>
+                  <Text style={s.statLabel}>Followers</Text>
                 </TouchableOpacity>
-                <Text style={s.userStats}>    </Text>
-                <TouchableOpacity onPress={() => router.push('/follows')} data-testid="profile-follows-btn">
-                  <Text style={s.userStats}>Follows <Text style={s.statBold}>{followsCount}</Text></Text>
+                <View style={s.statDivider} />
+                <TouchableOpacity 
+                  style={s.statTouchable}
+                  onPress={() => router.push('/follows')} 
+                  data-testid="profile-follows-btn"
+                >
+                  <Text style={s.statNumber}>{followsCount}</Text>
+                  <Text style={s.statLabel}>Follows</Text>
                 </TouchableOpacity>
               </View>
             </View>
