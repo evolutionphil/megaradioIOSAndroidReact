@@ -295,14 +295,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginTop: -2,
   },
-  mailIconInner: {
-    width: 26,
-    height: 20,
-    backgroundColor: '#5C6670',
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   authButtonText: {
     flex: 1,
     textAlign: 'center',
