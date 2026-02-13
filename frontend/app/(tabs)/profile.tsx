@@ -116,7 +116,7 @@ export default function ProfileScreen() {
   const [showConfirmPw, setShowConfirmPw] = useState(false);
 
   // Country picker
-  const [countries, setCountries] = useState<string[]>([]);
+  const [countries, setCountries] = useState<CountryData[]>([]);
   const [countriesLoading, setCountriesLoading] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
   
