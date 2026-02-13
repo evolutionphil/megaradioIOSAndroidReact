@@ -273,7 +273,9 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
     if (station.logoAssets?.webp192) {
       return `https://themegaradio.com/station-logos/${(station.logoAssets as any).folder}/${station.logoAssets.webp192}`;
     }
-    return station.favicon || station.logo || null;
+    const raw = station.favicon || station.logo || null;
+    if (raw && raw.startsWith('/')) return `https://themegaradio.com${raw}`;
+    return raw;
   }, []);
 
   const handleIndexChange = useCallback((newIndex: number) => {
