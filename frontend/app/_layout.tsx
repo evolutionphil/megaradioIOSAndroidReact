@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, StyleSheet } from 'react-native';
 import { colors } from '../src/constants/theme';
+import { RadioErrorModal } from '../src/components/RadioErrorModal';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -41,6 +42,7 @@ export default function RootLayout() {
             <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="signup" options={{ headerShown: false }} />
           </Stack>
+          <RadioErrorModal />
         </View>
       </QueryClientProvider>
     </GestureHandlerRootView>
