@@ -66,12 +66,12 @@ const GlowArcs = () => (
   </View>
 );
 
-// Icon URLs
-const ICON_URLS = {
-  apple: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/91udnihb_image.png',
-  facebook: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/n91q8elv_image.png',
-  google: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/t0xw2p6m_image.png',
-  mail: 'https://customer-assets.emergentagent.com/job_26f54832-0b94-4ea4-adc8-3007c1d178a1/artifacts/us09lyak_image.png',
+// Local icon assets
+const ICONS = {
+  apple: require('../assets/icons/apple.png'),
+  facebook: require('../assets/icons/facebook.png'),
+  google: require('../assets/icons/google.png'),
+  mail: require('../assets/icons/mail.png'),
 };
 
 export default function AuthOptionsScreen() {
@@ -133,7 +133,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-apple-button"
           >
             <Image 
-              source={{ uri: ICON_URLS.apple }} 
+              source={ICONS.apple} 
               style={styles.iconImage}
               resizeMode="contain"
             />
@@ -147,7 +147,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-facebook-button"
           >
             <Image 
-              source={{ uri: ICON_URLS.facebook }} 
+              source={ICONS.facebook} 
               style={styles.iconImage}
               resizeMode="contain"
             />
@@ -161,7 +161,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-google-button"
           >
             <Image 
-              source={{ uri: ICON_URLS.google }} 
+              source={ICONS.google} 
               style={styles.iconImage}
               resizeMode="contain"
             />
@@ -175,7 +175,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-mail-button"
           >
             <Image 
-              source={{ uri: ICON_URLS.mail }} 
+              source={ICONS.mail} 
               style={styles.iconImage}
               resizeMode="contain"
             />
