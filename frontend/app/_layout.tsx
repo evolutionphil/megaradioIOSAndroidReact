@@ -79,24 +79,30 @@ export default function RootLayout() {
   // Check onboarding status and navigate after splash
   useEffect(() => {
     const checkAndNavigate = async () => {
+      console.log('[Layout] Check: showSplash=', showSplash, 'isNavigationReady=', isNavigationReady, 'hasCheckedOnboarding=', hasCheckedOnboarding, 'segments=', segments);
+      
       if (!showSplash && isNavigationReady && !hasCheckedOnboarding) {
         setHasCheckedOnboarding(true);
         
         const onboardingComplete = await checkOnboardingComplete();
-        console.log('[Layout] Onboarding complete:', onboardingComplete, 'Current segment:', segments[0]);
+        const currentSegment = segments[0];
+        console.log('[Layout] Onboarding complete:', onboardingComplete, 'Current segment:', currentSegment);
         
         if (onboardingComplete) {
           // If onboarding is complete and user is on onboarding page, redirect to home
-          if (segments[0] === 'onboarding') {
+          if (currentSegment === 'onboarding') {
             console.log('[Layout] Onboarding complete, redirecting to home...');
             router.replace('/(tabs)');
+          } else {
+            console.log('[Layout] Onboarding complete, staying on current page');
           }
-          // Otherwise do nothing - let them stay where they are
         } else {
           // Onboarding not complete - redirect to onboarding if not already there
-          if (segments[0] !== 'onboarding') {
+          if (currentSegment !== 'onboarding') {
             console.log('[Layout] Navigating to onboarding...');
             router.replace('/onboarding');
+          } else {
+            console.log('[Layout] Already on onboarding page');
           }
         }
       }
