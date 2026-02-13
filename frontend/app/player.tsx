@@ -298,6 +298,44 @@ export default function PlayerScreen() {
     }
   }, [playStation]);
 
+  // Sleep timer handlers
+  const handleSleepTimerStart = useCallback((totalMinutes: number) => {
+    // Clear any existing timer
+    if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
+
+    const totalSeconds = totalMinutes * 60;
+    setSleepRemaining(totalSeconds);
+    setSleepTimerActive(true);
+
+    sleepTimerRef.current = setInterval(() => {
+      setSleepRemaining((prev) => {
+        if (prev <= 1) {
+          // Time's up - stop playback
+          if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
+          sleepTimerRef.current = null;
+          setSleepTimerActive(false);
+          stopPlayback();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, [stopPlayback]);
+
+  const handleSleepTimerCancel = useCallback(() => {
+    if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
+    sleepTimerRef.current = null;
+    setSleepTimerActive(false);
+    setSleepRemaining(0);
+  }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
+    };
+  }, []);
+
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
   const isPlaying = playbackState === 'playing';
 
