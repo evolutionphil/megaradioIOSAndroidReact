@@ -131,11 +131,11 @@ export default function ProfileScreen() {
   const followersCount = 86;
   const followsCount = 86;
 
-  // Fetch countries from API
+  // Fetch countries from API with rich format (includes flags)
   useEffect(() => {
     if (currentPage === 'country' && countries.length === 0) {
       setCountriesLoading(true);
-      api.get(API_ENDPOINTS.countries)
+      api.get(`${API_ENDPOINTS.countries}?format=rich`)
         .then(res => setCountries(res.data || []))
         .catch(() => {})
         .finally(() => setCountriesLoading(false));
@@ -143,7 +143,10 @@ export default function ProfileScreen() {
   }, [currentPage]);
 
   const filteredCountries = countrySearch
-    ? countries.filter(c => c.toLowerCase().includes(countrySearch.toLowerCase()))
+    ? countries.filter(c => 
+        c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+        c.nativeName.toLowerCase().includes(countrySearch.toLowerCase())
+      )
     : countries;
 
   const handleLogout = async () => {
