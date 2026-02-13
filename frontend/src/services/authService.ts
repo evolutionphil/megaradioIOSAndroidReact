@@ -182,7 +182,8 @@ export const authService = {
 
   /**
    * Mobile register
-   * POST /api/auth/mobile/register (if supported)
+   * Uses web signup endpoint as mobile-specific register may not exist
+   * POST /api/auth/signup then auto-login via mobile endpoint
    */
   async mobileRegister(
     email: string,
@@ -191,15 +192,22 @@ export const authService = {
   ): Promise<MobileLoginResponse> {
     const { deviceInfo } = useAuthStore.getState();
     
-    const response = await api.post(`${API_BASE}/api/auth/mobile/register`, {
+    // First, register using web signup endpoint
+    await api.post(`${API_BASE}/api/auth/signup`, {
       email,
       password,
-      fullName,
+      name: fullName,
+    });
+    
+    // Then login via mobile endpoint to get token
+    const loginResponse = await api.post(`${API_BASE}/api/auth/mobile/login`, {
+      email,
+      password,
       deviceType: deviceInfo.deviceType,
       deviceName: deviceInfo.deviceName,
     });
     
-    return response.data;
+    return loginResponse.data;
   },
 };
 
