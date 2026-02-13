@@ -319,10 +319,28 @@ export default function ProfileScreen() {
         {/* Header */}
         <View style={s.header}>
           <View style={s.avatarRow}>
-            <View style={s.avatar}><Ionicons name="person" size={32} color="#888" /></View>
+            <TouchableOpacity 
+              style={s.avatar}
+              onPress={() => router.push({ pathname: '/user-profile', params: { userId: 'me', userName, userAvatar: userAvatar || '' } })}
+              data-testid="profile-avatar-btn"
+            >
+              {userAvatar ? (
+                <Image source={{ uri: userAvatar }} style={s.avatarImage} />
+              ) : (
+                <Ionicons name="person" size={32} color="#888" />
+              )}
+            </TouchableOpacity>
             <View style={{ flex: 1 }}>
               <Text style={s.userName}>{userName}</Text>
-              <Text style={s.userStats}>Followers 0    Follows 0</Text>
+              <View style={s.statsRow}>
+                <TouchableOpacity onPress={() => router.push('/followers')} data-testid="profile-followers-btn">
+                  <Text style={s.userStats}>Followers <Text style={s.statBold}>{followersCount}</Text></Text>
+                </TouchableOpacity>
+                <Text style={s.userStats}>    </Text>
+                <TouchableOpacity onPress={() => router.push('/follows')} data-testid="profile-follows-btn">
+                  <Text style={s.userStats}>Follows <Text style={s.statBold}>{followsCount}</Text></Text>
+                </TouchableOpacity>
+              </View>
             </View>
             <TouchableOpacity><Ionicons name="share-outline" size={22} color="#FFF" /></TouchableOpacity>
           </View>
