@@ -548,24 +548,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   
-  // Background Glow - color underneath, blur on top
+  // Background Glow - matches Figma CSS: 430x430, left:-160, top:-130, blur(100px)
   bgGradientContainer: {
     position: 'absolute',
-    top: -80,
-    left: -80,
-    width: 300,
-    height: 300,
+    top: -130,
+    left: -160,
+    width: 430,
+    height: 430,
     zIndex: 0,
-    borderRadius: 150,
+    borderRadius: 215,
     overflow: 'hidden',
   },
   bgGlowColor: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(107, 78, 255, 0.5)',
-    borderRadius: 150,
-  },
-  bgBlurOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(120, 60, 255, 0.30)',
+    borderRadius: 215,
   },
   
   safeArea: {
