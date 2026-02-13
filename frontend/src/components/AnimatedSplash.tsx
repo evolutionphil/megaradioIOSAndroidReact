@@ -27,7 +27,7 @@ export const AnimatedSplash: React.FC<AnimatedSplashProps> = ({ onAnimationEnd }
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.8)).current;
   const dotsTranslateY = useRef(new Animated.Value(50)).current;
-  const dotsOpacity = useRef(new Animated.Value(0)).current;
+  const dotsOpacity = useRef(new Animated.Value(1)).current;
   const waveAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
