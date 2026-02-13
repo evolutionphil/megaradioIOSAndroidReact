@@ -820,6 +820,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#FFFFFF',
     marginBottom: 16,
+    lineHeight: 18,
   },
   stationGrid: {
     flexDirection: 'row',
