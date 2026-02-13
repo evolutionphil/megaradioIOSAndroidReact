@@ -1,0 +1,347 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ActivityIndicator,
+  Modal,
+  Share,
+  Linking,
+} from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as Clipboard from 'expo-clipboard';
+
+interface FavoriteStation {
+  id: string;
+  name: string;
+  genre: string;
+  logo: string;
+}
+
+// Mock data for favorite stations
+const MOCK_STATIONS: FavoriteStation[] = [
+  { id: '1', name: 'Power Türk', genre: 'Türkçe Pop', logo: 'https://themegaradio.com/station-logos/power-turk/logo.png' },
+  { id: '2', name: 'Metro FM', genre: 'Pop', logo: 'https://themegaradio.com/station-logos/metro-fm/logo.png' },
+];
+
+export default function UserProfileScreen() {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string }>();
+  const [stations, setStations] = useState<FavoriteStation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  // User info from params or mock
+  const userName = params.userName || 'Talha Çay';
+  const userAvatar = params.userAvatar || 'https://i.pravatar.cc/100?img=11';
+  const followers = 86;
+  const follows = 86;
+
+  useEffect(() => {
+    // Simulate API call
+    setTimeout(() => {
+      setStations(MOCK_STATIONS);
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  const handlePlayStation = (station: FavoriteStation) => {
+    // TODO: Play station
+    console.log('Play station:', station.name);
+  };
+
+  const handleShare = async (platform: string) => {
+    const shareUrl = `https://themegaradio.com/user/${params.userId}`;
+    const shareMessage = `Check out ${userName}'s profile on MegaRadio!`;
+
+    switch (platform) {
+      case 'facebook':
+        Linking.openURL(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
+        break;
+      case 'instagram':
+        // Instagram doesn't support direct URL sharing, open app
+        Linking.openURL('instagram://');
+        break;
+      case 'twitter':
+        Linking.openURL(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(shareUrl)}`);
+        break;
+      case 'whatsapp':
+        Linking.openURL(`whatsapp://send?text=${encodeURIComponent(shareMessage + ' ' + shareUrl)}`);
+        break;
+      case 'copy':
+        await Clipboard.setStringAsync(shareUrl);
+        setShowShareModal(false);
+        break;
+      case 'more':
+        setShowShareModal(false);
+        Share.share({ message: shareMessage, url: shareUrl });
+        break;
+    }
+  };
+
+  const renderStation = ({ item }: { item: FavoriteStation }) => (
+    <View style={styles.stationCard}>
+      <Image source={{ uri: item.logo }} style={styles.stationLogo} />
+      <View style={styles.stationInfo}>
+        <Text style={styles.stationName}>{item.name}</Text>
+        <Text style={styles.stationGenre}>{item.genre}</Text>
+      </View>
+      <TouchableOpacity 
+        style={styles.playButton} 
+        onPress={() => handlePlayStation(item)}
+        data-testid={`play-station-${item.id}`}
+      >
+        <Ionicons name="play" size={22} color="#FFFFFF" />
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} data-testid="user-profile-back-btn">
+          <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Image source={{ uri: userAvatar }} style={styles.headerAvatar} />
+        <View style={styles.headerInfo}>
+          <Text style={styles.headerName}>{userName}</Text>
+          <View style={styles.statsRow}>
+            <Text style={styles.statText}>Followers <Text style={styles.statNumber}>{followers}</Text></Text>
+            <Text style={styles.statText}>  Follows <Text style={styles.statNumber}>{follows}</Text></Text>
+          </View>
+        </View>
+        <TouchableOpacity 
+          style={styles.shareBtn} 
+          onPress={() => setShowShareModal(true)}
+          data-testid="user-profile-share-btn"
+        >
+          <Ionicons name="share-social-outline" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Stations List */}
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FF4081" />
+        </View>
+      ) : (
+        <FlatList
+          data={stations}
+          renderItem={renderStation}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>No favorite stations yet</Text>
+          }
+        />
+      )}
+
+      {/* Share Modal */}
+      <Modal visible={showShareModal} transparent animationType="slide" onRequestClose={() => setShowShareModal(false)}>
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={() => setShowShareModal(false)}
+        >
+          <View style={{ flex: 1 }} />
+        </TouchableOpacity>
+        
+        <View style={[styles.shareSheet, { paddingBottom: insets.bottom || 20 }]}>
+          <View style={styles.sheetHandle} />
+          
+          {/* Social Icons Row */}
+          <View style={styles.socialRow}>
+            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#3B5998' }]} onPress={() => handleShare('facebook')}>
+              <FontAwesome5 name="facebook-f" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#E4405F' }]} onPress={() => handleShare('instagram')}>
+              <FontAwesome5 name="instagram" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#1DA1F2' }]} onPress={() => handleShare('twitter')}>
+              <FontAwesome5 name="twitter" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#25D366' }]} onPress={() => handleShare('whatsapp')}>
+              <FontAwesome5 name="whatsapp" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Copy Link */}
+          <TouchableOpacity style={styles.shareOption} onPress={() => handleShare('copy')}>
+            <View style={styles.shareOptionIcon}>
+              <Ionicons name="link-outline" size={22} color="#FFFFFF" />
+            </View>
+            <Text style={styles.shareOptionText}>Copy Link</Text>
+          </TouchableOpacity>
+
+          {/* More */}
+          <TouchableOpacity style={styles.shareOption} onPress={() => handleShare('more')}>
+            <View style={styles.shareOptionIcon}>
+              <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
+            </View>
+            <Text style={styles.shareOptionText}>More</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  headerAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    marginRight: 12,
+  },
+  headerInfo: {
+    flex: 1,
+  },
+  headerName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  statsRow: {
+    flexDirection: 'row',
+  },
+  statText: {
+    fontSize: 13,
+    color: '#888888',
+  },
+  statNumber: {
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  shareBtn: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listContent: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  stationCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2A2A2A',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+  stationLogo: {
+    width: 56,
+    height: 56,
+    borderRadius: 8,
+    backgroundColor: '#1A1A1A',
+  },
+  stationInfo: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  stationName: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  stationGenre: {
+    fontSize: 14,
+    color: '#888888',
+  },
+  playButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#3A3A3A',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 40,
+  },
+
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  shareSheet: {
+    backgroundColor: '#1B1C1E',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+  },
+  sheetHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#555',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  socialRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    marginBottom: 20,
+  },
+  socialBtn: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shareOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2A2A2A',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    marginBottom: 12,
+  },
+  shareOptionIcon: {
+    marginRight: 16,
+  },
+  shareOptionText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+});
