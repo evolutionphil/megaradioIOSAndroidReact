@@ -259,32 +259,37 @@ export default function HomeScreen() {
             </View>
             {popularLoading ? (
               <ActivityIndicator size="small" color={colors.primary} />
+            ) : popularStations.length === 0 ? (
+              <Text style={styles.emptyText}>No popular stations found</Text>
             ) : (
               <View style={styles.popularList}>
-                {popularStations.slice(0, 4).map((station) => (
-                  <TouchableOpacity
-                    key={station._id}
-                    style={styles.popularItem}
-                    onPress={() => handleStationPress(station)}
-                  >
-                    <View style={styles.popularLogo}>
-                      <Image 
-                        source={{ uri: station.favicon || station.logo || `https://themegaradio.com/station-logos/${station.logoAssets?.folder}/${station.logoAssets?.webp96}` }} 
-                        style={styles.popularLogoImage} 
-                        resizeMode="contain" 
-                      />
-                    </View>
-                    <View style={styles.popularInfo}>
-                      <Text style={styles.popularName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.popularCountry} numberOfLines={1}>
-                        {station.country || station.countrycode || 'Unknown'}
-                      </Text>
-                    </View>
-                    <TouchableOpacity style={styles.playButton} onPress={() => handleStationPress(station)}>
-                      <Ionicons name="play" size={16} color={colors.text} />
+                {popularStations.slice(0, 4).map((station) => {
+                  const logoUrl = getLogoUrl(station);
+                  return (
+                    <TouchableOpacity
+                      key={station._id}
+                      style={styles.popularItem}
+                      onPress={() => handleStationPress(station)}
+                    >
+                      <View style={styles.popularLogo}>
+                        <Image 
+                          source={logoUrl ? { uri: logoUrl } : FALLBACK_LOGO} 
+                          style={styles.popularLogoImage} 
+                          resizeMode="cover" 
+                        />
+                      </View>
+                      <View style={styles.popularInfo}>
+                        <Text style={styles.popularName} numberOfLines={1}>{station.name}</Text>
+                        <Text style={styles.popularCountry} numberOfLines={1}>
+                          {station.country || station.countrycode || 'Unknown'}
+                        </Text>
+                      </View>
+                      <TouchableOpacity style={styles.playButton} onPress={() => handleStationPress(station)}>
+                        <Ionicons name="play" size={16} color={colors.text} />
+                      </TouchableOpacity>
                     </TouchableOpacity>
-                  </TouchableOpacity>
-                ))}
+                  );
+                })}
               </View>
             )}
           </View>
