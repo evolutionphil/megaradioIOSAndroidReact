@@ -196,7 +196,7 @@ const getGenreDisplay = (station: Station): string => {
               {item.name}
             </Text>
             <Text style={styles.stationGenre} numberOfLines={1}>
-              {item.genre || 'Radio'}
+              {getGenreDisplay(item)}
             </Text>
           </View>
           <TouchableOpacity
@@ -226,7 +226,7 @@ const getGenreDisplay = (station: Station): string => {
             {item.name}
           </Text>
           <Text style={styles.stationGenre} numberOfLines={1}>
-            {item.genre || 'Radio'}
+            {getGenreDisplay(item)}
           </Text>
         </View>
         <TouchableOpacity
