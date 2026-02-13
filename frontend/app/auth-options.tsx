@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     gap: 14,
+    marginTop: 420,
   },
   authButton: {
     flexDirection: 'row',
