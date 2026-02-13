@@ -267,11 +267,11 @@ const styles = StyleSheet.create({
   },
   slide: {
     width: width,
-    height: height,
-    flex: 1,
+    height: '100%',
+    minHeight: height,
   },
   imageContainer: {
-    flex: 0.55,
+    height: '50%',
     width: '100%',
     position: 'relative',
   },
