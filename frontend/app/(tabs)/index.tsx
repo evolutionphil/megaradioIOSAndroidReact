@@ -161,7 +161,9 @@ export default function HomeScreen() {
     if (station.logoAssets?.webp96) {
       return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
     }
-    return station.favicon || station.logo || null;
+    const raw = station.favicon || station.logo || null;
+    if (raw && raw.startsWith('/')) return `https://themegaradio.com${raw}`;
+    return raw;
   };
 
   const renderStationLogo = (station: Station, size: number = 100) => {
