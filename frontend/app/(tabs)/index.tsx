@@ -84,13 +84,15 @@ export default function HomeScreen() {
   const calculatedWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
   const gridItemWidth = Math.max(80, Math.min(150, calculatedWidth));
 
-  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(country || undefined, 8);
+  // Use English name for popular stations API, native for stations API
+  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(country || countryCode || undefined);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
   const { data: publicProfiles, refetch: refetchProfiles } = usePublicProfiles(10);
-  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: country || countryCode || undefined });
+  // Use native country name for stations list API
+  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: country || undefined });
   const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 150, 12);
 
   const { playStation } = useAudioPlayer();
