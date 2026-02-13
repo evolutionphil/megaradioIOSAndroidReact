@@ -19,6 +19,14 @@ export const colors = {
   primaryDark: '#4B30BE',
   accent: '#E53935',
   accentPink: '#FF1493',
+  accentPinkButton: '#FF4B8C',
+  
+  // Auth specific
+  inputBackground: '#FFFFFF',
+  inputPlaceholder: '#8E8E93',
+  inputIcon: '#5C6670',
+  errorToast: '#FF6B6B',
+  errorBorder: '#FF6B6B',
   
   // Genre colors
   genreOrange: '#FF8C00',
