@@ -1,15 +1,15 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
 import { AnimatedSplash } from '../src/components/AnimatedSplash';
-import { Onboarding, checkOnboardingComplete } from '../src/components/Onboarding';
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -24,10 +24,31 @@ const queryClient = new QueryClient({
   },
 });
 
+const ONBOARDING_COMPLETE_KEY = '@megaradio_onboarding_complete';
+
+// Storage helper for cross-platform support
+const checkOnboardingComplete = async (): Promise<boolean> => {
+  try {
+    if (Platform.OS === 'web') {
+      const value = localStorage.getItem(ONBOARDING_COMPLETE_KEY);
+      return value === 'true';
+    }
+    const value = await AsyncStorage.getItem(ONBOARDING_COMPLETE_KEY);
+    return value === 'true';
+  } catch (error) {
+    console.error('Error checking onboarding:', error);
+    return false;
+  }
+};
+
 export default function RootLayout() {
-  const [appState, setAppState] = useState<'splash' | 'onboarding_check' | 'onboarding' | 'ready'>('splash');
-  const [isMounted, setIsMounted] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [isNavigationReady, setIsNavigationReady] = useState(false);
+  const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   
+  const segments = useSegments();
+  const navigationState = useRootNavigationState();
+
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
     'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
@@ -38,85 +59,52 @@ export default function RootLayout() {
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
 
-  // Mark component as mounted (client-side only)
+  // Check if navigation is ready
   useEffect(() => {
-    console.log('[Layout] Component mounted');
-    setIsMounted(true);
-  }, []);
+    if (navigationState?.key) {
+      setIsNavigationReady(true);
+    }
+  }, [navigationState?.key]);
 
-  // Handle app state transitions - start splash timeout once mounted
+  // Handle splash screen timeout
   useEffect(() => {
-    console.log('[Layout] Effect triggered - isMounted:', isMounted, 'appState:', appState, 'fontsLoaded:', fontsLoaded, 'fontError:', fontError);
-    
-    if (!isMounted) return;
-    
-    if (appState === 'splash') {
-      // Always start splash timeout after mounting, regardless of font status
-      console.log('[Layout] Starting splash timeout...');
+    if (showSplash) {
       const timer = setTimeout(() => {
-        console.log('[Layout] Splash timeout finished, moving to onboarding_check');
-        setAppState('onboarding_check');
+        setShowSplash(false);
       }, 2800);
       return () => clearTimeout(timer);
     }
-  }, [isMounted, appState, fontsLoaded, fontError]);
+  }, [showSplash]);
 
-  // Check onboarding status
+  // Check onboarding status and navigate after splash
   useEffect(() => {
-    if (!isMounted) return;
-    
-    if (appState === 'onboarding_check') {
-      console.log('[Layout] Checking onboarding status...');
-      checkOnboardingComplete().then((completed) => {
-        console.log('[Layout] Onboarding completed:', completed);
-        if (completed) {
-          setAppState('ready');
-        } else {
-          setAppState('onboarding');
+    const checkAndNavigate = async () => {
+      if (!showSplash && isNavigationReady && !hasCheckedOnboarding) {
+        setHasCheckedOnboarding(true);
+        
+        const onboardingComplete = await checkOnboardingComplete();
+        console.log('[Layout] Onboarding complete:', onboardingComplete);
+        
+        // Only navigate to onboarding if not completed and not already there
+        if (!onboardingComplete && segments[0] !== 'onboarding') {
+          console.log('[Layout] Navigating to onboarding...');
+          router.replace('/onboarding');
         }
-      }).catch((err) => {
-        console.error('[Layout] Error checking onboarding:', err);
-        setAppState('onboarding'); // Show onboarding on error
-      });
-    }
-  }, [appState, isMounted]);
+      }
+    };
 
-  // Font loading check is now optional - app works without fonts loaded
-  const fontsReady = fontsLoaded || fontError || isMounted;
+    checkAndNavigate();
+  }, [showSplash, isNavigationReady, hasCheckedOnboarding, segments]);
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsReady) {
+    if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsReady]);
+  }, [fontsLoaded, fontError]);
 
-  // SSR/Hydration: On server or before hydration, render loading state
-  // This prevents hydration mismatch errors
-  if (!isMounted) {
-    return (
-      <View style={[styles.container, styles.loading]}>
-        <ActivityIndicator size="large" color="#FF1493" />
-      </View>
-    );
-  }
-
-  // Client-side only: Show splash screen
-  if (appState === 'splash') {
-    return <AnimatedSplash onAnimationEnd={() => setAppState('onboarding_check')} />;
-  }
-
-  // Show onboarding if needed
-  if (appState === 'onboarding') {
-    return <Onboarding onComplete={() => setAppState('ready')} />;
-  }
-
-  // Still checking onboarding status
-  if (appState === 'onboarding_check') {
-    return (
-      <View style={[styles.container, styles.loading]}>
-        <ActivityIndicator size="large" color="#FF1493" />
-      </View>
-    );
+  // Show animated custom splash screen
+  if (showSplash) {
+    return <AnimatedSplash onAnimationEnd={() => setShowSplash(false)} />;
   }
 
   return (
@@ -132,6 +120,7 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
             <Stack.Screen
               name="player"
               options={{
