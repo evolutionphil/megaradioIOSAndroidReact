@@ -34,53 +34,57 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Play at Login Screen (Last Played, Random, Favorite, Off options)
 - [x] Country Picker with flag emojis and search
 - [x] Location-based content (GPS-based station discovery)
-- [x] **Followers Screen** - List followers with Remove button
-- [x] **Follows Screen** - List following users with Unfollow button
-- [x] **User Profile Screen** - View other user's profile with favorite stations
-- [x] **Share User Modal** - Facebook, Instagram, Twitter, WhatsApp, Copy Link
-- [x] **Logout Modal** - Centered confirmation dialog with Cancel/Ok buttons
+- [x] Followers Screen - List followers with Remove button
+- [x] Follows Screen - List following users with Unfollow button
+- [x] User Profile Screen - View other user's profile with favorite stations
+- [x] Share User Modal - Facebook, Instagram, Twitter, WhatsApp, Copy Link
+- [x] Logout Modal - Centered confirmation dialog with Cancel/Ok buttons
 
-### Session 5 Bug Fixes (Dec 2025)
-1. **Popular Stations Logo Fix (P0)**: Fixed logo URLs not loading for popular stations.
-   - Now using `getLogoUrl()` helper consistently across all station renders
-   - Handles relative URLs by prepending `https://themegaradio.com`
-   - Falls back to FALLBACK_LOGO when no image available
+### Session 6 Updates (Dec 2025)
+1. **Profile Page - Clickable Followers/Follows Stats (COMPLETED)**
+   - Both the number and text label for "Followers" and "Follows" are now clickable
+   - Uses separate TouchableOpacity for each stat block
+   - Navigates to `/followers` and `/follows` routes respectively
+   - New visual layout with vertical alignment (number on top, label below)
+   - Added divider between stats
 
-2. **API Country Parameter Consistency (P0)**: Fixed stations not loading after country change.
-   - Created country mapping in `locationStore.ts` for English vs Native names
-   - `/api/stations/popular` uses English names (e.g., "Turkey")
-   - `/api/stations` uses native names (e.g., "Türkiye")
-   - Store now tracks both `country` (native) and `countryEnglish`
+2. **Languages Page (NEW - COMPLETED)**
+   - Created `/app/frontend/app/languages.tsx`
+   - Lists 30 common languages with English name and native name
+   - Search functionality to filter languages
+   - Selection persists to AsyncStorage via LANGUAGE_KEY
+   - Pink radio button design matching Figma
+   - Back navigation to Profile
 
-3. **Car Mode Initial Station Fix (P0)**: Fixed carousel starting on wrong station.
-   - Added `initialIndexSetRef` to ensure index is only set once when CarMode opens
-   - Stations list is frozen on open to prevent re-ordering
+3. **Favorites Page Redesign (COMPLETED)**
+   - Complete redesign following Figma mockups
+   - Empty state: Heart icon + "You don't have any favorites yet" + "Discover stations" link
+   - Station cards with logo, name, genre, and pink heart button
+   - Search mode with white search bar and Cancel button
+   - Sort modal (bottom sheet) with 5 options:
+     - Newest first
+     - Oldest first
+     - A-Z
+     - Z-A
+     - Custom order (with drag handles for reordering)
+   - View mode toggle (Grid/List)
+   - Reorder mode with Cancel/Save buttons
 
-4. **GlowEffect Improvement (P1)**: Rewrote SVG RadialGradient for softer blur.
-   - Changed from Rect to Circle element
-   - Added 8 gradient stops (0%, 15%, 30%, 45%, 60%, 75%, 90%, 100%)
-   - Opacity smoothly fades to 0 at edges
-
-5. **Statistics Page (NEW)**: Created `/app/frontend/app/statistics.tsx`
-   - Cards: Total Listening (hours/minutes), Total Radio Station, Music Played
-   - Pink wave graph using SVG Path with LinearGradient
-   - Dark theme matching Figma (#121212 background, #1E1E1E cards)
-
-6. **Play at Login Page (NEW)**: Created `/app/frontend/app/play-at-login.tsx`
-   - Options: Last Played, Random, Favorite, Off
-   - Pink radio buttons (#FF4081) matching Figma
-   - Persists selection to AsyncStorage
-
-7. **Country Picker Enhanced**: Extended FLAG_MAP with 100+ countries
-   - Supports both English and native country names
-   - Search functionality working
-   - Flag emojis display correctly
+4. **New FavoritesStore (NEW)**
+   - `/app/frontend/src/store/favoritesStore.ts`
+   - Local storage via AsyncStorage
+   - Supports sorting (newest, oldest, A-Z, Z-A, custom)
+   - Custom order persistence
+   - View mode (grid/list) preference
 
 ## Key Files
+- `/app/frontend/app/(tabs)/profile.tsx` - Profile with clickable stats and Language navigation
+- `/app/frontend/app/(tabs)/favorites.tsx` - Redesigned Favorites with Figma design
+- `/app/frontend/app/languages.tsx` - New Languages page
+- `/app/frontend/src/store/favoritesStore.ts` - New favorites store with AsyncStorage
 - `/app/frontend/src/store/locationStore.ts` - Country handling with English/Native mapping
 - `/app/frontend/app/statistics.tsx` - Statistics screen (Figma design)
 - `/app/frontend/app/play-at-login.tsx` - Play at Login screen (Figma design)
-- `/app/frontend/app/(tabs)/profile.tsx` - Profile with navigation to sub-screens
 - `/app/frontend/src/components/GlowEffect.tsx` - SVG-based soft glow effect
 - `/app/frontend/src/components/CarModeScreen.tsx` - Car Mode with frozen station list
 - `/app/frontend/app/player.tsx` - Player with animated equalizer
@@ -91,26 +95,33 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - `GET /api/stations?country=Türkiye` - All stations (Native country name)
 - `GET /api/stations/nearby?lat=X&lng=Y` - Nearby stations
 - `GET /api/countries` - List of all countries
+- `GET /api/translations/:lang` - Translations for a language (Languages feature)
 - **Note**: All endpoints require `X-API-Key: mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw` header
 
 ## Pending Tasks (P1)
 - [ ] Authentication flow (Login/Signup)
-- [ ] Favorites feature (API integration)
+- [ ] Connect Favorites to real API (currently local storage)
 - [ ] Profile background colors (Figma match)
+- [ ] i18n integration using selected language
 
 ## Pending Tasks (P2)
 - [ ] Animated equalizer enhancement (more bars)
 - [ ] Sleep timer resume playback fix
 - [ ] Skeleton loaders for loading states
-- [ ] i18n (i18next) integration
+- [ ] Country flags from API (backend update deployed pending)
 
 ## Known Issues
 - Country search requires native name for some countries (e.g., "Tür" for Turkey)
 - Web preview has CORS blocking (use Expo Go for testing)
+- Favorites data is **MOCKED** (stored locally, not from API)
+- Languages list is **MOCKED** (hardcoded, API endpoint for verification only)
 
 ## User Preferences
 - Language: Turkish
 - Priority: Pixel-perfect Figma design
 
+## Test Reports
+- `/app/test_reports/iteration_5.json` - All 8 features passed (100% success rate)
+
 ## Last Updated
-December 2025 - Session 5
+December 2025 - Session 6
