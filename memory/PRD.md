@@ -26,7 +26,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Car Mode Screen with Custom Carousel
 - [x] Now Playing API with ICY Metadata
 - [x] API Key Integration (X-API-Key header on all requests)
-- [x] Sleep Timer with countdown functionality
+- [x] Sleep Timer with countdown functionality + ON badge + Sleep Counter Modal
 - [x] Share Modal with native sharing
 - [x] Radio Error Modal for stream failures
 - [x] Client-side Recently Played (AsyncStorage)
@@ -34,6 +34,11 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Play at Login Screen (Last Played, Random, Favorite, Off options)
 - [x] Country Picker with flag emojis and search
 - [x] Location-based content (GPS-based station discovery)
+- [x] **Followers Screen** - List followers with Remove button
+- [x] **Follows Screen** - List following users with Unfollow button
+- [x] **User Profile Screen** - View other user's profile with favorite stations
+- [x] **Share User Modal** - Facebook, Instagram, Twitter, WhatsApp, Copy Link
+- [x] **Logout Modal** - Centered confirmation dialog with Cancel/Ok buttons
 
 ### Session 5 Bug Fixes (Dec 2025)
 1. **Popular Stations Logo Fix (P0)**: Fixed logo URLs not loading for popular stations.
