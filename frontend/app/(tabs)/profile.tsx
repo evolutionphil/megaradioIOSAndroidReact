@@ -438,9 +438,11 @@ const s = StyleSheet.create({
   avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
   avatarImage: { width: 56, height: 56, borderRadius: 28 },
   userName: { fontSize: 20, fontWeight: '700', color: '#FFF' },
-  statsRow: { flexDirection: 'row', marginTop: 2 },
-  userStats: { fontSize: 13, color: '#888' },
-  statBold: { fontWeight: '700', color: '#FFF' },
+  statsRow: { flexDirection: 'row', marginTop: 4, alignItems: 'center' },
+  statTouchable: { alignItems: 'center', paddingVertical: 4, paddingHorizontal: 8 },
+  statNumber: { fontSize: 16, fontWeight: '700', color: '#FFF' },
+  statLabel: { fontSize: 13, color: '#888', marginTop: 2 },
+  statDivider: { width: 1, height: 24, backgroundColor: '#333', marginHorizontal: 8 },
   // Section
   sectionLabel: { fontSize: 18, fontWeight: '700', color: '#FFF', paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 },
   // Rows
