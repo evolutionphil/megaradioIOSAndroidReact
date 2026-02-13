@@ -284,21 +284,13 @@ export default function ProfileScreen() {
           <View style={s.guestAvatar}>
             <Ionicons name="person" size={48} color="#888" />
           </View>
-          <Text style={s.guestTitle}>Welcome to MegaRadio</Text>
           <Text style={s.guestSubtitle}>Sign in to access your profile, favorites, and more</Text>
           <TouchableOpacity 
             style={s.loginBtn} 
             onPress={() => router.push('/auth-options')}
             data-testid="profile-login-btn"
           >
-            <Text style={s.loginBtnText}>Sign In</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={s.skipBtn} 
-            onPress={() => router.push('/auth-options')}
-            data-testid="profile-signup-btn"
-          >
-            <Text style={s.skipBtnText}>Create Account</Text>
+            <Text style={s.loginBtnText}>Sign In / Sign Up</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
