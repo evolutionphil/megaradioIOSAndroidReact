@@ -361,7 +361,7 @@ export default function ProfileScreen() {
         {[
           { title: 'Play at Login', sub: 'Last Played', onPress: () => router.push('/play-at-login') },
           { title: 'Country', sub: country || 'Not set', onPress: () => setCurrentPage('country') },
-          { title: 'Language', sub: 'English', onPress: undefined },
+          { title: 'Language', sub: 'English', onPress: () => router.push('/languages') },
           { title: 'Statistics', onPress: () => router.push('/statistics') },
           { title: 'Account', onPress: () => setCurrentPage('account') },
         ].map((item, i) => (
