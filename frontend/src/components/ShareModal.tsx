@@ -10,8 +10,10 @@ import {
   Linking,
   Dimensions,
   Platform,
+  StatusBar,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Clipboard from 'expo-clipboard';
 import type { Station } from '../types';
 
@@ -33,28 +35,48 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   nowPlayingTitle,
   getLogoUrl,
 }) => {
+  const insets = useSafeAreaInsets();
+
   if (!station) return null;
 
   const logoUrl = getLogoUrl(station);
   const stationUrl = `https://themegaradio.com/station/${station._id}`;
-  const shareText = nowPlayingTitle
-    ? `${station.name} - ${nowPlayingTitle}`
-    : `${station.name} on MegaRadio`;
+  const shareText = `${station.name} - MegaRadio`;
+  const shareMessage = nowPlayingTitle
+    ? `${station.name} - ${nowPlayingTitle}\nMegaRadio'da dinle: ${stationUrl}`
+    : `${station.name} - MegaRadio'da dinle: ${stationUrl}`;
 
   const handleFacebookShare = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(stationUrl)}`;
-    Linking.openURL(url);
+    const fbUrl = `fb://share?link=${encodeURIComponent(stationUrl)}`;
+    Linking.canOpenURL(fbUrl).then((supported) => {
+      if (supported) {
+        Linking.openURL(fbUrl);
+      } else {
+        Linking.openURL(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(stationUrl)}&quote=${encodeURIComponent(shareText)}`);
+      }
+    });
   };
 
-  const handleTwitterShare = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(stationUrl)}`;
-    Linking.openURL(url);
+  const handleInstagramShare = async () => {
+    // Instagram doesn't have a direct share URL, use native share with Instagram hint
+    onClose();
+    try {
+      await Share.share({
+        message: shareMessage,
+        url: stationUrl,
+        title: shareText,
+      });
+    } catch {}
   };
 
   const handleWhatsAppShare = () => {
-    const url = `whatsapp://send?text=${encodeURIComponent(`${shareText} ${stationUrl}`)}`;
-    Linking.openURL(url).catch(() => {
-      Linking.openURL(`https://wa.me/?text=${encodeURIComponent(`${shareText} ${stationUrl}`)}`);
+    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(shareMessage)}`;
+    Linking.canOpenURL(whatsappUrl).then((supported) => {
+      if (supported) {
+        Linking.openURL(whatsappUrl);
+      } else {
+        Linking.openURL(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`);
+      }
     });
   };
 
@@ -65,41 +87,49 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   const handleMore = async () => {
     onClose();
-    try {
-      await Share.share({
-        message: `${shareText}\n${stationUrl}`,
-        url: stationUrl,
-        title: shareText,
-      });
-    } catch {}
+    setTimeout(async () => {
+      try {
+        await Share.share({
+          message: shareMessage,
+          url: stationUrl,
+          title: shareText,
+        });
+      } catch {}
+    }, 300);
   };
 
   return (
     <Modal
       visible={visible}
-      animationType="slide"
-      transparent={true}
+      animationType="fade"
+      transparent={false}
       onRequestClose={onClose}
+      statusBarTranslucent
     >
-      <View style={styles.overlay} data-testid="share-modal">
-        <View style={styles.container}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerSpacer} />
-            <Text style={styles.headerTitle}>Share</Text>
-            <TouchableOpacity
-              style={styles.closeBtn}
-              onPress={onClose}
-              data-testid="share-modal-close"
-            >
-              <Ionicons name="close" size={20} color="#FFF" />
-            </TouchableOpacity>
-          </View>
+      <StatusBar barStyle="light-content" backgroundColor="#1B1C1E" />
+      <View style={[styles.fullScreen, { paddingTop: insets.top, paddingBottom: insets.bottom || 24 }]} data-testid="share-modal">
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerSpacer} />
+          <Text style={styles.headerTitle}>Share</Text>
+          <TouchableOpacity
+            style={styles.closeBtn}
+            onPress={onClose}
+            data-testid="share-modal-close"
+          >
+            <Ionicons name="close" size={22} color="#FFF" />
+          </TouchableOpacity>
+        </View>
 
+        {/* Main content centered */}
+        <View style={styles.content}>
           {/* Artwork with glow */}
           <View style={styles.artworkSection}>
-            <View style={styles.glowOuter} />
-            <View style={styles.glowInner} />
+            {/* Multi-layer glow for blur effect */}
+            <View style={[styles.glowLayer, styles.glow1]} />
+            <View style={[styles.glowLayer, styles.glow2]} />
+            <View style={[styles.glowLayer, styles.glow3]} />
+            <View style={[styles.glowLayer, styles.glow4]} />
             <View style={styles.artworkWrapper}>
               {logoUrl ? (
                 <Image
@@ -115,49 +145,52 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             </View>
           </View>
 
-          {/* Equalizer dots */}
+          {/* Equalizer bars */}
           <View style={styles.eqDots}>
+            <View style={[styles.eqBar, { height: 10 }]} />
+            <View style={[styles.eqBar, { height: 16 }]} />
             <View style={[styles.eqBar, { height: 12 }]} />
-            <View style={[styles.eqBar, { height: 18 }]} />
-            <View style={[styles.eqBar, { height: 14 }]} />
           </View>
 
           {/* Station info */}
-          <Text style={styles.stationName}>{station.name}</Text>
-          <Text style={styles.songTitle}>{nowPlayingTitle || 'Live Radio'}</Text>
+          <Text style={styles.stationName} numberOfLines={1}>{station.name}</Text>
+          <Text style={styles.songTitle} numberOfLines={1}>{nowPlayingTitle || 'Live Radio'}</Text>
 
-          {/* Social buttons */}
+          {/* Social buttons - Facebook, Instagram, WhatsApp */}
           <View style={styles.socialRow}>
             <TouchableOpacity
               style={[styles.socialBtn, { backgroundColor: '#3b5998' }]}
               onPress={handleFacebookShare}
               data-testid="share-facebook"
             >
-              <Text style={styles.fbIcon}>f</Text>
+              <FontAwesome5 name="facebook-f" size={24} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.socialBtn, { backgroundColor: '#1DA1F2' }]}
-              onPress={handleTwitterShare}
-              data-testid="share-twitter"
+              style={[styles.socialBtn, { backgroundColor: '#C13584' }]}
+              onPress={handleInstagramShare}
+              data-testid="share-instagram"
             >
-              <Ionicons name="logo-twitter" size={24} color="#FFF" />
+              <FontAwesome5 name="instagram" size={26} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.socialBtn, { backgroundColor: '#25D366' }]}
               onPress={handleWhatsAppShare}
               data-testid="share-whatsapp"
             >
-              <Ionicons name="logo-whatsapp" size={24} color="#FFF" />
+              <FontAwesome5 name="whatsapp" size={26} color="#FFF" />
             </TouchableOpacity>
           </View>
+        </View>
 
+        {/* Bottom actions */}
+        <View style={styles.bottomActions}>
           {/* Copy Link */}
           <TouchableOpacity
             style={styles.actionRow}
             onPress={handleCopyLink}
             data-testid="share-copy-link"
           >
-            <Ionicons name="link" size={22} color="#FFF" />
+            <Ionicons name="link-outline" size={22} color="#FFF" />
             <Text style={styles.actionText}>Copy Link</Text>
           </TouchableOpacity>
 
@@ -177,28 +210,19 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  overlay: {
+  fullScreen: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'flex-end',
-  },
-  container: {
     backgroundColor: '#1B1C1E',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-    paddingHorizontal: 24,
-    alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
-    paddingTop: 20,
-    paddingBottom: 16,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
-  headerSpacer: { width: 36 },
+  headerSpacer: { width: 40 },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
@@ -206,35 +230,53 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   closeBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#3A3A3A',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  // Artwork with glow
+  // Main content
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+
+  // Artwork with multi-layer glow (simulates blur on iOS)
   artworkSection: {
-    width: ARTWORK_SIZE + 60,
-    height: ARTWORK_SIZE + 60,
+    width: ARTWORK_SIZE + 120,
+    height: ARTWORK_SIZE + 120,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
-  glowOuter: {
+  glowLayer: {
     position: 'absolute',
-    width: ARTWORK_SIZE + 80,
-    height: ARTWORK_SIZE + 80,
-    borderRadius: (ARTWORK_SIZE + 80) / 2,
-    backgroundColor: 'rgba(123, 97, 255, 0.12)',
+    borderRadius: 999,
   },
-  glowInner: {
-    position: 'absolute',
-    width: ARTWORK_SIZE + 40,
-    height: ARTWORK_SIZE + 40,
-    borderRadius: (ARTWORK_SIZE + 40) / 2,
-    backgroundColor: 'rgba(123, 97, 255, 0.18)',
+  glow1: {
+    width: ARTWORK_SIZE + 140,
+    height: ARTWORK_SIZE + 140,
+    backgroundColor: 'rgba(123, 97, 255, 0.06)',
+  },
+  glow2: {
+    width: ARTWORK_SIZE + 100,
+    height: ARTWORK_SIZE + 100,
+    backgroundColor: 'rgba(123, 97, 255, 0.10)',
+  },
+  glow3: {
+    width: ARTWORK_SIZE + 60,
+    height: ARTWORK_SIZE + 60,
+    backgroundColor: 'rgba(123, 97, 255, 0.15)',
+  },
+  glow4: {
+    width: ARTWORK_SIZE + 30,
+    height: ARTWORK_SIZE + 30,
+    backgroundColor: 'rgba(123, 97, 255, 0.20)',
   },
   artworkWrapper: {
     width: ARTWORK_SIZE,
@@ -255,12 +297,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A2A2A',
   },
 
-  // Equalizer dots
+  // Equalizer bars
   eqDots: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: 3,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   eqBar: {
     width: 5,
@@ -280,30 +322,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#999',
     textAlign: 'center',
-    marginBottom: 28,
+    marginBottom: 32,
   },
 
   // Social buttons
   socialRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 24,
-    marginBottom: 28,
+    gap: 28,
   },
   socialBtn: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fbIcon: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#FFF',
-  },
 
-  // Action rows
+  // Bottom actions
+  bottomActions: {
+    paddingHorizontal: 24,
+    paddingBottom: 8,
+  },
   actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
