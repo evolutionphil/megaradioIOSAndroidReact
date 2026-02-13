@@ -119,7 +119,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-apple-button"
           >
             <View style={styles.iconContainer}>
-              <FontAwesome5 name="apple" size={22} color="#000000" solid />
+              <Ionicons name="logo-apple" size={22} color="#000000" />
             </View>
             <Text style={styles.authButtonText}>Login With Apple</Text>
           </TouchableOpacity>
