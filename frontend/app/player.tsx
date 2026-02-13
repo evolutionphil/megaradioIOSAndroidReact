@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Animated,
   Dimensions,
   ScrollView,
   Platform,
