@@ -404,11 +404,18 @@ export default function ProfileScreen() {
         </View>
 
         {/* Logout */}
-        <TouchableOpacity style={s.logoutBtn} onPress={handleLogout}>
+        <TouchableOpacity style={s.logoutBtn} onPress={() => setShowLogoutModal(true)} data-testid="profile-logout-btn">
           <Text style={s.logoutText}>Log Out</Text>
         </TouchableOpacity>
         <View style={{ height: 80 }} />
       </ScrollView>
+      
+      {/* Logout Modal */}
+      <LogoutModal
+        visible={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+      />
     </SafeAreaView>
   );
 }
