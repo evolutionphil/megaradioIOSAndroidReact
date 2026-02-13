@@ -170,17 +170,11 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background Gradient Blur - Platform-aware implementation */}
+      {/* Background Glow with BlurView */}
       <View style={styles.bgGradientContainer}>
-        {/* Multiple layered circles for soft blur effect on iOS */}
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer1]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer2]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer3]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer4]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer5]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer6]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer7]} />
-        <View style={[styles.bgGlowLayer, styles.bgGlowLayer8]} />
+        <BlurView intensity={80} tint="dark" style={styles.bgBlurView}>
+          <View style={styles.bgGlowColor} />
+        </BlurView>
       </View>
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -524,75 +518,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   
-  // Background Gradient Blur - Using CSS filter for web
+  // Background Glow with BlurView
   bgGradientContainer: {
     position: 'absolute',
-    top: -200,
-    left: -200,
-    width: 650,
-    height: 650,
+    top: -100,
+    left: -100,
+    width: 350,
+    height: 350,
     zIndex: 0,
+    borderRadius: 175,
+    overflow: 'hidden',
   },
-  // Multiple layered circles create soft blur effect on iOS
-  bgGlowLayer: {
-    position: 'absolute',
-    borderRadius: 999,
+  bgBlurView: {
+    flex: 1,
   },
-  bgGlowLayer1: {
-    top: 0,
-    left: 0,
-    width: 650,
-    height: 650,
-    backgroundColor: 'rgba(107, 78, 255, 0.04)',
-  },
-  bgGlowLayer2: {
-    top: 35,
-    left: 35,
-    width: 580,
-    height: 580,
-    backgroundColor: 'rgba(107, 78, 255, 0.05)',
-  },
-  bgGlowLayer3: {
-    top: 70,
-    left: 70,
-    width: 510,
-    height: 510,
-    backgroundColor: 'rgba(107, 78, 255, 0.06)',
-  },
-  bgGlowLayer4: {
-    top: 105,
-    left: 105,
-    width: 440,
-    height: 440,
-    backgroundColor: 'rgba(107, 78, 255, 0.07)',
-  },
-  bgGlowLayer5: {
-    top: 140,
-    left: 140,
-    width: 370,
-    height: 370,
-    backgroundColor: 'rgba(107, 78, 255, 0.09)',
-  },
-  bgGlowLayer6: {
-    top: 175,
-    left: 175,
-    width: 300,
-    height: 300,
-    backgroundColor: 'rgba(107, 78, 255, 0.11)',
-  },
-  bgGlowLayer7: {
-    top: 210,
-    left: 210,
-    width: 230,
-    height: 230,
-    backgroundColor: 'rgba(107, 78, 255, 0.14)',
-  },
-  bgGlowLayer8: {
-    top: 245,
-    left: 245,
-    width: 160,
-    height: 160,
-    backgroundColor: 'rgba(107, 78, 255, 0.17)',
+  bgGlowColor: {
+    flex: 1,
+    backgroundColor: 'rgba(107, 78, 255, 0.35)',
+    borderRadius: 175,
   },
   
   safeArea: {
