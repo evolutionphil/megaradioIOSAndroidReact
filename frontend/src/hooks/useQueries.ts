@@ -34,9 +34,8 @@ export const usePopularStations = (country?: string, limit: number = 12) => {
   return useQuery({
     queryKey: [...queryKeys.popularStations, country, limit],
     queryFn: () => stationService.getPopularStations(country, limit),
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 };
 
