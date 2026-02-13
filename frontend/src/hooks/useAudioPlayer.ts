@@ -458,8 +458,11 @@ export const useAudioPlayer = () => {
       await pause();
     } else if (playbackState === 'paused') {
       await resume();
+    } else if (playbackState === 'idle' && currentStation) {
+      // After sleep timer stops playback, allow re-play
+      await playStation(currentStation);
     }
-  }, [playbackState, pause, resume]);
+  }, [playbackState, pause, resume, currentStation, playStation]);
 
   // Set volume
   const setVolume = useCallback(async (volume: number) => {
