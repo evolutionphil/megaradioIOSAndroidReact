@@ -18,6 +18,7 @@ import { StationCard, GenreCard, SectionHeader } from '../../src/components';
 import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
+import { useLocationStore } from '../../src/store/locationStore';
 import type { Station, Genre } from '../../src/types';
 
 export default function DiscoverScreen() {
@@ -25,13 +26,15 @@ export default function DiscoverScreen() {
   const params = useLocalSearchParams();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(params.genre as string || null);
+  const { countryCode } = useLocationStore();
 
-  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
+  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
   const { data: stationsData, isLoading: stationsLoading, refetch: refetchStations } = useStations({
     sort: 'votes',
     order: 'desc',
     limit: 50,
     genre: selectedGenre || undefined,
+    country: countryCode || undefined,
   });
 
   const { playStation } = useAudioPlayer();
