@@ -215,8 +215,6 @@ export default function PlayerScreen() {
   const [showCarMode, setShowCarMode] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSleepTimer, setShowSleepTimer] = useState(false);
-  const [sleepTimerActive, setSleepTimerActive] = useState(false);
-  const [sleepRemaining, setSleepRemaining] = useState(0);
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
