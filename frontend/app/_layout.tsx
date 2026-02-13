@@ -71,16 +71,9 @@ export default function RootLayout() {
     return (
       <View style={styles.splashContainer}>
         <StatusBar style="light" />
-        <View style={styles.logoContainer}>
-          <Image
-            source={SPLASH_LOGO}
-            style={styles.splashLogo}
-            resizeMode="contain"
-          />
-        </View>
         <Image
-          source={SPLASH_DOTS}
-          style={styles.dotsPattern}
+          source={SPLASH_FULL}
+          style={styles.splashFullImage}
           resizeMode="cover"
         />
       </View>
