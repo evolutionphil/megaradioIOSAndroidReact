@@ -83,12 +83,21 @@ export default function RootLayout() {
         setHasCheckedOnboarding(true);
         
         const onboardingComplete = await checkOnboardingComplete();
-        console.log('[Layout] Onboarding complete:', onboardingComplete);
+        console.log('[Layout] Onboarding complete:', onboardingComplete, 'Current segment:', segments[0]);
         
-        // Only navigate to onboarding if not completed and not already there
-        if (!onboardingComplete && segments[0] !== 'onboarding') {
-          console.log('[Layout] Navigating to onboarding...');
-          router.replace('/onboarding');
+        if (onboardingComplete) {
+          // If onboarding is complete and user is on onboarding page, redirect to home
+          if (segments[0] === 'onboarding') {
+            console.log('[Layout] Onboarding complete, redirecting to home...');
+            router.replace('/(tabs)');
+          }
+          // Otherwise do nothing - let them stay where they are
+        } else {
+          // Onboarding not complete - redirect to onboarding if not already there
+          if (segments[0] !== 'onboarding') {
+            console.log('[Layout] Navigating to onboarding...');
+            router.replace('/onboarding');
+          }
         }
       }
     };
