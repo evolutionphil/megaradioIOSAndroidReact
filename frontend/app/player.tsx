@@ -842,6 +842,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  timerOnBadge: {
+    position: 'absolute',
+    bottom: -4,
+    right: -8,
+    backgroundColor: '#4CD964',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  timerOnText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
   skipButton: {
     width: 60,
     height: 60,
