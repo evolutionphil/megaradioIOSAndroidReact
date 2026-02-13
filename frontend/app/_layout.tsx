@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, ActivityIndicator, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Image, ImageBackground, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { colors } from '../src/constants/theme';
