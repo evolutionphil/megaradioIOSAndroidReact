@@ -191,7 +191,7 @@ export const AnimatedSplash: React.FC<AnimatedSplashProps> = ({ onAnimationEnd }
         <Image
           source={SPLASH_DOTS}
           style={styles.dots}
-          resizeMode="cover"
+          resizeMode="contain"
         />
       </Animated.View>
     </View>
