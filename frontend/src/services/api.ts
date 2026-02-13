@@ -21,12 +21,29 @@ const api: AxiosInstance = axios.create({
   withCredentials: !isWeb,
 });
 
+// Helper to get auth token (lazy import to avoid circular dependency)
+const getAuthToken = (): string | null => {
+  try {
+    // Dynamic import of authStore to avoid circular dependency
+    const { useAuthStore } = require('../store/authStore');
+    return useAuthStore.getState().token;
+  } catch {
+    return null;
+  }
+};
+
 // Request interceptor
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Ensure API key is always present
     if (config.headers) {
       config.headers['X-API-Key'] = MEGARADIO_API_KEY;
+      
+      // Add mobile auth token if available and not already set
+      const token = getAuthToken();
+      if (token && !config.headers['Authorization']) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
     }
     return config;
   },
