@@ -109,6 +109,7 @@ export default function HomeScreen() {
   const recentStations = recentlyPlayedData || [];
   const allStations = allStationsData?.stations || [];
   const discoverableGenresList = discoverableGenres || [];
+  const nearbyStations = Array.isArray(nearbyData) ? nearbyData : (nearbyData?.stations || []);
 
   // Get discoverable genre image URL
   const getDiscoverableGenreImage = (genre: any) => {
