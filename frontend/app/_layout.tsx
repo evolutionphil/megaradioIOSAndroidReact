@@ -41,7 +41,7 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 2500);
+      }, 2800);
       return () => clearTimeout(timer);
     }
   }, [fontsLoaded, fontError]);
@@ -60,27 +60,9 @@ export default function RootLayout() {
     );
   }
 
-  // Show custom splash screen
+  // Show animated custom splash screen
   if (showSplash) {
-    return (
-      <View style={styles.splashContainer}>
-        <StatusBar style="light" />
-        {/* Logo with circles centered */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={SPLASH_LOGO}
-            style={styles.splashLogo}
-            resizeMode="contain"
-          />
-        </View>
-        {/* Dotted pattern at bottom left */}
-        <Image
-          source={SPLASH_DOTS}
-          style={styles.dotsPattern}
-          resizeMode="contain"
-        />
-      </View>
-    );
+    return <AnimatedSplash onAnimationEnd={() => setShowSplash(false)} />;
   }
 
   return (
