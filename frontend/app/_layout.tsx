@@ -65,6 +65,27 @@ export default function RootLayout() {
     );
   }
 
+  // Show custom splash screen
+  if (showSplash) {
+    return (
+      <View style={styles.splashContainer}>
+        <StatusBar style="light" />
+        <View style={styles.logoContainer}>
+          <Image
+            source={SPLASH_LOGO}
+            style={styles.splashLogo}
+            resizeMode="contain"
+          />
+        </View>
+        <Image
+          source={SPLASH_DOTS}
+          style={styles.dotsPattern}
+          resizeMode="cover"
+        />
+      </View>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
       <QueryClientProvider client={queryClient}>
