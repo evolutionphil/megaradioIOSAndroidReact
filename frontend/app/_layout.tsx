@@ -153,9 +153,10 @@ const styles = StyleSheet.create({
   },
   dotsPattern: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: width * 0.6,
-    height: height * 0.25,
+    bottom: -20,
+    left: -20,
+    width: width * 0.8,
+    height: height * 0.35,
+    opacity: 1,
   },
 });
