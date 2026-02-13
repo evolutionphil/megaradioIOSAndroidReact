@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,32 +11,53 @@ import {
   TextInput,
   Alert,
   Linking,
-  Dimensions,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { colors, spacing, typography } from '../../src/constants/theme';
 import { useAuthStore } from '../../src/store/authStore';
 import { useLocationStore } from '../../src/store/locationStore';
+import api from '../../src/services/api';
+import API_ENDPOINTS from '../../src/constants/api';
 
-const COUNTRIES = [
-  'Austria', 'Germany', 'Turkey', 'United States', 'United Kingdom',
-  'France', 'Spain', 'Italy', 'Netherlands', 'Switzerland',
-  'Belgium', 'Sweden', 'Norway', 'Denmark', 'Poland',
-  'Czech Republic', 'Hungary', 'Romania', 'Greece', 'Portugal',
-  'Brazil', 'Canada', 'Australia', 'Japan', 'India',
-];
+// Country name → flag emoji mapping
+const FLAG_MAP: Record<string, string> = {
+  'Afghanistan': '🇦🇫', 'Albania': '🇦🇱', 'Algeria': '🇩🇿', 'Argentina': '🇦🇷', 'Armenia': '🇦🇲',
+  'Australia': '🇦🇺', 'Austria': '🇦🇹', 'Azerbaijan': '🇦🇿', 'Bangladesh': '🇧🇩', 'Belarus': '🇧🇾',
+  'Belgium': '🇧🇪', 'Bolivia': '🇧🇴', 'Bosnia And Herzegovina': '🇧🇦', 'Brazil': '🇧🇷',
+  'Bulgaria': '🇧🇬', 'Canada': '🇨🇦', 'Chile': '🇨🇱', 'China': '🇨🇳', 'Colombia': '🇨🇴',
+  'Costa Rica': '🇨🇷', 'Croatia': '🇭🇷', 'Cuba': '🇨🇺', 'Czech Republic': '🇨🇿', 'Denmark': '🇩🇰',
+  'Dominican Republic': '🇩🇴', 'Ecuador': '🇪🇨', 'Egypt': '🇪🇬', 'Estonia': '🇪🇪',
+  'Finland': '🇫🇮', 'France': '🇫🇷', 'Georgia': '🇬🇪', 'Germany': '🇩🇪', 'Ghana': '🇬🇭',
+  'Greece': '🇬🇷', 'Guatemala': '🇬🇹', 'Honduras': '🇭🇳', 'Hungary': '🇭🇺', 'Iceland': '🇮🇸',
+  'India': '🇮🇳', 'Indonesia': '🇮🇩', 'Iran': '🇮🇷', 'Iraq': '🇮🇶', 'Ireland': '🇮🇪',
+  'Israel': '🇮🇱', 'Italy': '🇮🇹', 'Jamaica': '🇯🇲', 'Japan': '🇯🇵', 'Jordan': '🇯🇴',
+  'Kazakhstan': '🇰🇿', 'Kenya': '🇰🇪', 'Kuwait': '🇰🇼', 'Latvia': '🇱🇻', 'Lebanon': '🇱🇧',
+  'Lithuania': '🇱🇹', 'Luxembourg': '🇱🇺', 'Malaysia': '🇲🇾', 'Mexico': '🇲🇽', 'Moldova': '🇲🇩',
+  'Morocco': '🇲🇦', 'Nepal': '🇳🇵', 'Netherlands': '🇳🇱', 'New Zealand': '🇳🇿', 'Nigeria': '🇳🇬',
+  'North Macedonia': '🇲🇰', 'Norway': '🇳🇴', 'Pakistan': '🇵🇰', 'Panama': '🇵🇦', 'Paraguay': '🇵🇾',
+  'Peru': '🇵🇪', 'Philippines': '🇵🇭', 'Poland': '🇵🇱', 'Portugal': '🇵🇹', 'Qatar': '🇶🇦',
+  'Romania': '🇷🇴', 'Russia': '🇷🇺', 'Saudi Arabia': '🇸🇦', 'Serbia': '🇷🇸', 'Singapore': '🇸🇬',
+  'Slovakia': '🇸🇰', 'Slovenia': '🇸🇮', 'South Africa': '🇿🇦', 'South Korea': '🇰🇷',
+  'Spain': '🇪🇸', 'Sri Lanka': '🇱🇰', 'Sweden': '🇸🇪', 'Switzerland': '🇨🇭', 'Syria': '🇸🇾',
+  'Taiwan': '🇹🇼', 'Thailand': '🇹🇭', 'Tunisia': '🇹🇳', 'Türkiye': '🇹🇷', 'Turkey': '🇹🇷',
+  'Ukraine': '🇺🇦', 'United Arab Emirates': '🇦🇪', 'United Kingdom': '🇬🇧',
+  'United States': '🇺🇸', 'Uruguay': '🇺🇾', 'Uzbekistan': '🇺🇿',
+  'Venezuela': '🇻🇪', 'Vietnam': '🇻🇳',
+  'The United States Of America': '🇺🇸', 'The United Kingdom Of Great Britain And Northern Ireland': '🇬🇧',
+};
+const getFlag = (name: string) => FLAG_MAP[name] || '🌍';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, isAuthenticated, logout: clearAuth } = useAuthStore();
+  const { user, logout: clearAuth } = useAuthStore();
   const { country, setCountryManual } = useLocationStore();
 
   const [notifications, setNotifications] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
-  const [showAccount, setShowAccount] = useState(false);
-  const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'main' | 'account' | 'country'>('main');
 
   // Account modals
   const [showNameModal, setShowNameModal] = useState(false);
@@ -45,7 +66,6 @@ export default function ProfileScreen() {
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [showPasswordChanged, setShowPasswordChanged] = useState(false);
 
-  // Form values
   const [nameValue, setNameValue] = useState(user?.name || 'Guest');
   const [emailValue, setEmailValue] = useState(user?.email || '');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -55,8 +75,28 @@ export default function ProfileScreen() {
   const [showNewPw, setShowNewPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
 
-  const userName = user?.name || 'Guest';
+  // Country picker
+  const [countries, setCountries] = useState<string[]>([]);
+  const [countriesLoading, setCountriesLoading] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
+
+  const userName = user?.name || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
+
+  // Fetch countries from API
+  useEffect(() => {
+    if (currentPage === 'country' && countries.length === 0) {
+      setCountriesLoading(true);
+      api.get(API_ENDPOINTS.countries)
+        .then(res => setCountries(res.data || []))
+        .catch(() => {})
+        .finally(() => setCountriesLoading(false));
+    }
+  }, [currentPage]);
+
+  const filteredCountries = countrySearch
+    ? countries.filter(c => c.toLowerCase().includes(countrySearch.toLowerCase()))
+    : countries;
 
   const handleLogout = async () => {
     clearAuth();
@@ -77,432 +117,295 @@ export default function ProfileScreen() {
     setShowPasswordModal(false);
     setShowPasswordChanged(true);
     setTimeout(() => setShowPasswordChanged(false), 3000);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-  };
-
-  const handleNameDone = () => {
-    setShowNameModal(false);
+    setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
   };
 
   const handleCountrySelect = (c: string) => {
     setCountryManual(c);
-    setShowCountryPicker(false);
+    setCurrentPage('main');
   };
 
-  // ── ACCOUNT SCREEN ──
-  if (showAccount) {
+  // ── COUNTRY PICKER ──
+  if (currentPage === 'country') {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.accountHeader}>
-          <TouchableOpacity onPress={() => setShowAccount(false)} data-testid="account-back">
+      <SafeAreaView style={s.container} edges={['top']}>
+        <View style={s.subHeader}>
+          <TouchableOpacity onPress={() => setCurrentPage('main')}>
             <Ionicons name="chevron-back" size={24} color="#FFF" />
           </TouchableOpacity>
-          <Text style={styles.accountTitle}>Account</Text>
+          <Text style={s.subTitle}>Country</Text>
           <View style={{ width: 24 }} />
         </View>
 
-        <View style={styles.accountList}>
-          <TouchableOpacity style={styles.accountRow} onPress={() => setShowNameModal(true)} data-testid="account-name">
-            <View>
-              <Text style={styles.accountLabel}>Name</Text>
-              <Text style={styles.accountValue}>{nameValue}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#666" />
-          </TouchableOpacity>
-          <View style={styles.divider} />
-
-          <TouchableOpacity style={styles.accountRow} onPress={() => setShowEmailModal(true)} data-testid="account-email">
-            <View>
-              <Text style={styles.accountLabel}>Email</Text>
-              <Text style={styles.accountValue}>{userEmail}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#666" />
-          </TouchableOpacity>
-          <View style={styles.divider} />
-
-          <TouchableOpacity style={styles.accountRow} onPress={() => setShowPasswordModal(true)} data-testid="account-password">
-            <View>
-              <Text style={styles.accountLabel}>Password</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#666" />
-          </TouchableOpacity>
-          <View style={styles.divider} />
+        {/* Search */}
+        <View style={s.searchBar}>
+          <TextInput
+            style={s.searchInput}
+            placeholder="Search Country"
+            placeholderTextColor="#999"
+            value={countrySearch}
+            onChangeText={setCountrySearch}
+          />
+          <Ionicons name="search" size={20} color="#999" />
         </View>
 
-        {/* Change Name Modal */}
+        {countriesLoading ? (
+          <ActivityIndicator size="large" color="#FF4199" style={{ marginTop: 40 }} />
+        ) : (
+          <FlatList
+            data={filteredCountries}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[s.countryRow, item === country && s.countryRowActive]}
+                onPress={() => handleCountrySelect(item)}
+              >
+                <Text style={s.flagEmoji}>{getFlag(item)}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={s.countryName}>{item}</Text>
+                </View>
+                <View style={[s.radioCircle, item === country && s.radioCircleActive]}>
+                  {item === country && <View style={s.radioCircleFill} />}
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </SafeAreaView>
+    );
+  }
+
+  // ── ACCOUNT SCREEN ──
+  if (currentPage === 'account') {
+    return (
+      <SafeAreaView style={s.container} edges={['top']}>
+        <View style={s.subHeader}>
+          <TouchableOpacity onPress={() => setCurrentPage('main')}>
+            <Ionicons name="chevron-back" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={s.subTitle}>Account</Text>
+          <View style={{ width: 24 }} />
+        </View>
+        <View style={{ paddingTop: 8 }}>
+          <TouchableOpacity style={s.accountRow} onPress={() => setShowNameModal(true)}>
+            <View><Text style={s.aLabel}>Name</Text><Text style={s.aValue}>{nameValue}</Text></View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+          <View style={s.divider} />
+          <TouchableOpacity style={s.accountRow} onPress={() => setShowEmailModal(true)}>
+            <View><Text style={s.aLabel}>Email</Text><Text style={s.aValue}>{userEmail}</Text></View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+          <View style={s.divider} />
+          <TouchableOpacity style={s.accountRow} onPress={() => setShowPasswordModal(true)}>
+            <Text style={s.aLabel}>Password</Text>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Name Modal */}
         <Modal visible={showNameModal} transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalBox}>
-              <Text style={styles.modalTitle}>Change your name</Text>
-              <View style={styles.inputRow}>
-                <TextInput
-                  style={styles.modalInput}
-                  value={nameValue}
-                  onChangeText={setNameValue}
-                  placeholder="Enter name"
-                  placeholderTextColor="#666"
-                  autoFocus
-                />
-                {nameValue.length > 0 && (
-                  <TouchableOpacity onPress={() => setNameValue('')} style={styles.clearBtn}>
-                    <Ionicons name="close-circle" size={20} color="#999" />
-                  </TouchableOpacity>
-                )}
-              </View>
-              <View style={styles.modalActions}>
-                <TouchableOpacity onPress={() => setShowNameModal(false)}>
-                  <Text style={styles.cancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.pinkBtn} onPress={handleNameDone}>
-                  <Text style={styles.pinkBtnText}>Done</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={s.mOverlay}><View style={s.mBox}>
+            <Text style={s.mTitle}>Change your name</Text>
+            <View style={s.mInputRow}>
+              <TextInput style={s.mInput} value={nameValue} onChangeText={setNameValue} placeholder="Enter name" placeholderTextColor="#666" autoFocus />
+              {nameValue.length > 0 && <TouchableOpacity onPress={() => setNameValue('')}><Ionicons name="close-circle" size={20} color="#999" /></TouchableOpacity>}
             </View>
-          </View>
+            <View style={s.mActions}>
+              <TouchableOpacity onPress={() => setShowNameModal(false)}><Text style={s.mCancel}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={s.mPinkBtn} onPress={() => setShowNameModal(false)}><Text style={s.mPinkText}>Done</Text></TouchableOpacity>
+            </View>
+          </View></View>
         </Modal>
 
-        {/* Change Email Modal */}
+        {/* Email Modal */}
         <Modal visible={showEmailModal} transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalBox}>
-              <Text style={styles.modalTitle}>Change your email</Text>
-              <View style={styles.inputRow}>
-                <TextInput
-                  style={styles.modalInput}
-                  value={emailValue}
-                  onChangeText={setEmailValue}
-                  placeholder="Enter email"
-                  placeholderTextColor="#666"
-                  keyboardType="email-address"
-                  autoFocus
-                />
-                {emailValue.length > 0 && (
-                  <TouchableOpacity onPress={() => setEmailValue('')} style={styles.clearBtn}>
-                    <Ionicons name="close-circle" size={20} color="#999" />
-                  </TouchableOpacity>
-                )}
-              </View>
-              <View style={styles.modalActions}>
-                <TouchableOpacity onPress={() => setShowEmailModal(false)}>
-                  <Text style={styles.cancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.pinkBtn} onPress={handleEmailSend}>
-                  <Text style={styles.pinkBtnText}>Send</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={s.mOverlay}><View style={s.mBox}>
+            <Text style={s.mTitle}>Change your email</Text>
+            <View style={s.mInputRow}>
+              <TextInput style={s.mInput} value={emailValue} onChangeText={setEmailValue} placeholder="Enter email" placeholderTextColor="#666" keyboardType="email-address" autoFocus />
             </View>
-          </View>
+            <View style={s.mActions}>
+              <TouchableOpacity onPress={() => setShowEmailModal(false)}><Text style={s.mCancel}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={s.mPinkBtn} onPress={handleEmailSend}><Text style={s.mPinkText}>Send</Text></TouchableOpacity>
+            </View>
+          </View></View>
         </Modal>
 
-        {/* Verification Sent Popup */}
+        {/* Verification Popup */}
         <Modal visible={showVerificationPopup} transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalBox}>
-              <View style={styles.checkCircle}>
-                <Ionicons name="checkmark" size={32} color="#FF4199" />
-              </View>
-              <Text style={styles.modalTitle}>We sent you{'\n'}a verification mail!</Text>
-              <Text style={styles.modalSubtitle}>Please check your mail</Text>
-            </View>
-          </View>
+          <View style={s.mOverlay}><View style={s.mBox}>
+            <View style={s.checkCircle}><Ionicons name="checkmark" size={32} color="#FF4199" /></View>
+            <Text style={s.mTitle}>We sent you{'\n'}a verification mail!</Text>
+            <Text style={s.mSub}>Please check your mail</Text>
+          </View></View>
         </Modal>
 
-        {/* Change Password Modal */}
+        {/* Password Modal */}
         <Modal visible={showPasswordModal} transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalBox}>
-              <Text style={styles.modalTitle}>Change your password</Text>
-              <View style={styles.pwRow}>
-                <TextInput
-                  style={styles.modalInputFull}
-                  value={currentPassword}
-                  onChangeText={setCurrentPassword}
-                  placeholder="Current password"
-                  placeholderTextColor="#666"
-                  secureTextEntry={!showCurrentPw}
-                />
-                <TouchableOpacity onPress={() => setShowCurrentPw(!showCurrentPw)} style={styles.eyeBtn}>
-                  <Ionicons name={showCurrentPw ? 'eye' : 'eye-off'} size={20} color="#999" />
-                </TouchableOpacity>
+          <View style={s.mOverlay}><View style={s.mBox}>
+            <Text style={s.mTitle}>Change your password</Text>
+            {[
+              { val: currentPassword, set: setCurrentPassword, show: showCurrentPw, toggle: () => setShowCurrentPw(!showCurrentPw), ph: 'Current password' },
+              { val: newPassword, set: setNewPassword, show: showNewPw, toggle: () => setShowNewPw(!showNewPw), ph: 'New password' },
+              { val: confirmPassword, set: setConfirmPassword, show: showConfirmPw, toggle: () => setShowConfirmPw(!showConfirmPw), ph: 'Confirm new password' },
+            ].map((f, i) => (
+              <View key={i} style={s.pwRow}>
+                <TextInput style={s.pwInput} value={f.val} onChangeText={f.set} placeholder={f.ph} placeholderTextColor="#666" secureTextEntry={!f.show} />
+                <TouchableOpacity onPress={f.toggle}><Ionicons name={f.show ? 'eye' : 'eye-off'} size={20} color="#999" /></TouchableOpacity>
               </View>
-              <View style={styles.pwRow}>
-                <TextInput
-                  style={styles.modalInputFull}
-                  value={newPassword}
-                  onChangeText={setNewPassword}
-                  placeholder="New password"
-                  placeholderTextColor="#666"
-                  secureTextEntry={!showNewPw}
-                />
-                <TouchableOpacity onPress={() => setShowNewPw(!showNewPw)} style={styles.eyeBtn}>
-                  <Ionicons name={showNewPw ? 'eye' : 'eye-off'} size={20} color="#999" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.pwRow}>
-                <TextInput
-                  style={styles.modalInputFull}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  placeholder="Confirm new password"
-                  placeholderTextColor="#666"
-                  secureTextEntry={!showConfirmPw}
-                />
-                <TouchableOpacity onPress={() => setShowConfirmPw(!showConfirmPw)} style={styles.eyeBtn}>
-                  <Ionicons name={showConfirmPw ? 'eye' : 'eye-off'} size={20} color="#999" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.modalActions}>
-                <TouchableOpacity onPress={() => setShowPasswordModal(false)}>
-                  <Text style={styles.cancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.pinkBtn} onPress={handlePasswordDone}>
-                  <Text style={styles.pinkBtnText}>Done</Text>
-                </TouchableOpacity>
-              </View>
+            ))}
+            <View style={s.mActions}>
+              <TouchableOpacity onPress={() => setShowPasswordModal(false)}><Text style={s.mCancel}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={s.mPinkBtn} onPress={handlePasswordDone}><Text style={s.mPinkText}>Done</Text></TouchableOpacity>
             </View>
-          </View>
+          </View></View>
         </Modal>
 
-        {/* Password Changed Popup */}
+        {/* Password Changed */}
         <Modal visible={showPasswordChanged} transparent animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalBox}>
-              <View style={styles.checkCircle}>
-                <Ionicons name="checkmark" size={32} color="#FF4199" />
-              </View>
-              <Text style={styles.modalTitle}>Your password{'\n'}was changed!</Text>
-            </View>
-          </View>
+          <View style={s.mOverlay}><View style={s.mBox}>
+            <View style={s.checkCircle}><Ionicons name="checkmark" size={32} color="#FF4199" /></View>
+            <Text style={s.mTitle}>Your password{'\n'}was changed!</Text>
+          </View></View>
         </Modal>
       </SafeAreaView>
     );
   }
 
-  // ── COUNTRY PICKER ──
-  if (showCountryPicker) {
-    return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.accountHeader}>
-          <TouchableOpacity onPress={() => setShowCountryPicker(false)}>
-            <Ionicons name="chevron-back" size={24} color="#FFF" />
-          </TouchableOpacity>
-          <Text style={styles.accountTitle}>Country</Text>
-          <View style={{ width: 24 }} />
+  // ── MAIN PROFILE ──
+  return (
+    <SafeAreaView style={s.container} edges={['top']}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={s.header}>
+          <View style={s.avatarRow}>
+            <View style={s.avatar}><Ionicons name="person" size={32} color="#888" /></View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.userName}>{userName}</Text>
+              <Text style={s.userStats}>Followers 0    Follows 0</Text>
+            </View>
+            <TouchableOpacity><Ionicons name="share-outline" size={22} color="#FFF" /></TouchableOpacity>
+          </View>
         </View>
-        <ScrollView>
-          {COUNTRIES.map((c) => (
-            <TouchableOpacity
-              key={c}
-              style={[styles.countryRow, c === country && styles.countryRowActive]}
-              onPress={() => handleCountrySelect(c)}
-            >
-              <Text style={[styles.countryText, c === country && { color: '#FF4199' }]}>{c}</Text>
-              {c === country && <Ionicons name="checkmark" size={20} color="#FF4199" />}
+
+        {/* Settings */}
+        <Text style={s.sectionLabel}>Settings</Text>
+        {[
+          { title: 'Play at Login', sub: 'Last Played', onPress: undefined },
+          { title: 'Country', sub: country || 'Not set', onPress: () => setCurrentPage('country') },
+          { title: 'Language', sub: 'English', onPress: undefined },
+          { title: 'Statistics', onPress: undefined },
+          { title: 'Account', onPress: () => setCurrentPage('account') },
+        ].map((item, i) => (
+          <React.Fragment key={i}>
+            <TouchableOpacity style={s.row} onPress={item.onPress}>
+              <View>
+                <Text style={s.rowTitle}>{item.title}</Text>
+                {item.sub && <Text style={s.rowSub}>{item.sub}</Text>}
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+            <View style={s.divider} />
+          </React.Fragment>
+        ))}
+
+        <View style={s.row}>
+          <Text style={s.rowTitle}>Notifications</Text>
+          <Switch value={notifications} onValueChange={setNotifications} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
+        </View>
+        <View style={s.divider} />
+        <View style={s.row}>
+          <Text style={s.rowTitle}>Private Profile</Text>
+          <Switch value={privateProfile} onValueChange={setPrivateProfile} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
+        </View>
+
+        {/* About */}
+        <Text style={s.sectionLabel}>About</Text>
+        {['Mega Radio', 'Privacy Policy', 'Terms and Conditions'].map((title, i) => (
+          <React.Fragment key={i}>
+            <TouchableOpacity style={s.row}>
+              <Text style={s.rowTitle}>{title}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+            {i < 2 && <View style={s.divider} />}
+          </React.Fragment>
+        ))}
+
+        {/* Social */}
+        <Text style={[s.sectionLabel, { textAlign: 'center', backgroundColor: 'transparent' }]}>Social Media</Text>
+        <View style={s.socialRow}>
+          {[
+            { name: 'facebook-f' as const, bg: '#3b5998' },
+            { name: 'instagram' as const, bg: '#C13584' },
+            { name: 'twitter' as const, bg: '#1DA1F2' },
+          ].map((soc) => (
+            <TouchableOpacity key={soc.name} style={[s.socialBtn, { backgroundColor: soc.bg }]}>
+              <FontAwesome5 name={soc.name} size={22} color="#FFF" />
             </TouchableOpacity>
           ))}
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  // ── MAIN PROFILE SCREEN ──
-  return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header - User info */}
-        <View style={styles.header}>
-          <View style={styles.avatarRow}>
-            <View style={styles.avatar}>
-              <Ionicons name="person" size={32} color="#888" />
-            </View>
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{userName}</Text>
-              <Text style={styles.userStats}>Followers 0    Follows 0</Text>
-            </View>
-            <TouchableOpacity>
-              <Ionicons name="share-outline" size={22} color="#FFF" />
-            </TouchableOpacity>
-          </View>
         </View>
 
-        {/* Settings Section */}
-        <Text style={styles.sectionLabel}>Settings</Text>
-
-        <TouchableOpacity style={styles.row}>
-          <View>
-            <Text style={styles.rowTitle}>Play at Login</Text>
-            <Text style={styles.rowSubtitle}>Last Played</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
+        {/* Logout */}
+        <TouchableOpacity style={s.logoutBtn} onPress={handleLogout}>
+          <Text style={s.logoutText}>Log Out</Text>
         </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.row} onPress={() => setShowCountryPicker(true)} data-testid="profile-country">
-          <View>
-            <Text style={styles.rowTitle}>Country</Text>
-            <Text style={styles.rowSubtitle}>{country || 'Not set'}</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.row}>
-          <View>
-            <Text style={styles.rowTitle}>Language</Text>
-            <Text style={styles.rowSubtitle}>English</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.row}>
-          <Text style={styles.rowTitle}>Statistics</Text>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.row} onPress={() => setShowAccount(true)} data-testid="profile-account">
-          <Text style={styles.rowTitle}>Account</Text>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <View style={styles.row}>
-          <Text style={styles.rowTitle}>Notifications</Text>
-          <Switch
-            value={notifications}
-            onValueChange={setNotifications}
-            trackColor={{ false: '#333', true: '#FF4199' }}
-            thumbColor="#FFF"
-          />
-        </View>
-        <View style={styles.divider} />
-
-        <View style={styles.row}>
-          <Text style={styles.rowTitle}>Private Profile</Text>
-          <Switch
-            value={privateProfile}
-            onValueChange={setPrivateProfile}
-            trackColor={{ false: '#333', true: '#FF4199' }}
-            thumbColor="#FFF"
-          />
-        </View>
-
-        {/* About Section */}
-        <Text style={styles.sectionLabel}>About</Text>
-
-        <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://themegaradio.com')}>
-          <Text style={styles.rowTitle}>Mega Radio</Text>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://themegaradio.com/privacy')}>
-          <Text style={styles.rowTitle}>Privacy Policy</Text>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://themegaradio.com/terms')}>
-          <Text style={styles.rowTitle}>Terms and Conditions</Text>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
-        </TouchableOpacity>
-
-        {/* Rate Us */}
-        <View style={styles.rateSection}>
-          <Text style={{ fontSize: 28, marginBottom: 4 }}>{'*'}</Text>
-          <Text style={styles.rateText}>Rate Us On Store</Text>
-        </View>
-
-        {/* Social Media */}
-        <Text style={styles.socialTitle}>Social Media</Text>
-        <View style={styles.socialRow}>
-          <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#3b5998' }]} onPress={() => Linking.openURL('https://facebook.com/megaradio')}>
-            <FontAwesome5 name="facebook-f" size={22} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#C13584' }]} onPress={() => Linking.openURL('https://instagram.com/megaradio')}>
-            <FontAwesome5 name="instagram" size={22} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#1DA1F2' }]} onPress={() => Linking.openURL('https://twitter.com/megaradio')}>
-            <FontAwesome5 name="twitter" size={22} color="#FFF" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Log Out */}
-        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} data-testid="profile-logout">
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
-
         <View style={{ height: 80 }} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0D0D0F' },
-
   // Header
   header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center' },
-  userInfo: { flex: 1 },
   userName: { fontSize: 20, fontWeight: '700', color: '#FFF' },
   userStats: { fontSize: 13, color: '#888', marginTop: 2 },
-
-  // Sections
-  sectionLabel: { fontSize: 18, fontWeight: '700', color: '#FFF', paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8, backgroundColor: '#1A1A1C' },
-
+  // Section
+  sectionLabel: { fontSize: 18, fontWeight: '700', color: '#FFF', paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 },
   // Rows
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#0D0D0F' },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 },
   rowTitle: { fontSize: 16, fontWeight: '600', color: '#FFF' },
-  rowSubtitle: { fontSize: 13, color: '#888', marginTop: 2 },
-  divider: { height: 0.5, backgroundColor: '#333', marginHorizontal: 16 },
-
-  // Rate
-  rateSection: { alignItems: 'center', paddingVertical: 24 },
-  rateText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
-
+  rowSub: { fontSize: 13, color: '#888', marginTop: 2 },
+  divider: { height: 0.5, backgroundColor: '#2A2A2A', marginHorizontal: 16 },
   // Social
-  socialTitle: { fontSize: 16, fontWeight: '700', color: '#FFF', textAlign: 'center', marginBottom: 12 },
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginBottom: 20 },
   socialBtn: { width: 52, height: 52, borderRadius: 26, justifyContent: 'center', alignItems: 'center' },
-
   // Logout
   logoutBtn: { alignSelf: 'center', paddingHorizontal: 40, paddingVertical: 12, borderRadius: 20, backgroundColor: '#333', marginTop: 8 },
   logoutText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
-
-  // Account screen
-  accountHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 },
-  accountTitle: { fontSize: 18, fontWeight: '700', color: '#FFF' },
-  accountList: { paddingTop: 8 },
+  // Sub pages header
+  subHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 },
+  subTitle: { fontSize: 18, fontWeight: '700', color: '#FFF' },
+  // Account
   accountRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 16 },
-  accountLabel: { fontSize: 16, fontWeight: '600', color: '#FFF' },
-  accountValue: { fontSize: 14, color: '#888', marginTop: 2 },
-
+  aLabel: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  aValue: { fontSize: 14, color: '#888', marginTop: 2 },
   // Country picker
-  countryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 0.5, borderBottomColor: '#333' },
-  countryRowActive: { backgroundColor: 'rgba(255,65,153,0.08)' },
-  countryText: { fontSize: 16, color: '#FFF' },
-
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 12, marginHorizontal: 16, marginBottom: 12, paddingHorizontal: 16, height: 48 },
+  searchInput: { flex: 1, fontSize: 16, color: '#000' },
+  countryRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#1A1A1C', marginHorizontal: 12, marginBottom: 6, borderRadius: 12, gap: 12 },
+  countryRowActive: { borderWidth: 1, borderColor: '#FF4199' },
+  flagEmoji: { fontSize: 28, width: 40, textAlign: 'center' },
+  countryName: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  radioCircle: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: '#FF4199', justifyContent: 'center', alignItems: 'center' },
+  radioCircleActive: { borderColor: '#FF4199' },
+  radioCircleFill: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#FF4199' },
   // Modals
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },
-  modalBox: { width: '100%', backgroundColor: '#1B1C1E', borderRadius: 16, padding: 24, alignItems: 'center' },
-  modalTitle: { fontSize: 18, fontWeight: '700', color: '#FFF', textAlign: 'center', marginBottom: 16 },
-  modalSubtitle: { fontSize: 14, color: '#888', textAlign: 'center', marginTop: 4 },
-  inputRow: { width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 24, paddingHorizontal: 16, height: 48, marginBottom: 16 },
-  modalInput: { flex: 1, fontSize: 16, color: '#000' },
-  clearBtn: { marginLeft: 8 },
-  modalActions: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 16 },
-  cancelText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
-  pinkBtn: { paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20, backgroundColor: '#FF4199' },
-  pinkBtnText: { fontSize: 16, fontWeight: '700', color: '#FFF' },
+  mOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },
+  mBox: { width: '100%', backgroundColor: '#1B1C1E', borderRadius: 16, padding: 24, alignItems: 'center' },
+  mTitle: { fontSize: 18, fontWeight: '700', color: '#FFF', textAlign: 'center', marginBottom: 16 },
+  mSub: { fontSize: 14, color: '#888', textAlign: 'center', marginTop: 4 },
+  mInputRow: { width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 24, paddingHorizontal: 16, height: 48, marginBottom: 16 },
+  mInput: { flex: 1, fontSize: 16, color: '#000' },
+  mActions: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: 16 },
+  mCancel: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  mPinkBtn: { paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20, backgroundColor: '#FF4199' },
+  mPinkText: { fontSize: 16, fontWeight: '700', color: '#FFF' },
   checkCircle: { width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: '#FF4199', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
-
-  // Password modal
   pwRow: { width: '100%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#2A2A2A', borderRadius: 12, paddingHorizontal: 16, height: 48, marginBottom: 12 },
-  modalInputFull: { flex: 1, fontSize: 16, color: '#FFF' },
-  eyeBtn: { marginLeft: 8 },
+  pwInput: { flex: 1, fontSize: 16, color: '#FFF' },
 });
