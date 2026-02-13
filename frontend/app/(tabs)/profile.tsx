@@ -115,7 +115,7 @@ export default function ProfileScreen() {
 
   const userName = user?.name || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
-  const userAvatar = user?.avatar || null;
+  const userAvatar = user?.profilePhoto || null;
   
   // Mock followers/follows count - will be replaced with API
   const followersCount = 86;
