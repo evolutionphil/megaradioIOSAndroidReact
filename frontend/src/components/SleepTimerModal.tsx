@@ -194,11 +194,20 @@ export const SleepTimerModal: React.FC<SleepTimerModalProps> = ({
     <Modal
       visible={visible}
       animationType="slide"
-      transparent={false}
+      transparent={true}
       onRequestClose={onClose}
-      statusBarTranslucent
     >
-      <View style={[styles.container, { paddingTop: insets.top + 12, paddingBottom: insets.bottom || 24 }]}>
+      <TouchableOpacity
+        style={styles.overlay}
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <View style={styles.dummyFlex} />
+      </TouchableOpacity>
+      <View style={[styles.container, { paddingBottom: insets.bottom || 24 }]}>
+        {/* Drag handle */}
+        <View style={styles.dragHandle} />
+
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
