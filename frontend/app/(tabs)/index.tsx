@@ -32,6 +32,7 @@ import {
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
+import { useLocationStore } from '../../src/store/locationStore';
 import type { Station, Genre } from '../../src/types';
 
 // Fixed padding for all elements - same as Jazz banner
@@ -53,6 +54,12 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
+  const { countryCode, country, fetchLocation } = useLocationStore();
+
+  // Fetch location on mount
+  useEffect(() => {
+    fetchLocation();
+  }, []);
   
   // Use window width if available, otherwise use Dimensions API
   const screenWidth = windowWidth > 0 ? windowWidth : Dimensions.get('window').width || 375;
@@ -69,13 +76,13 @@ export default function HomeScreen() {
   const calculatedWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
   const gridItemWidth = Math.max(80, Math.min(150, calculatedWidth));
 
-  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(undefined, 8);
-  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres();
+  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryCode || undefined, 8);
+  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
   const { data: publicProfiles, refetch: refetchProfiles } = usePublicProfiles(10);
-  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21 });
+  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: countryCode || undefined });
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
