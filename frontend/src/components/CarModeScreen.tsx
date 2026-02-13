@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
@@ -478,19 +479,12 @@ const styles = StyleSheet.create({
   // Purple glow effect behind center card
   centerGlow: {
     position: 'absolute',
-    top: -20 * S,
-    left: SCREEN_WIDTH / 2 - 100 * S,
-    width: 200 * S,
-    height: 200 * S,
-    borderRadius: 100 * S,
-    backgroundColor: '#7B61FF',
-    opacity: 0.4,
-    ...(Platform.OS === 'web' ? {
-      // @ts-ignore
-      filter: 'blur(60px)',
-    } : {
-      // iOS/Android: Use shadow for glow effect
-    }),
+    top: -30 * S,
+    left: SCREEN_WIDTH / 2 - 110 * S,
+    width: 220 * S,
+    height: 220 * S,
+    borderRadius: 110 * S,
+    overflow: 'hidden',
   },
 
   infoSection: { alignItems: 'center', paddingHorizontal: 20 * S },
