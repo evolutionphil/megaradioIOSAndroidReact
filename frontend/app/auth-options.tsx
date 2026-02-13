@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Svg, { Path, Circle, Ellipse, RadialGradient, Defs, Stop } from 'react-native-svg';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
@@ -131,7 +131,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-facebook-button"
           >
             <View style={[styles.iconContainer, styles.facebookIcon]}>
-              <FontAwesome5 name="facebook-f" size={18} color="#FFFFFF" />
+              <Ionicons name="logo-facebook" size={20} color="#FFFFFF" />
             </View>
             <Text style={styles.authButtonText}>Login With Facebook</Text>
           </TouchableOpacity>
