@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: spacing.md,
     marginTop: -spacing.xs,
-    marginLeft: 64,
+    marginLeft: 72,
   },
   signupButton: {
     height: 56,
