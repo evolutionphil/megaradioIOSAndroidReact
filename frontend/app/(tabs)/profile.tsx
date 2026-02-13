@@ -109,9 +109,17 @@ export default function ProfileScreen() {
   const [countries, setCountries] = useState<string[]>([]);
   const [countriesLoading, setCountriesLoading] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
+  
+  // Logout modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const userName = user?.name || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
+  const userAvatar = user?.avatar || null;
+  
+  // Mock followers/follows count - will be replaced with API
+  const followersCount = 86;
+  const followsCount = 86;
 
   // Fetch countries from API
   useEffect(() => {
