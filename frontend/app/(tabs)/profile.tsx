@@ -21,6 +21,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useLocationStore } from '../../src/store/locationStore';
 import api from '../../src/services/api';
 import API_ENDPOINTS from '../../src/constants/api';
+import { LogoutModal } from '../../src/components/LogoutModal';
 
 // Country name → flag emoji mapping (extended)
 const FLAG_MAP: Record<string, string> = {
