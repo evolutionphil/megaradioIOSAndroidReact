@@ -870,8 +870,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    fontStyle: 'italic',
     color: '#FFFFFF',
     marginBottom: 16,
     lineHeight: 18,
