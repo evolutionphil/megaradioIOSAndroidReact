@@ -166,16 +166,12 @@ export default function HomeScreen() {
 
   const renderStationLogo = (station: Station, size: number = 100) => {
     const logoUrl = getLogoUrl(station);
-    return logoUrl ? (
+    return (
       <Image 
-        source={{ uri: logoUrl }} 
+        source={logoUrl ? { uri: logoUrl } : FALLBACK_LOGO} 
         style={{ width: '100%', height: '100%' }} 
         resizeMode="cover" 
       />
-    ) : (
-      <View style={[styles.logoPlaceholder, { width: '100%', height: '100%' }]}>
-        <Ionicons name="radio" size={24} color={colors.textMuted} />
-      </View>
     );
   };
 
