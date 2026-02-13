@@ -35,6 +35,7 @@ import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
 import { useLocationStore } from '../../src/store/locationStore';
+import { useRecentlyPlayedStore } from '../../src/store/recentlyPlayedStore';
 import type { Station, Genre } from '../../src/types';
 
 // Fixed padding for all elements - same as Jazz banner
@@ -62,6 +63,10 @@ export default function HomeScreen() {
   useEffect(() => {
     fetchLocation();
   }, []);
+
+  // Recently played from local storage
+  const { stations: localRecentStations, loadFromStorage: loadRecent } = useRecentlyPlayedStore();
+  useEffect(() => { loadRecent(); }, []);
   
   // Use window width if available, otherwise use Dimensions API
   const screenWidth = windowWidth > 0 ? windowWidth : Dimensions.get('window').width || 375;
@@ -106,7 +111,7 @@ export default function HomeScreen() {
 
   const genres = genresData?.data?.slice(0, 8) || [];
   const popularStations = popularData?.stations || [];
-  const recentStations = recentlyPlayedData || [];
+  const recentStations = localRecentStations;
   const allStations = allStationsData?.stations || [];
   const discoverableGenresList = discoverableGenres || [];
   const nearbyStations = Array.isArray(nearbyData) ? nearbyData : (nearbyData?.stations || []);
