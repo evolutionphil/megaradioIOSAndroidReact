@@ -78,7 +78,7 @@ export default function HomeScreen() {
   const calculatedWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
   const gridItemWidth = Math.max(80, Math.min(150, calculatedWidth));
 
-  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryCode || undefined, 8);
+  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(country || undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
