@@ -73,7 +73,6 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ## Pending Tasks (P2)
 - [ ] Country flag badge on station logos
-- [ ] Radios Near You (expo-location)
 - [ ] Profile screen
 - [ ] Skeleton loaders
 - [ ] i18n (i18next)
