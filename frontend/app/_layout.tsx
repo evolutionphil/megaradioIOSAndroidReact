@@ -51,8 +51,13 @@ export default function RootLayout() {
   // Check if onboarding needs to be shown (only after splash hides)
   useEffect(() => {
     if (!showSplash && showOnboarding === null) {
+      console.log('[Layout] Checking onboarding status...');
       checkOnboardingComplete().then((completed) => {
+        console.log('[Layout] Onboarding completed:', completed);
         setShowOnboarding(!completed);
+      }).catch((err) => {
+        console.error('[Layout] Error checking onboarding:', err);
+        setShowOnboarding(true); // Show onboarding on error
       });
     }
   }, [showSplash, showOnboarding]);
