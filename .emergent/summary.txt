@@ -5,187 +5,184 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 - **Role:** Senior React Native + Expo Architect.
 - **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
 - **Core Features:**
-    - **UI:** A pixel-perfect implementation of provided Figma designs, delivered through iterative feedback.
-    - **Streaming:** Robust playback within the app. Background playback and lock-screen controls were initially requested but are on hold as  is incompatible with the user's Expo Go testing environment.
-    - **Authentication:** Cookie-based sessions with Signup, Login, and Google OAuth.
-    - **Station Discovery:** Popular stations, nearby stations, search, and genre filtering.
-    - **User Features:** Favorites, recently played.
+    - **UI:** A pixel-perfect implementation of provided Figma designs, including a Car Mode screen and various modals.
+    - **Streaming:** Robust in-app playback with sleep timer and error handling.
+    - **Location Services:** Station discovery based on user's GPS location (Popular, Nearby, Genres). Manual country selection is also required.
+    - **User Features:** Favorites, Recently Played (client-side), Profile screen with account management placeholders.
+- **Authentication:** All API requests must include the header . Full user auth (Login/Signup) is a future task.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is a multi-tab React Native app built with Expo. It features a home screen with station grids, a functional search page, and a custom tab bar. A sticky  appears when a station is played. A full-screen player page () has been extensively developed to match user-provided Figma designs. A singleton  has been implemented in  to manage audio playback and prevent multiple streams. A new, but non-functional, backend endpoint () has been added to fetch song metadata.
+The application is a feature-rich React Native app built with Expo. It includes Home, Discover, Player, and Profile screens. Key functionalities like audio playback, location-based station fetching, client-side Recently Played, a sleep timer, and various modals (Share, Error, Sleep) are implemented. Fonts are now loaded globally in the root layout. However, the app suffers from several critical, recurring bugs related to API integration inconsistencies, state management, and visual effects. The agent's most recent work involved attempting to fix a long list of user-reported issues, including broken location-based content, faulty UI effects, and incorrect component logic.
 
 **Last working item**:
-- **Last item agent was working**: The agent was working on two critical issues raised by the user:
-    1.  **Now Playing Song Title:** A backend endpoint () was created in  to fetch the current song title from the radio stream. However, this endpoint is timing out and failing, causing the player to show Unknown Artist.
-    2.  **Multiple Audio Streams:** The user reported that selecting a new station does not stop the currently playing one. The agent refactored  with a singleton  to fix this. Console logs indicate the fix is working, but the user reported the issue persists.
+- **Last item agent was working**: Investigating two issues from the user's latest feedback message:
+    1.  Logos for popular stations (e.g., Arabesk FM) are not loading after changing the country.
+    2.  The country selection screen shows country codes (e.g., TR, DE) instead of full country names with flags.
+    The agent started by analyzing the rendering code for the popular stations list in .
 - **Status**: IN PROGRESS
-- **Agent Testing Done**: Y (for the multi-stream fix via console logs, which showed the correct stop/play sequence. The backend API fix was not successfully tested.)
-- **Which testing method agent to use?**: Backend testing for the  API endpoint. Use  to debug the timeout. For the multi-stream issue, the code needs to be re-verified, and then the user must test on Expo Go.
-- **User Testing Done**: Y (User reported that the multi-stream issue is not fixed).
+- **Agent Testing Done**: N
+- **Which testing method agent to use?**: Frontend testing agent
+- **User Testing Done**: Y
 
 **All Pending/In progress Issue list**:
--   **Issue 1 (P0): Now Playing API is broken.**
--   **Issue 2 (P0): Multiple audio streams play simultaneously when changing stations.**
--   **Issue 3 (P1): Grid item layout is broken in the web preview.**
--   **Issue 4 (P2): Custom icons and fonts are not consistently applied.**
--   **Issue 5 (P2): Add country flag next to the station logo on the player screen.**
--   **Issue 6 (P3): Recently Played feature is broken due to lack of authentication.**
+- **Issue 1 (P0):** Popular stations are not loading for some countries (e.g., Austria) and logos are missing for others (e.g., Turkey).
+- **Issue 2 (P0):** Car Mode shows the wrong station on entry; it doesn't center the currently playing station.
+- **Issue 3 (P0):** All Stations list is empty after changing the country manually via the profile screen.
+- **Issue 4 (P1):** The Glow effect is visually incorrect; it appears as a solid shape with sharp edges instead of a soft, blurry glow.
+- **Issue 5 (P1):** The country selection screen UI is incomplete; it must show country flags and include a search bar.
+- **Issue 6 (P2):** The sleep timer does not resume playback correctly after being stopped.
+- **Issue 7 (P2):** The equalizer on the player screen is static (3 dots) instead of animated.
+- **Issue 8 (P2):** The Profile screen's background colors do not match the Figma design.
 
 **Issues Detail**:
-- **Issue 1: Now Playing API is broken**
-    - **Description**: The backend endpoint  in  times out when trying to fetch song metadata from a station's audio stream. This prevents the player screen from showing the current song title.
-    - **Attempted fixes**: The agent created the endpoint using . This implementation is flawed as it likely tries to download the entire audio stream instead of just reading the ICY metadata from the headers.
+- **Issue 1: Popular Stations Loading/Logo Issues**
+    - **Description**: After changing country, the Popular Stations list is either empty (for Austria) or shows stations without logos (for Turkey). This is a regression. The root cause is likely a combination of API parameter inconsistency and incorrect logo URL parsing for this specific component.
     - **Next debug checklist**:
-        1.  Modify  in .
-        2.  Use a library or method that specifically reads stream headers (e.g., sending a  request or a  request that is immediately closed after reading headers) to extract ICY metadata ().
-        3.  Ensure the endpoint handles cases where metadata is not available and returns a stable response.
-        4.  Test the endpoint with  to confirm it returns quickly with the correct data.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a core feature for a radio app, significantly improving the user experience by showing the current song.
-    - **Status:** IN PROGRESS
-    - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?**: Backend.
-    - **Blocked on other issue:** None.
+        1.  In , verify the  hook passes the correct parameter ( full name) and is enabled only when the country is known.
+        2.  In , inspect the  for the popular stations . Ensure the  logic (prepending the domain for relative URLs) is being correctly applied to the image source. Add the fallback logo logic here as well.
+    - **Status**: IN PROGRESS
+    - **Is recurring issue?**: Y
 
-- **Issue 2: Multiple audio streams play simultaneously when changing stations**
-    - **Description**: The user has repeatedly reported that when one radio is playing and they select another, the first one does not stop, resulting in overlapping audio.
-    - **Attempted fixes**: The agent refactored  to use a singleton  class. The intention was to have a single, shared  object instance that gets unloaded and re-created.
+- **Issue 2: Car Mode Incorrect Station Logic**
+    - **Description**: When entering Car Mode, the carousel often starts at index 0 instead of centering on the currently playing station.
+    - **Attempted fixes**: The agent tried to fix this by ensuring the current station is part of the  array passed to the component.
     - **Next debug checklist**:
-        1.  Thoroughly review the implementation of the singleton  in .
-        2.  Verify that  is being called reliably before a new station is played in the  function.
-        3.  Add clear console logs to trace the lifecycle of the  object (creating, loading, playing, unloading).
-        4.  Confirm with the user that the fix works on their Expo Go app, as this is where the issue is observed.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a critical, app-breaking bug. A radio app must only play one station at a time.
-    - **Status:** IN PROGRESS
-    - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?**: Frontend.
-    - **Blocked on other issue:** None.
+        1.  In , re-examine the  that calculates . There might be a race condition where the  array is not yet populated when the index is calculated.
+        2.  Ensure the  object from the player store is correctly compared with items in the  array.
+    - **Status**: IN PROGRESS
+    - **Is recurring issue?**: Y
 
-- **Issue 3: Grid item layout is broken in the web preview**
-    - **Description**: On the  screen, the station grids for Recently Played and Similar Radios render with incorrectly large item sizes, breaking the layout.
-    - **Attempted fixes**: The agent tried multiple CSS-in-JS approaches (, , , wrapping in ) without success. The agent concluded it's a  rendering issue.
-    - **Next debug checklist**: This is a low priority as it only affects the web preview. The solution may involve web-specific styles using . For now, focus on native functionality.
-    - **Why fix this issue and what will be achieved with the fix?**: Provides a more accurate preview for the agent, improving the development feedback loop.
-    - **Status:** NOT STARTED
-    - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?**: Frontend.
-    - **Blocked on other issue:** None.
-
-- **Issue 4: Custom icons and fonts are not consistently applied**
-    - **Description**: The user requested specific Ubuntu fonts and provided custom PNG icons. The agent struggled to implement the icons, citing web preview rendering issues (, ), and reverted to Ionicons. The Ubuntu font was not always applied to the correct elements.
+- **Issue 3: All Stations List Empty After Country Change**
+    - **Description**: When the user manually selects a country in the Profile screen, the All Stations section on the Home page becomes empty.
+    - **Attempted fixes**: The agent tried to standardize API calls to use the native country name.
     - **Next debug checklist**:
-        1.  Ensure the Ubuntu font is loaded correctly in  or  and applied to all text elements specified by the user (e.g., section headers).
-        2.  For icons, implement them as  components without  and ensure the asset bundling is correct.
-    - **Why fix this issue and what will be achieved with the fix?**: Achieves the pixel-perfect UI requested by the user.
-    - **Status:** NOT STARTED
-    - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?**: Frontend.
-    - **Blocked on other issue:** None.
+        1.  Investigate  and the  hook. The  endpoint requires the native country name (e.g., Türkiye). Verify that the  value from  is correctly passed.
+        2.  Add logging to see what  parameter is being sent when the bug occurs.
+    - **Status**: IN PROGRESS
+    - **Is recurring issue?**: Y
 
-- **Issue 5: Add country flag next to the station logo on the player screen**
-    - **Description**: User requested a small, circular badge showing the station's country flag on top of the station logo/artwork.
+- **Issue 4: Glow Effect Incorrect**
+    - **Description**: The glow effect, implemented with 's  in , appears as a solid circle instead of a soft, blurred light source. The edges are sharp.
+    - **Attempted fixes**: The agent switched from layered s to  and finally to . The current SVG implementation is still wrong.
     - **Next debug checklist**:
-        1.  Find a library or API to get country flag images from country codes (e.g.,  for Germany). The station data from the API likely contains the country.
-        2.  In , overlay the flag  on top of the station artwork  using absolute positioning.
-    - **Why fix this issue and what will be achieved with the fix?**: Implements a specific UI feature requested by the user.
-    - **Status:** NOT STARTED
-    - **Is recurring issue?** N
-    - **Should Test frontend/backend/both after fix?**: Frontend.
-    - **Blocked on other issue:** None.
-
-- **Issue 6: Recently Played feature is broken due to lack of authentication**
-    - **Description**: The  endpoint returns a 401 Unauthorized error, causing UI flickering as React Query retries the request.
-    - **Attempted fixes**: The agent disabled retries () and background refetching () in the  hook in  to stop the flickering. This is a temporary workaround.
-    - **Next debug checklist**: The permanent fix is to implement the user authentication flow. Once a user is logged in, the API call should succeed.
-    - **Why fix this issue and what will be achieved with the fix?**: Enables a core user feature.
-    - **Status:** BLOCKED
-    - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?**: Both.
-    - **Blocked on other issue:** Implement Authentication Flow task.
+        1.  Edit . The  needs to be adjusted. The outer  color should have an opacity of 0 to create a fade-to-transparent effect, which simulates a blur.
+        2.  Experiment with the , , ,  properties of the gradient to achieve the desired shape and spread.
+    - **Status**: IN PROGRESS
+    - **Is recurring issue?**: Y
 
 **In progress Task List**:
-None.
+- **Task 1: Fix Critical Regressions and UI Bugs**
+    - **Where to resume**: Start by fixing the  data and logo issue in  and . Then proceed to the other issues in the pending list.
+    - **What will be achieved with this?**: A stable application where core features like location-based content and Car Mode work as expected, and visual effects match the user's requirements.
+    - **Status**: IN PROGRESS
+    - **Should Test frontend/backend/both after fix?**: Frontend.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-- **P1: Implement Authentication Flow:** Build Login/Signup screens and manage user sessions. This will also unblock the Recently Played feature.
-- **P2: Implement Favorites Feature:** Implement the backend logic and the  screen to allow users to save and view their favorite stations.
+-   **P0: Implement Profile Sub-Screens**:
+    -   **Statistics**: Build the screen to show user listening stats.
+    -   **Play at Login**: Implement the logic to save the user's preference to  and apply it on app startup.
+    -   **Account Management Modals**: Create and implement modals for changing user name, email, and password (currently placeholder UI).
+-   **P1: Implement Authentication Flow:** Build Login/Signup screens and manage user sessions.
 
 **Future Tasks:**
-- Implement Radios Near You using .
-- Integrate  for internationalization.
-- Build out the Profile Screen ().
-- Add skeleton loaders for a better data loading experience.
+-   Integrate  for full internationalization.
+-   Add skeleton loaders for a better data loading experience.
 
 **Completed work in this session**
-- **Full-Screen Player UI Implementation:** The  screen was extensively rewritten to closely match the user's Figma designs, including layout, custom controls, and typography.
-- **Multi-Stream Playback Fix (Attempted):** Refactored  to use a singleton  class to prevent multiple audio streams from playing at once.
-- **Similar Radios Feature:** Implemented  hook and integrated it into the player screen to display a grid of similar radio stations.
-- **React Query Flickering Fix:** Mitigated UI flickering caused by failing API calls by disabling retries and window focus refetching in React Query.
-- ** Standardization:** Reverted an initial attempt to use  and standardized on  to ensure compatibility with the user's Expo Go testing environment.
+-   **Massive Bug-Fixing Effort**: Addressed numerous issues, including fixing a critical 429 rate limit error by adding retry logic to , resolving icon rendering failures by creating a  and pre-loading all fonts globally, and fixing various layout/styling problems.
+-   **Feature Implementation**:
+    -   Implemented a  with native sharing capabilities.
+    -   Implemented a  that appears when a stream fails.
+    -   Implemented a  with functioning countdown logic.
+    -   Refactored Recently Played to use  for client-side persistence.
+-   **Location & API Integration**:
+    -   Integrated  to fetch stations based on the user's country.
+    -   Created a full Profile screen structure with a new Country Picker that fetches countries from the  endpoint.
+    -   Implemented a  slim mode parameter on API calls for performance optimization.
+-   **Glow Effect Iteration**: Attempted three different implementations for the glow effect, finally landing on a (currently buggy)  component.
+-   **Fallback Logo**: Implemented a fallback logo for stations that are missing an image.
+
+**Earlier issues found/mentioned but not fixed**
+- All known issues have been captured in the **All Pending/In progress Issue list**.
+
+**Known issue recurrence from previous fork**
+-   **Issue recurrence in previous fork**: Inconsistent API parameter handling ( vs , English vs native names) continues to cause bugs in data fetching. Car Mode logic remains fragile.
+-   **Recurrence count**: 3+
+-   **Status**: IN PROGRESS
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Singleton Audio Manager:** An  class was implemented in  to create a single, shared instance of the  sound object. This pattern is intended to ensure that playing a new station unloads the previous one.
-- ** for Playback:** The project exclusively uses  for audio playback, as  was found to be incompatible with the user's Expo Go testing workflow.
-- **React Query Optimization:** Utilized  and  to prevent UI instability caused by unauthenticated API endpoints that repeatedly fail.
-- **FastAPI Backend Proxy:** A new endpoint was added to the Python backend to act as a server-side proxy for fetching metadata from third-party radio streams.
+-   **API Inconsistency**: A core problem is the backend API using different parameter names (, ) and values (English name Austria vs. native name Österreich) across its endpoints. This requires careful handling in the service layer.
+-   **Global Font Loading**: All fonts (, , ) are now pre-loaded in the root  using  and  to prevent the app from displaying before fonts are ready.
+-   **State Management (Zustand)**: The app uses Zustand for global state, including player state (), location data (), and recently played stations ().
+-   **Client-Side Persistence**:  is used via a Zustand middleware to persist the  across app sessions.
+-   **SVG for UI Effects**: The agent pivoted to using  with a  to create the glow effect after  proved insufficient for the user's needs.
 
 **All files of reference**
--  (Main UI file for the player)
--  (Core audio logic)
--  (Location of the broken Now Playing API)
--  (Frontend API service definitions)
+-    (Popular/All stations display logic)
+-    (Core data fetching logic)
+-    (Current implementation of the broken glow effect)
+-    (Car mode logic)
+-    (Profile screen UI and country picker)
+-    (API call definitions)
+-    (Contains  helper function)
+
+**key api endpoints**
+-    (Expects  with English name, e.g., Turkey)
+-    (Expects  with native name, e.g., Türkiye)
+-    (Expects  and )
+-    (Provides list of countries with native names and codes)
+-   **Note**: All endpoints require an  header and benefit from the  parameter for smaller payloads.
 
 **Critical Info for New Agent**
-- **Highest Priority (P0) is fixing the audio playback.** This has two parts:
-    1.  **Fix the multi-stream bug:** The user insists that selecting a new station plays audio over the old one. The singleton pattern in  must be perfected to solve this definitively.
-    2.  **Fix the Now Playing API:** The backend endpoint in  is timing out. It needs to be re-implemented to correctly read only the headers from an audio stream to get the song title.
-- **Communicate in Turkish.** The user communicates exclusively in Turkish.
-- **Test on Expo Go:** The user's primary testing method is the Expo Go app. All features must be compatible with it. This means avoiding native libraries that require a custom development build (like ).
-- **Web Preview has known bugs:** The grid layout on the player screen is broken in the web preview. Do not spend time fixing this unless explicitly asked; focus on native functionality.
-- **Follow Figma Designs:** The user is very detail-oriented about the UI. Pay close attention to their images and design specifications.
-
-**documents and test reports created in this job**
-- 
+-   **API Inconsistency is the main source of bugs.** Before fixing any data-loading issue, verify which parameter the specific endpoint needs:  (English name),  (native name), or  (ISO code).
+-   **Logo URLs can be relative.** The  helper in  prepends  to relative paths. Ensure this function is used consistently for all station images.
+-   **The user is very specific about UI/UX.** The glow effect must be a soft, blurry, radial light. The country picker needs flags and a search bar. Pay close attention to the provided Figma images.
+-   **Prioritize the bug list.** The user is frustrated with recurring issues. Address the P0 items (Popular stations, Car Mode, All Stations) before implementing new features.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User (LATEST):** Requested a backend API for Now Playing and reiterated that changing the radio does not stop the previous stream. (P0 Tasks)
-2.  **User:** Listed multiple bugs: incorrect font, unused custom icons, multi-stream issue, UI flickering, and Unknown Artist text. (P0, P1 issues)
-3.  **User:** Pointed out that Similar Radios shows the same station and the page flickers. Also noted incorrect logo size and icons.
-4.  **User:** Provided detailed CSS-like properties for the player UI, an image, and requested a country flag badge and a fix for the multi-stream issue.
-5.  **User:** Reported several critical bugs: multi-stream playback, player not being full-screen, broken grid layout, radio not playing on Expo Go, and incorrect icons.
-6.  **Agent:** Completed and finished a task.
-7.  **User:** Re-stated that  is the goal.
-8.  **Agent:** Completed and finished a task.
-9.  **User:** Approved the initial plan.
-10. **Agent:** Proposed initial plan to integrate .
+- **User (LATEST & PENDING):** Reported that popular stations still show global results, logos are missing for Turkish stations, country flags are not shown in the picker, and Car Mode still starts on the wrong station. Demanded a detailed analysis and fixes.
+- **User:** Approved the plan to fix a large batch of issues including the profile screen redesign.
+- **User:** Provided very detailed requirements for the profile screen, statistics page, play at login feature, and an improved country selection page with flags and search. Also reported issues with glow effects and missing logos.
+- **User:** Reported that the player glow effect is misplaced, list item sizes are broken, popular stations are empty, many logos are missing, the equalizer is static, and there's no loading spinner on play/pause.
+- **User:** Reported that after the sleep timer stops the radio, the play button no longer works.
+- **User:** Complained that the glow effect is still wrong and has no blur. Asked for  to work without authentication by using local storage.
+- **User:** Reported  error. Pointed to API docs for  endpoint. Asked for performance optimization.
+- **User:** Reported a long list of new bugs: 429 errors, popular stations not country-specific, recently played shows popular stations, genres not by country, sleep timer resets, and all glow effects are broken.
+- **User:** Confirmed the agent's plan to fix fonts, sleep timer, and add location features.
+- **User:** Reported font inconsistencies again, and that the sleep timer picker doesn't work with swipe gestures. Asked for GPS-based content (radios near you, genres by country). Complained glow effect looks like a solid color.
 
 **Project Health Check:**
-- **Broken:**
-    - Core audio playback logic (multiple streams play at once).
-    - Now Playing song title feature (backend API is timing out).
-    - Grid layout on the player screen in the web preview.
-- **Blocked:**
-    - The Recently Played feature is non-functional pending the implementation of user authentication.
+-   **Broken:**
+    -   Location-based content fetching (Popular Stations, All Stations).
+    -   Car Mode initial station logic.
+    -   Glow Effect visuals.
+    -   Profile screen country picker UI.
+-   **Mocked:**
+    -   N/A
 
 **3rd Party Integrations**
-- **MegaRadio API:**  - The primary backend for all application data.
+-   **MegaRadio API:** 
+-   **expo-av:** Audio playback.
+-   **expo-location:** GPS and reverse geocoding.
+-   **react-native-svg:** Used for UI effects ().
+-   **@react-native-async-storage/async-storage:** Client-side data persistence.
+-   **Zustand & React Query:** State management and data fetching.
 
 **Testing status**
-- **Testing agent used after significant changes:** NO
-- **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** None
-- **Known regressions:** The multi-stream playback issue has been reported multiple times by the user despite agent fixes.
+-   **Testing agent used after significant changes:** NO (in recent iterations).
+-   **Known regressions:** Country-specific station loading, logo rendering.
 
 **Credentials to test flow:**
-N/A
+-   **API Key**:  (sent in  header).
 
 **What agent forgot to execute**
-- The agent failed to add the country flag badge to the player UI as requested.
-- The agent was unable to resolve the multi-stream playback issue to the user's satisfaction.
-- The agent did not successfully implement the custom PNG icons provided by the user, reverting to a library.
-- The agent did not fix the backend API timeout for the Now Playing feature.</analysis>
+- The agent repeatedly failed to fix the  vs  API inconsistency, leading to recurring data loading bugs.
+- The agent has not successfully implemented the user's visual requirements for the glow effect despite multiple attempts.
+- The UI for the country picker (flags, search bar) has not been implemented as requested.
+- The agent has not addressed all aspects of the Car Mode bug (centering the current station).</analysis>
