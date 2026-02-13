@@ -14,7 +14,6 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useFonts } from 'expo-font';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
@@ -220,12 +219,6 @@ export default function PlayerScreen() {
   const [sleepRemaining, setSleepRemaining] = useState(0);
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
-  
-  // Load Ubuntu font
-  const [fontsLoaded] = useFonts({
-    'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
-    'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
-  });
   
   const {
     currentStation,
@@ -573,7 +566,7 @@ export default function PlayerScreen() {
 
           {/* Recently Played Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-BoldItalic' }]}>
+            <Text style={[styles.sectionTitle, { fontFamily: 'Ubuntu-BoldItalic' }]}>
               Recently Played
             </Text>
             <View style={styles.stationGrid}>
@@ -591,7 +584,7 @@ export default function PlayerScreen() {
 
           {/* Similar Radios Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, fontsLoaded && { fontFamily: 'Ubuntu-BoldItalic' }]}>
+            <Text style={[styles.sectionTitle, { fontFamily: 'Ubuntu-BoldItalic' }]}>
               Similar Radios
             </Text>
             <View style={styles.stationGrid}>
