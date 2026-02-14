@@ -382,7 +382,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   gridItem: {
-    width: GRID_ITEM_WIDTH,
     marginBottom: spacing.md,
   },
   gridItemActive: {
