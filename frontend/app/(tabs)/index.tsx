@@ -21,7 +21,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { GlowEffect } from '../../src/components/GlowEffect';
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
+import { SectionSkeleton, UserItemSkeleton } from '../../src/components/Skeleton';
 import {
   usePopularStations,
   usePrecomputedGenres,
@@ -58,6 +60,7 @@ const getGridItemSize = (screenWidth: number) => {
 export default function HomeScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const preloadStarted = useRef(false);
   const { user } = useAuthStore();
