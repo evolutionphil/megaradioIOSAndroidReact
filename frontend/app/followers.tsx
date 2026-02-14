@@ -50,8 +50,20 @@ export default function FollowersScreen() {
       // API docs: GET /api/user/followers/:userId
       const response = await api.get(`https://themegaradio.com/api/user/followers/${user._id}`);
       
-      // API may return { followers: [...] } or directly [...]
-      const data = response.data.followers || response.data || [];
+      // API returns { followers: [{ user: {...}, followedAt: "..." }] }
+      const rawData = response.data.followers || response.data || [];
+      
+      // Extract user objects from the nested structure
+      const data = rawData.map((item: any) => {
+        if (item.user) {
+          return {
+            ...item.user,
+            followedAt: item.followedAt,
+          };
+        }
+        return item;
+      });
+      
       setFollowers(data);
     } catch (error: any) {
       console.error('Error fetching followers:', error);
