@@ -454,10 +454,10 @@ export default function HomeScreen() {
                 </View>
               ))
             ) : (
-              <Text style={styles.emptyText}>Enable location to see nearby stations</Text>
+              <Text style={styles.emptyText}>{t('enable_location')}</Text>
             )}
             <TouchableOpacity style={styles.seeMoreButton}>
-              <Text style={styles.seeMoreText}>See More</Text>
+              <Text style={styles.seeMoreText}>{t('see_more')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -506,9 +506,9 @@ export default function HomeScreen() {
           {/* Favorites From Users - Real API data with specified dimensions */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Favorites From Users</Text>
+              <Text style={styles.sectionTitle}>{t('homepage_favorites_from_users')}</Text>
               <TouchableOpacity onPress={() => router.push('/users')} data-testid="see-all-users-btn">
-                <Text style={styles.seeAllText}>See All</Text>
+                <Text style={styles.seeAllText}>{t('homepage_see_all')}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.usersList}>
@@ -546,10 +546,10 @@ export default function HomeScreen() {
           {/* All Stations - 3 Column Grid with specified dimensions (100x144) */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>All Stations</Text>
+              <Text style={styles.sectionTitle}>{t('homepage_all_stations')}</Text>
             </View>
             {allStationsLoading ? (
-              <ActivityIndicator size="large" color={colors.primary} />
+              <SectionSkeleton itemCount={9} horizontal={false} title={false} />
             ) : (
               <>
                 {/* Render rows of 3 items each */}
@@ -579,7 +579,7 @@ export default function HomeScreen() {
                   </View>
                 ))}
                 <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push('/all-stations')}>
-                  <Text style={styles.seeMoreText}>See More</Text>
+                  <Text style={styles.seeMoreText}>{t('see_more')}</Text>
                 </TouchableOpacity>
               </>
             )}
