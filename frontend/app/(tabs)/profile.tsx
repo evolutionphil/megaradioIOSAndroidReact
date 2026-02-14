@@ -67,6 +67,10 @@ export default function ProfileScreen() {
   
   // Logout modal
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  
+  // Avatar upload
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [localAvatar, setLocalAvatar] = useState<string | null>(null);
 
   const userName = user?.name || user?.fullName || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
