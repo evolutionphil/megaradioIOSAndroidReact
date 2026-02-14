@@ -90,9 +90,8 @@ export default function LoginScreen() {
         await saveAuth(user as any, response.token);
         
         // Use setTimeout to ensure navigation happens after state update
-        // and dismissTo to properly reset the navigation stack
+        // Replace the entire stack with tabs
         setTimeout(() => {
-          router.dismissAll();
           router.replace('/(tabs)');
         }, 100);
       } else {
