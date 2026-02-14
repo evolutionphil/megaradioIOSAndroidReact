@@ -11,6 +11,7 @@ import {
   TextInput,
   useWindowDimensions,
   Modal,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,10 +34,11 @@ export default function AllStationsScreen() {
   const params = useLocalSearchParams();
   const genreSlug = params.genre as string | undefined;
   const genreName = params.genreName as string | undefined;
-  const { width: screenWidth } = useWindowDimensions();
-
-  // Calculate grid item width dynamically
-  const GRID_ITEM_WIDTH = Math.floor((screenWidth - spacing.md * 2 - spacing.sm * (GRID_COLUMNS - 1)) / GRID_COLUMNS);
+  const { width: windowWidth } = useWindowDimensions();
+  
+  // Calculate grid item width dynamically with fallback
+  const screenWidth = windowWidth > 100 ? windowWidth : 375;
+  const GRID_ITEM_WIDTH = Math.floor((screenWidth - 32 - 16) / GRID_COLUMNS); // 32 = padding, 16 = gaps
 
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
