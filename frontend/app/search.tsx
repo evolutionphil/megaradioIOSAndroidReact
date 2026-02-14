@@ -343,10 +343,10 @@ export default function SearchScreen() {
   };
 
   const filters: { key: FilterType; label: string }[] = [
-    { key: 'all', label: 'All' },
-    { key: 'radios', label: 'Radios' },
-    { key: 'genres', label: 'Genres' },
-    { key: 'profiles', label: 'Profiles' },
+    { key: 'all', label: t('filter_all', 'All') },
+    { key: 'radios', label: t('filter_radios', 'Radios') },
+    { key: 'genres', label: t('filter_genres', 'Genres') },
+    { key: 'profiles', label: t('filter_profiles', 'Profiles') },
   ];
 
   return (
@@ -359,7 +359,7 @@ export default function SearchScreen() {
             <Ionicons name="search" size={24} color="#5B5B5B" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search radio, user"
+              placeholder={t('search_radio_user', 'Search radio, user')}
               placeholderTextColor="#5B5B5B"
               value={query}
               onChangeText={setQuery}
@@ -380,7 +380,7 @@ export default function SearchScreen() {
 
           {/* Cancel Button */}
           <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
-            <Text style={styles.cancelText}>Cancel</Text>
+            <Text style={styles.cancelText}>{t('cancel', 'Cancel')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -413,7 +413,7 @@ export default function SearchScreen() {
           {isSearching ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#FF4199" />
-              <Text style={styles.loadingText}>Searching...</Text>
+              <Text style={styles.loadingText}>{t('searching', 'Searching...')}</Text>
             </View>
           ) : filteredResults.length > 0 ? (
             <FlatList
@@ -430,17 +430,17 @@ export default function SearchScreen() {
                 source={{ uri: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=200&h=200&fit=crop' }}
                 style={styles.emptyImage}
               />
-              <Text style={styles.emptyTitle}>We couldn't find any result!</Text>
+              <Text style={styles.emptyTitle}>{t('no_results_found', "We couldn't find any result!")}</Text>
               <Text style={styles.emptyText}>
-                Try searching for something else
+                {t('try_different_search_term', 'Try searching for something else')}
               </Text>
             </View>
           ) : (
             <View style={styles.initialState}>
               <Ionicons name="radio-outline" size={64} color="#5B5B5B" />
-              <Text style={styles.initialTitle}>Search Stations</Text>
+              <Text style={styles.initialTitle}>{t('search_stations_title', 'Search Stations')}</Text>
               <Text style={styles.initialText}>
-                Find your favorite radio stations, genres, and users
+                {t('find_favorites', 'Find your favorite radio stations, genres, and users')}
               </Text>
             </View>
           )}
