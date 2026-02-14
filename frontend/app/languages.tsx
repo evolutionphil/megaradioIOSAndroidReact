@@ -40,66 +40,32 @@ const NATIVE_NAMES: Record<string, string> = {
 
 export default function LanguagesScreen() {
   const router = useRouter();
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
-  const [languages, setLanguages] = useState<Language[]>(KNOWN_LANGUAGES);
+  const { t } = useTranslation();
+  const { currentLanguage, setLanguage, isLoading: languageLoading, initialize } = useLanguageStore();
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Load saved language preference
+  // Initialize language store and fetch available languages
   useEffect(() => {
-    const loadLanguage = async () => {
-      try {
-        const saved = await AsyncStorage.getItem(LANGUAGE_KEY);
-        if (saved) {
-          setSelectedLanguage(saved);
-        }
-      } catch (error) {
-        console.error('Error loading language:', error);
-      }
-    };
-    loadLanguage();
-  }, []);
-
-  // Fetch available translations from API
-  useEffect(() => {
-    const fetchLanguages = async () => {
+    const init = async () => {
       setIsLoading(true);
       try {
-        // Try to fetch a test translation to verify API works
-        const response = await fetch(`${API_BASE}/api/translations/en`, {
-          headers: {
-            'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-          },
-        });
-        
-        if (response.ok) {
-          // API works, use our predefined list
-          // In the future, we could fetch the list of available languages from the API
-          setLanguages(KNOWN_LANGUAGES);
-        }
+        await initialize();
+        const availableLanguages = await getAvailableLanguages();
+        setLanguages(availableLanguages);
       } catch (error) {
-        console.error('Error fetching languages:', error);
-        // Use default list on error
-        setLanguages(KNOWN_LANGUAGES);
+        console.error('Error initializing languages:', error);
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchLanguages();
+    init();
   }, []);
 
   const handleLanguageSelect = async (code: string) => {
     try {
-      await AsyncStorage.setItem(LANGUAGE_KEY, code);
-      setSelectedLanguage(code);
-      
-      // Optionally fetch translations for the selected language
-      // This would be useful when i18n is fully implemented
-      // const response = await fetch(`${API_BASE}/api/translations/${code}`, {
-      //   headers: { 'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw' },
-      // });
-      
+      await setLanguage(code);
     } catch (error) {
       console.error('Error saving language:', error);
     }
