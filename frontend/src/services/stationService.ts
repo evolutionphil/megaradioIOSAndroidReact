@@ -46,7 +46,7 @@ export const stationService = {
   // Get precomputed stations
   async getPrecomputedStations(country?: string, page: number = 1, limit: number = 33) {
     const response = await api.get(API_ENDPOINTS.stations.precomputed, {
-      params: { country, page, limit },
+      params: { country, page, limit, tv: 1 },
     });
     return response.data;
   },
@@ -70,7 +70,7 @@ export const stationService = {
   // Search stations
   async searchStations(query: string, limit: number = 20): Promise<Station[]> {
     const response = await api.get(API_ENDPOINTS.stations.list, {
-      params: { search: query, limit },
+      params: { search: query, limit, tv: 1 },
     });
     const data = response.data;
     if (data && data.stations) {
@@ -82,7 +82,7 @@ export const stationService = {
   // Get top 100
   async getTop100(country?: string): Promise<Station[]> {
     const response = await api.get(API_ENDPOINTS.discover.top100, {
-      params: { country },
+      params: { country, tv: 1 },
     });
     const data = response.data;
     if (data && data.results) {
@@ -94,7 +94,9 @@ export const stationService = {
   // Get recently played
   async getRecentlyPlayed(): Promise<Station[]> {
     try {
-      const response = await api.get(API_ENDPOINTS.recentlyPlayed);
+      const response = await api.get(API_ENDPOINTS.recentlyPlayed, {
+        params: { tv: 1 },
+      });
       const data = response.data;
       if (data && data.stations) {
         return data.stations;
@@ -109,7 +111,7 @@ export const stationService = {
   async getCommunityFavorites(limit: number = 20): Promise<any[]> {
     try {
       const response = await api.get(API_ENDPOINTS.communityFavorites, {
-        params: { limit },
+        params: { limit, tv: 1 },
       });
       return response.data || [];
     } catch {
