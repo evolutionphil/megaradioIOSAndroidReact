@@ -559,7 +559,7 @@ export default function HomeScreen() {
                     }
                   </View>
                 ))}
-                <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push('/discover')}>
+                <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push('/all-stations')}>
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
               </>
