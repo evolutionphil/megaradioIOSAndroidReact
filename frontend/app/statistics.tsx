@@ -190,6 +190,11 @@ const styles = StyleSheet.create({
   headerSpacer: {
     width: 40,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   // Total Listening Card
   totalListeningCard: {
@@ -240,5 +245,15 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  
+  // Unique Stations Card
+  uniqueStationsCard: {
+    backgroundColor: '#1E1E1E',
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginTop: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
   },
 });
