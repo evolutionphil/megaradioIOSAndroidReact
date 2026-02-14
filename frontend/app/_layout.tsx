@@ -14,12 +14,17 @@ import { AnimatedSplash } from '../src/components/AnimatedSplash';
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-// Create a client
+// Create a client with optimized defaults for performance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000, // 5 minutes - data is considered fresh
+      gcTime: 30 * 60 * 1000, // 30 minutes - keep unused data in cache
       retry: 2,
+      refetchOnWindowFocus: false, // Don't refetch when app comes to foreground
+      refetchOnReconnect: true, // Refetch when network reconnects
+      refetchOnMount: false, // Don't refetch if data exists in cache
+      networkMode: 'offlineFirst', // Use cached data first, then fetch
     },
   },
 });
