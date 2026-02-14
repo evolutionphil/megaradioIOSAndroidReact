@@ -10,60 +10,97 @@ The user wants to build a production-ready mobile radio streaming app called Meg
     - **Streaming:** Robust in-app playback.
     - **User Features:** Favorites, Recently Played, Profile (Followers/Following).
     - **Authentication:** All API requests must include .
-- **New User Requests:**
-    - Implement pagination for user favorites to fix a performance issue.
-    - Create a notifications page based on a Figma design.
-    - Implement a See All Users page based on a Figma design.
+- **User Requests from previous forks:**
+    - Implement pagination for user favorites.
+    - Create a notifications page.
+    - Create a See All Users page.
     - Integrate  for internationalization.
     - Add skeleton loaders to pages during data fetching.
     - Optimize API calls by adding  to station endpoints.
     - Implement a language selector and auto-detect phone language.
+- **New User Requests from this session:**
+    - Fix the broken internationalization: language switching does not update the UI, and many texts remain untranslated.
+    - Fix the profile page to show the currently selected language, not a hardcoded value.
+    - Investigate and fix slow initial load times for stations.
+    - Fix post-login navigation on Expo Go (profile page opens like a modal instead of redirecting to discover page).
+    - Add an animation effect for language changes.
+    - Ensure ALL text in the application is translated.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The agent addressed a severe performance issue on the user profile page by implementing pagination for the user's favorite stations. A new notifications page was created and styled according to a Figma design, accessible from an icon in the header for logged-in users. The usage of the nearby stations API was verified.
+The agent attempted to complete the internationalization () task. Skeleton loaders and  hooks were added to several pages, including , , , , , and the  settings page was updated to use the i18n service. The agent also verified that the login flow, previously reported as broken, was working correctly on the web preview. A testing agent was run and reported 100% success.
 
-Following new user requests, the agent implemented a See All Users page, optimized API calls by adding the  parameter to station-related services, and began the integration of  for internationalization. This included installing dependencies, creating service and store files for language management, and creating a  component. A list of 22 missing translation keys was identified and documented for the backend developer.
+However, the user tested the application on Expo Go and found the implementation to be completely broken. Language switching does not work, large parts of the UI remain untranslated, the selected language display is hardcoded, and new performance and navigation bugs have been introduced.
 
 **Last working item**:
-- **Last item agent was working**: The agent had just set up the foundation for the  integration and created a  component. The user's last request was to proceed with integrating these into the application: applying skeleton loaders to loading states and using the  hook in UI components. The agent also compiled a list of missing translation keys.
-- **Status**: IN PROGRESS
-- **Agent Testing Done**: N (Only manual screenshot testing was performed. The new features have not been holistically tested).
-- **Which testing method agent to use?**: Frontend testing agent to verify the new i18n and skeleton loader implementations across the app.
-- **User Testing Done**: N
+- **Last item agent was working**: The user provided a detailed and critical bug report after the agent claimed the internationalization task was complete. The agent's last action was to acknowledge the user's feedback and prepare to investigate the numerous issues.
+- **Status**: BLOCKED (on user-reported bugs)
+- **Agent Testing Done**: Y (but ineffective, gave false positive)
+- **Which testing method agent to use?**: Frontend testing agent with a very detailed test plan covering every user-reported issue. Manual testing is also critical to verify the translation coverage and functionality.
+- **User Testing Done**: Y (and it failed catastrophically)
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Extremely Slow API Response for User Favorites (P1 - Workaround Implemented)**
-    - **Description**: The  endpoint is critically slow for users with many favorites. A frontend workaround (pagination) has been implemented on the profile page, but the underlying backend issue still exists.
-    - **Status**: BLOCKED (by slow backend, but the frontend workaround is considered complete for now).
-    - **Is recurring issue?**: Y
-    - **Should Test frontend/backend/both after fix?**: Frontend
-- **Issue 2: Login Flow Redirects to Onboarding (P0)**
-    - **Description**: During testing, after submitting the login form, the agent observed that the app redirected back to the onboarding screen instead of the main application for the logged-in user. This prevents testing of authenticated features.
-    - **Attempted fixes**: None. The agent noted the issue and moved on.
+- **Issue 1: Broken Internationalization (i18next) Implementation (P0)**
+- **Issue 2: Slow Initial Load Performance (P0)**
+- **Issue 3: Incorrect Post-Login Navigation on Expo Go (P1)**
+- **Issue 4: Extremely Slow API Response for User Favorites (P1 - Workaround Implemented)**
+- **Issue 5: Recurring UI Bugs (Glow Effect, Static Equalizer) (P2)**
+- **Issue 6: Avatar Not Displaying on Web Preview (P2)**
+
+**Issues Detail:**
+- **Issue 1: Broken Internationalization (i18next) Implementation (P0)**
+    - **Description**: The core feature implemented in this session is non-functional. The user reported multiple failures:
+        1.  **Functionality:** Changing the language in settings does not update the UI text.
+        2.  **UI Display:** The profile settings page shows English as the selected language regardless of the actual selection (hardcoded).
+        3.  **Incomplete Coverage:** Massive parts of the app are not translated, including: Tab bar menu, All Stations page title and search placeholder, Sort by popular, Station Detail texts (Recently Played, Similar Stations), Login/Signup pages, Profile page settings, and search components.
+    - **Attempted fixes**: The agent's initial implementation is the cause of the issue. No fixes have been attempted yet.
     - **Next debug checklist**:
-        - Examine the code in  to understand the post-login navigation logic.
-        - Check the  hook or any authentication state management (e.g., Zustand store) to see how the user session is handled after a successful login.
-        - Review  to see how it handles routing based on authentication status. It might be incorrectly redirecting authenticated users.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a critical bug blocking all authenticated user flows, including the new notifications page. Fixing it will allow proper testing and usage of the app.
+        1.  Review  and . The state change is likely not triggering a re-render or the  function is not being called correctly.
+        2.  Fix the  component to correctly display the currently active language from the .
+        3.  Perform a full audit of the entire application, screen by screen, and wrap ALL user-facing strings with the  function from .
+        4.  Verify the backend has deployed the new translation keys as the user mentioned.
+    - **Why fix this issue and what will be achieved with the fix?**: This is the user's primary request. Fixing it will make the application usable for a multi-lingual audience and restore user confidence.
     - **Status**: NOT STARTED
     - **Is recurring issue?**: N
     - **Should Test frontend/backend/both after fix?**: Frontend
+- **Issue 2: Slow Initial Load Performance (P0)**
+    - **Description**: The user reports that since the last changes, the app is much slower to load stations on initial startup in Expo Go.
+    - **Attempted fixes**: None.
+    - **Next debug checklist**:
+        1.  Analyze the  file. The  initialization might be blocking the main thread or delaying the initial data fetch.
+        2.  Examine the data-fetching logic in  and . Check for waterfalls or inefficient  configurations.
+        3.  Compare network requests before and after the recent changes to see if anything has changed.
+    - **Why fix this issue and what will be achieved with the fix?**: A slow startup creates a poor user experience and can lead to app abandonment.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Frontend
+- **Issue 3: Incorrect Post-Login Navigation on Expo Go (P1)**
+    - **Description**: The user reports that after logging in on Expo Go, the profile page opens like a pop-up instead of redirecting to the main discover/home page. This contradicts the agent's test on the web preview, which showed a successful redirect.
+    - **Attempted fixes**: None.
+    - **Next debug checklist**:
+        1.  Review . The  command might be behaving differently on native (Expo Go) vs. web.
+        2.  Investigate the router configuration in  and . There might be a configuration that causes a modal presentation for certain routes on native builds.
+    - **Why fix this issue and what will be achieved with the fix?**: Ensures a consistent and correct user flow after authentication.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Frontend
+- **Issue 4: Extremely Slow API Response for User Favorites (P1 - Workaround Implemented)**
+    - **Description**: The  endpoint is critically slow. A frontend pagination workaround exists, but the backend issue persists.
+    - **Status**: BLOCKED (by backend).
+    - **Is recurring issue?**: Y
+    - **Should Test frontend/backend/both after fix?**: Frontend
+- **Issue 5: Recurring UI Bugs (Glow Effect, Static Equalizer) (P2)**
+    - **Status**: NOT STARTED
+- **Issue 6: Avatar Not Displaying on Web Preview (P2)**
+    - **Status**: NOT STARTED
 
 **In progress Task List**:
-- **Task 1: Complete Internationalization (i18next) Integration (P0)**
-    - **Where to resume**: The  service, , and initial setup in  are complete. The next steps are:
-        1. Integrate the  component into pages with data fetching (, , , , etc.) to show while data is loading.
-        2. Wrap UI text with the  hook and replace hardcoded strings with the translation keys. Start with the 22 identified missing keys, but continue for all relevant text.
-        3. Implement the language detection from the device and the language selector UI in the profile menu.
-    - **What will be achieved with this?**: A fully internationalized application that can switch between languages provided by the API and a better user experience with loading states.
-    - **Status**: IN PROGRESS
-    - **Should Test frontend/backend/both after fix?**: Frontend
+- There are no tasks in progress; all work has been superseded by the P0 bugs that need to be fixed.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-- **P2: Fix Recurring UI Bugs**: Address the persistent visual glitches: incorrect Glow Effect, Static Equalizer, and Vector Icon rendering on web.
+- **P1: Add Animated Transition on Language Change**: Implement the user's suggestion for a smooth animation effect when the language is switched.
 - **P2: Fix Avatar Not Displaying on Web Preview**: Investigate the potential CORS issue preventing avatars from loading on the web build.
 
 **Future Tasks:**
@@ -71,24 +108,14 @@ Following new user requests, the agent implemented a See All Users page, optimiz
 - Fix the Sleep Timer bug (requires more user feedback/details).
 
 **Completed work in this session**
-- **Feature**: Implemented pagination on the  page for favorite stations.
-- **Feature**: Created a new  page, styled it based on Figma designs, and linked it from the header.
-- **Feature**: Created a new  page for the See All Users feature and linked it from the homepage.
-- **Enhancement**: Added the  query parameter to all relevant  and  API calls to reduce payload size.
-- **Enhancement**: Initiated  integration by installing packages and setting up , , and .
-- **Component**: Created .
-- **Documentation**: Generated a list of 22 missing translation keys with default English values for the backend developer, saved in .
-- **Verification**: Confirmed the  API is being used correctly with GPS coordinates.
+- **Setup**: Initial (but flawed) setup of  by installing dependencies and creating/modifying , , and .
+- **UI Modification**: Added  and  components to , , , , and . (Note: This work is incomplete and part of the broken feature).
+- **Verification**: Confirmed the login flow redirects correctly on the **web preview**, which contradicts the user's report on Expo Go.
 
 **Earlier issues found/mentioned but not fixed**
 - **Issue 1: Recurring UI Bugs (Glow Effect, Static Equalizer, Vector Icons)**
-    - **Debug checklist**: These are persistent visual glitches that need deeper investigation, possibly related to  or specific component styles.
-- **Issue 2: Avatar Not Displaying on Web Preview**
-    - **Debug checklist**: Investigate backend CORS policy for images or check if the image URL is correct for web environments.
-- **Issue 3: Social Logins Not Fully Functional**
-    - **Debug checklist**: This is blocked until a development build can be created.
-- **Issue 4: Sleep Timer Bug**
-    - **Debug checklist**: Requires more specific steps from the user to reproduce the bug.
+- **Issue 2: Social Logins Not Fully Functional** (Blocked by dev build requirement).
+- **Issue 3: Sleep Timer Bug** (Blocked by lack of user detail).
 
 **Known issue recurrence from previous fork**
 - **Issue recurrence in previous fork**: Glow Effect visual bug.
@@ -99,90 +126,72 @@ Following new user requests, the agent implemented a See All Users page, optimiz
 
 
 **Key Technical Concepts**
-- **React Query Caching**: Control data freshness and background fetching.
-- **Pagination**: Implemented on the client-side to handle a slow API endpoint.
-- **Internationalization (i18next)**: Setup for multi-language support, fetching translations from an API.
-- **State Management (Zustand)**: Used for managing language state.
-- **API Optimization**: Using query parameters () to request smaller data payloads.
+- **Internationalization (i18next)**: The current implementation is broken and needs a full review. It involves a Zustand store (), a service (), and the  hook.
+- **State Management (Zustand)**: Used for managing language state. The connection between the state change and UI re-render is likely broken.
+- **Routing (Expo Router)**: Potential discrepancy in navigation behavior between web and native (Expo Go).
 
 **key DB schema**
 - N/A (Interaction is via a REST API).
 
 **changes in tech stack**
-- **Added**: , , .
+- No new packages were added in this session. Existing packages (, ) were used.
 
 **All files of reference**
--  (Pagination added)
--  (New page created)
--  (New page created)
--  (Notification icon link added)
--  (Link to users page added)
--  (i18n initialization and new routes added)
--  ( parameter added)
--  ( parameter added)
--  (New i18n service created)
--  (New Zustand store for language)
--  (New component created)
--  (List of keys for backend dev)
--  (Updated)
+- 
+- 
+- 
+- 
+- 
+- All pages modified for i18n: , , , , .
 
 **Areas that need refactoring**:
-- The  integration is incomplete. Skeleton loaders and translation hooks need to be implemented throughout the application's UI components to finalize the feature.
+- **The entire i18next feature**. The logic for changing languages and updating the UI must be rewritten. All components need to be audited to ensure every string is correctly translated. The  page needs to be fixed to show the current language.
 
 **key api endpoints**
-- 
-- 
-- 
-- 
 - 
 
 **Critical Info for New Agent**
 - **Communicate in Turkish.**
-- **P0 Blocker**: The login flow is broken. After a user logs in, they are redirected to the onboarding screen. This must be fixed first to enable testing of any authenticated features.
-- **P0 Task**: After fixing the login, continue the  integration. Apply the  to all data-fetching views and use the  hook to replace hardcoded text across the app.
-- **Backend Dependency**: A list of 22 missing translation keys has been created in . These are needed from the backend to complete the i18n task. You should proceed with English defaults for now.
+- **User Trust is Low**: The previous session ended with the user reporting that a completed feature was entirely broken. Your first priority is to acknowledge all reported issues and fix them thoroughly to rebuild trust.
+- **P0 Priority**: Fix the internationalization feature completely. This includes:
+    1.  Making language switching work.
+    2.  Translating **ALL** missing text across the entire application.
+    3.  Fixing the language display in the profile settings.
+- **P0 Priority**: Investigate and fix the new performance (slow load) and navigation (post-login modal) bugs.
+- **Test on Expo Go vs. Web**: The user is testing on Expo Go, where new bugs have appeared. Do not rely solely on web preview testing. Be mindful of platform differences in navigation and performance.
+- **Backend Translations Ready**: The user confirmed that the backend developer has deployed the necessary translation keys.
 
 **documents and test reports created in this job**
-- 
+-  (Note: This report is a **false positive** and should not be trusted. The tests were not comprehensive enough to catch the functional bugs.)
 - 
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **User**: Instructed the agent to integrate skeleton loaders, apply the  hook, implement language detection, and provided a list of 22 missing translation keys with default values. **Status: IN PROGRESS**.
-- **Agent**: Acknowledged the tasks and provided the formatted JSON list of missing keys.
-- **User**: Provided instructions for API optimization (), the See All Users page design, initiating  integration, and adding skeleton loaders. **Status: IN PROGRESS**.
-- **Agent**: Acknowledged the new tasks and started work.
-- **Agent**: Completed a previous set of tasks and called the  tool.
-- **User**: Provided the Figma design for the notifications page and the API endpoint. **Status: COMPLETED**.
-- **Agent**: Acknowledged the Figma design and prepared to update the notifications page.
-- **Agent**: Called the testing agent to verify the previously implemented features.
-- **Agent**: Manually tested the app with screenshots, noting the discover page icon was correctly hidden for guest users.
-- **User**: Requested to proceed with the work (devam et). **Status: COMPLETED**.
+- **User (LATEST)**: Provided a long, detailed list of bugs and missing translations in the i18next implementation. Reported new performance and navigation issues on Expo Go. Requested an animation enhancement. Confirmed backend has added translation keys. **Status: PENDING (this is the new work)**.
 
 **Project Health Check:**
 - **Broken:**
-    - The login flow incorrectly redirects users to the onboarding screen, blocking access to authenticated sections of the app.
+    - The entire internationalization feature is non-functional.
+    - Post-login navigation is broken on Expo Go.
+    - Initial app loading is reportedly slow (performance regression).
+- **Mocked:**
+    - N/A
 - **In Progress:**
-    - Internationalization () and  integration.
-- **Blocked:**
-    - Full i18n completion is dependent on the backend team adding the 22 missing translation keys.
-    - Avatar display on web preview (likely a backend CORS issue).
-    - Social Login functionality (blocked by Expo Go environment).
+    - All previous in-progress work is now part of the broken list that needs to be fixed.
 
 **3rd Party Integrations**
 - **MegaRadio API:** 
-- **expo-av:** Audio playback.
-- **@react-native-async-storage/async-storage:** Client-side data persistence.
+- **i18next & react-i18next**: For internationalization (implementation is currently broken).
 - **Zustand & React Query:** State management and data fetching.
-- **react-native-reanimated:** For animations.
-- **expo-auth-session & expo-web-browser:** For social authentication flows.
-- **i18next & react-i18next**: For internationalization.
+- Others from previous forks: , , .
 
 **Testing status**
-- **Testing agent used after significant changes:** NO
+- **Testing agent used after significant changes:** YES
 - **Troubleshoot agent used after agent stuck in loop:** NO
 - **Test files created:** None.
 - **Known regressions:**
-    - **Login Flow Failure**: Users are redirected to onboarding after a successful login attempt, making authenticated features inaccessible.
+    1.  **Internationalization Failure**: The entire feature is broken.
+    2.  **Performance Regression**: App is slower on initial load.
+    3.  **Navigation Regression**: Post-login flow is incorrect on Expo Go.
 
 **Credentials to test flow:**
 - **API Key**:  (sent in  header).
@@ -191,5 +200,6 @@ Following new user requests, the agent implemented a See All Users page, optimiz
     - **Password**: 
 
 **What agent forgot to execute**
-- The agent observed the critical login flow issue (redirecting to onboarding) but did not investigate or attempt to fix it before finishing the session.
-- The agent did not complete the user's final request to integrate the  and apply  hooks throughout the UI; only the setup was done.</analysis>
+- The agent failed to perform basic functional testing. They implemented the code for i18next but never verified if changing the language actually worked or if all text was covered.
+- The agent relied on a testing agent report that was not comprehensive enough, leading to a false sense of completion and a broken deliverable to the user.
+- The agent did not account for potential differences between the web preview and the native Expo Go environment, where the user discovered new bugs.</analysis>
