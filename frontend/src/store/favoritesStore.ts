@@ -51,26 +51,34 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      if (isAuthenticated()) {
-        // Fetch from API for authenticated users
+      const { user } = useAuthStore.getState();
+      
+      if (isAuthenticated() && user?._id) {
+        // Fetch from public user favorites endpoint (doesn't require session)
         try {
-          const response = await userService.getFavorites();
-          const favorites = response.favorites || [];
+          const response = await fetch(`https://themegaradio.com/api/users/${user._id}/favorites`, {
+            headers: {
+              'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+            },
+          });
           
-          // Also load custom order from local storage
-          const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
-          const customOrder = orderJson ? JSON.parse(orderJson) : [];
-          
-          set({ favorites, customOrder, isLoaded: true, isLoading: false });
+          if (response.ok) {
+            const favorites = await response.json();
+            
+            // Also load custom order from local storage
+            const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
+            const customOrder = orderJson ? JSON.parse(orderJson) : [];
+            
+            set({ favorites: Array.isArray(favorites) ? favorites : [], customOrder, isLoaded: true, isLoading: false });
+            return;
+          }
         } catch (apiError: any) {
-          // If API fails (e.g., 401), fallback to local storage
           console.log('API favorites failed, using local storage:', apiError.message);
-          await get().loadFromLocal();
         }
-      } else {
-        // Use local storage for guests
-        await get().loadFromLocal();
       }
+      
+      // Fallback to local storage for guests or API failure
+      await get().loadFromLocal();
     } catch (error) {
       console.error('Error loading favorites:', error);
       set({ isLoading: false, isLoaded: true, error: 'Failed to load favorites' });
