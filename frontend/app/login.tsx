@@ -59,7 +59,8 @@ export default function LoginScreen() {
     try {
       const response = await authService.mobileLogin(email.trim(), password);
       
-      if (response.success && response.token && response.user) {
+      // API returns { message: "Login successful", token, user } not { success: true }
+      if (response.token && response.user) {
         await saveAuth(response.user, response.token);
         router.replace('/(tabs)');
       } else {
