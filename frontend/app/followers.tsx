@@ -132,7 +132,7 @@ export default function FollowersScreen() {
   };
 
   const renderItem = ({ item }: { item: Follower }) => (
-    <View style={styles.row} key={item._id}>
+    <View style={styles.row}>
       <TouchableOpacity 
         style={styles.userInfo}
         onPress={() => navigateToProfile(item)}
