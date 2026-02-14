@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { changeLanguage, getStoredLanguage, getAvailableLanguages } from '../services/i18nService';
+import { changeLanguage, getStoredLanguage, getAvailableLanguages, addLanguageChangeListener, getCurrentLanguage } from '../services/i18nService';
 
 interface Language {
   code: string;
@@ -12,10 +12,12 @@ interface LanguageState {
   availableLanguages: Language[];
   isLoading: boolean;
   isInitialized: boolean;
+  languageVersion: number; // For forcing re-renders
   
   // Actions
   initialize: () => Promise<void>;
   setLanguage: (code: string) => Promise<void>;
+  forceUpdate: () => void;
 }
 
 export const useLanguageStore = create<LanguageState>((set, get) => ({
@@ -23,6 +25,7 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
   availableLanguages: [],
   isLoading: false,
   isInitialized: false,
+  languageVersion: 0,
 
   initialize: async () => {
     if (get().isInitialized) return;
@@ -32,6 +35,15 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
     try {
       const storedLang = await getStoredLanguage();
       const languages = await getAvailableLanguages();
+      
+      // Add listener for language changes from i18n service
+      addLanguageChangeListener((lang) => {
+        console.log('[LanguageStore] Language change detected:', lang);
+        set((state) => ({
+          currentLanguage: lang,
+          languageVersion: state.languageVersion + 1,
+        }));
+      });
       
       set({
         currentLanguage: storedLang,
@@ -50,11 +62,16 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
     
     try {
       await changeLanguage(code);
-      set({ currentLanguage: code, isLoading: false });
+      // The listener will update the state
+      set({ isLoading: false });
     } catch (error) {
       console.error('[LanguageStore] Failed to change language:', error);
       set({ isLoading: false });
     }
+  },
+  
+  forceUpdate: () => {
+    set((state) => ({ languageVersion: state.languageVersion + 1 }));
   },
 }));
 
