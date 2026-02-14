@@ -4,6 +4,47 @@ import genreService from '../services/genreService';
 import userService from '../services/userService';
 import type { Station } from '../types';
 
+// Cache TTL Configuration (based on backend developer recommendations)
+// staleTime: How long data is considered fresh (won't refetch)
+// gcTime: How long to keep unused data in memory cache
+export const CACHE_TTL = {
+  // Static data - changes rarely (24 hours)
+  GENRES_ALL: 24 * 60 * 60 * 1000,        // 24 hours
+  COUNTRIES: 24 * 60 * 60 * 1000,          // 24 hours
+  TRANSLATIONS: 24 * 60 * 60 * 1000,       // 24 hours
+  
+  // Semi-static data (30 min - 1 hour)
+  STATION_DETAIL: 30 * 60 * 1000,          // 30 minutes
+  GENRE_STATIONS: 60 * 60 * 1000,          // 1 hour
+  SIMILAR_STATIONS: 30 * 60 * 1000,        // 30 minutes
+  
+  // Dynamic lists (5-10 minutes)
+  STATIONS_LIST: 10 * 60 * 1000,           // 10 minutes
+  POPULAR_STATIONS: 10 * 60 * 1000,        // 10 minutes
+  TRENDING: 5 * 60 * 1000,                 // 5 minutes
+  TOP_100: 10 * 60 * 1000,                 // 10 minutes
+  NEARBY_STATIONS: 10 * 60 * 1000,         // 10 minutes
+  
+  // User-specific data (30 sec - 2 min)
+  RECENTLY_PLAYED: 30 * 1000,              // 30 seconds
+  FAVORITES: 60 * 1000,                    // 1 minute
+  USER_PROFILE: 2 * 60 * 1000,             // 2 minutes
+  FOLLOWERS: 2 * 60 * 1000,                // 2 minutes
+  FOLLOWING: 2 * 60 * 1000,                // 2 minutes
+  IS_FOLLOWING: 2 * 60 * 1000,             // 2 minutes
+  NOTIFICATIONS: 30 * 1000,                // 30 seconds
+  
+  // Search - short cache for fresh results
+  SEARCH: 2 * 60 * 1000,                   // 2 minutes
+  
+  // Community data
+  COMMUNITY_FAVORITES: 5 * 60 * 1000,      // 5 minutes
+  PUBLIC_PROFILES: 5 * 60 * 1000,          // 5 minutes
+};
+
+// gcTime multiplier (2x staleTime for most cases)
+const GC_MULTIPLIER = 2;
+
 // Query keys
 export const queryKeys = {
   stations: ['stations'] as const,
