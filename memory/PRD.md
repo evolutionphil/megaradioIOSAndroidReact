@@ -167,9 +167,11 @@ GET /api/translations/:lang
 
 ## Pending Tasks
 
+### P0 (Blocker)
+- [ ] Follow/Unfollow button on user-profile.tsx page header (requested but not implemented)
+
 ### P1 (Important)
 - [ ] i18n integration using selected language
-- [ ] Avatar upload - Use POST /api/auth/avatar endpoint with expo-image-picker
 
 ### P2 (Nice to have)
 - [ ] Skeleton loaders
