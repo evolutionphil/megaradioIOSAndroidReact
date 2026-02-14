@@ -180,6 +180,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+  // Update user data (e.g., after avatar upload)
+  updateUser: async (user: User) => {
+    try {
+      await secureStorage.setItem(USER_KEY, JSON.stringify(user));
+      set({ user });
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  },
+
   // Logout - clear everything
   logout: async () => {
     try {
