@@ -11,6 +11,10 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - React Query (Data Fetching with backend-recommended caching)
 - expo-av for audio playback
 - expo-secure-store for token storage
+- i18next for internationalization
+
+## API Optimization (Feb 14, 2026)
+**Slim Mode (?tv=1)**: All station endpoints now use `?tv=1` parameter for ~47% smaller payloads. Removes descriptions, homepage, and other non-essential fields.
 
 ## Caching Strategy (Feb 14, 2026)
 Based on backend developer recommendations:
