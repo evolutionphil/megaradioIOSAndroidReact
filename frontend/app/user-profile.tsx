@@ -131,46 +131,6 @@ export default function UserProfileScreen() {
 
   const loading = favoritesLoading && stations.length === 0;
 
-    setLoading(true);
-    try {
-      // Fetch user's favorite stations
-      const stationsRes = await api.get(`https://themegaradio.com/api/users/${userId}/favorites`);
-      const stationsData = stationsRes.data?.favorites || stationsRes.data || [];
-      setStations(stationsData.map((s: any) => ({
-        id: s._id || s.id,
-        name: s.name,
-        genre: s.genre || 'Radio',
-        logo: s.logo || s.favicon || 'https://themegaradio.com/images/default-station.png',
-      })));
-
-      // Fetch follower/following counts
-      try {
-        const [followersRes, followingRes] = await Promise.all([
-          api.get(`https://themegaradio.com/api/users/${userId}/followers`),
-          api.get(`https://themegaradio.com/api/users/${userId}/following`),
-        ]);
-        setFollowerCount((followersRes.data.followers || followersRes.data || []).length);
-        setFollowingCount((followingRes.data.following || followingRes.data || []).length);
-      } catch (e) {
-        console.log('Could not fetch follower counts');
-      }
-
-      // Check if current user is following this user
-      if (isAuthenticated && !isOwnProfile) {
-        try {
-          const isFollowingRes = await api.get(`https://themegaradio.com/api/user/is-following/${userId}`);
-          setIsFollowing(isFollowingRes.data.isFollowing || false);
-        } catch (e) {
-          console.log('Could not check following status');
-        }
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleFollowToggle = async () => {
     if (!isAuthenticated) {
       Alert.alert('Login Required', 'Please login to follow users.');
