@@ -18,6 +18,8 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import api from '../src/services/api';
 import { useAuthStore } from '../src/store/authStore';
+import { useUserFavorites, useUserProfile } from '../src/hooks/useQueries';
+import { getPreloadedFavorites } from '../src/services/preloadService';
 
 interface FavoriteStation {
   id: string;
@@ -32,7 +34,6 @@ export default function UserProfileScreen() {
   const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string }>();
   const { user: currentUser, isAuthenticated } = useAuthStore();
   const [stations, setStations] = useState<FavoriteStation[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
@@ -45,18 +46,90 @@ export default function UserProfileScreen() {
   const userAvatar = rawAvatar 
     ? (rawAvatar.startsWith('http') ? rawAvatar : `https://themegaradio.com${rawAvatar}`)
     : 'https://themegaradio.com/images/default-avatar.png';
-  const userId = params.userId;
+  const userId = params.userId || '';
   const isOwnProfile = currentUser?._id === userId;
 
+  // Use React Query with preloaded data support
+  const { data: favoritesData, isLoading: favoritesLoading } = useUserFavorites(userId);
+  const { data: profileData } = useUserProfile(userId);
+
+  // Check for preloaded data first
   useEffect(() => {
-    loadUserProfile();
+    if (userId) {
+      const preloaded = getPreloadedFavorites(userId);
+      if (preloaded) {
+        console.log('[UserProfile] Using preloaded favorites');
+        setStations(preloaded.map((s: any) => ({
+          id: s._id || s.id,
+          name: s.name,
+          genre: s.genre || 'Radio',
+          logo: s.logo || s.favicon || 'https://themegaradio.com/images/default-station.png',
+        })));
+      }
+    }
   }, [userId]);
 
-  const loadUserProfile = async () => {
-    if (!userId) {
-      setLoading(false);
-      return;
+  // Update stations when React Query data arrives
+  useEffect(() => {
+    if (favoritesData && favoritesData.length > 0) {
+      setStations(favoritesData.map((s: any) => ({
+        id: s._id || s.id,
+        name: s.name,
+        genre: s.genre || 'Radio',
+        logo: s.logo || s.favicon || 'https://themegaradio.com/images/default-station.png',
+      })));
     }
+  }, [favoritesData]);
+
+  // Update profile counts from React Query
+  useEffect(() => {
+    if (profileData) {
+      setFollowerCount(profileData.followersCount || 0);
+      setFollowingCount(profileData.followingCount || 0);
+    }
+  }, [profileData]);
+
+  // Load additional profile data (follow status)
+  useEffect(() => {
+    loadFollowStatus();
+  }, [userId, isAuthenticated]);
+
+  const loadFollowStatus = async () => {
+    if (!userId) return;
+
+    // Check if current user is following this user
+    if (isAuthenticated && !isOwnProfile) {
+      try {
+        const isFollowingRes = await api.get(`https://themegaradio.com/api/user/is-following/${userId}`);
+        setIsFollowing(isFollowingRes.data.isFollowing || false);
+      } catch (e) {
+        console.log('Could not check following status');
+      }
+    }
+  };
+
+  // Fallback: Load follower counts if not from React Query
+  useEffect(() => {
+    if (!profileData && userId) {
+      loadFollowerCounts();
+    }
+  }, [userId, profileData]);
+
+  const loadFollowerCounts = async () => {
+    if (!userId) return;
+    try {
+      const [followersRes, followingRes] = await Promise.all([
+        api.get(`https://themegaradio.com/api/users/${userId}/followers`),
+        api.get(`https://themegaradio.com/api/users/${userId}/following`),
+      ]);
+      setFollowerCount((followersRes.data.followers || followersRes.data || []).length);
+      setFollowingCount((followingRes.data.following || followingRes.data || []).length);
+    } catch (e) {
+      console.log('Could not fetch follower counts');
+    }
+  };
+
+  const loading = favoritesLoading && stations.length === 0;
 
     setLoading(true);
     try {
