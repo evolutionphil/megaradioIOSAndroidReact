@@ -280,17 +280,25 @@ export const setStoredLanguage = async (lang: string): Promise<void> => {
   }
 };
 
-// Initialize i18next
+// Initialize i18next - Optimized for fast startup
 export const initI18n = async (): Promise<void> => {
   const storedLang = await getStoredLanguage();
-  const translations = await fetchTranslations(storedLang);
+  
+  // Start with default translations for fast startup
+  // API translations will be fetched in background
+  const initialTranslations = storedLang === 'en' 
+    ? defaultTranslations 
+    : { ...defaultTranslations }; // Use defaults first
 
   await i18n
     .use(initReactI18next)
     .init({
       resources: {
         [storedLang]: {
-          translation: translations,
+          translation: initialTranslations,
+        },
+        en: {
+          translation: defaultTranslations,
         },
       },
       lng: storedLang,
@@ -302,6 +310,16 @@ export const initI18n = async (): Promise<void> => {
         useSuspense: false,
       },
     });
+  
+  // Fetch translations from API in background (non-blocking)
+  if (storedLang !== 'en') {
+    fetchTranslations(storedLang).then(translations => {
+      i18n.addResourceBundle(storedLang, 'translation', translations, true, true);
+      notifyLanguageChange(storedLang);
+    }).catch(err => {
+      console.log('[i18n] Background translation fetch error:', err);
+    });
+  }
 };
 
 // Change language
