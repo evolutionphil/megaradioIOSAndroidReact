@@ -39,9 +39,12 @@ export default function UserProfileScreen() {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
 
-  // User info from params
+  // User info from params - build full avatar URL
   const userName = params.userName || 'User';
-  const userAvatar = params.userAvatar || 'https://themegaradio.com/images/default-avatar.png';
+  const rawAvatar = params.userAvatar || '';
+  const userAvatar = rawAvatar 
+    ? (rawAvatar.startsWith('http') ? rawAvatar : `https://themegaradio.com${rawAvatar}`)
+    : 'https://themegaradio.com/images/default-avatar.png';
   const userId = params.userId;
   const isOwnProfile = currentUser?._id === userId;
 
