@@ -259,6 +259,37 @@ export const usePublicProfiles = (limit: number = 10) => {
   });
 };
 
+// User profile favorites hook with preloading support
+export const useUserFavorites = (userId: string) => {
+  return useQuery({
+    queryKey: ['userFavorites', userId],
+    queryFn: async () => {
+      const response = await api.get(`https://themegaradio.com/api/users/${userId}/favorites`);
+      return response.data?.favorites || response.data || [];
+    },
+    enabled: !!userId,
+    staleTime: CACHE_TTL.COMMUNITY_FAVORITES,
+    gcTime: CACHE_TTL.COMMUNITY_FAVORITES * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Use cached/preloaded data
+  });
+};
+
+// User profile info hook
+export const useUserProfile = (userId: string) => {
+  return useQuery({
+    queryKey: ['userProfile', userId],
+    queryFn: async () => {
+      const response = await api.get(`https://themegaradio.com/api/user-profile/${userId}`);
+      return response.data;
+    },
+    enabled: !!userId,
+    staleTime: CACHE_TTL.USER_PROFILE,
+    gcTime: CACHE_TTL.USER_PROFILE * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
+  });
+};
+
 // Mutations
 export const useAddFavorite = () => {
   const queryClient = useQueryClient();
