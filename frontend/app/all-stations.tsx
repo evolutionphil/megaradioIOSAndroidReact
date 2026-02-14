@@ -133,7 +133,7 @@ export default function AllStationsScreen() {
       (playbackState === 'loading' || playbackState === 'buffering');
   };
 
-  const title = genreName || 'All Stations';
+  const title = genreName || t('all_stations', 'All Stations');
 
   // Helper function to build reliable logo URL
   const getLogoUrl = useCallback((station: Station): string | null => {
