@@ -11,6 +11,7 @@ import {
   TextInput,
   useWindowDimensions,
   Modal,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,10 +33,11 @@ export default function GenreDetailScreen() {
   const params = useLocalSearchParams();
   const slug = params.slug as string;
   const genreName = params.name as string || slug;
-  const { width: screenWidth } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
 
-  // Calculate grid item width dynamically
-  const GRID_ITEM_WIDTH = Math.floor((screenWidth - spacing.md * 2 - spacing.sm * (GRID_COLUMNS - 1)) / GRID_COLUMNS);
+  // Calculate grid item width dynamically with fallback
+  const screenWidth = windowWidth > 100 ? windowWidth : 375;
+  const GRID_ITEM_WIDTH = Math.floor((screenWidth - 32 - 16) / GRID_COLUMNS);
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [searchQuery, setSearchQuery] = useState('');
