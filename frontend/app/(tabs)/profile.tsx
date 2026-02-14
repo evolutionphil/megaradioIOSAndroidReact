@@ -503,8 +503,9 @@ const s = StyleSheet.create({
   // Header
   header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
+  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', position: 'relative' as const },
   avatarImage: { width: 56, height: 56, borderRadius: 28 },
+  cameraBadge: { position: 'absolute' as const, bottom: 0, right: 0, width: 20, height: 20, borderRadius: 10, backgroundColor: '#FF4199', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#0D0D0F' },
   userName: { fontSize: 20, fontWeight: '700', color: '#FFF' },
   statsRow: { flexDirection: 'row', marginTop: 4, alignItems: 'center' },
   statTouchable: { alignItems: 'center', paddingVertical: 4, paddingHorizontal: 8 },
