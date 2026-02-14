@@ -90,8 +90,13 @@ export interface Genre {
   name: string;
   slug: string;
   stationCount?: number;
+  total_stations?: number;
   icon?: string;
   color?: string;
+  posterImage?: string;
+  discoverableImage?: string;
+  isDiscoverable?: boolean;
+  isDynamic?: boolean;
 }
 
 export interface GenreResponse {
