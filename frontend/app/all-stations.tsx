@@ -32,6 +32,7 @@ const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
 export default function AllStationsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const genreSlug = params.genre as string | undefined;
   const genreName = params.genreName as string | undefined;
   const { width: windowWidth } = useWindowDimensions();
