@@ -80,21 +80,22 @@ export const authService = {
   /**
    * Mobile Login with Email/Password
    * For native: POST /api/auth/mobile/login (returns token)
-   * For web: POST /api/auth/login (session-based) + GET /api/auth/me
+   * For web: POST /api/auth/login + response includes user data
    */
   async mobileLogin(email: string, password: string): Promise<MobileLoginResponse> {
     const { deviceInfo } = useAuthStore.getState();
     const isWeb = typeof window !== 'undefined' && !('ReactNativeWebView' in window);
     
     if (isWeb) {
-      // Web: Use session-based login
+      // Web: Use session-based login without credentials (CORS issue with *)
+      // The API returns user data directly in login response
       const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
         },
-        credentials: 'include', // Important: include cookies
+        // Note: credentials: 'include' doesn't work with Access-Control-Allow-Origin: *
         body: JSON.stringify({ email, password }),
       });
       
@@ -105,26 +106,12 @@ export const authService = {
       
       const loginData = await loginResponse.json();
       
-      // Now get user details with session cookie
-      const meResponse = await fetch(`${API_BASE}/api/auth/me`, {
-        method: 'GET',
-        headers: {
-          'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-        },
-        credentials: 'include',
-      });
-      
-      if (!meResponse.ok) {
-        throw new Error('Failed to get user data');
-      }
-      
-      const meData = await meResponse.json();
-      
-      // Return in mobile format (use session ID as pseudo-token for web)
+      // Login response already includes user data
+      // Return in mobile format
       return {
         success: true,
-        token: 'web_session_' + Date.now(), // Pseudo token for web
-        user: meData.user,
+        token: 'web_session_' + Date.now(), // Pseudo token for web state management
+        user: loginData.user,
         message: loginData.message,
       };
     } else {
