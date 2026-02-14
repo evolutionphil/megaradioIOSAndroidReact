@@ -284,22 +284,22 @@ export default function ProfileScreen() {
           <TouchableOpacity onPress={() => setCurrentPage('main')}>
             <Ionicons name="chevron-back" size={24} color="#FFF" />
           </TouchableOpacity>
-          <Text style={s.subTitle}>Account</Text>
+          <Text style={s.subTitle}>{t('account', 'Account')}</Text>
           <View style={{ width: 24 }} />
         </View>
         <View style={{ paddingTop: 8 }}>
           <TouchableOpacity style={s.accountRow} onPress={() => setShowNameModal(true)}>
-            <View><Text style={s.aLabel}>Name</Text><Text style={s.aValue}>{nameValue}</Text></View>
+            <View><Text style={s.aLabel}>{t('name', 'Name')}</Text><Text style={s.aValue}>{nameValue}</Text></View>
             <Ionicons name="chevron-forward" size={20} color="#666" />
           </TouchableOpacity>
           <View style={s.divider} />
           <TouchableOpacity style={s.accountRow} onPress={() => setShowEmailModal(true)}>
-            <View><Text style={s.aLabel}>Email</Text><Text style={s.aValue}>{userEmail}</Text></View>
+            <View><Text style={s.aLabel}>{t('email', 'Email')}</Text><Text style={s.aValue}>{userEmail}</Text></View>
             <Ionicons name="chevron-forward" size={20} color="#666" />
           </TouchableOpacity>
           <View style={s.divider} />
           <TouchableOpacity style={s.accountRow} onPress={() => setShowPasswordModal(true)}>
-            <Text style={s.aLabel}>Password</Text>
+            <Text style={s.aLabel}>{t('password', 'Password')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#666" />
           </TouchableOpacity>
         </View>
@@ -307,14 +307,14 @@ export default function ProfileScreen() {
         {/* Name Modal */}
         <Modal visible={showNameModal} transparent animationType="fade">
           <View style={s.mOverlay}><View style={s.mBox}>
-            <Text style={s.mTitle}>Change your name</Text>
+            <Text style={s.mTitle}>{t('change_name', 'Change your name')}</Text>
             <View style={s.mInputRow}>
-              <TextInput style={s.mInput} value={nameValue} onChangeText={setNameValue} placeholder="Enter name" placeholderTextColor="#666" autoFocus />
+              <TextInput style={s.mInput} value={nameValue} onChangeText={setNameValue} placeholder={t('name', 'Name')} placeholderTextColor="#666" autoFocus />
               {nameValue.length > 0 && <TouchableOpacity onPress={() => setNameValue('')}><Ionicons name="close-circle" size={20} color="#999" /></TouchableOpacity>}
             </View>
             <View style={s.mActions}>
-              <TouchableOpacity onPress={() => setShowNameModal(false)}><Text style={s.mCancel}>Cancel</Text></TouchableOpacity>
-              <TouchableOpacity style={s.mPinkBtn} onPress={() => setShowNameModal(false)}><Text style={s.mPinkText}>Done</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowNameModal(false)}><Text style={s.mCancel}>{t('cancel', 'Cancel')}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.mPinkBtn} onPress={() => setShowNameModal(false)}><Text style={s.mPinkText}>{t('done', 'Done')}</Text></TouchableOpacity>
             </View>
           </View></View>
         </Modal>
@@ -322,13 +322,13 @@ export default function ProfileScreen() {
         {/* Email Modal */}
         <Modal visible={showEmailModal} transparent animationType="fade">
           <View style={s.mOverlay}><View style={s.mBox}>
-            <Text style={s.mTitle}>Change your email</Text>
+            <Text style={s.mTitle}>{t('change_email', 'Change your email')}</Text>
             <View style={s.mInputRow}>
-              <TextInput style={s.mInput} value={emailValue} onChangeText={setEmailValue} placeholder="Enter email" placeholderTextColor="#666" keyboardType="email-address" autoFocus />
+              <TextInput style={s.mInput} value={emailValue} onChangeText={setEmailValue} placeholder={t('email', 'Email')} placeholderTextColor="#666" keyboardType="email-address" autoFocus />
             </View>
             <View style={s.mActions}>
-              <TouchableOpacity onPress={() => setShowEmailModal(false)}><Text style={s.mCancel}>Cancel</Text></TouchableOpacity>
-              <TouchableOpacity style={s.mPinkBtn} onPress={handleEmailSend}><Text style={s.mPinkText}>Send</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowEmailModal(false)}><Text style={s.mCancel}>{t('cancel', 'Cancel')}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.mPinkBtn} onPress={handleEmailSend}><Text style={s.mPinkText}>{t('save', 'Save')}</Text></TouchableOpacity>
             </View>
           </View></View>
         </Modal>
@@ -337,19 +337,19 @@ export default function ProfileScreen() {
         <Modal visible={showVerificationPopup} transparent animationType="fade">
           <View style={s.mOverlay}><View style={s.mBox}>
             <View style={s.checkCircle}><Ionicons name="checkmark" size={32} color="#FF4199" /></View>
-            <Text style={s.mTitle}>We sent you{'\n'}a verification mail!</Text>
-            <Text style={s.mSub}>Please check your mail</Text>
+            <Text style={s.mTitle}>{t('verification_sent', 'We sent you a verification mail!')}</Text>
+            <Text style={s.mSub}>{t('check_mail', 'Please check your mail')}</Text>
           </View></View>
         </Modal>
 
         {/* Password Modal */}
         <Modal visible={showPasswordModal} transparent animationType="fade">
           <View style={s.mOverlay}><View style={s.mBox}>
-            <Text style={s.mTitle}>Change your password</Text>
+            <Text style={s.mTitle}>{t('change_password', 'Change your password')}</Text>
             {[
-              { val: currentPassword, set: setCurrentPassword, show: showCurrentPw, toggle: () => setShowCurrentPw(!showCurrentPw), ph: 'Current password' },
-              { val: newPassword, set: setNewPassword, show: showNewPw, toggle: () => setShowNewPw(!showNewPw), ph: 'New password' },
-              { val: confirmPassword, set: setConfirmPassword, show: showConfirmPw, toggle: () => setShowConfirmPw(!showConfirmPw), ph: 'Confirm new password' },
+              { val: currentPassword, set: setCurrentPassword, show: showCurrentPw, toggle: () => setShowCurrentPw(!showCurrentPw), ph: t('current_password', 'Current password') },
+              { val: newPassword, set: setNewPassword, show: showNewPw, toggle: () => setShowNewPw(!showNewPw), ph: t('new_password', 'New password') },
+              { val: confirmPassword, set: setConfirmPassword, show: showConfirmPw, toggle: () => setShowConfirmPw(!showConfirmPw), ph: t('confirm_password', 'Confirm new password') },
             ].map((f, i) => (
               <View key={i} style={s.pwRow}>
                 <TextInput style={s.pwInput} value={f.val} onChangeText={f.set} placeholder={f.ph} placeholderTextColor="#666" secureTextEntry={!f.show} />
@@ -357,8 +357,8 @@ export default function ProfileScreen() {
               </View>
             ))}
             <View style={s.mActions}>
-              <TouchableOpacity onPress={() => setShowPasswordModal(false)}><Text style={s.mCancel}>Cancel</Text></TouchableOpacity>
-              <TouchableOpacity style={s.mPinkBtn} onPress={handlePasswordDone}><Text style={s.mPinkText}>Done</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowPasswordModal(false)}><Text style={s.mCancel}>{t('cancel', 'Cancel')}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.mPinkBtn} onPress={handlePasswordDone}><Text style={s.mPinkText}>{t('done', 'Done')}</Text></TouchableOpacity>
             </View>
           </View></View>
         </Modal>
@@ -367,7 +367,7 @@ export default function ProfileScreen() {
         <Modal visible={showPasswordChanged} transparent animationType="fade">
           <View style={s.mOverlay}><View style={s.mBox}>
             <View style={s.checkCircle}><Ionicons name="checkmark" size={32} color="#FF4199" /></View>
-            <Text style={s.mTitle}>Your password{'\n'}was changed!</Text>
+            <Text style={s.mTitle}>{t('password_changed', 'Your password was changed!')}</Text>
           </View></View>
         </Modal>
       </SafeAreaView>
@@ -383,13 +383,13 @@ export default function ProfileScreen() {
           <View style={s.guestAvatar}>
             <Ionicons name="person" size={48} color="#888" />
           </View>
-          <Text style={s.guestSubtitle}>Sign in to access your profile, favorites, and more</Text>
+          <Text style={s.guestSubtitle}>{t('sign_in_prompt', 'Sign in to access your profile, favorites, and more')}</Text>
           <TouchableOpacity 
             style={s.loginBtn} 
             onPress={() => router.push('/auth-options')}
             data-testid="profile-login-btn"
           >
-            <Text style={s.loginBtnText}>Sign In / Sign Up</Text>
+            <Text style={s.loginBtnText}>{t('sign_in_sign_up', 'Sign In / Sign Up')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
