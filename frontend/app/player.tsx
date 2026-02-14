@@ -246,6 +246,7 @@ const GridItem = React.memo(({
 
 export default function PlayerScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuthStore();
   const [showCarMode, setShowCarMode] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
