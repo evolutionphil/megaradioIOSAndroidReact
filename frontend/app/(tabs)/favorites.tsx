@@ -253,13 +253,13 @@ const getGenreDisplay = (station: Station): string => {
       <View style={styles.emptyIconContainer}>
         <Ionicons name="heart-outline" size={80} color="#4A4A4A" />
       </View>
-      <Text style={styles.emptyTitle}>You don't have any{'\n'}favorites yet</Text>
+      <Text style={styles.emptyTitle}>{t('no_favorites_yet', "You don't have any favorites yet")}</Text>
       <TouchableOpacity
         style={styles.discoverLink}
         onPress={() => router.push('/(tabs)')}
         data-testid="discover-stations-btn"
       >
-        <Text style={styles.discoverText}>Discover stations near to you!</Text>
+        <Text style={styles.discoverText}>{t('discover_stations_link', 'Discover stations near to you!')}</Text>
         <Ionicons name="arrow-forward" size={16} color="#FF4081" style={{ marginLeft: 4 }} />
       </TouchableOpacity>
     </View>
