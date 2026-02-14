@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,9 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  TextInput,
+  Dimensions,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,9 +20,14 @@ import { colors, gradients, spacing, borderRadius, typography } from '../src/con
 import { useGenreStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
-import { useFavoritesStore } from '../src/store/favoritesStore';
 import { useLocationStore } from '../src/store/locationStore';
 import type { Station } from '../src/types';
+
+const { width } = Dimensions.get('window');
+const GRID_COLUMNS = 3;
+const GRID_ITEM_WIDTH = (width - spacing.md * 2 - spacing.sm * 2) / GRID_COLUMNS;
+
+type ViewMode = 'grid' | 'list';
 
 export default function GenreDetailScreen() {
   const router = useRouter();
@@ -27,16 +35,29 @@ export default function GenreDetailScreen() {
   const slug = params.slug as string;
   const genreName = params.name as string || slug;
 
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSortModal, setShowSortModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
+  
   const { countryCode } = useLocationStore();
 
-  const { data, isLoading, refetch } = useGenreStations(slug, page, 50, countryCode || undefined);
+  const { data, isLoading, refetch } = useGenreStations(slug, page, 100, countryCode || undefined);
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
-  const { isFavorite, toggleFavorite } = useFavoritesStore();
 
   const stations = data?.stations || [];
+  const totalCount = data?.pagination?.total || stations.length;
+
+  // Filter stations by search
+  const filteredStations = useMemo(() => {
+    if (!searchQuery.trim()) return stations;
+    return stations.filter(s => 
+      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.country?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [stations, searchQuery]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -52,10 +73,6 @@ export default function GenreDetailScreen() {
     playStation(station);
   };
 
-  const handleFavoritePress = async (station: Station) => {
-    await toggleFavorite(station);
-  };
-
   const isStationPlaying = (station: Station) => {
     return currentStation?._id === station._id && playbackState === 'playing';
   };
@@ -65,59 +82,76 @@ export default function GenreDetailScreen() {
       (playbackState === 'loading' || playbackState === 'buffering');
   };
 
-  const renderStationCard = (station: Station) => {
+  // Grid Item Component
+  const renderGridItem = (station: Station) => {
     const logoUrl = station.logoAssets?.webp96 || station.favicon || station.logo;
     const playing = isStationPlaying(station);
-    const loading = isStationLoading(station);
-    const favorite = isFavorite(station._id);
 
     return (
-      <View 
-        key={station._id} 
-        style={[styles.stationCard, playing && styles.stationCardActive]}
-        data-testid={`station-card-${station._id}`}
+      <TouchableOpacity
+        key={station._id}
+        style={[styles.gridItem, playing && styles.gridItemActive]}
+        onPress={() => handleStationPress(station)}
+        activeOpacity={0.7}
+        data-testid={`grid-station-${station._id}`}
       >
-        {/* Station Logo */}
-        <View style={styles.logoContainer}>
+        <View style={styles.gridLogoContainer}>
           {logoUrl ? (
             <Image
               source={{ uri: logoUrl }}
-              style={styles.logo}
+              style={styles.gridLogo}
               resizeMode="cover"
             />
           ) : (
-            <View style={styles.placeholderLogo}>
+            <View style={styles.gridPlaceholder}>
+              <Ionicons name="radio" size={32} color={colors.textMuted} />
+            </View>
+          )}
+        </View>
+        <Text style={styles.gridName} numberOfLines={1}>{station.name}</Text>
+        <Text style={styles.gridLocation} numberOfLines={1}>
+          {station.country}{station.state ? `, ${station.state}` : ''}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  // List Item Component
+  const renderListItem = (station: Station) => {
+    const logoUrl = station.logoAssets?.webp96 || station.favicon || station.logo;
+    const playing = isStationPlaying(station);
+    const loading = isStationLoading(station);
+
+    return (
+      <TouchableOpacity
+        key={station._id}
+        style={[styles.listItem, playing && styles.listItemActive]}
+        onPress={() => handleStationPress(station)}
+        activeOpacity={0.7}
+        data-testid={`list-station-${station._id}`}
+      >
+        <View style={styles.listLogoContainer}>
+          {logoUrl ? (
+            <Image
+              source={{ uri: logoUrl }}
+              style={styles.listLogo}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={styles.listPlaceholder}>
               <Ionicons name="radio" size={24} color={colors.textMuted} />
             </View>
           )}
         </View>
-
-        {/* Station Info */}
-        <View style={styles.stationInfo}>
-          <Text style={styles.stationName} numberOfLines={1}>{station.name}</Text>
-          <Text style={styles.stationMeta} numberOfLines={1}>
-            {station.genres?.[0] || genreName}
+        <View style={styles.listInfo}>
+          <Text style={styles.listName} numberOfLines={1}>{station.name}</Text>
+          <Text style={styles.listLocation} numberOfLines={1}>
+            {station.country}{station.state ? `, ${station.state}` : ''}
           </Text>
         </View>
-
-        {/* Favorite Button */}
         <TouchableOpacity
-          style={styles.favoriteButton}
-          onPress={() => handleFavoritePress(station)}
-          data-testid={`favorite-btn-${station._id}`}
-        >
-          <Ionicons 
-            name="heart" 
-            size={22} 
-            color={favorite ? colors.accentPink : colors.textMuted} 
-          />
-        </TouchableOpacity>
-
-        {/* Play Button */}
-        <TouchableOpacity
-          style={styles.playButton}
+          style={[styles.playButton, playing && styles.playButtonActive]}
           onPress={() => handleStationPress(station)}
-          data-testid={`play-btn-${station._id}`}
         >
           {loading ? (
             <ActivityIndicator size="small" color={colors.text} />
@@ -129,7 +163,7 @@ export default function GenreDetailScreen() {
             />
           )}
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -137,25 +171,61 @@ export default function GenreDetailScreen() {
     <View style={styles.mainContainer}>
       <LinearGradient colors={gradients.background as any} style={styles.gradient}>
         <SafeAreaView style={styles.container} edges={['top']}>
-          {/* Header with Breadcrumb */}
+          {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity 
               style={styles.backButton} 
               onPress={handleBackPress}
               data-testid="genre-detail-back-btn"
             >
-              <Ionicons name="arrow-back" size={24} color={colors.text} />
+              <Ionicons name="chevron-back" size={28} color={colors.text} />
             </TouchableOpacity>
             
-            <View style={styles.breadcrumb}>
-              <TouchableOpacity onPress={() => router.push('/genres')}>
-                <Text style={styles.breadcrumbText}>Genres</Text>
-              </TouchableOpacity>
-              <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
-              <Text style={styles.breadcrumbActive}>{genreName}</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{genreName}</Text>
+              <Text style={styles.subtitle}>{totalCount}</Text>
             </View>
 
-            <View style={styles.placeholder} />
+            <View style={styles.headerActions}>
+              <TouchableOpacity 
+                style={styles.headerButton}
+                onPress={() => setShowSortModal(true)}
+                data-testid="sort-btn"
+              >
+                <Ionicons name="filter" size={22} color={colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.headerButton}
+                onPress={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+                data-testid="view-toggle-btn"
+              >
+                <Ionicons 
+                  name={viewMode === 'grid' ? 'list' : 'grid'} 
+                  size={22} 
+                  color={colors.text} 
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <View style={styles.searchBar}>
+              <Ionicons name="search" size={18} color={colors.textMuted} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search stations..."
+                placeholderTextColor={colors.textMuted}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                data-testid="genre-search-input"
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')}>
+                  <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
 
           {isLoading && stations.length === 0 ? (
@@ -175,25 +245,32 @@ export default function GenreDetailScreen() {
               }
               showsVerticalScrollIndicator={false}
             >
-              {/* Station List */}
-              <View style={styles.stationList}>
-                {stations.map(renderStationCard)}
+              {viewMode === 'grid' ? (
+                <View style={styles.gridContainer}>
+                  {filteredStations.map(renderGridItem)}
+                </View>
+              ) : (
+                <View style={styles.listContainer}>
+                  {filteredStations.map(renderListItem)}
+                </View>
+              )}
 
-                {stations.length === 0 && !isLoading && (
-                  <View style={styles.emptyState}>
-                    <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
-                    <Text style={styles.emptyText}>No stations found in this genre</Text>
-                  </View>
-                )}
-              </View>
+              {filteredStations.length === 0 && !isLoading && (
+                <View style={styles.emptyState}>
+                  <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
+                  <Text style={styles.emptyText}>
+                    {searchQuery ? 'No stations found' : 'No stations in this genre'}
+                  </Text>
+                </View>
+              )}
 
               {/* See More Button */}
-              {stations.length >= 50 && (
+              {stations.length >= 100 && (
                 <View style={styles.seeMoreContainer}>
                   <TouchableOpacity 
                     style={styles.seeMoreButton}
                     onPress={() => setPage(p => p + 1)}
-                    data-testid="see-more-stations-btn"
+                    data-testid="see-more-btn"
                   >
                     <Text style={styles.seeMoreText}>See More</Text>
                   </TouchableOpacity>
@@ -223,6 +300,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
@@ -232,24 +310,51 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  breadcrumb: {
+  titleContainer: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
   },
-  breadcrumbText: {
-    fontSize: typography.sizes.md,
-    fontFamily: typography.fonts.medium,
-    color: colors.textSecondary,
-  },
-  breadcrumbActive: {
-    fontSize: typography.sizes.md,
+  title: {
+    fontSize: typography.sizes.xl,
     fontFamily: typography.fonts.bold,
     color: colors.text,
   },
-  placeholder: {
+  subtitle: {
+    fontSize: typography.sizes.sm,
+    fontFamily: typography.fonts.regular,
+    color: colors.textSecondary,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  headerButton: {
     width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Search
+  searchContainer: {
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.sm,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: typography.sizes.md,
+    fontFamily: typography.fonts.regular,
+    color: colors.text,
+    paddingVertical: spacing.xs,
   },
 
   // Loading
@@ -267,80 +372,109 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
 
-  // Station List
-  stationList: {
+  // Grid View
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
+  },
+  gridItem: {
+    width: GRID_ITEM_WIDTH,
+    marginBottom: spacing.md,
+  },
+  gridItemActive: {
+    opacity: 0.8,
+  },
+  gridLogoContainer: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    backgroundColor: colors.surface,
+    marginBottom: spacing.xs,
+  },
+  gridLogo: {
+    width: '100%',
+    height: '100%',
+  },
+  gridPlaceholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.surfaceLight,
+  },
+  gridName: {
+    fontSize: typography.sizes.sm,
+    fontFamily: typography.fonts.bold,
+    color: colors.text,
+  },
+  gridLocation: {
+    fontSize: typography.sizes.xs,
+    fontFamily: typography.fonts.regular,
+    color: colors.textSecondary,
+  },
+
+  // List View
+  listContainer: {
     paddingHorizontal: spacing.md,
   },
-  stationCard: {
+  listItem: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.backgroundCard,
     borderRadius: borderRadius.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
-  stationCardActive: {
-    borderColor: colors.primary,
+  listItemActive: {
     backgroundColor: colors.surfaceLight,
   },
-  logoContainer: {
+  listLogoContainer: {
     width: 56,
     height: 56,
     borderRadius: borderRadius.md,
     overflow: 'hidden',
     backgroundColor: colors.surface,
   },
-  logo: {
+  listLogo: {
     width: '100%',
     height: '100%',
   },
-  placeholderLogo: {
+  listPlaceholder: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.surfaceLight,
   },
-  stationInfo: {
+  listInfo: {
     flex: 1,
     marginLeft: spacing.md,
     marginRight: spacing.sm,
   },
-  stationName: {
+  listName: {
     fontSize: typography.sizes.md,
     fontFamily: typography.fonts.bold,
     color: colors.text,
     marginBottom: 2,
   },
-  stationMeta: {
+  listLocation: {
     fontSize: typography.sizes.sm,
     fontFamily: typography.fonts.regular,
     color: colors.textSecondary,
   },
-
-  // Buttons
-  favoriteButton: {
+  playButton: {
     width: 44,
     height: 44,
     borderRadius: borderRadius.full,
     backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: spacing.sm,
-    borderWidth: 2,
-    borderColor: colors.border,
   },
-  playButton: {
-    width: 44,
-    height: 44,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surfaceLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
+  playButtonActive: {
+    backgroundColor: colors.primary,
   },
 
   // Empty State
