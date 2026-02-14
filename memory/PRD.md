@@ -98,7 +98,16 @@ GET /api/translations/:lang
 
 ## Completed Tasks
 
-### December 2025 - Session 9 (Latest)
+### February 2026 - Session 10 (Latest)
+- [x] Onboarding screens UI fix - Full screen background images with linear gradient
+- [x] Ubuntu font integration throughout the app (Regular, Medium, Bold, BoldItalic)
+- [x] Onboarding title: Ubuntu Bold 36px (Enjoy, Anywhere, Free)
+- [x] Onboarding subtitle: Ubuntu Medium 15px
+- [x] Login/Signup screens updated with Ubuntu fonts
+- [x] Full screen login/signup screens (not popup style)
+- [x] Linear gradient on onboarding: transparent to black at 29.42%
+
+### December 2025 - Session 9
 - [x] Added MegaRadio logo with arc effect image to auth-options.tsx (user-provided image)
 - [x] Updated mobileRegister to use web signup endpoint then auto-login
 - [x] All 9 auth feature tests passed (100% success rate)
@@ -162,5 +171,13 @@ GET /api/translations/:lang
 - API returns 401 for invalid credentials (correct behavior)
 - All auth screens follow Figma design specifications
 
+## Typography (Ubuntu Font Family)
+- **Ubuntu-Regular**: General body text, input fields
+- **Ubuntu-Medium**: Subtitles, hints, secondary text
+- **Ubuntu-Bold**: Headlines, buttons, titles
+- **Ubuntu-BoldItalic**: Special emphasis (splash screen)
+
+Font files: `/app/frontend/assets/fonts/`
+
 ## Last Updated
-February 2026 - Session 9
+February 2026 - Session 10
