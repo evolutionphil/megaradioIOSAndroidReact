@@ -88,6 +88,8 @@ export const authService = {
     // Use mobile login endpoint for all platforms to get real JWT token
     // This works for both web and native since it returns a Bearer token
     // that can be used for API calls without CORS cookie issues
+    // IMPORTANT: Always send deviceType as 'mobile' to get JWT token
+    // The external API returns web_session_* tokens for 'tablet' which don't work with API calls
     const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
       method: 'POST',
       headers: {
@@ -97,8 +99,8 @@ export const authService = {
       body: JSON.stringify({
         email,
         password,
-        deviceType: deviceInfo.deviceType,
-        deviceName: deviceInfo.deviceName,
+        deviceType: 'mobile', // Always 'mobile' to get JWT token (API returns web_session for 'tablet')
+        deviceName: deviceInfo.deviceName || 'Web Browser',
       }),
     });
     
