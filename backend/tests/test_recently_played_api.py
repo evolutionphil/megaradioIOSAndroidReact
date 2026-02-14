@@ -185,7 +185,7 @@ class TestRecentlyPlayedAPI:
         """Test POST /api/recently-played to sync a station play"""
         # First, get a sample station ID from popular stations
         popular_response = requests.get(
-            f"{BASE_URL}/api/stations/precomputed",
+            f"{BASE_URL}/api/stations/popular?limit=5",
             headers={
                 "X-API-Key": API_KEY
             }
