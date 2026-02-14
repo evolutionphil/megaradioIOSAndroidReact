@@ -73,36 +73,36 @@ export default function GenreDetailScreen() {
     }
   }, []);
 
-  const { data, isLoading, refetch } = useGenreStations(slug, page, 100, countryCode || undefined);
+  // Map sortOption to API parameters - memoized to use in query key
+  const sortParams = useMemo(() => {
+    switch (sortOption) {
+      case 'popular': return { sort: 'votes' as const, order: 'desc' as const };
+      case 'newest': return { sort: 'createdAt' as const, order: 'desc' as const };
+      case 'oldest': return { sort: 'createdAt' as const, order: 'asc' as const };
+      case 'az': return { sort: 'name' as const, order: 'asc' as const };
+      case 'za': return { sort: 'name' as const, order: 'desc' as const };
+      default: return { sort: 'votes' as const, order: 'desc' as const };
+    }
+  }, [sortOption]);
+
+  const { data, isLoading, refetch } = useGenreStations(
+    slug, 
+    page, 
+    100, 
+    countryCode || undefined,
+    sortParams.sort,
+    sortParams.order
+  );
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
   const stations = data?.stations || [];
   const totalCount = data?.pagination?.total || stations.length;
 
-  // Sort stations based on selection
-  const sortedStations = useMemo(() => {
-    const sorted = [...stations];
-    switch (sortOption) {
-      case 'popular':
-        return sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0));
-      case 'newest':
-        return sorted.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-      case 'oldest':
-        return sorted.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
-      case 'az':
-        return sorted.sort((a, b) => a.name.localeCompare(b.name));
-      case 'za':
-        return sorted.sort((a, b) => b.name.localeCompare(a.name));
-      default:
-        return sorted;
-    }
-  }, [stations, sortOption]);
-
-  // Filter stations by search
+  // Filter stations by search (no frontend sorting needed - API handles it)
   const filteredStations = useMemo(() => {
-    if (!searchQuery.trim()) return sortedStations;
-    return sortedStations.filter(s => 
+    if (!searchQuery.trim()) return stations;
+    return stations.filter(s => 
       s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.country?.toLowerCase().includes(searchQuery.toLowerCase())
     );
