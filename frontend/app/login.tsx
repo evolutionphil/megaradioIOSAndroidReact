@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import authService from '../src/services/authService';
 import { useAuthStore } from '../src/store/authStore';
@@ -23,6 +24,7 @@ const PASSWORD_ICON = require('../assets/icons/password-input.png');
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { saveAuth } = useAuthStore();
 
   const [email, setEmail] = useState('');
@@ -33,17 +35,17 @@ export default function LoginScreen() {
 
   const validateForm = () => {
     if (!email.trim()) {
-      setError('Please enter your email');
+      setError(t('please_enter_email', 'Please enter your email'));
       setHasError(true);
       return false;
     }
     if (!password) {
-      setError('Please enter your password');
+      setError(t('please_enter_password', 'Please enter your password'));
       setHasError(true);
       return false;
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address');
+      setError(t('invalid_email', 'Please enter a valid email address'));
       setHasError(true);
       return false;
     }
