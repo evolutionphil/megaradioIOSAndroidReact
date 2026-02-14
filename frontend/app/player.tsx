@@ -398,7 +398,7 @@ export default function PlayerScreen() {
     if (currentStation?.country) {
       return currentStation.country;
     }
-    return 'Live Radio';
+    return t('live_radio', 'Live Radio');
   };
 
   if (!currentStation) {
