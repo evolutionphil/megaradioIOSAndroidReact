@@ -109,7 +109,7 @@ export default function GenreDetailScreen() {
           <Ionicons 
             name="heart" 
             size={22} 
-            color={favorite ? colors.accentPink : colors.accentPink} 
+            color={favorite ? colors.accentPink : colors.textMuted} 
           />
         </TouchableOpacity>
 
