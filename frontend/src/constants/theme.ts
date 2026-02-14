@@ -83,6 +83,12 @@ export const borderRadius = {
 };
 
 export const typography = {
+  fonts: {
+    regular: 'Ubuntu-Regular',
+    medium: 'Ubuntu-Medium',
+    bold: 'Ubuntu-Bold',
+    boldItalic: 'Ubuntu-BoldItalic',
+  },
   sizes: {
     xs: 10,
     sm: 12,
