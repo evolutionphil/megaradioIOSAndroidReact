@@ -273,11 +273,14 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: borderRadius.md,
     marginRight: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   popularChipText: {
     fontSize: typography.sizes.md,
     fontFamily: typography.fonts.medium,
     color: colors.text,
+    textAlign: 'center',
   },
 
   // Genre List
@@ -296,17 +299,20 @@ const styles = StyleSheet.create({
   },
   genreInfo: {
     flex: 1,
+    alignItems: 'flex-start',
   },
   genreName: {
     fontSize: typography.sizes.lg,
     fontFamily: typography.fonts.bold,
     color: colors.text,
     marginBottom: 2,
+    textAlign: 'left',
   },
   genreCount: {
     fontSize: typography.sizes.sm,
     fontFamily: typography.fonts.regular,
     color: colors.textSecondary,
+    textAlign: 'left',
   },
 
   // Empty State
