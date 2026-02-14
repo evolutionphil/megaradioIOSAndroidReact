@@ -15,72 +15,62 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The agent has successfully resolved a large number of critical bugs and UI issues reported by the user. This includes fixing the login navigation flow, search functionality, missing station images, and implementing persistence for the user's grid/list view preference using AsyncStorage.
+The agent implemented the backend developer's caching recommendations by updating  and  for all relevant React Query hooks. Following this, the user reported a severe performance issue on the user profile page, where loading stations for users with many favorites took an extremely long time (~30 seconds).
 
-Following these fixes, the agent addressed a new high-priority request to fix the Sort by functionality, ensuring that selecting a sort option correctly refetches data from the API on both the All Stations and Genre Detail pages. The agent also implemented general performance optimizations using React Query's caching capabilities (, ).
-
-The user then provided a document from their backend developer with specific caching recommendations. The agent is currently in the process of analyzing this document to implement the suggested server-side caching strategy on the frontend.
+To mitigate this, the agent implemented a preloading system to fetch and cache user favorites in the background. However, the investigation revealed the root cause to be a slow backend API endpoint. The user approved a frontend workaround: implementing pagination for favorite stations on the profile page. The agent also received a new list of tasks from the user, including creating a notifications page, implementing a follow/unfollow button, and verifying the nearby stations functionality.
 
 **Last working item**:
-- **Last item agent was working**: Analyzing a text file () provided by the user, which contains caching recommendations from the backend developer. The agent has viewed the file's contents and is poised to implement the suggested caching logic using React Query.
-- **Status**: IN PROGRESS
+- **Last item agent was working**: The agent had just received and acknowledged a new set of high-priority tasks from the user. The primary focus is now on fixing the severe performance issue on the user profile page by implementing pagination, alongside other feature requests.
+- **Status**: NOT STARTED
 - **Agent Testing Done**: N
-- **Which testing method agent to use?**: The agent should first manually verify the new caching behavior by observing network requests (e.g., in a web browser's developer tools). After implementation, a full regression test using the  is recommended to ensure no existing functionality was broken.
+- **Which testing method agent to use?**: Frontend testing agent to verify the new features (pagination, notifications, follow button).  can be used to manually test the  API endpoint.
 - **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Implement Backend Caching Recommendations (P0)**
-    - **Description**: The user has provided a document with specific caching headers and strategies recommended by the backend team. The agent needs to analyze this document and apply the recommendations to the React Query configuration.
-    - **Attempted fixes**: The agent was unable to access the caching documentation via a URL provided by the user. The user then uploaded the content as a text file (), which the agent has successfully read.
-    - **Next debug checklist**:
-        1. Parse the content of  to understand the recommended  headers (e.g., , ) for different API endpoints.
-        2. Update the  and  values for the corresponding queries in  and  to align with the backend developer's recommendations.
-        3. Verify that the new caching strategy works as expected.
-    - **Why fix this issue and what will be achieved with the fix?**: To align frontend caching with the backend's intended behavior, reducing unnecessary API calls, improving performance, and ensuring data consistency.
-    - **Status**: IN PROGRESS
-    - **Is recurring issue?**: N
+- **Issue 1: Extremely Slow API Response for User Favorites (P0)**
+    - **Description**: The  endpoint is critically slow when a user has a large number of favorite stations (e.g., 100 favorites takes ~29 seconds to load). This causes the user profile page to hang, display a persistent loading spinner, and show incorrect data (e.g., 0 Followers) until the request completes.
+    - **Attempted fixes**: An asynchronous preloading system was implemented, but it does not solve the underlying API latency issue.
+    - **Next debug checklist**: Implement the user-approved pagination solution. This is captured in the Upcoming Tasks list.
+    - **Why fix this issue and what will be achieved with the fix?**: To make the user profile page usable, prevent it from freezing, and provide immediate feedback to the user instead of a long, blocking load.
+    - **Status**: BLOCKED (by slow backend, but a frontend workaround is planned)
+    - **Is recurring issue?**: Y
     - **Should Test frontend/backend/both after fix?**: Frontend
+    - **Blocked on other issue**: Backend API performance.
 
 **In progress Task List**:
-- **Task 1: Implement Backend Caching Recommendations**
-    - **Where to resume**: The agent has the content of . The next step is to translate those recommendations into code changes in  and .
-    - **What will be achieved with this?**: A more robust and efficient data-fetching layer that respects the backend's caching policies.
-    - **Status**: IN PROGRESS
-    - **Should Test frontend/backend/both after fix?**: Frontend
-    - **Blocked on something**: No.
+None. The previous tasks were completed, and the new ones are pending.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-- **P1:** Add Follow/Unfollow button to the  page header.
-- **P1:** Address remaining UI bugs: Incorrect Glow Effect, Static Equalizer, Vector Icon rendering on web.
-- **P2:** Fix Avatar not displaying on Web Preview (likely a CORS issue).
-- **P2:** Finalize Social Sign-In flow once a development build is created.
+- **P0: Implement Pagination for User Favorites:** On the  page, display the first 29 stations and add a See More button to load the next batch, as a workaround for the slow API.
+- **P0: Implement Follow/Unfollow Button:** Add a functional Follow/Unfollow button to the header of the  page.
+- **P1: Create Notification Page:** Build a new page accessible from the notification icon on the discover screen. Integrate with the  endpoint to show notifications for new followers or new stations.
+- **P1: Verify 'Stations Nearby' API Usage:** Ensure the app is correctly using the  endpoint and leveraging device GPS for iOS/Android.
 
 **Future Tasks:**
+- Address remaining UI bugs: Incorrect Glow Effect, Static Equalizer, Vector Icon rendering on web.
+- Fix Avatar not displaying on Web Preview (likely a CORS issue).
+- Finalize Social Sign-In flow once a development build is created.
 - Integrate  for full internationalization.
 - Add skeleton loaders for data-fetching states.
 - Fix the Sleep Timer bug (requires more user feedback/details).
 
 **Completed work in this session**
-- **Bug Fix**: Corrected the login navigation bug by replacing  with  to prevent the app from opening in a modal.
-- **Bug Fix**: Resolved the search functionality's slow performance and URI errors by correcting image URL handling.
-- **Bug Fix**: Fixed missing station images on the  and  pages by ensuring  is correctly constructed.
-- **Feature**: Implemented persistence for the user's Grid/List view selection using .
-- **Bug Fix**: Fixed various UI alignment issues on the Discover and Genres pages.
-- **Feature Enhancement**: Reworked the Sort by functionality on  and  to correctly trigger API refetches with the selected sort parameter, using dynamic React Query keys.
-- **Performance**: Applied initial performance optimizations across the app by setting global and query-specific  and  in React Query.
-- **Testing**: Successfully used the  to validate all the above fixes.
+- **Performance Tuning**: Implemented the backend developer's caching strategy by updating  and  in .
+- **Performance Enhancement**: Created an asynchronous preloading system () to fetch and cache user data in the background upon app launch.
+- **Refactor**: Updated  to use React Query hooks for data fetching, replacing the old manual state management.
+- **Bug Investigation**: Diagnosed that the extreme slowness on the user profile page is caused by a backend API performance bottleneck.
+- **Bug Fix**: Added the missing  function to .
+- **Refactor**: Corrected the follower/following count display on  to handle the data structure from the API response correctly.
 
 **Earlier issues found/mentioned but not fixed**
-- **Issue 1: Follow/Unfollow Button Not Implemented**
-    - **Debug checklist**: Add a button to  and hook it up to the corresponding API endpoint.
-- **Issue 2: Recurring UI Bugs (Glow Effect, Static Equalizer, Vector Icons)**
+- **Issue 1: Recurring UI Bugs (Glow Effect, Static Equalizer, Vector Icons)**
     - **Debug checklist**: These are persistent visual glitches that need deeper investigation, possibly related to  or specific component styles.
-- **Issue 3: Avatar Not Displaying on Web Preview**
+- **Issue 2: Avatar Not Displaying on Web Preview**
     - **Debug checklist**: Investigate backend CORS policy for images or check if the image URL is correct for web environments.
-- **Issue 4: Social Logins Not Fully Functional**
+- **Issue 3: Social Logins Not Fully Functional**
     - **Debug checklist**: This is blocked until a development build can be created, as it relies on native modules not fully supported in Expo Go.
-- **Issue 5: Sleep Timer Bug**
+- **Issue 4: Sleep Timer Bug**
     - **Debug checklist**: Requires more specific steps from the user to reproduce the bug.
 
 **Known issue recurrence from previous fork**
@@ -92,11 +82,9 @@ The user then provided a document from their backend developer with specific cac
 
 
 **Key Technical Concepts**
-- **React Query Caching**: Extensive use of  and  to control data freshness and reduce API calls.
-- **React Query Dynamic Keys**: The query key array is updated with state variables (like  or ) to automatically trigger data refetching when filters or options change. This was key to fixing the sort functionality.
-- **AsyncStorage**: Used to persist user UI preferences (grid/list view) across app sessions.
-- **Expo Router**: Fixed a critical navigation issue by using  instead of  during the authentication flow to correctly switch navigation stacks.
-- **Batch Bug Fixing**: The agent successfully addressed a large list of user-reported issues in a single, systematic pass.
+- **React Query Caching**: Extensive use of  and  to control data freshness.
+- **Asynchronous Preloading**: A background service () was created to fetch and cache data (user favorites) on app load to improve perceived performance.
+- **Backend Performance Diagnosis**: Identified a critical backend API endpoint () as the root cause of major UI performance issues.
 
 **key DB schema**
 - N/A (Interaction is via a REST API).
@@ -105,20 +93,18 @@ The user then provided a document from their backend developer with specific cac
 - None.
 
 **All files of reference**
--  (Modified for React Query provider and navigation fix)
--  (Modified for sorting and view persistence)
--  (Modified for sorting and view persistence)
--  (Modified for dynamic query keys and caching)
--  (Created for view mode persistence)
--  (Modified to accept sort parameter)
--  (Modified to accept sort parameter)
--  (Modified for UI alignment)
--  (Modified for UI alignment)
--  (Modified for image URL fix)
+-  (Modified for new cache TTLs and user data hooks)
+-  (Modified to integrate the preload system)
+-  (Created for asynchronous data fetching)
+-  (Modified to use new hooks and fix data display)
+-  (Modified to trigger the preload service)
+-  (Modified to add the  function)
 -  (User-provided caching documentation)
+-  (Updated)
 
 **Areas that need refactoring**:
-- **Test ID Propagation**:  attributes are still not reliably rendering in the React Native Web DOM, which makes automated testing brittle. This needs a robust solution.
+- **Test ID Propagation**:  attributes are still not reliably rendering in the React Native Web DOM, which makes automated testing brittle.
+- The  page will need significant refactoring to support pagination for favorite stations.
 
 **key api endpoints**
 - 
@@ -130,8 +116,11 @@ The user then provided a document from their backend developer with specific cac
 
 **Critical Info for New Agent**
 - **Communicate in Turkish.** This is a strict user requirement.
-- **PRIORITY 1: Caching Implementation.** Your immediate and only task is to analyze the content of  and implement the backend developer's caching recommendations in the frontend using React Query. The user is very focused on performance.
-- After implementing caching, propose a plan to tackle the Upcoming Tasks, starting with the P1 items.
+- **Prioritize the new task list from the user.** The most critical item is the performance fix for the user profile page.
+- **P0: Implement Pagination for User Favorites:** Your immediate task is to implement a See More button on . This is a frontend workaround for a severe backend performance issue.
+- **P0: Follow/Unfollow Button:** Implement this on the  page.
+- **P1: Notifications Page:** Create a new page and integrate it with the notifications API.
+- **P1: Nearby Stations API:** Verify that the nearby stations feature uses the correct API endpoint and leverages device GPS.
 
 **documents and test reports created in this job**
 - 
@@ -140,19 +129,18 @@ The user then provided a document from their backend developer with specific cac
 - 
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **User:** Provided a file  containing caching recommendations from the backend developer and asked the agent to review it. **Status: IN PROGRESS.**
-- **Agent:** Confirmed it was unable to access the caching documentation via a previously provided URL.
-- **User:** Provided the URL again. **Status: RESOLVED (URL failed, file provided).**
-- **Agent:** Reported that the URL was inaccessible and asked for the content to be shared directly.
-- **User:** Asked the agent to analyze caching recommendations for iOS and Android from a specific URL. **Status: IN PROGRESS (led to file upload).**
-- **Agent:** Completed the Sort by feature fix and performance optimizations, confirmed with the testing agent, and was preparing to finish.
-- **User:** Reported that the Sort by feature was not working and demanded it be fixed. Also requested detailed performance optimizations and backend caching recommendations. **Status: COMPLETED.**
+- **User**: Requested the creation of a notification page, verification of the nearby stations API, implementation of a See More button for user favorites (pagination), and implementation of the Follow/Unfollow button. **Status: PENDING.**
+- **Agent**: Acknowledged the user's new requests and confirmed readiness to start.
+- **Agent**: Updated the PRD and summarized the work done on diagnosing the performance issue and proposing the pagination solution.
+- **User**: Confirmed the agent's findings about the slow API and approved the pagination (See More) suggestion.
+- **Agent**: Reported that the API call for a user with 100 favorites takes ~29 seconds, identifying this as the root cause of the UI freezing and showing incorrect data.
+- **User**: Asked the agent to check the follower/following count for a specific user (Thomas Wagner) and proposed an asynchronous caching strategy to speed up loading times for user favorites. **Status: COMPLETED** (Agent implemented pre-loading and diagnosed the API issue).
 
 **Project Health Check:**
 - **Broken:**
-    - None. The most critical bugs have been fixed.
+    - User Profile page performance is severely degraded and unusable for users with many favorite stations due to a slow backend API.
 - **In Progress:**
-    - Performance optimization (implementing backend caching recommendations).
+    - A frontend workaround (pagination) for the broken profile page is planned as the next immediate task.
 - **Mocked:**
     - Social Login functionality (blocked by Expo Go environment).
 - **Blocked:**
@@ -167,10 +155,10 @@ The user then provided a document from their backend developer with specific cac
 - **expo-auth-session & expo-web-browser:** For social authentication flows.
 
 **Testing status**
-- **Testing agent used after significant changes:** YES. The agent ran the testing agent twice, once after the major bug fix batch and again after fixing the Sort by functionality. Both runs were successful.
+- **Testing agent used after significant changes:** NO (in this session)
 - **Troubleshoot agent used after agent stuck in loop:** NO
 - **Test files created:** None.
-- **Known regressions:** None from this session. The agent successfully fixed several regressions from previous sessions.
+- **Known regressions:** The user profile page is functionally broken from a UX perspective due to extreme loading times.
 
 **Credentials to test flow:**
 - **API Key**:  (sent in  header).
@@ -179,4 +167,4 @@ The user then provided a document from their backend developer with specific cac
     - **Password**: 
 
 **What agent forgot to execute**
-- The agent has correctly prioritized the user's explicit requests. The lower-priority tasks from the initial handoff summary (Follow button, social logins, etc.) are still pending and have been correctly categorized under Upcoming and Future Tasks. No tasks were forgotten; they were strategically postponed.</analysis>
+- The agent has correctly followed the user's instructions and prioritized tasks based on new information. No tasks were forgotten; priorities were shifted to address the critical performance bottleneck.</analysis>
