@@ -114,7 +114,13 @@ GET /api/translations/:lang
 
 ## Completed Tasks
 
-### February 2026 - Session 14 (Latest)
+### February 2026 - Session 15 (Latest)
+- [x] **FEATURE: All Stations Page** - Created `/app/frontend/app/all-stations.tsx` with grid/list view toggle, search bar, sort modal (Most Popular, Name A-Z, Most Played)
+- [x] **FEATURE: Genre Detail Redesign** - Updated `/app/frontend/app/genre-detail.tsx` with same layout as All Stations (grid/list view, search, sort)
+- [x] **FEATURE: See More Navigation** - Home page "All Stations" section "See More" button now navigates to `/all-stations` page
+- [x] **FIX: Dynamic Grid Layout** - Grid items now use `useWindowDimensions` with fallback for proper sizing across platforms
+
+### February 2026 - Session 14
 - [x] **FEATURE: Genres Page Redesign** - Created `/app/frontend/app/genres.tsx` with search bar, Popular genres horizontal scroll, and genre list with station counts
 - [x] **FEATURE: Genre Detail Page** - Created `/app/frontend/app/genre-detail.tsx` with breadcrumb navigation (Genres > Genre Name), station list with favorite (pink heart) and play buttons
 - [x] **FIX: SectionHeader See All Navigation** - Updated SectionHeader component to use Pressable instead of TouchableOpacity for better web compatibility
