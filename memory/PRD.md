@@ -152,6 +152,19 @@ POST /api/auth/mobile/logout-all  → All devices
   - Uses `/api/stations/nearby?lat={...}&lng={...}` endpoint
   - GPS coordinates fetched via expo-location
   - Displayed in "Radios Near You" section on home page
+- ✅ **Slim Mode (?tv=1)** - Added to all station API calls for ~47% smaller payloads
+  - Files: `/app/frontend/src/services/stationService.ts`
+- ✅ **Users Page (See All Users)** - Created new page for listing all public profiles
+  - File: `/app/frontend/app/users.tsx`
+  - Features: Search, Follow/Unfollow buttons, Avatar, Radio count
+  - Accessible via "See All" button on "Favorites From Users" section
+- ✅ **i18next Integration** - Internationalization system
+  - Files: `/app/frontend/src/services/i18nService.ts`, `/app/frontend/src/store/languageStore.ts`
+  - API: `/api/translations/{lang}` - 706 keys available
+  - Supports: EN, TR, DE, FR, ES, IT, PT, NL, PL, RU, JA, KO, ZH, AR
+- ✅ **Skeleton Loaders** - Created reusable skeleton components
+  - File: `/app/frontend/src/components/Skeleton.tsx`
+  - Components: Skeleton, StationCardSkeleton, GenreCardSkeleton, UserItemSkeleton, NotificationItemSkeleton, StationListItemSkeleton, SectionSkeleton, DiscoverSkeleton, ProfileSkeleton
 
 ### P1: Recently Played Sync
 - Implementation exists in `recentlyPlayedStore.ts`
