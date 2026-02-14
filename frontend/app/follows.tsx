@@ -47,8 +47,8 @@ export default function FollowsScreen() {
 
     try {
       setLoading(true);
-      // GET /api/users/:userId/following
-      const response = await api.get(`https://themegaradio.com/api/users/${user._id}/following`);
+      // API docs: GET /api/user/following/:userId
+      const response = await api.get(`https://themegaradio.com/api/user/following/${user._id}`);
       
       // API may return { following: [...] } or directly [...]
       const data = response.data.following || response.data || [];
