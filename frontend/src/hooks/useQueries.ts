@@ -63,16 +63,15 @@ export const queryKeys = {
   communityFavorites: ['communityFavorites'] as const,
 };
 
-// Station hooks
-// Station hooks with performance optimizations
+// Station hooks with backend-recommended caching
 export const useStations = (params: StationQueryParams = {}) => {
   return useQuery({
     queryKey: [...queryKeys.stations, params],
     queryFn: () => stationService.getStations(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes - data doesn't change frequently
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    staleTime: CACHE_TTL.STATIONS_LIST,
+    gcTime: CACHE_TTL.STATIONS_LIST * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch if data exists
+    refetchOnMount: false,
   });
 };
 
@@ -80,8 +79,10 @@ export const usePopularStations = (country?: string, limit: number = 12) => {
   return useQuery({
     queryKey: [...queryKeys.popularStations, country, limit],
     queryFn: () => stationService.getPopularStations(country, limit),
-    staleTime: 10 * 60 * 1000,
+    staleTime: CACHE_TTL.POPULAR_STATIONS,
+    gcTime: CACHE_TTL.POPULAR_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
@@ -90,8 +91,10 @@ export const useNearbyStations = (lat: number | null, lng: number | null, radius
     queryKey: [...queryKeys.nearbyStations(lat || 0, lng || 0), radius, limit],
     queryFn: () => stationService.getNearbyStations(lat!, lng!, radius, limit),
     enabled: lat !== null && lng !== null,
-    staleTime: 10 * 60 * 1000,
+    staleTime: CACHE_TTL.NEARBY_STATIONS,
+    gcTime: CACHE_TTL.NEARBY_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
@@ -104,6 +107,9 @@ export const usePrecomputedStations = (
   return useQuery({
     queryKey: [...queryKeys.precomputedStations(country), page, limit],
     queryFn: () => stationService.getPrecomputedStations(country, countryName, page, limit),
+    staleTime: CACHE_TTL.STATIONS_LIST,
+    gcTime: CACHE_TTL.STATIONS_LIST * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -112,6 +118,9 @@ export const useStation = (identifier: string) => {
     queryKey: queryKeys.station(identifier),
     queryFn: () => stationService.getStation(identifier),
     enabled: !!identifier,
+    staleTime: CACHE_TTL.STATION_DETAIL,
+    gcTime: CACHE_TTL.STATION_DETAIL * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -119,11 +128,12 @@ export const useSimilarStations = (stationId: string, limit: number = 12) => {
   return useQuery({
     queryKey: queryKeys.similarStations(stationId),
     queryFn: () => stationService.getSimilarStations(stationId, limit),
-    enabled: stationId.length > 0, // Only fetch when stationId is not empty
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: stationId.length > 0,
+    staleTime: CACHE_TTL.SIMILAR_STATIONS,
+    gcTime: CACHE_TTL.SIMILAR_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    retry: false, // Don't retry to prevent flickering
+    retry: false,
   });
 };
 
