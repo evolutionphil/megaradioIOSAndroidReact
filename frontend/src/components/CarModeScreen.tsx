@@ -276,22 +276,13 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   }, [visible, propStations, currentStation]);
 
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const initialIndexSetRef = useRef(false);
 
-  // Set carousel to current station when opened - run ONCE when both visible and stations are ready
+  // Reset carousel index when CarMode is closed
   useEffect(() => {
-    if (visible && currentStation && stations.length > 0 && !initialIndexSetRef.current) {
-      const idx = stations.findIndex((s: Station) => s._id === currentStation._id);
-      if (idx !== -1) {
-        setCarouselIndex(idx);
-        initialIndexSetRef.current = true;
-      }
-    }
-    // Reset the ref when CarMode is closed
     if (!visible) {
-      initialIndexSetRef.current = false;
+      setCarouselIndex(0);
     }
-  }, [visible, currentStation?._id, stations]);
+  }, [visible]);
 
   const getLogoUrl = useCallback((station: Station) => {
     if (station.logoAssets?.webp192) {
