@@ -382,14 +382,21 @@ export default function ProfileScreen() {
           <View style={s.avatarRow}>
             <TouchableOpacity 
               style={s.avatar}
-              onPress={() => router.push({ pathname: '/user-profile', params: { userId: 'me', userName, userAvatar: userAvatar || '' } })}
+              onPress={handleAvatarUpload}
+              disabled={avatarUploading}
               data-testid="profile-avatar-btn"
             >
-              {userAvatar ? (
-                <Image source={{ uri: userAvatar }} style={s.avatarImage} />
+              {avatarUploading ? (
+                <ActivityIndicator size="small" color="#FF4199" />
+              ) : (localAvatar || userAvatar) ? (
+                <Image source={{ uri: localAvatar || userAvatar }} style={s.avatarImage} />
               ) : (
                 <Ionicons name="person" size={32} color="#888" />
               )}
+              {/* Camera badge */}
+              <View style={s.cameraBadge}>
+                <Ionicons name="camera" size={12} color="#FFF" />
+              </View>
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
               <Text style={s.userName}>{userName}</Text>
