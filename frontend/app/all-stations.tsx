@@ -193,56 +193,6 @@ export default function AllStationsScreen() {
     );
   };
 
-  // Sort Modal
-  const renderSortModal = () => (
-    <Modal
-      visible={showSortModal}
-      transparent
-      animationType="fade"
-      onRequestClose={() => setShowSortModal(false)}
-    >
-      <TouchableOpacity
-        style={styles.modalOverlay}
-        activeOpacity={1}
-        onPress={() => setShowSortModal(false)}
-      >
-        <View style={styles.sortModal}>
-          <Text style={styles.sortModalTitle}>Sort By</Text>
-          
-          <TouchableOpacity
-            style={[styles.sortOption, sortOption === 'votes' && styles.sortOptionActive]}
-            onPress={() => { setSortOption('votes'); setShowSortModal(false); }}
-          >
-            <Text style={[styles.sortOptionText, sortOption === 'votes' && styles.sortOptionTextActive]}>
-              Most Popular
-            </Text>
-            {sortOption === 'votes' && <Ionicons name="checkmark" size={20} color={colors.primary} />}
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.sortOption, sortOption === 'name' && styles.sortOptionActive]}
-            onPress={() => { setSortOption('name'); setShowSortModal(false); }}
-          >
-            <Text style={[styles.sortOptionText, sortOption === 'name' && styles.sortOptionTextActive]}>
-              Name (A-Z)
-            </Text>
-            {sortOption === 'name' && <Ionicons name="checkmark" size={20} color={colors.primary} />}
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.sortOption, sortOption === 'clickCount' && styles.sortOptionActive]}
-            onPress={() => { setSortOption('clickCount'); setShowSortModal(false); }}
-          >
-            <Text style={[styles.sortOptionText, sortOption === 'clickCount' && styles.sortOptionTextActive]}>
-              Most Played
-            </Text>
-            {sortOption === 'clickCount' && <Ionicons name="checkmark" size={20} color={colors.primary} />}
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    </Modal>
-  );
-
   return (
     <View style={styles.mainContainer}>
       <LinearGradient colors={gradients.background as any} style={styles.gradient}>
