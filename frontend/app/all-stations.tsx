@@ -10,7 +10,6 @@ import {
   RefreshControl,
   TextInput,
   useWindowDimensions,
-  Modal,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,12 +21,10 @@ import { useStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useLocationStore } from '../src/store/locationStore';
+import { SortBottomSheet, SortOption, ViewMode } from '../src/components/SortBottomSheet';
 import type { Station } from '../src/types';
 
 const GRID_COLUMNS = 3;
-
-type ViewMode = 'grid' | 'list';
-type SortOption = 'votes' | 'name' | 'clickCount';
 
 export default function AllStationsScreen() {
   const router = useRouter();
