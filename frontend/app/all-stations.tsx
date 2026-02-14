@@ -39,16 +39,30 @@ export default function AllStationsScreen() {
 
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortOption, setSortOption] = useState<SortOption>('votes');
-  const [showSortModal, setShowSortModal] = useState(false);
+  const [sortOption, setSortOption] = useState<SortOption>('popular');
+  const [showSortSheet, setShowSortSheet] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   
   const { countryCode } = useLocationStore();
 
+  // Map sortOption to API parameters
+  const getApiSort = () => {
+    switch (sortOption) {
+      case 'popular': return { sort: 'votes', order: 'desc' };
+      case 'newest': return { sort: 'createdAt', order: 'desc' };
+      case 'oldest': return { sort: 'createdAt', order: 'asc' };
+      case 'az': return { sort: 'name', order: 'asc' };
+      case 'za': return { sort: 'name', order: 'desc' };
+      default: return { sort: 'votes', order: 'desc' };
+    }
+  };
+
+  const apiSort = getApiSort();
+
   const { data, isLoading, refetch } = useStations({
-    sort: sortOption,
-    order: 'desc',
+    sort: apiSort.sort,
+    order: apiSort.order as 'asc' | 'desc',
     limit: 100,
     genre: genreSlug || undefined,
     country: countryCode || undefined,
