@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { GlowEffect } from '../../src/components/GlowEffect';
 import { useRouter } from 'expo-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import {
   usePopularStations,
@@ -32,6 +33,7 @@ import {
   usePublicProfiles,
   useNearbyStations,
 } from '../../src/hooks/useQueries';
+import { preloadPublicProfileFavorites } from '../../src/services/preloadService';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
