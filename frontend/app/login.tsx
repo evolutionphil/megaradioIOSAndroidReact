@@ -148,7 +148,7 @@ export default function LoginScreen() {
           {/* Content */}
           <View style={styles.content}>
             {/* Title - Ubuntu Bold 24px */}
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>{t('login', 'Login')}</Text>
 
             {/* Email Input */}
             <View style={[styles.inputContainer, hasError && styles.inputError]}>
@@ -157,7 +157,7 @@ export default function LoginScreen() {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={t('email_placeholder', 'Email')}
                 placeholderTextColor={colors.inputPlaceholder}
                 value={email}
                 onChangeText={(text) => {
@@ -179,7 +179,7 @@ export default function LoginScreen() {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder={t('password_placeholder', 'Password')}
                 placeholderTextColor={colors.inputPlaceholder}
                 value={password}
                 onChangeText={(text) => {
@@ -202,7 +202,7 @@ export default function LoginScreen() {
               {isLoading ? (
                 <ActivityIndicator color={colors.text} />
               ) : (
-                <Text style={styles.loginButtonText}>Login</Text>
+                <Text style={styles.loginButtonText}>{t('login', 'Login')}</Text>
               )}
             </TouchableOpacity>
 
@@ -212,14 +212,14 @@ export default function LoginScreen() {
               onPress={handleForgotPassword}
               data-testid="login-forgot-password-button"
             >
-              <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+              <Text style={styles.forgotPasswordText}>{t('forgot_password', 'Forgot your password?')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
             <TouchableOpacity onPress={handleGoToSignup}>
-              <Text style={styles.footerText}>Don't you have an account?</Text>
+              <Text style={styles.footerText}>{t('dont_have_account', "Don't you have an account?")}</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
