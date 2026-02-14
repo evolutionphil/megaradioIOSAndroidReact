@@ -86,12 +86,16 @@ GET /api/translations/:lang
 - `/app/frontend/src/store/authStore.ts` - Auth state & token persistence
 - `/app/frontend/src/store/favoritesStore.ts` - Hybrid favorites (API + local)
 - `/app/frontend/src/services/authService.ts` - Auth API methods
+- `/app/frontend/src/services/socialAuthService.ts` - Social OAuth (Google/Apple/Facebook)
+- `/app/frontend/src/services/statsService.ts` - Listening statistics tracking
 - `/app/frontend/src/services/api.ts` - Auto Bearer token
 - `/app/frontend/app/(tabs)/profile.tsx` - Profile with guest state
-- `/app/frontend/app/auth-options.tsx` - Login options screen
+- `/app/frontend/app/auth-options.tsx` - Login options screen (with social buttons)
 - `/app/frontend/app/login.tsx` - Email login screen
 - `/app/frontend/app/signup.tsx` - Registration screen
 - `/app/frontend/app/forgot-password.tsx` - Password reset screen
+- `/app/frontend/app/statistics.tsx` - User listening stats (real data)
+- `/app/frontend/app/play-at-login.tsx` - Play at login preference
 - `/app/frontend/app/followers.tsx` - Real API
 - `/app/frontend/app/follows.tsx` - Real API
 - `/app/frontend/app/languages.tsx` - Languages list
