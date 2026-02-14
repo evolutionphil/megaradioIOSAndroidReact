@@ -108,11 +108,12 @@ GET /api/translations/:lang
 ## Completed Tasks
 
 ### February 2026 - Session 12 (Latest)
-- [x] **CRITICAL FIX: Auth Token for All Platforms** - Changed authService.ts to use mobile login endpoint for ALL platforms (web + native). This returns real JWT tokens that work with authenticated API endpoints
-- [x] **FIX: Favorites Loading** - Fixed favoritesStore.ts to use `/api/user/favorites` endpoint with Bearer token auth. Favorites now load correctly (39 stations for test user)
+- [x] **CRITICAL FIX: deviceType Always 'mobile'** - Fixed authService.ts mobileLogin() to always send deviceType='mobile'. The external API returns invalid web_session_* tokens for 'tablet' deviceType which caused 401 errors on favorites API
+- [x] **FIX: Favorites Loading** - Fixed favoritesStore.ts to use `/api/user/favorites` endpoint with Bearer token auth. Now loads correctly (39 stations verified)
+- [x] **FIX: Auth State Dependency** - Updated favorites.tsx to reload favorites when auth state changes (isAuthenticated, user._id)
 - [x] **FIX: Followers/Following Avatars** - Updated followers.tsx and follows.tsx to properly handle avatar URLs with getAvatarUrl() helper
 - [x] **FEATURE: Recently Played API Sync** - Enhanced recentlyPlayedStore.ts to sync with API. When a station plays, it's added to recently played and synced to server
-- [x] **INTEGRATION: Player + Recently Played** - playerStore.ts now automatically calls recentlyPlayedStore.addStation() when a station starts playing
+- [x] **DEBUG: Added Console Logs** - Added detailed logging to favoritesStore and api.ts for troubleshooting
 
 ### February 2026 - Session 11
 - [x] Social Sign-In Integration - Created socialAuthService.ts with Google/Apple/Facebook OAuth support
