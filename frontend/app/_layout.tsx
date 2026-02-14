@@ -14,11 +14,11 @@ import { AnimatedSplash } from '../src/components/AnimatedSplash';
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-// Create a client with optimized defaults for performance
+// Create a client with optimized defaults for performance (based on backend recommendations)
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes - data is considered fresh
+      staleTime: 10 * 60 * 1000, // 10 minutes - default for most data
       gcTime: 30 * 60 * 1000, // 30 minutes - keep unused data in cache
       retry: 2,
       refetchOnWindowFocus: false, // Don't refetch when app comes to foreground
