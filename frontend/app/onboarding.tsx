@@ -89,7 +89,14 @@ const storage = {
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isChecking, setIsChecking] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
   const currentItem = ONBOARDING_DATA[currentIndex];
+  
+  // Animation values for slide/fade transitions
+  const slideX = useSharedValue(0);
+  const fadeOpacity = useSharedValue(1);
+  const contentFadeOpacity = useSharedValue(1);
+  const contentSlideY = useSharedValue(0);
   
   // Check if onboarding is already complete - redirect if so
   useEffect(() => {
@@ -125,9 +132,51 @@ export default function OnboardingScreen() {
     opacity: interpolate(glowScale.value, [1, 1.15], [0.6, 0.9], Extrapolation.CLAMP),
   }));
 
+  // Image slide animation style
+  const imageAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: slideX.value }],
+    opacity: fadeOpacity.value,
+  }));
+
+  // Content fade and slide animation style
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contentFadeOpacity.value,
+    transform: [{ translateY: contentSlideY.value }],
+  }));
+
+  const animateToNext = (newIndex: number) => {
+    setIsAnimating(true);
+    
+    // Animate out
+    slideX.value = withTiming(-width * 0.3, { duration: ANIMATION_DURATION / 2 });
+    fadeOpacity.value = withTiming(0, { duration: ANIMATION_DURATION / 2 });
+    contentFadeOpacity.value = withTiming(0, { duration: ANIMATION_DURATION / 2 });
+    contentSlideY.value = withTiming(20, { duration: ANIMATION_DURATION / 2 });
+    
+    setTimeout(() => {
+      setCurrentIndex(newIndex);
+      
+      // Reset position for incoming
+      slideX.value = width * 0.3;
+      contentSlideY.value = -20;
+      
+      // Animate in
+      slideX.value = withSpring(0, { damping: 20, stiffness: 200 });
+      fadeOpacity.value = withTiming(1, { duration: ANIMATION_DURATION / 2 });
+      contentFadeOpacity.value = withTiming(1, { duration: ANIMATION_DURATION / 2 });
+      contentSlideY.value = withSpring(0, { damping: 20, stiffness: 200 });
+      
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, ANIMATION_DURATION / 2);
+    }, ANIMATION_DURATION / 2);
+  };
+
   const handleNext = async () => {
+    if (isAnimating) return;
+    
     if (currentIndex < ONBOARDING_DATA.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      animateToNext(currentIndex + 1);
     } else {
       await completeOnboarding();
     }
