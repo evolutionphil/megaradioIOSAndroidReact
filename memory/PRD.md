@@ -81,6 +81,8 @@ POST /api/auth/mobile/logout-all  → All devices
 - ✅ Missing station images on genre-detail - Fixed with getLogoUrl helper
 - ✅ Grid/List view persistence - Implemented with AsyncStorage
 - ✅ UI text/icon alignment on Genres page - Fixed alignment styles
+- ✅ Sort By functionality - Fixed API integration with useMemo for proper query key updates
+- ✅ Performance Optimization - Added React Query caching (staleTime, gcTime, refetchOnWindowFocus)
 
 ### P1: Recently Played Sync
 - Implementation exists in `recentlyPlayedStore.ts`
