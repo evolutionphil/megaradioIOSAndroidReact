@@ -102,20 +102,20 @@ export default function GenreDetailScreen() {
 
         {/* Favorite Button */}
         <TouchableOpacity
-          style={[styles.favoriteButton, favorite && styles.favoriteButtonActive]}
+          style={styles.favoriteButton}
           onPress={() => handleFavoritePress(station)}
           data-testid={`favorite-btn-${station._id}`}
         >
           <Ionicons 
-            name={favorite ? 'heart' : 'heart-outline'} 
-            size={20} 
-            color={favorite ? colors.accentPink : colors.textMuted} 
+            name="heart" 
+            size={22} 
+            color={favorite ? colors.accentPink : colors.accentPink} 
           />
         </TouchableOpacity>
 
         {/* Play Button */}
         <TouchableOpacity
-          style={[styles.playButton, playing && styles.playButtonActive]}
+          style={styles.playButton}
           onPress={() => handleStationPress(station)}
           data-testid={`play-btn-${station._id}`}
         >
