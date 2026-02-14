@@ -275,7 +275,7 @@ const getGenreDisplay = (station: Station): string => {
             <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search favorites..."
+              placeholder={t('search_favorites', 'Search favorites...')}
               placeholderTextColor="#888"
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -290,7 +290,7 @@ const getGenreDisplay = (station: Station): string => {
             )}
           </View>
           <TouchableOpacity onPress={handleSearchCancel} data-testid="search-cancel-btn">
-            <Text style={styles.cancelText}>Cancel</Text>
+            <Text style={styles.cancelText}>{t('cancel', 'Cancel')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -303,7 +303,7 @@ const getGenreDisplay = (station: Station): string => {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.noResultsContainer}>
-              <Text style={styles.noResultsText}>No stations found</Text>
+              <Text style={styles.noResultsText}>{t('no_stations_found_search', 'No stations found')}</Text>
             </View>
           }
         />
@@ -317,7 +317,7 @@ const getGenreDisplay = (station: Station): string => {
       <SafeAreaView style={styles.container} edges={['top']}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Favorites</Text>
+          <Text style={styles.headerTitle}>{t('favorites', 'Favorites')}</Text>
           <View style={styles.headerActions}>
             <TouchableOpacity onPress={openSortModal} style={styles.headerButton} data-testid="sort-btn">
               <Ionicons name="options-outline" size={24} color="#FFF" />
@@ -344,14 +344,14 @@ const getGenreDisplay = (station: Station): string => {
             onPress={handleReorderCancel}
             data-testid="reorder-cancel-btn"
           >
-            <Text style={styles.reorderCancelText}>Cancel</Text>
+            <Text style={styles.reorderCancelText}>{t('cancel', 'Cancel')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.reorderSaveBtn}
             onPress={handleReorderSave}
             data-testid="reorder-save-btn"
           >
-            <Text style={styles.reorderSaveText}>Save</Text>
+            <Text style={styles.reorderSaveText}>{t('save', 'Save')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -364,7 +364,7 @@ const getGenreDisplay = (station: Station): string => {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>Favorites</Text>
+          <Text style={styles.headerTitle}>{t('favorites', 'Favorites')}</Text>
           {favorites.length > 0 && (
             <Text style={styles.headerCount}>{favorites.length}</Text>
           )}
