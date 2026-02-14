@@ -106,6 +106,12 @@ GET /api/translations/:lang
 - [x] Login/Signup screens updated with Ubuntu fonts
 - [x] Full screen login/signup screens (not popup style)
 - [x] Linear gradient on onboarding: transparent to black at 29.42%
+- [x] Onboarding slide/fade animations added (react-native-reanimated)
+- [x] User Profile: Follow/Unfollow functionality integrated with live API
+- [x] User Profile: Real follower/following counts from API
+- [x] Followers/Following screens: API-connected unfollow functionality
+- [x] Car Mode bug fixed: Current station now always appears at center position
+- [x] Car Mode: Station list initialization improved
 
 ### December 2025 - Session 9
 - [x] Added MegaRadio logo with arc effect image to auth-options.tsx (user-provided image)
