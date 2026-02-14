@@ -463,6 +463,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 40,
   },
+  seeMoreBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 64, 129, 0.1)',
+    borderWidth: 1,
+    borderColor: '#FF4081',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 24,
+    gap: 8,
+  },
+  seeMoreText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FF4081',
+  },
 
   // Modal styles
   modalOverlay: {
