@@ -142,6 +142,9 @@ export const useSearchStations = (query: string, limit: number = 20) => {
     queryKey: queryKeys.searchStations(query),
     queryFn: () => stationService.searchStations(query, limit),
     enabled: query.length >= 2,
+    staleTime: CACHE_TTL.SEARCH,
+    gcTime: CACHE_TTL.SEARCH * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -149,17 +152,21 @@ export const useTop100 = (country?: string) => {
   return useQuery({
     queryKey: queryKeys.top100(country),
     queryFn: () => stationService.getTop100(country),
+    staleTime: CACHE_TTL.TOP_100,
+    gcTime: CACHE_TTL.TOP_100 * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
-// Genre hooks with performance optimizations
+// Genre hooks with backend-recommended caching
 export const useGenres = (page: number = 1, limit: number = 50) => {
   return useQuery({
     queryKey: [...queryKeys.genres, page, limit],
     queryFn: () => genreService.getGenres(page, limit),
-    staleTime: 15 * 60 * 1000, // 15 minutes
-    gcTime: 60 * 60 * 1000, // 1 hour
+    staleTime: CACHE_TTL.GENRES_ALL,
+    gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
@@ -167,9 +174,10 @@ export const usePrecomputedGenres = (country?: string) => {
   return useQuery({
     queryKey: queryKeys.precomputedGenres(country),
     queryFn: () => genreService.getPrecomputedGenres(country),
-    staleTime: 15 * 60 * 1000, // 15 minutes - genres change rarely
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    staleTime: CACHE_TTL.GENRES_ALL,
+    gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
@@ -185,9 +193,10 @@ export const useGenreStations = (
     queryKey: [...queryKeys.genreStations(slug), page, limit, country, sort, order],
     queryFn: () => genreService.getGenreStations(slug, page, limit, country, sort, order),
     enabled: !!slug,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    staleTime: CACHE_TTL.GENRE_STATIONS,
+    gcTime: CACHE_TTL.GENRE_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
@@ -195,6 +204,10 @@ export const useDiscoverableGenres = () => {
   return useQuery({
     queryKey: ['genres', 'discoverable'],
     queryFn: () => genreService.getDiscoverableGenres(),
+    staleTime: CACHE_TTL.GENRES_ALL,
+    gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
