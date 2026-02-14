@@ -243,10 +243,20 @@ const styles = StyleSheet.create({
     borderColor: '#3A3A3D',
     paddingHorizontal: 8,
   },
+  authButtonDisabled: {
+    opacity: 0.6,
+  },
   buttonIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
+  },
+  loadingIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   authButtonText: {
     flex: 1,
@@ -260,6 +270,9 @@ const styles = StyleSheet.create({
     marginTop: 28,
     alignItems: 'center',
     paddingVertical: spacing.md,
+  },
+  continueButtonDisabled: {
+    opacity: 0.6,
   },
   continueButtonText: {
     fontSize: typography.sizes.lg,
