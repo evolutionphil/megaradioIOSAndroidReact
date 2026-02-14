@@ -65,11 +65,44 @@ export default function SearchScreen() {
 
   // Convert station to search result
   const stationToResult = (station: Station): SearchResultItem => {
-    let imageUrl = null;
-    if (station.logoAssets?.webp96) {
-      imageUrl = `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
-    } else if (station.favicon) {
-      imageUrl = station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`;
+    let imageUrl: string | null = null;
+    
+    try {
+      // Safely build image URL with validation
+      if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
+        const folder = encodeURIComponent(station.logoAssets.folder);
+        const file = encodeURIComponent(station.logoAssets.webp96);
+        imageUrl = `https://themegaradio.com/station-logos/${folder}/${file}`;
+      } else if (station.favicon) {
+        // Validate and sanitize favicon URL
+        const faviconUrl = station.favicon.trim();
+        if (faviconUrl.startsWith('http://') || faviconUrl.startsWith('https://')) {
+          // Validate it's a proper URL
+          try {
+            new URL(faviconUrl);
+            imageUrl = faviconUrl;
+          } catch {
+            imageUrl = null;
+          }
+        } else if (faviconUrl.startsWith('/')) {
+          imageUrl = `https://themegaradio.com${faviconUrl}`;
+        }
+      } else if (station.logo) {
+        const logoUrl = station.logo.trim();
+        if (logoUrl.startsWith('http://') || logoUrl.startsWith('https://')) {
+          try {
+            new URL(logoUrl);
+            imageUrl = logoUrl;
+          } catch {
+            imageUrl = null;
+          }
+        } else if (logoUrl.startsWith('/')) {
+          imageUrl = `https://themegaradio.com${logoUrl}`;
+        }
+      }
+    } catch (e) {
+      console.log('[Search] Error building image URL:', e);
+      imageUrl = null;
     }
     
     // Get proper genre/tag for subtitle
@@ -202,11 +235,11 @@ export default function SearchScreen() {
     }
   }, []);
 
-  // Handle query change with debounce
+  // Handle query change with debounce - increased delay for better performance
   useEffect(() => {
     const timer = setTimeout(() => {
       performSearch(query);
-    }, 400);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [query, performSearch]);

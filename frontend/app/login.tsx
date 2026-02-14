@@ -88,7 +88,13 @@ export default function LoginScreen() {
           totalListeningTime: apiUser.totalListeningTime || 0,
         };
         await saveAuth(user as any, response.token);
-        router.replace('/(tabs)');
+        
+        // Use setTimeout to ensure navigation happens after state update
+        // and dismissTo to properly reset the navigation stack
+        setTimeout(() => {
+          router.dismissAll();
+          router.replace('/(tabs)');
+        }, 100);
       } else {
         console.error('Invalid response structure:', response);
         throw new Error('Invalid response from server');
