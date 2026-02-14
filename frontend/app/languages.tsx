@@ -221,6 +221,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0D0D0F',
   },
+  animatedContainer: {
+    flex: 1,
+  },
 
   // Header
   header: {
@@ -325,5 +328,23 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: '#888',
+  },
+  
+  // Language changing overlay
+  changingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(13, 13, 15, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  changingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: '500',
   },
 });
