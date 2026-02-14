@@ -147,7 +147,7 @@ export default function UserProfileScreen() {
     }
   };
 
-  const loading = favoritesLoading && stations.length === 0;
+  const loading = favoritesLoading && allStations.length === 0;
 
   const handleFollowToggle = async () => {
     if (!isAuthenticated) {
@@ -278,6 +278,20 @@ export default function UserProfileScreen() {
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
             <Text style={styles.emptyText}>No favorite stations yet</Text>
+          }
+          ListFooterComponent={
+            hasMoreStations ? (
+              <TouchableOpacity 
+                style={styles.seeMoreBtn} 
+                onPress={handleLoadMore}
+                data-testid="see-more-stations-btn"
+              >
+                <Text style={styles.seeMoreText}>
+                  Daha Fazla Gör ({remainingCount} istasyon daha)
+                </Text>
+                <Ionicons name="chevron-down" size={18} color="#FF4081" />
+              </TouchableOpacity>
+            ) : null
           }
         />
       )}
