@@ -120,7 +120,7 @@ export default function SignupScreen() {
             {/* Content */}
             <View style={styles.content}>
               {/* Title - Ubuntu Bold 24px */}
-              <Text style={styles.title}>Signup</Text>
+              <Text style={styles.title}>{t('signup', 'Signup')}</Text>
 
               {/* Name Input */}
               <View style={[styles.inputContainer, hasError && styles.inputError]}>
@@ -129,7 +129,7 @@ export default function SignupScreen() {
                 </View>
                 <TextInput
                   style={styles.input}
-                  placeholder="Your name"
+                  placeholder={t('your_name', 'Your name')}
                   placeholderTextColor={colors.inputPlaceholder}
                   value={name}
                   onChangeText={(text) => {
@@ -149,7 +149,7 @@ export default function SignupScreen() {
                 </View>
                 <TextInput
                   style={styles.input}
-                  placeholder="Email"
+                  placeholder={t('email_placeholder', 'Email')}
                   placeholderTextColor={colors.inputPlaceholder}
                   value={email}
                   onChangeText={(text) => {
@@ -171,7 +171,7 @@ export default function SignupScreen() {
                 </View>
                 <TextInput
                   style={styles.input}
-                  placeholder="Password"
+                  placeholder={t('password_placeholder', 'Password')}
                   placeholderTextColor={colors.inputPlaceholder}
                   value={password}
                   onChangeText={(text) => {
@@ -185,7 +185,7 @@ export default function SignupScreen() {
               </View>
 
               {/* Password hint */}
-              <Text style={styles.passwordHint}>Password must be at least 6 characters.</Text>
+              <Text style={styles.passwordHint}>{t('password_hint', 'Password must be at least 6 characters.')}</Text>
 
               {/* Signup Button */}
               <TouchableOpacity
@@ -197,7 +197,7 @@ export default function SignupScreen() {
                 {isLoading ? (
                   <ActivityIndicator color={colors.text} />
                 ) : (
-                  <Text style={styles.signupButtonText}>Signup</Text>
+                  <Text style={styles.signupButtonText}>{t('signup', 'Signup')}</Text>
                 )}
               </TouchableOpacity>
             </View>
