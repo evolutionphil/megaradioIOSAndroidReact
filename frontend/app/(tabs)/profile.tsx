@@ -66,13 +66,18 @@ export default function ProfileScreen() {
   // Logout modal
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const userName = user?.name || nameValue || 'Guest';
+  const userName = user?.name || user?.fullName || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
-  const userAvatar = user?.profilePhoto || null;
   
-  // Mock followers/follows count - will be replaced with API
-  const followersCount = 86;
-  const followsCount = 86;
+  // Build full avatar URL if relative
+  let userAvatar = user?.profilePhoto || user?.avatar || null;
+  if (userAvatar && !userAvatar.startsWith('http')) {
+    userAvatar = `https://themegaradio.com${userAvatar}`;
+  }
+  
+  // Use real followers/following count from user data
+  const followersCount = user?.followersCount || 0;
+  const followsCount = user?.followingCount || 0;
 
   // Fetch countries from API with rich format (includes flags)
   useEffect(() => {
