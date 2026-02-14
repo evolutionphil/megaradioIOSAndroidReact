@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useGenreStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
@@ -25,6 +26,7 @@ import { SortBottomSheet, SortOption, ViewMode } from '../src/components/SortBot
 import type { Station } from '../src/types';
 
 const GRID_COLUMNS = 3;
+const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
 
 export default function GenreDetailScreen() {
   const router = useRouter();
@@ -45,6 +47,31 @@ export default function GenreDetailScreen() {
   const [page, setPage] = useState(1);
   
   const { countryCode } = useLocationStore();
+
+  // Load saved view mode preference on mount
+  useEffect(() => {
+    const loadViewMode = async () => {
+      try {
+        const savedMode = await AsyncStorage.getItem(VIEW_MODE_STORAGE_KEY);
+        if (savedMode === 'grid' || savedMode === 'list') {
+          setViewMode(savedMode);
+        }
+      } catch (error) {
+        console.log('Error loading view mode:', error);
+      }
+    };
+    loadViewMode();
+  }, []);
+
+  // Save view mode preference when changed
+  const handleViewModeChange = useCallback(async (mode: ViewMode) => {
+    setViewMode(mode);
+    try {
+      await AsyncStorage.setItem(VIEW_MODE_STORAGE_KEY, mode);
+    } catch (error) {
+      console.log('Error saving view mode:', error);
+    }
+  }, []);
 
   const { data, isLoading, refetch } = useGenreStations(slug, page, 100, countryCode || undefined);
   const { playStation } = useAudioPlayer();
@@ -308,7 +335,7 @@ export default function GenreDetailScreen() {
             sortOption={sortOption}
             onSortChange={setSortOption}
             viewMode={viewMode}
-            onViewModeChange={setViewMode}
+            onViewModeChange={handleViewModeChange}
           />
         </SafeAreaView>
       </LinearGradient>
