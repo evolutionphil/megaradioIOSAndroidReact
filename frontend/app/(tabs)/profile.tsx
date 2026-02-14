@@ -131,6 +131,72 @@ export default function ProfileScreen() {
     setCurrentPage('main');
   };
 
+  // Avatar upload handler
+  const handleAvatarUpload = async () => {
+    try {
+      // Request permission
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (!permissionResult.granted) {
+        Alert.alert('Permission Required', 'Please allow access to your photo library to upload an avatar.');
+        return;
+      }
+
+      // Pick image
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (result.canceled || !result.assets?.[0]) {
+        return;
+      }
+
+      const asset = result.assets[0];
+      setAvatarUploading(true);
+      
+      // Show local preview immediately
+      setLocalAvatar(asset.uri);
+
+      // Create form data for upload
+      const formData = new FormData();
+      const fileName = asset.uri.split('/').pop() || 'avatar.jpg';
+      const match = /\.(\w+)$/.exec(fileName);
+      const type = match ? `image/${match[1]}` : 'image/jpeg';
+      
+      formData.append('avatar', {
+        uri: asset.uri,
+        name: fileName,
+        type,
+      } as any);
+
+      // Upload to API
+      const response = await api.post('https://themegaradio.com/api/auth/avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data?.avatar || response.data?.user?.avatar) {
+        const newAvatarUrl = response.data.avatar || response.data.user?.avatar;
+        // Update auth store with new avatar
+        const { updateUser } = useAuthStore.getState();
+        if (updateUser && user) {
+          updateUser({ ...user, avatar: newAvatarUrl, profilePhoto: newAvatarUrl });
+        }
+        Alert.alert('Success', 'Avatar updated successfully!');
+      }
+    } catch (error: any) {
+      console.error('Avatar upload error:', error);
+      setLocalAvatar(null); // Revert preview
+      Alert.alert('Error', error.response?.data?.message || 'Failed to upload avatar. Please try again.');
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   // ── COUNTRY PICKER ──
   if (currentPage === 'country') {
     return (
