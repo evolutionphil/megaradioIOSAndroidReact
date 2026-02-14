@@ -57,7 +57,9 @@ const getGridItemSize = (screenWidth: number) => {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const preloadStarted = useRef(false);
   const { user } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
   const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
@@ -101,6 +103,18 @@ export default function HomeScreen() {
   // Use native country name for stations list API
   const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: country || undefined });
   const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 150, 12);
+
+  // Preload user favorites when public profiles are loaded
+  useEffect(() => {
+    if (publicProfiles && publicProfiles.length > 0 && !preloadStarted.current) {
+      preloadStarted.current = true;
+      console.log('[HomeScreen] Starting preload for', publicProfiles.length, 'users');
+      // Run in background without blocking UI
+      preloadPublicProfileFavorites(publicProfiles, queryClient).catch(err => {
+        console.log('[HomeScreen] Preload error (non-blocking):', err);
+      });
+    }
+  }, [publicProfiles, queryClient]);
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
