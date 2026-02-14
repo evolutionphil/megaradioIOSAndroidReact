@@ -14,9 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import api from '../src/services/api';
 import { API_ENDPOINTS } from '../src/constants/api';
 import { useAuthStore } from '../src/store/authStore';
+import { UserItemSkeleton } from '../src/components/Skeleton';
 
 interface PublicUser {
   _id: string;
@@ -33,6 +35,7 @@ interface PublicUser {
 export default function UsersScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const { isAuthenticated, user: currentUser } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -156,7 +159,7 @@ export default function UsersScreen() {
         {/* User Info */}
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{item.name}</Text>
-          <Text style={styles.userRadios}>{item.favorites_count} Radios</Text>
+          <Text style={styles.userRadios}>{item.favorites_count} {t('records') || 'Radios'}</Text>
         </View>
 
         {/* Follow Button - Only show for other users */}
@@ -177,7 +180,7 @@ export default function UsersScreen() {
                 styles.followBtnText,
                 isFollowing && styles.followingBtnText,
               ]}>
-                {isFollowing ? 'Unfollow' : 'Follow'}
+                {isFollowing ? t('unfollow') : t('follow')}
               </Text>
             )}
           </TouchableOpacity>
@@ -202,7 +205,7 @@ export default function UsersScreen() {
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search users..."
+              placeholder={t('search_placeholder')}
               placeholderTextColor="#888888"
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -214,7 +217,7 @@ export default function UsersScreen() {
           </View>
         ) : (
           <>
-            <Text style={styles.headerTitle}>Users</Text>
+            <Text style={styles.headerTitle}>{t('users')}</Text>
             <TouchableOpacity 
               onPress={() => setShowSearch(true)} 
               style={styles.searchBtn}
@@ -231,8 +234,10 @@ export default function UsersScreen() {
 
       {/* Content */}
       {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF4081" />
+        <View style={styles.listContent}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <UserItemSkeleton key={i} />
+          ))}
         </View>
       ) : (
         <FlatList
@@ -250,9 +255,9 @@ export default function UsersScreen() {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>No users found</Text>
+              <Text style={styles.emptyTitle}>{t('no_users') || 'No users found'}</Text>
               <Text style={styles.emptyText}>
-                {searchQuery ? 'Try a different search term' : 'No public profiles available'}
+                {searchQuery ? t('try_different_search') || 'Try a different search term' : t('no_public_profiles') || 'No public profiles available'}
               </Text>
             </View>
           }
