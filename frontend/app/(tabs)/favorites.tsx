@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useFavoritesStore, SortOption, ViewMode } from '../../src/store/favoritesStore';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
@@ -34,6 +35,7 @@ const getLogoUrl = (station: Station): string => {
 
 export default function FavoritesScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   
   // Store
   const {
