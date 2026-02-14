@@ -195,20 +195,35 @@ export default function HomeScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <View style={styles.headerLeft}>
+            <TouchableOpacity 
+              style={styles.headerLeft}
+              onPress={() => user ? router.push('/(tabs)/profile') : router.push('/auth-options')}
+              activeOpacity={0.7}
+              data-testid="header-profile-btn"
+            >
               <View style={styles.avatarContainer}>
-                <LinearGradient
-                  colors={['#00FF87', '#60EFFF'] as any}
-                  style={styles.avatarGradient}
-                >
-                  <Ionicons name="person" size={20} color="#000" />
-                </LinearGradient>
+                {user?.avatar || user?.profilePhoto ? (
+                  <Image 
+                    source={{ uri: (user.avatar || user.profilePhoto)?.startsWith('http') 
+                      ? (user.avatar || user.profilePhoto) 
+                      : `https://themegaradio.com${user.avatar || user.profilePhoto}` 
+                    }} 
+                    style={styles.avatarImage}
+                  />
+                ) : (
+                  <LinearGradient
+                    colors={['#00FF87', '#60EFFF'] as any}
+                    style={styles.avatarGradient}
+                  >
+                    <Ionicons name="person" size={20} color="#000" />
+                  </LinearGradient>
+                )}
               </View>
               <View>
                 <Text style={styles.welcomeText}>Welcome Back</Text>
-                <Text style={styles.userName}>{user?.name || 'Guest'}</Text>
+                <Text style={styles.userName}>{user?.name || user?.fullName || 'Guest'}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
             <View style={styles.headerRight}>
               <TouchableOpacity style={styles.headerIcon}>
                 <Ionicons name="notifications-outline" size={22} color={colors.text} />
