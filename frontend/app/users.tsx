@@ -159,7 +159,7 @@ export default function UsersScreen() {
         {/* User Info */}
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{item.name}</Text>
-          <Text style={styles.userRadios}>{item.favorites_count} {t('records') || 'Radios'}</Text>
+          <Text style={styles.userRadios}>{item.favorites_count} {t('radios', 'Radios')}</Text>
         </View>
 
         {/* Follow Button - Only show for other users */}
