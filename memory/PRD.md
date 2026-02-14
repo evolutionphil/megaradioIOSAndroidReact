@@ -178,6 +178,33 @@ POST /api/auth/mobile/logout-all  → All devices
 - Vector icon rendering on web
 - Avatar not displaying on web preview (CORS issue)
 
+### Missing Translation Keys (Backend Developer Action Required)
+The following 22 keys need to be added to the translations API:
+```
+- homepage_favorites_from_users
+- homepage_recently_played
+- auth_or_with_email
+- profile_followers
+- profile_following
+- profile_favorites
+- stations_near_you
+- now_playing
+- notifications
+- no_notifications
+- users
+- follow
+- unfollow
+- following
+- discover
+- discover_subtitle
+- browse_genres
+- top_stations
+- favorites
+- add_to_favorites
+- remove_from_favorites
+- records
+```
+
 ### P2: Social Logins
 - Google/Apple/Facebook login scaffolded but requires dev build
 
