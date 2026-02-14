@@ -543,45 +543,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fonts.medium,
     color: colors.text,
   },
-
-  // Sort Modal
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sortModal: {
-    backgroundColor: colors.backgroundCard,
-    borderRadius: borderRadius.xl,
-    padding: spacing.lg,
-    width: '80%',
-    maxWidth: 320,
-  },
-  sortModalTitle: {
-    fontSize: typography.sizes.lg,
-    fontFamily: typography.fonts.bold,
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
-  },
-  sortOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.sm,
-    borderRadius: borderRadius.md,
-  },
-  sortOptionActive: {
-    backgroundColor: colors.surface,
-  },
-  sortOptionText: {
-    fontSize: typography.sizes.md,
-    fontFamily: typography.fonts.medium,
-    color: colors.textSecondary,
-  },
-  sortOptionTextActive: {
-    color: colors.primary,
-  },
 });
