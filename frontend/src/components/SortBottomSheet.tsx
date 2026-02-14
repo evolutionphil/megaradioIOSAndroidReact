@@ -9,6 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../constants/theme';
 
 export type SortOption = 'popular' | 'newest' | 'oldest' | 'az' | 'za';
@@ -23,14 +24,6 @@ interface SortBottomSheetProps {
   onViewModeChange: (mode: ViewMode) => void;
 }
 
-const SORT_OPTIONS: { key: SortOption; label: string }[] = [
-  { key: 'popular', label: 'Popular' },
-  { key: 'newest', label: 'Newest first' },
-  { key: 'oldest', label: 'Oldest first' },
-  { key: 'az', label: 'A-Z' },
-  { key: 'za', label: 'Z-A' },
-];
-
 export const SortBottomSheet: React.FC<SortBottomSheetProps> = ({
   visible,
   onClose,
@@ -39,6 +32,16 @@ export const SortBottomSheet: React.FC<SortBottomSheetProps> = ({
   viewMode,
   onViewModeChange,
 }) => {
+  const { t } = useTranslation();
+  
+  const SORT_OPTIONS: { key: SortOption; label: string }[] = [
+    { key: 'popular', label: t('popular', 'Popular') },
+    { key: 'newest', label: t('sort_newest_first', 'Newest first') },
+    { key: 'oldest', label: t('sort_oldest_first', 'Oldest first') },
+    { key: 'az', label: t('sort_az', 'A-Z') },
+    { key: 'za', label: t('sort_za', 'Z-A') },
+  ];
+  
   const handleSortSelect = (option: SortOption) => {
     onSortChange(option);
   };
@@ -91,7 +94,7 @@ export const SortBottomSheet: React.FC<SortBottomSheetProps> = ({
 
           {/* View Mode Toggle */}
           <View style={styles.viewModeContainer}>
-            <Text style={styles.viewModeLabel}>Grid</Text>
+            <Text style={styles.viewModeLabel}>{t('grid', 'Grid')}</Text>
             <View style={styles.viewModeToggle}>
               <TouchableOpacity
                 style={[
