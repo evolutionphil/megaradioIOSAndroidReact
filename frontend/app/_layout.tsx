@@ -7,6 +7,8 @@ import { View, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { I18nextProvider } from 'react-i18next';
+import i18n, { initI18n } from '../src/services/i18nService';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
 import { AnimatedSplash } from '../src/components/AnimatedSplash';
@@ -51,6 +53,7 @@ export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
+  const [i18nReady, setI18nReady] = useState(false);
   const preloadStarted = useRef(false);
   
   const segments = useSegments();
@@ -72,6 +75,14 @@ export default function RootLayout() {
   useEffect(() => {
     if (!preloadStarted.current) {
       preloadStarted.current = true;
+      // Initialize i18n
+      initI18n().then(() => {
+        setI18nReady(true);
+        console.log('[Layout] i18n initialized');
+      }).catch(err => {
+        console.log('[Layout] i18n init error:', err);
+        setI18nReady(true); // Continue anyway
+      });
       // Run preload in background without blocking
       preloadEssentialData(queryClient).catch(err => {
         console.log('[Layout] Preload error (non-blocking):', err);
@@ -144,43 +155,47 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
-      <QueryClientProvider client={queryClient}>
-        <View style={styles.container}>
-          <StatusBar style="light" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.background },
-              animation: 'slide_from_right',
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
-            <Stack.Screen
-              name="player"
-              options={{
-                presentation: 'fullScreenModal',
-                animation: 'slide_from_bottom',
+      <I18nextProvider i18n={i18n}>
+        <QueryClientProvider client={queryClient}>
+          <View style={styles.container}>
+            <StatusBar style="light" />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.background },
+                animation: 'slide_from_right',
               }}
-            />
-            <Stack.Screen name="search" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="signup" options={{ headerShown: false }} />
-            <Stack.Screen name="statistics" options={{ headerShown: false }} />
-            <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
-            <Stack.Screen name="followers" options={{ headerShown: false }} />
-            <Stack.Screen name="follows" options={{ headerShown: false }} />
-            <Stack.Screen name="user-profile" options={{ headerShown: false }} />
-            <Stack.Screen name="languages" options={{ headerShown: false }} />
-            <Stack.Screen name="auth-options" options={{ headerShown: false, presentation: 'modal' }} />
-            <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
-            <Stack.Screen name="genres" options={{ headerShown: false }} />
-            <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
-            <Stack.Screen name="all-stations" options={{ headerShown: false }} />
-          </Stack>
-          <RadioErrorModal />
-        </View>
-      </QueryClientProvider>
+            >
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
+              <Stack.Screen
+                name="player"
+                options={{
+                  presentation: 'fullScreenModal',
+                  animation: 'slide_from_bottom',
+                }}
+              />
+              <Stack.Screen name="search" options={{ headerShown: false }} />
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+              <Stack.Screen name="signup" options={{ headerShown: false }} />
+              <Stack.Screen name="statistics" options={{ headerShown: false }} />
+              <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
+              <Stack.Screen name="followers" options={{ headerShown: false }} />
+              <Stack.Screen name="follows" options={{ headerShown: false }} />
+              <Stack.Screen name="user-profile" options={{ headerShown: false }} />
+              <Stack.Screen name="languages" options={{ headerShown: false }} />
+              <Stack.Screen name="auth-options" options={{ headerShown: false, presentation: 'modal' }} />
+              <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+              <Stack.Screen name="genres" options={{ headerShown: false }} />
+              <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
+              <Stack.Screen name="all-stations" options={{ headerShown: false }} />
+              <Stack.Screen name="notifications" options={{ headerShown: false }} />
+              <Stack.Screen name="users" options={{ headerShown: false }} />
+            </Stack>
+            <RadioErrorModal />
+          </View>
+        </QueryClientProvider>
+      </I18nextProvider>
     </GestureHandlerRootView>
   );
 }
