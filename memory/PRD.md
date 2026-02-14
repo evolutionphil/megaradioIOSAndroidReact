@@ -8,9 +8,33 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - TypeScript
 - Expo Router
 - Zustand (State Management)
-- React Query (Data Fetching)
+- React Query (Data Fetching with backend-recommended caching)
 - expo-av for audio playback
 - expo-secure-store for token storage
+
+## Caching Strategy (Feb 14, 2026)
+Based on backend developer recommendations:
+
+| Data Type | staleTime | gcTime |
+|-----------|-----------|--------|
+| GENRES_ALL | 24 hours | 48 hours |
+| COUNTRIES | 24 hours | 48 hours |
+| STATION_DETAIL | 30 minutes | 1 hour |
+| GENRE_STATIONS | 1 hour | 2 hours |
+| STATIONS_LIST | 10 minutes | 20 minutes |
+| POPULAR_STATIONS | 10 minutes | 20 minutes |
+| TRENDING | 5 minutes | 10 minutes |
+| RECENTLY_PLAYED | 30 seconds | 1 minute |
+| FAVORITES | 1 minute | 2 minutes |
+| USER_PROFILE | 2 minutes | 4 minutes |
+| FOLLOWERS/FOLLOWING | 2 minutes | 4 minutes |
+| SEARCH | 2 minutes | 4 minutes |
+
+### Preload System (Feb 14, 2026)
+- `/app/frontend/src/services/preloadService.ts` - Async preloading service
+- Preloads first 6 user profiles from "Favorites From Users" section immediately
+- Remaining users are loaded in background without blocking UI
+- Cache stored both in-memory and React Query cache
 
 ## Authentication System
 
@@ -40,6 +64,13 @@ Response: { authenticated, user }
 POST /api/auth/mobile/logout      → Single device
 POST /api/auth/mobile/logout-all  → All devices
 ```
+
+## Known Issues
+
+### Backend Performance Issue (Feb 14, 2026)
+- `/api/users/{userId}/favorites` endpoint returns full station data with multi-language descriptions
+- Thomas Wagner's 100 favorites take ~29 seconds to load
+- **Recommendation**: Backend should implement pagination and lighter response payload
 
 ## Completed Features
 
