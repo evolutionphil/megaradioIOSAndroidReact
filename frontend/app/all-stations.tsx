@@ -444,13 +444,15 @@ const styles = StyleSheet.create({
 
   // Grid View
   gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     paddingHorizontal: spacing.md,
-    gap: spacing.sm,
+  },
+  gridRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
   },
   gridItem: {
-    marginBottom: spacing.md,
+    alignItems: 'center',
   },
   gridItemActive: {
     opacity: 0.8,
