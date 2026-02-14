@@ -14,8 +14,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { GlowEffect } from '../../src/components/GlowEffect';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { StationCard, GenreCard, SectionHeader } from '../../src/components';
+import { DiscoverSkeleton, GenreGridSkeleton, StationListItemSkeleton } from '../../src/components/Skeleton';
 import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
@@ -25,6 +27,7 @@ import type { Station, Genre } from '../../src/types';
 
 export default function DiscoverScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
   const { isAuthenticated } = useAuthStore();
@@ -93,8 +96,8 @@ export default function DiscoverScreen() {
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={styles.title}>Discover</Text>
-              <Text style={styles.subtitle}>Explore the world of radio</Text>
+              <Text style={styles.title}>{t('discover')}</Text>
+              <Text style={styles.subtitle}>{t('discover_subtitle')}</Text>
             </View>
             <View style={styles.headerButtons}>
               {isAuthenticated && (
@@ -169,7 +172,7 @@ export default function DiscoverScreen() {
           {/* Browse All Genres */}
           <View style={styles.section}>
             <SectionHeader 
-              title="Browse Genres" 
+              title={t('browse_genres')} 
               showSeeAll={true}
               onSeeAll={() => router.push('/genres')}
             />
@@ -192,13 +195,17 @@ export default function DiscoverScreen() {
           {/* Top Stations List */}
           <View style={styles.stationsSection}>
             <SectionHeader 
-              title="Top Stations"
-              subtitle={`${stations.length} stations`}
+              title={t('top_stations')}
+              subtitle={`${stations.length} ${t('stations').toLowerCase()}`}
               showSeeAll={true}
               onSeeAll={() => router.push('/all-stations')}
             />
             {stationsLoading ? (
-              <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
+              <View style={styles.stationsList}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <StationListItemSkeleton key={i} />
+                ))}
+              </View>
             ) : stations.length > 0 ? (
               <View style={styles.stationsList}>
                 {stations.slice(0, 10).map((station) => (
@@ -216,8 +223,8 @@ export default function DiscoverScreen() {
                 <View style={styles.emptyIcon}>
                   <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
                 </View>
-                <Text style={styles.emptyTitle}>No stations found</Text>
-                <Text style={styles.emptyText}>Try refreshing the page</Text>
+                <Text style={styles.emptyTitle}>{t('no_stations_found')}</Text>
+                <Text style={styles.emptyText}>{t('try_refresh') || 'Try refreshing the page'}</Text>
               </View>
             )}
           </View>
