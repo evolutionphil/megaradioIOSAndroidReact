@@ -103,7 +103,7 @@ export default function AllStationsScreen() {
     return (
       <TouchableOpacity
         key={station._id}
-        style={[styles.gridItem, playing && styles.gridItemActive]}
+        style={[styles.gridItem, { width: GRID_ITEM_WIDTH }, playing && styles.gridItemActive]}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
         data-testid={`grid-station-${station._id}`}
