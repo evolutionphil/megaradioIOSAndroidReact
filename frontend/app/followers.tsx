@@ -47,8 +47,8 @@ export default function FollowersScreen() {
 
     try {
       setLoading(true);
-      // GET /api/users/:userId/followers
-      const response = await api.get(`https://themegaradio.com/api/users/${user._id}/followers`);
+      // API docs: GET /api/user/followers/:userId
+      const response = await api.get(`https://themegaradio.com/api/user/followers/${user._id}`);
       
       // API may return { followers: [...] } or directly [...]
       const data = response.data.followers || response.data || [];
