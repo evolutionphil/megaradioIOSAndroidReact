@@ -247,20 +247,33 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   const stationsInitRef = useRef(false);
 
   useEffect(() => {
-    if (visible && propStations.length > 0 && !stationsInitRef.current) {
+    if (visible && !stationsInitRef.current) {
       stationsInitRef.current = true;
-      // Ensure currentStation is in the list
-      let list = [...propStations];
-      if (currentStation && !list.find(s => s._id === currentStation._id)) {
-        list = [currentStation, ...list];
+      
+      // Build station list with currentStation always first
+      let list: Station[] = [];
+      
+      // Add current station first if exists
+      if (currentStation) {
+        list.push(currentStation);
       }
+      
+      // Add other stations (excluding currentStation to avoid duplicates)
+      propStations.forEach(s => {
+        if (!currentStation || s._id !== currentStation._id) {
+          list.push(s);
+        }
+      });
+      
       setStations(list);
+      // Set carousel to index 0 (currentStation)
+      setCarouselIndex(0);
     }
     if (!visible) {
       stationsInitRef.current = false;
       setStations([]);
     }
-  }, [visible, propStations]);
+  }, [visible, propStations, currentStation]);
 
   const [carouselIndex, setCarouselIndex] = useState(0);
   const initialIndexSetRef = useRef(false);
