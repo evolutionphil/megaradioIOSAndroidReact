@@ -38,6 +38,7 @@ interface AuthState {
   // Auth operations
   loadStoredAuth: () => Promise<void>;
   saveAuth: (user: User, token: string) => Promise<void>;
+  updateUser: (user: User) => Promise<void>;
   logout: () => Promise<void>;
   clearAuth: () => void;
 }
