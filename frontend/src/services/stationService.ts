@@ -13,6 +13,14 @@ export interface StationQueryParams {
 }
 
 export const stationService = {
+  // Get single station by identifier (slug or id)
+  async getStation(identifier: string): Promise<Station> {
+    const response = await api.get(API_ENDPOINTS.stations.single(identifier), {
+      params: { tv: 1 },
+    });
+    return response.data;
+  },
+
   // Get list of stations
   async getStations(params: StationQueryParams = {}): Promise<{ stations: Station[]; totalCount: number }> {
     const response = await api.get(API_ENDPOINTS.stations.list, { params: { ...params, tv: 1 } });
