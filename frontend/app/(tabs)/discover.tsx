@@ -234,11 +234,13 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.title,
     fontWeight: typography.weights.bold,
     color: colors.text,
+    textAlign: 'left',
   },
   subtitle: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
     marginTop: 2,
+    textAlign: 'left',
   },
   searchButton: {
     width: 44,
