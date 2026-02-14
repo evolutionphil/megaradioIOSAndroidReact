@@ -109,6 +109,10 @@ GET /api/translations/:lang
 - [x] **P1: Statistics Page** - Integrated real stats tracking via statsService.ts
 - [x] Created statsService.ts for tracking listening time, unique stations, and history
 - [x] Statistics page now shows real data: Total Listening, Music Played, Unique Stations
+- [x] **BUG FIX: Email Login** - Fixed CORS issue with web login
+  - Web now uses `/api/auth/login` (session-based, no credentials)
+  - Native mobile uses `/api/auth/mobile/login` (token-based)
+  - Login successfully tested with real credentials
 
 ### February 2026 - Session 10
 - [x] Onboarding screens UI fix - Full screen background images with linear gradient
