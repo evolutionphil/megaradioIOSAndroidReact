@@ -59,15 +59,30 @@ export default function LoginScreen() {
     try {
       const response = await authService.mobileLogin(email.trim(), password);
       
+      console.log('Login response:', JSON.stringify(response, null, 2));
+      
       // API returns { message: "Login successful", token, user } not { success: true }
-      if (response.token && response.user) {
-        await saveAuth(response.user, response.token);
+      if (response && response.token && response.user) {
+        // Map API user format to our User type
+        const user = {
+          id: response.user._id || response.user.id,
+          name: response.user.fullName || response.user.name,
+          email: response.user.email,
+          username: response.user.username,
+          avatar: response.user.avatar,
+          profilePhoto: response.user.avatar,
+          followersCount: response.user.followersCount,
+          followingCount: response.user.followingCount,
+        };
+        await saveAuth(user as any, response.token);
         router.replace('/(tabs)');
       } else {
+        console.error('Invalid response structure:', response);
         throw new Error('Invalid response from server');
       }
     } catch (err: any) {
       console.error('Login error:', err);
+      console.error('Error response:', err.response?.data);
       setHasError(true);
       setError('Wrong email or password! Try again');
     } finally {
