@@ -96,9 +96,20 @@ export default function DiscoverScreen() {
               <Text style={styles.title}>Discover</Text>
               <Text style={styles.subtitle}>Explore the world of radio</Text>
             </View>
-            <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
-              <Ionicons name="search" size={22} color={colors.text} />
-            </TouchableOpacity>
+            <View style={styles.headerButtons}>
+              {isAuthenticated && (
+                <TouchableOpacity 
+                  style={styles.iconButton} 
+                  onPress={handleNotificationsPress}
+                  data-testid="discover-notifications-btn"
+                >
+                  <Ionicons name="notifications-outline" size={22} color={colors.text} />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress} data-testid="discover-search-btn">
+                <Ionicons name="search" size={22} color={colors.text} />
+              </TouchableOpacity>
+            </View>
           </View>
 
         <ScrollView
@@ -235,6 +246,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingTop: spacing.sm,
     paddingBottom: spacing.md,
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  iconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: typography.sizes.title,
