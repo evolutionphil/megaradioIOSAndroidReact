@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   TextInput,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,11 +41,16 @@ const NATIVE_NAMES: Record<string, string> = {
 
 export default function LanguagesScreen() {
   const router = useRouter();
-  const { t } = useTranslation();
-  const { currentLanguage, setLanguage, isLoading: languageLoading, initialize } = useLanguageStore();
+  const { t, i18n } = useTranslation();
+  const { currentLanguage, setLanguage, isLoading: languageLoading, initialize, languageVersion } = useLanguageStore();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isChanging, setIsChanging] = useState(false);
+  
+  // Animation value for language change effect
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   // Initialize language store and fetch available languages
   useEffect(() => {
@@ -64,11 +70,50 @@ export default function LanguagesScreen() {
   }, []);
 
   const handleLanguageSelect = async (code: string) => {
-    try {
-      await setLanguage(code);
-    } catch (error) {
-      console.error('Error saving language:', error);
-    }
+    if (code === currentLanguage || isChanging) return;
+    
+    setIsChanging(true);
+    
+    // Animate out
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0.3,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 0.98,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(async () => {
+      try {
+        await setLanguage(code);
+        
+        // Animate back in
+        Animated.parallel([
+          Animated.spring(fadeAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 50,
+            friction: 7,
+          }),
+          Animated.spring(scaleAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 50,
+            friction: 7,
+          }),
+        ]).start();
+      } catch (error) {
+        console.error('Error saving language:', error);
+        // Reset animation on error
+        fadeAnim.setValue(1);
+        scaleAnim.setValue(1);
+      } finally {
+        setIsChanging(false);
+      }
+    });
   };
 
   // Filter languages by search
@@ -81,14 +126,18 @@ export default function LanguagesScreen() {
       )
     : languages;
 
+  // Use i18n.language for real-time current language (not just store value)
+  const activeLanguage = i18n.language || currentLanguage;
+
   const renderLanguageItem = ({ item }: { item: Language }) => {
-    const isSelected = currentLanguage === item.code;
+    const isSelected = activeLanguage === item.code;
     const nativeName = NATIVE_NAMES[item.code] || item.name;
 
     return (
       <TouchableOpacity
         style={[styles.languageRow, isSelected && styles.languageRowActive]}
         onPress={() => handleLanguageSelect(item.code)}
+        disabled={isChanging}
         data-testid={`language-${item.code}`}
       >
         <View style={styles.languageInfo}>
@@ -104,49 +153,65 @@ export default function LanguagesScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} data-testid="back-btn">
-          <Ionicons name="chevron-back" size={24} color="#FFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('languages')}</Text>
-        <View style={{ width: 24 }} />
-      </View>
+      <Animated.View 
+        style={[
+          styles.animatedContainer,
+          { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }
+        ]}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} data-testid="back-btn">
+            <Ionicons name="chevron-back" size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>{t('languages', 'Languages')}</Text>
+          <View style={{ width: 24 }} />
+        </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder={t('search_placeholder')}
-            placeholderTextColor="#999"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            data-testid="language-search-input"
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchBar}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder={t('search_placeholder', 'Search...')}
+              placeholderTextColor="#999"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              data-testid="language-search-input"
+            />
+            <Ionicons name="search" size={20} color="#999" />
+          </View>
+        </View>
+
+        {/* Language List */}
+        {isLoading || languageLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#FF4199" />
+          </View>
+        ) : (
+          <FlatList
+            data={filteredLanguages}
+            renderItem={renderLanguageItem}
+            keyExtractor={(item) => item.code}
+            extraData={activeLanguage} // Force re-render on language change
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>{t('no_results', 'No languages found')}</Text>
+              </View>
+            }
           />
-          <Ionicons name="search" size={20} color="#999" />
-        </View>
-      </View>
-
-      {/* Language List */}
-      {isLoading || languageLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF4199" />
-        </View>
-      ) : (
-        <FlatList
-          data={filteredLanguages}
-          renderItem={renderLanguageItem}
-          keyExtractor={(item) => item.code}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>{t('no_results') || 'No languages found'}</Text>
-            </View>
-          }
-        />
-      )}
+        )}
+        
+        {/* Loading overlay during language change */}
+        {isChanging && (
+          <View style={styles.changingOverlay}>
+            <ActivityIndicator size="large" color="#FF4199" />
+            <Text style={styles.changingText}>{t('loading', 'Loading...')}</Text>
+          </View>
+        )}
+      </Animated.View>
     </SafeAreaView>
   );
 }
