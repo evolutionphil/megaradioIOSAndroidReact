@@ -262,9 +262,9 @@ export default function HomeScreen() {
           {/* Genres Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Genres</Text>
+              <Text style={styles.sectionTitle}>{t('genres')}</Text>
               <TouchableOpacity onPress={() => router.push('/discover')}>
-                <Text style={styles.seeAllText}>See All</Text>
+                <Text style={styles.seeAllText}>{t('homepage_see_all')}</Text>
               </TouchableOpacity>
             </View>
             {genresLoading ? (
@@ -296,12 +296,12 @@ export default function HomeScreen() {
           {/* Popular Stations - List View */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Popular Stations</Text>
+              <Text style={styles.sectionTitle}>{t('popular_stations')}</Text>
             </View>
             {popularLoading ? (
-              <ActivityIndicator size="small" color={colors.primary} />
+              <SectionSkeleton itemCount={4} horizontal={false} title={false} />
             ) : popularStations.length === 0 ? (
-              <Text style={styles.emptyText}>No popular stations found</Text>
+              <Text style={styles.emptyText}>{t('no_stations_found')}</Text>
             ) : (
               <View style={styles.popularList}>
                 {popularStations.slice(0, 4).map((station) => {
@@ -338,7 +338,7 @@ export default function HomeScreen() {
           {/* Recently Played - 3 Column Grid, 6 stations */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Recently Played</Text>
+              <Text style={styles.sectionTitle}>{t('homepage_recently_played')}</Text>
             </View>
             {recentStations.length > 0 ? (
               <>
@@ -390,14 +390,14 @@ export default function HomeScreen() {
                 )}
               </>
             ) : (
-              <Text style={styles.emptyText}>No recently played stations</Text>
+              <Text style={styles.emptyText}>{t('no_recently_played')}</Text>
             )}
           </View>
 
           {/* Radios Near You - 3 Column Grid, multiple rows */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Radios Near You{country ? ` - ${country}` : ''}</Text>
+              <Text style={styles.sectionTitle}>{t('stations_near_you')}{country ? ` - ${country}` : ''}</Text>
             </View>
             {/* Render rows of 3 items each - use nearby GPS stations */}
             {nearbyStations.length > 0 ? (
