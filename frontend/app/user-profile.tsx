@@ -10,11 +10,14 @@ import {
   Modal,
   Share,
   Linking,
+  Alert,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
+import api from '../src/services/api';
+import { useAuthStore } from '../src/store/authStore';
 
 interface FavoriteStation {
   id: string;
@@ -23,25 +26,24 @@ interface FavoriteStation {
   logo: string;
 }
 
-// Mock data for favorite stations
-const MOCK_STATIONS: FavoriteStation[] = [
-  { id: '1', name: 'Power Türk', genre: 'Türkçe Pop', logo: 'https://themegaradio.com/station-logos/power-turk/logo.png' },
-  { id: '2', name: 'Metro FM', genre: 'Pop', logo: 'https://themegaradio.com/station-logos/metro-fm/logo.png' },
-];
-
 export default function UserProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string }>();
+  const { user: currentUser, isAuthenticated } = useAuthStore();
   const [stations, setStations] = useState<FavoriteStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
-  // User info from params or mock
-  const userName = params.userName || 'Talha Çay';
-  const userAvatar = params.userAvatar || 'https://i.pravatar.cc/100?img=11';
-  const followers = 86;
-  const follows = 86;
+  // User info from params
+  const userName = params.userName || 'User';
+  const userAvatar = params.userAvatar || 'https://themegaradio.com/images/default-avatar.png';
+  const userId = params.userId;
+  const isOwnProfile = currentUser?._id === userId;
 
   useEffect(() => {
     // Simulate API call
