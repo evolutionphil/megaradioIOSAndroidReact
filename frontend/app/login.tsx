@@ -104,7 +104,7 @@ export default function LoginScreen() {
       console.error('Login error:', err);
       console.error('Error response:', err.response?.data);
       setHasError(true);
-      setError('Wrong email or password! Try again');
+      setError(t('wrong_credentials', 'Wrong email or password! Try again'));
     } finally {
       setIsLoading(false);
     }
