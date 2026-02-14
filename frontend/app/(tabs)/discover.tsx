@@ -160,14 +160,18 @@ export default function DiscoverScreen() {
           <View style={styles.section}>
             <SectionHeader 
               title="Browse Genres" 
-              showSeeAll={false}
+              showSeeAll={true}
+              onSeeAll={() => router.push('/genres')}
             />
             <View style={styles.genresGrid}>
               {genres.slice(0, 8).map((genre) => (
                 <GenreCard
                   key={genre._id}
                   genre={genre}
-                  onPress={(g) => handleGenreSelect(g)}
+                  onPress={(g) => router.push({
+                    pathname: '/genre-detail',
+                    params: { slug: g.slug, name: g.name },
+                  })}
                   size="small"
                   style={styles.genreGridItem}
                 />
