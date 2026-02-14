@@ -494,11 +494,8 @@ export const setStoredLanguage = async (lang: string): Promise<void> => {
 export const initI18n = async (): Promise<void> => {
   const storedLang = await getStoredLanguage();
   
-  // Start with default translations for fast startup
-  // API translations will be fetched in background
-  const initialTranslations = storedLang === 'en' 
-    ? defaultTranslations 
-    : { ...defaultTranslations }; // Use defaults first
+  // Use cached translations for fast startup (tr and en are pre-cached)
+  const initialTranslations = translationsCache[storedLang] || defaultTranslations;
 
   await i18n
     .use(initReactI18next)
@@ -509,6 +506,9 @@ export const initI18n = async (): Promise<void> => {
         },
         en: {
           translation: defaultTranslations,
+        },
+        tr: {
+          translation: turkishTranslations,
         },
       },
       lng: storedLang,
@@ -521,15 +521,16 @@ export const initI18n = async (): Promise<void> => {
       },
     });
   
-  // Fetch translations from API in background (non-blocking)
-  if (storedLang !== 'en') {
-    fetchTranslations(storedLang).then(translations => {
+  // Fetch latest translations from API in background (non-blocking)
+  // This will update with any new keys from backend
+  fetchTranslations(storedLang).then(translations => {
+    if (Object.keys(translations).length > Object.keys(initialTranslations).length) {
       i18n.addResourceBundle(storedLang, 'translation', translations, true, true);
-      notifyLanguageChange(storedLang);
-    }).catch(err => {
-      console.log('[i18n] Background translation fetch error:', err);
-    });
-  }
+      console.log('[i18n] Updated translations from API');
+    }
+  }).catch(err => {
+    console.log('[i18n] Background translation fetch error:', err);
+  });
 };
 
 // Change language
