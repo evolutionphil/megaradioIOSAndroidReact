@@ -41,178 +41,65 @@ POST /api/auth/mobile/logout      → Single device
 POST /api/auth/mobile/logout-all  → All devices
 ```
 
-### Auth UI Screens (IMPLEMENTED)
-- `/app/frontend/app/auth-options.tsx` - Main auth selection (Apple, Facebook, Google, Mail, Continue without login)
-- `/app/frontend/app/login.tsx` - Email/password login form with error toast
-- `/app/frontend/app/signup.tsx` - Registration form with name/email/password
-- `/app/frontend/app/forgot-password.tsx` - Password reset request
-- `/app/frontend/app/(tabs)/profile.tsx` - Guest state with Sign In/Create Account buttons
+## Completed Features
 
-### Implementation Files
-- `authStore.ts` - Token storage with SecureStore/localStorage
-- `authService.ts` - Mobile auth API methods (unified for web and native)
-- `api.ts` - Auto-attaches Bearer token to all requests
-- Token persists across app restarts
+### Sort Bottom Sheet (Feb 14, 2026)
+- Created `/app/frontend/src/components/SortBottomSheet.tsx`
+- Implemented for both `all-stations.tsx` and `genre-detail.tsx`
+- Features:
+  - Radio button sorting options: Popular, Newest first, Oldest first, A-Z, Z-A
+  - Grid/List view toggle at bottom
+  - Pink/magenta themed radio buttons per Figma design
+  - Slide-up animation
 
-## API Integrations
+### Pages Implemented
+- `/app/frontend/app/genres.tsx` - List all genres
+- `/app/frontend/app/all-stations.tsx` - All stations with search, sort, grid/list views
+- `/app/frontend/app/genre-detail.tsx` - Stations by genre with sort and view options
 
-### Countries API
-```
-GET /api/countries?format=rich
-Response: [{ name, nativeName, code, flag, flagUrl, stationCount }]
-```
+### Navigation
+- "See All" on Discover page → `/genres`
+- Genre item click → `/genre-detail?slug=xxx&name=xxx`
+- "See More" on Home page Top Stations → `/all-stations`
 
-### Users API
-```
-GET /api/user/followers/:userId
-GET /api/user/following/:userId
-POST /api/user/follow/:userId (requires auth)
-DELETE /api/user/unfollow/:userId (requires auth)
-```
+## In Progress / Pending Issues
 
-### Favorites API
-```
-GET /api/user/favorites (requires auth - Bearer token)
-POST /api/user/favorites/:stationId (requires auth)
-DELETE /api/user/favorites/:stationId (requires auth)
-```
+### P1: Recently Played Sync
+- Implementation exists in `recentlyPlayedStore.ts`
+- POST `/api/recently-played` called on station play
+- GET `/api/recently-played` called on app load
+- **Note:** Sync requires user authentication. Guest users only get local storage.
 
-### Recently Played API (UPDATED)
-```
-GET /api/recently-played 
-  - Headers: Authorization: Bearer mrt_xxx (REQUIRED)
-  - Returns: Array of station objects with playedAt timestamp
+### P2: Follow/Unfollow Button on Profile
+- Not yet implemented on user-profile.tsx
 
-POST /api/recently-played 
-  - Headers: Authorization: Bearer mrt_xxx (REQUIRED)
-  - Body: { stationId: "station_id" }
-  - Returns: { success: true }
-```
-**Note**: Both endpoints now require Bearer token authentication (updated Feb 2026)
+### P2: Visual Bugs
+- Glow Effect incorrect
+- Static Equalizer 
+- Vector icon rendering on web
 
-### Languages API
+## Backend API Reference
+
+### Recently Played
 ```
-GET /api/translations/:lang
+POST /api/recently-played
+Authorization: Bearer mrt_xxx
+Body: { stationId: "68a8c47dbd66579311ab228c" }
+Response: { success: true }
+
+GET /api/recently-played
+Authorization: Bearer mrt_xxx
+Response: [Station[], max 12 items, newest first]
 ```
 
 ## Key Files
-- `/app/frontend/src/store/authStore.ts` - Auth state & token persistence
-- `/app/frontend/src/store/favoritesStore.ts` - Hybrid favorites (API + local)
-- `/app/frontend/src/store/recentlyPlayedStore.ts` - Recently played with API sync
-- `/app/frontend/src/store/playerStore.ts` - Player state, auto-adds to recently played
-- `/app/frontend/src/services/authService.ts` - Auth API methods (unified mobile login for all platforms)
-- `/app/frontend/src/services/socialAuthService.ts` - Social OAuth (Google/Apple/Facebook)
-- `/app/frontend/src/services/statsService.ts` - Listening statistics tracking
-- `/app/frontend/src/services/api.ts` - Auto Bearer token
-- `/app/frontend/app/(tabs)/profile.tsx` - Profile with guest state
-- `/app/frontend/app/(tabs)/favorites.tsx` - Favorites list
-- `/app/frontend/app/(tabs)/records.tsx` - Recently played history
-- `/app/frontend/app/auth-options.tsx` - Login options screen
-- `/app/frontend/app/login.tsx` - Email login screen
-- `/app/frontend/app/followers.tsx` - Followers list with avatars
-- `/app/frontend/app/follows.tsx` - Following list with avatars
+- `/app/frontend/src/components/SortBottomSheet.tsx` - New sort bottom sheet component
+- `/app/frontend/app/all-stations.tsx` - All stations page
+- `/app/frontend/app/genre-detail.tsx` - Genre detail page
+- `/app/frontend/src/store/recentlyPlayedStore.ts` - Recently played state
+- `/app/frontend/src/store/playerStore.ts` - Audio player state
 
-## Completed Tasks
-
-### February 2026 - Session 15 (Latest)
-- [x] **FEATURE: All Stations Page** - Created `/app/frontend/app/all-stations.tsx` with grid/list view toggle, search bar, sort modal (Most Popular, Name A-Z, Most Played)
-- [x] **FEATURE: Genre Detail Redesign** - Updated `/app/frontend/app/genre-detail.tsx` with same layout as All Stations (grid/list view, search, sort)
-- [x] **FEATURE: See More Navigation** - Home page "All Stations" section "See More" button now navigates to `/all-stations` page
-- [x] **FIX: Dynamic Grid Layout** - Grid items now use `useWindowDimensions` with fallback for proper sizing across platforms
-
-### February 2026 - Session 14
-- [x] **FEATURE: Genres Page Redesign** - Created `/app/frontend/app/genres.tsx` with search bar, Popular genres horizontal scroll, and genre list with station counts
-- [x] **FEATURE: Genre Detail Page** - Created `/app/frontend/app/genre-detail.tsx` with breadcrumb navigation (Genres > Genre Name), station list with favorite (pink heart) and play buttons
-- [x] **FIX: SectionHeader See All Navigation** - Updated SectionHeader component to use Pressable instead of TouchableOpacity for better web compatibility
-- [x] **FIX: Genre Type Definition** - Added total_stations, posterImage, discoverableImage, isDiscoverable, isDynamic to Genre interface
-- [x] **FEATURE: Discover See All Link** - Added "See All" link in Browse Genres section that navigates to /genres page
-- [x] **FIX: Favorite Button Color** - Genre detail page favorite button now shows pink for favorited, gray for non-favorited
-- [x] **TEST: Backend API Verified** - 12/12 tests passed (genres, recently-played endpoints)
-- [x] **VERIFIED: Recently Played API Sync** - POST/GET /api/recently-played with Bearer token working correctly
-
-### February 2026 - Session 13
-- [x] **CRITICAL FIX: Recently Played Bearer Auth** - Updated recentlyPlayedStore.ts to use axios api instance instead of raw fetch. This ensures Authorization: Bearer token is automatically added via interceptor
-- [x] **FIX: Auth State Subscription** - Added useAuthStore.subscribe() to recentlyPlayedStore to automatically reload data when user logs in/out
-- [x] **FIX: React Query Auth Reactivity** - Updated useRecentlyPlayed hook to use reactive auth state (useAuthStore selector) instead of getState() for proper re-fetching on auth changes
-- [x] **FIX: Unique Key Prop Errors** - Removed redundant `key` props from renderItem in followers.tsx and follows.tsx (FlatList already handles via keyExtractor)
-- [x] **FEATURE: Discover Header Avatar** - Added user avatar display in "Welcome Back" header section with clickable navigation to profile
-- [x] **FEATURE: User Profile Navigation** - Clicking on users in "Favorites From Users" section now navigates to user-profile page with userId, userName, userAvatar params
-- [x] **FEATURE: Avatar Upload** - Added expo-image-picker integration for avatar upload on Profile tab. Camera badge overlay shows on avatar, clicking uploads new image via POST /api/auth/avatar
-- [x] **FIX: User Type Definition** - Added avatar, fullName, username, followersCount, followingCount to User interface
-- [x] **FIX: Auth Store updateUser** - Added updateUser function to persist avatar changes
-- [x] **TEST: Backend API Verified** - 6/6 backend tests passed (login, recently-played GET/POST with/without auth)
-- [x] **KNOWN ISSUE: CORS Avatar Loading** - Avatar images from themegaradio.com fail to load on web preview due to CORS (ERR_BLOCKED_BY_ORB). Works correctly on native builds.
-
-### February 2026 - Session 12
-- [x] **CRITICAL FIX: deviceType Always 'mobile'** - Fixed authService.ts mobileLogin() to always send deviceType='mobile'. The external API returns invalid web_session_* tokens for 'tablet' deviceType which caused 401 errors on favorites API
-- [x] **FIX: Favorites Loading** - Fixed favoritesStore.ts to use `/api/user/favorites` endpoint with Bearer token auth. Now loads correctly (39 stations verified)
-- [x] **FIX: Auth State Dependency** - Updated favorites.tsx to reload favorites when auth state changes (isAuthenticated, user._id)
-- [x] **FIX: Followers/Following Avatars** - Updated followers.tsx and follows.tsx to properly handle avatar URLs with getAvatarUrl() helper
-- [x] **FEATURE: Recently Played API Sync** - Enhanced recentlyPlayedStore.ts to sync with API. When a station plays, it's added to recently played and synced to server
-- [x] **DEBUG: Added Console Logs** - Added detailed logging to favoritesStore and api.ts for troubleshooting
-
-### February 2026 - Session 11
-- [x] Social Sign-In Integration - Created socialAuthService.ts with Google/Apple/Facebook OAuth support
-- [x] Statistics Page - Integrated real stats tracking via statsService.ts
-- [x] BUG FIX: Email Login - Fixed CORS issue with web login
-
-### February 2026 - Session 10
-- [x] Onboarding screens UI fix
-- [x] Ubuntu font integration throughout the app
-- [x] Full screen login/signup screens
-- [x] Onboarding slide/fade animations
-- [x] User Profile: Follow/Unfollow functionality
-- [x] Car Mode bug fixed
-
-### Previous Sessions
-- [x] Favorites page redesign with hybrid API/local storage
-- [x] Languages page creation
-- [x] Clickable followers/follows stats on profile
-- [x] Country flags from /api/countries?format=rich
-- [x] Connected followers.tsx and follows.tsx to real API
-
-## Pending Tasks
-
-### P0 (Blocker)
-- [ ] Follow/Unfollow button on user-profile.tsx page header (requested but not implemented)
-
-### P1 (Important)
-- [ ] i18n integration using selected language
-
-### P2 (Nice to have)
-- [ ] Skeleton loaders
-- [ ] Glow Effect visual fix (needs user feedback for specifics)
-- [ ] Animated equalizer enhancement
-- [ ] Sleep timer bug (needs reproduction steps)
-- [ ] Vector icons web rendering fix
-
-## Known Issues
-- Social OAuth requires development build for native (Google/Apple/Facebook Sign-In won't work in Expo Go)
-- TouchableOpacity click handlers may not work in Playwright automation (React Native Web limitation)
-- Glow Effect and Sleep Timer bugs are blocked pending user feedback
-
-## Credentials
-- **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
-- **Test User**: gey14853@outlook.com / Muhammed5858
-
-## Test Reports
-- `/app/test_reports/iteration_10.json` - Recently Played feature test (100% backend, 90% frontend - PASS)
-- `/app/test_reports/iteration_8.json` - Profile features test (partial pass, identified auth token issue - NOW FIXED)
-- `/app/test_reports/iteration_7.json` - Auth UI complete test (100% pass rate)
-
-## Notes
-- Mobile auth endpoints are deployed and working
-- API returns 401 for invalid credentials (correct behavior)
-- All auth screens follow Figma design specifications
-- Web now uses mobile login endpoint to get real JWT tokens
-
-## Typography (Ubuntu Font Family)
-- **Ubuntu-Regular**: General body text, input fields
-- **Ubuntu-Medium**: Subtitles, hints, secondary text
-- **Ubuntu-Bold**: Headlines, buttons, titles
-- **Ubuntu-BoldItalic**: Special emphasis (splash screen)
-
-Font files: `/app/frontend/assets/fonts/`
-
-## Last Updated
-February 2026 - Session 13
+## Test Credentials
+- Email: gey14853@outlook.com
+- Password: Muhammed5858
+- API Key: mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw
