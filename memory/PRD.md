@@ -114,7 +114,17 @@ GET /api/translations/:lang
 
 ## Completed Tasks
 
-### February 2026 - Session 13 (Latest)
+### February 2026 - Session 14 (Latest)
+- [x] **FEATURE: Genres Page Redesign** - Created `/app/frontend/app/genres.tsx` with search bar, Popular genres horizontal scroll, and genre list with station counts
+- [x] **FEATURE: Genre Detail Page** - Created `/app/frontend/app/genre-detail.tsx` with breadcrumb navigation (Genres > Genre Name), station list with favorite (pink heart) and play buttons
+- [x] **FIX: SectionHeader See All Navigation** - Updated SectionHeader component to use Pressable instead of TouchableOpacity for better web compatibility
+- [x] **FIX: Genre Type Definition** - Added total_stations, posterImage, discoverableImage, isDiscoverable, isDynamic to Genre interface
+- [x] **FEATURE: Discover See All Link** - Added "See All" link in Browse Genres section that navigates to /genres page
+- [x] **FIX: Favorite Button Color** - Genre detail page favorite button now shows pink for favorited, gray for non-favorited
+- [x] **TEST: Backend API Verified** - 12/12 tests passed (genres, recently-played endpoints)
+- [x] **VERIFIED: Recently Played API Sync** - POST/GET /api/recently-played with Bearer token working correctly
+
+### February 2026 - Session 13
 - [x] **CRITICAL FIX: Recently Played Bearer Auth** - Updated recentlyPlayedStore.ts to use axios api instance instead of raw fetch. This ensures Authorization: Bearer token is automatically added via interceptor
 - [x] **FIX: Auth State Subscription** - Added useAuthStore.subscribe() to recentlyPlayedStore to automatically reload data when user logs in/out
 - [x] **FIX: React Query Auth Reactivity** - Updated useRecentlyPlayed hook to use reactive auth state (useAuthStore selector) instead of getState() for proper re-fetching on auth changes
