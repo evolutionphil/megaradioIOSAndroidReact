@@ -14,7 +14,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ## Authentication System
 
-### Mobile Token-Based Auth
+### Mobile Token-Based Auth (All Platforms)
 Token format: `mrt_` prefix + 64 character hex
 Token validity: 90 days
 Storage: SecureStore (iOS/Android) / localStorage (web)
@@ -41,7 +41,7 @@ POST /api/auth/mobile/logout      → Single device
 POST /api/auth/mobile/logout-all  → All devices
 ```
 
-### Auth UI Screens (IMPLEMENTED - December 2025)
+### Auth UI Screens (IMPLEMENTED)
 - `/app/frontend/app/auth-options.tsx` - Main auth selection (Apple, Facebook, Google, Mail, Continue without login)
 - `/app/frontend/app/login.tsx` - Email/password login form with error toast
 - `/app/frontend/app/signup.tsx` - Registration form with name/email/password
@@ -50,34 +50,40 @@ POST /api/auth/mobile/logout-all  → All devices
 
 ### Implementation Files
 - `authStore.ts` - Token storage with SecureStore/localStorage
-- `authService.ts` - Mobile auth API methods (mobileLogin, mobileRegister, mobileCheckAuth, mobileLogout)
+- `authService.ts` - Mobile auth API methods (unified for web and native)
 - `api.ts` - Auto-attaches Bearer token to all requests
 - Token persists across app restarts
 
 ## API Integrations
 
-### Countries API ✅
+### Countries API
 ```
 GET /api/countries?format=rich
 Response: [{ name, nativeName, code, flag, flagUrl, stationCount }]
 ```
 
-### Users API ✅
+### Users API
 ```
-GET /api/users/:userId/followers
-GET /api/users/:userId/following
-POST /api/user-engagement/follow/:userId (requires auth)
-POST /api/user-engagement/unfollow/:userId (requires auth)
+GET /api/user/followers/:userId
+GET /api/user/following/:userId
+POST /api/user/follow/:userId (requires auth)
+DELETE /api/user/unfollow/:userId (requires auth)
 ```
 
-### Favorites API ✅
+### Favorites API
 ```
-GET /api/user/favorites (requires auth)
+GET /api/user/favorites (requires auth - Bearer token)
 POST /api/user/favorites/:stationId (requires auth)
 DELETE /api/user/favorites/:stationId (requires auth)
 ```
 
-### Languages API ✅
+### Recently Played API
+```
+GET /api/recently-played (with auth returns user's history)
+POST /api/recently-played { stationId } (records a play)
+```
+
+### Languages API
 ```
 GET /api/translations/:lang
 ```
@@ -85,68 +91,41 @@ GET /api/translations/:lang
 ## Key Files
 - `/app/frontend/src/store/authStore.ts` - Auth state & token persistence
 - `/app/frontend/src/store/favoritesStore.ts` - Hybrid favorites (API + local)
-- `/app/frontend/src/services/authService.ts` - Auth API methods
+- `/app/frontend/src/store/recentlyPlayedStore.ts` - Recently played with API sync
+- `/app/frontend/src/store/playerStore.ts` - Player state, auto-adds to recently played
+- `/app/frontend/src/services/authService.ts` - Auth API methods (unified mobile login for all platforms)
 - `/app/frontend/src/services/socialAuthService.ts` - Social OAuth (Google/Apple/Facebook)
 - `/app/frontend/src/services/statsService.ts` - Listening statistics tracking
 - `/app/frontend/src/services/api.ts` - Auto Bearer token
 - `/app/frontend/app/(tabs)/profile.tsx` - Profile with guest state
-- `/app/frontend/app/auth-options.tsx` - Login options screen (with social buttons)
+- `/app/frontend/app/(tabs)/favorites.tsx` - Favorites list
+- `/app/frontend/app/(tabs)/records.tsx` - Recently played history
+- `/app/frontend/app/auth-options.tsx` - Login options screen
 - `/app/frontend/app/login.tsx` - Email login screen
-- `/app/frontend/app/signup.tsx` - Registration screen
-- `/app/frontend/app/forgot-password.tsx` - Password reset screen
-- `/app/frontend/app/statistics.tsx` - User listening stats (real data)
-- `/app/frontend/app/play-at-login.tsx` - Play at login preference
-- `/app/frontend/app/followers.tsx` - Real API
-- `/app/frontend/app/follows.tsx` - Real API
-- `/app/frontend/app/languages.tsx` - Languages list
+- `/app/frontend/app/followers.tsx` - Followers list with avatars
+- `/app/frontend/app/follows.tsx` - Following list with avatars
 
 ## Completed Tasks
 
-### February 2026 - Session 11 (Latest)
-- [x] **P0: Social Sign-In Integration** - Created socialAuthService.ts with Google/Apple/Facebook OAuth support
-- [x] Updated auth-options.tsx with social login handlers and loading states
-- [x] API Investigation completed: Backend supports cross-platform auth via `/api/auth/google`, `/api/auth/apple`, `/api/auth/facebook`
-- [x] **P1: Statistics Page** - Integrated real stats tracking via statsService.ts
-- [x] Created statsService.ts for tracking listening time, unique stations, and history
-- [x] Statistics page now shows real data: Total Listening, Music Played, Unique Stations
-- [x] **BUG FIX: Email Login** - Fixed CORS issue with web login
-  - Web now uses `/api/auth/login` (session-based, no credentials)
-  - Native mobile uses `/api/auth/mobile/login` (token-based)
-  - Login successfully tested with real credentials
+### February 2026 - Session 12 (Latest)
+- [x] **CRITICAL FIX: Auth Token for All Platforms** - Changed authService.ts to use mobile login endpoint for ALL platforms (web + native). This returns real JWT tokens that work with authenticated API endpoints
+- [x] **FIX: Favorites Loading** - Fixed favoritesStore.ts to use `/api/user/favorites` endpoint with Bearer token auth. Favorites now load correctly (39 stations for test user)
+- [x] **FIX: Followers/Following Avatars** - Updated followers.tsx and follows.tsx to properly handle avatar URLs with getAvatarUrl() helper
+- [x] **FEATURE: Recently Played API Sync** - Enhanced recentlyPlayedStore.ts to sync with API. When a station plays, it's added to recently played and synced to server
+- [x] **INTEGRATION: Player + Recently Played** - playerStore.ts now automatically calls recentlyPlayedStore.addStation() when a station starts playing
+
+### February 2026 - Session 11
+- [x] Social Sign-In Integration - Created socialAuthService.ts with Google/Apple/Facebook OAuth support
+- [x] Statistics Page - Integrated real stats tracking via statsService.ts
+- [x] BUG FIX: Email Login - Fixed CORS issue with web login
 
 ### February 2026 - Session 10
-- [x] Onboarding screens UI fix - Full screen background images with linear gradient
-- [x] Ubuntu font integration throughout the app (Regular, Medium, Bold, BoldItalic)
-- [x] Onboarding title: Ubuntu Bold 36px (Enjoy, Anywhere, Free)
-- [x] Onboarding subtitle: Ubuntu Medium 15px
-- [x] Login/Signup screens updated with Ubuntu fonts
-- [x] Full screen login/signup screens (not popup style)
-- [x] Linear gradient on onboarding: transparent to black at 29.42%
-- [x] Onboarding slide/fade animations added (react-native-reanimated)
-- [x] User Profile: Follow/Unfollow functionality integrated with live API
-- [x] User Profile: Real follower/following counts from API
-- [x] Followers/Following screens: API-connected unfollow functionality
-- [x] Car Mode bug fixed: Current station now always appears at center position
-- [x] Car Mode: Station list initialization improved
-
-### December 2025 - Session 9
-- [x] Added MegaRadio logo with arc effect image to auth-options.tsx (user-provided image)
-- [x] Updated mobileRegister to use web signup endpoint then auto-login
-- [x] All 9 auth feature tests passed (100% success rate)
-- [x] Login, Signup, Forgot Password screens fully functional
-- [x] Error toast displays correctly on invalid login
-
-### December 2025 - Session 8
-- [x] Created auth-options.tsx (main login selection screen)
-- [x] Redesigned login.tsx per Figma (email/password form with error toast)
-- [x] Redesigned signup.tsx per Figma (name/email/password form)
-- [x] Created forgot-password.tsx (password reset request)
-- [x] Added guest state to profile.tsx with Sign In/Create Account buttons
-- [x] Connected login to mobileLogin API endpoint
-- [x] Connected signup to mobileRegister API endpoint
-- [x] Fixed navigator SSR error in authStore.ts
-- [x] Fixed typo in forgot-password.tsx
-- [x] Updated icons from FontAwesome5 to Ionicons for web compatibility
+- [x] Onboarding screens UI fix
+- [x] Ubuntu font integration throughout the app
+- [x] Full screen login/signup screens
+- [x] Onboarding slide/fade animations
+- [x] User Profile: Follow/Unfollow functionality
+- [x] Car Mode bug fixed
 
 ### Previous Sessions
 - [x] Favorites page redesign with hybrid API/local storage
@@ -157,19 +136,11 @@ GET /api/translations/:lang
 
 ## Pending Tasks
 
-### P0 (Critical)
-- [x] Google Sign-In integration - DONE (socialAuthService.ts)
-- [x] Apple Sign-In integration - DONE (socialAuthService.ts)
-- [x] Facebook Sign-In integration - DONE (socialAuthService.ts)
-
 ### P1 (Important)
-- [x] Login/Signup screens (DONE)
-- [x] Statistics page implementation (DONE)
 - [ ] i18n integration using selected language
-- [ ] Profile page - connect real followers/following count from API
+- [ ] Avatar upload - Use POST /api/auth/avatar endpoint with expo-image-picker
 
 ### P2 (Nice to have)
-- [x] Play at Login preference (DONE - already working)
 - [ ] Skeleton loaders
 - [ ] Glow Effect visual fix (needs user feedback for specifics)
 - [ ] Animated equalizer enhancement
@@ -183,15 +154,17 @@ GET /api/translations/:lang
 
 ## Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
+- **Test User**: gey14853@outlook.com / Muhammed5858
 
 ## Test Reports
-- `/app/test_reports/iteration_7.json` - Auth UI complete test (100% pass rate, all 9 features)
-- `/app/test_reports/iteration_6.json` - Auth UI screens test (95% pass rate)
+- `/app/test_reports/iteration_8.json` - Profile features test (partial pass, identified auth token issue - NOW FIXED)
+- `/app/test_reports/iteration_7.json` - Auth UI complete test (100% pass rate)
 
 ## Notes
 - Mobile auth endpoints are deployed and working
 - API returns 401 for invalid credentials (correct behavior)
 - All auth screens follow Figma design specifications
+- Web now uses mobile login endpoint to get real JWT tokens
 
 ## Typography (Ubuntu Font Family)
 - **Ubuntu-Regular**: General body text, input fields
@@ -202,4 +175,4 @@ GET /api/translations/:lang
 Font files: `/app/frontend/assets/fonts/`
 
 ## Last Updated
-February 2026 - Session 10
+February 2026 - Session 12
