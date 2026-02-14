@@ -63,16 +63,29 @@ export default function LoginScreen() {
       
       // API returns { message: "Login successful", token, user } not { success: true }
       if (response && response.token && response.user) {
+        const apiUser = response.user;
+        
+        // Build full avatar URL if relative
+        let avatarUrl = apiUser.avatar || null;
+        if (avatarUrl && !avatarUrl.startsWith('http')) {
+          avatarUrl = `https://themegaradio.com${avatarUrl}`;
+        }
+        
         // Map API user format to our User type
         const user = {
-          id: response.user._id || response.user.id,
-          name: response.user.fullName || response.user.name,
-          email: response.user.email,
-          username: response.user.username,
-          avatar: response.user.avatar,
-          profilePhoto: response.user.avatar,
-          followersCount: response.user.followersCount,
-          followingCount: response.user.followingCount,
+          _id: apiUser._id,
+          id: apiUser._id,
+          name: apiUser.fullName || apiUser.name || '',
+          fullName: apiUser.fullName,
+          email: apiUser.email,
+          username: apiUser.username,
+          avatar: avatarUrl,
+          profilePhoto: avatarUrl,
+          followersCount: apiUser.followersCount || 0,
+          followingCount: apiUser.followingCount || 0,
+          isPublicProfile: apiUser.isPublicProfile,
+          favoriteStationsCount: apiUser.favoriteStationsCount || 0,
+          totalListeningTime: apiUser.totalListeningTime || 0,
         };
         await saveAuth(user as any, response.token);
         router.replace('/(tabs)');
