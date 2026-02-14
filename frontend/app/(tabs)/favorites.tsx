@@ -19,6 +19,7 @@ import { useRouter } from 'expo-router';
 import { useFavoritesStore, SortOption, ViewMode } from '../../src/store/favoritesStore';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
+import { useAuthStore } from '../../src/store/authStore';
 import type { Station } from '../../src/types';
 
 const FALLBACK_LOGO = 'https://themegaradio.com/static/default-station.png';
@@ -38,6 +39,7 @@ export default function FavoritesScreen() {
   const {
     favorites,
     isLoaded,
+    isLoading,
     loadFavorites,
     removeFavorite,
     sortOption,
@@ -47,6 +49,9 @@ export default function FavoritesScreen() {
     getSortedFavorites,
     updateCustomOrder,
   } = useFavoritesStore();
+
+  // Auth state
+  const { isAuthenticated, user } = useAuthStore();
 
   // Player
   const { playStation } = useAudioPlayer();
@@ -62,12 +67,11 @@ export default function FavoritesScreen() {
   // Animation for bottom sheet
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
-  // Load favorites on mount
+  // Load favorites on mount and when auth state changes
   useEffect(() => {
-    if (!isLoaded) {
-      loadFavorites();
-    }
-  }, [isLoaded, loadFavorites]);
+    console.log('[Favorites] useEffect triggered, isAuthenticated:', isAuthenticated, 'user:', user?._id, 'isLoaded:', isLoaded);
+    loadFavorites();
+  }, [isAuthenticated, user?._id]);
 
   // Get sorted favorites
   const sortedFavorites = getSortedFavorites();
