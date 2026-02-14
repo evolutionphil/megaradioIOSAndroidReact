@@ -98,7 +98,15 @@ GET /api/translations/:lang
 
 ## Completed Tasks
 
-### February 2026 - Session 10 (Latest)
+### February 2026 - Session 11 (Latest)
+- [x] **P0: Social Sign-In Integration** - Created socialAuthService.ts with Google/Apple/Facebook OAuth support
+- [x] Updated auth-options.tsx with social login handlers and loading states
+- [x] API Investigation completed: Backend supports cross-platform auth via `/api/auth/google`, `/api/auth/apple`, `/api/auth/facebook`
+- [x] **P1: Statistics Page** - Integrated real stats tracking via statsService.ts
+- [x] Created statsService.ts for tracking listening time, unique stations, and history
+- [x] Statistics page now shows real data: Total Listening, Music Played, Unique Stations
+
+### February 2026 - Session 10
 - [x] Onboarding screens UI fix - Full screen background images with linear gradient
 - [x] Ubuntu font integration throughout the app (Regular, Medium, Bold, BoldItalic)
 - [x] Onboarding title: Ubuntu Bold 36px (Enjoy, Anywhere, Free)
@@ -142,28 +150,28 @@ GET /api/translations/:lang
 ## Pending Tasks
 
 ### P0 (Critical)
-- [ ] Google Sign-In integration for mobile
-- [ ] Apple Sign-In integration
-- [ ] Facebook Sign-In integration
+- [x] Google Sign-In integration - DONE (socialAuthService.ts)
+- [x] Apple Sign-In integration - DONE (socialAuthService.ts)
+- [x] Facebook Sign-In integration - DONE (socialAuthService.ts)
 
 ### P1 (Important)
 - [x] Login/Signup screens (DONE)
-- [ ] Follow/Unfollow functionality (buttons exist, API not connected)
+- [x] Statistics page implementation (DONE)
 - [ ] i18n integration using selected language
-- [ ] Profile page real data (some mock data remains)
+- [ ] Profile page - connect real followers/following count from API
 
 ### P2 (Nice to have)
-- [ ] Statistics page implementation
-- [ ] Play at Login preference
+- [x] Play at Login preference (DONE - already working)
 - [ ] Skeleton loaders
-- [ ] Car Mode bug fix (station centering)
-- [ ] Glow Effect visual fix
+- [ ] Glow Effect visual fix (needs user feedback for specifics)
 - [ ] Animated equalizer enhancement
-- [ ] Sleep timer resume fix
+- [ ] Sleep timer bug (needs reproduction steps)
+- [ ] Vector icons web rendering fix
 
 ## Known Issues
+- Social OAuth requires development build for native (Google/Apple/Facebook Sign-In won't work in Expo Go)
 - TouchableOpacity click handlers may not work in Playwright automation (React Native Web limitation)
-- Close button on auth-options may need accessibilityRole for better web accessibility
+- Glow Effect and Sleep Timer bugs are blocked pending user feedback
 
 ## Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
