@@ -119,4 +119,15 @@ export const useRecentlyPlayedStore = create<RecentlyPlayedState>((set, get) => 
   },
 }));
 
+// Subscribe to auth changes and reload recently played when user logs in/out
+useAuthStore.subscribe((state, prevState) => {
+  // Reload when authentication status changes
+  if (state.isAuthenticated !== prevState.isAuthenticated) {
+    console.log('[RecentlyPlayedStore] Auth status changed, reloading...');
+    // Reset loaded state to allow fresh fetch
+    useRecentlyPlayedStore.setState({ loaded: false });
+    useRecentlyPlayedStore.getState().loadFromAPI();
+  }
+});
+
 export default useRecentlyPlayedStore;
