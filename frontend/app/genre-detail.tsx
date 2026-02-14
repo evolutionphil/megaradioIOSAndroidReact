@@ -251,7 +251,12 @@ export default function GenreDetailScreen() {
             >
               {viewMode === 'grid' ? (
                 <View style={styles.gridContainer}>
-                  {filteredStations.map(renderGridItem)}
+                  {/* Render items in rows of 3 */}
+                  {Array.from({ length: Math.ceil(filteredStations.length / GRID_COLUMNS) }).map((_, rowIndex) => (
+                    <View key={`row-${rowIndex}`} style={styles.gridRow}>
+                      {filteredStations.slice(rowIndex * GRID_COLUMNS, (rowIndex + 1) * GRID_COLUMNS).map(renderGridItem)}
+                    </View>
+                  ))}
                 </View>
               ) : (
                 <View style={styles.listContainer}>
