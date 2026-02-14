@@ -1,12 +1,11 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from './authStore';
+import api from '../services/api';
 import type { Station } from '../types';
 
 const STORAGE_KEY = 'megaradio_recently_played';
 const MAX_RECENT = 12;
-const API_BASE = 'https://themegaradio.com';
-const API_KEY = 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw';
 
 interface RecentlyPlayedState {
   stations: Station[];
@@ -61,6 +60,7 @@ export const useRecentlyPlayedStore = create<RecentlyPlayedState>((set, get) => 
   // Load recently played from API for authenticated users
   loadFromAPI: async () => {
     if (!isAuthenticated()) {
+      console.log('[RecentlyPlayedStore] Not authenticated, loading from local storage');
       await get().loadFromStorage();
       return;
     }
@@ -68,44 +68,32 @@ export const useRecentlyPlayedStore = create<RecentlyPlayedState>((set, get) => 
     set({ isLoading: true });
 
     try {
-      const { token } = useAuthStore.getState();
-      const headers: Record<string, string> = {
-        'X-API-Key': API_KEY,
-      };
+      console.log('[RecentlyPlayedStore] Loading from API with auth token...');
       
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`${API_BASE}/api/recently-played`, {
-        headers,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // API returns array of stations with playedAt field
-        const stations = Array.isArray(data) ? data : (data.stations || []);
-        
-        // Merge with local storage (API takes priority)
-        const localData = await AsyncStorage.getItem(STORAGE_KEY);
-        const localStations: Station[] = localData ? JSON.parse(localData) : [];
-        
-        // Merge: API stations + local-only stations
-        const apiIds = new Set(stations.map((s: Station) => s._id));
-        const localOnly = localStations.filter(s => !apiIds.has(s._id));
-        const merged = [...stations, ...localOnly].slice(0, MAX_RECENT);
-        
-        set({ stations: merged, loaded: true, isLoading: false });
-        
-        // Update local storage with merged data
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      } else {
-        // Fallback to local storage
-        await get().loadFromStorage();
-        set({ isLoading: false });
-      }
+      // Use api instance which automatically adds Authorization header via interceptor
+      const response = await api.get('/api/recently-played');
+      const data = response.data;
+      
+      // API returns array of stations with playedAt field
+      const stations = Array.isArray(data) ? data : (data.stations || []);
+      
+      console.log('[RecentlyPlayedStore] API returned', stations.length, 'stations');
+      
+      // Merge with local storage (API takes priority)
+      const localData = await AsyncStorage.getItem(STORAGE_KEY);
+      const localStations: Station[] = localData ? JSON.parse(localData) : [];
+      
+      // Merge: API stations + local-only stations
+      const apiIds = new Set(stations.map((s: Station) => s._id));
+      const localOnly = localStations.filter(s => !apiIds.has(s._id));
+      const merged = [...stations, ...localOnly].slice(0, MAX_RECENT);
+      
+      set({ stations: merged, loaded: true, isLoading: false });
+      
+      // Update local storage with merged data
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
     } catch (error) {
-      console.error('Error loading recently played from API:', error);
+      console.error('[RecentlyPlayedStore] Error loading from API:', error);
       await get().loadFromStorage();
       set({ isLoading: false });
     }
@@ -113,26 +101,20 @@ export const useRecentlyPlayedStore = create<RecentlyPlayedState>((set, get) => 
 
   // Sync a station play to API
   syncToAPI: async (stationId: string) => {
-    if (!isAuthenticated()) return;
+    if (!isAuthenticated()) {
+      console.log('[RecentlyPlayedStore] Not authenticated, skipping API sync');
+      return;
+    }
 
     try {
-      const { token } = useAuthStore.getState();
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'X-API-Key': API_KEY,
-      };
+      console.log('[RecentlyPlayedStore] Syncing station to API:', stationId);
       
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      await fetch(`${API_BASE}/api/recently-played`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ stationId }),
-      });
+      // Use api instance which automatically adds Authorization header via interceptor
+      await api.post('/api/recently-played', { stationId });
+      
+      console.log('[RecentlyPlayedStore] Successfully synced to API');
     } catch (error) {
-      console.error('Error syncing recently played to API:', error);
+      console.error('[RecentlyPlayedStore] Error syncing to API:', error);
     }
   },
 }));
