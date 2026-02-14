@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
+  Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
+import socialAuthService, { SocialProvider } from '../src/services/socialAuthService';
+import { useAuthStore } from '../src/store/authStore';
 
 // Auth button icons from assets
 const APPLE_ICON = require('../assets/icons/apple.png');
@@ -22,18 +27,64 @@ const MEGA_LOGO_ARC = require('../assets/images/mega-logo-arc.png');
 
 export default function AuthOptionsScreen() {
   const router = useRouter();
+  const { saveAuth } = useAuthStore();
+  const [loadingProvider, setLoadingProvider] = useState<SocialProvider | null>(null);
 
-  const handleAppleLogin = () => {
-    console.log('Apple login pressed');
+  const showError = (message: string) => {
+    if (Platform.OS === 'web') {
+      alert(message);
+    } else {
+      Alert.alert('Giriş Hatası', message);
+    }
   };
 
-  const handleFacebookLogin = () => {
-    console.log('Facebook login pressed');
+  const handleSocialLogin = async (provider: SocialProvider) => {
+    setLoadingProvider(provider);
+    
+    try {
+      let result;
+      
+      switch (provider) {
+        case 'google':
+          result = await socialAuthService.signInWithGoogle();
+          break;
+        case 'apple':
+          result = await socialAuthService.signInWithApple();
+          break;
+        case 'facebook':
+          result = await socialAuthService.signInWithFacebook();
+          break;
+      }
+      
+      if (result.success && result.token && result.user) {
+        // Save auth and navigate to home
+        await saveAuth(
+          {
+            id: result.user.id,
+            email: result.user.email,
+            name: result.user.name,
+            avatar: result.user.avatar,
+          } as any,
+          result.token
+        );
+        router.replace('/(tabs)');
+      } else if (result.error === 'Authentication cancelled') {
+        // User cancelled - do nothing
+        console.log('User cancelled authentication');
+      } else {
+        showError(result.error || 'Giriş başarısız oldu');
+      }
+    } catch (error: any) {
+      console.error(`${provider} login error:`, error);
+      showError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setLoadingProvider(null);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google login pressed');
-  };
+  const handleAppleLogin = () => handleSocialLogin('apple');
+  const handleFacebookLogin = () => handleSocialLogin('facebook');
+  const handleGoogleLogin = () => handleSocialLogin('google');
 
   const handleMailLogin = () => {
     router.push('/login');
@@ -46,6 +97,8 @@ export default function AuthOptionsScreen() {
   const handleClose = () => {
     router.back();
   };
+
+  const isLoading = loadingProvider !== null;
 
   return (
     <View style={styles.container}>
