@@ -130,7 +130,7 @@ export default function FollowsScreen() {
   };
 
   const renderItem = ({ item }: { item: Following }) => (
-    <View style={styles.row} key={item._id}>
+    <View style={styles.row}>
       <TouchableOpacity 
         style={styles.userInfo}
         onPress={() => navigateToProfile(item)}
