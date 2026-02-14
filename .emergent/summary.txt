@@ -1,160 +1,177 @@
 <analysis>**original_problem_statement:**
-The user wants to build a production-ready mobile radio streaming app called MegaRadio using React Native with Expo. The user's primary and most critical requirement is that the application's UI must be a pixel-perfect implementation of the Figma designs they provide. The backend API is available at .
+The user wants to build a production-ready mobile radio streaming app called MegaRadio using React Native with Expo. The user's primary and most critical requirement is that the application's UI must be a pixel-perfect implementation of the Figma designs they provide.
 
-The current focus is on building UI components as requested by the user, including a complete token-based authentication flow (Login, Signup, Forgot Password), an animated splash screen, and a set of onboarding screens to be shown on first launch.
+The initial scope included implementing a token-based authentication flow, an animated splash screen, and a set of onboarding screens. The scope has since expanded to include a global font update, UI animations, and social login integrations. The backend API is available at .
 
 **PRODUCT REQUIREMENTS:**
 - **Role:** Senior React Native + Expo Architect.
 - **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, , .
 - **Core Features:**
     - **UI:** A pixel-perfect implementation of provided Figma designs.
+    - **Font:** The entire application must use the  font family.
     - **Streaming:** Robust in-app playback.
     - **User Features:** Favorites, Recently Played, Profile (Followers/Following).
-- **Authentication:** All API requests must include . A token-based user authentication system is now implemented.
+    - **Authentication:** All API requests must include . A token-based user authentication system is in place, and the user has requested Social Sign-In (Google/Apple/Facebook) and wants to ensure authentication works across all platforms (web, mobile, TV).
+- **Design:** Login and Onboarding screens must be full-screen, not pop-ups. Onboarding screens should have animated transitions.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application has a fully functional token-based authentication flow (Login, Signup, Forgot Password) that has been connected to the backend and verified by the testing agent. Several UI adjustments have been completed based on specific user feedback for the auth and profile screens.
+The application has a 3-screen onboarding flow that is displayed on the first launch. The UI has been updated to meet the user's design specifications, including full-screen background images, a linear gradient overlay, and animated slide/fade transitions between screens.
 
-A complex, fully animated splash screen has been created using  and is displayed for 2.8 seconds on app startup. This was built from separate image assets (logo, circles, dots pattern) to allow for individual animations (pulse, fade, wave), as requested by the user.
+A global font theme has been implemented, ensuring the  font family is used across the application, specifically in the onboarding, login, and signup screens.
+
+The Follow/Unfollow functionality has been implemented on the user profile page (), allowing a user to follow or unfollow another user.
+
+A critical bug in Car Mode has been fixed, ensuring the currently playing station is always correctly displayed when entering this mode.
 
 **Last working item**:
-- **Last item agent was working**: The user requested the creation of a set of onboarding screens that must appear after the splash screen and only on the first launch of the application. The user provided an image for the first onboarding screen. The agent acknowledged the request and was preparing to download the assets and begin implementation.
-- **Status**: NOT STARTED
-- **Agent Testing Done**: N
-- **Which testing method agent to use?**: screenshot tool (to verify UI) and manual testing (to verify the show once logic using ).
+- **Last item agent was working**: The user asked if the backend API supports cross-platform authentication (i.e., a user account created on one platform is accessible on all others). The agent was in the process of investigating the API documentation at  to answer this question. This is a prerequisite for implementing the P0 social login task.
+- **Status**: IN PROGRESS
+- **Agent Testing Done**: N/A
+- **Which testing method agent to use?**: manual testing by curl (to test API endpoints if needed after investigation).
 - **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Car Mode Incorrect Station Logic (P1)**: Car Mode shows the wrong station on entry; it doesn't center the currently playing station.
-- **Issue 2: Glow Effect Incorrect (P1)**: The Glow effect is visually incorrect, appearing as a solid shape instead of a soft glow.
-- **Issue 3: Static Equalizer (P2)**: The equalizer on the player screen is static.
-- **Issue 4: Sleep Timer Bug (P2)**: The sleep timer does not resume playback correctly after being stopped.
+- **Issue 1: Investigate API for Cross-Platform Authentication (P0)**
+- **Issue 2: Glow Effect Incorrect (P1)**
+- **Issue 3: Static Equalizer (P2)**
+- **Issue 4: Sleep Timer Bug (P2)**
+- **Issue 5: Vector Icon Rendering on Web (P2)**
 
 **Issues Detail**:
-- **Issue 1: Car Mode Incorrect Station Logic**
-    - **Attempted fixes**: None in this session.
-    - **Next debug checklist**: Investigate the logic in the Car Mode component that determines which station to display upon entry. Check how the currently playing station state is being passed to and used by this component.
-    - **Why fix this issue and what will be achieved with the fix?**: Provides a seamless user experience in Car Mode.
-    - **Status**: NOT STARTED
+- **Issue 1: Investigate API for Cross-Platform Authentication**
+    - **Attempted fixes**: The agent started to investigate the API documentation provided by the user.
+    - **Next debug checklist**:
+        1.  Complete the review of the API documentation at .
+        2.  Identify endpoints related to social login (, etc.) and standard JWT login.
+        3.  Determine if a single user identity is created regardless of the authentication method or platform.
+        4.  Report the findings to the user and confirm if the API supports their requirement or if backend changes are needed.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a mandatory investigation to unblock the P0 task of implementing social sign-ins.
+    - **Status**: IN PROGRESS
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Backend
+    - **Blocked on other issue**: None
+
+- **Issue 2: Glow Effect Incorrect**
+    - **Attempted fixes**: The agent viewed the  file but found no specific details about what is incorrect.
+    - **Next debug checklist**: Ask the user for specific details or a visual example of the expected glow effect versus the current one.
+    - **Why fix this issue and what will be achieved with the fix?**: To match the user's design requirements.
+    - **Status**: BLOCKED (needs user feedback)
     - **Is recurring issue?**: Y
     - **Should Test frontend/backend/both after fix?**: Frontend
-- **(Other issues repeat the pattern above)**
+
+- **Issue 3: Static Equalizer**
+    - **Status**: NOT STARTED
+
+- **Issue 4: Sleep Timer Bug**
+    - **Attempted fixes**: The agent investigated the code in  and  and found the implementation (/) to be logically correct.
+    - **Next debug checklist**: Ask the user for specific steps to reproduce the bug (e.g., The timer does not stop playback after 15 minutes, The UI does not update).
+    - **Why fix this issue and what will be achieved with the fix?**: To ensure the sleep timer feature is reliable for the user.
+    - **Status**: BLOCKED (needs user feedback)
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Frontend
+
+- **Issue 5: Vector Icon Rendering on Web**
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: Y
 
 **In progress Task List**:
-- **Task 1: Implement Onboarding Screens (P0)**
-    - **Description**: Build a multi-screen onboarding flow that appears after the splash screen. This flow must only be displayed the very first time a user opens the app.
-    - **Where to resume**:
-        1. Download the image assets provided by the user for the onboarding screens.
-        2. Create a new component (e.g., ) to manage the flow, likely using a  with  or a similar pager component.
-        3. Implement logic using  to set a flag (e.g., ) after the user finishes the flow.
-        4. Update  to conditionally render the  component based on the  flag after the splash screen finishes.
-    - **What will be achieved with this?**: A guided introduction for new users, improving the first-time user experience.
-    - **Status**: NOT STARTED
-    - **Should Test frontend/backend/both after fix?**: Frontend
+- There are no other in-progress tasks.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P0: Finalize Profile Sub-Screens**: Populate  with data and implement logic in .
--   **P1: Implement Follow/Unfollow Functionality**: Connect UI buttons to the live API endpoints.
+- **P0: Implement Google/Apple/Facebook Sign-In**: Blocked by the Investigate API issue. Once confirmed, this will require using the  endpoints.
+- **P1: Finalize Profile Sub-Screens**: Populate  with data and implement logic in .
 
 **Future Tasks:**
--   Integrate  for full internationalization.
--   Add skeleton loaders for data-fetching states.
--   Implement Google Sign-In using the  endpoint.
+- Integrate  for full internationalization.
+- Add skeleton loaders for data-fetching states.
 
 **Completed work in this session**
-- **Full Authentication Flow (DONE)**: The entire mobile authentication system (Login, Signup, Forgot Password) was connected to the backend API and fully tested. This included debugging an incorrect registration endpoint () and replacing it with the correct one ().
-- **Animated Splash Screen (DONE)**: Created a complex animated splash screen () with pulsing circles, a scaling logo, and a waving dots pattern, exactly matching user specifications.
-- **UI Adjustments (DONE)**:
-    - **Auth Options**: Replaced the old logo with a new, larger, and repositioned image.
-    - **Profile Page**: Updated the guest user view by changing button text (Sign In / Sign Up) and removing redundant elements.
-    - **Signup Page**: Made the title bold and perfectly centered the password hint text according to the user's screenshot.
+- **Onboarding UI Overhaul (DONE)**: The onboarding screens were redesigned with full-screen background images and a linear gradient overlay as per user request in .
+- **Global Font Integration (DONE)**: The  font was integrated application-wide by updating the theme file at  and applying it to components like  and .
+- **Onboarding Animations (DONE)**: Fade/slide animations were added to the onboarding screens using  in .
+- **Follow/Unfollow Functionality (DONE)**: A follow/unfollow button and associated logic were added to the user profile page in .
+- **Car Mode Bug Fix (DONE)**: Fixed the logic in  to ensure the currently playing station is always displayed first.
+- **PRD.md Updates (DONE)**: The product requirements document was updated to reflect the completed tasks.
 
 **Earlier issues found/mentioned but not fixed**
-- **Issue 1: Vector Icon Rendering on Web**
-    - **Debug checklist**: The root cause of  not rendering on the web platform was never identified. The workaround was to use local image assets for all icons.
-    - **Why to solve this issue and what will be achieved with this?**: To enable the use of a standard, scalable icon library and avoid managing a large number of individual image files.
-    - **Should Test frontend/backend/both after fix?**: Frontend
-    - **Is recurring issue?**: Y
+- **Issue 1: Glow Effect Incorrect**: Skipped due to a lack of specific details from the user.
+- **Issue 2: Static Equalizer**: Not started.
+- **Issue 3: Sleep Timer Bug**: Investigated, but the implementation seems correct. Blocked on user feedback for reproduction steps.
+- **Issue 4: Vector Icon Rendering on Web**: A known issue from a previous session that has not been addressed.
 
 **Known issue recurrence from previous fork**
 - **Issue recurrence in previous fork**: Car Mode incorrect station logic and Glow Effect visual bug.
 - **Recurrence count**: 3
-- **Status**: NOT STARTED
+- **Status**: Car Mode: RESOLVED. Glow Effect: NOT STARTED.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Animated UI**: Extensive use of  to create complex, performant animations for the splash screen. The next agent should be comfortable with this library for the onboarding transitions.
--   **First-Launch Logic**: The upcoming task requires using  to persist a state flag () across app sessions to control the visibility of the onboarding flow.
+- **Expo Router**: Used for file-based routing.
+- **react-native-reanimated**: Implemented for fade/slide animations on the onboarding screens.
+- **Global Theming**: A central theme file () was updated to manage application-wide font styles.
+- **State Management (Zustand)**: Used for managing player state and sleep timer logic.
+- **Cross-Platform Persistence**:  /  abstraction via .
 
 **key DB schema**
 - No changes to the database schema in this session.
 
 **changes in tech stack**
-- No changes to the tech stack.  was used but was already a dependency.
+- No new dependencies were added.  was utilized from the existing .
 
 **All files of reference**
--    (New animated splash screen)
--    (Modified to orchestrate splash and main app)
--    (Modified for UI update)
--    (Modified for UI update)
--    (Modified for UI update)
--    (Modified to use correct signup endpoint)
-
-**Areas that need refactoring**:
-- The state management in  (e.g., ) is becoming complex. As the onboarding flow logic is added, consider abstracting this app state (e.g., , ) into a dedicated context provider or a Zustand store to keep the root layout component clean.
-
-**key api endpoints**
--    (Verified)
--    (Verified, corrected from )
--   
--   
+- : Contains the UI and animation logic for the onboarding flow.
+- : Defines the global typography for the app.
+- : Implements the user profile view with follow/unfollow logic.
+- : Contains the fix for the station logic bug.
+- : The API documentation currently under investigation.
 
 **Critical Info for New Agent**
--   **Immediate Task**: Your highest priority is to build the onboarding flow. It must appear after the animated splash screen and only on the first app launch. Use  to manage this show once state.
--   **User Language is Turkish**: The user communicates exclusively in Turkish. You **must** respond in Turkish.
--   **Animation is Expected**: The user requested detailed animations for the splash screen. Expect similar requirements for transitions in the onboarding flow.
--   **Pixel-Perfect from Images**: All UI work is driven by images provided by the user. Adhere to them strictly.
+- **Immediate Task**: Your first priority is to complete the investigation of the API documentation at . You need to determine if the API supports a unified user identity across different platforms and login methods (JWT, Social). Report your findings to the user in **Turkish**. This task blocks the user's P0 priority.
+- **User Language is Turkish**: You **must** respond to the user in Turkish.
+- **Blocked Issues**: The Glow Effect and Sleep Timer bugs are blocked pending more specific details from the user. After you report on the API investigation, you should ask the user for clarification on these items so you can address them.
+- **Priorities**: After the API investigation, the user's priorities are:
+    1.  **P0:** Implement Google/Apple/Facebook Sign-In.
+    2.  **P1:** Populate profile sub-screens (, ) with real data.
+    3.  **P2:** Fix the remaining bugs (Glow Effect, Equalizer, Sleep Timer).
 
 **documents and test reports created in this job**
--    (Updated)
--    (New report from testing the full auth flow)
+-  was updated.
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **User (LATEST):** Requested onboarding screens to appear after the splash screen, only on first launch, and provided an image for the first screen. **Status: Pending (This is the next task).**
--   **User:** Requested the splash screen be animated with separate, moving parts (logo, pulsing circles, waving dots) and provided the necessary image assets. **Status: Completed.**
--   **User:** Requested the initial static splash screen. **Status: Completed.**
--   **User:** Requested the Password must be at least 6 characters text on the signup page be centered like in an image provided. **Status: Completed.**
--   **User:** Pointed out UI issues on the signup page (title not bold, hint text misaligned). **Status: Completed.**
--   **User:** Requested UI changes to the  screen (make logo bigger, move it down) and the guest  screen (change button text, remove elements). **Status: Completed.**
--   **User:** Provided the new logo/arc image for the  page. **Status: Completed.**
+- **User (LATEST):** Asked if the API supports cross-platform authentication (same account for web/mobile/TV) and provided a link to the API documentation for investigation. **Status: IN PROGRESS.**
+- **User:** Requested animations for onboarding screens and approved the plan to work on a prioritized list of features/bugs (Social login, profile data, other bugs). **Status: Partially Completed (Animation done, rest are pending).**
+- **User:** Provided specific font requirements (, weights, sizes) and confirmed that login/auth screens must be full-screen. **Status: Completed.**
 
 **Project Health Check:**
--   **Broken:**
-    -   Older, unaddressed bugs remain: Car Mode station logic, incorrect Glow effect, static equalizer, and sleep timer issue.
--   **Mocked:**
-    -   The  and  profile sub-screens are still placeholders.
-    -   Follow/Unfollow functionality is not implemented.
+- **Broken:**
+    - Glow Effect is visually incorrect.
+    - Equalizer is static.
+    - Sleep Timer may have a bug.
+    - Vector Icons do not render correctly on the web.
+- **Mocked:**
+    - Profile sub-screens (, ).
 
 **3rd Party Integrations**
--   **MegaRadio API:** 
--   **expo-av:** Audio playback.
--   **@react-native-async-storage/async-storage:** Client-side data persistence.
--   **Zustand & React Query:** State management and data fetching.
--   **react-native-reanimated:** For animations.
+- **MegaRadio API:** 
+- **expo-av:** Audio playback.
+- **@react-native-async-storage/async-storage:** Client-side data persistence.
+- **Zustand & React Query:** State management and data fetching.
+- **react-native-reanimated:** For animations.
 
 **Testing status**
--   **Testing agent used after significant changes:** YES, successfully used to validate the entire authentication flow end-to-end after a critical endpoint fix.
--   **Troubleshoot agent used after agent stuck in loop:** NO.
--   **Test files created:** None.
--   **Known regressions:** None from the work completed in this session.
+- **Testing agent used after significant changes:** NO
+- **Troubleshoot agent used after agent stuck in loop:** NO
+- **Test files created:** None
+- **Known regressions:** None
 
 **Credentials to test flow:**
--   **API Key**:  (to be sent in the  header for all backend requests).
+- **API Key**:  (to be sent in the  header for all backend requests).
 
 **What agent forgot to execute**
-- The agent successfully completed all user requests from this session. The only remaining items are pre-existing bugs and features from the backlog, and the new onboarding task that was just assigned.</analysis>
+- The agent was interrupted while investigating the API documentation and has not yet provided an answer to the user's critical question about cross-platform authentication.
+- The agent did not ask the user for more details on the Glow Effect and Sleep Timer bugs after identifying them as blocked, which would be a necessary step to unblock them.</analysis>
