@@ -20,12 +20,14 @@ import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useLocationStore } from '../../src/store/locationStore';
+import { useAuthStore } from '../../src/store/authStore';
 import type { Station, Genre } from '../../src/types';
 
 export default function DiscoverScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
+  const { isAuthenticated } = useAuthStore();
 
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
   const { data: stationsData, isLoading: stationsLoading, refetch: refetchStations } = useStations({
@@ -63,6 +65,10 @@ export default function DiscoverScreen() {
 
   const handleSearchPress = () => {
     router.push('/search');
+  };
+
+  const handleNotificationsPress = () => {
+    router.push('/notifications');
   };
 
   const isStationPlaying = (station: Station) => {
