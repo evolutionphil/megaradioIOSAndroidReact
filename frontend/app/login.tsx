@@ -91,10 +91,11 @@ export default function LoginScreen() {
         };
         await saveAuth(user as any, response.token);
         
-        // Use setTimeout to ensure navigation happens after state update
-        // Replace the entire stack with tabs
+        // Use router.replace with dismissAll for clean navigation
+        // This ensures the login screen is completely removed from the stack
         setTimeout(() => {
-          router.replace('/(tabs)');
+          // Use replace to navigate and clear the auth stack
+          router.replace('/');
         }, 100);
       } else {
         console.error('Invalid response structure:', response);
