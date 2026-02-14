@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import authService from '../src/services/authService';
 import { useAuthStore } from '../src/store/authStore';
@@ -25,6 +26,7 @@ const PERSON_ICON = require('../assets/icons/person-input.png');
 
 export default function SignupScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { saveAuth } = useAuthStore();
 
   const [name, setName] = useState('');
@@ -36,22 +38,22 @@ export default function SignupScreen() {
 
   const validateForm = () => {
     if (!name.trim()) {
-      setError('Please enter your name');
+      setError(t('please_enter_name', 'Please enter your name'));
       setHasError(true);
       return false;
     }
     if (!email.trim()) {
-      setError('Please enter your email');
+      setError(t('please_enter_email', 'Please enter your email'));
       setHasError(true);
       return false;
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address');
+      setError(t('invalid_email', 'Please enter a valid email address'));
       setHasError(true);
       return false;
     }
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('password_hint', 'Password must be at least 6 characters'));
       setHasError(true);
       return false;
     }
