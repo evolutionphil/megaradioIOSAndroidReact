@@ -1,9 +1,11 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform, Image } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
+import { useLanguageStore } from '../../src/store/languageStore';
 
 // Tab bar height constant for MiniPlayer positioning
 export const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
@@ -26,7 +28,9 @@ const TabIcon = ({ iconUrl, size = 24 }: { iconUrl: string; size?: number }) => 
 );
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const { isMiniPlayerVisible, currentStation } = usePlayerStore();
+  const { languageVersion } = useLanguageStore(); // Subscribe to language changes
   const showMiniPlayer = isMiniPlayerVisible && currentStation;
 
   return (
@@ -48,7 +52,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Discover',
+            title: t('tab_discover', 'Discover'),
             tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.discover} size={28} />,
           }}
         />
@@ -61,21 +65,21 @@ export default function TabLayout() {
         <Tabs.Screen
           name="favorites"
           options={{
-            title: 'Favorites',
+            title: t('tab_favorites', 'Favorites'),
             tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.favorites} size={24} />,
           }}
         />
         <Tabs.Screen
           name="profile"
           options={{
-            title: 'Profile',
+            title: t('tab_profile', 'Profile'),
             tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.profile} size={28} />,
           }}
         />
         <Tabs.Screen
           name="records"
           options={{
-            title: 'Records',
+            title: t('tab_records', 'Records'),
             tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.records} size={28} />,
           }}
         />
