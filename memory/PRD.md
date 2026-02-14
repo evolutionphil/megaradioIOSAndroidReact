@@ -129,15 +129,31 @@ POST /api/auth/mobile/logout-all  → All devices
   - SEARCH: 2 minutes
   - COMMUNITY_FAVORITES/PUBLIC_PROFILES: 5 minutes
 - ✅ Added getStation service method for single station fetching
+- ✅ **P0: User Profile Favorites Pagination** - Implemented "Daha Fazla Gör" button showing first 29 stations, with load more functionality
+  - File: `/app/frontend/app/user-profile.tsx`
+  - STATIONS_PER_PAGE = 29
+  - handleLoadMore function for loading additional stations
+- ✅ **P0: Follow/Unfollow Button** - Already implemented on user-profile.tsx header with API integration
+  - Calls `/api/user-engagement/follow/{userId}` and `/api/user-engagement/unfollow/{userId}`
+  - Shows "Follow" or "Following" based on state
+- ✅ **P1: Notifications Page** - Created new notifications page matching Figma design
+  - File: `/app/frontend/app/notifications.tsx`
+  - Design: Back button + "Notifications" title, avatar/logo + notification text + time
+  - API: `/api/user/notifications`
+  - Types: follow notifications, new_station notifications
+- ✅ **P1: Notifications Icon on Discover** - Added notification icon button for authenticated users
+  - File: `/app/frontend/app/(tabs)/discover.tsx`
+  - Only visible when user is logged in
+- ✅ **P1: Nearby Stations with GPS** - Verified API usage
+  - Uses `/api/stations/nearby?lat={...}&lng={...}` endpoint
+  - GPS coordinates fetched via expo-location
+  - Displayed in "Radios Near You" section on home page
 
 ### P1: Recently Played Sync
 - Implementation exists in `recentlyPlayedStore.ts`
 - POST `/api/recently-played` called on station play
 - GET `/api/recently-played` called on app load
 - **Note:** Sync requires user authentication. Guest users only get local storage.
-
-### P2: Follow/Unfollow Button on Profile
-- Implemented on user-profile.tsx with follow/unfollow API calls
 
 ### P2: Visual Bugs
 - Glow Effect incorrect
@@ -178,6 +194,10 @@ Response: [Station[], max 12 items, newest first]
 - `/app/frontend/src/store/recentlyPlayedStore.ts` - Recently played state
 - `/app/frontend/src/store/playerStore.ts` - Audio player state
 - `/app/frontend/app/genres.tsx` - Genres list page with UI alignment fixes
+- `/app/frontend/app/user-profile.tsx` - User profile with favorites pagination and follow button
+- `/app/frontend/app/notifications.tsx` - Notifications page (Figma design)
+- `/app/frontend/app/(tabs)/discover.tsx` - Discover page with notifications icon
+- `/app/frontend/src/store/locationStore.ts` - GPS location handling for nearby stations
 
 ## Test Credentials
 - Email: gey14853@outlook.com
