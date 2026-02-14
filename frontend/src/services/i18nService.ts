@@ -236,6 +236,216 @@ let translationsCache: Record<string, Record<string, string>> = {
   en: defaultTranslations,
 };
 
+// Turkish translations for fast startup (most requested language)
+const turkishTranslations: Record<string, string> = {
+  // Tab bar navigation
+  tab_discover: 'Keşfet',
+  tab_favorites: 'Favoriler',
+  tab_profile: 'Profil',
+  tab_records: 'Kayıtlar',
+  
+  // Navigation
+  nav_home: 'Ana Sayfa',
+  nav_for_you: 'Sizin İçin',
+  nav_genres: 'Türler',
+  nav_about: 'Hakkında',
+  nav_contact: 'İletişim',
+  nav_apps: 'Uygulamalar',
+  nav_feedback: 'Geri Bildirim',
+  nav_discover: 'Keşfet',
+  nav_favorites: 'Favoriler',
+  nav_settings: 'Ayarlar',
+  
+  // Homepage
+  homepage_see_all: 'Tümünü Gör',
+  homepage_community_favorites: 'Topluluk Favorileri',
+  homepage_genres: 'Türler',
+  homepage_popular_stations: 'Popüler İstasyonlar',
+  homepage_stations_near_you: 'Yakınınızdaki İstasyonlar',
+  homepage_favorites_from_users: 'Kullanıcı Favorileri',
+  homepage_all_stations: 'Tüm İstasyonlar',
+  homepage_recently_played: 'Son Çalınanlar',
+  welcome_back: 'Tekrar Hoş Geldiniz',
+  
+  // Common
+  loading: 'Yükleniyor...',
+  search: 'Ara',
+  search_placeholder: 'Ara...',
+  search_stations: 'İstasyonları ara...',
+  search_radio_user: 'Radyo, kullanıcı ara',
+  all: 'Tümü',
+  see_more: 'Daha Fazla',
+  cancel: 'İptal',
+  done: 'Tamam',
+  save: 'Kaydet',
+  ok: 'Tamam',
+  back: 'Geri',
+  
+  // Auth
+  login: 'Giriş Yap',
+  log_in: 'Giriş Yap',
+  sign_up: 'Kaydol',
+  signup: 'Kaydol',
+  forgot_password: 'Şifrenizi mi unuttunuz?',
+  email: 'E-Posta',
+  email_placeholder: 'E-Posta',
+  password: 'Şifre',
+  password_placeholder: 'Şifre',
+  your_name: 'Adınız',
+  logging_in: 'Giriş yapılıyor...',
+  auth_create_account: 'Hesap Oluştur',
+  auth_continue_with_google: 'Google ile Devam Et',
+  auth_continue_with_apple: 'Apple ile Devam Et',
+  auth_continue_with_facebook: 'Facebook ile Devam Et',
+  auth_or_with_email: 'Veya e-posta ile devam et',
+  dont_have_account: 'Hesabınız yok mu?',
+  already_have_account: 'Zaten hesabınız var mı?',
+  password_hint: 'Şifre en az 6 karakter olmalıdır.',
+  wrong_credentials: 'E-posta veya şifre yanlış! Tekrar deneyin',
+  please_enter_email: 'Lütfen e-postanızı girin',
+  please_enter_password: 'Lütfen şifrenizi girin',
+  please_enter_name: 'Lütfen adınızı girin',
+  invalid_email: 'Lütfen geçerli bir e-posta adresi girin',
+  
+  // Profile
+  profile_followers: 'Takipçiler',
+  profile_following: 'Takip Edilenler',
+  profile_favorites: 'Favoriler',
+  profile_login_required: 'Bu profili görüntülemek için giriş yapın',
+  followers: 'Takipçiler',
+  follows: 'Takip Edilenler',
+  guest: 'Misafir',
+  sign_in_prompt: 'Profilinize, favorilerinize ve daha fazlasına erişmek için giriş yapın',
+  sign_in_sign_up: 'Giriş Yap / Kaydol',
+  
+  // Profile Settings
+  settings: 'Ayarlar',
+  play_at_login: 'Girişte Çal',
+  last_played: 'Son Çalınan',
+  country: 'Ülke',
+  language: 'Dil',
+  statistics: 'İstatistikler',
+  account: 'Hesap',
+  notifications_setting: 'Bildirimler',
+  private_profile: 'Gizli Profil',
+  about: 'Hakkında',
+  mega_radio: 'Mega Radio',
+  privacy_policy: 'Gizlilik Politikası',
+  terms_conditions: 'Şartlar ve Koşullar',
+  social_media: 'Sosyal Medya',
+  log_out: 'Çıkış Yap',
+  name: 'İsim',
+  change_name: 'İsminizi değiştirin',
+  change_email: 'E-postanızı değiştirin',
+  change_password: 'Şifrenizi değiştirin',
+  current_password: 'Mevcut şifre',
+  new_password: 'Yeni şifre',
+  confirm_password: 'Yeni şifreyi onayla',
+  verification_sent: 'Doğrulama e-postası gönderdik!',
+  check_mail: 'Lütfen e-postanızı kontrol edin',
+  password_changed: 'Şifreniz değiştirildi!',
+  
+  // Stations
+  stations: 'İstasyonlar',
+  popular_stations: 'Popüler İstasyonlar',
+  stations_near_you: 'Yakınınızdaki İstasyonlar',
+  no_stations_found: 'İstasyon bulunamadı.',
+  all_stations: 'Tüm İstasyonlar',
+  
+  // Genres
+  genres: 'Türler',
+  genres_description: 'Müzik türüne göre istasyonları keşfedin',
+  
+  // Player
+  now_playing: 'Şu An Çalıyor',
+  recently_played: 'Son Çalınanlar',
+  similar_stations: 'Benzer İstasyonlar',
+  similar_radios: 'Benzer Radyolar',
+  live_radio: 'Canlı Radyo',
+  
+  // Notifications
+  notifications: 'Bildirimler',
+  no_notifications: 'Bildirim yok',
+  notifications_empty_text: 'Yeni takipçiler ve istasyonlar hakkında bildirimleri burada göreceksiniz.',
+  
+  // Users
+  users: 'Kullanıcılar',
+  follow: 'Takip Et',
+  unfollow: 'Takibi Bırak',
+  following: 'Takip Ediliyor',
+  radios: 'Radyolar',
+  no_users: 'Kullanıcı bulunamadı',
+  no_public_profiles: 'Herkese açık profil yok',
+  try_different_search: 'Farklı bir arama terimi deneyin',
+  
+  // Discover
+  discover: 'Keşfet',
+  discover_subtitle: 'Radyo dünyasını keşfedin',
+  browse_genres: 'Türlere Göz At',
+  top_stations: 'En İyi İstasyonlar',
+  discover_all_stations: 'Tüm istasyonları keşfet',
+  
+  // Favorites
+  favorites: 'Favoriler',
+  add_to_favorites: 'Favorilere Ekle',
+  remove_from_favorites: 'Favorilerden Kaldır',
+  no_favorites_yet: 'Henüz favoriniz yok',
+  discover_stations_link: 'Yakınınızdaki istasyonları keşfedin!',
+  search_favorites: 'Favorilerde ara...',
+  no_stations_found_search: 'İstasyon bulunamadı',
+  
+  // Records
+  records: 'Kayıtlar',
+  
+  // Sort
+  sort_az: 'A\'dan Z\'ye',
+  sort_za: 'Z\'den A\'ya',
+  sort_newest_first: 'Yeniden Eskiye',
+  sort_oldest_first: 'Eskiden Yeniye',
+  sort_popular: 'Popüler',
+  popular: 'Popüler',
+  custom_order: 'Özel sıra',
+  grid: 'Izgara',
+  
+  // Countries
+  countries: 'Ülkeler',
+  all_countries: 'Tüm Ülkeler',
+  search_country: 'Ülke Ara',
+  
+  // Languages
+  languages: 'Diller',
+  select_language: 'Dil Seç',
+  language_changed: 'Dil değiştirildi',
+  no_results: 'Sonuç bulunamadı',
+  
+  // Errors
+  general_error: 'Hata',
+  general_error_message: 'Bir hata oluştu. Lütfen tekrar deneyin.',
+  
+  // Share
+  share: 'Paylaş',
+  copy_link: 'Bağlantıyı Kopyala',
+  
+  // Empty states
+  no_favorites: 'Henüz favori yok',
+  no_recently_played: 'Son çalınan istasyon yok',
+  enable_location: 'Yakındaki istasyonları görmek için konumu etkinleştirin',
+  
+  // Search filters
+  filter_all: 'Tümü',
+  filter_radios: 'Radyolar',
+  filter_genres: 'Türler',
+  filter_profiles: 'Profiller',
+  searching: 'Aranıyor...',
+  no_results_found: 'Sonuç bulunamadı!',
+  try_different_search_term: 'Farklı bir şey aramayı deneyin',
+  search_stations_title: 'İstasyonları Ara',
+  find_favorites: 'Favori radyo istasyonlarınızı, türleri ve kullanıcıları bulun',
+};
+
+// Pre-populate Turkish cache
+translationsCache['tr'] = turkishTranslations;
+
 // Fetch translations from API
 export const fetchTranslations = async (lang: string): Promise<Record<string, string>> => {
   // Return from cache if available
