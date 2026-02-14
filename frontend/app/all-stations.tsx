@@ -17,6 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
