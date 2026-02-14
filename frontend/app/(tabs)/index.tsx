@@ -600,6 +600,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: borderRadius.full,
+  },
   welcomeText: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
