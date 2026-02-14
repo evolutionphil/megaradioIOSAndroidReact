@@ -73,23 +73,21 @@ export default function AllStationsScreen() {
     }
   }, []);
 
-  // Map sortOption to API parameters
-  const getApiSort = () => {
+  // Map sortOption to API parameters - memoized to use in query key
+  const sortParams = useMemo(() => {
     switch (sortOption) {
-      case 'popular': return { sort: 'votes', order: 'desc' };
-      case 'newest': return { sort: 'createdAt', order: 'desc' };
-      case 'oldest': return { sort: 'createdAt', order: 'asc' };
-      case 'az': return { sort: 'name', order: 'asc' };
-      case 'za': return { sort: 'name', order: 'desc' };
-      default: return { sort: 'votes', order: 'desc' };
+      case 'popular': return { sort: 'votes' as const, order: 'desc' as const };
+      case 'newest': return { sort: 'createdAt' as const, order: 'desc' as const };
+      case 'oldest': return { sort: 'createdAt' as const, order: 'asc' as const };
+      case 'az': return { sort: 'name' as const, order: 'asc' as const };
+      case 'za': return { sort: 'name' as const, order: 'desc' as const };
+      default: return { sort: 'votes' as const, order: 'desc' as const };
     }
-  };
-
-  const apiSort = getApiSort();
+  }, [sortOption]);
 
   const { data, isLoading, refetch } = useStations({
-    sort: apiSort.sort,
-    order: apiSort.order as 'asc' | 'desc',
+    sort: sortParams.sort,
+    order: sortParams.order,
     limit: 100,
     genre: genreSlug || undefined,
     country: countryCode || undefined,
