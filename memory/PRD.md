@@ -52,6 +52,15 @@ POST /api/auth/mobile/logout-all  → All devices
   - Pink/magenta themed radio buttons per Figma design
   - Slide-up animation
 
+### Discover Page Genre Navigation Update (Feb 14, 2026)
+- Removed inline filtering behavior on Discover page
+- All genre interactions now navigate directly to dedicated pages:
+  - Genre chips (horizontal bar) → `/genre-detail?slug=xxx&name=xxx`
+  - Browse Genres cards → `/genre-detail?slug=xxx&name=xxx`
+  - "All" chip → `/all-stations`
+  - "See All" button → `/genres`
+- Discover page now shows "Top Stations" (general popular stations, not filtered)
+
 ### Pages Implemented
 - `/app/frontend/app/genres.tsx` - List all genres
 - `/app/frontend/app/all-stations.tsx` - All stations with search, sort, grid/list views
@@ -61,6 +70,8 @@ POST /api/auth/mobile/logout-all  → All devices
 - "See All" on Discover page → `/genres`
 - Genre item click → `/genre-detail?slug=xxx&name=xxx`
 - "See More" on Home page Top Stations → `/all-stations`
+- Genre chips on Discover → `/genre-detail?slug=xxx&name=xxx`
+- "All" chip on Discover → `/all-stations`
 
 ## In Progress / Pending Issues
 
