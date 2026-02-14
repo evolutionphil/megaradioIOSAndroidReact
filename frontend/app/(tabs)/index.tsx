@@ -495,7 +495,7 @@ export default function HomeScreen() {
                     />
                     <View style={styles.discoverableBannerContent}>
                       <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
-                      <Text style={styles.discoverableBannerSubtitle}>Discover all the stations</Text>
+                      <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover all the stations')}</Text>
                     </View>
                   </TouchableOpacity>
                 );
