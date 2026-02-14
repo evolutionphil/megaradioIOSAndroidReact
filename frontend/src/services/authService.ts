@@ -84,14 +84,27 @@ export const authService = {
   async mobileLogin(email: string, password: string): Promise<MobileLoginResponse> {
     const { deviceInfo } = useAuthStore.getState();
     
-    const response = await api.post(`${API_BASE}/api/auth/mobile/login`, {
-      email,
-      password,
-      deviceType: deviceInfo.deviceType,
-      deviceName: deviceInfo.deviceName,
+    // Use fetch directly for mobile login to avoid CORS issues
+    const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        deviceType: deviceInfo.deviceType,
+        deviceName: deviceInfo.deviceName,
+      }),
     });
     
-    return response.data;
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || 'Login failed');
+    }
+    
+    return response.json();
   },
 
   /**
