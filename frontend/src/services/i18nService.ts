@@ -307,6 +307,8 @@ export const initI18n = async (): Promise<void> => {
 // Change language
 export const changeLanguage = async (lang: string): Promise<void> => {
   try {
+    console.log('[i18n] Changing language to:', lang);
+    
     // Fetch translations for the new language
     const translations = await fetchTranslations(lang);
     
@@ -318,9 +320,19 @@ export const changeLanguage = async (lang: string): Promise<void> => {
     
     // Store preference
     await setStoredLanguage(lang);
+    
+    // Notify all listeners about the language change
+    notifyLanguageChange(lang);
+    
+    console.log('[i18n] Language changed successfully to:', lang);
   } catch (error) {
     console.error('[i18n] Failed to change language:', error);
   }
+};
+
+// Get current language
+export const getCurrentLanguage = (): string => {
+  return i18n.language || 'en';
 };
 
 // Get available languages from API
