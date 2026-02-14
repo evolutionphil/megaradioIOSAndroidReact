@@ -211,21 +211,17 @@ export default function GenreDetailScreen() {
             <View style={styles.headerActions}>
               <TouchableOpacity 
                 style={styles.headerButton}
-                onPress={() => setShowSortModal(true)}
+                onPress={() => setShowSortSheet(true)}
                 data-testid="sort-btn"
               >
                 <Ionicons name="filter" size={22} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.headerButton}
-                onPress={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                data-testid="view-toggle-btn"
+                onPress={() => router.push('/search')}
+                data-testid="search-btn"
               >
-                <Ionicons 
-                  name={viewMode === 'grid' ? 'list' : 'grid'} 
-                  size={22} 
-                  color={colors.text} 
-                />
+                <Ionicons name="search" size={22} color={colors.text} />
               </TouchableOpacity>
             </View>
           </View>
