@@ -208,12 +208,14 @@ export default function OnboardingScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
       
-      {/* Full screen background image */}
-      <Image 
-        source={currentItem.image} 
-        style={styles.backgroundImage} 
-        resizeMode="cover" 
-      />
+      {/* Full screen background image with animation */}
+      <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
+        <Image 
+          source={currentItem.image} 
+          style={styles.backgroundImage} 
+          resizeMode="cover" 
+        />
+      </Animated.View>
       
       {/* Skip button - positioned at top right */}
       <TouchableOpacity
@@ -231,8 +233,8 @@ export default function OnboardingScreen() {
         locations={[0, 0.2942]}
         style={styles.gradientOverlay}
       >
-        {/* Content section */}
-        <View style={styles.contentSection}>
+        {/* Content section with animation */}
+        <Animated.View style={[styles.contentSection, contentAnimatedStyle]}>
           {/* Title */}
           <Text style={styles.title}>{currentItem.title}</Text>
           
@@ -242,7 +244,7 @@ export default function OnboardingScreen() {
           {/* Pagination Dots */}
           <View style={styles.dotsContainer}>
             {ONBOARDING_DATA.map((_, i) => (
-              <View
+              <Animated.View
                 key={i}
                 style={[
                   styles.dot,
@@ -277,7 +279,7 @@ export default function OnboardingScreen() {
               </>
             )}
           </View>
-        </View>
+        </Animated.View>
       </LinearGradient>
     </View>
   );
