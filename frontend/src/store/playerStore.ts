@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Station, NowPlayingMetadata } from '../types';
+import { useRecentlyPlayedStore } from './recentlyPlayedStore';
 
 export type PlaybackState = 'idle' | 'loading' | 'playing' | 'paused' | 'buffering' | 'error';
 
@@ -44,12 +45,18 @@ const initialState = {
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   ...initialState,
 
-  setCurrentStation: (station) =>
+  setCurrentStation: (station) => {
     set({
       currentStation: station,
       isMiniPlayerVisible: station !== null,
       errorMessage: null,
-    }),
+    });
+    
+    // Add to recently played when station is set
+    if (station) {
+      useRecentlyPlayedStore.getState().addStation(station);
+    }
+  },
 
   setPlaybackState: (state) =>
     set({ playbackState: state }),
