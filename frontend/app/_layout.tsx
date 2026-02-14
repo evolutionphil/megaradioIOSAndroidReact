@@ -156,6 +156,8 @@ export default function RootLayout() {
             <Stack.Screen name="languages" options={{ headerShown: false }} />
             <Stack.Screen name="auth-options" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+            <Stack.Screen name="genres" options={{ headerShown: false }} />
+            <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
           </Stack>
           <RadioErrorModal />
         </View>
