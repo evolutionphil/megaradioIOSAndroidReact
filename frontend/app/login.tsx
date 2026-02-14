@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   errorToastText: {
+    fontFamily: 'Ubuntu-Medium',
     fontSize: typography.sizes.md,
-    fontWeight: '500',
     color: colors.text,
   },
   content: {
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: spacing.md,
     fontSize: typography.sizes.lg,
+    fontFamily: 'Ubuntu-Regular',
     color: '#1A1A1D',
   },
   loginButton: {
@@ -284,8 +285,8 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   loginButtonText: {
+    fontFamily: 'Ubuntu-Bold',
     fontSize: typography.sizes.lg,
-    fontWeight: '600',
     color: colors.text,
   },
   forgotPasswordButton: {
@@ -293,8 +294,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   forgotPasswordText: {
+    fontFamily: 'Ubuntu-Medium',
     fontSize: typography.sizes.md,
-    fontWeight: '500',
     color: colors.text,
     textDecorationLine: 'underline',
   },
@@ -303,8 +304,8 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   footerText: {
+    fontFamily: 'Ubuntu-Medium',
     fontSize: typography.sizes.md,
-    fontWeight: '500',
     color: colors.text,
     textDecorationLine: 'underline',
   },
