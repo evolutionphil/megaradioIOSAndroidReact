@@ -37,9 +37,10 @@ export default function GenreDetailScreen() {
   const screenWidth = windowWidth > 100 ? windowWidth : 375;
   const GRID_ITEM_WIDTH = Math.floor((screenWidth - 32 - 16) / GRID_COLUMNS);
 
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showSortModal, setShowSortModal] = useState(false);
+  const [sortOption, setSortOption] = useState<SortOption>('popular');
+  const [showSortSheet, setShowSortSheet] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   
@@ -52,10 +53,29 @@ export default function GenreDetailScreen() {
   const stations = data?.stations || [];
   const totalCount = data?.pagination?.total || stations.length;
 
+  // Sort stations based on selection
+  const sortedStations = useMemo(() => {
+    const sorted = [...stations];
+    switch (sortOption) {
+      case 'popular':
+        return sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+      case 'newest':
+        return sorted.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
+      case 'az':
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      case 'za':
+        return sorted.sort((a, b) => b.name.localeCompare(a.name));
+      default:
+        return sorted;
+    }
+  }, [stations, sortOption]);
+
   // Filter stations by search
   const filteredStations = useMemo(() => {
-    if (!searchQuery.trim()) return stations;
-    return stations.filter(s => 
+    if (!searchQuery.trim()) return sortedStations;
+    return sortedStations.filter(s => 
       s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.country?.toLowerCase().includes(searchQuery.toLowerCase())
     );
