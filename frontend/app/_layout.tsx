@@ -51,6 +51,7 @@ export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
+  const preloadStarted = useRef(false);
   
   const segments = useSegments();
   const navigationState = useRootNavigationState();
@@ -66,6 +67,17 @@ export default function RootLayout() {
     'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
+
+  // Start preloading essential data asynchronously (doesn't block UI)
+  useEffect(() => {
+    if (!preloadStarted.current) {
+      preloadStarted.current = true;
+      // Run preload in background without blocking
+      preloadEssentialData(queryClient).catch(err => {
+        console.log('[Layout] Preload error (non-blocking):', err);
+      });
+    }
+  }, []);
 
   // Check if navigation is ready
   useEffect(() => {
