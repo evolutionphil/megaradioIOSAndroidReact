@@ -18,11 +18,15 @@ import Animated, {
   withRepeat,
   withSequence,
   withTiming,
+  withSpring,
   interpolate,
   Extrapolation,
+  runOnJS,
+  Easing,
 } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
+const ANIMATION_DURATION = 400;
 
 // Assets
 const GIRL_IMAGE = require('../assets/images/onboarding/girl.png');
