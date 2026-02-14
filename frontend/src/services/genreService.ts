@@ -36,10 +36,12 @@ export const genreService = {
     slug: string,
     page: number = 1,
     limit: number = 25,
-    country?: string
+    country?: string,
+    sort?: 'votes' | 'name' | 'createdAt',
+    order?: 'asc' | 'desc'
   ): Promise<{ stations: Station[]; pagination: any }> {
     const response = await api.get(API_ENDPOINTS.genres.stations(slug), {
-      params: { page, limit, country },
+      params: { page, limit, country, sort, order },
     });
     return response.data;
   },
