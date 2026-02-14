@@ -211,11 +211,14 @@ export const useDiscoverableGenres = () => {
   });
 };
 
-// User hooks
+// User hooks with backend-recommended caching
 export const useFavorites = () => {
   return useQuery({
     queryKey: queryKeys.favorites,
     queryFn: () => userService.getFavorites(),
+    staleTime: CACHE_TTL.FAVORITES,
+    gcTime: CACHE_TTL.FAVORITES * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -229,9 +232,10 @@ export const useRecentlyPlayed = () => {
     queryKey: [...queryKeys.recentlyPlayed, isAuthenticated, userId],
     queryFn: () => stationService.getRecentlyPlayed(),
     retry: false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    // Refetch when auth changes
+    staleTime: CACHE_TTL.RECENTLY_PLAYED,
+    gcTime: CACHE_TTL.RECENTLY_PLAYED * GC_MULTIPLIER,
     refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -239,6 +243,9 @@ export const useCommunityFavorites = (limit: number = 20) => {
   return useQuery({
     queryKey: [...queryKeys.communityFavorites, limit],
     queryFn: () => stationService.getCommunityFavorites(limit),
+    staleTime: CACHE_TTL.COMMUNITY_FAVORITES,
+    gcTime: CACHE_TTL.COMMUNITY_FAVORITES * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -246,6 +253,9 @@ export const usePublicProfiles = (limit: number = 10) => {
   return useQuery({
     queryKey: ['publicProfiles', limit],
     queryFn: () => stationService.getPublicProfiles(limit),
+    staleTime: CACHE_TTL.PUBLIC_PROFILES,
+    gcTime: CACHE_TTL.PUBLIC_PROFILES * GC_MULTIPLIER,
+    refetchOnWindowFocus: false,
   });
 };
 
