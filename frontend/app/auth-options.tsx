@@ -125,38 +125,60 @@ export default function AuthOptionsScreen() {
         <View style={styles.buttonsContainer}>
           {/* Apple */}
           <TouchableOpacity
-            style={styles.authButton}
+            style={[styles.authButton, isLoading && styles.authButtonDisabled]}
             onPress={handleAppleLogin}
+            disabled={isLoading}
             data-testid="login-apple-button"
           >
-            <Image source={APPLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
+            {loadingProvider === 'apple' ? (
+              <View style={styles.loadingIconContainer}>
+                <ActivityIndicator size="small" color={colors.text} />
+              </View>
+            ) : (
+              <Image source={APPLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
+            )}
             <Text style={styles.authButtonText}>Login With Apple</Text>
           </TouchableOpacity>
 
           {/* Facebook */}
           <TouchableOpacity
-            style={styles.authButton}
+            style={[styles.authButton, isLoading && styles.authButtonDisabled]}
             onPress={handleFacebookLogin}
+            disabled={isLoading}
             data-testid="login-facebook-button"
           >
-            <Image source={FACEBOOK_ICON} style={styles.buttonIcon} resizeMode="contain" />
+            {loadingProvider === 'facebook' ? (
+              <View style={styles.loadingIconContainer}>
+                <ActivityIndicator size="small" color={colors.text} />
+              </View>
+            ) : (
+              <Image source={FACEBOOK_ICON} style={styles.buttonIcon} resizeMode="contain" />
+            )}
             <Text style={styles.authButtonText}>Login With Facebook</Text>
           </TouchableOpacity>
 
           {/* Google */}
           <TouchableOpacity
-            style={styles.authButton}
+            style={[styles.authButton, isLoading && styles.authButtonDisabled]}
             onPress={handleGoogleLogin}
+            disabled={isLoading}
             data-testid="login-google-button"
           >
-            <Image source={GOOGLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
+            {loadingProvider === 'google' ? (
+              <View style={styles.loadingIconContainer}>
+                <ActivityIndicator size="small" color={colors.text} />
+              </View>
+            ) : (
+              <Image source={GOOGLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
+            )}
             <Text style={styles.authButtonText}>Login With Google</Text>
           </TouchableOpacity>
 
           {/* Mail */}
           <TouchableOpacity
-            style={styles.authButton}
+            style={[styles.authButton, isLoading && styles.authButtonDisabled]}
             onPress={handleMailLogin}
+            disabled={isLoading}
             data-testid="login-mail-button"
           >
             <Image source={MAIL_ICON} style={styles.buttonIcon} resizeMode="contain" />
@@ -166,8 +188,9 @@ export default function AuthOptionsScreen() {
 
         {/* Continue without login */}
         <TouchableOpacity
-          style={styles.continueButton}
+          style={[styles.continueButton, isLoading && styles.continueButtonDisabled]}
           onPress={handleContinueWithoutLogin}
+          disabled={isLoading}
           data-testid="continue-without-login-button"
         >
           <Text style={styles.continueButtonText}>Continue without login</Text>
