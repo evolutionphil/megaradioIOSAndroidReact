@@ -119,8 +119,13 @@ GET /api/translations/:lang
 - [x] **FIX: Auth State Subscription** - Added useAuthStore.subscribe() to recentlyPlayedStore to automatically reload data when user logs in/out
 - [x] **FIX: React Query Auth Reactivity** - Updated useRecentlyPlayed hook to use reactive auth state (useAuthStore selector) instead of getState() for proper re-fetching on auth changes
 - [x] **FIX: Unique Key Prop Errors** - Removed redundant `key` props from renderItem in followers.tsx and follows.tsx (FlatList already handles via keyExtractor)
+- [x] **FEATURE: Discover Header Avatar** - Added user avatar display in "Welcome Back" header section with clickable navigation to profile
+- [x] **FEATURE: User Profile Navigation** - Clicking on users in "Favorites From Users" section now navigates to user-profile page with userId, userName, userAvatar params
+- [x] **FEATURE: Avatar Upload** - Added expo-image-picker integration for avatar upload on Profile tab. Camera badge overlay shows on avatar, clicking uploads new image via POST /api/auth/avatar
+- [x] **FIX: User Type Definition** - Added avatar, fullName, username, followersCount, followingCount to User interface
+- [x] **FIX: Auth Store updateUser** - Added updateUser function to persist avatar changes
 - [x] **TEST: Backend API Verified** - 6/6 backend tests passed (login, recently-played GET/POST with/without auth)
-- [x] **TEST: Frontend Integration** - Login flow works, Recently Played loads 12 stations from API with Bearer token
+- [x] **KNOWN ISSUE: CORS Avatar Loading** - Avatar images from themegaradio.com fail to load on web preview due to CORS (ERR_BLOCKED_BY_ORB). Works correctly on native builds.
 
 ### February 2026 - Session 12
 - [x] **CRITICAL FIX: deviceType Always 'mobile'** - Fixed authService.ts mobileLogin() to always send deviceType='mobile'. The external API returns invalid web_session_* tokens for 'tablet' deviceType which caused 401 errors on favorites API
