@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '../constants/theme';
 
@@ -18,6 +18,13 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   showSeeAll = true,
   icon,
 }) => {
+  const handleSeeAllPress = () => {
+    console.log('[SectionHeader] See All pressed');
+    if (onSeeAll) {
+      onSeeAll();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.leftContent}>
@@ -32,10 +39,14 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         </View>
       </View>
       {showSeeAll && onSeeAll && (
-        <TouchableOpacity style={styles.seeAllButton} onPress={onSeeAll}>
+        <Pressable 
+          style={styles.seeAllButton} 
+          onPress={handleSeeAllPress}
+          data-testid="section-header-see-all"
+        >
           <Text style={styles.seeAllText}>See All</Text>
           <Ionicons name="chevron-forward" size={16} color={colors.primary} />
-        </TouchableOpacity>
+        </Pressable>
       )}
     </View>
   );
