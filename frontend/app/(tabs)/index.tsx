@@ -504,7 +504,7 @@ export default function HomeScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Favorites From Users</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/users')} data-testid="see-all-users-btn">
                 <Text style={styles.seeAllText}>See All</Text>
               </TouchableOpacity>
             </View>
