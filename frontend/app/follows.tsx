@@ -50,8 +50,20 @@ export default function FollowsScreen() {
       // API docs: GET /api/user/following/:userId
       const response = await api.get(`https://themegaradio.com/api/user/following/${user._id}`);
       
-      // API may return { following: [...] } or directly [...]
-      const data = response.data.following || response.data || [];
+      // API returns { following: [{ user: {...}, followedAt: "..." }] }
+      const rawData = response.data.following || response.data || [];
+      
+      // Extract user objects from the nested structure
+      const data = rawData.map((item: any) => {
+        if (item.user) {
+          return {
+            ...item.user,
+            followedAt: item.followedAt,
+          };
+        }
+        return item;
+      });
+      
       setFollowing(data);
     } catch (error: any) {
       console.error('Error fetching following:', error);
