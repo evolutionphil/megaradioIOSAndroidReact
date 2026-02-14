@@ -433,7 +433,7 @@ const getGenreDisplay = (station: Station): string => {
 
             {/* View Mode Toggle */}
             <View style={styles.viewModeRow}>
-              <Text style={styles.viewModeLabel}>Grid</Text>
+              <Text style={styles.viewModeLabel}>{t('grid', 'Grid')}</Text>
               <View style={styles.viewModeButtons}>
                 <TouchableOpacity
                   style={[
