@@ -23,10 +23,15 @@ export const queryKeys = {
 };
 
 // Station hooks
+// Station hooks with performance optimizations
 export const useStations = (params: StationQueryParams = {}) => {
   return useQuery({
     queryKey: [...queryKeys.stations, params],
     queryFn: () => stationService.getStations(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes - data doesn't change frequently
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch if data exists
   });
 };
 
@@ -96,11 +101,14 @@ export const useTop100 = (country?: string) => {
   });
 };
 
-// Genre hooks
+// Genre hooks with performance optimizations
 export const useGenres = (page: number = 1, limit: number = 50) => {
   return useQuery({
     queryKey: [...queryKeys.genres, page, limit],
     queryFn: () => genreService.getGenres(page, limit),
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    gcTime: 60 * 60 * 1000, // 1 hour
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -108,6 +116,9 @@ export const usePrecomputedGenres = (country?: string) => {
   return useQuery({
     queryKey: queryKeys.precomputedGenres(country),
     queryFn: () => genreService.getPrecomputedGenres(country),
+    staleTime: 15 * 60 * 1000, // 15 minutes - genres change rarely
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -123,6 +134,9 @@ export const useGenreStations = (
     queryKey: [...queryKeys.genreStations(slug), page, limit, country, sort, order],
     queryFn: () => genreService.getGenreStations(slug, page, limit, country, sort, order),
     enabled: !!slug,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false,
   });
 };
 
