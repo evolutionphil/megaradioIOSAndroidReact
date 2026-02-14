@@ -79,32 +79,83 @@ export const authService = {
 
   /**
    * Mobile Login with Email/Password
-   * POST /api/auth/mobile/login
+   * For native: POST /api/auth/mobile/login (returns token)
+   * For web: POST /api/auth/login (session-based) + GET /api/auth/me
    */
   async mobileLogin(email: string, password: string): Promise<MobileLoginResponse> {
     const { deviceInfo } = useAuthStore.getState();
+    const isWeb = typeof window !== 'undefined' && !('ReactNativeWebView' in window);
     
-    // Use fetch directly for mobile login to avoid CORS issues
-    const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        deviceType: deviceInfo.deviceType,
-        deviceName: deviceInfo.deviceName,
-      }),
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || errorData.error || 'Login failed');
+    if (isWeb) {
+      // Web: Use session-based login
+      const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+        },
+        credentials: 'include', // Important: include cookies
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (!loginResponse.ok) {
+        const errorData = await loginResponse.json().catch(() => ({}));
+        throw new Error(errorData.message || errorData.error || 'Login failed');
+      }
+      
+      const loginData = await loginResponse.json();
+      
+      // Now get user details with session cookie
+      const meResponse = await fetch(`${API_BASE}/api/auth/me`, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+        },
+        credentials: 'include',
+      });
+      
+      if (!meResponse.ok) {
+        throw new Error('Failed to get user data');
+      }
+      
+      const meData = await meResponse.json();
+      
+      // Return in mobile format (use session ID as pseudo-token for web)
+      return {
+        success: true,
+        token: 'web_session_' + Date.now(), // Pseudo token for web
+        user: meData.user,
+        message: loginData.message,
+      };
+    } else {
+      // Native: Use token-based mobile login
+      const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          deviceType: deviceInfo.deviceType,
+          deviceName: deviceInfo.deviceName,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || errorData.error || 'Login failed');
+      }
+      
+      const data = await response.json();
+      return {
+        success: true,
+        token: data.token,
+        user: data.user,
+        message: data.message,
+      };
     }
-    
-    return response.json();
   },
 
   /**
