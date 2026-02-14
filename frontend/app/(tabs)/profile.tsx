@@ -429,7 +429,7 @@ export default function ProfileScreen() {
                   data-testid="profile-followers-btn"
                 >
                   <Text style={s.statNumber}>{followersCount}</Text>
-                  <Text style={s.statLabel}>Followers</Text>
+                  <Text style={s.statLabel}>{t('followers', 'Followers')}</Text>
                 </TouchableOpacity>
                 <View style={s.statDivider} />
                 <TouchableOpacity 
@@ -438,7 +438,7 @@ export default function ProfileScreen() {
                   data-testid="profile-follows-btn"
                 >
                   <Text style={s.statNumber}>{followsCount}</Text>
-                  <Text style={s.statLabel}>Follows</Text>
+                  <Text style={s.statLabel}>{t('follows', 'Follows')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
