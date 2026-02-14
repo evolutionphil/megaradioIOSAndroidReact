@@ -55,6 +55,7 @@ interface SearchGenre {
 
 export default function SearchScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [allResults, setAllResults] = useState<SearchResultItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
