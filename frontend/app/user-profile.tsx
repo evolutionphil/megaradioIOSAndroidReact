@@ -122,8 +122,9 @@ export default function UserProfileScreen() {
         api.get(`https://themegaradio.com/api/users/${userId}/followers`),
         api.get(`https://themegaradio.com/api/users/${userId}/following`),
       ]);
-      setFollowerCount((followersRes.data.followers || followersRes.data || []).length);
-      setFollowingCount((followingRes.data.following || followingRes.data || []).length);
+      // API returns {followers: [], total: X} or {following: [], total: X}
+      setFollowerCount(followersRes.data.total ?? (followersRes.data.followers || []).length);
+      setFollowingCount(followingRes.data.total ?? (followingRes.data.following || []).length);
     } catch (e) {
       console.log('Could not fetch follower counts');
     }
