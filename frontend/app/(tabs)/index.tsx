@@ -488,21 +488,30 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             <View style={styles.usersList}>
-              {(publicProfiles && publicProfiles.length > 0 ? publicProfiles : []).slice(0, 6).map((user: any, index: number) => (
+              {(publicProfiles && publicProfiles.length > 0 ? publicProfiles : []).slice(0, 6).map((profileUser: any, index: number) => (
                 <TouchableOpacity 
-                  key={user._id || index} 
+                  key={profileUser._id || index} 
                   style={styles.userItem}
+                  onPress={() => router.push({
+                    pathname: '/user-profile',
+                    params: {
+                      userId: profileUser._id,
+                      userName: profileUser.name || profileUser.fullName || 'User',
+                      userAvatar: profileUser.profileImageUrl || profileUser.avatar || ''
+                    }
+                  })}
+                  data-testid={`user-profile-${profileUser._id}`}
                 >
                   <View style={styles.userAvatar}>
-                    {user.profileImageUrl ? (
-                      <Image source={{ uri: user.profileImageUrl }} style={styles.userAvatarImage} />
+                    {profileUser.profileImageUrl ? (
+                      <Image source={{ uri: profileUser.profileImageUrl }} style={styles.userAvatarImage} />
                     ) : (
                       <Ionicons name="person" size={20} color={colors.textMuted} />
                     )}
                   </View>
                   <View style={styles.userInfo}>
-                    <Text style={styles.userNameText}>{user.name || 'User'}</Text>
-                    <Text style={styles.userRadioCount}>{user.favorites_count || 0} Radios</Text>
+                    <Text style={styles.userNameText}>{profileUser.name || 'User'}</Text>
+                    <Text style={styles.userRadioCount}>{profileUser.favorites_count || 0} Radios</Text>
                   </View>
                   <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
                 </TouchableOpacity>
