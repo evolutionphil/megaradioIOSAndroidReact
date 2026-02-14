@@ -303,7 +303,7 @@ export default function AllStationsScreen() {
               <Ionicons name="search" size={18} color={colors.textMuted} />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search stations..."
+                placeholder={t('search_stations', 'Search stations...')}
                 placeholderTextColor={colors.textMuted}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
