@@ -55,8 +55,12 @@ export interface PrecomputedStationResponse {
 // User Types
 export interface User {
   _id: string;
+  id?: string;
   email: string;
   name: string;
+  fullName?: string;
+  username?: string;
+  avatar?: string | null;
   profilePhoto?: string | null;
   isPublicProfile?: boolean;
   favoriteStations?: string[];
@@ -64,6 +68,9 @@ export interface User {
   totalListeningTime?: number;
   followers?: number;
   following?: number;
+  followersCount?: number;
+  followingCount?: number;
+  favoriteStationsCount?: number;
   createdAt?: string;
 }
 
