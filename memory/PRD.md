@@ -135,7 +135,10 @@ Response: [Station[], max 12 items, newest first]
 ```
 
 ## Key Files
+- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks with backend-recommended caching TTLs
+- `/app/frontend/src/services/stationService.ts` - Station service with API calls
 - `/app/frontend/src/components/SortBottomSheet.tsx` - Sort bottom sheet component
+- `/app/frontend/app/_layout.tsx` - Root layout with QueryClient configuration
 - `/app/frontend/app/all-stations.tsx` - All stations page with view mode persistence
 - `/app/frontend/app/genre-detail.tsx` - Genre detail page with view mode persistence
 - `/app/frontend/app/search.tsx` - Search with improved image URL validation
