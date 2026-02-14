@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -28,12 +28,15 @@ interface FavoriteStation {
   logo: string;
 }
 
+const STATIONS_PER_PAGE = 29;
+
 export default function UserProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string }>();
   const { user: currentUser, isAuthenticated } = useAuthStore();
-  const [stations, setStations] = useState<FavoriteStation[]>([]);
+  const [allStations, setAllStations] = useState<FavoriteStation[]>([]);
+  const [visibleCount, setVisibleCount] = useState(STATIONS_PER_PAGE);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
@@ -59,7 +62,7 @@ export default function UserProfileScreen() {
       const preloaded = getPreloadedFavorites(userId);
       if (preloaded) {
         console.log('[UserProfile] Using preloaded favorites');
-        setStations(preloaded.map((s: any) => ({
+        setAllStations(preloaded.map((s: any) => ({
           id: s._id || s.id,
           name: s.name,
           genre: s.genre || 'Radio',
@@ -72,7 +75,7 @@ export default function UserProfileScreen() {
   // Update stations when React Query data arrives
   useEffect(() => {
     if (favoritesData && favoritesData.length > 0) {
-      setStations(favoritesData.map((s: any) => ({
+      setAllStations(favoritesData.map((s: any) => ({
         id: s._id || s.id,
         name: s.name,
         genre: s.genre || 'Radio',
@@ -80,6 +83,20 @@ export default function UserProfileScreen() {
       })));
     }
   }, [favoritesData]);
+
+  // Paginated stations - show only visibleCount items
+  const stations = useMemo(() => {
+    return allStations.slice(0, visibleCount);
+  }, [allStations, visibleCount]);
+
+  // Check if there are more stations to show
+  const hasMoreStations = allStations.length > visibleCount;
+  const remainingCount = allStations.length - visibleCount;
+
+  // Load more stations handler
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + STATIONS_PER_PAGE);
+  };
 
   // Update profile counts from React Query
   useEffect(() => {
