@@ -76,13 +76,14 @@ export default function LanguagesScreen() {
     ? languages.filter(
         (lang) =>
           lang.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          lang.nativeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (NATIVE_NAMES[lang.code]?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
           lang.code.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : languages;
 
   const renderLanguageItem = ({ item }: { item: Language }) => {
-    const isSelected = selectedLanguage === item.code;
+    const isSelected = currentLanguage === item.code;
+    const nativeName = NATIVE_NAMES[item.code] || item.name;
 
     return (
       <TouchableOpacity
@@ -92,7 +93,7 @@ export default function LanguagesScreen() {
       >
         <View style={styles.languageInfo}>
           <Text style={styles.languageName}>{item.name}</Text>
-          <Text style={styles.languageNative}>{item.nativeName}</Text>
+          <Text style={styles.languageNative}>{nativeName}</Text>
         </View>
         <View style={[styles.radioCircle, isSelected && styles.radioCircleActive]}>
           {isSelected && <View style={styles.radioCircleFill} />}
@@ -108,7 +109,7 @@ export default function LanguagesScreen() {
         <TouchableOpacity onPress={() => router.back()} data-testid="back-btn">
           <Ionicons name="chevron-back" size={24} color="#FFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Language</Text>
+        <Text style={styles.headerTitle}>{t('languages')}</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -117,7 +118,7 @@ export default function LanguagesScreen() {
         <View style={styles.searchBar}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search Language"
+            placeholder={t('search_placeholder')}
             placeholderTextColor="#999"
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -128,7 +129,7 @@ export default function LanguagesScreen() {
       </View>
 
       {/* Language List */}
-      {isLoading ? (
+      {isLoading || languageLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#FF4199" />
         </View>
@@ -141,7 +142,7 @@ export default function LanguagesScreen() {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No languages found</Text>
+              <Text style={styles.emptyText}>{t('no_results') || 'No languages found'}</Text>
             </View>
           }
         />
