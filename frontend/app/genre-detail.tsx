@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,9 +23,7 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { useLocationStore } from '../src/store/locationStore';
 import type { Station } from '../src/types';
 
-const { width } = Dimensions.get('window');
 const GRID_COLUMNS = 3;
-const GRID_ITEM_WIDTH = (width - spacing.md * 2 - spacing.sm * 2) / GRID_COLUMNS;
 
 type ViewMode = 'grid' | 'list';
 
@@ -34,6 +32,10 @@ export default function GenreDetailScreen() {
   const params = useLocalSearchParams();
   const slug = params.slug as string;
   const genreName = params.name as string || slug;
+  const { width: screenWidth } = useWindowDimensions();
+
+  // Calculate grid item width dynamically
+  const GRID_ITEM_WIDTH = Math.floor((screenWidth - spacing.md * 2 - spacing.sm * (GRID_COLUMNS - 1)) / GRID_COLUMNS);
 
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [searchQuery, setSearchQuery] = useState('');
