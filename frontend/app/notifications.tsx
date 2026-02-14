@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,22 +16,36 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import api from '../src/services/api';
 import { API_ENDPOINTS } from '../src/constants/api';
 import { useAuthStore } from '../src/store/authStore';
-import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
+
+interface NotificationData {
+  userId?: string;
+  userName?: string;
+  userAvatar?: string;
+  stationId?: string;
+  stationName?: string;
+  stationLogo?: string;
+}
 
 interface Notification {
   _id: string;
   type: 'follow' | 'new_station' | 'like' | 'comment' | 'system';
-  title: string;
+  title?: string;
   message: string;
   isRead: boolean;
   createdAt: string;
-  data?: {
-    userId?: string;
-    userName?: string;
-    userAvatar?: string;
-    stationId?: string;
-    stationName?: string;
-    stationLogo?: string;
+  data?: NotificationData;
+  // Alternative field names from API
+  fromUser?: {
+    _id: string;
+    username?: string;
+    fullName?: string;
+    avatar?: string;
+  };
+  station?: {
+    _id: string;
+    name: string;
+    logo?: string;
+    favicon?: string;
   };
 }
 
@@ -60,24 +74,14 @@ export default function NotificationsScreen() {
       return response.data;
     },
     enabled: isAuthenticated,
-    staleTime: 30 * 1000, // 30 seconds
-    gcTime: 60 * 1000, // 1 minute
+    staleTime: 30 * 1000,
+    gcTime: 60 * 1000,
   });
 
   // Mark notification as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId: string) => {
       await api.patch(API_ENDPOINTS.user.markNotificationRead(notificationId));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
-    },
-  });
-
-  // Mark all as read mutation
-  const markAllReadMutation = useMutation({
-    mutationFn: async () => {
-      await api.patch(API_ENDPOINTS.user.markAllNotificationsRead);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -97,50 +101,27 @@ export default function NotificationsScreen() {
     }
 
     // Navigate based on notification type
-    if (notification.type === 'follow' && notification.data?.userId) {
+    const userId = notification.data?.userId || notification.fromUser?._id;
+    const userName = notification.data?.userName || notification.fromUser?.fullName || notification.fromUser?.username;
+    const userAvatar = notification.data?.userAvatar || notification.fromUser?.avatar;
+
+    if (notification.type === 'follow' && userId) {
       router.push({
         pathname: '/user-profile',
         params: {
-          userId: notification.data.userId,
-          userName: notification.data.userName || 'User',
-          userAvatar: notification.data.userAvatar || '',
+          userId,
+          userName: userName || 'User',
+          userAvatar: userAvatar || '',
         },
       });
-    } else if (notification.type === 'new_station' && notification.data?.stationId) {
-      router.push({
-        pathname: '/player',
-        params: { stationId: notification.data.stationId },
-      });
-    }
-  };
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'follow':
-        return 'person-add';
-      case 'new_station':
-        return 'radio';
-      case 'like':
-        return 'heart';
-      case 'comment':
-        return 'chatbubble';
-      default:
-        return 'notifications';
-    }
-  };
-
-  const getNotificationIconColor = (type: string) => {
-    switch (type) {
-      case 'follow':
-        return '#4CAF50';
-      case 'new_station':
-        return '#FF4081';
-      case 'like':
-        return '#E91E63';
-      case 'comment':
-        return '#2196F3';
-      default:
-        return colors.textSecondary;
+    } else if (notification.type === 'new_station') {
+      const stationId = notification.data?.stationId || notification.station?._id;
+      if (stationId) {
+        router.push({
+          pathname: '/player',
+          params: { stationId },
+        });
+      }
     }
   };
 
@@ -152,66 +133,95 @@ export default function NotificationsScreen() {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMins < 1) return 'Şimdi';
-    if (diffMins < 60) return `${diffMins}dk önce`;
-    if (diffHours < 24) return `${diffHours}sa önce`;
-    if (diffDays < 7) return `${diffDays}g önce`;
-    return date.toLocaleDateString('tr-TR');
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString('en-US');
   };
 
-  const renderNotification = ({ item }: { item: Notification }) => (
-    <TouchableOpacity
-      style={[styles.notificationItem, !item.isRead && styles.unreadItem]}
-      onPress={() => handleNotificationPress(item)}
-      data-testid={`notification-item-${item._id}`}
-    >
-      {/* Icon or Avatar */}
-      <View style={[styles.iconContainer, { backgroundColor: getNotificationIconColor(item.type) + '20' }]}>
-        {item.type === 'follow' && item.data?.userAvatar ? (
-          <Image 
-            source={{ uri: item.data.userAvatar.startsWith('http') ? item.data.userAvatar : `https://themegaradio.com${item.data.userAvatar}` }} 
-            style={styles.avatar} 
-          />
-        ) : (
-          <Ionicons 
-            name={getNotificationIcon(item.type) as any} 
-            size={22} 
-            color={getNotificationIconColor(item.type)} 
-          />
-        )}
-      </View>
+  const getAvatarUrl = (notification: Notification): string => {
+    // For follow notifications - get user avatar
+    if (notification.type === 'follow') {
+      const avatar = notification.data?.userAvatar || notification.fromUser?.avatar;
+      if (avatar) {
+        return avatar.startsWith('http') ? avatar : `https://themegaradio.com${avatar}`;
+      }
+      return 'https://themegaradio.com/images/default-avatar.png';
+    }
+    
+    // For new station notifications - get station logo
+    if (notification.type === 'new_station') {
+      const logo = notification.data?.stationLogo || notification.station?.logo || notification.station?.favicon;
+      if (logo) {
+        return logo.startsWith('http') ? logo : `https://themegaradio.com${logo}`;
+      }
+      return 'https://themegaradio.com/images/default-station.png';
+    }
 
-      {/* Content */}
-      <View style={styles.content}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.message} numberOfLines={2}>{item.message}</Text>
-        <Text style={styles.time}>{formatTimeAgo(item.createdAt)}</Text>
-      </View>
+    return 'https://themegaradio.com/images/default-avatar.png';
+  };
 
-      {/* Unread indicator */}
-      {!item.isRead && <View style={styles.unreadDot} />}
-    </TouchableOpacity>
-  );
+  const getNotificationText = (notification: Notification): { main: string; sub?: string } => {
+    if (notification.type === 'follow') {
+      const name = notification.data?.userName || notification.fromUser?.fullName || notification.fromUser?.username || 'Someone';
+      return { main: `${name} started following you` };
+    }
+    
+    if (notification.type === 'new_station') {
+      const stationName = notification.data?.stationName || notification.station?.name;
+      return { 
+        main: 'We added a new radio station!',
+        sub: stationName 
+      };
+    }
+
+    // Fallback to message
+    return { main: notification.message || notification.title || 'New notification' };
+  };
+
+  const renderNotification = ({ item }: { item: Notification }) => {
+    const { main, sub } = getNotificationText(item);
+    
+    return (
+      <TouchableOpacity
+        style={styles.notificationItem}
+        onPress={() => handleNotificationPress(item)}
+        data-testid={`notification-item-${item._id}`}
+      >
+        {/* Avatar/Logo */}
+        <Image 
+          source={{ uri: getAvatarUrl(item) }} 
+          style={styles.avatar} 
+        />
+
+        {/* Content */}
+        <View style={styles.content}>
+          <Text style={styles.mainText}>{main}</Text>
+          {sub && <Text style={styles.subText}>{sub}</Text>}
+          <Text style={styles.timeText}>{formatTimeAgo(item.createdAt)}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const notifications = data?.notifications || [];
-  const unreadCount = data?.unreadCount || 0;
 
   if (!isAuthenticated) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="chevron-back" size={28} color={colors.text} />
+            <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Bildirimler</Text>
+          <Text style={styles.headerTitle}>Notifications</Text>
           <View style={styles.headerRight} />
         </View>
         <View style={styles.emptyContainer}>
-          <Ionicons name="notifications-off-outline" size={64} color={colors.textMuted} />
-          <Text style={styles.emptyTitle}>Giriş Yapın</Text>
-          <Text style={styles.emptyText}>Bildirimleri görmek için giriş yapmanız gerekiyor.</Text>
+          <Text style={styles.emptyTitle}>Please Login</Text>
+          <Text style={styles.emptyText}>You need to login to see notifications.</Text>
           <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/login')}>
-            <Text style={styles.loginBtnText}>Giriş Yap</Text>
+            <Text style={styles.loginBtnText}>Login</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -220,31 +230,26 @@ export default function NotificationsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
+      {/* Header - matching Figma design */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} data-testid="notifications-back-btn">
-          <Ionicons name="chevron-back" size={28} color={colors.text} />
+        <TouchableOpacity 
+          onPress={() => router.back()} 
+          style={styles.backBtn} 
+          data-testid="notifications-back-btn"
+        >
+          <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          Bildirimler {unreadCount > 0 && `(${unreadCount})`}
-        </Text>
-        {unreadCount > 0 ? (
-          <TouchableOpacity 
-            style={styles.markAllBtn} 
-            onPress={() => markAllReadMutation.mutate()}
-            data-testid="mark-all-read-btn"
-          >
-            <Text style={styles.markAllText}>Tümünü Oku</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.headerRight} />
-        )}
+        <Text style={styles.headerTitle}>Notifications</Text>
+        <View style={styles.headerRight} />
       </View>
+
+      {/* Divider */}
+      <View style={styles.divider} />
 
       {/* Content */}
       {isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color="#FF4081" />
         </View>
       ) : (
         <FlatList
@@ -256,15 +261,15 @@ export default function NotificationsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor={colors.primary}
+              tintColor="#FF4081"
             />
           }
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="notifications-outline" size={64} color={colors.textMuted} />
-              <Text style={styles.emptyTitle}>Bildirim Yok</Text>
+              <Text style={styles.emptyTitle}>No notifications</Text>
               <Text style={styles.emptyText}>
-                Yeni takipçiler ve istasyonlar hakkında bildirimleri burada göreceksiniz.
+                You'll see notifications about new followers and stations here.
               </Text>
             </View>
           }
@@ -277,16 +282,14 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#121212',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   backBtn: {
     width: 40,
@@ -295,21 +298,18 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   headerTitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    fontFamily: 'Ubuntu-Bold',
   },
   headerRight: {
-    width: 80,
+    width: 40,
   },
-  markAllBtn: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  markAllText: {
-    fontSize: typography.sizes.sm,
-    color: colors.primary,
-    fontWeight: typography.weights.medium,
+  divider: {
+    height: 1,
+    backgroundColor: '#2A2A2A',
+    marginHorizontal: 16,
   },
   loadingContainer: {
     flex: 1,
@@ -317,88 +317,82 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listContent: {
-    paddingVertical: spacing.sm,
+    paddingTop: 8,
     flexGrow: 1,
   },
   notificationItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  unreadItem: {
-    backgroundColor: 'rgba(255, 64, 129, 0.05)',
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: borderRadius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.md,
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   avatar: {
     width: 48,
     height: 48,
-    borderRadius: borderRadius.full,
+    borderRadius: 24,
+    backgroundColor: '#2A2A2A',
+    marginRight: 14,
   },
   content: {
     flex: 1,
+    justifyContent: 'center',
   },
-  title: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
+  mainText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    fontFamily: 'Ubuntu-Medium',
     marginBottom: 2,
   },
-  message: {
-    fontSize: typography.sizes.sm,
-    color: colors.textSecondary,
-    lineHeight: 18,
+  subText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#FFFFFF',
+    fontFamily: 'Ubuntu-Regular',
+    marginBottom: 2,
   },
-  time: {
-    fontSize: typography.sizes.xs,
-    color: colors.textMuted,
-    marginTop: 4,
+  timeText: {
+    fontSize: 13,
+    color: '#888888',
+    fontFamily: 'Ubuntu-Regular',
+    marginTop: 2,
   },
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.primary,
-    marginLeft: spacing.sm,
+  separator: {
+    height: 1,
+    backgroundColor: '#2A2A2A',
+    marginLeft: 78, // Avatar width (48) + marginRight (14) + paddingHorizontal (16)
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: 40,
   },
   emptyTitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
-    marginTop: spacing.md,
-    marginBottom: spacing.xs,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    fontFamily: 'Ubuntu-Medium',
+    marginBottom: 8,
   },
   emptyText: {
-    fontSize: typography.sizes.md,
-    color: colors.textMuted,
+    fontSize: 14,
+    color: '#888888',
+    fontFamily: 'Ubuntu-Regular',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 20,
   },
   loginBtn: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.full,
-    marginTop: spacing.lg,
+    backgroundColor: '#FF4081',
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 24,
+    marginTop: 24,
   },
   loginBtnText: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold,
-    color: colors.text,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    fontFamily: 'Ubuntu-Medium',
   },
 });
