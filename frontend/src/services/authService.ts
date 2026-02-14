@@ -84,65 +84,36 @@ export const authService = {
    */
   async mobileLogin(email: string, password: string): Promise<MobileLoginResponse> {
     const { deviceInfo } = useAuthStore.getState();
-    const isWeb = typeof window !== 'undefined' && !('ReactNativeWebView' in window);
     
-    if (isWeb) {
-      // Web: Use session-based login without credentials (CORS issue with *)
-      // The API returns user data directly in login response
-      const loginResponse = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-        },
-        // Note: credentials: 'include' doesn't work with Access-Control-Allow-Origin: *
-        body: JSON.stringify({ email, password }),
-      });
-      
-      if (!loginResponse.ok) {
-        const errorData = await loginResponse.json().catch(() => ({}));
-        throw new Error(errorData.message || errorData.error || 'Login failed');
-      }
-      
-      const loginData = await loginResponse.json();
-      
-      // Login response already includes user data
-      // Return in mobile format
-      return {
-        success: true,
-        token: 'web_session_' + Date.now(), // Pseudo token for web state management
-        user: loginData.user,
-        message: loginData.message,
-      };
-    } else {
-      // Native: Use token-based mobile login
-      const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          deviceType: deviceInfo.deviceType,
-          deviceName: deviceInfo.deviceName,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || errorData.error || 'Login failed');
-      }
-      
-      const data = await response.json();
-      return {
-        success: true,
-        token: data.token,
-        user: data.user,
-        message: data.message,
-      };
+    // Use mobile login endpoint for all platforms to get real JWT token
+    // This works for both web and native since it returns a Bearer token
+    // that can be used for API calls without CORS cookie issues
+    const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        deviceType: deviceInfo.deviceType,
+        deviceName: deviceInfo.deviceName,
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || 'Login failed');
     }
+    
+    const data = await response.json();
+    return {
+      success: true,
+      token: data.token,
+      user: data.user,
+      message: data.message,
+    };
   },
 
   /**
