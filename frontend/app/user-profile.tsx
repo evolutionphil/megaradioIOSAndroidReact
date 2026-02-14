@@ -327,6 +327,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  followBtn: {
+    backgroundColor: '#FF4081',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  followingBtn: {
+    backgroundColor: '#3A3A3A',
+  },
+  followBtnText: {
+    fontFamily: 'Ubuntu-Medium',
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
