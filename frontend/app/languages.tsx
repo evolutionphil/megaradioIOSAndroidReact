@@ -11,50 +11,32 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const LANGUAGE_KEY = '@megaradio_language';
-const API_BASE = 'https://themegaradio.com';
+import { useTranslation } from 'react-i18next';
+import { useLanguageStore } from '../src/store/languageStore';
+import { getAvailableLanguages, changeLanguage } from '../src/services/i18nService';
 
 interface Language {
   code: string;
   name: string;
-  nativeName: string;
 }
 
-// Common languages with their codes and native names
-const KNOWN_LANGUAGES: Language[] = [
-  { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'tr', name: 'Turkish', nativeName: 'Türkçe' },
-  { code: 'de', name: 'German', nativeName: 'Deutsch' },
-  { code: 'fr', name: 'French', nativeName: 'Français' },
-  { code: 'es', name: 'Spanish', nativeName: 'Español' },
-  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
-  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
-  { code: 'nl', name: 'Dutch', nativeName: 'Nederlands' },
-  { code: 'pl', name: 'Polish', nativeName: 'Polski' },
-  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
-  { code: 'ar', name: 'Arabic', nativeName: 'العربية' },
-  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
-  { code: 'ko', name: 'Korean', nativeName: '한국어' },
-  { code: 'zh', name: 'Chinese', nativeName: '中文' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
-  { code: 'sv', name: 'Swedish', nativeName: 'Svenska' },
-  { code: 'no', name: 'Norwegian', nativeName: 'Norsk' },
-  { code: 'da', name: 'Danish', nativeName: 'Dansk' },
-  { code: 'fi', name: 'Finnish', nativeName: 'Suomi' },
-  { code: 'el', name: 'Greek', nativeName: 'Ελληνικά' },
-  { code: 'cs', name: 'Czech', nativeName: 'Čeština' },
-  { code: 'ro', name: 'Romanian', nativeName: 'Română' },
-  { code: 'hu', name: 'Hungarian', nativeName: 'Magyar' },
-  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська' },
-  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia' },
-  { code: 'th', name: 'Thai', nativeName: 'ไทย' },
-  { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt' },
-  { code: 'bg', name: 'Bulgarian', nativeName: 'Български' },
-  { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski' },
-  { code: 'sk', name: 'Slovak', nativeName: 'Slovenčina' },
-];
+// Supported languages with their native names
+const NATIVE_NAMES: Record<string, string> = {
+  en: 'English',
+  tr: 'Türkçe',
+  de: 'Deutsch',
+  fr: 'Français',
+  es: 'Español',
+  it: 'Italiano',
+  pt: 'Português',
+  nl: 'Nederlands',
+  pl: 'Polski',
+  ru: 'Русский',
+  ja: '日本語',
+  ko: '한국어',
+  zh: '中文',
+  ar: 'العربية',
+};
 
 export default function LanguagesScreen() {
   const router = useRouter();
