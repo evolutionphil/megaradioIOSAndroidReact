@@ -602,7 +602,7 @@ export default function PlayerScreen() {
           {recentStations.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>
-              Recently Played
+              {t('recently_played', 'Recently Played')}
             </Text>
             <View style={styles.stationGrid}>
               {recentStations.slice(0, 6).map((station: Station, index: number) => (
@@ -621,7 +621,7 @@ export default function PlayerScreen() {
           {/* Similar Radios Section */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>
-              Similar Radios
+              {t('similar_radios', 'Similar Radios')}
             </Text>
             <View style={styles.stationGrid}>
               {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
