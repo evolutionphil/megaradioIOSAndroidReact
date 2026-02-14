@@ -52,32 +52,40 @@ const WaveGraph = () => {
   );
 };
 
-interface ListeningStats {
-  totalMinutes: number;
-  totalStations: number;
-  musicPlayed: number;
+interface LocalStats extends ListeningStats {
+  uniqueStations: number;
 }
 
 export default function StatisticsScreen() {
   const router = useRouter();
-  const [stats, setStats] = useState<ListeningStats>({
+  const [stats, setStats] = useState<LocalStats>({
     totalMinutes: 0,
     totalStations: 136000,
-    musicPlayed: 169000,
+    musicPlayed: 0,
+    lastUpdated: '',
+    uniqueStations: 0,
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadStats();
   }, []);
 
   const loadStats = async () => {
+    setIsLoading(true);
     try {
-      const stored = await AsyncStorage.getItem('listening_stats');
-      if (stored) {
-        setStats(JSON.parse(stored));
-      }
+      const [storedStats, uniqueCount] = await Promise.all([
+        statsService.getStats(),
+        statsService.getUniqueStationsCount(),
+      ]);
+      setStats({
+        ...storedStats,
+        uniqueStations: uniqueCount,
+      });
     } catch (e) {
       console.log('Failed to load stats:', e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
