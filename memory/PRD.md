@@ -75,6 +75,13 @@ POST /api/auth/mobile/logout-all  → All devices
 
 ## In Progress / Pending Issues
 
+### COMPLETED (Dec 2025)
+- ✅ Login navigation bug - Fixed with setTimeout delay on router.replace
+- ✅ Search URI error - Fixed with proper URL validation and try-catch
+- ✅ Missing station images on genre-detail - Fixed with getLogoUrl helper
+- ✅ Grid/List view persistence - Implemented with AsyncStorage
+- ✅ UI text/icon alignment on Genres page - Fixed alignment styles
+
 ### P1: Recently Played Sync
 - Implementation exists in `recentlyPlayedStore.ts`
 - POST `/api/recently-played` called on station play
@@ -82,12 +89,19 @@ POST /api/auth/mobile/logout-all  → All devices
 - **Note:** Sync requires user authentication. Guest users only get local storage.
 
 ### P2: Follow/Unfollow Button on Profile
-- Not yet implemented on user-profile.tsx
+- Implemented on user-profile.tsx with follow/unfollow API calls
 
 ### P2: Visual Bugs
 - Glow Effect incorrect
 - Static Equalizer 
 - Vector icon rendering on web
+- Avatar not displaying on web preview (CORS issue)
+
+### P2: Social Logins
+- Google/Apple/Facebook login scaffolded but requires dev build
+
+### P2: Sleep Timer
+- Needs user feedback on specific issue
 
 ## Backend API Reference
 
@@ -104,11 +118,15 @@ Response: [Station[], max 12 items, newest first]
 ```
 
 ## Key Files
-- `/app/frontend/src/components/SortBottomSheet.tsx` - New sort bottom sheet component
-- `/app/frontend/app/all-stations.tsx` - All stations page
-- `/app/frontend/app/genre-detail.tsx` - Genre detail page
+- `/app/frontend/src/components/SortBottomSheet.tsx` - Sort bottom sheet component
+- `/app/frontend/app/all-stations.tsx` - All stations page with view mode persistence
+- `/app/frontend/app/genre-detail.tsx` - Genre detail page with view mode persistence
+- `/app/frontend/app/search.tsx` - Search with improved image URL validation
+- `/app/frontend/app/login.tsx` - Login with proper navigation handling
+- `/app/frontend/src/components/StationCard.tsx` - Station card with getLogoUrl helper
 - `/app/frontend/src/store/recentlyPlayedStore.ts` - Recently played state
 - `/app/frontend/src/store/playerStore.ts` - Audio player state
+- `/app/frontend/app/genres.tsx` - Genres list page with UI alignment fixes
 
 ## Test Credentials
 - Email: gey14853@outlook.com
