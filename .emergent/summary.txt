@@ -15,86 +15,71 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application has a working email/password login flow that was heavily debugged to handle API responses and CORS issues in the Expo Go web environment. A UI for social logins has been created, and a service to handle the web-based OAuth flow using  is in place, though it is not fully testable in Expo Go.
-
-A listening statistics tracking service () has been created and integrated. An initial, but buggy, implementation for fetching profile data (followers, following, favorites) exists. The agent attempted to fix these data-fetching issues, but the user has confirmed they are still broken.
+The application has a fully functional token-based email/password login system for both mobile and web (Expo Go). A major bug was fixed where the web version was receiving a pseudo-token instead of a valid JWT; this has been resolved by forcing the use of the mobile login endpoint. As a result, profile data (avatar, follower/following counts) and the Favorites list now load correctly after login. The UI for social logins exists but is not functional in the Expo Go environment. The Recently Played feature is partially implemented but does not sync with the backend correctly.
 
 **Last working item**:
-- **Last item agent was working**: The agent was about to start debugging a series of issues reported by the user after they tested the latest changes. The user found that after logging in, the profile picture, followers, following, and favorites data were all incorrect or missing. They also requested the implementation of a Recently Played feature that syncs with the API.
+- **Last item agent was working**: The agent was about to implement the user's latest backend fix for the Recently Played feature. The user updated the backend so that the  and  endpoints now require a  header, solving the previous issue where they were not working with token authentication. The agent's next step is to update the frontend code to use this new authentication method for fetching and saving recently played stations.
 - **Status**: IN PROGRESS
 - **Agent Testing Done**: N
-- **Which testing method agent to use?**: manual testing by curl (to verify API endpoint responses) followed by visual confirmation in the Expo Go application.
-- **User Testing Done**: Y
+- **Which testing method agent to use?**: manual testing by curl, followed by frontend testing.
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Profile & Favorites Data Not Loading Correctly (P0)**
-- **Issue 2: Recently Played Feature Not Implemented (P0)**
-- **Issue 3: Followers List has unique key prop Error (P0)**
-- **Issue 4: Social Logins Not Fully Functional in Expo Go (P1)**
-- **Issue 5: Glow Effect Incorrect (P2)**
-- **Issue 6: Static Equalizer (P2)**
-- **Issue 7: Sleep Timer Bug (P2)**
-- **Issue 8: Vector Icon Rendering on Web (P2)**
+- **Issue 1: Recently Played Feature Not Syncing (P0)**
+- **Issue 2: Followers List has unique key prop Error (P1)**
+- **Issue 3: Social Logins Not Fully Functional in Expo Go (P1)**
+- **Issue 4: Glow Effect Incorrect (P2)**
+- **Issue 5: Static Equalizer (P2)**
+- **Issue 6: Sleep Timer Bug (P2)**
+- **Issue 7: Vector Icon Rendering on Web (P2)**
 
 **Issues Detail**:
-- **Issue 1: Profile & Favorites Data Not Loading Correctly**
-    - **Attempted fixes**: The agent modified , , and  to use different API endpoints and map data differently. This fix was unsuccessful. Specifically, the agent used a public endpoint for favorites, which was incorrect.
+- **Issue 1: Recently Played Feature Not Syncing**
+    - **Attempted fixes**: The agent tried using session cookies and public endpoints, which failed because the backend logic was incorrect. The user has since fixed the backend API.
     - **Next debug checklist**:
-        1.  Carefully re-examine the API documentation at .
-        2.  **Avatar:** Verify the user object stored in  after login. Ensure the relative  URL is correctly prepended with  and rendered in the profile component.
-        3.  **Following:** Check the data mapping in . The API likely returns nested objects (e.g., , ). Update the component to render the data from the correct structure.
-        4.  **Favorites:** This is critical. The agent used a public endpoint, but it requires authentication. Use the authenticated endpoint . This will require sending the session cookie. The previous login fix *removed*  to solve a CORS issue, but this will need to be re-evaluated and handled correctly for authenticated API calls.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a core feature of the user profile and is currently broken, preventing proper user interaction.
+        1. Using , verify that  and  work correctly with the  header, using the test user's token.
+        2. In  (or a relevant service), implement a call to  with the bearer token whenever a user starts playing a new station.
+        3. In  and its consumer , ensure the  call is made with the bearer token.
+        4. Make the  hook's query key dependent on the user's authentication status (e.g., ) to ensure data is refetched after login/logout.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a core user-facing feature required for syncing listening history across devices.
     - **Status**: IN PROGRESS
     - **Is recurring issue?**: Y
-    - **Should Test frontend/backend/both after fix?**: Frontend
-    - **Blocked on other issue**: None
-
-- **Issue 2: Recently Played Feature Not Implemented**
-    - **Attempted fixes**: None.
-    - **Next debug checklist**:
-        1.  In , create two functions:  (using ) and  (using ). Both require authentication.
-        2.  In , when a station begins playing, call .
-        3.  Create or update a component to display the list of recently played stations by calling .
-    - **Why fix this issue and what will be achieved with the fix?**: This will implement a key user feature, allowing playback history to be synced across devices.
-    - **Status**: NOT STARTED
-    - **Is recurring issue?**: N
     - **Should Test frontend/backend/both after fix?**: Both
     - **Blocked on other issue**: None
 
-- **Issue 3: Followers List has unique key prop Error**
-    - **Attempted fixes**: The agent modified  but the bug persists.
+- **Issue 2: Followers List has unique key prop Error**
+    - **Attempted fixes**: The issue was noted in a previous session but has not been addressed.
     - **Next debug checklist**:
         1.  Inspect the  function inside .
-        2.  Ensure that the  prop is being assigned a unique value from the item being iterated, such as  or another unique identifier from the API response.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a fundamental React error that breaks the rendering of the followers list.
-    - **Status**: IN PROGRESS
+        2.  Ensure the  prop is assigned a unique value from the iteration item, such as .
+    - **Why fix this issue and what will be achieved with the fix?**: This is a fundamental React error that prevents the followers list from rendering correctly and causes console warnings.
+    - **Status**: NOT STARTED
     - **Is recurring issue?**: Y
     - **Should Test frontend/backend/both after fix?**: Frontend
     - **Blocked on other issue**: None
 
-- **Issue 4: Social Logins Not Fully Functional in Expo Go**
-    - **Attempted fixes**: UI and a web-based auth service were created.
-    - **Next debug checklist**: The current implementation is the correct approach for Expo Go. The next step is to inform the user that testing requires a development build (An Expo user account is required to proceed.
+- **Issue 3: Social Logins Not Fully Functional in Expo Go**
+    - **Attempted fixes**: The UI and a web-based auth service () are already in place, which is the correct approach.
+    - **Next debug checklist**: This is not a bug to be fixed but a limitation of the environment. The agent needs to inform the user that testing this feature requires creating a development build using An Expo user account is required to proceed.
 
 Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username). Offer to configure  for this purpose.
-    - **Why fix this issue and what will be achieved with the fix?**: To enable full testing and deployment of the social login feature.
-    - **Status**: BLOCKED (by Expo Go limitations)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username and offer to help configure  for it.
+    - **Why fix this issue and what will be achieved with the fix?**: Unblocks testing and deployment of the social login feature.
+    - **Status**: BLOCKED
     - **Is recurring issue?**: N
     - **Should Test frontend/backend/both after fix?**: Both
     - **Blocked on other issue**: None
 
 **In progress Task List**:
-- There are no other in-progress tasks beyond the issues listed above.
+- No other in-progress tasks.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-- **P1: Implement Avatar Upload**: Use the  endpoint. This will require  to allow users to select a photo.
-- **P1: Finalize Social Sign-In**: Guide the user to create a development build to test the existing social login implementation.
-- **P2: Fix Glow Effect**: Blocked, needs user feedback.
+- **P1: Implement Avatar Upload**: Use the  endpoint with .
+- **P1: Finalize Social Sign-In**: Guide the user to create a development build for testing.
+- **P2: Fix Glow Effect**: Visual bug, needs user feedback for specifics.
 - **P2: Animate Equalizer**: Not started.
-- **P2: Fix Sleep Timer**: Blocked, needs user feedback.
+- **P2: Fix Sleep Timer**: Blocked, needs user feedback for reproduction steps.
 - **P2: Fix Vector Icons on Web**: Not started.
 
 **Future Tasks:**
@@ -102,15 +87,17 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
 - Add skeleton loaders for data-fetching states.
 
 **Completed work in this session**
-- **Email/Password Login Flow (FIXED)**: Successfully debugged and fixed the login functionality for the Expo Go web client, resolving complex CORS and API response handling issues in  and .
-- **API Investigation for Cross-Platform Auth (DONE)**: Confirmed that the backend API supports a unified user identity across different platforms.
-- **Social Login UI and Service (DONE)**: Implemented the UI in  and created  to handle the web-based OAuth flow using .
-- **Listening Statistics Tracking (DONE)**: Created  and integrated it into the  to track user listening history.
+- **Profile & Favorites Data Loading (FIXED)**:
+    - Successfully debugged and resolved the critical  errors for authenticated endpoints on the web.
+    - The root cause was identified by the testing agent: the app was generating a pseudo-token for web platforms.
+    - The fix was implemented in  to always force  in the login payload, ensuring the API returns a valid JWT ().
+    -  was made reactive to authentication changes, ensuring favorites load correctly after a user logs in.
+- **API Investigation and Testing**: Performed extensive  testing to validate API behavior for login, profiles, favorites, and recently played endpoints, which was crucial for debugging.
 
 **Earlier issues found/mentioned but not fixed**
 - **Issue 1: Glow Effect Incorrect**: Skipped due to a lack of specific details from the user.
 - **Issue 2: Static Equalizer**: Not started.
-- **Issue 3: Sleep Timer Bug**: Investigated, but the implementation seems correct. Blocked on user feedback for reproduction steps.
+- **Issue 3: Sleep Timer Bug**: Investigated, but blocked on user feedback for reproduction steps.
 - **Issue 4: Vector Icon Rendering on Web**: A known issue from a previous session that has not been addressed.
 
 **Known issue recurrence from previous fork**
@@ -122,50 +109,66 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
 
 
 **Key Technical Concepts**
-- ****: Used for handling the web-based OAuth flow for social logins.
-- **CORS & Credentials**: Extensive debugging was done to handle a CORS error ( cannot be used with ). The temporary fix for login was to omit credentials, but this will not work for authenticated requests and needs to be addressed.
-- ** API**: The agent switched from  to  to gain more control over request headers and credentials, which was key to fixing the login issue.
-- **Platform-Specific Auth**: The app needs to handle session-based auth for web and token-based for mobile, although the current implementation focuses on the session-based flow for Expo Go.
+- **JWT vs. Session Auth**: The backend's distinction between session-based auth (problematic with CORS on web) and token-based auth () was a critical discovery. The solution is to force token-based authentication for all client platforms.
+- **Zustand State Reactivity**: A pattern was established where one store () subscribes to changes in another () to trigger data re-loading. This should be replicated for the Recently Played feature.
+- **React Query & Auth State**:  (used by ) can cause stale data issues if its query key doesn't change when auth status changes. The key must include a user-dependent value (e.g., ) to force a refetch on login/logout.
+
+**key DB schema**
+- N/A (Interaction is via a REST API).
+
+**changes in tech stack**
+- None.
 
 **All files of reference**
-- 
-- 
-- 
-- 
-- 
--  (Primary source for debugging)
-- 
+-  (Contains the critical login fix)
+-  (Example of a reactive store)
+-  (Needs to be updated to post recently played songs)
+-  (Needs to be made auth-aware)
+-  (Displays recently played songs)
+- User's updated API docs: 
+
+**Areas that need refactoring**:
+- The data fetching for  should be streamlined. The current approach uses a  hook that calls . This should be reviewed to ensure it correctly handles authentication and caching via React Query, especially after the user logs in.
+
+**key api endpoints**
+- : Get a JWT.
+- : Get current user profile (requires auth).
+- : Get user's favorite stations (requires auth).
+- : Get user's recently played stations (now requires auth).
+- : Add a station to recently played (now requires auth).
 
 **Critical Info for New Agent**
-- **Your top priority is to fix the user-reported bugs**: Profile picture, followers/following lists, and favorites are all broken. Start by carefully reviewing the API documentation at  and the user's latest  commands.
-- **Authentication is Tricky**: The login fix involved setting  in  requests to bypass a CORS issue. This allows login but **will fail** for authenticated endpoints like fetching favorites or posting recently played tracks. You must devise a strategy to send credentials ( cookie) for these specific requests, which might require different handling for web vs. mobile.
-- **User is Technical**: The user provides API docs and  examples. Trust their reports and use the information they provide to debug.
-- **Social Logins are Blocked in Expo Go**: Do not try to fix social logins in Expo Go. The current implementation is correct. When the time comes, explain to the user that a development build is required for testing and offer to help set it up.
-- **Communicate in Turkish**: All user-facing communication must be in Turkish.
+- **Your top priority is to fix the Recently Played feature.** The user has fixed the backend API. You must now update the frontend to use  for both  and  requests to .
+- **Authentication is solved.** All client platforms should use the mobile login endpoint to receive a valid JWT. Ensure all authenticated API requests use this token from the .
+- **The user is technical** and actively contributes to debugging the backend. Trust their reports and API updates.
+- **Follow the existing pattern for reactive data loading.** The fix for the  (subscribing to  changes) is the correct pattern to apply to the Recently Played feature.
+- **Address query caching.** For hooks using React Query (), make the query key dependent on the user ID to ensure data is fresh after login.
+- **Communicate in Turkish.** This is a strict requirement.
 
 **documents and test reports created in this job**
--  was updated.
+- 
+- 
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **User (LATEST):** Reported that after a successful login, the profile picture is missing, followers/following pages are empty/buggy, and favorites aren't loading. Requested the implementation of a Recently Played feature with API sync. Provided the correct API doc URL (), the endpoint for avatar uploads (), and sample  commands for favorites and recently played. **Status: PENDING FIXES.**
-- **Agent:** Announced that login was successful.
-- **User:** Confirmed they could log in with email on Expo Go but reported the profile data issues.
-- **Agent:** Reverted a change to  and successfully logged the user in by addressing a CORS issue related to credentials.
-- **User:** Provided the backend has  and asked the agent to re-investigate the  and  endpoints.
-- **Agent:** Attempted multiple fixes for email login, including switching from Axios to Fetch and cleaning the Metro cache, but was stuck on a 500 error from the API, likely due to CORS.
-- **User:** Reported that email login is failing with wrong email or password and provided credentials for testing.
-- **Agent:** Explained to the user that social logins do not work in Expo Go and require a development build.
-- **User:** Reported that after a social login attempt, the app opens the website instead of returning to the app, and asked if this is an Expo Go limitation.
-- **Agent:** Finished implementing P0 and P1 tasks and updated the PRD.
+- **User (LATEST):** Explained that the backend is now fixed for the Recently Played feature. Provided new, clear instructions: both  and  endpoints for  now require an  token. Shared updated API docs and asked the agent to fix the frontend implementation accordingly. **Status: PENDING FIX.**
+- **Agent:** Proposed a fix for the Recently Played issue by explaining the backend might have a bug, as POST requests seemed to succeed but GET requests returned empty. This was based on the old backend behavior.
+- **User:** Reported that the  API call was returning an empty array.
+- **Agent:** Used  to test the  endpoint with a session cookie, which appeared to work, but  still returned nothing. Concluded it was likely a backend issue.
+- **Testing Agent:** The  found and fixed the root cause of the  errors on other pages:  was generating a pseudo-token for web clients. The agent fixed it to always request a real JWT.
+- **User:** Reported that favorites and recently played are still not working.
+- **Agent:** Acknowledged the issue and began a deep dive, adding console logs to  and  to trace the execution flow and token availability.
+- **Agent:** Realized the stores were not reacting to authentication changes and implemented a fix for  to reload data after login.
 
 **Project Health Check:**
 - **Broken:**
-    - Profile page data fetching (avatar, followers count, following count).
-    - Followers and Following list rendering.
-    - Favorites list fetching.
+    - Recently Played feature data synchronization.
 - **Mocked:**
-    - Recently Played feature does not exist.
-    - Social Login functionality is not testable without a development build.
+    - Social Login functionality (blocked by Expo Go environment, requires a development build).
+- **Fixed:**
+    - Core email/password login flow for all platforms.
+    - Profile data fetching (avatar, followers/following counts).
+    - Favorites list fetching and display.
 
 **3rd Party Integrations**
 - **MegaRadio API:** 
@@ -176,10 +179,10 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
 - **expo-auth-session & expo-web-browser:** For social authentication flows.
 
 **Testing status**
-- **Testing agent used after significant changes:** NO
+- **Testing agent used after significant changes:** YES (Twice, was instrumental in solving the authentication bug).
 - **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** None
-- **Known regressions:** Profile data fetching was working at some point but is now broken after recent changes.
+- **Test files created:** None.
+- **Known regressions:** None. The major regression with profile data was successfully fixed.
 
 **Credentials to test flow:**
 - **API Key**:  (sent in  header).
@@ -188,6 +191,4 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
     - **Password**: 
 
 **What agent forgot to execute**
-- The agent failed to correctly implement the fix for profile data and favorites, using a public endpoint for favorites instead of the required authenticated one.
-- The agent did not fully consider the implications of setting  and how it would affect other authenticated API calls.
-- The agent has not yet addressed the unique key prop error in the followers list, a basic React issue.</analysis>
+- The agent has not yet fixed the  error in the followers list (), which was reported in the initial handoff. This is a minor but fundamental React issue that should be addressed.</analysis>
