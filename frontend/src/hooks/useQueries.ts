@@ -140,16 +140,18 @@ export const useFavorites = () => {
 };
 
 export const useRecentlyPlayed = () => {
-  // Include auth state in query key to refetch when auth changes
+  // Use hook to get reactive auth state
   const { useAuthStore } = require('../store/authStore');
-  const isAuthenticated = useAuthStore.getState().isAuthenticated;
-  const userId = useAuthStore.getState().user?._id;
+  const isAuthenticated = useAuthStore((state: any) => state.isAuthenticated);
+  const userId = useAuthStore((state: any) => state.user?._id);
   
   return useQuery({
     queryKey: [...queryKeys.recentlyPlayed, isAuthenticated, userId],
     queryFn: () => stationService.getRecentlyPlayed(),
     retry: false,
     staleTime: 2 * 60 * 1000, // 2 minutes
+    // Refetch when auth changes
+    refetchOnMount: true,
   });
 };
 
