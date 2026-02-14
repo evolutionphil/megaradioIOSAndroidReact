@@ -1,14 +1,18 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Localization from 'expo-localization';
 import api from './api';
 import { API_ENDPOINTS } from '../constants/api';
 
 // Storage key for language preference
 const LANGUAGE_KEY = '@megaradio_language';
 
-// Default fallback translations (English)
-const defaultTranslations = {
+// Supported languages
+const SUPPORTED_LANGUAGES = ['en', 'tr', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'ru', 'ja', 'ko', 'zh', 'ar'];
+
+// Default fallback translations (English) - includes missing keys from API
+const defaultTranslations: Record<string, string> = {
   // Navigation
   nav_home: 'Home',
   nav_for_you: 'For You',
@@ -105,6 +109,8 @@ const defaultTranslations = {
   
   // Languages
   languages: 'Languages',
+  select_language: 'Select Language',
+  language_changed: 'Language changed',
   
   // Errors
   general_error: 'Error',
@@ -113,6 +119,11 @@ const defaultTranslations = {
   // Share
   share: 'Share',
   copy_link: 'Copy Link',
+  
+  // Empty states
+  no_favorites: 'No favorites yet',
+  no_recently_played: 'No recently played stations',
+  enable_location: 'Enable location to see nearby stations',
 };
 
 // Translation cache
