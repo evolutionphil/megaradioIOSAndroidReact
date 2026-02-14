@@ -227,7 +227,7 @@ export default function ProfileScreen() {
           <TouchableOpacity onPress={() => setCurrentPage('main')}>
             <Ionicons name="chevron-back" size={24} color="#FFF" />
           </TouchableOpacity>
-          <Text style={s.subTitle}>Country</Text>
+          <Text style={s.subTitle}>{t('country', 'Country')}</Text>
           <View style={{ width: 24 }} />
         </View>
 
@@ -235,7 +235,7 @@ export default function ProfileScreen() {
         <View style={s.searchBar}>
           <TextInput
             style={s.searchInput}
-            placeholder="Search Country"
+            placeholder={t('search_country', 'Search Country')}
             placeholderTextColor="#999"
             value={countrySearch}
             onChangeText={setCountrySearch}
