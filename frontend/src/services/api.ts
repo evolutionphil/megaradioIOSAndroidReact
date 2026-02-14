@@ -26,8 +26,11 @@ const getAuthToken = (): string | null => {
   try {
     // Dynamic import of authStore to avoid circular dependency
     const { useAuthStore } = require('../store/authStore');
-    return useAuthStore.getState().token;
-  } catch {
+    const token = useAuthStore.getState().token;
+    console.log('[API] getAuthToken called, token exists:', !!token, token ? token.substring(0, 15) + '...' : 'null');
+    return token;
+  } catch (err) {
+    console.log('[API] getAuthToken error:', err);
     return null;
   }
 };
