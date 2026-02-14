@@ -84,6 +84,21 @@ POST /api/auth/mobile/logout-all  → All devices
 - ✅ Sort By functionality - Fixed API integration with useMemo for proper query key updates
 - ✅ Performance Optimization - Added React Query caching (staleTime, gcTime, refetchOnWindowFocus)
 
+### COMPLETED (Feb 14, 2026)
+- ✅ Backend Caching Recommendations Implementation - Updated React Query cache TTL values per backend developer recommendations:
+  - GENRES_ALL: 24 hours (static data)
+  - STATION_DETAIL: 30 minutes
+  - STATIONS_LIST: 10 minutes
+  - POPULAR_STATIONS: 10 minutes
+  - GENRE_STATIONS: 1 hour
+  - TRENDING: 5 minutes
+  - RECENTLY_PLAYED: 30 seconds
+  - FAVORITES: 1 minute
+  - USER_PROFILE/FOLLOWERS/FOLLOWING: 2 minutes
+  - SEARCH: 2 minutes
+  - COMMUNITY_FAVORITES/PUBLIC_PROFILES: 5 minutes
+- ✅ Added getStation service method for single station fetching
+
 ### P1: Recently Played Sync
 - Implementation exists in `recentlyPlayedStore.ts`
 - POST `/api/recently-played` called on station play
