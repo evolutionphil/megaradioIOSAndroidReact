@@ -115,11 +115,13 @@ export const useGenreStations = (
   slug: string,
   page: number = 1,
   limit: number = 25,
-  country?: string
+  country?: string,
+  sort?: 'votes' | 'name' | 'createdAt',
+  order?: 'asc' | 'desc'
 ) => {
   return useQuery({
-    queryKey: [...queryKeys.genreStations(slug), page, limit, country],
-    queryFn: () => genreService.getGenreStations(slug, page, limit, country),
+    queryKey: [...queryKeys.genreStations(slug), page, limit, country, sort, order],
+    queryFn: () => genreService.getGenreStations(slug, page, limit, country, sort, order),
     enabled: !!slug,
   });
 };
