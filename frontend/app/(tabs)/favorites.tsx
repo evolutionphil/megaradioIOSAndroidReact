@@ -178,11 +178,11 @@ const getGenreDisplay = (station: Station): string => {
 
   // Sort options
   const sortOptions: { key: SortOption; label: string }[] = [
-    { key: 'newest', label: 'Newest first' },
-    { key: 'oldest', label: 'Oldest first' },
-    { key: 'az', label: 'A-Z' },
-    { key: 'za', label: 'Z-A' },
-    { key: 'custom', label: 'Custom order' },
+    { key: 'newest', label: t('sort_newest_first', 'Newest first') },
+    { key: 'oldest', label: t('sort_oldest_first', 'Oldest first') },
+    { key: 'az', label: t('sort_az', 'A-Z') },
+    { key: 'za', label: t('sort_za', 'Z-A') },
+    { key: 'custom', label: t('custom_order', 'Custom order') },
   ];
 
   // Render station item
