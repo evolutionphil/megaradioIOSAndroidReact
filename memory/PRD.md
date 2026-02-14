@@ -77,11 +77,18 @@ POST /api/user/favorites/:stationId (requires auth)
 DELETE /api/user/favorites/:stationId (requires auth)
 ```
 
-### Recently Played API
+### Recently Played API (UPDATED)
 ```
-GET /api/recently-played (with auth returns user's history)
-POST /api/recently-played { stationId } (records a play)
+GET /api/recently-played 
+  - Headers: Authorization: Bearer mrt_xxx (REQUIRED)
+  - Returns: Array of station objects with playedAt timestamp
+
+POST /api/recently-played 
+  - Headers: Authorization: Bearer mrt_xxx (REQUIRED)
+  - Body: { stationId: "station_id" }
+  - Returns: { success: true }
 ```
+**Note**: Both endpoints now require Bearer token authentication (updated Feb 2026)
 
 ### Languages API
 ```
@@ -107,7 +114,15 @@ GET /api/translations/:lang
 
 ## Completed Tasks
 
-### February 2026 - Session 12 (Latest)
+### February 2026 - Session 13 (Latest)
+- [x] **CRITICAL FIX: Recently Played Bearer Auth** - Updated recentlyPlayedStore.ts to use axios api instance instead of raw fetch. This ensures Authorization: Bearer token is automatically added via interceptor
+- [x] **FIX: Auth State Subscription** - Added useAuthStore.subscribe() to recentlyPlayedStore to automatically reload data when user logs in/out
+- [x] **FIX: React Query Auth Reactivity** - Updated useRecentlyPlayed hook to use reactive auth state (useAuthStore selector) instead of getState() for proper re-fetching on auth changes
+- [x] **FIX: Unique Key Prop Errors** - Removed redundant `key` props from renderItem in followers.tsx and follows.tsx (FlatList already handles via keyExtractor)
+- [x] **TEST: Backend API Verified** - 6/6 backend tests passed (login, recently-played GET/POST with/without auth)
+- [x] **TEST: Frontend Integration** - Login flow works, Recently Played loads 12 stations from API with Bearer token
+
+### February 2026 - Session 12
 - [x] **CRITICAL FIX: deviceType Always 'mobile'** - Fixed authService.ts mobileLogin() to always send deviceType='mobile'. The external API returns invalid web_session_* tokens for 'tablet' deviceType which caused 401 errors on favorites API
 - [x] **FIX: Favorites Loading** - Fixed favoritesStore.ts to use `/api/user/favorites` endpoint with Bearer token auth. Now loads correctly (39 stations verified)
 - [x] **FIX: Auth State Dependency** - Updated favorites.tsx to reload favorites when auth state changes (isAuthenticated, user._id)
@@ -158,6 +173,7 @@ GET /api/translations/:lang
 - **Test User**: gey14853@outlook.com / Muhammed5858
 
 ## Test Reports
+- `/app/test_reports/iteration_10.json` - Recently Played feature test (100% backend, 90% frontend - PASS)
 - `/app/test_reports/iteration_8.json` - Profile features test (partial pass, identified auth token issue - NOW FIXED)
 - `/app/test_reports/iteration_7.json` - Auth UI complete test (100% pass rate)
 
@@ -176,4 +192,4 @@ GET /api/translations/:lang
 Font files: `/app/frontend/assets/fonts/`
 
 ## Last Updated
-February 2026 - Session 12
+February 2026 - Session 13
