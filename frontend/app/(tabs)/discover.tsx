@@ -10,11 +10,10 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { GlowEffect } from '../../src/components/GlowEffect';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { StationCard, GenreCard, SectionHeader } from '../../src/components';
 import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
@@ -25,9 +24,7 @@ import type { Station, Genre } from '../../src/types';
 
 export default function DiscoverScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(params.genre as string || null);
   const { countryCode } = useLocationStore();
 
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
@@ -35,7 +32,6 @@ export default function DiscoverScreen() {
     sort: 'votes',
     order: 'desc',
     limit: 50,
-    genre: selectedGenre || undefined,
     country: countryCode || undefined,
   });
 
@@ -52,8 +48,17 @@ export default function DiscoverScreen() {
     playStation(station);
   };
 
-  const handleGenreSelect = (genre: Genre | null) => {
-    setSelectedGenre(genre?.slug || null);
+  // Navigate to genre-detail page when genre chip is clicked
+  const handleGenreChipPress = (genre: Genre) => {
+    router.push({
+      pathname: '/genre-detail',
+      params: { slug: genre.slug, name: genre.name },
+    });
+  };
+
+  // Navigate to all-stations page when "All" chip is clicked
+  const handleAllPress = () => {
+    router.push('/all-stations');
   };
 
   const handleSearchPress = () => {
@@ -102,7 +107,7 @@ export default function DiscoverScreen() {
           }
           showsVerticalScrollIndicator={false}
         >
-          {/* Genre Filter Section */}
+          {/* Genre Filter Chips - Now navigate to genre-detail */}
           <View style={styles.genreSection}>
             {genresLoading ? (
               <ActivityIndicator size="small" color={colors.primary} style={styles.loader} />
@@ -112,42 +117,30 @@ export default function DiscoverScreen() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.genreChips}
               >
+                {/* "All" chip navigates to all-stations page */}
                 <TouchableOpacity
-                  style={[
-                    styles.genreChip,
-                    !selectedGenre && styles.genreChipActive,
-                  ]}
-                  onPress={() => handleGenreSelect(null)}
+                  style={styles.genreChip}
+                  onPress={handleAllPress}
+                  data-testid="genre-chip-all"
                 >
                   <Ionicons 
                     name="radio" 
                     size={16} 
-                    color={!selectedGenre ? colors.text : colors.textSecondary} 
+                    color={colors.textSecondary} 
                   />
-                  <Text
-                    style={[
-                      styles.genreChipText,
-                      !selectedGenre && styles.genreChipTextActive,
-                    ]}
-                  >
+                  <Text style={styles.genreChipText}>
                     All
                   </Text>
                 </TouchableOpacity>
+                {/* Genre chips navigate to genre-detail page */}
                 {genres.slice(0, 15).map((genre) => (
                   <TouchableOpacity
                     key={genre._id}
-                    style={[
-                      styles.genreChip,
-                      selectedGenre === genre.slug && styles.genreChipActive,
-                    ]}
-                    onPress={() => handleGenreSelect(genre)}
+                    style={styles.genreChip}
+                    onPress={() => handleGenreChipPress(genre)}
+                    data-testid={`genre-chip-${genre.slug}`}
                   >
-                    <Text
-                      style={[
-                        styles.genreChipText,
-                        selectedGenre === genre.slug && styles.genreChipTextActive,
-                      ]}
-                    >
+                    <Text style={styles.genreChipText}>
                       {genre.name}
                     </Text>
                   </TouchableOpacity>
@@ -179,18 +172,19 @@ export default function DiscoverScreen() {
             </View>
           </View>
 
-          {/* Stations List */}
+          {/* Top Stations List */}
           <View style={styles.stationsSection}>
             <SectionHeader 
-              title={selectedGenre ? `${selectedGenre.charAt(0).toUpperCase() + selectedGenre.slice(1)} Stations` : 'Top Stations'}
+              title="Top Stations"
               subtitle={`${stations.length} stations`}
-              showSeeAll={false}
+              showSeeAll={true}
+              onSeeAll={() => router.push('/all-stations')}
             />
             {stationsLoading ? (
               <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
             ) : stations.length > 0 ? (
               <View style={styles.stationsList}>
-                {stations.slice(0, 30).map((station) => (
+                {stations.slice(0, 10).map((station) => (
                   <StationCard
                     key={station._id}
                     station={station}
@@ -206,7 +200,7 @@ export default function DiscoverScreen() {
                   <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
                 </View>
                 <Text style={styles.emptyTitle}>No stations found</Text>
-                <Text style={styles.emptyText}>Try selecting a different genre</Text>
+                <Text style={styles.emptyText}>Try refreshing the page</Text>
               </View>
             )}
           </View>
@@ -222,7 +216,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  // Glow removed - using GlowEffect SVG component
   gradient: {
     flex: 1,
   },
@@ -283,17 +276,10 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     gap: spacing.xs,
   },
-  genreChipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
   genreChipText: {
     fontSize: typography.sizes.sm,
     color: colors.textSecondary,
     fontWeight: typography.weights.medium,
-  },
-  genreChipTextActive: {
-    color: colors.text,
   },
   
   // Section
