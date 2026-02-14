@@ -51,15 +51,22 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      const { user } = useAuthStore.getState();
+      const { user, token } = useAuthStore.getState();
       
       if (isAuthenticated() && user?._id) {
-        // Fetch from public user favorites endpoint (doesn't require session)
+        // Use authenticated endpoint GET /api/user/favorites (requires session/token)
         try {
-          const response = await fetch(`https://themegaradio.com/api/users/${user._id}/favorites`, {
-            headers: {
-              'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-            },
+          const headers: Record<string, string> = {
+            'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+          };
+          
+          // Add auth token if available (mobile)
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+          }
+          
+          const response = await fetch('https://themegaradio.com/api/user/favorites', {
+            headers,
           });
           
           if (response.ok) {

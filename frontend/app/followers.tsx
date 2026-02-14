@@ -125,15 +125,21 @@ export default function FollowersScreen() {
       )
     : followers;
 
+  const getAvatarUrl = (avatar?: string): string => {
+    if (!avatar) return DEFAULT_AVATAR;
+    if (avatar.startsWith('http')) return avatar;
+    return `https://themegaradio.com${avatar}`;
+  };
+
   const renderItem = ({ item }: { item: Follower }) => (
-    <View style={styles.row}>
+    <View style={styles.row} key={item._id}>
       <TouchableOpacity 
         style={styles.userInfo}
         onPress={() => navigateToProfile(item)}
         data-testid={`follower-profile-${item._id}`}
       >
         <Image 
-          source={{ uri: item.avatar || DEFAULT_AVATAR }} 
+          source={{ uri: getAvatarUrl(item.avatar) }} 
           style={styles.avatar} 
         />
         <Text style={styles.name} numberOfLines={1}>
