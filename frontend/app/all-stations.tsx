@@ -306,7 +306,14 @@ export default function AllStationsScreen() {
             </ScrollView>
           )}
 
-          {renderSortModal()}
+          <SortBottomSheet
+            visible={showSortSheet}
+            onClose={() => setShowSortSheet(false)}
+            sortOption={sortOption}
+            onSortChange={setSortOption}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
         </SafeAreaView>
       </LinearGradient>
     </View>
