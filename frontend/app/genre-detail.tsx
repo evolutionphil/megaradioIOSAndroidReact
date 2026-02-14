@@ -131,9 +131,49 @@ export default function GenreDetailScreen() {
       (playbackState === 'loading' || playbackState === 'buffering');
   };
 
+  // Helper function to build reliable logo URL
+  const getLogoUrl = useCallback((station: Station): string | null => {
+    try {
+      if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
+        const folder = encodeURIComponent(station.logoAssets.folder);
+        const file = encodeURIComponent(station.logoAssets.webp96);
+        return `https://themegaradio.com/station-logos/${folder}/${file}`;
+      }
+      if (station.favicon) {
+        const favicon = station.favicon.trim();
+        if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
+          try {
+            new URL(favicon);
+            return favicon;
+          } catch {
+            return null;
+          }
+        } else if (favicon.startsWith('/')) {
+          return `https://themegaradio.com${favicon}`;
+        }
+      }
+      if (station.logo) {
+        const logo = station.logo.trim();
+        if (logo.startsWith('http://') || logo.startsWith('https://')) {
+          try {
+            new URL(logo);
+            return logo;
+          } catch {
+            return null;
+          }
+        } else if (logo.startsWith('/')) {
+          return `https://themegaradio.com${logo}`;
+        }
+      }
+    } catch (e) {
+      console.log('[GenreDetail] Error building logo URL:', e);
+    }
+    return null;
+  }, []);
+
   // Grid Item Component
   const renderGridItem = (station: Station) => {
-    const logoUrl = station.logoAssets?.webp96 || station.favicon || station.logo;
+    const logoUrl = getLogoUrl(station);
     const playing = isStationPlaying(station);
 
     return (
@@ -167,7 +207,7 @@ export default function GenreDetailScreen() {
 
   // List Item Component
   const renderListItem = (station: Station) => {
-    const logoUrl = station.logoAssets?.webp96 || station.favicon || station.logo;
+    const logoUrl = getLogoUrl(station);
     const playing = isStationPlaying(station);
     const loading = isStationLoading(station);
 
