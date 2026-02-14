@@ -119,33 +119,47 @@ export default function StatisticsScreen() {
         <View style={styles.headerSpacer} />
       </View>
 
-      {/* Total Listening Card */}
-      <View style={styles.totalListeningCard} data-testid="total-listening-card">
-        <View style={styles.totalListeningContent}>
-          <Text style={styles.cardLabel}>Total Listening</Text>
-          <Text style={styles.totalListeningValue}>
-            {formatListeningTime(stats.totalMinutes)}
-          </Text>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FF4199" />
         </View>
-        <View style={styles.waveContainer}>
-          <WaveGraph />
-        </View>
-      </View>
+      ) : (
+        <>
+          {/* Total Listening Card */}
+          <View style={styles.totalListeningCard} data-testid="total-listening-card">
+            <View style={styles.totalListeningContent}>
+              <Text style={styles.cardLabel}>Total Listening</Text>
+              <Text style={styles.totalListeningValue}>
+                {formatListeningTime(stats.totalMinutes)}
+              </Text>
+            </View>
+            <View style={styles.waveContainer}>
+              <WaveGraph />
+            </View>
+          </View>
 
-      {/* Stats Row */}
-      <View style={styles.statsRow}>
-        {/* Total Radio Station Card */}
-        <View style={styles.statCard} data-testid="total-stations-card">
-          <Text style={styles.cardLabel}>Total Radio Station</Text>
-          <Text style={styles.statValue}>{formatNumber(stats.totalStations)}</Text>
-        </View>
+          {/* Stats Row */}
+          <View style={styles.statsRow}>
+            {/* Total Radio Station Card */}
+            <View style={styles.statCard} data-testid="total-stations-card">
+              <Text style={styles.cardLabel}>Total Radio Station</Text>
+              <Text style={styles.statValue}>{formatNumber(stats.totalStations)}</Text>
+            </View>
 
-        {/* Music Played Card */}
-        <View style={styles.statCard} data-testid="music-played-card">
-          <Text style={styles.cardLabel}>Music Played</Text>
-          <Text style={styles.statValue}>{formatNumber(stats.musicPlayed)}</Text>
-        </View>
-      </View>
+            {/* Music Played Card */}
+            <View style={styles.statCard} data-testid="music-played-card">
+              <Text style={styles.cardLabel}>Music Played</Text>
+              <Text style={styles.statValue}>{formatNumber(stats.musicPlayed)}</Text>
+            </View>
+          </View>
+
+          {/* Unique Stations Listened */}
+          <View style={styles.uniqueStationsCard} data-testid="unique-stations-card">
+            <Text style={styles.cardLabel}>Unique Stations Listened</Text>
+            <Text style={styles.statValue}>{stats.uniqueStations}</Text>
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 }
