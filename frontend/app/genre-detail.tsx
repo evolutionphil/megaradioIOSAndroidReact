@@ -329,25 +329,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.sm,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: colors.border,
-  },
-  favoriteButtonActive: {
-    borderColor: colors.accentPink,
   },
   playButton: {
     width: 44,
     height: 44,
     borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceLight,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
-  },
-  playButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
   },
 
   // Empty State
