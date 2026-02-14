@@ -60,6 +60,11 @@ export default function HomeScreen() {
   const { width: windowWidth } = useWindowDimensions();
   const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
 
+  // Debug avatar
+  useEffect(() => {
+    console.log('[HomeScreen] User avatar:', user?.avatar, 'profilePhoto:', user?.profilePhoto);
+  }, [user]);
+
   // Fetch location on mount
   useEffect(() => {
     fetchLocation();
