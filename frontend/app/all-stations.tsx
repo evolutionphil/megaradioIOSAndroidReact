@@ -108,7 +108,7 @@ export default function AllStationsScreen() {
         activeOpacity={0.7}
         data-testid={`grid-station-${station._id}`}
       >
-        <View style={styles.gridLogoContainer}>
+        <View style={[styles.gridLogoContainer, { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}>
           {logoUrl ? (
             <Image
               source={{ uri: logoUrl }}
@@ -121,8 +121,8 @@ export default function AllStationsScreen() {
             </View>
           )}
         </View>
-        <Text style={styles.gridName} numberOfLines={1}>{station.name}</Text>
-        <Text style={styles.gridLocation} numberOfLines={1}>
+        <Text style={[styles.gridName, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>{station.name}</Text>
+        <Text style={[styles.gridLocation, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>
           {station.country}{station.state ? `, ${station.state}` : ''}
         </Text>
       </TouchableOpacity>
