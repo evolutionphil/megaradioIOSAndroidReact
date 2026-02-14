@@ -184,10 +184,24 @@ export default function UserProfileScreen() {
         <View style={styles.headerInfo}>
           <Text style={styles.headerName}>{userName}</Text>
           <View style={styles.statsRow}>
-            <Text style={styles.statText}>Followers <Text style={styles.statNumber}>{followers}</Text></Text>
-            <Text style={styles.statText}>  Follows <Text style={styles.statNumber}>{follows}</Text></Text>
+            <Text style={styles.statText}>Followers <Text style={styles.statNumber}>{followerCount}</Text></Text>
+            <Text style={styles.statText}>  Follows <Text style={styles.statNumber}>{followingCount}</Text></Text>
           </View>
         </View>
+        {!isOwnProfile && (
+          <TouchableOpacity 
+            style={[styles.followBtn, isFollowing && styles.followingBtn]} 
+            onPress={handleFollowToggle}
+            disabled={followLoading}
+            data-testid="user-profile-follow-btn"
+          >
+            {followLoading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text style={styles.followBtnText}>{isFollowing ? 'Following' : 'Follow'}</Text>
+            )}
+          </TouchableOpacity>
+        )}
         <TouchableOpacity 
           style={styles.shareBtn} 
           onPress={() => setShowShareModal(true)}
