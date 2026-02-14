@@ -5,7 +5,6 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   RefreshControl,
   Image,
 } from 'react-native';
@@ -13,9 +12,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import api from '../src/services/api';
 import { API_ENDPOINTS } from '../src/constants/api';
 import { useAuthStore } from '../src/store/authStore';
+import { NotificationItemSkeleton } from '../src/components/Skeleton';
 
 interface NotificationData {
   userId?: string;
@@ -63,6 +64,7 @@ interface NotificationsResponse {
 export default function NotificationsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -214,14 +216,14 @@ export default function NotificationsScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
             <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Notifications</Text>
+          <Text style={styles.headerTitle}>{t('notifications')}</Text>
           <View style={styles.headerRight} />
         </View>
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Please Login</Text>
-          <Text style={styles.emptyText}>You need to login to see notifications.</Text>
+          <Text style={styles.emptyTitle}>{t('login')}</Text>
+          <Text style={styles.emptyText}>{t('profile_login_required')}</Text>
           <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/login')}>
-            <Text style={styles.loginBtnText}>Login</Text>
+            <Text style={styles.loginBtnText}>{t('login')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -239,7 +241,7 @@ export default function NotificationsScreen() {
         >
           <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <Text style={styles.headerTitle}>{t('notifications')}</Text>
         <View style={styles.headerRight} />
       </View>
 
@@ -248,8 +250,10 @@ export default function NotificationsScreen() {
 
       {/* Content */}
       {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF4081" />
+        <View style={styles.listContent}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <NotificationItemSkeleton key={i} />
+          ))}
         </View>
       ) : (
         <FlatList
@@ -267,9 +271,9 @@ export default function NotificationsScreen() {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>No notifications</Text>
+              <Text style={styles.emptyTitle}>{t('no_notifications')}</Text>
               <Text style={styles.emptyText}>
-                You'll see notifications about new followers and stations here.
+                {t('notifications_empty_text') || "You'll see notifications about new followers and stations here."}
               </Text>
             </View>
           }
