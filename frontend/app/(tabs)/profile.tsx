@@ -447,13 +447,13 @@ export default function ProfileScreen() {
         </View>
 
         {/* Settings */}
-        <Text style={s.sectionLabel}>Settings</Text>
+        <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
         {[
-          { title: 'Play at Login', sub: 'Last Played', onPress: () => router.push('/play-at-login') },
-          { title: 'Country', sub: country || 'Not set', onPress: () => setCurrentPage('country') },
-          { title: 'Language', sub: 'English', onPress: () => router.push('/languages' as any) },
-          { title: 'Statistics', onPress: () => router.push('/statistics') },
-          { title: 'Account', onPress: () => setCurrentPage('account') },
+          { title: t('play_at_login', 'Play at Login'), sub: t('last_played', 'Last Played'), onPress: () => router.push('/play-at-login') },
+          { title: t('country', 'Country'), sub: country || t('not_set', 'Not set'), onPress: () => setCurrentPage('country') },
+          { title: t('language', 'Language'), sub: LANGUAGE_NAMES[currentLanguage] || currentLanguage, onPress: () => router.push('/languages' as any) },
+          { title: t('statistics', 'Statistics'), onPress: () => router.push('/statistics') },
+          { title: t('account', 'Account'), onPress: () => setCurrentPage('account') },
         ].map((item, i) => (
           <React.Fragment key={i}>
             <TouchableOpacity style={s.row} onPress={item.onPress}>
@@ -468,18 +468,18 @@ export default function ProfileScreen() {
         ))}
 
         <View style={s.row}>
-          <Text style={s.rowTitle}>Notifications</Text>
+          <Text style={s.rowTitle}>{t('notifications_setting', 'Notifications')}</Text>
           <Switch value={notifications} onValueChange={setNotifications} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
         </View>
         <View style={s.divider} />
         <View style={s.row}>
-          <Text style={s.rowTitle}>Private Profile</Text>
+          <Text style={s.rowTitle}>{t('private_profile', 'Private Profile')}</Text>
           <Switch value={privateProfile} onValueChange={setPrivateProfile} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
         </View>
 
         {/* About */}
-        <Text style={s.sectionLabel}>About</Text>
-        {['Mega Radio', 'Privacy Policy', 'Terms and Conditions'].map((title, i) => (
+        <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
+        {[t('mega_radio', 'Mega Radio'), t('privacy_policy', 'Privacy Policy'), t('terms_conditions', 'Terms and Conditions')].map((title, i) => (
           <React.Fragment key={i}>
             <TouchableOpacity style={s.row}>
               <Text style={s.rowTitle}>{title}</Text>
@@ -490,7 +490,7 @@ export default function ProfileScreen() {
         ))}
 
         {/* Social */}
-        <Text style={[s.sectionLabel, { textAlign: 'center', backgroundColor: 'transparent' }]}>Social Media</Text>
+        <Text style={[s.sectionLabel, { textAlign: 'center', backgroundColor: 'transparent' }]}>{t('social_media', 'Social Media')}</Text>
         <View style={s.socialRow}>
           {[
             { name: 'facebook-f' as const, bg: '#3b5998' },
@@ -505,7 +505,7 @@ export default function ProfileScreen() {
 
         {/* Logout */}
         <TouchableOpacity style={s.logoutBtn} onPress={() => setShowLogoutModal(true)} data-testid="profile-logout-btn">
-          <Text style={s.logoutText}>Log Out</Text>
+          <Text style={s.logoutText}>{t('log_out', 'Log Out')}</Text>
         </TouchableOpacity>
         <View style={{ height: 80 }} />
       </ScrollView>
