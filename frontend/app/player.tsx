@@ -22,6 +22,7 @@ import { useRecentlyPlayedStore } from '../src/store/recentlyPlayedStore';
 import { useAddFavorite, useRemoveFavorite, useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
 import userService from '../src/services/userService';
 import { useAuthStore } from '../src/store/authStore';
+import { useFavoritesStore } from '../src/store/favoritesStore';
 import { CarModeScreen } from '../src/components/CarModeScreen';
 import { ShareModal } from '../src/components/ShareModal';
 import { SleepTimerModal, SleepCounterModal } from '../src/components/SleepTimerModal';

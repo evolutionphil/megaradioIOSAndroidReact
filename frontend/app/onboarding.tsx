@@ -127,8 +127,6 @@ export default function OnboardingScreen() {
   };
 
   const handleNext = async () => {
-    if (isAnimating) return;
-    
     if (currentIndex < ONBOARDING_DATA.length - 1) {
       animateToNext(currentIndex + 1);
     } else {
