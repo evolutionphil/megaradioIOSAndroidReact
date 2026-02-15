@@ -11,144 +11,183 @@ The user wants to build a production-ready mobile radio streaming app called Meg
     - **User Features:** Favorites, Recently Played, Profile (Followers/Following).
     - **Authentication:** All API requests must include .
 - **New Feature Requests from this session:**
-    - Implement a Favorites from users section that displays public profiles from the  endpoint with pagination.
-    - Implement the Private Profile toggle in the settings.
-    - Add iOS and Android permissions required for a build.
-    - **Critical Performance Requirement:** All API requests must include the  query parameter to reduce payload size and improve performance, ideally via an Axios interceptor.
-    - Use the new  endpoint for initial data loading.
-    - Migrate from  to the newer  and  packages for SDK compatibility.
-    - The popular stations section on the home screen is still loading too slowly. It should be optimized to only fetch the top 4 stations needed for display.
+    - Implement local caching for  response to improve app startup time using a stale-while-revalidate pattern.
+    - Allow guest users to add favorites, store them locally, and sync them to their account upon login.
+    - Restructure the main tab bar to .
+    - Fix navigation bug where clicking a genre on the home page leads to the wrong screen.
+    - Fix broken List/Grid view toggle and sorting on the Favorites page.
+    - Adjust the Guest Profile page to show settings and limit login prompts.
+    - Fix various UI/UX bugs reported by the user.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The agent performed a massive and successful recovery and feature implementation session. It addressed the critical performance issue by implementing an Axios interceptor to add  to all API requests. It fixed the severe regressions from the previous session, including the broken Favorites page and the state management lag on the follow/unfollow buttons (by using optimistic updates).
+The agent successfully migrated the application from  to . It also integrated the new  endpoint to fetch initial app data (popular stations, genres, etc.) and refactored the corresponding data hooks (, ) to consume this data, aiming to improve performance.
 
-Furthermore, the agent completed several user requests:
-1.  Implemented the Private Profile toggle functionality.
-2.  Added the new Favorites from Users (Public Profiles) page with infinite scrolling.
-3.  Fixed login error handling and re-added the Continue without login option.
-4.  Added extensive missing Turkish translations across the app.
-5.  Added required iOS and Android permissions to .
+Following a large batch of user requests, the agent also performed a significant UI/UX overhaul:
+-   The main tab bar was restructured to .
+-   A new  screen was created.
+-   The navigation flow for clicking a genre on the home screen was fixed to go directly to the genre's detail page.
+-   The Guest User profile page was modified.
+-   List/Grid view functionality was added to the Favorites page.
+-   A text alignment issue on the Discoverable Genres banner was fixed.
 
-The agent used the testing subagent to validate its changes and fixed the reported issues (missing route and hardcoded translations). However, the user reported that the initial loading of Popular Stations is still too slow and requested a migration from .
+However, the user's latest feedback indicates several regressions and new bugs have been introduced, and a new high-priority feature (local caching) has been requested.
 
 **Last working item**:
-- **Last item agent was working**: The agent had just completed a large batch of bug fixes and feature implementations, updated the , and was calling the  tool when it received new feedback from the user.
-- **Status**: USER VERIFICATION PENDING
-- **Agent Testing Done**: Y
-- **Which testing method agent to use?**: Frontend testing agent. The next test plan should focus on verifying the performance of the popular stations loading and the successful migration of .
-- **User Testing Done**: N (The user has not yet tested the full suite of fixes but has provided new feedback on specific items).
+- **Last item agent was working**: The agent had just finished a batch of UI/UX changes and was preparing to call the  tool when the user provided extensive new feedback, including bug reports and a high-priority feature request for local caching.
+- **Status**: BLOCKED (new user feedback has introduced high-priority blocking issues).
+- **Agent Testing Done**: Y (for the changes before the latest user feedback).
+- **Which testing method agent to use?**: Frontend testing agent. The test plan must verify all the new bug fixes and the local caching implementation.
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1: Slow Initial Load for Popular Stations (P0)**: Despite the  fix, the user reports that the Popular Stations section still loads very slowly. The user suggests that the API call might be fetching all popular stations instead of just the 4 that are displayed, and that it should be limited. This is a recurring performance issue and is the highest priority.
+-   **Issue 1: Broken Profile Page UI (P0)**: The user reports that the profile page design is severely broken on the web after recent changes.
+-   **Issue 2: Empty Popular Genres Section on Web (P1)**: The user noted that the Popular Genres section is now empty on the web version, indicating a data fetching or rendering regression.
+-   **Issue 3: Incorrect Genre Display in Genres Tab (P1)**: The new Genres tab only shows 3 genres, not all genres for the selected country as expected.
+-   **Issue 4: Sorting and View Toggle on Favorites Page (P2)**: The user reports that sorting (A-Z, Z-A, etc.) on the Favorites page is not working. The List/Grid view toggle was implemented but needs verification.
+-   **Issue 5: Slow Initial Load (Recurring)**: While  was integrated, the user wants to eliminate network dependency on startup by implementing local caching.
 
 **Issues Detail:**
-- **Issue 1: Slow Initial Load for Popular Stations (P0)**
-    - **Attempted fixes**: The agent added an Axios interceptor to append  to all requests, which was expected to solve performance issues. However, the specific query for popular stations remains slow.
+- **Issue 1: Broken Profile Page UI (P0)**
+    - **Attempted fixes**: The agent modified  to change the layout for guest users. This seems to have broken the overall design.
     - **Next debug checklist**:
-        1.  Locate the API call that fetches Popular Stations. This is likely within  or , possibly as part of the  call.
-        2.  Analyze the data returned from that call. Is it returning all popular stations or just a few?
-        3.  Modify the API call to explicitly request only the top 4 stations. This might involve adding a  parameter to the request, e.g., .
-        4.  If the data comes from , check if that data can be sliced or if a separate, more limited API call is needed for a faster initial render.
-    - **Why fix this issue and what will be achieved with the fix?**: A fast app start is critical for user retention. Fixing this will resolve one of the user's most persistent complaints.
+        1.  Review the changes made to .
+        2.  Inspect the component on the web using browser dev tools to identify the CSS/layout issues.
+        3.  Re-implement the guest user logic without breaking the existing design for logged-in users. The user suggested only adding Sign In/Sign Up buttons at the bottom.
+    - **Why fix this issue and what will be achieved with the fix?**: The profile page is a core screen and must be functional and visually correct.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Frontend
+    - **Blocked on other issue**: None.
+
+- **Issue 2: Empty Popular Genres Section on Web (P1)**
+    - **Attempted fixes**: The agent refactored data hooks to use data from . This change likely introduced the bug.
+    - **Next debug checklist**:
+        1.  Examine the component that renders Popular Genres (likely ).
+        2.  Debug the data hook ( or a similar hook) to see why it's returning an empty array on the web.
+        3.  Check the React Query cache to see if the  data is being populated correctly and if the hook is reading from it properly.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a major content discovery feature on the home screen.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Frontend
+
+- **Issue 3: Incorrect Genre Display in Genres Tab (P1)**
+    - **Attempted fixes**: A new  page was created.
+    - **Next debug checklist**:
+        1.  Inspect the code in .
+        2.  Verify the data hook being used (?) and check if it's being called with a  parameter or if the data is being sliced incorrectly.
+        3.  Ensure it's fetching all genres from the  cache or a dedicated API call.
+    - **Why fix this issue and what will be achieved with the fix?**: The genres page should allow users to browse all available genres.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: Frontend
+
+- **Issue 4: Sorting and View Toggle on Favorites Page (P2)**
+    - **Attempted fixes**: The agent implemented the view toggle but did not touch the sorting logic.
+    - **Next debug checklist**:
+        1.  Review .
+        2.  Locate the sorting state management and the logic that reorders the favorites list.
+        3.  Implement the sorting functions based on the user's selection (A-Z, Newest, etc.).
+        4.  Verify the List/Grid view toggle works as expected with the sorted data.
+    - **Why fix this issue and what will be achieved with the fix?**: Provides essential user-requested functionality for managing favorites.
     - **Status**: NOT STARTED
     - **Is recurring issue?**: Y
     - **Should Test frontend/backend/both after fix?**: Frontend
 
 **In progress Task List**:
-None.
+None. The next task will be implementing the local caching feature.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
-- **P1: Migrate from  to /**: As requested by the user for compatibility with newer Expo SDKs (user mentioned SDK 51, but the agent should target the project's current SDK version). This is a technical debt task required for future builds.
-- **P2: Verify Unresolved Minor Bugs**:
-    - **UI Layout Bug**: Re-investigate the text overlapping images on genre pages ().
-    - **Post-Login Navigation**: Test the login flow specifically on Expo Go to confirm the user is correctly redirected to the main tabs screen () and not a modal profile page.
+-   **P0: Implement Local Caching for **:
+    -   **Where to resume**: Create/modify a service file (e.g., ).
+    -   **What will be achieved**: Implement the stale-while-revalidate pattern using  as specified by the user. This will make the app load instantly on subsequent launches.
+    -   **Status**: NOT STARTED
+-   **P1: Local Favorites for Guest Users**:
+    -   **Where to resume**: Modify  hook and related components.
+    -   **What will be achieved**: Allow non-logged-in users to add/remove favorites, storing them in . Implement a sync mechanism that merges local favorites with account favorites upon login.
+    -   **Status**: NOT STARTED
 
 **Future Tasks:**
-- Finalize Social Sign-In flow once a development build is created.
-- Fix the Sleep Timer bug (requires more user feedback/details).
-- Fix recurring UI bugs (Glow Effect, Static Equalizer).
+-   Finalize Social Sign-In flow once a development build is created.
+-   Fix the Sleep Timer bug (requires more user feedback/details).
+-   Fix recurring UI bugs (Glow Effect, Static Equalizer).
+-   Verify post-login navigation behavior on Expo Go.
 
 **Completed work in this session**
-- **Performance Optimization**: Implemented an Axios interceptor in  to automatically add  to all API requests.
-- **Regression Fix (Favorites Page)**: Restored the missing play button and styles in .
-- **State Management Fix (Follow Button)**: Implemented optimistic updates in  and  to provide immediate UI feedback.
-- **Feature (Private Profile)**: Implemented the functionality for the Private Profile toggle in .
-- **Feature (Public Profiles)**: Created the new Favorites from Users page at  with infinite scrolling and added navigation to it from the favorites tab.
-- **Internationalization**: Added a significant number of missing Turkish translations to  and refactored  to be translatable.
-- **Login Flow**: Improved error handling in  and re-implemented the Continue without login feature.
-- **Configuration**: Added necessary permissions for iOS and Android to .
-- **Routing**: Added the new  screen to the navigator in .
-
-**Earlier issues found/mentioned but not fixed**
-- **Issue 1: UI/Layout Bug on Genre Pages**
-    - **Debug checklist**: Inspect the styling in . The agent previously checked this file but did not apply a fix. A style adjustment like  or Flexbox properties is likely needed.
-    - **Why to solve this issue and what will be achieved with this?**: Improves UI polish and professionalism.
-    - **Should Test frontend/backend/both after fix?**: Frontend
-- **Issue 2: Incorrect Post-Login Navigation on Expo Go**
-    - **Debug checklist**: The current redirect is  in . This needs to be tested on a native device/simulator using Expo Go to see if Expo Router's stack behavior differs from the web. The fix might involve using a more explicit path like .
-    - **Why to solve this issue and what will be achieved with this?**: Ensures a consistent and correct user flow on all platforms.
-    - **Should Test frontend/backend/both after fix?**: Frontend
+-   **Migration**: Migrated from  to , updating , , and the  hook.
+-   **API Integration**: Integrated the  endpoint to fetch initial application data.
+-   **Data Hook Refactor**: Updated  and  to use data from the  call.
+-   **Tab Bar Restructuring**: Removed the Records tab and added a new Genres tab in . Created the base file .
+-   **Navigation Fix**: Corrected the  handler in  to navigate directly to  when a genre is clicked.
+-   **Favorites Page UI**: Implemented a List/Grid view toggle in .
+-   **Guest Profile UI**: Modified  to change the view for guest users (though this introduced bugs).
+-   **Styling**: Adjusted text alignment on the discoverable genres banner in .
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Axios Interceptor**: Used to globally modify API requests to include the  parameter for performance.
-- **React Query - Optimistic Updates**: Successfully used  to provide instant UI feedback for follow/unfollow actions, dramatically improving user experience.
-- **React Query - Infinite Scroll**: Implemented with  on the  page to handle pagination.
-- **Expo Router**: Configuration was updated to include the new  route.
+-   **Expo Audio Migration**: Replaced the  package and refactored the audio player hook to use the new  API.
+-   **Centralized Data Fetching**: Use of a single  endpoint to load initial data for multiple components.
+-   **React Query Caching**: Hooks were refactored to read from React Query's cache, which is populated by the  call. The next step is to add a persistent  layer.
+-   **Expo Router**: Modified  to alter the app's primary navigation structure.
 
 **All files of reference**
--  (Interceptor implementation)
--  (Potential location of slow popular stations query)
--  (UI fixed, new button added)
--  (Private profile toggle implemented)
--  (New feature page)
--  and  (Optimistic updates)
--  (Permissions added)
--  (For checking  and other dependencies for migration)
+-    (For local caching implementation)
+-    (Needs UI fix)
+-    (Check for empty genres bug)
+-    (Check for limited genres bug)
+-    (Needs sorting and view toggle fix)
+-    (Completed migration)
+-    (Completed tab restructure)
 
 **Critical Info for New Agent**
-- **Continue communicating in Turkish.**
-- Your immediate priority is the **P0 performance issue** with Popular Stations. The user's suggestion to limit the API query to 4 items is your primary lead.
-- After fixing the performance issue, the next task is the technical migration from  to /.
-- The user's trust has been largely restored due to the comprehensive fixes in this session. Maintain this by being thorough and addressing their new feedback promptly.
+-   **Continue communicating in Turkish.**
+-   The user has provided very specific, technical feedback and a clear implementation plan for the highest priority task: **local caching of the  response using **. This must be the first task.
+-   After implementing caching, address the user's list of regressions and bugs in order of priority (Profile UI, empty genres, etc.).
+-   The user also requested a new feature for guest favorites. This should be prioritized after the critical bug fixes.
+-   The agent introduced several regressions in the last step. Be extra careful to test changes thoroughly before finishing.
 
 **documents and test reports created in this job**
-- 
--  (updated)
+-    (updated)
+-    (Passed, but is now outdated due to new bugs reported by the user)
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **User (LATEST)**: Stated that the Popular Stations section is still loading very slowly and suggested limiting the API request to only the 4 stations shown. Also requested a migration from  to / for Expo SDK 51 compatibility. **Status: PENDING**
-- **User**: I approve. And provided critical information from a backend developer about adding  to all API requests via an interceptor, a new  endpoint, and requested adding app permissions for an upcoming build. **Status: COMPLETED**
+-   **User (LATEST)**: Provided a detailed technical plan for implementing a local cache () for the  data using a stale-while-revalidate pattern. Also reported several critical bugs: broken profile page UI, empty popular genres on web, new genres tab only showing 3 items, and non-functional sorting on the favorites page. Additionally, requested a new feature for guest users to save favorites locally. **Status: PENDING**
+-   **User**: yes, continue. **Status: COMPLETED**
+-   **User**: Agreed to the agent's plan for UI/UX changes. **Status: COMPLETED**
+-   **User**: Requested major UI/UX changes: restructure tab bar, fix genre navigation, update guest profile, fix favorites view/sorting, and fix text alignment. **Status: IN PROGRESS (partially done, but introduced bugs)**
+-   **User**: Asked agent to integrate the  endpoint with specific parameters and response structure. **Status: COMPLETED**
+-   **User**: Asked if the  query was being used. **Status: COMPLETED**
 
 **Project Health Check:**
-- **Broken:**
-    - Performance of Popular Stations initial load.
-- **Mocked:**
-    - N/A
+-   **Broken:**
+    -   Profile page UI/layout on web.
+    -   Popular Genres section is empty on web.
+    -   Genres tab shows incomplete data.
+    -   Sorting functionality on the Favorites page.
 
 **3rd Party Integrations**
-- **MegaRadio API:** 
-- **i18next & react-i18next**: For internationalization.
-- **Zustand & React Query:** State management and data fetching.
-- **Expo AV ()**: Slated for migration to /.
+-   **MegaRadio API:** 
+-   **i18next & react-i18next**: For internationalization.
+-   **Zustand & React Query:** State management and data fetching.
+-   **Expo Audio ()**: For in-app audio playback.
+-   **AsyncStorage ()**: To be used for local caching.
 
 **Testing status**
-- **Testing agent used after significant changes:** YES
-- **Test files created:** None.
-- **Known regressions:** All major regressions from the previous fork were fixed in this session.
+-   **Testing agent used after significant changes:** YES (but before latest user bug reports).
+-   **Troubleshoot agent used after agent stuck in loop:** NO
+-   **Test files created:** None.
+-   **Known regressions:** Profile page UI, empty popular genres, incomplete genre list.
 
 **Credentials to test flow:**
-- **API Key**:  (sent in  header).
-- **Test User**:
-    - **Email**: 
-    - **Password**: 
+-   **API Key**:  (sent in  header).
+-   **Test User**:
+    -   **Email**: 
+    -   **Password**: 
 
 **What agent forgot to execute**
-The agent did a very thorough job. However, two minor issues from the previous fork's bug list were not fully resolved and need re-verification:
-- The UI text overlap on genre pages was inspected but not fixed.
-- The Expo Go-specific navigation bug after login was not explicitly tested on a native platform.</analysis>
+-   The agent did not implement or test the sorting functionality on the Favorites page, as requested by the user.
+-   The agent's implementation of the guest profile page and the refactoring of data hooks introduced several major UI/data regressions that need immediate attention.</analysis>
