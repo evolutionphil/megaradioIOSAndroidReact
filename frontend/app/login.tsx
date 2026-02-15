@@ -232,6 +232,9 @@ export default function LoginScreen() {
             <TouchableOpacity onPress={handleGoToSignup}>
               <Text style={styles.footerText}>{t('dont_have_account', "Don't you have an account?")}</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.replace('/')} style={styles.continueWithoutBtn}>
+              <Text style={styles.continueWithoutText}>{t('continue_without_login', 'Continue without login')}</Text>
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
