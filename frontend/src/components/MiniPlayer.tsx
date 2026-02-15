@@ -85,9 +85,17 @@ export const MiniPlayer: React.FC = () => {
   };
 
   const handleFavorite = async () => {
+    console.log('[MiniPlayer] handleFavorite called');
     if (currentStation) {
-      await toggleFavorite(currentStation);
-      console.log('[MiniPlayer] Toggled favorite for:', currentStation.name);
+      console.log('[MiniPlayer] Calling toggleFavorite for station:', currentStation._id);
+      try {
+        await toggleFavorite(currentStation);
+        console.log('[MiniPlayer] toggleFavorite completed successfully');
+      } catch (err) {
+        console.error('[MiniPlayer] toggleFavorite error:', err);
+      }
+    } else {
+      console.log('[MiniPlayer] No currentStation available');
     }
   };
 
