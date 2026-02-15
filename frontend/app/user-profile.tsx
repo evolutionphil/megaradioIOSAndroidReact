@@ -157,19 +157,23 @@ export default function UserProfileScreen() {
 
     if (!userId) return;
 
+    // Optimistic update - UI'ı hemen güncelle
+    const wasFollowing = isFollowing;
+    setIsFollowing(!wasFollowing);
+    setFollowerCount(prev => wasFollowing ? Math.max(0, prev - 1) : prev + 1);
     setFollowLoading(true);
+
     try {
-      if (isFollowing) {
+      if (wasFollowing) {
         await api.post(`https://themegaradio.com/api/user-engagement/unfollow/${userId}`);
-        setIsFollowing(false);
-        setFollowerCount(prev => Math.max(0, prev - 1));
       } else {
         await api.post(`https://themegaradio.com/api/user-engagement/follow/${userId}`);
-        setIsFollowing(true);
-        setFollowerCount(prev => prev + 1);
       }
     } catch (error: any) {
       console.error('Follow/unfollow error:', error);
+      // Hata durumunda geri al
+      setIsFollowing(wasFollowing);
+      setFollowerCount(prev => wasFollowing ? prev + 1 : Math.max(0, prev - 1));
       Alert.alert('Error', 'Failed to update follow status. Please try again.');
     } finally {
       setFollowLoading(false);
