@@ -268,11 +268,19 @@ export const getCachedInitData = (): TvInitResponse | null => {
 };
 
 /**
- * Clear cached init data
+ * Clear cached init data (both in-memory and persistent)
  */
-export const clearInitCache = (): void => {
+export const clearInitCache = async (): Promise<void> => {
   cachedInitData = null;
   cacheTimestamp = 0;
+  cachedCountry = null;
+  cachedLang = null;
+  try {
+    await AsyncStorage.removeItem(TV_INIT_CACHE_KEY);
+    console.log('[TvInit] Cache cleared');
+  } catch (error) {
+    console.log('[TvInit] Error clearing cache:', error);
+  }
 };
 
 /**
