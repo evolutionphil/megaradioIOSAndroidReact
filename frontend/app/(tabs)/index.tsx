@@ -497,6 +497,13 @@ export default function HomeScreen() {
                       style={StyleSheet.absoluteFill}
                       resizeMode="cover"
                     />
+                    {/* Gradient overlay for text readability */}
+                    <LinearGradient
+                      colors={['transparent', 'rgba(0,0,0,0.7)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={StyleSheet.absoluteFill}
+                    />
                     <View style={styles.discoverableBannerContent}>
                       <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
                       <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover all the stations')}</Text>
