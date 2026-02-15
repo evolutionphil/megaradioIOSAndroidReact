@@ -153,3 +153,13 @@ export const HeartOutlineIcon: React.FC<IconProps> = ({ color, size = 20 }) => (
     />
   </Svg>
 );
+
+// Heart filled for favorites
+export const HeartFilledIcon: React.FC<IconProps> = ({ color, size = 20 }) => (
+  <Svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+    <Path
+      d="M10 17.5l-1.05-.95C4.85 12.95 2 10.35 2 7.25 2 4.67 4.01 2.5 6.5 2.5c1.4 0 2.75.65 3.5 1.7.75-1.05 2.1-1.7 3.5-1.7C16.01 2.5 18 4.67 18 7.25c0 3.1-2.85 5.7-6.95 9.3L10 17.5z"
+      fill={color}
+    />
+  </Svg>
+);
