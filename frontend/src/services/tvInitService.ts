@@ -7,9 +7,11 @@ import { QueryClient } from '@tanstack/react-query';
 import i18n from './i18nService';
 
 export interface TvInitGenre {
+  _id: string;
   name: string;
   slug: string;
   stationCount: number;
+  posterImage?: string;
 }
 
 export interface TvInitStation {
@@ -18,10 +20,18 @@ export interface TvInitStation {
   slug: string;
   favicon?: string;
   url: string;
+  urlResolved?: string;
   url_resolved?: string;
   country?: string;
+  countrycode?: string;
+  state?: string;
   tags?: string;
   votes?: number;
+  clickCount?: number;
+  codec?: string;
+  bitrate?: number;
+  hls?: boolean;
+  language?: string;
 }
 
 export interface TvInitResponse {
