@@ -587,6 +587,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#888',
   },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  playButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FF4081',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   heartButton: {
     width: 44,
     height: 44,
