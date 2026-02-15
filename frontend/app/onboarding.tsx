@@ -125,18 +125,6 @@ export default function OnboardingScreen() {
     opacity: interpolate(glowScale.value, [1, 1.15], [0.6, 0.9], Extrapolation.CLAMP),
   }));
 
-  // Image slide animation style
-  const imageAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: slideX.value }],
-    opacity: fadeOpacity.value,
-  }));
-
-  // Content fade and slide animation style
-  const contentAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: contentFadeOpacity.value,
-    transform: [{ translateY: contentSlideY.value }],
-  }));
-
   const animateToNext = (newIndex: number) => {
     // Animasyon olmadan direkt geçiş
     setCurrentIndex(newIndex);
