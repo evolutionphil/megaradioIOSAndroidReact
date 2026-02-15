@@ -71,7 +71,90 @@ let cachedLang: string | null = null;
 const CACHE_DURATION = CACHE_TTL;
 
 /**
+ * Load cached data from AsyncStorage (persistent)
+ */
+const loadFromAsyncStorage = async (): Promise<CachedData | null> => {
+  try {
+    const cached = await AsyncStorage.getItem(TV_INIT_CACHE_KEY);
+    if (cached) {
+      const parsed: CachedData = JSON.parse(cached);
+      return parsed;
+    }
+  } catch (error) {
+    console.log('[TvInit] Error loading from AsyncStorage:', error);
+  }
+  return null;
+};
+
+/**
+ * Save data to AsyncStorage (persistent)
+ */
+const saveToAsyncStorage = async (data: TvInitResponse, country?: string, lang?: string): Promise<void> => {
+  try {
+    const cacheData: CachedData = {
+      data,
+      timestamp: Date.now(),
+      country,
+      lang,
+    };
+    await AsyncStorage.setItem(TV_INIT_CACHE_KEY, JSON.stringify(cacheData));
+    console.log('[TvInit] Saved to AsyncStorage');
+  } catch (error) {
+    console.log('[TvInit] Error saving to AsyncStorage:', error);
+  }
+};
+
+/**
+ * Fetch data from API and cache it
+ */
+const fetchAndCache = async (country?: string, lang?: string): Promise<TvInitResponse> => {
+  console.log('[TvInit] Fetching from API...', { country, lang });
+  
+  const response = await api.get<TvInitResponse>('/api/tv/init', {
+    params: {
+      country: country || undefined,
+      lang: lang || 'tr',
+    },
+  });
+
+  const data = response.data;
+  
+  // Update in-memory cache
+  cachedInitData = data;
+  cacheTimestamp = Date.now();
+  cachedCountry = country || null;
+  cachedLang = lang || null;
+
+  // Save to persistent storage (async, non-blocking)
+  saveToAsyncStorage(data, country, lang).catch(() => {});
+
+  console.log('[TvInit] Data fetched successfully:', {
+    countries: data.countries?.length || 0,
+    genres: data.genres?.length || 0,
+    translations: Object.keys(data.translations || {}).length,
+    popularStations: data.popularStations?.length || 0,
+    responseTime: data.responseTime,
+  });
+
+  return data;
+};
+
+/**
+ * Refresh data in background without blocking UI
+ */
+const refreshInBackground = (country?: string, lang?: string): void => {
+  console.log('[TvInit] Starting background refresh...');
+  fetchAndCache(country, lang).catch((error) => {
+    console.log('[TvInit] Background refresh failed:', error);
+  });
+};
+
+/**
  * Fetch all initial app data in one request
+ * Implements stale-while-revalidate pattern:
+ * 1. Return cached data immediately (if available)
+ * 2. Refresh in background if cache is stale
+ * 
  * @param country - Country name or ISO code (Turkey, TR, Germany, DE)
  * @param lang - Language code (tr, en, de, ar)
  */
@@ -79,40 +162,47 @@ export const fetchTvInit = async (
   country?: string,
   lang?: string
 ): Promise<TvInitResponse> => {
-  // Return cached data if still fresh
   const now = Date.now();
+
+  // 1. Check in-memory cache first (fastest)
   if (cachedInitData && (now - cacheTimestamp) < CACHE_DURATION) {
-    console.log('[TvInit] Returning cached data');
+    console.log('[TvInit] Returning in-memory cached data');
     return cachedInitData;
   }
 
-  console.log('[TvInit] Fetching init data...', { country, lang });
-  
+  // 2. Check AsyncStorage cache (persistent, survives app restart)
   try {
-    // Note: This endpoint is already optimized, no need for tv=1 param
-    const response = await api.get<TvInitResponse>('/api/tv/init', {
-      params: {
-        country: country || undefined,
-        lang: lang || 'tr',
-      },
-    });
-
-    cachedInitData = response.data;
-    cacheTimestamp = now;
-
-    console.log('[TvInit] Data fetched successfully:', {
-      countries: response.data.countries?.length || 0,
-      genres: response.data.genres?.length || 0,
-      translations: Object.keys(response.data.translations || {}).length,
-      popularStations: response.data.popularStations?.length || 0,
-      responseTime: response.data.responseTime,
-    });
-
-    return response.data;
+    const persistedCache = await loadFromAsyncStorage();
+    if (persistedCache) {
+      const isExpired = (now - persistedCache.timestamp) > CACHE_TTL;
+      
+      // Update in-memory cache from persisted data
+      cachedInitData = persistedCache.data;
+      cacheTimestamp = persistedCache.timestamp;
+      cachedCountry = persistedCache.country || null;
+      cachedLang = persistedCache.lang || null;
+      
+      if (!isExpired) {
+        console.log('[TvInit] Cache valid, returning persisted data (age:', Math.round((now - persistedCache.timestamp) / 1000 / 60), 'minutes)');
+        // Optionally refresh in background if cache is more than 12 hours old
+        if ((now - persistedCache.timestamp) > CACHE_TTL / 2) {
+          refreshInBackground(country, lang);
+        }
+        return persistedCache.data;
+      } else {
+        console.log('[TvInit] Cache expired, returning stale data and refreshing...');
+        // Return stale data immediately, refresh in background
+        refreshInBackground(country, lang);
+        return persistedCache.data;
+      }
+    }
   } catch (error) {
-    console.error('[TvInit] Error fetching init data:', error);
-    throw error;
+    console.log('[TvInit] Error checking persistent cache:', error);
   }
+
+  // 3. No cache available, fetch from API (blocking)
+  console.log('[TvInit] No cache, fetching fresh data...');
+  return await fetchAndCache(country, lang);
 };
 
 /**
