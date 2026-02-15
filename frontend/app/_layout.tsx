@@ -13,6 +13,9 @@ import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
 import { AnimatedSplash } from '../src/components/AnimatedSplash';
 import { preloadEssentialData } from '../src/services/preloadService';
+import { initializeApp as initializeTvData } from '../src/services/tvInitService';
+import { useLocationStore } from '../src/store/locationStore';
+import { useLanguageStore } from '../src/store/languageStore';
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
