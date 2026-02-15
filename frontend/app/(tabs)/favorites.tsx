@@ -605,6 +605,55 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
 
+  // Grid content
+  gridContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 120,
+  },
+  gridRow: {
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  gridItem: {
+    width: '31%',
+    alignItems: 'center',
+  },
+  gridImageContainer: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: '#2A2A2C',
+    marginBottom: 8,
+  },
+  gridImage: {
+    width: '100%',
+    height: '100%',
+  },
+  gridPlayingIndicator: {
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#FF4081',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gridName: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#FFF',
+    textAlign: 'center',
+    marginBottom: 2,
+  },
+  gridGenre: {
+    fontSize: 11,
+    color: '#888',
+    textAlign: 'center',
+  },
+
   // Station Card
   stationCard: {
     flexDirection: 'row',
