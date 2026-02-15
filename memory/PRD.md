@@ -6,7 +6,7 @@ A production-ready mobile radio streaming application built with React Native + 
 ## Tech Stack
 - **Frontend**: React Native, Expo, TypeScript
 - **State Management**: Zustand, React Query v5
-- **Audio**: expo-av
+- **Audio**: expo-audio (migrated from deprecated expo-av)
 - **Navigation**: Expo Router
 - **Animations**: react-native-reanimated
 - **Internationalization**: i18next, react-i18next
@@ -42,7 +42,17 @@ A production-ready mobile radio streaming application built with React Native + 
 ### Build Configuration (app.json)
 - **iOS**: Background audio, location, photo library, camera, microphone permissions
 - **Android**: Internet, network state, location, foreground service, wake lock, storage, camera, audio permissions
-- **Plugins**: expo-router, expo-splash-screen, expo-location, expo-image-picker, expo-av
+- **Plugins**: expo-router, expo-splash-screen, expo-location, expo-image-picker, expo-audio
+
+### Session 17 - expo-av to expo-audio Migration (December 2025)
+- **COMPLETED**: Migrated from deprecated expo-av to expo-audio
+- **Files Changed**: 
+  - `src/hooks/useAudioPlayer.ts` - Complete rewrite using expo-audio hooks
+  - `app.json` - Changed plugin from expo-av to expo-audio
+  - `package.json` - Removed expo-av, added expo-audio v1.1.1
+- **API Changes**: Using useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync hooks instead of Audio.Sound class
+- **Genre Detail Fix**: Added textAlign: 'center' and maxWidth to prevent text overflow
+- **Login Redirect Fix**: Changed from router.replace('/') to router.replace('/(tabs)/discover') for Expo Go compatibility
 
 ## File Structure
 ```
@@ -91,10 +101,9 @@ A production-ready mobile radio streaming application built with React Native + 
 1. Social Sign-In (requires development build for native auth)
 2. Sleep Timer bug fix
 3. Glow Effect and Static Equalizer UI bugs
-4. expo-av deprecation migration (expo-audio, expo-video)
+4. Popular Stations slow loading optimization (add limit=4 parameter)
 
 ## Known Issues
-- expo-av deprecated warning (will be removed in SDK 54)
 - TypeScript strict mode warnings for Image component uri types
 - Expo Router typed routes warnings for new pages
 
