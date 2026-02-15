@@ -352,6 +352,16 @@ const styles = StyleSheet.create({
   footer: {
     alignItems: 'center',
     paddingBottom: spacing.xxl,
+    gap: spacing.md,
+  },
+  continueWithoutBtn: {
+    marginTop: spacing.sm,
+  },
+  continueWithoutText: {
+    fontFamily: 'Ubuntu-Medium',
+    fontSize: typography.sizes.md,
+    color: colors.textSecondary,
+    textDecorationLine: 'underline',
   },
   footerText: {
     fontFamily: 'Ubuntu-Medium',
