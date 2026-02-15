@@ -88,6 +88,8 @@ const audioManager = AudioManager.getInstance();
 export const useAudioPlayer = () => {
   const listeningStartRef = useRef<Date | null>(null);
   const [audioSource, setAudioSource] = useState<string | null>(null);
+  const [pendingPlay, setPendingPlay] = useState(false);
+  const pendingPlayIdRef = useRef<number>(0);
   
   // expo-audio hook - creates player instance
   const player = useExpoAudioPlayer(audioSource ? audioSource : undefined);
@@ -110,6 +112,36 @@ export const useAudioPlayer = () => {
   useEffect(() => {
     audioManager.setPlayer(player);
   }, [player]);
+  
+  // Auto-play when player is ready and pendingPlay is true
+  useEffect(() => {
+    if (pendingPlay && player && status && !status.playing && !status.isBuffering) {
+      const currentPlayId = audioManager.getPlayId();
+      if (pendingPlayIdRef.current === currentPlayId) {
+        try {
+          console.log('[useAudioPlayer] Auto-playing - player ready');
+          player.play();
+          setPendingPlay(false);
+        } catch (e) {
+          console.warn('[useAudioPlayer] Auto-play failed:', e);
+          // Retry after delay
+          setTimeout(() => {
+            if (pendingPlayIdRef.current === audioManager.getPlayId() && player) {
+              try {
+                player.play();
+                setPendingPlay(false);
+              } catch (e2) {
+                console.error('[useAudioPlayer] Retry play also failed:', e2);
+                setError('Unable to start playback');
+                setPlaybackState('error');
+                setPendingPlay(false);
+              }
+            }
+          }, 500);
+        }
+      }
+    }
+  }, [pendingPlay, player, status, setError, setPlaybackState]);
 
   // Set up audio mode ONCE globally
   useEffect(() => {
