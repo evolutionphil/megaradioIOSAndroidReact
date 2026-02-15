@@ -131,7 +131,9 @@ export const MiniPlayer: React.FC = () => {
             style={styles.controlButton}
             onPress={handlePlayPause}
             disabled={isLoading}
-            data-testid="mini-player-play-pause"
+            testID="mini-player-play-pause"
+            accessibilityLabel={isPlaying ? "Pause" : "Play"}
+            accessibilityRole="button"
           >
             {isLoading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
