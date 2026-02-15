@@ -277,50 +277,27 @@ export default function PlayerScreen() {
   const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
   const { data: popularData } = usePopularStations(undefined, 12);
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  // Use favoritesStore for guest/authenticated favorites
+  const { isFavorite: checkIsFavorite, toggleFavorite } = useFavoritesStore();
   const [checkingFavorite, setCheckingFavorite] = useState(false);
-
-  const addFavoriteMutation = useAddFavorite();
-  const removeFavoriteMutation = useRemoveFavorite();
-
-  useEffect(() => {
-    if (isAuthenticated && currentStation) {
-      checkFavoriteStatus();
-    }
-  }, [isAuthenticated, currentStation?._id]);
-
-  const checkFavoriteStatus = async () => {
-    if (!currentStation) return;
-    setCheckingFavorite(true);
-    try {
-      const result = await userService.checkFavorite(currentStation._id);
-      setIsFavorite(result.isFavorite);
-    } catch {
-      // Ignore
-    } finally {
-      setCheckingFavorite(false);
-    }
-  };
+  
+  // Check if current station is favorited
+  const isFavorite = currentStation ? checkIsFavorite(currentStation._id) : false;
 
   const handleClose = () => {
     router.back();
   };
 
   const handleToggleFavorite = async () => {
-    if (!currentStation || !isAuthenticated) {
-      router.push('/login');
-      return;
-    }
+    if (!currentStation) return;
+    
+    setCheckingFavorite(true);
     try {
-      if (isFavorite) {
-        await removeFavoriteMutation.mutateAsync(currentStation._id);
-        setIsFavorite(false);
-      } else {
-        await addFavoriteMutation.mutateAsync(currentStation._id);
-        setIsFavorite(true);
-      }
+      await toggleFavorite(currentStation);
     } catch (error) {
       console.error('Toggle favorite error:', error);
+    } finally {
+      setCheckingFavorite(false);
     }
   };
 
