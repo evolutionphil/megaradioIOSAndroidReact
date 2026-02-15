@@ -190,11 +190,17 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   toggleFavorite: async (station: Station) => {
     const { isFavorite, addFavorite, removeFavorite } = get();
     
+    console.log('[FavoritesStore] toggleFavorite called for:', station._id, station.name);
+    console.log('[FavoritesStore] isFavorite:', isFavorite(station._id));
+    
     if (isFavorite(station._id)) {
+      console.log('[FavoritesStore] Removing favorite...');
       await removeFavorite(station._id);
     } else {
+      console.log('[FavoritesStore] Adding favorite...');
       await addFavorite(station);
     }
+    console.log('[FavoritesStore] toggleFavorite complete');
   },
 
   setSortOption: (option: SortOption) => {
