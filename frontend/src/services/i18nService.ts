@@ -306,6 +306,9 @@ const turkishTranslations: Record<string, string> = {
   please_enter_password: 'Lütfen şifrenizi girin',
   please_enter_name: 'Lütfen adınızı girin',
   invalid_email: 'Lütfen geçerli bir e-posta adresi girin',
+  network_error: 'Bağlantı hatası. Lütfen internet bağlantınızı kontrol edin.',
+  login_error: 'Giriş başarısız. Lütfen tekrar deneyin.',
+  continue_without_login: 'Giriş yapmadan devam et',
   
   // Profile
   profile_followers: 'Takipçiler',
