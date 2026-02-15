@@ -193,14 +193,16 @@ export const usePrecomputedGenres = (country?: string) => {
         // Return in same format as API
         return { success: true, data: cachedGenres };
       }
-      // Fallback to API call
-      console.log('[useQueries] Fetching genres from API');
-      return genreService.getPrecomputedGenres(country);
+      // Fallback to API call - ALWAYS call API if cache is empty
+      console.log('[useQueries] Cache empty, fetching genres from API');
+      const result = await genreService.getPrecomputedGenres(country);
+      console.log('[useQueries] API returned genres:', result?.data?.length || 0);
+      return result;
     },
     staleTime: CACHE_TTL.GENRES_ALL,
     gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true, // Allow refetch on mount if cache is stale
   });
 };
 
