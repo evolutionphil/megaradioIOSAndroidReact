@@ -13,10 +13,10 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 ## Core Features (Implemented)
 1. **Radio Streaming**: In-app audio playback with expo-audio
 2. **Tab Navigation**: Discover | Genres | Favorites | Profile
-3. **Local Caching**: TV init data cached with stale-while-revalidate pattern
-4. **Guest User Support**: Settings and profile accessible without login
-5. **Favorites**: Add/remove favorites (syncs on login)
-6. **Genres**: Browse all genres with station counts
+3. **Local Caching**: TV init data and genres cached with stale-while-revalidate pattern
+4. **Guest User Support**: Settings, profile, and favorites accessible without login
+5. **Favorites**: Add/remove favorites (syncs on login, works for guests too)
+6. **Genres**: Browse all genres sorted by station count
 7. **Popular Stations**: Shows popular stations from user's country
 
 ## Implementation Status
@@ -36,55 +36,70 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] **Favorites Auto-load** - App loads favorites from AsyncStorage on startup
 - [x] **Onboarding Animations Removed** - Instant transitions between steps
 
-### Bug Fixes (December 2025 - Latest Session)
+### Bug Fixes (Latest Session - December 2025)
+
+#### Session 1 Fixes (Verified):
 1. **Guest Language Navigation** - Fixed path from `/language` to `/languages` in profile.tsx
 2. **Genre Country Filtering** - Fixed to use country name instead of countryCode for API filtering
-3. **MiniPlayer Button Events** - Restructured to avoid nested TouchableOpacity issues causing uncaught errors on Expo Go
+3. **MiniPlayer Button Events** - Restructured to avoid nested TouchableOpacity issues
 4. **GenreCard Text Alignment** - Fixed subtitle alignment with `alignItems: 'flex-start'`
-5. **Stale Favorites on Logout** - Logout now clears AsyncStorage favorites for clean guest state
+5. **Stale Favorites on Logout** - Logout now clears AsyncStorage favorites
 6. **MiniPlayer Play/Pause Error** - Fixed by removing nested TouchableOpacity structure
 
-### Previous Bug Fixes (February 2025)
-1. **Popular Stations Empty**: Fixed React Query cache key mismatch
-2. **Genres Tab Limited**: Changed from usePrecomputedGenres to useGenres hook
-3. **Profile UI Broken**: Added missing StyleSheet properties
-4. **Favorites Sorting**: Fixed toLowerCase comparison for A-Z/Z-A sorting
+#### Session 2 Fixes (Current):
+1. **isAnimating Error in Onboarding** - FIXED: Removed unused `isAnimating` variable reference
+2. **Guest Favorites in Player Page** - FIXED: Player.tsx now uses favoritesStore instead of redirecting to login
+3. **Genre Sorting** - FIXED: Genres now sorted by station count (most stations first)
+4. **Genres Local Caching** - FIXED: Added AsyncStorage caching for genres (24hr TTL)
+5. **Audio Player Play Error (Expo Go)** - IN PROGRESS: 
+   - Root cause: `expo-audio` native module lifecycle issue in Expo Go
+   - Added pendingPlay state with useEffect to wait for player ready state
+   - This is a known Expo Go limitation - may require development build for full fix
 
 ## Key Files
-- `frontend/src/services/tvInitService.ts` - Local caching implementation
-- `frontend/src/hooks/useQueries.ts` - Data fetching hooks
-- `frontend/app/(tabs)/genres.tsx` - Genres tab screen
-- `frontend/app/(tabs)/profile.tsx` - Profile screen (guest language nav fixed)
-- `frontend/app/genre-detail.tsx` - Genre stations with country filtering
+- `frontend/app/onboarding.tsx` - Fixed isAnimating reference
+- `frontend/app/player.tsx` - Fixed guest favorites support
+- `frontend/app/(tabs)/genres.tsx` - Added sorting and local caching
+- `frontend/src/hooks/useAudioPlayer.ts` - Audio playback with pending play fix
 - `frontend/src/components/MiniPlayer.tsx` - Mini player controls
-- `frontend/src/components/GenreCard.tsx` - Genre card UI
-- `frontend/src/store/authStore.ts` - Auth state with logout cleanup
 - `frontend/src/store/favoritesStore.ts` - Favorites state management
 
 ## API Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
 - **Test User**: gey14853@outlook.com / Muhammed5858
 
+## Known Issues
+
+### Critical - Expo Go Audio Playback
+**Error**: `FunctionCallException: Calling the 'play' function has failed - NativeSharedObjectNotFoundException`
+
+**Cause**: When changing audio source in expo-audio, the hook creates a new player instance but the old reference becomes invalid. Expo Go has stricter native module loading than development builds.
+
+**Workarounds Applied**:
+1. Added pendingPlay state to wait for player ready
+2. Use useEffect to trigger play when new player is ready
+3. Added retry logic with increasing delays
+
+**Recommended Solution**: Build a development build instead of using Expo Go:
+```bash
+eas build --profile development --platform android
+```
+
 ## Backlog
 
 ### P1 - High Priority
-1. **API Performance Test** - Measure and report caching performance improvement
-2. **Sleep Timer Fix** - Investigate and fix sleep timer functionality
+1. **Audio Playback on Expo Go** - May require development build
+2. **API Performance Test** - Measure caching performance improvement
+3. **Sleep Timer Fix** - Investigate and fix sleep timer functionality
 
 ### P2 - Medium Priority
 1. **Glow Effect and Static Equalizer** - UI improvements for player screen
 2. **Social Sign-In Finalization** - Complete OAuth integration
 3. **Post-login Navigation Behavior** - Verify on Expo Go
 
-## API Performance
-- **API Response Time**: ~370-450ms per request
-- **Response Size**: ~65KB (compressed)
-- **Local Cache**: 24hr TTL, stale-while-revalidate pattern
-- **Performance Gain**: ~99% faster app startup with cache
+## Test Reports
+- `/app/test_reports/iteration_0.json` - Previous testing session
+- `/app/test_reports/iteration_21.json` - Bug fixes verification
 
 ## User Language
 Turkish (Türkçe)
-
-## Test Reports
-- `/app/test_reports/iteration_0.json` - Previous testing session
-- `/app/test_reports/iteration_21.json` - Latest bug fixes verification (all 6 bugs PASSED)
