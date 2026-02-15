@@ -210,8 +210,8 @@ export default function OnboardingScreen() {
         locations={[0, 0.2942]}
         style={styles.gradientOverlay}
       >
-        {/* Content section with animation */}
-        <Animated.View style={[styles.contentSection, contentAnimatedStyle]}>
+        {/* Content section - no animation */}
+        <View style={styles.contentSection}>
           {/* Title */}
           <Text style={styles.title}>{currentItem.title}</Text>
           
