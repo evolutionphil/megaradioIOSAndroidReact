@@ -237,14 +237,24 @@ export const initializeApp = async (
 
     // 3. Cache popular stations in React Query
     if (data.popularStations && data.popularStations.length > 0) {
-      // Cache with country key for consistency with existing queries
+      // Cache with multiple keys for flexibility
       // Format: { stations: Station[] } to match usePopularStations return format
-      queryClient.setQueryData(['popularStations', country || 'global', 8], { 
-        stations: data.popularStations.slice(0, 8) 
-      });
-      queryClient.setQueryData(['popularStations', country || 'global', 21], { 
-        stations: data.popularStations 
-      });
+      const stationsData8 = { stations: data.popularStations.slice(0, 8) };
+      const stationsData12 = { stations: data.popularStations.slice(0, 12) };
+      const stationsData21 = { stations: data.popularStations };
+      
+      // Cache with country-specific key
+      queryClient.setQueryData(['popularStations', country || 'global', 8], stationsData8);
+      queryClient.setQueryData(['popularStations', country || 'global', 12], stationsData12);
+      queryClient.setQueryData(['popularStations', country || 'global', 21], stationsData21);
+      
+      // Also cache with 'global' key for fallback when no country is selected
+      if (country) {
+        queryClient.setQueryData(['popularStations', 'global', 8], stationsData8);
+        queryClient.setQueryData(['popularStations', 'global', 12], stationsData12);
+        queryClient.setQueryData(['popularStations', 'global', 21], stationsData21);
+      }
+      
       console.log('[TvInit] Cached', data.popularStations.length, 'popular stations');
     }
 
