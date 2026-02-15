@@ -415,23 +415,115 @@ export default function ProfileScreen() {
   }
 
   // ── MAIN PROFILE ──
-  // If not authenticated, show login prompt
+  // If not authenticated, show Guest User Settings
   if (!user) {
     return (
       <SafeAreaView style={s.container} edges={['top']}>
-        <View style={s.guestContainer}>
-          <View style={s.guestAvatar}>
-            <Ionicons name="person" size={48} color="#888" />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Guest Header */}
+          <View style={s.header}>
+            <View style={s.avatarRow}>
+              <View style={s.avatar}>
+                <Ionicons name="person" size={48} color="#888" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={s.name}>{t('guest_user', 'Guest User')}</Text>
+              </View>
+            </View>
           </View>
-          <Text style={s.guestSubtitle}>{t('sign_in_prompt', 'Sign in to access your profile, favorites, and more')}</Text>
-          <TouchableOpacity 
-            style={s.loginBtn} 
-            onPress={() => router.push('/auth-options')}
-            data-testid="profile-login-btn"
-          >
-            <Text style={s.loginBtnText}>{t('sign_in_sign_up', 'Sign In / Sign Up')}</Text>
-          </TouchableOpacity>
-        </View>
+
+          {/* Settings Section */}
+          <View style={s.section}>
+            <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
+
+            {/* Account - Redirects to Login */}
+            <TouchableOpacity 
+              style={s.row} 
+              onPress={() => router.push('/auth-options')}
+              data-testid="guest-account-btn"
+            >
+              <Ionicons name="person-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('account', 'Account')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+
+            {/* Language Picker */}
+            <TouchableOpacity 
+              style={s.row}
+              onPress={() => router.push('/language')}
+              data-testid="guest-language-btn"
+            >
+              <Ionicons name="language-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('language', 'Language')}</Text>
+              <View style={s.rowRight}>
+                <Text style={s.rowVal}>{LANGUAGE_NAMES[currentLanguage] || 'English'}</Text>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </View>
+            </TouchableOpacity>
+
+            {/* Country Picker */}
+            <TouchableOpacity 
+              style={s.row} 
+              onPress={() => setCurrentPage('country')}
+              data-testid="guest-country-btn"
+            >
+              <Ionicons name="location-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('country', 'Country')}</Text>
+              <View style={s.rowRight}>
+                <Text style={s.rowVal}>{country || 'Not set'}</Text>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </View>
+            </TouchableOpacity>
+
+            {/* Private Profile - Login Required */}
+            <TouchableOpacity 
+              style={s.row} 
+              onPress={() => router.push('/auth-options')}
+              data-testid="guest-private-profile-btn"
+            >
+              <Ionicons name="lock-closed-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('private_profile', 'Private Profile')}</Text>
+              <View style={s.rowRight}>
+                <Text style={[s.rowVal, { color: '#888' }]}>{t('login_required', 'Login Required')}</Text>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* About Section */}
+          <View style={s.section}>
+            <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
+
+            <TouchableOpacity style={s.row} onPress={() => Linking.openURL('https://themegaradio.com')}>
+              <Ionicons name="information-circle-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('about_us', 'About Us')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={s.row} onPress={() => Linking.openURL('https://themegaradio.com/terms')}>
+              <Ionicons name="document-text-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('terms', 'Terms of Service')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={s.row} onPress={() => Linking.openURL('https://themegaradio.com/privacy')}>
+              <Ionicons name="shield-checkmark-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('privacy', 'Privacy Policy')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Login Button */}
+          <View style={s.section}>
+            <TouchableOpacity 
+              style={s.loginBtn} 
+              onPress={() => router.push('/auth-options')}
+              data-testid="guest-login-btn"
+            >
+              <Text style={s.loginBtnText}>{t('sign_in_sign_up', 'Sign In / Sign Up')}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
