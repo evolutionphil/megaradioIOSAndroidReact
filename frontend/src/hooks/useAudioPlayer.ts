@@ -279,12 +279,41 @@ export const useAudioPlayer = () => {
       setAudioSource(url);
       
       // Give expo-audio time to load the new source, then play
-      setTimeout(() => {
-        if (audioManager.getPlayId() === myPlayId && player) {
-          player.play();
-          console.log('[useAudioPlayer] PlayID', myPlayId, '- Play triggered');
-        }
-      }, 100);
+      // Use longer timeout and verify player state before play
+      const attemptPlay = (attempt: number = 1, maxAttempts: number = 5) => {
+        setTimeout(() => {
+          const currentPlayer = audioManager.getPlayer();
+          if (audioManager.getPlayId() !== myPlayId) {
+            console.log('[useAudioPlayer] PlayID', myPlayId, '- STALE, aborting play attempt');
+            return;
+          }
+          
+          if (currentPlayer) {
+            try {
+              currentPlayer.play();
+              console.log('[useAudioPlayer] PlayID', myPlayId, '- Play triggered (attempt', attempt, ')');
+            } catch (e) {
+              console.warn('[useAudioPlayer] Play attempt', attempt, 'failed:', e);
+              if (attempt < maxAttempts) {
+                attemptPlay(attempt + 1, maxAttempts);
+              } else {
+                setError('Unable to start playback');
+                setPlaybackState('error');
+              }
+            }
+          } else {
+            console.warn('[useAudioPlayer] Player not ready, attempt', attempt);
+            if (attempt < maxAttempts) {
+              attemptPlay(attempt + 1, maxAttempts);
+            } else {
+              setError('Player initialization failed');
+              setPlaybackState('error');
+            }
+          }
+        }, attempt * 200); // Increasing delay: 200, 400, 600, 800, 1000ms
+      };
+      
+      attemptPlay();
       
       listeningStartRef.current = new Date();
       console.log('[useAudioPlayer] ========== LOADING NEW STATION ==========');
