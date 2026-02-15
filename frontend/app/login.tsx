@@ -105,7 +105,17 @@ export default function LoginScreen() {
       console.error('Login error:', err);
       console.error('Error response:', err.response?.data);
       setHasError(true);
-      setError(t('wrong_credentials', 'Wrong email or password! Try again'));
+      
+      // Handle specific error cases
+      if (err.response?.status === 401 || err.response?.status === 400) {
+        setError(t('wrong_credentials', 'Wrong email or password! Try again'));
+      } else if (err.response?.data?.error || err.response?.data?.message) {
+        setError(err.response.data.error || err.response.data.message);
+      } else if (err.code === 'NETWORK_ERROR' || !err.response) {
+        setError(t('network_error', 'Network error. Please check your connection.'));
+      } else {
+        setError(t('login_error', 'Login failed. Please try again.'));
+      }
     } finally {
       setIsLoading(false);
     }
