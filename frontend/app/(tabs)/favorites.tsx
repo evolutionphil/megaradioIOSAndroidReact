@@ -399,6 +399,19 @@ const getGenreDisplay = (station: Station): string => {
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <TouchableOpacity
+              style={styles.publicProfilesLink}
+              onPress={() => router.push('/public-profiles')}
+              data-testid="favorites-from-users-btn"
+            >
+              <View style={styles.publicProfilesIcon}>
+                <Ionicons name="people" size={20} color="#FF4081" />
+              </View>
+              <Text style={styles.publicProfilesText}>{t('favorites_from_users', 'Favorites from Users')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#888" />
+            </TouchableOpacity>
+          }
         />
       )}
 
