@@ -78,7 +78,8 @@ export default function RootLayout() {
   useEffect(() => {
     if (!preloadStarted.current) {
       preloadStarted.current = true;
-      // Initialize i18n
+      
+      // Initialize i18n first
       initI18n().then(() => {
         setI18nReady(true);
         console.log('[Layout] i18n initialized');
@@ -86,7 +87,28 @@ export default function RootLayout() {
         console.log('[Layout] i18n init error:', err);
         setI18nReady(true); // Continue anyway
       });
-      // Run preload in background without blocking
+      
+      // Fetch TV init data - single request for all essential data
+      // Get country and language from stores
+      const { countryCode, countryEnglish } = useLocationStore.getState();
+      const { currentLanguage } = useLanguageStore.getState();
+      
+      const country = countryCode || countryEnglish || 'TR'; // Default to Turkey
+      const lang = currentLanguage || 'tr';
+      
+      console.log('[Layout] Starting TV init with country:', country, 'lang:', lang);
+      
+      initializeTvData(queryClient, country, lang)
+        .then((data) => {
+          if (data) {
+            console.log('[Layout] TV init complete - loaded genres:', data.genres?.length, 'stations:', data.popularStations?.length);
+          }
+        })
+        .catch(err => {
+          console.log('[Layout] TV init error (non-blocking):', err);
+        });
+      
+      // Also run legacy preload in background for public profiles
       preloadEssentialData(queryClient).catch(err => {
         console.log('[Layout] Preload error (non-blocking):', err);
       });
