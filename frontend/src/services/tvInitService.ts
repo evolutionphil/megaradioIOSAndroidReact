@@ -238,8 +238,13 @@ export const initializeApp = async (
     // 3. Cache popular stations in React Query
     if (data.popularStations && data.popularStations.length > 0) {
       // Cache with country key for consistency with existing queries
-      queryClient.setQueryData(['popularStations', country || 'global', 8], data.popularStations.slice(0, 8));
-      queryClient.setQueryData(['popularStations', country || 'global', 21], data.popularStations);
+      // Format: { stations: Station[] } to match usePopularStations return format
+      queryClient.setQueryData(['popularStations', country || 'global', 8], { 
+        stations: data.popularStations.slice(0, 8) 
+      });
+      queryClient.setQueryData(['popularStations', country || 'global', 21], { 
+        stations: data.popularStations 
+      });
       console.log('[TvInit] Cached', data.popularStations.length, 'popular stations');
     }
 
