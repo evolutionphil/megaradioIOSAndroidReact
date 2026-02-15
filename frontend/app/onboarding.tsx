@@ -89,29 +89,7 @@ const storage = {
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isChecking, setIsChecking] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(false);
   const currentItem = ONBOARDING_DATA[currentIndex];
-  
-  // Animation values for slide/fade transitions
-  const slideX = useSharedValue(0);
-  const fadeOpacity = useSharedValue(1);
-  const contentFadeOpacity = useSharedValue(1);
-  const contentSlideY = useSharedValue(0);
-  
-  // Check if onboarding is already complete - redirect if so
-  useEffect(() => {
-    const checkStatus = async () => {
-      const complete = await checkOnboardingComplete();
-      console.log('[Onboarding] Checking status:', complete);
-      if (complete) {
-        console.log('[Onboarding] Already complete, redirecting to home');
-        router.replace('/(tabs)');
-      } else {
-        setIsChecking(false);
-      }
-    };
-    checkStatus();
-  }, []);
   
   // Glow animation for next button
   const glowScale = useSharedValue(1);
