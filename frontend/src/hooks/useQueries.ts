@@ -184,8 +184,18 @@ export const useGenres = (page: number = 1, limit: number = 50) => {
 
 export const usePrecomputedGenres = (country?: string) => {
   return useQuery({
-    queryKey: queryKeys.precomputedGenres(country),
-    queryFn: () => genreService.getPrecomputedGenres(country),
+    queryKey: ['precomputedGenres', country],
+    queryFn: async () => {
+      // First try to get from TV init cache (instant, no network)
+      const cachedGenres = getCachedGenres();
+      if (cachedGenres && cachedGenres.length > 0) {
+        console.log('[useQueries] Using cached genres from TV init:', cachedGenres.length);
+        return cachedGenres;
+      }
+      // Fallback to API call
+      console.log('[useQueries] Fetching genres from API');
+      return genreService.getPrecomputedGenres(country);
+    },
     staleTime: CACHE_TTL.GENRES_ALL,
     gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
