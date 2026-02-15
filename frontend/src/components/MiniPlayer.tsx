@@ -155,7 +155,10 @@ export const MiniPlayer: React.FC = () => {
           {/* Favorite Button */}
           <TouchableOpacity
             style={styles.controlButton}
-            onPress={handleFavorite}
+            onPress={(e) => {
+              e.stopPropagation();
+              handleFavorite();
+            }}
             testID="mini-player-favorite"
             accessibilityLabel="Toggle Favorite"
             accessibilityRole="button"
