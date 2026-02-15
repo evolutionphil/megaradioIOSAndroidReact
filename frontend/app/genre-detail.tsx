@@ -89,7 +89,7 @@ export default function GenreDetailScreen() {
     slug, 
     page, 
     100, 
-    countryCode || undefined,
+    country || undefined,
     sortParams.sort,
     sortParams.order
   );
