@@ -31,12 +31,16 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - [x] Added missing styles for Profile page components
 - [x] Improved Favorites sorting logic (case-insensitive)
 - [x] Added login sync for local favorites
+- [x] **Guest Favorites** - Non-logged-in users can now add favorites via MiniPlayer heart icon
+- [x] **Heart Icon Toggle** - MiniPlayer shows filled/outline heart based on favorite status
+- [x] **Favorites Auto-load** - App loads favorites from AsyncStorage on startup for both guest and logged-in users
 
 ### Bug Fixes (February 2025)
 1. **Popular Stations Empty**: Fixed React Query cache key mismatch between initializeApp and usePopularStations
 2. **Genres Tab Limited**: Changed from usePrecomputedGenres to useGenres hook to fetch all genres
 3. **Profile UI Broken**: Added missing StyleSheet properties (name, section, rowIcon, etc.)
 4. **Favorites Sorting**: Fixed toLowerCase comparison for A-Z/Z-A sorting
+5. **MiniPlayer Button Events**: Fixed event propagation issue where control buttons were triggering parent navigation
 
 ## Key Files
 - `frontend/src/services/tvInitService.ts` - Local caching implementation
