@@ -137,7 +137,10 @@ export const MiniPlayer: React.FC = () => {
           {/* Play/Pause Button */}
           <TouchableOpacity
             style={styles.controlButton}
-            onPress={handlePlayPause}
+            onPress={(e) => {
+              e.stopPropagation();
+              handlePlayPause();
+            }}
             disabled={isLoading}
             testID="mini-player-play-pause"
             accessibilityLabel={isPlaying ? "Pause" : "Play"}
