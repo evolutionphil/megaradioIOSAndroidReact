@@ -16,6 +16,7 @@ import { preloadEssentialData } from '../src/services/preloadService';
 import { initializeApp as initializeTvData } from '../src/services/tvInitService';
 import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
+import { useFavoritesStore } from '../src/store/favoritesStore';
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
