@@ -185,7 +185,7 @@ const getGenreDisplay = (station: Station): string => {
     { key: 'custom', label: t('custom_order', 'Custom order') },
   ];
 
-  // Render station item
+  // Render station item (List View)
   const renderStationItem = ({ item, index }: { item: Station; index: number }) => {
     const isPlaying = isStationPlaying(item);
 
@@ -215,6 +215,38 @@ const getGenreDisplay = (station: Station): string => {
       );
     }
 
+    // Grid View
+    if (viewMode === 'grid') {
+      return (
+        <TouchableOpacity
+          style={styles.gridItem}
+          onPress={() => handleStationPress(item)}
+          activeOpacity={0.7}
+          data-testid={`favorite-grid-${item._id}`}
+        >
+          <View style={styles.gridImageContainer}>
+            <Image
+              source={{ uri: getLogoUrl(item) }}
+              style={styles.gridImage}
+              defaultSource={{ uri: FALLBACK_LOGO }}
+            />
+            {isPlaying && (
+              <View style={styles.gridPlayingIndicator}>
+                <Ionicons name="pause" size={16} color="#FFF" />
+              </View>
+            )}
+          </View>
+          <Text style={[styles.gridName, isPlaying && styles.stationNamePlaying]} numberOfLines={1}>
+            {item.name}
+          </Text>
+          <Text style={styles.gridGenre} numberOfLines={1}>
+            {getGenreDisplay(item)}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+
+    // List View (default)
     return (
       <TouchableOpacity
         style={styles.stationCard}
