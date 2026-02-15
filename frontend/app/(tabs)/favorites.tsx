@@ -235,14 +235,24 @@ const getGenreDisplay = (station: Station): string => {
             {getGenreDisplay(item)}
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.heartButton}
-          onPress={() => handleRemoveFavorite(item._id)}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          data-testid={`remove-favorite-${item._id}`}
-        >
-          <Ionicons name="heart" size={24} color="#FF4081" />
-        </TouchableOpacity>
+        <View style={styles.actionButtons}>
+          <TouchableOpacity
+            style={styles.playButton}
+            onPress={() => handleStationPress(item)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            data-testid={`play-favorite-${item._id}`}
+          >
+            <Ionicons name={isPlaying ? "pause" : "play"} size={18} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.heartButton}
+            onPress={() => handleRemoveFavorite(item._id)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            data-testid={`remove-favorite-${item._id}`}
+          >
+            <Ionicons name="heart" size={24} color="#FF4081" />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
     );
   };
