@@ -309,6 +309,10 @@ const turkishTranslations: Record<string, string> = {
   network_error: 'Bağlantı hatası. Lütfen internet bağlantınızı kontrol edin.',
   login_error: 'Giriş başarısız. Lütfen tekrar deneyin.',
   continue_without_login: 'Giriş yapmadan devam et',
+  login_with_apple: 'Apple ile Giriş Yap',
+  login_with_facebook: 'Facebook ile Giriş Yap',
+  login_with_google: 'Google ile Giriş Yap',
+  login_with_mail: 'E-posta ile Giriş Yap',
   
   // Profile
   profile_followers: 'Takipçiler',
