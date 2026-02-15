@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,30 +14,88 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { useGenres, usePrecomputedGenres } from '../../src/hooks/useQueries';
 import { useLocationStore } from '../../src/store/locationStore';
 import type { Genre } from '../../src/types';
+
+const GENRES_CACHE_KEY = '@megaradio_genres_cache';
+const GENRES_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 export default function GenresTabScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const { countryCode } = useLocationStore();
+  const [cachedGenres, setCachedGenres] = useState<Genre[]>([]);
+  const { country } = useLocationStore();
 
   // Use the full genres endpoint (returns all 27+ genres) instead of precomputed/cached
   const { data: genresData, isLoading, refetch } = useGenres(1, 100);
 
   // Extract genres from API response
-  const genres = genresData?.data || genresData?.genres || [];
+  const apiGenres = genresData?.data || genresData?.genres || [];
 
-  // Filter genres based on search
-  const filteredGenres = useMemo(() => {
-    if (!searchQuery.trim()) return genres;
-    return genres.filter((g: any) => 
-      g.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // Load cached genres on mount
+  useEffect(() => {
+    const loadCachedGenres = async () => {
+      try {
+        const cached = await AsyncStorage.getItem(GENRES_CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          const isStale = Date.now() - timestamp > GENRES_CACHE_TTL;
+          if (!isStale && Array.isArray(data)) {
+            setCachedGenres(data);
+          }
+        }
+      } catch (error) {
+        console.log('[Genres] Error loading cache:', error);
+      }
+    };
+    loadCachedGenres();
+  }, []);
+
+  // Cache genres when API data arrives
+  useEffect(() => {
+    if (apiGenres.length > 0) {
+      const cacheGenres = async () => {
+        try {
+          await AsyncStorage.setItem(GENRES_CACHE_KEY, JSON.stringify({
+            data: apiGenres,
+            timestamp: Date.now(),
+          }));
+          setCachedGenres(apiGenres);
+        } catch (error) {
+          console.log('[Genres] Error caching:', error);
+        }
+      };
+      cacheGenres();
+    }
+  }, [apiGenres]);
+
+  // Use API genres if available, otherwise use cached
+  const genres = apiGenres.length > 0 ? apiGenres : cachedGenres;
+
+  // Sort genres by station count (descending) and filter by search
+  const filteredAndSortedGenres = useMemo(() => {
+    let result = [...genres];
+    
+    // Sort by station count (most stations first)
+    result.sort((a: any, b: any) => {
+      const countA = a.stationCount || a.total_stations || 0;
+      const countB = b.stationCount || b.total_stations || 0;
+      return countB - countA;
+    });
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      result = result.filter((g: any) => 
+        g.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return result;
   }, [genres, searchQuery]);
 
   const onRefresh = async () => {
