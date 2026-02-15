@@ -3,6 +3,7 @@ import stationService, { StationQueryParams } from '../services/stationService';
 import genreService from '../services/genreService';
 import userService from '../services/userService';
 import api from '../services/api';
+import { getCachedPopularStations, getCachedGenres } from '../services/tvInitService';
 import type { Station } from '../types';
 
 // Cache TTL Configuration (based on backend developer recommendations)
