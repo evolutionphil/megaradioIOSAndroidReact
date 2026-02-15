@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
-import { usePrecomputedGenres } from '../../src/hooks/useQueries';
+import { useGenres, usePrecomputedGenres } from '../../src/hooks/useQueries';
 import { useLocationStore } from '../../src/store/locationStore';
 import type { Genre } from '../../src/types';
 
@@ -26,9 +26,11 @@ export default function GenresTabScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
 
-  const { data: genresData, isLoading, refetch } = usePrecomputedGenres(countryCode || undefined);
+  // Use the full genres endpoint (returns all 27+ genres) instead of precomputed/cached
+  const { data: genresData, isLoading, refetch } = useGenres(1, 100);
 
-  const genres = genresData?.data || [];
+  // Extract genres from API response
+  const genres = genresData?.data || genresData?.genres || [];
 
   // Filter genres based on search
   const filteredGenres = useMemo(() => {
