@@ -204,6 +204,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         secureStorage.removeItem(TOKEN_KEY),
         secureStorage.removeItem(USER_KEY),
       ]);
+      
+      // Clear guest favorites on logout to ensure clean state for new users
+      // Import dynamically to avoid circular dependency
+      const AsyncStorage = await import('@react-native-async-storage/async-storage');
+      await Promise.all([
+        AsyncStorage.default.removeItem('@megaradio_favorites'),
+        AsyncStorage.default.removeItem('@megaradio_favorites_order'),
+      ]);
+      
+      // Reset favorites store
+      const { useFavoritesStore } = await import('./favoritesStore');
+      useFavoritesStore.setState({ favorites: [], customOrder: [], isLoaded: false });
     } catch (error) {
       console.error('Error clearing auth storage:', error);
     }
