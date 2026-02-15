@@ -94,19 +94,21 @@ export default function UsersScreen() {
       return;
     }
 
+    // Optimistic update - UI'ı hemen güncelle
+    const wasFollowing = followingStatus[userId];
+    setFollowingStatus(prev => ({ ...prev, [userId]: !wasFollowing }));
     setLoadingFollow(prev => ({ ...prev, [userId]: true }));
-    const isCurrentlyFollowing = followingStatus[userId];
 
     try {
-      if (isCurrentlyFollowing) {
+      if (wasFollowing) {
         await api.post(`https://themegaradio.com/api/user-engagement/unfollow/${userId}`);
-        setFollowingStatus(prev => ({ ...prev, [userId]: false }));
       } else {
         await api.post(`https://themegaradio.com/api/user-engagement/follow/${userId}`);
-        setFollowingStatus(prev => ({ ...prev, [userId]: true }));
       }
     } catch (error) {
       console.error('Follow/unfollow error:', error);
+      // Hata durumunda geri al
+      setFollowingStatus(prev => ({ ...prev, [userId]: wasFollowing }));
     } finally {
       setLoadingFollow(prev => ({ ...prev, [userId]: false }));
     }
