@@ -12,7 +12,16 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.megaradio.app",
       "infoPlist": {
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": ["audio", "fetch", "remote-notification"],
+        "NSLocationWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
+        "NSPhotoLibraryUsageDescription": "Profil fotoğrafı yükleyebilmek için fotoğraf galerinize erişim gereklidir.",
+        "NSCameraUsageDescription": "Profil fotoğrafı çekebilmek için kamera erişimi gereklidir.",
+        "NSMicrophoneUsageDescription": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -21,7 +30,23 @@
         "backgroundColor": "#000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.megaradio.app"
+      "package": "com.megaradio.app",
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_WIFI_STATE",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "WAKE_LOCK",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "CAMERA",
+        "RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +62,24 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#000"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Profil fotoğrafı yükleyebilmek için fotoğraf galerinize erişim gereklidir."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir."
         }
       ]
     ],
