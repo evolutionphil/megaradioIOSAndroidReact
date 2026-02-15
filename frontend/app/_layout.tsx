@@ -113,6 +113,12 @@ export default function RootLayout() {
       preloadEssentialData(queryClient).catch(err => {
         console.log('[Layout] Preload error (non-blocking):', err);
       });
+      
+      // Load favorites (works for both guest and authenticated users)
+      console.log('[Layout] Loading favorites from storage...');
+      useFavoritesStore.getState().loadFavorites().catch(err => {
+        console.log('[Layout] Favorites load error (non-blocking):', err);
+      });
     }
   }, []);
 
