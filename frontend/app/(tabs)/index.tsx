@@ -133,7 +133,11 @@ export default function HomeScreen() {
   };
 
   const handleGenrePress = (genre: Genre) => {
-    router.push(`/discover?genre=${genre.slug}`);
+    // Navigate directly to genre-detail page
+    router.push({
+      pathname: '/genre-detail',
+      params: { slug: genre.slug, name: genre.name },
+    });
   };
 
   const genres = genresData?.data?.slice(0, 8) || [];
