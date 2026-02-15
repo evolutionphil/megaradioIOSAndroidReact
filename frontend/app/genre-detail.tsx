@@ -197,8 +197,8 @@ export default function GenreDetailScreen() {
             </View>
           )}
         </View>
-        <Text style={[styles.gridName, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>{station.name}</Text>
-        <Text style={[styles.gridLocation, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>
+        <Text style={[styles.gridName, { maxWidth: GRID_ITEM_WIDTH }]} numberOfLines={1} ellipsizeMode="tail">{station.name}</Text>
+        <Text style={[styles.gridLocation, { maxWidth: GRID_ITEM_WIDTH }]} numberOfLines={1} ellipsizeMode="tail">
           {station.country}{station.state ? `, ${station.state}` : ''}
         </Text>
       </TouchableOpacity>
@@ -509,11 +509,13 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
     fontFamily: typography.fonts.bold,
     color: colors.text,
+    textAlign: 'center',
   },
   gridLocation: {
     fontSize: typography.sizes.xs,
     fontFamily: typography.fonts.regular,
     color: colors.textSecondary,
+    textAlign: 'center',
   },
 
   // List View
