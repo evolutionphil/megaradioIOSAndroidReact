@@ -148,7 +148,11 @@ export const MiniPlayer: React.FC = () => {
             onPress={handleFavorite}
             data-testid="mini-player-favorite"
           >
-            <HeartOutlineIcon color="#FFFFFF" size={18} />
+            {isCurrentFavorite ? (
+              <HeartFilledIcon color="#FF4081" size={18} />
+            ) : (
+              <HeartOutlineIcon color="#FFFFFF" size={18} />
+            )}
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
