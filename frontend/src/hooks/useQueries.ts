@@ -233,17 +233,20 @@ export const useDiscoverableGenres = () => {
       const cachedGenres = getCachedGenres();
       if (cachedGenres && cachedGenres.length > 0) {
         console.log('[useQueries] Using cached discoverable genres from TV init:', cachedGenres.length);
-        // Return in same format as API
-        return { success: true, data: cachedGenres };
+        // Return genres directly (not wrapped in object)
+        return cachedGenres;
       }
-      // Fallback to API call
-      console.log('[useQueries] Fetching discoverable genres from API');
-      return genreService.getDiscoverableGenres();
+      // Fallback to API call - ALWAYS call API if cache is empty
+      console.log('[useQueries] Cache empty, fetching discoverable genres from API');
+      const result = await genreService.getDiscoverableGenres();
+      console.log('[useQueries] API returned discoverable genres:', Array.isArray(result) ? result.length : result?.data?.length || 0);
+      // API returns array directly
+      return Array.isArray(result) ? result : (result?.data || []);
     },
     staleTime: CACHE_TTL.GENRES_ALL,
     gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true, // Allow refetch on mount if cache is stale
   });
 };
 
