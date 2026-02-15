@@ -429,20 +429,25 @@ const getGenreDisplay = (station: Station): string => {
           data={filteredFavorites}
           renderItem={renderStationItem}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.listContent}
+          key={viewMode} // Force re-render when view mode changes
+          numColumns={viewMode === 'grid' ? 3 : 1}
+          contentContainerStyle={viewMode === 'grid' ? styles.gridContent : styles.listContent}
+          columnWrapperStyle={viewMode === 'grid' ? styles.gridRow : undefined}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
-            <TouchableOpacity
-              style={styles.publicProfilesLink}
-              onPress={() => router.push('/public-profiles')}
-              data-testid="favorites-from-users-btn"
-            >
-              <View style={styles.publicProfilesIcon}>
-                <Ionicons name="people" size={20} color="#FF4081" />
-              </View>
-              <Text style={styles.publicProfilesText}>{t('favorites_from_users', 'Favorites from Users')}</Text>
-              <Ionicons name="chevron-forward" size={20} color="#888" />
-            </TouchableOpacity>
+            viewMode === 'list' ? (
+              <TouchableOpacity
+                style={styles.publicProfilesLink}
+                onPress={() => router.push('/public-profiles')}
+                data-testid="favorites-from-users-btn"
+              >
+                <View style={styles.publicProfilesIcon}>
+                  <Ionicons name="people" size={20} color="#FF4081" />
+                </View>
+                <Text style={styles.publicProfilesText}>{t('favorites_from_users', 'Favorites from Users')}</Text>
+                <Ionicons name="chevron-forward" size={20} color="#888" />
+              </TouchableOpacity>
+            ) : null
           }
         />
       )}
