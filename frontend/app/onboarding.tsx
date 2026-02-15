@@ -185,14 +185,14 @@ export default function OnboardingScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
       
-      {/* Full screen background image with animation */}
-      <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
+      {/* Full screen background image - no animation */}
+      <View style={styles.imageContainer}>
         <Image 
           source={currentItem.image} 
           style={styles.backgroundImage} 
           resizeMode="cover" 
         />
-      </Animated.View>
+      </View>
       
       {/* Skip button - positioned at top right */}
       <TouchableOpacity
