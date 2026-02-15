@@ -231,7 +231,8 @@ export const useDiscoverableGenres = () => {
       const cachedGenres = getCachedGenres();
       if (cachedGenres && cachedGenres.length > 0) {
         console.log('[useQueries] Using cached discoverable genres from TV init:', cachedGenres.length);
-        return cachedGenres;
+        // Return in same format as API
+        return { success: true, data: cachedGenres };
       }
       // Fallback to API call
       console.log('[useQueries] Fetching discoverable genres from API');
