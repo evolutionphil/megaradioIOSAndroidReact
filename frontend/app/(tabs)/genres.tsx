@@ -159,13 +159,13 @@ export default function GenresTabScreen() {
           </View>
 
           {/* Genre List */}
-          {isLoading ? (
+          {isLoading && genres.length === 0 ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={colors.primary} />
             </View>
           ) : (
             <FlatList
-              data={filteredGenres}
+              data={filteredAndSortedGenres}
               renderItem={renderGenreItem}
               keyExtractor={(item: any) => item._id || item.slug}
               contentContainerStyle={styles.listContent}
