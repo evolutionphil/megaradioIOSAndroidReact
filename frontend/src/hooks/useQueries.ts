@@ -79,8 +79,18 @@ export const useStations = (params: StationQueryParams = {}) => {
 
 export const usePopularStations = (country?: string, limit: number = 12) => {
   return useQuery({
-    queryKey: [...queryKeys.popularStations, country, limit],
-    queryFn: () => stationService.getPopularStations(country, limit),
+    queryKey: ['popularStations', country || 'global', limit],
+    queryFn: async () => {
+      // First try to get from TV init cache (instant, no network)
+      const cachedStations = getCachedPopularStations(limit);
+      if (cachedStations && cachedStations.length > 0) {
+        console.log('[useQueries] Using cached popular stations from TV init:', cachedStations.length);
+        return cachedStations as unknown as Station[];
+      }
+      // Fallback to API call
+      console.log('[useQueries] Fetching popular stations from API');
+      return stationService.getPopularStations(country, limit);
+    },
     staleTime: CACHE_TTL.POPULAR_STATIONS,
     gcTime: CACHE_TTL.POPULAR_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
