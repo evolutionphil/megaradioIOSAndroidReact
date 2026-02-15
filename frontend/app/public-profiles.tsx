@@ -45,16 +45,16 @@ export default function PublicProfilesScreen() {
       const response = await api.get(API_ENDPOINTS.publicProfiles, {
         params: { page, limit: ITEMS_PER_PAGE }
       });
-      return response.data;
-    },
-    onSuccess: (data) => {
-      const profiles = data?.data || [];
+      const profiles = response.data?.data || [];
+      
       if (page === 1) {
         setAllProfiles(profiles);
       } else {
         setAllProfiles(prev => [...prev, ...profiles]);
       }
       setHasMore(profiles.length === ITEMS_PER_PAGE);
+      
+      return response.data;
     },
   });
 
