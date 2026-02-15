@@ -1,10 +1,17 @@
 // TV Init Service - Fetches all essential data in one request
 // Endpoint: GET /api/tv/init?country=TR&lang=tr
 // Returns: countries, genres, translations, popularStations
+// 
+// Implements stale-while-revalidate pattern with AsyncStorage for instant app startup
 
 import api from './api';
 import { QueryClient } from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './i18nService';
+
+// AsyncStorage keys
+const TV_INIT_CACHE_KEY = '@megaradio_tv_init_cache';
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 export interface TvInitGenre {
   _id: string;
@@ -12,6 +19,7 @@ export interface TvInitGenre {
   slug: string;
   stationCount: number;
   posterImage?: string;
+  discoverableImage?: string;
 }
 
 export interface TvInitStation {
@@ -19,6 +27,7 @@ export interface TvInitStation {
   name: string;
   slug: string;
   favicon?: string;
+  logo?: string;
   url: string;
   urlResolved?: string;
   url_resolved?: string;
@@ -32,6 +41,10 @@ export interface TvInitStation {
   bitrate?: number;
   hls?: boolean;
   language?: string;
+  logoAssets?: {
+    folder?: string;
+    webp96?: string;
+  };
 }
 
 export interface TvInitResponse {
@@ -43,10 +56,19 @@ export interface TvInitResponse {
   cacheAge: number;
 }
 
-// In-memory cache for init data
+interface CachedData {
+  data: TvInitResponse;
+  timestamp: number;
+  country?: string;
+  lang?: string;
+}
+
+// In-memory cache for init data (fast access)
 let cachedInitData: TvInitResponse | null = null;
 let cacheTimestamp: number = 0;
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours (matches server cache)
+let cachedCountry: string | null = null;
+let cachedLang: string | null = null;
+const CACHE_DURATION = CACHE_TTL;
 
 /**
  * Fetch all initial app data in one request
