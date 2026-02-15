@@ -64,6 +64,7 @@ export default function ProfileScreen() {
 
   const [notifications, setNotifications] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
+  const [privateProfileLoading, setPrivateProfileLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<'main' | 'account' | 'country'>('main');
 
   // Account modals
@@ -117,6 +118,45 @@ export default function ProfileScreen() {
         .finally(() => setCountriesLoading(false));
     }
   }, [currentPage]);
+
+  // Sync private profile status from user data
+  useEffect(() => {
+    if (user) {
+      // API returns isPublicProfile: true means profile is public
+      // So privateProfile = !isPublicProfile
+      setPrivateProfile(user.isPublicProfile === false);
+    }
+  }, [user]);
+
+  // Handle private profile toggle
+  const handlePrivateProfileToggle = async (value: boolean) => {
+    if (!user) return;
+    
+    setPrivateProfileLoading(true);
+    const previousValue = privateProfile;
+    
+    // Optimistic update
+    setPrivateProfile(value);
+    
+    try {
+      // API expects isPublicProfile (inverse of privateProfile)
+      await api.put('https://themegaradio.com/api/auth/profile', {
+        isPublicProfile: !value
+      });
+      
+      // Update user in auth store
+      const { updateUser } = useAuthStore.getState();
+      if (updateUser) {
+        updateUser({ ...user, isPublicProfile: !value });
+      }
+    } catch (error) {
+      console.error('Failed to update profile privacy:', error);
+      // Revert on error
+      setPrivateProfile(previousValue);
+    } finally {
+      setPrivateProfileLoading(false);
+    }
+  };
 
   const filteredCountries = countrySearch
     ? countries.filter(c => 
@@ -474,7 +514,13 @@ export default function ProfileScreen() {
         <View style={s.divider} />
         <View style={s.row}>
           <Text style={s.rowTitle}>{t('private_profile', 'Private Profile')}</Text>
-          <Switch value={privateProfile} onValueChange={setPrivateProfile} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
+          <Switch 
+            value={privateProfile} 
+            onValueChange={handlePrivateProfileToggle} 
+            trackColor={{ false: '#333', true: '#FF4199' }} 
+            thumbColor="#FFF"
+            disabled={privateProfileLoading}
+          />
         </View>
 
         {/* About */}
