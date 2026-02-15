@@ -85,16 +85,18 @@ export const usePopularStations = (country?: string, limit: number = 12) => {
       const cachedStations = getCachedPopularStations(limit);
       if (cachedStations && cachedStations.length > 0) {
         console.log('[useQueries] Using cached popular stations from TV init:', cachedStations.length);
-        return cachedStations as unknown as Station[];
+        // Return in same format as API response
+        return { stations: cachedStations as unknown as Station[] };
       }
       // Fallback to API call
       console.log('[useQueries] Fetching popular stations from API');
-      return stationService.getPopularStations(country, limit);
+      const stations = await stationService.getPopularStations(country, limit);
+      return { stations };
     },
     staleTime: CACHE_TTL.POPULAR_STATIONS,
     gcTime: CACHE_TTL.POPULAR_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true, // Allow refetch on mount if cache is stale
   });
 };
 
