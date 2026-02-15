@@ -84,9 +84,11 @@ export const MiniPlayer: React.FC = () => {
     }
   };
 
-  const handleFavorite = () => {
-    // TODO: Implement favorite toggle
-    console.log('Toggle favorite');
+  const handleFavorite = async () => {
+    if (currentStation) {
+      await toggleFavorite(currentStation);
+      console.log('[MiniPlayer] Toggled favorite for:', currentStation.name);
+    }
   };
 
   return (
