@@ -101,18 +101,14 @@ export const MiniPlayer: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.content}
-        onPress={handlePress}
-        activeOpacity={0.95}
-      >
+      <View style={styles.content}>
         {/* Chevron Up Button */}
         <TouchableOpacity style={styles.chevronButton} onPress={handlePress}>
           <ChevronUpIcon color="#FFFFFF" size={32} />
         </TouchableOpacity>
 
-        {/* Station Logo */}
-        <View style={styles.logoContainer}>
+        {/* Station Logo - Tappable to open player */}
+        <TouchableOpacity style={styles.logoContainer} onPress={handlePress} activeOpacity={0.8}>
           {logoUrl ? (
             <Image source={{ uri: logoUrl }} style={styles.logo} resizeMode="cover" />
           ) : (
@@ -120,17 +116,17 @@ export const MiniPlayer: React.FC = () => {
               <Ionicons name="radio" size={24} color="#FFFFFF" />
             </View>
           )}
-        </View>
+        </TouchableOpacity>
 
-        {/* Station Info */}
-        <View style={styles.info}>
+        {/* Station Info - Tappable to open player */}
+        <TouchableOpacity style={styles.info} onPress={handlePress} activeOpacity={0.8}>
           <Text style={styles.stationName} numberOfLines={1}>
             {currentStation.name}
           </Text>
           <Text style={styles.genreText} numberOfLines={1}>
             {getGenre()}
           </Text>
-        </View>
+        </TouchableOpacity>
 
         {/* Controls */}
         <View style={styles.controls}>
@@ -167,7 +163,7 @@ export const MiniPlayer: React.FC = () => {
             )}
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };
