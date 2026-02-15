@@ -657,6 +657,31 @@ const styles = StyleSheet.create({
     color: '#FF4081',
   },
 
+  // Public Profiles Link
+  publicProfilesLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1A1A1D',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+  },
+  publicProfilesIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 64, 129, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  publicProfilesText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFF',
+  },
+
   // No Results
   noResultsContainer: {
     paddingVertical: 40,
