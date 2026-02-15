@@ -217,27 +217,34 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     
     switch (sortOption) {
       case 'newest':
+        // Sort by addedAt if available, otherwise keep original order (newest first)
         return [...favorites].sort((a, b) => {
-          const dateA = (a as any).addedAt || '';
-          const dateB = (b as any).addedAt || '';
+          const dateA = (a as any).addedAt || (a as any).createdAt || '';
+          const dateB = (b as any).addedAt || (b as any).createdAt || '';
+          if (!dateA && !dateB) return 0; // Keep original order
+          if (!dateA) return 1;
+          if (!dateB) return -1;
           return dateB.localeCompare(dateA);
         });
       
       case 'oldest':
         return [...favorites].sort((a, b) => {
-          const dateA = (a as any).addedAt || '';
-          const dateB = (b as any).addedAt || '';
+          const dateA = (a as any).addedAt || (a as any).createdAt || '';
+          const dateB = (b as any).addedAt || (b as any).createdAt || '';
+          if (!dateA && !dateB) return 0; // Keep original order
+          if (!dateA) return 1;
+          if (!dateB) return -1;
           return dateA.localeCompare(dateB);
         });
       
       case 'az':
         return [...favorites].sort((a, b) => 
-          (a.name || '').localeCompare(b.name || '')
+          (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase())
         );
       
       case 'za':
         return [...favorites].sort((a, b) => 
-          (b.name || '').localeCompare(a.name || '')
+          (b.name || '').toLowerCase().localeCompare((a.name || '').toLowerCase())
         );
       
       case 'custom':
