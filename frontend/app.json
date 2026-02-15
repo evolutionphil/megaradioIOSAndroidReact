@@ -77,7 +77,7 @@
         }
       ],
       [
-        "expo-av",
+        "expo-audio",
         {
           "microphonePermission": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir."
         }
