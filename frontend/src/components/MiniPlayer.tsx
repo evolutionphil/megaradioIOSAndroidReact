@@ -137,10 +137,7 @@ export const MiniPlayer: React.FC = () => {
           {/* Play/Pause Button */}
           <TouchableOpacity
             style={styles.controlButton}
-            onPress={(e) => {
-              e.stopPropagation();
-              handlePlayPause();
-            }}
+            onPress={handlePlayPause}
             disabled={isLoading}
             testID="mini-player-play-pause"
             accessibilityLabel={isPlaying ? "Pause" : "Play"}
@@ -158,10 +155,7 @@ export const MiniPlayer: React.FC = () => {
           {/* Favorite Button */}
           <TouchableOpacity
             style={styles.controlButton}
-            onPress={(e) => {
-              e.stopPropagation();
-              handleFavorite();
-            }}
+            onPress={handleFavorite}
             testID="mini-player-favorite"
             accessibilityLabel="Toggle Favorite"
             accessibilityRole="button"

@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 'auto',
+    alignItems: 'flex-start',
   },
   name: {
     fontSize: typography.sizes.md,

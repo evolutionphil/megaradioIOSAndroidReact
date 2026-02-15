@@ -450,7 +450,7 @@ export default function ProfileScreen() {
             {/* Language Picker */}
             <TouchableOpacity 
               style={s.row}
-              onPress={() => router.push('/language')}
+              onPress={() => router.push('/languages')}
               data-testid="guest-language-btn"
             >
               <Ionicons name="language-outline" size={22} color="#FFF" style={s.rowIcon} />
