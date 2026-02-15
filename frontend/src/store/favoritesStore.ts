@@ -144,12 +144,14 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       }
       
       // Always save to local storage as backup
+      console.log('[FavoritesStore] Saving to AsyncStorage:', FAVORITES_KEY, 'favorites count:', updatedFavorites.length);
       await Promise.all([
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
+      console.log('[FavoritesStore] Save complete');
     } catch (error) {
-      console.error('Error adding favorite:', error);
+      console.error('[FavoritesStore] Error adding favorite:', error);
       // Revert on error
       set({ favorites, customOrder });
     }
