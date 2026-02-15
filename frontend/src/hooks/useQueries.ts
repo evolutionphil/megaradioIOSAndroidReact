@@ -81,22 +81,16 @@ export const usePopularStations = (country?: string, limit: number = 12) => {
   return useQuery({
     queryKey: ['popularStations', country || 'global', limit],
     queryFn: async () => {
-      // First try to get from TV init cache (instant, no network)
-      const cachedStations = getCachedPopularStations(limit);
-      if (cachedStations && cachedStations.length > 0) {
-        console.log('[useQueries] Using cached popular stations from TV init:', cachedStations.length);
-        // Return in same format as API response
-        return { stations: cachedStations as unknown as Station[] };
-      }
-      // Fallback to API call
+      // Fetch popular stations from API
+      // Note: React Query cache is pre-populated by initializeApp via TV init
       console.log('[useQueries] Fetching popular stations from API');
       const stations = await stationService.getPopularStations(country, limit);
-      return { stations };
+      return { stations: stations.stations || [] };
     },
     staleTime: CACHE_TTL.POPULAR_STATIONS,
     gcTime: CACHE_TTL.POPULAR_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Allow refetch on mount if cache is stale
+    refetchOnMount: false, // React Query cache is pre-populated by initializeApp
   });
 };
 
