@@ -13,9 +13,9 @@ export const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
 // Tab icon URLs from uploaded images
 const TAB_ICONS = {
   discover: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/u83nevfq_image.png',
+  genres: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/620zikih_image.png',
   favorites: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/xf8ejdrl_image.png',
   profile: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/dr5dt9ku_image.png',
-  records: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/620zikih_image.png',
 };
 
 // Tab icon component
@@ -62,6 +62,14 @@ export default function TabLayout() {
             href: null, // Hide from tab bar
           }}
         />
+        {/* Genres tab */}
+        <Tabs.Screen
+          name="genres"
+          options={{
+            title: t('tab_genres', 'Genres'),
+            tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.genres} size={28} />,
+          }}
+        />
         <Tabs.Screen
           name="favorites"
           options={{
@@ -76,11 +84,11 @@ export default function TabLayout() {
             tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.profile} size={28} />,
           }}
         />
+        {/* Hide records from tab bar */}
         <Tabs.Screen
           name="records"
           options={{
-            title: t('tab_records', 'Records'),
-            tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.records} size={28} />,
+            href: null, // Hide from tab bar
           }}
         />
       </Tabs>
