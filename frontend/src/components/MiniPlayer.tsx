@@ -13,7 +13,8 @@ import { useRouter } from 'expo-router';
 import { colors, borderRadius, spacing, typography } from '../constants/theme';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
-import { ChevronUpIcon, HeartOutlineIcon, PauseIcon, PlayIcon } from './TabBarIcons';
+import { useFavoritesStore } from '../store/favoritesStore';
+import { ChevronUpIcon, HeartOutlineIcon, HeartFilledIcon, PauseIcon, PlayIcon } from './TabBarIcons';
 
 // Check if we're on web
 const isWeb = Platform.OS === 'web';
