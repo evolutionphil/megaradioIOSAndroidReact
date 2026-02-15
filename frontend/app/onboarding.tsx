@@ -145,31 +145,8 @@ export default function OnboardingScreen() {
   }));
 
   const animateToNext = (newIndex: number) => {
-    setIsAnimating(true);
-    
-    // Animate out
-    slideX.value = withTiming(-width * 0.3, { duration: ANIMATION_DURATION / 2 });
-    fadeOpacity.value = withTiming(0, { duration: ANIMATION_DURATION / 2 });
-    contentFadeOpacity.value = withTiming(0, { duration: ANIMATION_DURATION / 2 });
-    contentSlideY.value = withTiming(20, { duration: ANIMATION_DURATION / 2 });
-    
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
-      
-      // Reset position for incoming
-      slideX.value = width * 0.3;
-      contentSlideY.value = -20;
-      
-      // Animate in
-      slideX.value = withSpring(0, { damping: 20, stiffness: 200 });
-      fadeOpacity.value = withTiming(1, { duration: ANIMATION_DURATION / 2 });
-      contentFadeOpacity.value = withTiming(1, { duration: ANIMATION_DURATION / 2 });
-      contentSlideY.value = withSpring(0, { damping: 20, stiffness: 200 });
-      
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, ANIMATION_DURATION / 2);
-    }, ANIMATION_DURATION / 2);
+    // Animasyon olmadan direkt geçiş
+    setCurrentIndex(newIndex);
   };
 
   const handleNext = async () => {
