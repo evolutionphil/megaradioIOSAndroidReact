@@ -350,13 +350,13 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
       <View style={[styles.contentContainer, { paddingTop: statusBarHeight }]}>
         {/* ── Header ─────────────────── */}
         <View style={styles.header}>
-          <Text style={[styles.headerTitle, ub]}>Car Mode</Text>
+          <Text style={[styles.headerTitle, ub]}>Araç Modu</Text>
           <TouchableOpacity
             style={styles.closeBtn}
             onPress={onClose}
             data-testid="car-mode-close-btn"
           >
-            <Text style={[styles.closeBtnText, ub]}>Close</Text>
+            <Text style={[styles.closeBtnText, ub]}>Kapat</Text>
           </TouchableOpacity>
         </View>
 

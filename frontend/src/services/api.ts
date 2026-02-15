@@ -12,7 +12,7 @@ const isWeb = Platform.OS === 'web';
 // Create axios instance with API key and cookie support
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
     'X-API-Key': MEGARADIO_API_KEY,
@@ -27,15 +27,14 @@ const getAuthToken = (): string | null => {
     // Dynamic import of authStore to avoid circular dependency
     const { useAuthStore } = require('../store/authStore');
     const token = useAuthStore.getState().token;
-    console.log('[API] getAuthToken called, token exists:', !!token, token ? token.substring(0, 15) + '...' : 'null');
     return token;
   } catch (err) {
-    console.log('[API] getAuthToken error:', err);
     return null;
   }
 };
 
-// Request interceptor
+// Request interceptor - Add tv=1 param to ALL requests for optimized responses
+// This reduces response size by ~85% (18KB -> 2.5KB per station)
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Ensure API key is always present
@@ -48,6 +47,11 @@ api.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${token}`;
       }
     }
+    
+    // Add tv=1 parameter to ALL requests for optimized mobile/TV responses
+    // This returns only essential fields (name, slug, url, favicon, country, votes etc.)
+    config.params = { ...config.params, tv: 1 };
+    
     return config;
   },
   (error) => {
