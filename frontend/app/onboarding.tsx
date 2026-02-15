@@ -256,7 +256,7 @@ export default function OnboardingScreen() {
               </>
             )}
           </View>
-        </Animated.View>
+        </View>
       </LinearGradient>
     </View>
   );
