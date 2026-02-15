@@ -146,7 +146,9 @@ export const MiniPlayer: React.FC = () => {
           <TouchableOpacity
             style={styles.controlButton}
             onPress={handleFavorite}
-            data-testid="mini-player-favorite"
+            testID="mini-player-favorite"
+            accessibilityLabel="Toggle Favorite"
+            accessibilityRole="button"
           >
             {isCurrentFavorite ? (
               <HeartFilledIcon color="#FF4081" size={18} />
