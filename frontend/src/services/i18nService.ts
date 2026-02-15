@@ -380,6 +380,13 @@ const turkishTranslations: Record<string, string> = {
   no_users: 'Kullanıcı bulunamadı',
   no_public_profiles: 'Herkese açık profil yok',
   try_different_search: 'Farklı bir arama terimi deneyin',
+  favorites_from_users: 'Kullanıcılardan Favoriler',
+  discover_what_others_love: 'Başkalarının neleri sevdiğini keşfedin',
+  load_more: 'Daha Fazla Yükle',
+  loading: 'Yükleniyor...',
+  search_radio_user: 'Radyo, kullanıcı ara',
+  cancel: 'İptal',
+  save: 'Kaydet',
   
   // Discover
   discover: 'Keşfet',
