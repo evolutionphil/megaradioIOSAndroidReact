@@ -34,6 +34,12 @@ export const MiniPlayer: React.FC = () => {
   
   // Use the shared audio player hook
   const { pause, resume } = useAudioPlayer();
+  
+  // Favorites store
+  const { isFavorite, toggleFavorite } = useFavoritesStore();
+  
+  // Check if current station is favorited
+  const isCurrentFavorite = currentStation ? isFavorite(currentStation._id) : false;
 
   if (!isMiniPlayerVisible || !currentStation) {
     return null;
