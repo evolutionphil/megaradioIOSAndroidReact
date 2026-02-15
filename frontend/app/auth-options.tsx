@@ -139,7 +139,7 @@ export default function AuthOptionsScreen() {
             ) : (
               <Image source={APPLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
             )}
-            <Text style={styles.authButtonText}>Login With Apple</Text>
+            <Text style={styles.authButtonText}>{t('login_with_apple', 'Apple ile Giriş Yap')}</Text>
           </TouchableOpacity>
 
           {/* Facebook */}
@@ -156,7 +156,7 @@ export default function AuthOptionsScreen() {
             ) : (
               <Image source={FACEBOOK_ICON} style={styles.buttonIcon} resizeMode="contain" />
             )}
-            <Text style={styles.authButtonText}>Login With Facebook</Text>
+            <Text style={styles.authButtonText}>{t('login_with_facebook', 'Facebook ile Giriş Yap')}</Text>
           </TouchableOpacity>
 
           {/* Google */}
@@ -173,7 +173,7 @@ export default function AuthOptionsScreen() {
             ) : (
               <Image source={GOOGLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
             )}
-            <Text style={styles.authButtonText}>Login With Google</Text>
+            <Text style={styles.authButtonText}>{t('login_with_google', 'Google ile Giriş Yap')}</Text>
           </TouchableOpacity>
 
           {/* Mail */}
@@ -184,7 +184,7 @@ export default function AuthOptionsScreen() {
             data-testid="login-mail-button"
           >
             <Image source={MAIL_ICON} style={styles.buttonIcon} resizeMode="contain" />
-            <Text style={styles.authButtonText}>Login With Mail</Text>
+            <Text style={styles.authButtonText}>{t('login_with_mail', 'E-posta ile Giriş Yap')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -195,7 +195,7 @@ export default function AuthOptionsScreen() {
           disabled={isLoading}
           data-testid="continue-without-login-button"
         >
-          <Text style={styles.continueButtonText}>Continue without login</Text>
+          <Text style={styles.continueButtonText}>{t('continue_without_login', 'Giriş yapmadan devam et')}</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </View>
