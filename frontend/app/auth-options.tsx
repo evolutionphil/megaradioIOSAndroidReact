@@ -28,6 +28,7 @@ const MEGA_LOGO_ARC = require('../assets/images/mega-logo-arc.png');
 
 export default function AuthOptionsScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { saveAuth } = useAuthStore();
   const [loadingProvider, setLoadingProvider] = useState<SocialProvider | null>(null);
 
@@ -35,7 +36,7 @@ export default function AuthOptionsScreen() {
     if (Platform.OS === 'web') {
       alert(message);
     } else {
-      Alert.alert('Giriş Hatası', message);
+      Alert.alert(t('login_error', 'Giriş Hatası'), message);
     }
   };
 
