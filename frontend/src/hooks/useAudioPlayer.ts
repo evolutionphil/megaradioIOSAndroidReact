@@ -6,10 +6,9 @@ import { useCallback, useRef, useEffect, useState } from 'react';
 import { 
   useAudioPlayer as useExpoAudioPlayer, 
   useAudioPlayerStatus,
-  AudioPlayer,
   setAudioModeAsync,
-  AudioStatus
 } from 'expo-audio';
+import type { AudioPlayer } from 'expo-audio';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
@@ -19,7 +18,6 @@ import type { Station } from '../types';
 let audioModeConfigured = false;
 
 // SINGLETON: Global audio player manager
-// expo-audio doesn't have a direct singleton, so we manage state globally
 class AudioManager {
   private static instance: AudioManager;
   private currentStationId: string | null = null;
@@ -92,8 +90,7 @@ export const useAudioPlayer = () => {
   const [audioSource, setAudioSource] = useState<string | null>(null);
   
   // expo-audio hook - creates player instance
-  // We pass null initially and update source dynamically
-  const player = useExpoAudioPlayer(audioSource ? { uri: audioSource } : null);
+  const player = useExpoAudioPlayer(audioSource ? audioSource : undefined);
   const status = useAudioPlayerStatus(player);
 
   const {
@@ -112,9 +109,6 @@ export const useAudioPlayer = () => {
   // Register player with AudioManager
   useEffect(() => {
     audioManager.setPlayer(player);
-    return () => {
-      // Don't unset on unmount as it's a singleton pattern
-    };
   }, [player]);
 
   // Set up audio mode ONCE globally
@@ -128,6 +122,7 @@ export const useAudioPlayer = () => {
       try {
         await setAudioModeAsync({
           playsInSilentMode: true,
+          shouldPlayInBackground: true,
         });
         audioModeConfigured = true;
         console.log('[useAudioPlayer] Audio mode configured (expo-audio)');
@@ -149,14 +144,6 @@ export const useAudioPlayer = () => {
       setPlaybackState('buffering');
     } else if (status.currentTime > 0 && !status.playing) {
       setPlaybackState('paused');
-    }
-    
-    // Handle errors - check for error property in status
-    const statusAny = status as any;
-    if (statusAny.error) {
-      console.error('[useAudioPlayer] Playback error:', statusAny.error);
-      setError(`Playback error: ${statusAny.error}`);
-      setPlaybackState('error');
     }
   }, [status, setPlaybackState, setError]);
 
@@ -287,11 +274,11 @@ export const useAudioPlayer = () => {
       console.log('[useAudioPlayer] Stream URL:', url.substring(0, 80) + '...');
       setStreamUrl(url);
       
-      // STEP 6: Update audio source - this triggers expo-audio to load and play
+      // STEP 6: Update audio source - this triggers expo-audio to load
       audioManager.setCurrentStation(station._id, url);
       setAudioSource(url);
       
-      // Give expo-audio time to load the new source
+      // Give expo-audio time to load the new source, then play
       setTimeout(() => {
         if (audioManager.getPlayId() === myPlayId && player) {
           player.play();
