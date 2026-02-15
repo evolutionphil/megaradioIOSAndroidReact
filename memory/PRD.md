@@ -54,18 +54,23 @@ A production-ready mobile radio streaming application built with React Native + 
 - **Genre Detail Fix**: Added textAlign: 'center' and maxWidth to prevent text overflow
 - **Login Redirect Fix**: Changed from router.replace('/') to router.replace('/(tabs)/discover') for Expo Go compatibility
 
-### Session 18 - TV Init API Integration (February 2026)
+### Session 18 - TV Init API Integration & UI Improvements (February 2026)
 - **COMPLETED**: Integrated /api/tv/init endpoint for faster initial loading
+- **COMPLETED**: Tab bar reorganization (Discover → Genres → Favorites → Profile)
+- **COMPLETED**: Guest User Profile settings page with Language, Country options
+- **COMPLETED**: Genre navigation fix - now goes directly to genre-detail page
+- **COMPLETED**: Favorites List/Grid view toggle with 3-column grid
+- **COMPLETED**: Discoverable genres banner text aligned to right side
 - **Files Created**: 
   - `src/services/tvInitService.ts` - New service for TV init API
+  - `app/(tabs)/genres.tsx` - New Genres tab page
 - **Files Modified**:
   - `app/_layout.tsx` - Added TV init call on app startup
-  - `src/hooks/useQueries.ts` - Updated usePopularStations, usePrecomputedGenres, useDiscoverableGenres to use cached data
-- **Benefits**:
-  - Single API call fetches: countries (219), genres (13), translations (724 keys), popularStations (21)
-  - 24-hour server-side cache, 0-1ms response time
-  - Hooks now check in-memory cache first before making API calls
-- **API Format**: GET /api/tv/init?country=TR&lang=tr
+  - `app/(tabs)/_layout.tsx` - Tab bar reorganization
+  - `app/(tabs)/profile.tsx` - Guest User settings UI
+  - `app/(tabs)/favorites.tsx` - Grid view support
+  - `app/(tabs)/index.tsx` - Genre navigation and banner styling
+  - `src/hooks/useQueries.ts` - Cache integration for genres and stations
 
 ## File Structure
 ```
