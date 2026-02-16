@@ -23,8 +23,9 @@ export default function GenresScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const { countryCode } = useLocationStore();
+  const { countryCode, country } = useLocationStore();
 
+  // Use countryCode for API (e.g., "TR", "US", "DE")
   const { data: genresData, isLoading, refetch } = usePrecomputedGenres(countryCode || undefined);
 
   // Sort genres by station count (most popular first)
