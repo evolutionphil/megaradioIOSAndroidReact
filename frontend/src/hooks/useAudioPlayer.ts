@@ -394,11 +394,14 @@ export const useAudioPlayer = () => {
 
   // Pause playback
   const pause = useCallback(async () => {
+    console.log('[useAudioPlayer] Pause called, player exists:', !!player);
     try {
       if (player) {
         player.pause();
         setPlaybackState('paused');
-        console.log('[useAudioPlayer] Paused');
+        console.log('[useAudioPlayer] Paused successfully');
+      } else {
+        console.warn('[useAudioPlayer] Cannot pause - no player instance');
       }
     } catch (error) {
       console.error('[useAudioPlayer] Error pausing:', error);
@@ -407,11 +410,14 @@ export const useAudioPlayer = () => {
 
   // Resume playback
   const resume = useCallback(async () => {
+    console.log('[useAudioPlayer] Resume called, player exists:', !!player);
     try {
       if (player) {
         player.play();
         setPlaybackState('playing');
-        console.log('[useAudioPlayer] Resumed');
+        console.log('[useAudioPlayer] Resumed successfully');
+      } else {
+        console.warn('[useAudioPlayer] Cannot resume - no player instance');
       }
     } catch (error) {
       console.error('[useAudioPlayer] Error resuming:', error);
@@ -420,13 +426,17 @@ export const useAudioPlayer = () => {
 
   // Toggle play/pause
   const togglePlayPause = useCallback(async () => {
+    console.log('[useAudioPlayer] togglePlayPause called, playbackState:', playbackState, 'player:', !!player);
     if (playbackState === 'playing') {
       await pause();
     } else if (playbackState === 'paused') {
       await resume();
     } else if (playbackState === 'idle' && currentStation) {
       // After sleep timer stops playback, allow re-play
+      console.log('[useAudioPlayer] Replaying station from idle state');
       await playStation(currentStation);
+    } else {
+      console.log('[useAudioPlayer] togglePlayPause - no action taken, state:', playbackState);
     }
   }, [playbackState, pause, resume, currentStation, playStation]);
 
