@@ -27,7 +27,13 @@ export default function GenresScreen() {
 
   const { data: genresData, isLoading, refetch } = usePrecomputedGenres(countryCode || undefined);
 
-  const genres = genresData?.data || [];
+  // Sort genres by station count (most popular first)
+  const genres = useMemo(() => {
+    const allGenres = genresData?.data || [];
+    return [...allGenres].sort((a, b) => 
+      (b.stationCount || b.total_stations || 0) - (a.stationCount || a.total_stations || 0)
+    );
+  }, [genresData]);
 
   // Filter genres based on search
   const filteredGenres = useMemo(() => {
@@ -37,7 +43,7 @@ export default function GenresScreen() {
     );
   }, [genres, searchQuery]);
 
-  // Popular genres (first 6 for horizontal scroll)
+  // Popular genres (first 6 for horizontal scroll) - already sorted by station count
   const popularGenres = genres.slice(0, 6);
 
   const onRefresh = async () => {
