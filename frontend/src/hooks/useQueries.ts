@@ -219,16 +219,16 @@ export const useDiscoverableGenres = () => {
     queryKey: ['discoverableGenres'],
     queryFn: async () => {
       // ALWAYS call API for discoverable genres to get discoverableImage
-      console.log('[useQueries] Fetching discoverable genres from API');
+      console.log('[useQueries] Fetching discoverable genres from API...');
       const result = await genreService.getDiscoverableGenres();
-      console.log('[useQueries] API returned discoverable genres:', Array.isArray(result) ? result.length : result?.data?.length || 0);
+      console.log('[useQueries] Discoverable genres result:', JSON.stringify(result?.slice?.(0, 2) || result));
       // API returns array directly
       return Array.isArray(result) ? result : (result?.data || []);
     },
-    staleTime: CACHE_TTL.GENRES_ALL,
-    gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: 'always', // Force refetch on every mount
   });
 };
 
