@@ -394,15 +394,24 @@ export const useAudioPlayer = () => {
 
   // Pause playback
   const pause = useCallback(async () => {
-    console.log('[useAudioPlayer] Pause called, player exists:', !!player);
+    console.log('[useAudioPlayer] Pause called');
     try {
+      // Try audioManager's player first (most reliable)
+      const managerPlayer = audioManager.getPlayer();
+      if (managerPlayer) {
+        managerPlayer.pause();
+        setPlaybackState('paused');
+        console.log('[useAudioPlayer] Paused via audioManager');
+        return;
+      }
+      // Fallback to hook's player
       if (player) {
         player.pause();
         setPlaybackState('paused');
-        console.log('[useAudioPlayer] Paused successfully');
-      } else {
-        console.warn('[useAudioPlayer] Cannot pause - no player instance');
+        console.log('[useAudioPlayer] Paused via hook player');
+        return;
       }
+      console.warn('[useAudioPlayer] Cannot pause - no player instance available');
     } catch (error) {
       console.error('[useAudioPlayer] Error pausing:', error);
     }
@@ -410,15 +419,24 @@ export const useAudioPlayer = () => {
 
   // Resume playback
   const resume = useCallback(async () => {
-    console.log('[useAudioPlayer] Resume called, player exists:', !!player);
+    console.log('[useAudioPlayer] Resume called');
     try {
+      // Try audioManager's player first (most reliable)
+      const managerPlayer = audioManager.getPlayer();
+      if (managerPlayer) {
+        managerPlayer.play();
+        setPlaybackState('playing');
+        console.log('[useAudioPlayer] Resumed via audioManager');
+        return;
+      }
+      // Fallback to hook's player
       if (player) {
         player.play();
         setPlaybackState('playing');
-        console.log('[useAudioPlayer] Resumed successfully');
-      } else {
-        console.warn('[useAudioPlayer] Cannot resume - no player instance');
+        console.log('[useAudioPlayer] Resumed via hook player');
+        return;
       }
+      console.warn('[useAudioPlayer] Cannot resume - no player instance available');
     } catch (error) {
       console.error('[useAudioPlayer] Error resuming:', error);
     }
@@ -426,19 +444,24 @@ export const useAudioPlayer = () => {
 
   // Toggle play/pause
   const togglePlayPause = useCallback(async () => {
-    console.log('[useAudioPlayer] togglePlayPause called, playbackState:', playbackState, 'player:', !!player);
+    console.log('[useAudioPlayer] togglePlayPause called, playbackState:', playbackState);
+    
+    // Get current player
+    const currentPlayer = audioManager.getPlayer() || player;
+    console.log('[useAudioPlayer] Current player exists:', !!currentPlayer);
+    
     if (playbackState === 'playing') {
       await pause();
     } else if (playbackState === 'paused') {
       await resume();
-    } else if (playbackState === 'idle' && currentStation) {
-      // After sleep timer stops playback, allow re-play
-      console.log('[useAudioPlayer] Replaying station from idle state');
+    } else if ((playbackState === 'idle' || playbackState === 'error') && currentStation) {
+      // After sleep timer stops playback or error, allow re-play
+      console.log('[useAudioPlayer] Replaying station from', playbackState, 'state');
       await playStation(currentStation);
     } else {
-      console.log('[useAudioPlayer] togglePlayPause - no action taken, state:', playbackState);
+      console.log('[useAudioPlayer] togglePlayPause - no action taken, state:', playbackState, 'hasStation:', !!currentStation);
     }
-  }, [playbackState, pause, resume, currentStation, playStation]);
+  }, [playbackState, pause, resume, currentStation, playStation, player]);
 
   // Set volume
   const setVolume = useCallback(async (volume: number) => {
