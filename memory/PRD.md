@@ -4,7 +4,7 @@
 Build a production-ready mobile radio streaming app called "MegaRadio" using React Native with Expo. The app should provide pixel-perfect UI implementation of Figma designs with robust radio streaming capabilities.
 
 ## Tech Stack
-- **Frontend**: Expo, TypeScript, Expo Router, React Query, Zustand
+- **Frontend**: Expo SDK 54, TypeScript, Expo Router, React Query, Zustand
 - **Audio**: expo-audio (migrated from expo-av)
 - **Storage**: AsyncStorage for local caching
 - **API**: MegaRadio API (https://themegaradio.com)
@@ -46,60 +46,44 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 5. **Stale Favorites on Logout** - Logout now clears AsyncStorage favorites
 6. **MiniPlayer Play/Pause Error** - Fixed by removing nested TouchableOpacity structure
 
-#### Session 2 Fixes (Current):
-1. **isAnimating Error in Onboarding** - FIXED: Removed unused `isAnimating` variable reference
-2. **Guest Favorites in Player Page** - FIXED: Player.tsx now uses favoritesStore instead of redirecting to login
-3. **Genre Sorting** - FIXED: Genres now sorted by station count (most stations first)
-4. **Genres Local Caching** - FIXED: Added AsyncStorage caching for genres (24hr TTL)
-5. **Audio Player Play Error (Expo Go)** - IN PROGRESS: 
-   - Root cause: `expo-audio` native module lifecycle issue in Expo Go
-   - Added pendingPlay state with useEffect to wait for player ready state
-   - This is a known Expo Go limitation - may require development build for full fix
+#### Session 2 Fixes (VERIFIED by Testing Agent - iteration_22):
+1. **Audio Playback Crash Fix** - ✅ FIXED: Added 150ms delay + retry mechanism in useAudioPlayer.ts to prevent NativeSharedObjectNotFoundException
+2. **Genre Sorting by Station Count** - ✅ FIXED: Home screen and genres page now sort by stationCount (most popular first)
+3. **Guest Favorites in Player Page** - ✅ FIXED: Player.tsx uses favoritesStore.toggleFavorite without auth redirect
+4. **Full-Screen Auth Pages** - ✅ FIXED: auth-options removed modal presentation, now opens as full-screen page
 
 ## Key Files
-- `frontend/app/onboarding.tsx` - Fixed isAnimating reference
-- `frontend/app/player.tsx` - Fixed guest favorites support
-- `frontend/app/(tabs)/genres.tsx` - Added sorting and local caching
-- `frontend/src/hooks/useAudioPlayer.ts` - Audio playback with pending play fix
-- `frontend/src/components/MiniPlayer.tsx` - Mini player controls
-- `frontend/src/store/favoritesStore.ts` - Favorites state management
+- `frontend/src/hooks/useAudioPlayer.ts` - Audio playback with pendingPlay pattern (150ms delay + retry)
+- `frontend/app/(tabs)/index.tsx` - Home screen with sorted genres (line 143-148)
+- `frontend/app/genres.tsx` - Genres page with sorted list (line 30-36)
+- `frontend/app/player.tsx` - Player with guest favorites support (line 290-301)
+- `frontend/app/_layout.tsx` - Navigation without modal for auth (line 219)
+- `frontend/app/auth-options.tsx` - Full-screen auth options
+- `frontend/src/store/favoritesStore.ts` - Favorites state management for guests + authenticated
 
 ## API Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
 - **Test User**: gey14853@outlook.com / Muhammed5858
 
-## Known Issues
-
-### Critical - Expo Go Audio Playback
-**Error**: `FunctionCallException: Calling the 'play' function has failed - NativeSharedObjectNotFoundException`
-
-**Cause**: When changing audio source in expo-audio, the hook creates a new player instance but the old reference becomes invalid. Expo Go has stricter native module loading than development builds.
-
-**Workarounds Applied**:
-1. Added pendingPlay state to wait for player ready
-2. Use useEffect to trigger play when new player is ready
-3. Added retry logic with increasing delays
-
-**Recommended Solution**: Build a development build instead of using Expo Go:
-```bash
-eas build --profile development --platform android
-```
+## Audio Playback Technical Note
+**Issue**: NativeSharedObjectNotFoundException in Expo Go when calling play()
+**Root Cause**: expo-audio native module lifecycle issue - play() called before native player fully initialized
+**Solution Applied**: pendingPlay state pattern with 150ms delay + automatic retry (500ms) if native error occurs
 
 ## Backlog
 
 ### P1 - High Priority
-1. **Audio Playback on Expo Go** - May require development build
-2. **API Performance Test** - Measure caching performance improvement
-3. **Sleep Timer Fix** - Investigate and fix sleep timer functionality
+1. **API Performance Test** - Measure caching performance improvement
+2. **Sleep Timer Fix** - Investigate and fix sleep timer functionality
 
 ### P2 - Medium Priority
 1. **Glow Effect and Static Equalizer** - UI improvements for player screen
 2. **Social Sign-In Finalization** - Complete OAuth integration
-3. **Post-login Navigation Behavior** - Verify on Expo Go
+3. **Local Genre Caching** - Add AsyncStorage caching for genre list
 
 ## Test Reports
-- `/app/test_reports/iteration_0.json` - Previous testing session
-- `/app/test_reports/iteration_21.json` - Bug fixes verification
+- `/app/test_reports/iteration_22.json` - Latest bug fixes verification (100% success)
+- `/app/test_reports/iteration_3.json` - Previous testing session
 
 ## User Language
 Turkish (Türkçe)
