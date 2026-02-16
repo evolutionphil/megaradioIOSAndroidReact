@@ -297,41 +297,53 @@ export const useAudioPlayer = () => {
     console.log('[useAudioPlayer] Station:', station.name, 'ID:', station._id);
     
     const currentStationId = audioManager.getCurrentStationId();
+    const currentPlayer = audioManager.getPlayer();
     
     // Check if same station - toggle play/pause
-    if (currentStationId === station._id) {
+    if (currentStationId === station._id && currentPlayer) {
       console.log('[useAudioPlayer] Same station, toggling play/pause');
-      if (status?.playing) {
-        player.pause();
-        setPlaybackState('paused');
-      } else {
-        player.play();
-        setPlaybackState('playing');
+      try {
+        if (status?.playing) {
+          currentPlayer.pause();
+          setPlaybackState('paused');
+        } else {
+          currentPlayer.play();
+          setPlaybackState('playing');
+        }
+      } catch (e) {
+        console.log('[useAudioPlayer] Toggle error:', e);
       }
       return;
     }
 
     try {
-      // STEP 1: Set loading state immediately
+      // STEP 1: STOP current playback FIRST
+      console.log('[useAudioPlayer] Step 1: Stopping current playback...');
+      if (currentPlayer) {
+        try {
+          currentPlayer.pause();
+          console.log('[useAudioPlayer] Previous station paused');
+        } catch (e) {
+          console.log('[useAudioPlayer] Pause error (ignored):', e);
+        }
+      }
+      await audioManager.stop();
+      
+      // STEP 2: Set loading state
       setPlaybackState('loading');
       setError(null);
       
-      // STEP 2: Update station state BEFORE stopping (for immediate UI feedback)
-      console.log('[useAudioPlayer] Step 1: Setting new station...');
+      // STEP 3: Update station state for immediate UI feedback
+      console.log('[useAudioPlayer] Step 2: Setting new station...');
       setCurrentStation(station);
       setMiniPlayerVisible(true);
 
       // Record click (non-blocking)
       stationService.recordClick(station._id).catch(() => {});
 
-      // STEP 3: Get play ID for race condition prevention
+      // STEP 4: Get play ID for race condition prevention
       const myPlayId = audioManager.incrementPlayId();
       console.log('[useAudioPlayer] PlayID:', myPlayId, '- Starting');
-
-      // STEP 4: Stop current playback
-      if (player && status?.playing) {
-        player.pause();
-      }
 
       // STEP 5: Resolve stream URL
       console.log('[useAudioPlayer] Step 2: Resolving stream URL...');
