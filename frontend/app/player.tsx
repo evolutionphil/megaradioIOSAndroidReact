@@ -763,6 +763,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF3B30',
     borderRadius: 3,
   },
+  countryFlagContainer: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  countryFlag: {
+    width: '100%',
+    height: '100%',
+  },
 
   // Now Playing
   nowPlayingSection: {
