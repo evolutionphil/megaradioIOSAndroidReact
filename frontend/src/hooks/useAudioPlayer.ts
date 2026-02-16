@@ -87,12 +87,12 @@ const audioManager = AudioManager.getInstance();
 
 export const useAudioPlayer = () => {
   const listeningStartRef = useRef<Date | null>(null);
-  const [audioSource, setAudioSource] = useState<string | null>(null);
-  const [pendingPlay, setPendingPlay] = useState(false);
-  const pendingPlayIdRef = useRef<number>(0);
+  const currentStationIdRef = useRef<string | null>(null);
+  const isPlayingRef = useRef<boolean>(false);
   
-  // expo-audio hook - creates player instance
-  const player = useExpoAudioPlayer(audioSource ? audioSource : undefined);
+  // expo-audio hook - creates player instance with a dummy source
+  // Using a silent audio or null initially, then use replace() to change source
+  const player = useExpoAudioPlayer(undefined);
   const status = useAudioPlayerStatus(player);
 
   const {
@@ -116,75 +116,21 @@ export const useAudioPlayer = () => {
     }
   }, [player]);
   
-  // Debug: Log playbackState changes
+  // Sync playback state with actual player status
   useEffect(() => {
-    console.log('[useAudioPlayer] playbackState changed to:', playbackState);
-  }, [playbackState]);
-  
-  // Auto-play when player is ready and pendingPlay is true
-  // Key fix: Check that player exists and is in a valid state before calling play()
-  useEffect(() => {
-    if (!pendingPlay || !player) return;
+    if (!player || !status) return;
     
-    const currentPlayId = audioManager.getPlayId();
-    if (pendingPlayIdRef.current !== currentPlayId) {
-      console.log('[useAudioPlayer] Stale pendingPlay, ignoring');
-      setPendingPlay(false);
-      return;
+    if (status.playing && playbackState !== 'playing') {
+      console.log('[useAudioPlayer] Status sync: now playing');
+      setPlaybackState('playing');
+      isPlayingRef.current = true;
+    } else if (!status.playing && status.isBuffering && playbackState !== 'buffering') {
+      setPlaybackState('buffering');
+    } else if (!status.playing && !status.isBuffering && isPlayingRef.current && playbackState === 'playing') {
+      // Player stopped unexpectedly
+      console.log('[useAudioPlayer] Status sync: stopped unexpectedly');
     }
-    
-    // Safer play attempt with delay to ensure player is fully initialized
-    const attemptPlay = async () => {
-      try {
-        // Small delay to ensure native player is ready
-        await new Promise(resolve => setTimeout(resolve, 150));
-        
-        // Double-check we're still the current play request
-        if (pendingPlayIdRef.current !== audioManager.getPlayId()) {
-          console.log('[useAudioPlayer] Play request became stale during delay');
-          return;
-        }
-        
-        // Check player is still valid
-        if (!player) {
-          console.log('[useAudioPlayer] Player became null during delay');
-          return;
-        }
-        
-        console.log('[useAudioPlayer] Attempting play...');
-        player.play();
-        setPendingPlay(false);
-        console.log('[useAudioPlayer] Play called successfully');
-      } catch (e: any) {
-        console.warn('[useAudioPlayer] Play attempt failed:', e?.message || e);
-        
-        // If it's the NativeSharedObjectNotFoundException, retry with longer delay
-        if (e?.message?.includes('NativeSharedObject') || e?.message?.includes('native')) {
-          console.log('[useAudioPlayer] Native object error, retrying with longer delay...');
-          setTimeout(async () => {
-            if (pendingPlayIdRef.current === audioManager.getPlayId() && player) {
-              try {
-                player.play();
-                setPendingPlay(false);
-                console.log('[useAudioPlayer] Retry successful');
-              } catch (retryError: any) {
-                console.error('[useAudioPlayer] Retry also failed:', retryError?.message);
-                setError('Unable to start playback. Please try again.');
-                setPlaybackState('error');
-                setPendingPlay(false);
-              }
-            }
-          }, 500);
-        } else {
-          setError('Unable to start playback');
-          setPlaybackState('error');
-          setPendingPlay(false);
-        }
-      }
-    };
-    
-    attemptPlay();
-  }, [pendingPlay, player, setError, setPlaybackState]);
+  }, [status, playbackState, player, setPlaybackState]);
 
   // Set up audio mode ONCE globally
   useEffect(() => {
