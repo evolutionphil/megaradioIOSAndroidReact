@@ -23,6 +23,11 @@ import type { Genre } from '../../src/types';
 const GENRES_CACHE_KEY = '@megaradio_genres_cache';
 const GENRES_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
+// Get cache key with country code
+const getGenresCacheKey = (countryCode?: string | null) => {
+  return countryCode ? `${GENRES_CACHE_KEY}_${countryCode}` : GENRES_CACHE_KEY;
+};
+
 export default function GenresTabScreen() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -37,31 +42,44 @@ export default function GenresTabScreen() {
   // Extract genres from API response
   const apiGenres = genresData?.data || [];
 
-  // Load cached genres on mount
+  // Refetch when countryCode changes
+  useEffect(() => {
+    console.log('[Genres] Country changed, refetching...', countryCode);
+    refetch();
+  }, [countryCode]);
+
+  // Load cached genres on mount and when country changes
   useEffect(() => {
     const loadCachedGenres = async () => {
       try {
-        const cached = await AsyncStorage.getItem(GENRES_CACHE_KEY);
+        const cacheKey = getGenresCacheKey(countryCode);
+        const cached = await AsyncStorage.getItem(cacheKey);
         if (cached) {
           const { data, timestamp } = JSON.parse(cached);
           const isStale = Date.now() - timestamp > GENRES_CACHE_TTL;
           if (!isStale && Array.isArray(data)) {
             setCachedGenres(data);
+          } else {
+            setCachedGenres([]);
           }
+        } else {
+          setCachedGenres([]);
         }
       } catch (error) {
         console.log('[Genres] Error loading cache:', error);
+        setCachedGenres([]);
       }
     };
     loadCachedGenres();
-  }, []);
+  }, [countryCode]);
 
   // Cache genres when API data arrives
   useEffect(() => {
     if (apiGenres.length > 0) {
       const cacheGenres = async () => {
         try {
-          await AsyncStorage.setItem(GENRES_CACHE_KEY, JSON.stringify({
+          const cacheKey = getGenresCacheKey(countryCode);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify({
             data: apiGenres,
             timestamp: Date.now(),
           }));
@@ -72,7 +90,7 @@ export default function GenresTabScreen() {
       };
       cacheGenres();
     }
-  }, [apiGenres]);
+  }, [apiGenres, countryCode]);
 
   // Use API genres if available, otherwise use cached
   const genres = apiGenres.length > 0 ? apiGenres : cachedGenres;
