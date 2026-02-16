@@ -122,6 +122,12 @@ export default function HomeScreen() {
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
+  // Refetch genres when country changes
+  useEffect(() => {
+    console.log('[HomeScreen] Country changed, refetching genres...', countryCode);
+    refetchGenres();
+  }, [countryCode]);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await Promise.all([refetchPopular(), refetchGenres(), refetchDiscoverable(), refetchRecent(), refetchCommunity(), refetchProfiles(), refetchAll(), refetchNearby()]);
