@@ -457,6 +457,16 @@ export default function PlayerScreen() {
               <View style={styles.liveIndicator}>
                 <View style={styles.liveIndicatorBar} />
               </View>
+              {/* Country Flag */}
+              {currentStation?.countryCode && (
+                <View style={styles.countryFlagContainer}>
+                  <Image
+                    source={{ uri: `https://flagcdn.com/w40/${currentStation.countryCode.toLowerCase()}.png` }}
+                    style={styles.countryFlag}
+                    resizeMode="cover"
+                  />
+                </View>
+              )}
             </View>
             </View>
           </View>
