@@ -492,31 +492,42 @@ export default function HomeScreen() {
                   : null;
                 
                 // Debug log
-                console.log('[Discoverable] Genre:', genre.name, 'discoverableImage:', genre.discoverableImage, 'using:', apiImageUrl);
+                console.log('[Discoverable] Genre:', genre.name, 'discoverableImage:', genre.discoverableImage);
                 
-                // Only use API image, fallback to placeholder if not available
-                const imageUrl = apiImageUrl || 'https://themegaradio.com/images/genre-bg-grad-1.webp';
+                // Fallback gradient colors if no image
+                const gradientColors = [
+                  ['#667eea', '#764ba2'],
+                  ['#f093fb', '#f5576c'],
+                  ['#4facfe', '#00f2fe'],
+                ][index % 3] as [string, string];
                 
                 return (
                   <TouchableOpacity 
                     style={styles.discoverableBannerItem}
                     onPress={() => handleGenrePress(genre)}
                   >
-                    <Image 
-                      source={{ uri: imageUrl }}
-                      style={StyleSheet.absoluteFill}
-                      resizeMode="cover"
-                    />
-                    {/* Dark gradient overlay on right side for text readability */}
-                    <LinearGradient
-                      colors={['transparent', 'rgba(0,0,0,0.6)', 'rgba(0,0,0,0.8)']}
-                      start={{ x: 0, y: 0.5 }}
-                      end={{ x: 1, y: 0.5 }}
-                      style={StyleSheet.absoluteFill}
-                    />
+                    {apiImageUrl ? (
+                      <Image 
+                        source={{ uri: apiImageUrl }}
+                        style={StyleSheet.absoluteFill}
+                        resizeMode="cover"
+                        onError={(e) => console.log('[Discoverable] Image load error:', e.nativeEvent.error)}
+                      />
+                    ) : (
+                      <LinearGradient
+                        colors={gradientColors}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    )}
+                    {/* Dark overlay for text readability */}
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.3)' }]} />
                     <View style={styles.discoverableBannerContent}>
-                      <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
-                      <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover All Stations')}</Text>
+                      <View style={styles.discoverableBannerTextContainer}>
+                        <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
+                        <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover All Stations')}</Text>
+                      </View>
                     </View>
                   </TouchableOpacity>
                 );
