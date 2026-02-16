@@ -182,15 +182,8 @@ export const usePrecomputedGenres = (country?: string) => {
   return useQuery({
     queryKey: ['precomputedGenres', country],
     queryFn: async () => {
-      // First try to get from TV init cache (instant, no network)
-      const cachedGenres = getCachedGenres();
-      if (cachedGenres && cachedGenres.length > 0) {
-        console.log('[useQueries] Using cached genres from TV init:', cachedGenres.length);
-        // Return in same format as API
-        return { success: true, data: cachedGenres };
-      }
-      // Fallback to API call - ALWAYS call API if cache is empty
-      console.log('[useQueries] Cache empty, fetching genres from API');
+      // ALWAYS call API with country parameter for filtered results
+      console.log('[useQueries] Fetching genres from API with country:', country || 'global');
       const result = await genreService.getPrecomputedGenres(country);
       console.log('[useQueries] API returned genres:', result?.data?.length || 0);
       return result;
@@ -198,7 +191,7 @@ export const usePrecomputedGenres = (country?: string) => {
     staleTime: CACHE_TTL.GENRES_ALL,
     gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Allow refetch on mount if cache is stale
+    refetchOnMount: true,
   });
 };
 
