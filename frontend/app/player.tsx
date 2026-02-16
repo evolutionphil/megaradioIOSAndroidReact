@@ -557,7 +557,10 @@ export default function PlayerScreen() {
             </TouchableOpacity>
             
             {/* Previous */}
-            <TouchableOpacity style={styles.skipButton}>
+            <TouchableOpacity 
+              style={styles.skipButton}
+              onPress={handlePreviousStation}
+            >
               <Ionicons name="play-skip-back" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
@@ -580,7 +583,10 @@ export default function PlayerScreen() {
             </TouchableOpacity>
             
             {/* Next */}
-            <TouchableOpacity style={styles.skipButton}>
+            <TouchableOpacity 
+              style={styles.skipButton}
+              onPress={handleNextStation}
+            >
               <Ionicons name="play-skip-forward" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
