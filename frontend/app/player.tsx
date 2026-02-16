@@ -555,24 +555,21 @@ export default function PlayerScreen() {
                 onPress={() => setShowShareModal(true)}
                 data-testid="player-share-btn"
               >
-                <ShareIcon size={24} color="#888888" />
+                <Image 
+                  source={require('../assets/icons/share-icon.png')} 
+                  style={{ width: 24, height: 24, tintColor: '#888888' }} 
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
-              {/* Lock Radio */}
+              {/* Broadcast/Airplay */}
               <TouchableOpacity style={styles.secondaryButton}>
-                <LockRadioIcon size={24} color="#888888" />
-              </TouchableOpacity>
-              {/* Broadcast */}
-              <TouchableOpacity style={styles.secondaryButton}>
-                <BroadcastIcon size={24} color="#888888" />
+                <Image 
+                  source={require('../assets/icons/airplay-icon.png')} 
+                  style={{ width: 24, height: 24, tintColor: '#888888' }} 
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
             </View>
-            {/* REC Button */}
-            <TouchableOpacity style={styles.recButton}>
-              <View style={styles.recDotOuter}>
-                <View style={styles.recDotInner} />
-              </View>
-              <Text style={styles.recText}>REC</Text>
-            </TouchableOpacity>
           </View>
 
           {/* Recently Played Section */}
