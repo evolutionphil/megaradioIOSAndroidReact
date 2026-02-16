@@ -94,9 +94,8 @@ export default function LoginScreen() {
         // Use router.replace with dismissAll for clean navigation
         // This ensures the login screen is completely removed from the stack
         setTimeout(() => {
-          // Use replace to navigate and clear the auth stack
-          // Navigate to tabs home screen explicitly for Expo Go compatibility
-          router.replace('/(tabs)/discover');
+          // Navigate to home tab (index) where Popular Stations are shown
+          router.replace('/(tabs)');
         }, 100);
       } else {
         console.error('Invalid response structure:', response);
