@@ -218,15 +218,8 @@ export const useDiscoverableGenres = () => {
   return useQuery({
     queryKey: ['discoverableGenres'],
     queryFn: async () => {
-      // First try to get from TV init cache (instant, no network)
-      const cachedGenres = getCachedGenres();
-      if (cachedGenres && cachedGenres.length > 0) {
-        console.log('[useQueries] Using cached discoverable genres from TV init:', cachedGenres.length);
-        // Return genres directly (not wrapped in object)
-        return cachedGenres;
-      }
-      // Fallback to API call - ALWAYS call API if cache is empty
-      console.log('[useQueries] Cache empty, fetching discoverable genres from API');
+      // ALWAYS call API for discoverable genres to get discoverableImage
+      console.log('[useQueries] Fetching discoverable genres from API');
       const result = await genreService.getDiscoverableGenres();
       console.log('[useQueries] API returned discoverable genres:', Array.isArray(result) ? result.length : result?.data?.length || 0);
       // API returns array directly
@@ -235,7 +228,7 @@ export const useDiscoverableGenres = () => {
     staleTime: CACHE_TTL.GENRES_ALL,
     gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Allow refetch on mount if cache is stale
+    refetchOnMount: true,
   });
 };
 
