@@ -283,6 +283,45 @@ export default function PlayerScreen() {
   // Check if current station is favorited
   const isFavorite = currentStation ? checkIsFavorite(currentStation._id) : false;
 
+  // Play next station from similar stations
+  const handleNextStation = useCallback(() => {
+    const similarStations = similarData?.data || similarData || [];
+    if (similarStations.length > 0) {
+      // Pick a random station from similar stations
+      const randomIndex = Math.floor(Math.random() * similarStations.length);
+      const nextStation = similarStations[randomIndex];
+      console.log('[Player] Playing next station:', nextStation?.name);
+      if (nextStation) {
+        playStation(nextStation);
+        addRecentStation(nextStation);
+      }
+    }
+  }, [similarData, playStation, addRecentStation]);
+
+  // Play previous station from recently played
+  const handlePreviousStation = useCallback(() => {
+    // Find the station before the current one in recent history
+    const currentIndex = recentStations.findIndex(s => s._id === currentStation?._id);
+    if (currentIndex > 0) {
+      // Play the previous station in history
+      const prevStation = recentStations[currentIndex - 1];
+      console.log('[Player] Playing previous station:', prevStation?.name);
+      playStation(prevStation);
+    } else {
+      // No previous station, play random from similar
+      const similarStations = similarData?.data || similarData || [];
+      if (similarStations.length > 0) {
+        const randomIndex = Math.floor(Math.random() * similarStations.length);
+        const randomStation = similarStations[randomIndex];
+        console.log('[Player] No previous, playing random similar:', randomStation?.name);
+        if (randomStation) {
+          playStation(randomStation);
+          addRecentStation(randomStation);
+        }
+      }
+    }
+  }, [recentStations, currentStation, similarData, playStation, addRecentStation]);
+
   const handleClose = () => {
     router.back();
   };
