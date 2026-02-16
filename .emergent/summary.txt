@@ -1,207 +1,161 @@
 <analysis>**original_problem_statement:**
-The user wants to build a production-ready mobile radio streaming app called MegaRadio using React Native with Expo. The primary requirement is a pixel-perfect UI implementation of Figma designs. The backend API is available at .
+The user wants to build a production-ready mobile radio streaming app called MegaRadio. The primary requirement is a pixel-perfect UI implementation of Figma designs. The backend API is available at .
 
 **PRODUCT REQUIREMENTS:**
--   **Role:** Senior React Native + Expo Architect.
--   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, , .
--   **Core Features:**
-    -   **UI:** A pixel-perfect implementation of provided Figma designs.
-    -   **Font:** The entire application must use the  font family.
-    -   **Streaming:** Robust in-app playback.
-    -   **User Features:** Favorites, Recently Played, Profile (Followers/Following).
-    -   **Authentication:** All API requests must include .
-- **New Bugs reported by the user:**
-    1.  When a genre is selected, it shows stations from all countries, not just the currently selected country.
-    2.  In guest mode, clicking the language selection button (Sprache) leads to an unmatched route error.
-    3.  On Expo Go, adding a station to favorites from the MiniPlayer throws an uncaught error.
-    4.  The text alignment on genre cards is incorrect; the subtitle is not aligned with the title.
-    5.  On Expo Go, clicking on any radio station to play it throws an uncaught error.
-    6.  A potential state issue where a new guest user sees pre-existing favorites.
+-   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
+-   **Core Features:** Robust audio streaming, Favorites, Recently Played, Profile.
+-   **Authentication:** All API requests must include .
+
+**New Bugs & Feature Requests (from latest user messages):**
+1.  **Critical Playback Error:** App crashes with a  when trying to play any radio station in Expo Go.
+2.  **Genre Filtering/Sorting:**
+    -   The main genre grid view () does not filter by the selected country.
+    -   The horizontal genre swiper on the home screen is not sorted by the number of stations in each genre (most popular should be first).
+    -   Genre content should update automatically when the country is changed in the settings.
+3.  **Guest User Experience:**
+    -   Clicking the favorite (heart) icon on a station's detail page () incorrectly prompts a guest user to log in, instead of saving to guest favorites.
+4.  **UI/UX Issues:**
+    -   The app crashes on start-up due to an  error on the onboarding screen.
+    -   Login/authentication screens should be full-screen pages, not pop-up modals.
+5.  **Feature Request:** The genre list should be cached locally to improve performance.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The agent has successfully implemented the Guest Favorites feature, allowing non-logged-in users to add/remove favorites, which are stored locally via AsyncStorage and synced upon login. This involved updating the  component, creating a new , and ensuring favorites are loaded on app startup. The agent also fulfilled a user request to remove all slide/fade animations from the onboarding screen for a more direct, static transition between steps. The Guest Favorites feature was verified by the testing agent.
+The agent has attempted to fix a large number of bugs reported by the user. An initial batch of 6 bugs was declared fixed after a successful run by the testing agent, but the user immediately reported a new, more severe set of issues.
+
+In response to the second bug report, the agent has implemented several (untested) fixes:
+-   **Onboarding Crash:** The  error in  was fixed.
+-   **Guest Favorites:** The favorite logic in  was updated to support guest users using .
+-   **Genre Page:** The main genre list in  was modified to filter by country and sort by station count.
+-   **Audio Playback Crash:** A complex, multi-file fix is currently in progress to address the critical  on Expo Go.
 
 **Last working item**:
-- **Last item agent was working**: The user reported a list of critical bugs related to genre filtering, navigation, UI alignment, and core functionality (playing stations, adding favorites) on Expo Go. The agent acknowledged these issues and was about to begin investigation by examining the relevant source files.
-- **Status**: NOT STARTED
-- **Agent Testing Done**: N
-- **Which testing method agent to use?**: Frontend testing agent. The agent must verify the fixes on Expo Go, as the user specifically mentioned errors occurring on that platform. Manual testing using screenshots will also be necessary to confirm UI alignment and navigation fixes.
-- **User Testing Done**: N
+-   **Last item agent was working**: Debugging the critical  that occurs when playing audio on Expo Go. The agent correctly identified the root cause as a race condition where a function holds a stale reference to a destroyed native audio player instance. The proposed solution involves a state-based asynchronous fix using a  flag and a  hook to ensure the  command is only called on a fully loaded player instance. This work is spread across  and .
+-   **Status**: IN PROGRESS
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: Frontend testing agent. The primary goal is to verify the audio playback fix on Expo Go. This is a complex native-level bug, so simple screenshot testing will not be sufficient. The agent should provide clear steps for the testing agent to reproduce the play action.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Uncaught error on playing a station (P0)**
--   **Issue 2: Uncaught error on adding to favorites (P0)**
--   **Issue 3: Genres are not filtered by country (P0)**
--   **Issue 4: Language selection page broken for guests (P1)**
--   **Issue 5: Genre card text alignment is broken (P1)**
--   **Issue 6: Stale favorites state for new guest users (P2)**
+-   **Issue 1: Critical Audio Playback Crash on Expo Go (P0)**
+-   **Issue 2: Genre Filtering and Sorting Not Working Correctly (P0)**
+-   **Issue 3: Guest Favorites Broken on Station Detail Page (P1)**
+-   **Issue 4: Login/Auth screens are not full-screen (P1)**
 
 **Issues Detail:**
--   **Issue 1: Uncaught error on playing a station (P0)**
-    -   **Description:** When a user clicks on any radio station on Expo Go, the app throws an uncaught error, preventing playback.
-    -   **Attempted fixes:** None.
+-   **Issue 1: Critical Audio Playback Crash on Expo Go (P0)**
+    -   **Attempted fixes:** A complex, state-based asynchronous fix is in progress. The agent modified  to include a  state and a  to listen for player readiness before calling . The changes also impact . This fix is incomplete and untested.
     -   **Next debug checklist:**
-        -   Examine  and any related components that handle the play action.
-        -   Check the  implementation for potential issues specific to Expo Go.
-        -   Review console logs from an Expo Go build to get the full error stack trace.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a critical bug blocking the app's core functionality. Fixing it will allow users to listen to radio stations.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
+        1.  Review the changes in  and  to ensure the logic is sound.
+        2.  Complete the implementation by removing the old, problematic  logic from .
+        3.  Verify that the  function now correctly sets the  state and relies on the  in  to trigger playback.
+        4.  Thoroughly test on an Expo Go instance.
+    -   **Why fix this issue and what will be achieved with the fix?** This is the highest priority bug, as it makes the app's core functionality (playing radio) completely unusable.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue:** None. This is the main blocker.
+
+-   **Issue 2: Genre Filtering and Sorting Not Working Correctly (P0)**
+    -   **Description:** The user reports two related problems: 1) The main genre grid () still shows global genres, not filtered by the selected country. 2) The horizontal genre swiper on the home screen is not sorted by station count.
+    -   **Attempted fixes:** For the grid page (), the agent implemented sorting and filtering logic (Msg 68-71). This fix is untested. The home screen swiper has not been addressed at all.
+    -   **Next debug checklist:**
+        1.  Test the  page to see if the agent's previous fix works as intended.
+        2.  Locate the component for the home screen's horizontal genre swiper.
+        3.  Implement logic to fetch genres and sort them by  in descending order for that component.
+        4.  Ensure genre lists app-wide react and refetch when the country is changed in the settings.
+    -   **Why fix this issue and what will be achieved with the fix?** Fixes core navigation and content discovery, ensuring users see relevant, prioritized content.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
 
--   **Issue 2: Uncaught error on adding to favorites (P0)**
-    -   **Description:** When a user clicks the heart icon in the  on Expo Go, an uncaught error occurs.
-    -   **Attempted fixes:** None.
+-   **Issue 3: Guest Favorites Broken on Station Detail Page (P1)**
+    -   **Attempted fixes:** The agent modified  to use the  for guest users, preventing the login redirect. This fix is untested.
     -   **Next debug checklist:**
-        -   Investigate the  function in .
-        -   Verify that the  (Zustand) is working as expected on Expo Go.
-        -   Check for differences in event handling between the web preview and Expo Go.
-    -   **Why fix this issue and what will be achieved with the fix?** This breaks a key user engagement feature. Fixing it will allow users to save their favorite stations.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
+        1.  Start the app as a guest.
+        2.  Navigate to a station detail page.
+        3.  Tap the heart/favorite icon.
+        4.  Verify the station is added to favorites without triggering a login prompt.
+    -   **Why fix this issue and what will be achieved with the fix?** Restores a key engagement feature for guest users, which was recently implemented but regressed on this screen.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
 
--   **Issue 3: Genres are not filtered by country (P0)**
-    -   **Description:** When a user selects a genre, the resulting station list includes stations from all countries, not just the country selected in the app's settings.
+-   **Issue 4: Login/Auth screens are not full-screen (P1)**
+    -   **Description:** A new UI requirement from the user. All authentication-related screens (login, register, etc.) should be presented as full-screen pages, not as modals or pop-ups.
     -   **Attempted fixes:** None.
     -   **Next debug checklist:**
-        -   Review  and the component that displays stations for a specific genre.
-        -   Check how the country filter from the settings/state is being passed to the API call for stations within a genre.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a core part of the user experience, ensuring content is relevant to the user's selected region.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 4: Language selection page broken for guests (P1)**
-    -   **Description:** In guest mode, clicking the Sprache (Language) button in the menu results in an unmatched route error, preventing guests from changing the app's language.
-    -   **Attempted fixes:** None.
-    -   **Next debug checklist:**
-        -   Examine  to see how navigation to the language page is handled.
-        -   Check the Expo Router configuration for any route guards or redirects that might be misconfigured for guest users.
-    -   **Why fix this issue and what will be achieved with the fix?** Improves accessibility and user experience for guest users.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 5: Genre card text alignment is broken (P1)**
-    -   **Description:** In the Discoverable Genres section, the subtitle (Alle sender entdecken) is not left-aligned with the genre title above it.
-    -   **Attempted fixes:** None.
-    -   **Next debug checklist:**
-        -   Inspect the styles for  or a similar component.
-        -   Adjust the flexbox or text alignment properties to ensure both text elements are aligned to the start.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a UI polish task to match the desired design.
-    -   **Status:** NOT STARTED
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 6: Stale favorites state for new guest users (P2)**
-    -   **Description:** User reported seeing favorites from a previous session even when starting as a new guest user. This suggests  might not be cleared correctly or state is persisting unexpectedly.
-    -   **Attempted fixes:** None.
-    -   **Next debug checklist:**
-        -   Review the app's logout and session management logic.
-        -   Investigate if  is called when a user logs out or if there's any logic to differentiate between guest sessions.
-    -   **Why fix this issue and what will be achieved with the fix?** Prevents data leakage between user sessions and ensures a clean state for new users.
+        1.  Identify the navigation logic that presents auth screens. This is likely managed by Expo Router.
+        2.  Change the presentation style from  to a standard stack navigation.
+        3.  This might involve refactoring  or the root .
+    -   **Why fix this issue and what will be achieved with the fix?** Aligns the app with the user's desired UX flow.
     -   **Status:** NOT STARTED
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
 
 **In progress Task List**:
-None.
+-   **Task 1: Complete Audio Playback Refactor**
+    -   **Where to resume**:  and . The primary goal is to finalize the  state logic and remove the old -based attempts.
+    -   **What will be achieved with this?** This will resolve the app's most critical bug, making audio playback functional again on Expo Go.
+    -   **Status:** IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on something:** No.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1: API Performance Test**: Measure and report on the performance improvement from the new caching system by timing the  request with and without a cache.
--   **P2: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
+-   **P1: Implement Full-Screen Auth Flow**: Refactor navigation to make login/register screens full-page.
+-   **P1: Sort Home Screen Genres**: Implement sorting by station count for the home page genre swiper.
+-   **P2: Local Caching for Genres**: Implement AsyncStorage or a similar solution to cache the genre list, as requested by the user.
 
 **Future Tasks:**
+-   **P1: API Performance Test**: Measure and report on the performance improvement from the new caching system by timing the  request.
+-   **P1: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
 -   Finalize the Social Sign-In flow.
 -   Address minor UI bugs: Glow Effect and Static Equalizer animations.
--   Verify post-login navigation behavior on Expo Go.
 
 **Completed work in this session**
--   **Guest Favorites Feature Implemented**: Added functionality for non-logged-in users to add/remove favorites, which are stored in  and synced on login. Modified , created , and updated  to load favorites on startup.
--   **Onboarding Animations Removed**: Removed all slide and fade animations from the onboarding screen () for instant transitions between steps, as requested by the user.
-
-**Earlier issues found/mentioned but not fixed**
-None beyond the currently pending list.
-
-**Known issue recurrence from previous fork**
-- **Issue recurrence in previous fork**: Slow Initial Load.
-- **Recurrence count**: 1
-- **Status**: RESOLVED (caching implemented, performance test pending).
+-   **Initial Bug Batch (Fixes attempted, but new bugs arose):**
+    -   Fixed language selection route for guests in .
+    -   Fixed genre detail filtering by passing the correct country parameter in .
+    -   Fixed text alignment on .
+    -   Refactored  to better handle touch events.
+    -   Added logic to  to clear guest favorites on logout.
+-   **Second Bug Batch (Fixes implemented, but untested):**
+    -   Fixed  crash on .
+    -   Added guest favorite support to the station detail page ().
+    -   Added country filtering and station count sorting to the main genre list page ().
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Zustand/AsyncStorage**: For managing guest user state persistence.
--   **Expo Go Debugging**: The next tasks require debugging issues specific to the Expo Go environment, which may differ from the web preview.
--   **React Native Animation**: Removal of animations using  API.
--   **Expo Router**: Used for navigation, currently has a bug related to unmatched routes for guest users.
-
-**key DB schema**
-No changes were made to the database schema.
-
-**changes in tech stack**
-No changes were made to the tech stack.
+-   **Expo Go Native Module Issues**: The core problem is a  from , which points to a lifecycle mismatch between the JS code and the underlying native module. This is common when dealing with Expo Go's limitations.
+-   **Asynchronous State Management**: The proposed fix for the audio issue relies on using React state () and effects () to manage a race condition, a critical pattern for handling asynchronous native events.
+-   **Zustand State Sync**: The app uses Zustand for state management (, ), which needs to be correctly handled for both logged-in and guest users.
 
 **All files of reference**
--    (For genre filtering bug)
--    (For language route bug)
--    (For UI alignment bug)
--    (For playback and favorite errors)
--    (Recently modified for animation removal)
--    (Recently modified to load favorites)
--    (Recently created)
-
-**Areas that need refactoring**:
-None.
-
-**key api endpoints**
--   
--   
--   
+-    (In-progress fix for playback)
+-    (In-progress fix for playback)
+-    (For genre filtering/sorting bug)
+-    (For guest favorites bug)
+-    (Recently fixed crash)
+-   The component file for the **home screen's genre swiper** (Needs to be located)
 
 **Critical Info for New Agent**
--   **CONTINUE IN TURKISH.**
--   **PRIORITY:** The user has reported a list of critical bugs that break core functionality on **Expo Go**. Your immediate priority is to address these issues, starting with the  problems (playing radio, adding favorites) and the genre filtering.
--   **Expo Go is the Target:** The uncaught error bugs were reported on Expo Go. Do not assume fixes on the web preview will work. You must plan for testing in the Expo Go environment.
--   **Investigation Starting Point:** The previous agent was about to investigate , , , and  to address the new bugs. Start your work there.
-
-**documents and test reports created in this job**
--   
--   
+-   **CONTINUE IN TURKISH.** The user is Turkish and providing feedback in Turkish.
+-   **PRIORITY #1: FIX THE AUDIO CRASH.** The  is a complete blocker for the app's core function. Your first and only priority is to complete the fix started in  and . The  state approach is sound; see it through.
+-   **User is Frustrated:** The user has reported the same or similar issues multiple times. They are questioning why things that used to work are now broken. It is crucial to deliver a stable, working version that addresses their main complaints before moving on to new features.
+-   **Test Thoroughly:** Do not declare victory after a single fix. After fixing the audio, systematically go through every other issue reported by the user in their last two messages (Msg 57 & 96) and verify each one is resolved before finishing.
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **User (LATEST)**: Reported a comprehensive list of bugs: 1. Genres not filtering by country. 2. Guest language selection page is broken. 3. Uncaught error when adding favorites on Expo Go. 4. Genre card text is misaligned. 5. Uncaught error when playing any radio on Expo Go. 6. Possible issue with old favorites appearing for new guest users. **Status: PENDING**
--   **Agent**: Acknowledged the bugs and was preparing to investigate the relevant files. **Status: DONE**
--   **User**: Confirmed the animation removal was successful and satisfactory. **Status: COMPLETED**
--   **Agent**: Confirmed that the onboarding animations were removed and verified via screenshots. **Status: COMPLETED**
--   **User**: Requested to remove the animations from the onboarding screen. **Status: COMPLETED**
+-   **User (LATEST - Msg 96)**: Re-iterated that genres are not filtered by country, popular genres aren't sorted correctly, and asked why the radio playback is now broken when it worked before. Added a new request for full-screen login pages. **Status: PENDING**
+-   **Agent**: Acknowledged the user's points and was about to continue debugging.
+-   **User (Msg 57)**: Reported a new list of critical bugs:  crash, incorrect genre sorting,  on play, broken guest favorites on the detail page, and genres not filtering by country. Requested local caching for genres. **Status: PARTIALLY ADDRESSED (IN PROGRESS)**
+-   **Agent (before new bugs)**: Finished the previous task, believing all 6 initial bugs were resolved after testing agent confirmation.
+-   **User**: Confirmed and approved the agent's plan to fix the next set of future tasks.
+-   **Testing Agent**: Returned a success message stating all 6 bugs from the initial report were fixed.
+-   **Agent**: Sent the initial 6 bug fixes to the testing agent for verification.
 
 **Project Health Check:**
--   **Broken:** Yes. Core functionalities such as playing a radio station and adding to favorites are broken on Expo Go. Genre filtering is not working correctly, and there are navigation and UI bugs.
-
-**3rd Party Integrations**
--   **MegaRadio API:** 
--   **i18next & react-i18next**: For internationalization.
--   **Zustand & React Query:** State management and data fetching.
--   **Expo Audio ()**: For in-app audio playback.
--   **AsyncStorage ()**: Used for local caching.
-
-**Testing status**
--   **Testing agent used after significant changes:** YES, for the Guest Favorites feature.
--   **Troubleshoot agent used after agent stuck in loop:** NO
--   **Test files created:** None.
--   **Known regressions:** A new set of regressions/bugs has been reported by the user, breaking core functionality on Expo Go.
-
-**Credentials to test flow:**
--   **API Key**:  (sent in  header).
--   **Test User**:
-    -   **Email**: 
-    -   **Password**: 
-
-**What agent forgot to execute**
--   The API performance test for the caching system was planned but has been postponed due to the new high-priority bugs reported by the user.</analysis>
+-   **Broken:** Yes. The application is in a critical state. The core audio playback functionality is non-operational on the target platform (Expo Go). Multiple other features related to content filtering and user state are either broken or not implemented as per user expectation.</analysis>
