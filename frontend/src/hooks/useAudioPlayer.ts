@@ -332,6 +332,9 @@ export const useAudioPlayer = () => {
           console.log('[useAudioPlayer] Pause error (ignored):', e);
         }
       }
+      
+      // Clear audio source to release previous player
+      setAudioSource(null);
       await audioManager.stop();
       
       // STEP 2: Set loading state
