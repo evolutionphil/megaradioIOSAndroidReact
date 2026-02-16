@@ -914,20 +914,20 @@ const styles = StyleSheet.create({
   discoverableBannerContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     paddingHorizontal: spacing.lg,
   },
   discoverableBannerTitle: {
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
-    textAlign: 'right',
+    textAlign: 'left',
   },
   discoverableBannerSubtitle: {
     fontSize: typography.sizes.sm,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 4,
-    textAlign: 'right',
+    textAlign: 'left',
   },
 
   // Users List - Full width with specified dimensions
