@@ -270,10 +270,11 @@ const styles = StyleSheet.create({
   authButtonText: {
     flex: 1,
     textAlign: 'center',
-    fontSize: typography.sizes.lg,
+    fontSize: typography.sizes.md,
     fontWeight: '500',
     color: colors.text,
     marginRight: 40,
+    flexShrink: 1,
   },
   continueButton: {
     marginTop: 28,
