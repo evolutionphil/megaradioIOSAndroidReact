@@ -114,34 +114,69 @@ export const useAudioPlayer = () => {
   }, [player]);
   
   // Auto-play when player is ready and pendingPlay is true
+  // Key fix: Check that player exists and is in a valid state before calling play()
   useEffect(() => {
-    if (pendingPlay && player && status && !status.playing && !status.isBuffering) {
-      const currentPlayId = audioManager.getPlayId();
-      if (pendingPlayIdRef.current === currentPlayId) {
-        try {
-          console.log('[useAudioPlayer] Auto-playing - player ready');
-          player.play();
-          setPendingPlay(false);
-        } catch (e) {
-          console.warn('[useAudioPlayer] Auto-play failed:', e);
-          // Retry after delay
-          setTimeout(() => {
+    if (!pendingPlay || !player) return;
+    
+    const currentPlayId = audioManager.getPlayId();
+    if (pendingPlayIdRef.current !== currentPlayId) {
+      console.log('[useAudioPlayer] Stale pendingPlay, ignoring');
+      setPendingPlay(false);
+      return;
+    }
+    
+    // Safer play attempt with delay to ensure player is fully initialized
+    const attemptPlay = async () => {
+      try {
+        // Small delay to ensure native player is ready
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        // Double-check we're still the current play request
+        if (pendingPlayIdRef.current !== audioManager.getPlayId()) {
+          console.log('[useAudioPlayer] Play request became stale during delay');
+          return;
+        }
+        
+        // Check player is still valid
+        if (!player) {
+          console.log('[useAudioPlayer] Player became null during delay');
+          return;
+        }
+        
+        console.log('[useAudioPlayer] Attempting play...');
+        player.play();
+        setPendingPlay(false);
+        console.log('[useAudioPlayer] Play called successfully');
+      } catch (e: any) {
+        console.warn('[useAudioPlayer] Play attempt failed:', e?.message || e);
+        
+        // If it's the NativeSharedObjectNotFoundException, retry with longer delay
+        if (e?.message?.includes('NativeSharedObject') || e?.message?.includes('native')) {
+          console.log('[useAudioPlayer] Native object error, retrying with longer delay...');
+          setTimeout(async () => {
             if (pendingPlayIdRef.current === audioManager.getPlayId() && player) {
               try {
                 player.play();
                 setPendingPlay(false);
-              } catch (e2) {
-                console.error('[useAudioPlayer] Retry play also failed:', e2);
-                setError('Unable to start playback');
+                console.log('[useAudioPlayer] Retry successful');
+              } catch (retryError: any) {
+                console.error('[useAudioPlayer] Retry also failed:', retryError?.message);
+                setError('Unable to start playback. Please try again.');
                 setPlaybackState('error');
                 setPendingPlay(false);
               }
             }
           }, 500);
+        } else {
+          setError('Unable to start playback');
+          setPlaybackState('error');
+          setPendingPlay(false);
         }
       }
-    }
-  }, [pendingPlay, player, status, setError, setPlaybackState]);
+    };
+    
+    attemptPlay();
+  }, [pendingPlay, player, setError, setPlaybackState]);
 
   // Set up audio mode ONCE globally
   useEffect(() => {
