@@ -72,13 +72,18 @@ class AudioManager {
     if (this.playerRef) {
       try {
         this.playerRef.pause();
-        console.log('[AudioManager] Player paused');
+        // Try to release the player
+        if (typeof this.playerRef.release === 'function') {
+          this.playerRef.release();
+        }
+        console.log('[AudioManager] Player paused and released');
       } catch (e) {
-        console.log('[AudioManager] Pause error (ignored):', e);
+        console.log('[AudioManager] Stop error (ignored):', e);
       }
     }
     this.currentStationId = null;
     this.currentUrl = null;
+    this.playerRef = null;
   }
 }
 
