@@ -98,7 +98,7 @@ export default function HomeScreen() {
 
   // Use English name for popular stations API, native for stations API
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 8);
-  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(country || countryCode || undefined);
+  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
