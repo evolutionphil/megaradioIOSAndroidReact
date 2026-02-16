@@ -486,18 +486,16 @@ export default function HomeScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING, gap: 12, marginBottom: spacing.lg }}
               renderItem={({ item: genre, index }) => {
-                const gradientColors = [
-                  ['#0066FF', '#00BFFF'],
-                  ['#5C27F4', '#9F3FFF'],
-                  ['#FF6B6B', '#FF8E53'],
-                  ['#11998e', '#38ef7d'],
-                  ['#FC466B', '#3F5EFB'],
-                ][index % 5];
-                
-                // Use API image
-                const imageUrl = genre.discoverableImage 
+                // Use API image - discoverableImage from API
+                const apiImageUrl = genre.discoverableImage 
                   ? `https://themegaradio.com${genre.discoverableImage}`
-                  : getGenreBannerImage(genre);
+                  : null;
+                
+                // Debug log
+                console.log('[Discoverable] Genre:', genre.name, 'discoverableImage:', genre.discoverableImage, 'using:', apiImageUrl);
+                
+                // Only use API image, fallback to placeholder if not available
+                const imageUrl = apiImageUrl || 'https://themegaradio.com/images/genre-bg-grad-1.webp';
                 
                 return (
                   <TouchableOpacity 
@@ -509,16 +507,16 @@ export default function HomeScreen() {
                       style={StyleSheet.absoluteFill}
                       resizeMode="cover"
                     />
-                    {/* Gradient overlay for text readability */}
+                    {/* Dark gradient overlay on right side for text readability */}
                     <LinearGradient
-                      colors={['transparent', 'rgba(0,0,0,0.7)']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
+                      colors={['transparent', 'rgba(0,0,0,0.6)', 'rgba(0,0,0,0.8)']}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 1, y: 0.5 }}
                       style={StyleSheet.absoluteFill}
                     />
                     <View style={styles.discoverableBannerContent}>
                       <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
-                      <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover all the stations')}</Text>
+                      <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover All Stations')}</Text>
                     </View>
                   </TouchableOpacity>
                 );
