@@ -216,11 +216,11 @@ export const useGenreStations = (
 
 export const useDiscoverableGenres = () => {
   return useQuery({
-    queryKey: ['discoverableGenresWithImages', Date.now()], // Force fresh fetch
+    queryKey: ['discoverableGenres'],
     queryFn: async () => {
       console.log('[useQueries] Fetching discoverable genres from API...');
       const result = await genreService.getDiscoverableGenres();
-      console.log('[useQueries] Discoverable genres result:', JSON.stringify(result?.slice?.(0, 2) || result));
+      console.log('[useQueries] Discoverable genres result:', JSON.stringify(result?.slice?.(0, 2)));
       return Array.isArray(result) ? result : (result?.data || []);
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
