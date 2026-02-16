@@ -193,10 +193,15 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     const englishName = COUNTRY_ENGLISH_MAP[countryName] || countryName;
     const nativeName = COUNTRY_NATIVE_MAP[countryName] || COUNTRY_NATIVE_MAP[englishName] || countryName;
     
+    // Get country code from mapping
+    const countryCode = COUNTRY_CODE_MAP[countryName] || COUNTRY_CODE_MAP[englishName] || COUNTRY_CODE_MAP[nativeName] || null;
+    
+    console.log('[LocationStore] setCountryManual:', { countryName, englishName, nativeName, countryCode });
+    
     set({ 
       country: nativeName, 
       countryEnglish: englishName,
-      countryCode: null, 
+      countryCode: countryCode, 
       loading: false, 
       error: null 
     });
