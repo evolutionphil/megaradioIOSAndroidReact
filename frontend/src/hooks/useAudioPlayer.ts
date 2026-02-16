@@ -1,283 +1,160 @@
 // useAudioPlayer - Audio playback with expo-audio (Expo SDK 54+)
-// Uses a singleton pattern to ensure only ONE audio player exists at a time
-// Migrated from deprecated expo-av
+// Uses a SINGLE AudioPlayer instance to prevent multiple audio playing simultaneously
 
 import { useCallback, useRef, useEffect, useState } from 'react';
-import { 
-  useAudioPlayer as useExpoAudioPlayer, 
-  useAudioPlayerStatus,
-  setAudioModeAsync,
-} from 'expo-audio';
-import type { AudioPlayer } from 'expo-audio';
+import { AudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
 
-// Global state to track initialization
+// Global state
 let audioModeConfigured = false;
+let globalPlayer: AudioPlayer | null = null;
+let globalPlaybackState: 'idle' | 'loading' | 'playing' | 'paused' | 'buffering' | 'error' = 'idle';
 
-// SINGLETON: Global audio player manager
-class AudioManager {
-  private static instance: AudioManager;
-  private currentStationId: string | null = null;
-  private currentUrl: string | null = null;
-  private _playId = 0;
-  private playerRef: AudioPlayer | null = null;
-
-  private constructor() {
-    console.log('[AudioManager] Singleton instance created');
+// Get or create the single global player
+const getGlobalPlayer = (): AudioPlayer => {
+  if (!globalPlayer) {
+    console.log('[AudioPlayer] Creating new global AudioPlayer instance');
+    globalPlayer = new AudioPlayer();
   }
+  return globalPlayer;
+};
 
-  static getInstance(): AudioManager {
-    if (!AudioManager.instance) {
-      AudioManager.instance = new AudioManager();
-    }
-    return AudioManager.instance;
-  }
-
-  getCurrentStationId(): string | null {
-    return this.currentStationId;
-  }
-
-  getCurrentUrl(): string | null {
-    return this.currentUrl;
-  }
-
-  setPlayer(player: AudioPlayer | null): void {
-    this.playerRef = player;
-  }
-
-  getPlayer(): AudioPlayer | null {
-    return this.playerRef;
-  }
-
-  setCurrentStation(stationId: string | null, url: string | null): void {
-    this.currentStationId = stationId;
-    this.currentUrl = url;
-  }
-
-  incrementPlayId(): number {
-    return ++this._playId;
-  }
-
-  getPlayId(): number {
-    return this._playId;
-  }
-
-  async stop(): Promise<void> {
-    this._playId++;
-    console.log('[AudioManager] stop called, playId now:', this._playId);
-    
-    if (this.playerRef) {
-      try {
-        this.playerRef.pause();
-        // Try to release the player
-        if (typeof this.playerRef.release === 'function') {
-          this.playerRef.release();
-        }
-        console.log('[AudioManager] Player paused and released');
-      } catch (e) {
-        console.log('[AudioManager] Stop error (ignored):', e);
+// Stop and release the global player
+const stopGlobalPlayer = async () => {
+  if (globalPlayer) {
+    try {
+      console.log('[AudioPlayer] Stopping global player');
+      globalPlayer.pause();
+      // Release the player to free resources
+      if (typeof globalPlayer.release === 'function') {
+        globalPlayer.release();
       }
+    } catch (e) {
+      console.log('[AudioPlayer] Stop error (ignored):', e);
     }
-    this.currentStationId = null;
-    this.currentUrl = null;
-    this.playerRef = null;
+    globalPlayer = null;
   }
-}
-
-// Get singleton instance
-const audioManager = AudioManager.getInstance();
+  globalPlaybackState = 'idle';
+};
 
 export const useAudioPlayer = () => {
   const listeningStartRef = useRef<Date | null>(null);
-  const [audioSource, setAudioSource] = useState<string | null>(null);
-  const [pendingPlay, setPendingPlay] = useState(false);
-  const pendingPlayIdRef = useRef<number>(0);
+  const [localPlaybackState, setLocalPlaybackState] = useState(globalPlaybackState);
+  const currentStationIdRef = useRef<string | null>(null);
+  const currentUrlRef = useRef<string | null>(null);
   
-  // expo-audio hook - creates player instance
-  const player = useExpoAudioPlayer(audioSource ? audioSource : undefined);
-  const status = useAudioPlayerStatus(player);
-
   const {
     currentStation,
-    playbackState,
-    streamUrl,
     setCurrentStation,
-    setPlaybackState,
+    setPlaybackState: setStorePlaybackState,
     setStreamUrl,
     setNowPlaying,
     setError,
     setMiniPlayerVisible,
-    reset,
   } = usePlayerStore();
 
-  // Register player with AudioManager whenever it changes
-  useEffect(() => {
-    if (player) {
-      console.log('[useAudioPlayer] Registering player with AudioManager');
-      audioManager.setPlayer(player);
-    }
-  }, [player]);
-  
-  // Debug: Log playbackState changes
-  useEffect(() => {
-    console.log('[useAudioPlayer] playbackState changed to:', playbackState);
-  }, [playbackState]);
-  
-  // Auto-play when player is ready and pendingPlay is true
-  // Key fix: Check that player exists and is in a valid state before calling play()
-  useEffect(() => {
-    if (!pendingPlay || !player) return;
-    
-    const currentPlayId = audioManager.getPlayId();
-    if (pendingPlayIdRef.current !== currentPlayId) {
-      console.log('[useAudioPlayer] Stale pendingPlay, ignoring');
-      setPendingPlay(false);
-      return;
-    }
-    
-    // Safer play attempt with delay to ensure player is fully initialized
-    const attemptPlay = async () => {
-      try {
-        // Small delay to ensure native player is ready
-        await new Promise(resolve => setTimeout(resolve, 150));
-        
-        // Double-check we're still the current play request
-        if (pendingPlayIdRef.current !== audioManager.getPlayId()) {
-          console.log('[useAudioPlayer] Play request became stale during delay');
-          return;
-        }
-        
-        // Check player is still valid
-        if (!player) {
-          console.log('[useAudioPlayer] Player became null during delay');
-          return;
-        }
-        
-        console.log('[useAudioPlayer] Attempting play...');
-        player.play();
-        setPendingPlay(false);
-        console.log('[useAudioPlayer] Play called successfully');
-      } catch (e: any) {
-        console.warn('[useAudioPlayer] Play attempt failed:', e?.message || e);
-        
-        // If it's the NativeSharedObjectNotFoundException, retry with longer delay
-        if (e?.message?.includes('NativeSharedObject') || e?.message?.includes('native')) {
-          console.log('[useAudioPlayer] Native object error, retrying with longer delay...');
-          setTimeout(async () => {
-            if (pendingPlayIdRef.current === audioManager.getPlayId() && player) {
-              try {
-                player.play();
-                setPendingPlay(false);
-                console.log('[useAudioPlayer] Retry successful');
-              } catch (retryError: any) {
-                console.error('[useAudioPlayer] Retry also failed:', retryError?.message);
-                setError('Unable to start playback. Please try again.');
-                setPlaybackState('error');
-                setPendingPlay(false);
-              }
-            }
-          }, 500);
-        } else {
-          setError('Unable to start playback');
-          setPlaybackState('error');
-          setPendingPlay(false);
-        }
-      }
-    };
-    
-    attemptPlay();
-  }, [pendingPlay, player, setError, setPlaybackState]);
+  // Sync local state with store
+  const setPlaybackState = useCallback((state: typeof globalPlaybackState) => {
+    globalPlaybackState = state;
+    setLocalPlaybackState(state);
+    setStorePlaybackState(state);
+  }, [setStorePlaybackState]);
 
-  // Set up audio mode ONCE globally
+  // Configure audio mode once
   useEffect(() => {
     const setupAudio = async () => {
-      if (audioModeConfigured) {
-        console.log('[useAudioPlayer] Audio mode already configured, skipping');
-        return;
-      }
-      
+      if (audioModeConfigured) return;
       try {
         await setAudioModeAsync({
           playsInSilentMode: true,
           shouldPlayInBackground: true,
+          interruptionMode: 'duckOthers',
         });
         audioModeConfigured = true;
-        console.log('[useAudioPlayer] Audio mode configured (expo-audio)');
+        console.log('[useAudioPlayer] Audio mode configured');
       } catch (error) {
-        console.error('[useAudioPlayer] Failed to set audio mode:', error);
+        console.error('[useAudioPlayer] Failed to configure audio mode:', error);
       }
     };
     setupAudio();
   }, []);
 
-  // Handle playback status updates from expo-audio
+  // Listen to player status changes
   useEffect(() => {
-    if (!status) return;
+    const player = globalPlayer;
+    if (!player) return;
 
-    // Map expo-audio status to our playback states
-    if (status.playing) {
-      setPlaybackState('playing');
-    } else if (status.isBuffering) {
-      setPlaybackState('buffering');
-    } else if (status.currentTime > 0 && !status.playing) {
-      setPlaybackState('paused');
-    }
-  }, [status, setPlaybackState, setError]);
+    const checkStatus = () => {
+      try {
+        if (player.playing) {
+          if (globalPlaybackState !== 'playing') {
+            setPlaybackState('playing');
+          }
+        } else if (globalPlaybackState === 'playing') {
+          setPlaybackState('paused');
+        }
+      } catch (e) {
+        // Player might be released
+      }
+    };
 
-  // Resolve stream URL - follows redirects and handles HTTP/HTTPS
+    const interval = setInterval(checkStatus, 500);
+    return () => clearInterval(interval);
+  }, [localPlaybackState, setPlaybackState]);
+
+  // Resolve stream URL
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
     try {
       const streamData = await stationService.resolveStream(station.url);
 
       if (streamData.candidates && streamData.candidates.length > 0) {
         let resolvedUrl = streamData.candidates[0];
-
-        // iOS AVPlayer has problems with HTTP and certain redirects
-        // Always proxy through themegaradio for reliability
-        const isKnownWorkingHttps = resolvedUrl.includes('stream.laut.fm') || 
-                                     resolvedUrl.includes('radiohost.de') ||
-                                     resolvedUrl.includes('streamtheworld.com');
         
-        if (resolvedUrl.startsWith('http://') || !isKnownWorkingHttps) {
-          console.log('[useAudioPlayer] Using proxy for stream:', resolvedUrl.substring(0, 50));
+        // Always proxy for reliability
+        if (resolvedUrl.startsWith('http://') || !resolvedUrl.includes('streamtheworld.com')) {
           resolvedUrl = stationService.getProxyUrl(resolvedUrl);
         }
-
         return resolvedUrl;
       }
 
-      // Fallback to url_resolved or original url - always proxy
+      // Fallback
       let fallbackUrl = station.url_resolved || station.url;
-      console.log('[useAudioPlayer] Using fallback URL with proxy:', fallbackUrl.substring(0, 50));
       return stationService.getProxyUrl(fallbackUrl);
-      
     } catch (error) {
       console.error('[useAudioPlayer] Failed to resolve stream:', error);
-      
-      // Final fallback - always proxy
       let fallbackUrl = station.url_resolved || station.url;
       return stationService.getProxyUrl(fallbackUrl);
     }
   }, []);
 
-  // STOP playback
+  // Fetch now playing metadata
+  const fetchNowPlaying = useCallback(async (stationId: string) => {
+    try {
+      const nowPlayingData = await stationService.getNowPlaying(stationId);
+      if (nowPlayingData && (nowPlayingData.title || nowPlayingData.artist)) {
+        setNowPlaying(nowPlayingData);
+      }
+    } catch {
+      console.log('[useAudioPlayer] Now playing metadata not available');
+    }
+  }, [setNowPlaying]);
+
+  // STOP playback completely
   const stopPlayback = useCallback(async () => {
     console.log('[useAudioPlayer] ========== STOP PLAYBACK ==========');
     
-    const currentStationId = audioManager.getCurrentStationId();
-    
-    // Record listening time if there was a previous station
-    if (listeningStartRef.current && currentStationId) {
+    // Record listening time
+    if (listeningStartRef.current && currentStationIdRef.current) {
       const duration = Math.floor(
         (new Date().getTime() - listeningStartRef.current.getTime()) / 1000
       );
       if (duration > 5) {
         try {
           await userService.recordListening(
-            currentStationId,
+            currentStationIdRef.current,
             duration,
             listeningStartRef.current.toISOString()
           );
@@ -288,8 +165,9 @@ export const useAudioPlayer = () => {
       listeningStartRef.current = null;
     }
 
-    await audioManager.stop();
-    setAudioSource(null);
+    await stopGlobalPlayer();
+    currentStationIdRef.current = null;
+    currentUrlRef.current = null;
     setPlaybackState('idle');
     setMiniPlayerVisible(false);
     
@@ -301,18 +179,15 @@ export const useAudioPlayer = () => {
     console.log('[useAudioPlayer] ========== PLAY STATION ==========');
     console.log('[useAudioPlayer] Station:', station.name, 'ID:', station._id);
     
-    const currentStationId = audioManager.getCurrentStationId();
-    const currentPlayer = audioManager.getPlayer();
-    
     // Check if same station - toggle play/pause
-    if (currentStationId === station._id && currentPlayer) {
+    if (currentStationIdRef.current === station._id && globalPlayer) {
       console.log('[useAudioPlayer] Same station, toggling play/pause');
       try {
-        if (status?.playing) {
-          currentPlayer.pause();
+        if (globalPlayer.playing) {
+          globalPlayer.pause();
           setPlaybackState('paused');
         } else {
-          currentPlayer.play();
+          globalPlayer.play();
           setPlaybackState('playing');
         }
       } catch (e) {
@@ -322,20 +197,9 @@ export const useAudioPlayer = () => {
     }
 
     try {
-      // STEP 1: STOP current playback FIRST
+      // STEP 1: STOP any current playback FIRST
       console.log('[useAudioPlayer] Step 1: Stopping current playback...');
-      if (currentPlayer) {
-        try {
-          currentPlayer.pause();
-          console.log('[useAudioPlayer] Previous station paused');
-        } catch (e) {
-          console.log('[useAudioPlayer] Pause error (ignored):', e);
-        }
-      }
-      
-      // Clear audio source to release previous player
-      setAudioSource(null);
-      await audioManager.stop();
+      await stopGlobalPlayer();
       
       // STEP 2: Set loading state
       setPlaybackState('loading');
@@ -345,40 +209,39 @@ export const useAudioPlayer = () => {
       console.log('[useAudioPlayer] Step 2: Setting new station...');
       setCurrentStation(station);
       setMiniPlayerVisible(true);
+      currentStationIdRef.current = station._id;
 
       // Record click (non-blocking)
       stationService.recordClick(station._id).catch(() => {});
 
-      // STEP 4: Get play ID for race condition prevention
-      const myPlayId = audioManager.incrementPlayId();
-      console.log('[useAudioPlayer] PlayID:', myPlayId, '- Starting');
-
-      // STEP 5: Resolve stream URL
-      console.log('[useAudioPlayer] Step 2: Resolving stream URL...');
+      // STEP 4: Resolve stream URL
+      console.log('[useAudioPlayer] Step 3: Resolving stream URL...');
       const url = await resolveStreamUrl(station);
       if (!url) {
         throw new Error('Could not resolve stream URL');
       }
-      
-      // Check if we're still the current play request
-      if (audioManager.getPlayId() !== myPlayId) {
-        console.log('[useAudioPlayer] PlayID', myPlayId, '- STALE, aborting');
-        return;
-      }
 
       console.log('[useAudioPlayer] Stream URL:', url.substring(0, 80) + '...');
       setStreamUrl(url);
+      currentUrlRef.current = url;
       
-      // STEP 6: Update audio source - this triggers expo-audio to load a NEW player
-      audioManager.setCurrentStation(station._id, url);
-      setAudioSource(url);
+      // STEP 5: Create new player and load
+      console.log('[useAudioPlayer] Step 4: Creating player and loading...');
+      const player = getGlobalPlayer();
       
-      // Set pending play flag - the useEffect will trigger play when player is ready
-      pendingPlayIdRef.current = myPlayId;
-      setPendingPlay(true);
+      // Replace the source
+      player.replace({ uri: url });
+      
+      // Wait a bit for the player to load
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // STEP 6: Play
+      console.log('[useAudioPlayer] Step 5: Playing...');
+      player.play();
+      setPlaybackState('playing');
       
       listeningStartRef.current = new Date();
-      console.log('[useAudioPlayer] ========== LOADING NEW STATION ==========');
+      console.log('[useAudioPlayer] ========== PLAYING ==========');
 
       // Record recently played (non-blocking)
       userService.recordRecentlyPlayed(station._id).catch(() => {});
@@ -386,127 +249,84 @@ export const useAudioPlayer = () => {
       // Fetch now playing metadata (non-blocking)
       fetchNowPlaying(station._id);
 
-    } catch (error) {
-      console.error('[useAudioPlayer] Failed to play station:', error);
-      setError(error instanceof Error ? error.message : 'Failed to play station');
+    } catch (error: any) {
+      console.error('[useAudioPlayer] Play error:', error);
       setPlaybackState('error');
+      setError(error?.message || 'Failed to play station');
     }
-  }, [player, status, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible]);
-
-  // Fetch now playing metadata
-  const fetchNowPlaying = useCallback(async (stationId: string) => {
-    const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
-    
-    try {
-      const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
-      if (response.ok) {
-        const metadata = await response.json();
-        if (metadata && (metadata.title || metadata.artist)) {
-          setNowPlaying(metadata);
-          return;
-        }
-      }
-    } catch (error) {
-      console.log('[useAudioPlayer] Local backend now-playing failed:', error);
-    }
-    
-    try {
-      const metadata = await stationService.getNowPlaying(stationId);
-      if (metadata) {
-        setNowPlaying(metadata);
-      }
-    } catch {
-      console.log('[useAudioPlayer] Now playing metadata not available');
-    }
-  }, [setNowPlaying]);
+  }, [setCurrentStation, setPlaybackState, setError, setMiniPlayerVisible, setStreamUrl, resolveStreamUrl, fetchNowPlaying]);
 
   // Pause playback
   const pause = useCallback(async () => {
     console.log('[useAudioPlayer] Pause called');
     try {
-      // Try audioManager's player first (most reliable)
-      const managerPlayer = audioManager.getPlayer();
-      if (managerPlayer) {
-        managerPlayer.pause();
+      if (globalPlayer) {
+        globalPlayer.pause();
         setPlaybackState('paused');
-        console.log('[useAudioPlayer] Paused via audioManager');
-        return;
+        console.log('[useAudioPlayer] Paused');
+      } else {
+        console.warn('[useAudioPlayer] No player to pause');
       }
-      // Fallback to hook's player
-      if (player) {
-        player.pause();
-        setPlaybackState('paused');
-        console.log('[useAudioPlayer] Paused via hook player');
-        return;
-      }
-      console.warn('[useAudioPlayer] Cannot pause - no player instance available');
     } catch (error) {
       console.error('[useAudioPlayer] Error pausing:', error);
     }
-  }, [player, setPlaybackState]);
+  }, [setPlaybackState]);
 
   // Resume playback
   const resume = useCallback(async () => {
     console.log('[useAudioPlayer] Resume called');
     try {
-      // Try audioManager's player first (most reliable)
-      const managerPlayer = audioManager.getPlayer();
-      if (managerPlayer) {
-        managerPlayer.play();
+      if (globalPlayer) {
+        globalPlayer.play();
         setPlaybackState('playing');
-        console.log('[useAudioPlayer] Resumed via audioManager');
-        return;
+        console.log('[useAudioPlayer] Resumed');
+      } else {
+        console.warn('[useAudioPlayer] No player to resume');
       }
-      // Fallback to hook's player
-      if (player) {
-        player.play();
-        setPlaybackState('playing');
-        console.log('[useAudioPlayer] Resumed via hook player');
-        return;
-      }
-      console.warn('[useAudioPlayer] Cannot resume - no player instance available');
     } catch (error) {
       console.error('[useAudioPlayer] Error resuming:', error);
     }
-  }, [player, setPlaybackState]);
+  }, [setPlaybackState]);
 
   // Toggle play/pause
   const togglePlayPause = useCallback(async () => {
-    console.log('[useAudioPlayer] togglePlayPause called, playbackState:', playbackState);
+    console.log('[useAudioPlayer] togglePlayPause called, state:', globalPlaybackState);
     
-    // Get current player
-    const currentPlayer = audioManager.getPlayer() || player;
-    console.log('[useAudioPlayer] Current player exists:', !!currentPlayer);
-    
-    if (playbackState === 'playing') {
+    if (globalPlaybackState === 'playing') {
       await pause();
-    } else if (playbackState === 'paused') {
+    } else if (globalPlaybackState === 'paused') {
       await resume();
-    } else if ((playbackState === 'idle' || playbackState === 'error') && currentStation) {
-      // After sleep timer stops playback or error, allow re-play
-      console.log('[useAudioPlayer] Replaying station from', playbackState, 'state');
+    } else if ((globalPlaybackState === 'idle' || globalPlaybackState === 'error') && currentStation) {
+      console.log('[useAudioPlayer] Replaying station from', globalPlaybackState, 'state');
       await playStation(currentStation);
     } else {
-      console.log('[useAudioPlayer] togglePlayPause - no action taken, state:', playbackState, 'hasStation:', !!currentStation);
+      console.log('[useAudioPlayer] togglePlayPause - no action, state:', globalPlaybackState);
     }
-  }, [playbackState, pause, resume, currentStation, playStation, player]);
+  }, [pause, resume, currentStation, playStation]);
 
   // Set volume
   const setVolume = useCallback(async (volume: number) => {
     try {
-      if (player) {
-        player.volume = Math.max(0, Math.min(1, volume));
+      if (globalPlayer) {
+        globalPlayer.volume = Math.max(0, Math.min(1, volume));
         console.log('[useAudioPlayer] Volume set to:', volume);
       }
     } catch (error) {
       console.error('[useAudioPlayer] Error setting volume:', error);
     }
-  }, [player]);
+  }, []);
+
+  // Reset state
+  const reset = useCallback(() => {
+    stopGlobalPlayer();
+    currentStationIdRef.current = null;
+    currentUrlRef.current = null;
+  }, []);
 
   return {
     currentStation,
-    playbackState,
-    streamUrl,
+    playbackState: localPlaybackState,
+    streamUrl: currentUrlRef.current,
     playStation,
     stopPlayback,
     pause,
