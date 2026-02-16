@@ -29,13 +29,13 @@ export default function GenresTabScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [cachedGenres, setCachedGenres] = useState<Genre[]>([]);
-  const { country } = useLocationStore();
+  const { country, countryCode } = useLocationStore();
 
-  // Use the full genres endpoint (returns all 27+ genres) instead of precomputed/cached
-  const { data: genresData, isLoading, refetch } = useGenres(1, 100);
+  // Use precomputed genres with country filter (countryCode = ISO code like "TR", "US")
+  const { data: genresData, isLoading, refetch } = usePrecomputedGenres(countryCode || undefined);
 
   // Extract genres from API response
-  const apiGenres = genresData?.data || genresData?.genres || [];
+  const apiGenres = genresData?.data || [];
 
   // Load cached genres on mount
   useEffect(() => {
