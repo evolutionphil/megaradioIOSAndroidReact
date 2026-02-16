@@ -379,6 +379,7 @@ export const useAudioPlayer = () => {
       if (managerPlayer) {
         managerPlayer.pause();
         setPlaybackState('paused');
+        isPlayingRef.current = false;
         console.log('[useAudioPlayer] Paused via audioManager');
         return;
       }
@@ -386,6 +387,7 @@ export const useAudioPlayer = () => {
       if (player) {
         player.pause();
         setPlaybackState('paused');
+        isPlayingRef.current = false;
         console.log('[useAudioPlayer] Paused via hook player');
         return;
       }
@@ -404,6 +406,7 @@ export const useAudioPlayer = () => {
       if (managerPlayer) {
         managerPlayer.play();
         setPlaybackState('playing');
+        isPlayingRef.current = true;
         console.log('[useAudioPlayer] Resumed via audioManager');
         return;
       }
@@ -411,6 +414,7 @@ export const useAudioPlayer = () => {
       if (player) {
         player.play();
         setPlaybackState('playing');
+        isPlayingRef.current = true;
         console.log('[useAudioPlayer] Resumed via hook player');
         return;
       }
