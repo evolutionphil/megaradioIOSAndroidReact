@@ -230,12 +230,14 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: 'absolute',
-    top: 122,
-    left: 25,
+    top: 100,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
   logoImage: {
-    width: 326,
-    height: 326,
+    width: 340,
+    height: 340,
   },
   buttonsContainer: {
     gap: 14,
