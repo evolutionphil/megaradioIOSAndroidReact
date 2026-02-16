@@ -228,11 +228,12 @@ export const initializeApp = async (
       console.log('[TvInit] Loaded', Object.keys(data.translations).length, 'translations for', currentLang);
     }
 
-    // 2. Cache genres in React Query
+    // 2. Cache genres in React Query (only for precomputed, NOT for discoverable)
+    // Note: Discoverable genres must come from /api/genres/discoverable to get discoverableImage
     if (data.genres && data.genres.length > 0) {
-      queryClient.setQueryData(['discoverableGenres'], data.genres);
+      // Don't cache to 'discoverableGenres' - that needs discoverableImage from separate API
       queryClient.setQueryData(['precomputedGenres'], data.genres);
-      console.log('[TvInit] Cached', data.genres.length, 'genres');
+      console.log('[TvInit] Cached', data.genres.length, 'genres (precomputed only)');
     }
 
     // 3. Cache popular stations in React Query
