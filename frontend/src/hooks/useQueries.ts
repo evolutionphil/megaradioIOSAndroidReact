@@ -216,19 +216,16 @@ export const useGenreStations = (
 
 export const useDiscoverableGenres = () => {
   return useQuery({
-    queryKey: ['discoverableGenres'],
+    queryKey: ['discoverableGenresWithImages', Date.now()], // Force fresh fetch
     queryFn: async () => {
-      // ALWAYS call API for discoverable genres to get discoverableImage
       console.log('[useQueries] Fetching discoverable genres from API...');
       const result = await genreService.getDiscoverableGenres();
       console.log('[useQueries] Discoverable genres result:', JSON.stringify(result?.slice?.(0, 2) || result));
-      // API returns array directly
       return Array.isArray(result) ? result : (result?.data || []);
     },
-    staleTime: 0, // Always fetch fresh data
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: 'always', // Force refetch on every mount
   });
 };
 
