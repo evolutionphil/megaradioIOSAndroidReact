@@ -188,8 +188,8 @@ export const usePrecomputedGenres = (country?: string) => {
       console.log('[useQueries] API returned genres:', result?.data?.length || 0);
       return result;
     },
-    staleTime: CACHE_TTL.GENRES_ALL,
-    gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
+    staleTime: 5 * 60 * 1000, // 5 minutes - shorter to allow country changes
+    gcTime: 30 * 60 * 1000,   // 30 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   });
