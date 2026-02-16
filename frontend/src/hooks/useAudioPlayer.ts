@@ -108,10 +108,18 @@ export const useAudioPlayer = () => {
     reset,
   } = usePlayerStore();
 
-  // Register player with AudioManager
+  // Register player with AudioManager whenever it changes
   useEffect(() => {
-    audioManager.setPlayer(player);
+    if (player) {
+      console.log('[useAudioPlayer] Registering player with AudioManager');
+      audioManager.setPlayer(player);
+    }
   }, [player]);
+  
+  // Debug: Log playbackState changes
+  useEffect(() => {
+    console.log('[useAudioPlayer] playbackState changed to:', playbackState);
+  }, [playbackState]);
   
   // Auto-play when player is ready and pendingPlay is true
   // Key fix: Check that player exists and is in a valid state before calling play()
