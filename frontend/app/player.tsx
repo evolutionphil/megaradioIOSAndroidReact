@@ -525,7 +525,10 @@ export default function PlayerScreen() {
             {/* Play/Pause */}
             <TouchableOpacity
               style={styles.playPauseButton}
-              onPress={togglePlayPause}
+              onPress={() => {
+                console.log('[Player] Play/Pause pressed, playbackState:', playbackState);
+                togglePlayPause();
+              }}
               disabled={isLoading}
             >
               {isLoading ? (
