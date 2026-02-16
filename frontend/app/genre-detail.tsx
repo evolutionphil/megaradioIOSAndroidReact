@@ -272,7 +272,7 @@ export default function GenreDetailScreen() {
             
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{genreName}</Text>
-              <Text style={styles.subtitle}>{totalCount}</Text>
+              <Text style={styles.subtitle}>{totalCount} stations</Text>
             </View>
 
             <View style={styles.headerActions}>
