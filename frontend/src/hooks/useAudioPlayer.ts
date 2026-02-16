@@ -258,29 +258,36 @@ export const useAudioPlayer = () => {
     }
 
     try {
-      // STEP 1: Set loading state immediately
+      // STEP 1: STOP current playback FIRST
+      console.log('[useAudioPlayer] Step 1: Stopping current playback...');
+      if (player) {
+        try {
+          player.pause();
+          console.log('[useAudioPlayer] Previous station paused');
+        } catch (e) {
+          console.log('[useAudioPlayer] Pause error (ignored):', e);
+        }
+      }
+      
+      // STEP 2: Set loading state
       setPlaybackState('loading');
       setError(null);
       
-      // STEP 2: Update station state BEFORE stopping (for immediate UI feedback)
-      console.log('[useAudioPlayer] Step 1: Setting new station...');
+      // STEP 3: Update station state for immediate UI feedback
+      console.log('[useAudioPlayer] Step 2: Setting new station...');
       setCurrentStation(station);
       setMiniPlayerVisible(true);
+      currentStationIdRef.current = station._id;
 
       // Record click (non-blocking)
       stationService.recordClick(station._id).catch(() => {});
 
-      // STEP 3: Get play ID for race condition prevention
+      // STEP 4: Get play ID for race condition prevention
       const myPlayId = audioManager.incrementPlayId();
       console.log('[useAudioPlayer] PlayID:', myPlayId, '- Starting');
 
-      // STEP 4: Stop current playback
-      if (player && status?.playing) {
-        player.pause();
-      }
-
       // STEP 5: Resolve stream URL
-      console.log('[useAudioPlayer] Step 2: Resolving stream URL...');
+      console.log('[useAudioPlayer] Step 3: Resolving stream URL...');
       const url = await resolveStreamUrl(station);
       if (!url) {
         throw new Error('Could not resolve stream URL');
@@ -294,17 +301,34 @@ export const useAudioPlayer = () => {
 
       console.log('[useAudioPlayer] Stream URL:', url.substring(0, 80) + '...');
       setStreamUrl(url);
-      
-      // STEP 6: Update audio source - this triggers expo-audio to load a NEW player
       audioManager.setCurrentStation(station._id, url);
-      setAudioSource(url);
       
-      // Set pending play flag - the useEffect will trigger play when player is ready
-      pendingPlayIdRef.current = myPlayId;
-      setPendingPlay(true);
-      
-      listeningStartRef.current = new Date();
-      console.log('[useAudioPlayer] ========== LOADING NEW STATION ==========');
+      // STEP 6: Use player.replace() to change source WITHOUT creating new player
+      console.log('[useAudioPlayer] Step 4: Replacing audio source...');
+      if (player) {
+        player.replace({ uri: url });
+        
+        // Wait for player to load
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Check again if still current
+        if (audioManager.getPlayId() !== myPlayId) {
+          console.log('[useAudioPlayer] PlayID', myPlayId, '- STALE after load, aborting');
+          return;
+        }
+        
+        // STEP 7: Play
+        console.log('[useAudioPlayer] Step 5: Playing...');
+        player.play();
+        setPlaybackState('playing');
+        isPlayingRef.current = true;
+        
+        listeningStartRef.current = new Date();
+        console.log('[useAudioPlayer] ========== NOW PLAYING ==========');
+      } else {
+        console.error('[useAudioPlayer] No player available');
+        throw new Error('No audio player available');
+      }
 
       // Record recently played (non-blocking)
       userService.recordRecentlyPlayed(station._id).catch(() => {});
@@ -317,7 +341,7 @@ export const useAudioPlayer = () => {
       setError(error instanceof Error ? error.message : 'Failed to play station');
       setPlaybackState('error');
     }
-  }, [player, status, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible]);
+  }, [player, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying]);
 
   // Fetch now playing metadata
   const fetchNowPlaying = useCallback(async (stationId: string) => {
