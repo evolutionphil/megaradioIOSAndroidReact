@@ -97,7 +97,12 @@ export default function AuthOptionsScreen() {
   };
 
   const handleClose = () => {
-    router.back();
+    // Navigate back or to home if there's no navigation history
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
   };
 
   const isLoading = loadingProvider !== null;
