@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Asset } from 'expo-asset';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -29,6 +30,17 @@ const GIRL_IMAGE = require('../assets/images/onboarding/girl.png');
 const BOY_SCREEN2_IMAGE = require('../assets/images/onboarding/boy-screen2.png');
 const BOY_SCREEN3_IMAGE = require('../assets/images/onboarding/boy-screen3.png');
 const NEXT_BUTTON = require('../assets/images/onboarding/next-button.png');
+
+// Preload all onboarding images at module load
+const preloadImages = async () => {
+  try {
+    await Asset.loadAsync([GIRL_IMAGE, BOY_SCREEN2_IMAGE, BOY_SCREEN3_IMAGE, NEXT_BUTTON]);
+    console.log('[Onboarding] All images preloaded');
+  } catch (e) {
+    console.log('[Onboarding] Image preload error:', e);
+  }
+};
+preloadImages();
 
 // Onboarding data for 3 screens
 const ONBOARDING_DATA = [
