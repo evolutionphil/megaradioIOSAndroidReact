@@ -182,9 +182,35 @@ export default function UserProfileScreen() {
     }
   };
 
-  const handlePlayStation = (station: FavoriteStation) => {
-    // TODO: Play station
-    console.log('Play station:', station.name);
+  const handlePlayStation = async (station: FavoriteStation) => {
+    console.log('[UserProfile] Play station:', station.name);
+    
+    // Convert FavoriteStation to Station format for playStation
+    const stationToPlay = {
+      _id: station.id,
+      name: station.name,
+      url: '', // Will be resolved by useAudioPlayer
+      favicon: station.logo,
+      country: '',
+      language: '',
+      tags: station.genre,
+    };
+    
+    // Fetch full station data first
+    try {
+      const response = await api.get(`https://themegaradio.com/api/station/${station.id}`);
+      if (response.data) {
+        // Use full station data
+        await playStation(response.data);
+      } else {
+        // Fallback to basic data
+        await playStation(stationToPlay as any);
+      }
+    } catch (error) {
+      console.error('[UserProfile] Error fetching station:', error);
+      // Try with basic data anyway
+      await playStation(stationToPlay as any);
+    }
   };
 
   const handleShare = async (platform: string) => {
