@@ -233,6 +233,54 @@ export const authService = {
     
     return loginResponse.data;
   },
+
+  // ─── SOCIAL LOGIN (Mobile) ───
+
+  /**
+   * Google Sign-In
+   * POST /api/auth/google
+   */
+  async googleSignIn(idToken: string): Promise<MobileLoginResponse> {
+    const { deviceInfo } = useAuthStore.getState();
+    
+    console.log('[AuthService] Google Sign-In with token:', idToken.substring(0, 50) + '...');
+    
+    const response = await api.post(`${API_BASE}/api/auth/google`, {
+      idToken,
+      deviceType: deviceInfo.deviceType || 'mobile',
+      deviceName: deviceInfo.deviceName || 'Mobile Device',
+    });
+    
+    console.log('[AuthService] Google Sign-In response:', response.data);
+    return response.data;
+  },
+
+  /**
+   * Apple Sign-In
+   * POST /api/auth/apple
+   */
+  async appleSignIn(
+    identityToken: string,
+    authorizationCode: string,
+    fullName?: string,
+    email?: string
+  ): Promise<MobileLoginResponse> {
+    const { deviceInfo } = useAuthStore.getState();
+    
+    console.log('[AuthService] Apple Sign-In');
+    
+    const response = await api.post(`${API_BASE}/api/auth/apple`, {
+      identityToken,
+      authorizationCode,
+      fullName: fullName || undefined,
+      email: email || undefined,
+      deviceType: deviceInfo.deviceType || 'mobile',
+      deviceName: deviceInfo.deviceName || 'Mobile Device',
+    });
+    
+    console.log('[AuthService] Apple Sign-In response:', response.data);
+    return response.data;
+  },
 };
 
 export default authService;
