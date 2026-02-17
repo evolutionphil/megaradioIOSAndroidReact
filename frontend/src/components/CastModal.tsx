@@ -119,10 +119,14 @@ export const CastModal: React.FC<CastModalProps> = ({
   };
 
   const handleCastNow = async () => {
-    if (!sessionId || !currentStationId) return;
+    if (!sessionId || !currentStationId) {
+      console.log('[CastModal] Missing sessionId or stationId');
+      return;
+    }
     
     try {
-      await fetch(`${BASE_URL}/api/cast/command`, {
+      console.log('[CastModal] Sending play command to TV...');
+      const response = await fetch(`${BASE_URL}/api/cast/command`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,9 +139,25 @@ export const CastModal: React.FC<CastModalProps> = ({
         }),
       });
       
-      onClose();
-    } catch (err) {
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('[CastModal] Cast error response:', errorText);
+        setError('TV\'ye gönderilemedi');
+        return;
+      }
+      
+      const data = await response.json();
+      console.log('[CastModal] Cast response:', data);
+      
+      if (data.success) {
+        console.log('[CastModal] Cast successful!');
+        onClose();
+      } else {
+        setError(data.error || 'TV\'ye gönderilemedi');
+      }
+    } catch (err: any) {
       console.log('[CastModal] Cast error:', err);
+      setError(err.message || 'Bağlantı hatası');
     }
   };
 
