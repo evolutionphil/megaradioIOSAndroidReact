@@ -72,9 +72,14 @@ export default function HomeScreen() {
     console.log('[HomeScreen] User avatar:', user?.avatar, 'profilePhoto:', user?.profilePhoto);
   }, [user]);
 
-  // Fetch location on mount
+  // Fetch location on mount - with delay to avoid crash during initialization
   useEffect(() => {
-    fetchLocation();
+    // Delay location request to allow app to fully initialize
+    const timer = setTimeout(() => {
+      fetchLocation();
+    }, 2000); // 2 second delay
+    
+    return () => clearTimeout(timer);
   }, []);
 
   // Recently played from local storage
