@@ -130,39 +130,24 @@ export default function AuthOptionsScreen() {
 
         {/* Auth Buttons */}
         <View style={styles.buttonsContainer}>
-          {/* Apple */}
-          <TouchableOpacity
-            style={[styles.authButton, isLoading && styles.authButtonDisabled]}
-            onPress={handleAppleLogin}
-            disabled={isLoading}
-            data-testid="login-apple-button"
-          >
-            {loadingProvider === 'apple' ? (
-              <View style={styles.loadingIconContainer}>
-                <ActivityIndicator size="small" color={colors.text} />
-              </View>
-            ) : (
-              <Image source={APPLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
-            )}
-            <Text style={styles.authButtonText}>{t('login_with_apple', 'Apple ile Giriş Yap')}</Text>
-          </TouchableOpacity>
-
-          {/* Facebook */}
-          <TouchableOpacity
-            style={[styles.authButton, isLoading && styles.authButtonDisabled]}
-            onPress={handleFacebookLogin}
-            disabled={isLoading}
-            data-testid="login-facebook-button"
-          >
-            {loadingProvider === 'facebook' ? (
-              <View style={styles.loadingIconContainer}>
-                <ActivityIndicator size="small" color={colors.text} />
-              </View>
-            ) : (
-              <Image source={FACEBOOK_ICON} style={styles.buttonIcon} resizeMode="contain" />
-            )}
-            <Text style={styles.authButtonText}>{t('login_with_facebook', 'Facebook ile Giriş Yap')}</Text>
-          </TouchableOpacity>
+          {/* Apple - iOS only */}
+          {Platform.OS === 'ios' && (
+            <TouchableOpacity
+              style={[styles.authButton, isLoading && styles.authButtonDisabled]}
+              onPress={handleAppleLogin}
+              disabled={isLoading}
+              data-testid="login-apple-button"
+            >
+              {loadingProvider === 'apple' ? (
+                <View style={styles.loadingIconContainer}>
+                  <ActivityIndicator size="small" color={colors.text} />
+                </View>
+              ) : (
+                <Image source={APPLE_ICON} style={styles.buttonIcon} resizeMode="contain" />
+              )}
+              <Text style={styles.authButtonText}>{t('login_with_apple', 'Apple ile Giriş Yap')}</Text>
+            </TouchableOpacity>
+          )}
 
           {/* Google */}
           <TouchableOpacity
