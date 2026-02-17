@@ -2,12 +2,12 @@
   "expo": {
     "name": "MegaRadio",
     "slug": "megaradio",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "megaradio",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
@@ -18,11 +18,11 @@
           "fetch",
           "remote-notification"
         ],
-        "NSLocationWhenInUseUsageDescription": "MegaRadio yak\u0131n\u0131zda radyo istasyonlar\u0131 bulabilmek i\u00e7in konumunuzu kullan\u0131r.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio yak\u0131n\u0131zda radyo istasyonlar\u0131 bulabilmek i\u00e7in konumunuzu kullan\u0131r.",
-        "NSPhotoLibraryUsageDescription": "Profil foto\u011fraf\u0131 y\u00fckleyebilmek i\u00e7in foto\u011fraf galerinize eri\u015fim gereklidir.",
-        "NSCameraUsageDescription": "Profil foto\u011fraf\u0131 \u00e7ekebilmek i\u00e7in kamera eri\u015fimi gereklidir.",
-        "NSMicrophoneUsageDescription": "Ses kayd\u0131 yapabilmek i\u00e7in mikrofon eri\u015fimi gereklidir.",
+        "NSLocationWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
+        "NSPhotoLibraryUsageDescription": "Profil fotoğrafı yükleyebilmek için fotoğraf galerinize erişim gereklidir.",
+        "NSCameraUsageDescription": "Profil fotoğrafı çekebilmek için kamera erişimi gereklidir.",
+        "NSMicrophoneUsageDescription": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "config": {
