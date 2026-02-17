@@ -62,6 +62,12 @@ export const useCastStore = create<CastState>((set, get) => ({
   setShowCastModal: (show) => set({ showCastModal: show }),
 
   startCastSession: async (token: string) => {
+    const currentState = get();
+    if (currentState.isLoading || currentState.sessionId) {
+      console.log('[CastStore] Session already exists or loading, skipping');
+      return;
+    }
+    
     set({ isLoading: true, error: null });
     
     try {
@@ -77,7 +83,7 @@ export const useCastStore = create<CastState>((set, get) => ({
         isLoading: false,
       });
 
-      // Setup event listeners
+      // Setup event listeners (without connecting WebSocket yet)
       castService.onPaired((data) => {
         console.log('[CastStore] TV Paired!', data);
         set({
@@ -125,14 +131,20 @@ export const useCastStore = create<CastState>((set, get) => ({
         }
       });
 
-      // Connect WebSocket
-      castService.connectWebSocket(session.sessionId);
+      // Connect WebSocket after a short delay
+      setTimeout(() => {
+        try {
+          castService.connectWebSocket(session.sessionId);
+        } catch (e) {
+          console.log('[CastStore] WebSocket connection failed:', e);
+        }
+      }, 500);
       
     } catch (error: any) {
       console.error('[CastStore] Failed to start session:', error);
       set({
         isLoading: false,
-        error: error.message || 'Failed to start cast session',
+        error: error.message || 'Oturum başlatılamadı',
       });
     }
   },
