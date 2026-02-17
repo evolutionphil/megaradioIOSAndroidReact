@@ -65,25 +65,6 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
     setMiniPlayerVisible,
   } = usePlayerStore();
 
-  // Configure audio mode ONCE at app start
-  useEffect(() => {
-    const setupAudio = async () => {
-      if (audioModeConfigured) return;
-      
-      try {
-        await setAudioModeAsync({
-          playsInSilentMode: true,
-          shouldPlayInBackground: true,
-        });
-        audioModeConfigured = true;
-        console.log('[AudioProvider] Audio mode configured');
-      } catch (error) {
-        console.error('[AudioProvider] Failed to set audio mode:', error);
-      }
-    };
-    setupAudio();
-  }, []);
-
   // Sync playback state with actual player status
   useEffect(() => {
     if (!status) return;
