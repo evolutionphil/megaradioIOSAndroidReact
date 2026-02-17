@@ -53,16 +53,16 @@ const GOOGLE_DISCOVERY = {
 export const socialAuthService = {
   /**
    * Get the correct redirect URI for Expo
-   * Uses Expo AuthSession proxy for development
+   * For production builds, use native redirect
    */
   getRedirectUri(): string {
-    // For Expo Go, use the proxy
-    return AuthSession.makeRedirectUri({
+    // For production/standalone builds, use native scheme
+    const redirectUri = AuthSession.makeRedirectUri({
       scheme: 'megaradio',
       path: 'oauth',
-      // Use Expo's auth proxy for development
-      useProxy: true,
     });
+    console.log('[SocialAuth] Generated redirect URI:', redirectUri);
+    return redirectUri;
   },
 
   /**
