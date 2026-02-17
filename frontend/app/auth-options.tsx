@@ -85,7 +85,6 @@ export default function AuthOptionsScreen() {
   };
 
   const handleAppleLogin = () => handleSocialLogin('apple');
-  const handleFacebookLogin = () => handleSocialLogin('facebook');
   const handleGoogleLogin = () => handleSocialLogin('google');
 
   const handleMailLogin = () => {
