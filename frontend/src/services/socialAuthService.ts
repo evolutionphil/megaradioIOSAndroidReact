@@ -78,7 +78,7 @@ export const socialAuthService = {
 
       // Create auth request
       const request = new AuthSession.AuthRequest({
-        clientId: GOOGLE_IOS_CLIENT_ID,
+        clientId: getGoogleClientId(),
         scopes: ['openid', 'profile', 'email'],
         redirectUri,
         responseType: AuthSession.ResponseType.IdToken,
