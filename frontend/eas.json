@@ -7,6 +7,9 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "env": {
+        "RCT_NEW_ARCH_ENABLED": "1"
+      },
       "ios": {
         "resourceClass": "m-medium",
         "simulator": false,
@@ -19,6 +22,9 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "RCT_NEW_ARCH_ENABLED": "1"
+      },
       "ios": {
         "resourceClass": "m-medium",
         "autoIncrement": "buildNumber"
@@ -29,6 +35,9 @@
       }
     },
     "production": {
+      "env": {
+        "RCT_NEW_ARCH_ENABLED": "1"
+      },
       "ios": {
         "resourceClass": "m-medium",
         "autoIncrement": "buildNumber"
