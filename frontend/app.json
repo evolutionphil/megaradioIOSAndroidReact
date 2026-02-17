@@ -2,10 +2,10 @@
   "expo": {
     "name": "MegaRadio",
     "slug": "megaradio",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "megaradio",
+    "scheme": ["megaradio", "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "ios": {
@@ -18,6 +18,13 @@
           "fetch",
           "remote-notification"
         ],
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
+            ]
+          }
+        ],
         "NSLocationWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
         "NSPhotoLibraryUsageDescription": "Profil fotoğrafı yükleyebilmek için fotoğraf galerinize erişim gereklidir.",
@@ -26,7 +33,10 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "config": {
-        "usesNonExemptEncryption": false
+        "usesNonExemptEncryption": false,
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
+        }
       }
     },
     "android": {
