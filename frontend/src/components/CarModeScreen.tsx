@@ -429,16 +429,29 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
           </TouchableOpacity>
           <View style={styles.volumeBox}>
             <Ionicons name="volume-high" size={20 * S} color="#FFF" />
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={1}
-              value={isMuted ? 0 : volume}
-              onValueChange={handleVolumeChange}
-              minimumTrackTintColor="#FF4199"
-              maximumTrackTintColor="#373737"
-              thumbTintColor="#FF4199"
-            />
+            <View style={styles.slider}>
+              <View style={[styles.sliderTrack, { backgroundColor: '#373737' }]}>
+                <View 
+                  style={[
+                    styles.sliderFill, 
+                    { 
+                      backgroundColor: '#FF4199',
+                      width: `${(isMuted ? 0 : volume) * 100}%` 
+                    }
+                  ]} 
+                />
+              </View>
+              <TouchableOpacity 
+                style={[
+                  styles.sliderThumb,
+                  { left: `${(isMuted ? 0 : volume) * 100}%` }
+                ]}
+                onPress={() => {
+                  // Simple volume toggle between 0.5 and current
+                  handleVolumeChange(volume < 0.5 ? 1 : 0.5);
+                }}
+              />
+            </View>
           </View>
         </View>
 
