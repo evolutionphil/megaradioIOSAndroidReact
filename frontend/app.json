@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.themegaradio.app",
+      "bundleIdentifier": "com.visiongo.megaradio",
       "usesAppleSignIn": true,
       "infoPlist": {
         "UIBackgroundModes": [
@@ -35,7 +35,7 @@
         "backgroundColor": "#FF4199"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.themegaradio.app",
+      "package": "com.visiongo.megaradio",
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
