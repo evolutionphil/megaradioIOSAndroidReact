@@ -630,8 +630,11 @@ export default function PlayerScreen() {
                   resizeMode="contain"
                 />
               </TouchableOpacity>
-              {/* Broadcast/Airplay */}
-              <TouchableOpacity style={styles.secondaryButton}>
+              {/* Cast/Airplay */}
+              <TouchableOpacity 
+                style={styles.secondaryButton}
+                onPress={handleCastPress}
+              >
                 <Image 
                   source={require('../assets/icons/airplay-icon.png')} 
                   style={{ width: 24, height: 24, tintColor: '#888888' }} 
