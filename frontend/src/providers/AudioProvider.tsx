@@ -16,27 +16,6 @@ import type { Station } from '../types';
 import { AudioContext, AudioContextType } from '../hooks/useAudioPlayer';
 
 // ============================================
-// TYPES
-// ============================================
-interface AudioContextType {
-  playStation: (station: Station) => Promise<void>;
-  stopPlayback: () => Promise<void>;
-  pause: () => void;
-  resume: () => void;
-  togglePlayPause: () => void;
-  setVolume: (volume: number) => void;
-  currentStation: Station | null;
-  playbackState: string;
-  streamUrl: string | null;
-  isPlaying: boolean;
-}
-
-// ============================================
-// CONTEXT
-// ============================================
-const AudioContext = createContext<AudioContextType | null>(null);
-
-// ============================================
 // GLOBAL STATE (module level - truly singleton)
 // ============================================
 let audioModeConfigured = false;
