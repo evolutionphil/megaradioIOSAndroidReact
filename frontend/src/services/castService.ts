@@ -322,11 +322,12 @@ class CastService {
     }
   }
 
-  // Attempt reconnection
+  // Attempt reconnection - limited attempts
   private attemptReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('[CastService] Max reconnect attempts reached');
-      this.onErrorCallback?.('Connection lost');
+      console.log('[CastService] Max reconnect attempts reached, stopping');
+      this.onErrorCallback?.('Bağlantı kurulamadı');
+      this.currentSessionId = null;
       return;
     }
 
@@ -337,7 +338,7 @@ class CastService {
       if (this.currentSessionId && this.token) {
         this.connectWebSocket(this.currentSessionId);
       }
-    }, 5000);
+    }, 5000 * this.reconnectAttempts); // Exponential backoff
   }
 
   // Disconnect
