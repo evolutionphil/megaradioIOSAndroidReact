@@ -1,10 +1,15 @@
+// Social Authentication Service for MegaRadio
+// Uses expo-auth-session for Google and expo-apple-authentication for Apple
+
 import * as WebBrowser from 'expo-web-browser';
-import * as Linking from 'expo-linking';
+import * as Google from 'expo-auth-session/providers/google';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
 import { useAuthStore } from '../store/authStore';
-import api from './api';
+import authService from './authService';
 
-const API_BASE = 'https://themegaradio.com';
+// Complete auth session for web browser
+WebBrowser.maybeCompleteAuthSession();
 
 // OAuth provider types
 export type SocialProvider = 'google' | 'apple' | 'facebook';
@@ -22,203 +27,217 @@ interface SocialAuthResponse {
   error?: string;
 }
 
+// Google OAuth Client IDs
+const GOOGLE_IOS_CLIENT_ID = '246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com';
+// Android client ID - add when available
+// const GOOGLE_ANDROID_CLIENT_ID = 'YOUR_ANDROID_CLIENT_ID';
+
 /**
  * Social Authentication Service
- * Uses web-based OAuth flow through expo-web-browser
- * Works on iOS, Android, and Web
+ * Uses native SDKs for Google and Apple Sign-In
  */
 export const socialAuthService = {
   /**
-   * Get the redirect URI for OAuth callbacks
+   * Google Sign-In using expo-auth-session
+   * Returns idToken to send to backend
    */
-  getRedirectUri(): string {
-    // Create redirect URI based on platform
-    const scheme = 'megaradio';
-    
-    if (Platform.OS === 'web') {
-      // Web: use current origin
-      return typeof window !== 'undefined' 
-        ? `${window.location.origin}/auth-callback`
-        : 'https://themegaradio.com/auth-callback';
+  async signInWithGoogle(): Promise<SocialAuthResponse> {
+    try {
+      console.log('[SocialAuth] Starting Google Sign-In...');
+      
+      // Create Google auth request
+      const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+        iosClientId: GOOGLE_IOS_CLIENT_ID,
+        // androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+      });
+
+      // This won't work directly - need to use the hook in a component
+      // For now, use the web-based approach that works with Expo Go
+      return await this.googleWebAuth();
+    } catch (error: any) {
+      console.error('[SocialAuth] Google Sign-In error:', error);
+      return {
+        success: false,
+        error: error.message || 'Google Sign-In failed',
+      };
     }
-    
-    // Native: use deep link
-    return Linking.createURL('auth-callback');
   },
 
   /**
-   * Start OAuth flow for a provider
-   * Opens a web browser for authentication
+   * Google Sign-In via Web Browser (works in Expo Go)
    */
-  async startOAuth(provider: SocialProvider): Promise<SocialAuthResponse> {
-    const { deviceInfo } = useAuthStore.getState();
-    const redirectUri = this.getRedirectUri();
-    
-    // Construct OAuth URL with redirect
-    const authUrl = `${API_BASE}/api/auth/${provider}?` + 
-      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `device_type=${deviceInfo.deviceType}&` +
-      `platform=${Platform.OS}`;
-
+  async googleWebAuth(): Promise<SocialAuthResponse> {
     try {
-      // Open browser for OAuth
+      console.log('[SocialAuth] Starting Google Web Auth...');
+      
+      // Use Google OAuth endpoint
+      const redirectUri = 'com.megaradio.app:/oauth2redirect/google';
+      
+      // For Expo Go, we need to use a different approach
+      // Open Google OAuth in web browser
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${GOOGLE_IOS_CLIENT_ID}&` +
+        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+        `response_type=id_token&` +
+        `scope=openid%20email%20profile&` +
+        `nonce=${Math.random().toString(36).substring(7)}`;
+
       const result = await WebBrowser.openAuthSessionAsync(
         authUrl,
         redirectUri,
-        {
-          showInRecents: true,
-          preferEphemeralSession: true, // Don't persist cookies
-        }
+        { showInRecents: true }
       );
 
+      console.log('[SocialAuth] Google auth result:', result.type);
+
       if (result.type === 'success' && result.url) {
-        // Parse the callback URL for token and user data
-        return this.handleCallback(result.url);
+        // Extract id_token from URL fragment
+        const url = result.url;
+        const fragmentMatch = url.match(/#(.+)/);
+        
+        if (fragmentMatch) {
+          const params = new URLSearchParams(fragmentMatch[1]);
+          const idToken = params.get('id_token');
+          
+          if (idToken) {
+            console.log('[SocialAuth] Got Google ID token, sending to backend...');
+            
+            // Send to backend
+            const backendResponse = await authService.googleSignIn(idToken);
+            
+            if (backendResponse.token && backendResponse.user) {
+              return {
+                success: true,
+                token: backendResponse.token,
+                user: {
+                  id: backendResponse.user._id,
+                  email: backendResponse.user.email,
+                  name: backendResponse.user.fullName,
+                  avatar: backendResponse.user.avatar,
+                },
+              };
+            }
+          }
+        }
+        
+        return { success: false, error: 'Failed to get ID token from Google' };
       } else if (result.type === 'cancel') {
         return { success: false, error: 'Authentication cancelled' };
-      } else {
-        return { success: false, error: 'Authentication failed' };
       }
+      
+      return { success: false, error: 'Google Sign-In failed' };
     } catch (error: any) {
-      console.error(`${provider} OAuth error:`, error);
-      return { 
-        success: false, 
-        error: error.message || 'OAuth authentication failed' 
+      console.error('[SocialAuth] Google web auth error:', error);
+      return {
+        success: false,
+        error: error.message || 'Google Sign-In failed',
       };
     }
   },
 
   /**
-   * Handle OAuth callback URL
-   * Extracts token and user data from redirect URL
-   */
-  handleCallback(url: string): SocialAuthResponse {
-    try {
-      const parsed = Linking.parse(url);
-      const params = parsed.queryParams || {};
-      
-      // Check for error
-      if (params.error) {
-        return { 
-          success: false, 
-          error: params.error_description || params.error as string 
-        };
-      }
-      
-      // Extract token and user data
-      const token = params.token as string;
-      const userId = params.user_id as string;
-      const email = params.email as string;
-      const name = params.name as string;
-      const avatar = params.avatar as string;
-      
-      if (token && userId) {
-        return {
-          success: true,
-          token,
-          user: {
-            id: userId,
-            email: email || '',
-            name: name || '',
-            avatar: avatar || undefined,
-          },
-        };
-      }
-      
-      // If no token in URL, might need to exchange code
-      const code = params.code as string;
-      if (code) {
-        // Token not directly in URL - need to exchange code
-        return { 
-          success: false, 
-          error: 'OAuth code received - exchange required' 
-        };
-      }
-      
-      return { success: false, error: 'Invalid callback response' };
-    } catch (error: any) {
-      console.error('Callback parsing error:', error);
-      return { success: false, error: 'Failed to parse callback' };
-    }
-  },
-
-  /**
-   * Google Sign-In
-   */
-  async signInWithGoogle(): Promise<SocialAuthResponse> {
-    return this.startOAuth('google');
-  },
-
-  /**
-   * Apple Sign-In
+   * Apple Sign-In using expo-apple-authentication
+   * Only available on iOS
    */
   async signInWithApple(): Promise<SocialAuthResponse> {
-    return this.startOAuth('apple');
-  },
-
-  /**
-   * Facebook Sign-In
-   */
-  async signInWithFacebook(): Promise<SocialAuthResponse> {
-    return this.startOAuth('facebook');
-  },
-
-  /**
-   * Exchange authorization code for token
-   * Some OAuth flows return a code instead of direct token
-   */
-  async exchangeCodeForToken(
-    provider: SocialProvider, 
-    code: string
-  ): Promise<SocialAuthResponse> {
-    const { deviceInfo } = useAuthStore.getState();
-    
     try {
-      const response = await api.post(`${API_BASE}/api/auth/${provider}/callback`, {
-        code,
-        deviceType: deviceInfo.deviceType,
-        platform: Platform.OS,
+      console.log('[SocialAuth] Starting Apple Sign-In...');
+      
+      // Check if Apple auth is available (iOS only)
+      const isAvailable = await AppleAuthentication.isAvailableAsync();
+      
+      if (!isAvailable) {
+        return {
+          success: false,
+          error: 'Apple Sign-In is only available on iOS devices',
+        };
+      }
+
+      // Request Apple Sign-In
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
       });
-      
-      const { token, user } = response.data;
-      
-      if (token && user) {
+
+      console.log('[SocialAuth] Got Apple credential');
+
+      // Extract user info
+      const { identityToken, authorizationCode, fullName, email } = credential;
+
+      if (!identityToken || !authorizationCode) {
+        return {
+          success: false,
+          error: 'Failed to get Apple credentials',
+        };
+      }
+
+      // Build full name from Apple's name components
+      let userName = '';
+      if (fullName) {
+        const nameParts = [fullName.givenName, fullName.familyName].filter(Boolean);
+        userName = nameParts.join(' ');
+      }
+
+      console.log('[SocialAuth] Sending Apple credentials to backend...');
+
+      // Send to backend
+      const backendResponse = await authService.appleSignIn(
+        identityToken,
+        authorizationCode,
+        userName || undefined,
+        email || undefined
+      );
+
+      if (backendResponse.token && backendResponse.user) {
         return {
           success: true,
-          token,
+          token: backendResponse.token,
           user: {
-            id: user.id || user._id,
-            email: user.email,
-            name: user.name || user.fullName,
-            avatar: user.avatar || user.picture,
+            id: backendResponse.user._id,
+            email: backendResponse.user.email,
+            name: backendResponse.user.fullName,
+            avatar: backendResponse.user.avatar,
           },
         };
       }
-      
-      return { success: false, error: 'Invalid response from server' };
+
+      return { success: false, error: 'Backend authentication failed' };
     } catch (error: any) {
-      console.error('Token exchange error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Token exchange failed' 
+      console.error('[SocialAuth] Apple Sign-In error:', error);
+      
+      // Handle specific Apple errors
+      if (error.code === 'ERR_REQUEST_CANCELED') {
+        return { success: false, error: 'Authentication cancelled' };
+      }
+      
+      return {
+        success: false,
+        error: error.message || 'Apple Sign-In failed',
       };
     }
   },
 
   /**
-   * Check social auth status
-   * Returns which social providers are linked to the account
+   * Facebook Sign-In (placeholder)
+   * Not implemented yet
    */
-  async checkSocialStatus(): Promise<{
-    google: boolean;
-    apple: boolean;
-    facebook: boolean;
-  }> {
+  async signInWithFacebook(): Promise<SocialAuthResponse> {
+    return {
+      success: false,
+      error: 'Facebook Sign-In is not available yet',
+    };
+  },
+
+  /**
+   * Check if Apple Sign-In is available
+   */
+  async isAppleSignInAvailable(): Promise<boolean> {
     try {
-      const response = await api.get(`${API_BASE}/api/auth/social-status`);
-      return response.data;
-    } catch (error) {
-      return { google: false, apple: false, facebook: false };
+      return await AppleAuthentication.isAvailableAsync();
+    } catch {
+      return false;
     }
   },
 };
