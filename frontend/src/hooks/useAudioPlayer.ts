@@ -204,6 +204,33 @@ export const useAudioPlayer = () => {
     }
   }, []);
 
+  // Fetch now playing metadata - MUST be defined before playStation
+  const fetchNowPlaying = useCallback(async (stationId: string) => {
+    const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+    
+    try {
+      const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
+      if (response.ok) {
+        const metadata = await response.json();
+        if (metadata && (metadata.title || metadata.artist)) {
+          setNowPlaying(metadata);
+          return;
+        }
+      }
+    } catch (error) {
+      console.log('[useAudioPlayer] Local backend now-playing failed:', error);
+    }
+    
+    try {
+      const metadata = await stationService.getNowPlaying(stationId);
+      if (metadata) {
+        setNowPlaying(metadata);
+      }
+    } catch {
+      console.log('[useAudioPlayer] Now playing metadata not available');
+    }
+  }, [setNowPlaying]);
+
   // STOP playback
   const stopPlayback = useCallback(async () => {
     console.log('[useAudioPlayer] ========== STOP PLAYBACK ==========');
