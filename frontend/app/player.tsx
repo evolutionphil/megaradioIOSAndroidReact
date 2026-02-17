@@ -281,7 +281,11 @@ export default function PlayerScreen() {
   // Handle cast button - requires login
   const handleCastPress = () => {
     if (!isAuthenticated) {
-      router.push('/auth-options');
+      // Player modal'ı kapat ve full-screen login'e git
+      router.dismiss(); // Modal'ı kapat
+      setTimeout(() => {
+        router.push('/auth-options');
+      }, 100);
       return;
     }
     setShowCastModal(true);
