@@ -48,7 +48,7 @@ let listeningStartTime: Date | null = null;
 // ============================================
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // THE ONLY useAudioPlayer call in the entire app!
-  const player = useExpoAudioPlayer(null as any);
+  const player = useExpoPlayer(null as any);
   const status = useAudioPlayerStatus(player);
   
   const playerRef = useRef<AudioPlayer>(player);
