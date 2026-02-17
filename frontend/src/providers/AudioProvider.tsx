@@ -43,11 +43,18 @@ let currentPlayingStationId: string | null = null;
 let listeningStartTime: Date | null = null;
 
 // ============================================
+// SILENT AUDIO - Required for proper initialization
+// Using a tiny valid audio to avoid null crash on iOS
+// ============================================
+const SILENT_AUDIO = { uri: 'https://themegaradio.com/audio/silence.mp3' };
+
+// ============================================
 // PROVIDER COMPONENT
 // ============================================
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // THE ONLY useAudioPlayer call in the entire app!
-  const player = useExpoPlayer(null as any);
+  // Initialize with silent audio to avoid iOS crash with null
+  const player = useExpoPlayer(SILENT_AUDIO);
   const status = useAudioPlayerStatus(player);
   
   const playerRef = useRef<AudioPlayer>(player);
