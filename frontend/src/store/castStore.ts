@@ -117,8 +117,12 @@ export const useCastStore = create<CastState>((set, get) => ({
       });
 
       castService.onError((error) => {
-        console.error('[CastStore] Error:', error);
-        set({ error });
+        console.log('[CastStore] Error:', error);
+        // Only set error if not already in error state to prevent loops
+        const currentState = get();
+        if (!currentState.error) {
+          set({ error, isLoading: false });
+        }
       });
 
       // Connect WebSocket
