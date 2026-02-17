@@ -1,8 +1,8 @@
-// useAudioPlayer - Audio playback with expo-audio (Expo SDK 54+)
-// STABLE IMPLEMENTATION - Uses a single player instance with replace() for changing sources
-// Migrated from deprecated expo-av
+// useAudioPlayer - Audio playback hook using GLOBAL SINGLETON
+// This ensures only ONE audio stream plays at a time across ALL screens
+// Every component that uses this hook shares the SAME player instance
 
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { 
   useAudioPlayer as useExpoAudioPlayer, 
   useAudioPlayerStatus,
@@ -13,21 +13,36 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
 
-// Global state to track initialization
-let audioModeConfigured = false;
-
-// Global tracking for race condition prevention
+// ============================================
+// GLOBAL SINGLETON STATE
+// This state is shared across ALL hook instances
+// ============================================
+let globalPlayer: any = null;
 let globalPlayId = 0;
 let currentPlayingStationId: string | null = null;
+let listeningStartTime: Date | null = null;
+let audioModeConfigured = false;
 
+// ============================================
+// HOOK IMPLEMENTATION
+// ============================================
 export const useAudioPlayer = () => {
-  const listeningStartRef = useRef<Date | null>(null);
-  const playIdRef = useRef<number>(0);
+  // Create a player instance - but we'll only use ONE globally
+  const hookPlayer = useExpoAudioPlayer(null as any);
+  const hookStatus = useAudioPlayerStatus(hookPlayer);
   
-  // Initialize player - expo-audio SDK 54+ supports null/undefined initialization
-  // We use replace() to set the actual audio source when playing
-  const player = useExpoAudioPlayer(null as any);
-  const status = useAudioPlayerStatus(player);
+  // On first mount, set the global player
+  const isFirstMount = useRef(true);
+  
+  useEffect(() => {
+    // Register this player as the global one if not set yet
+    // Or if we're the "active" component
+    if (!globalPlayer || isFirstMount.current) {
+      console.log('[useAudioPlayer] Registering global player');
+      globalPlayer = hookPlayer;
+      isFirstMount.current = false;
+    }
+  }, [hookPlayer]);
 
   const {
     currentStation,
@@ -42,12 +57,10 @@ export const useAudioPlayer = () => {
     reset,
   } = usePlayerStore();
 
-  // Set up audio mode ONCE globally
+  // Configure audio mode ONCE
   useEffect(() => {
     const setupAudio = async () => {
-      if (audioModeConfigured) {
-        return;
-      }
+      if (audioModeConfigured) return;
       
       try {
         await setAudioModeAsync({
@@ -65,53 +78,42 @@ export const useAudioPlayer = () => {
 
   // Sync playback state with actual player status
   useEffect(() => {
-    if (!status) return;
+    if (!hookStatus) return;
     
-    // Only update state based on actual player status
-    const isActuallyPlaying = status.playing === true;
-    const isBuffering = status.isBuffering === true;
+    const isPlaying = hookStatus.playing === true;
+    const isBuffering = hookStatus.isBuffering === true;
     
     if (isBuffering && playbackState !== 'buffering') {
       setPlaybackState('buffering');
-    } else if (isActuallyPlaying && playbackState !== 'playing') {
+    } else if (isPlaying && playbackState !== 'playing') {
       setPlaybackState('playing');
-    } else if (!isActuallyPlaying && !isBuffering && playbackState === 'playing') {
-      // Only switch to paused if we were playing and now stopped
+    } else if (!isPlaying && !isBuffering && playbackState === 'playing') {
       setPlaybackState('paused');
     }
-  }, [status?.playing, status?.isBuffering]);
+  }, [hookStatus?.playing, hookStatus?.isBuffering]);
 
-  // Resolve stream URL - follows redirects and handles HTTP/HTTPS
+  // Resolve stream URL
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
     try {
       const streamData = await stationService.resolveStream(station.url);
 
       if (streamData.candidates && streamData.candidates.length > 0) {
         let resolvedUrl = streamData.candidates[0];
-
-        // iOS AVPlayer has problems with HTTP and certain redirects
-        // Always proxy through themegaradio for reliability
+        
         const isKnownWorkingHttps = resolvedUrl.includes('stream.laut.fm') || 
                                      resolvedUrl.includes('radiohost.de') ||
                                      resolvedUrl.includes('streamtheworld.com');
         
         if (resolvedUrl.startsWith('http://') || !isKnownWorkingHttps) {
-          console.log('[useAudioPlayer] Using proxy for stream:', resolvedUrl.substring(0, 50));
           resolvedUrl = stationService.getProxyUrl(resolvedUrl);
         }
 
         return resolvedUrl;
       }
 
-      // Fallback to url_resolved or original url - always proxy
       let fallbackUrl = station.url_resolved || station.url;
-      console.log('[useAudioPlayer] Using fallback URL with proxy:', fallbackUrl.substring(0, 50));
       return stationService.getProxyUrl(fallbackUrl);
-      
     } catch (error) {
-      console.error('[useAudioPlayer] Failed to resolve stream:', error);
-      
-      // Final fallback - always proxy
       let fallbackUrl = station.url_resolved || station.url;
       return stationService.getProxyUrl(fallbackUrl);
     }
@@ -130,212 +132,254 @@ export const useAudioPlayer = () => {
           return;
         }
       }
-    } catch (error) {
-      console.log('[useAudioPlayer] Local backend now-playing failed:', error);
-    }
+    } catch {}
     
     try {
       const metadata = await stationService.getNowPlaying(stationId);
       if (metadata) {
         setNowPlaying(metadata);
       }
-    } catch {
-      console.log('[useAudioPlayer] Now playing metadata not available');
-    }
+    } catch {}
   }, [setNowPlaying]);
 
-  // STOP playback completely
-  const stopPlayback = useCallback(async () => {
-    console.log('[useAudioPlayer] ========== STOP PLAYBACK ==========');
-    
-    // Record listening time if there was a previous station
-    if (listeningStartRef.current && currentPlayingStationId) {
-      const duration = Math.floor(
-        (new Date().getTime() - listeningStartRef.current.getTime()) / 1000
-      );
-      if (duration > 5) {
-        try {
-          await userService.recordListening(
-            currentPlayingStationId,
-            duration,
-            listeningStartRef.current.toISOString()
-          );
-        } catch {
-          // Non-critical
-        }
-      }
-      listeningStartRef.current = null;
-    }
-
-    // Increment play ID to invalidate any pending operations
-    globalPlayId++;
-    currentPlayingStationId = null;
-    
-    // Pause the player
-    try {
-      player.pause();
-    } catch (e) {
-      console.log('[useAudioPlayer] Pause error (ignored):', e);
-    }
-    
-    setPlaybackState('idle');
-    setMiniPlayerVisible(false);
-    
-    console.log('[useAudioPlayer] ========== STOPPED ==========');
-  }, [player, setPlaybackState, setMiniPlayerVisible]);
-
-  // PLAY a station - the core function
+  // ============================================
+  // PLAY STATION - THE CRITICAL FUNCTION
+  // Always uses the GLOBAL player instance
+  // ============================================
   const playStation = useCallback(async (station: Station) => {
-    console.log('[useAudioPlayer] ========== PLAY STATION ==========');
-    console.log('[useAudioPlayer] Station:', station.name, 'ID:', station._id);
+    console.log('[useAudioPlayer] ========================================');
+    console.log('[useAudioPlayer] PLAY STATION:', station.name);
+    console.log('[useAudioPlayer] Station ID:', station._id);
+    console.log('[useAudioPlayer] Current playing:', currentPlayingStationId);
+    console.log('[useAudioPlayer] ========================================');
+
+    // Use global player - this is the key!
+    const player = globalPlayer || hookPlayer;
     
-    // Check if same station - toggle play/pause instead
+    // Same station? Toggle play/pause
     if (currentPlayingStationId === station._id) {
-      console.log('[useAudioPlayer] Same station, toggling play/pause');
-      if (status?.playing) {
-        player.pause();
-        setPlaybackState('paused');
-      } else {
-        player.play();
-        setPlaybackState('playing');
+      console.log('[useAudioPlayer] Same station - toggling play/pause');
+      try {
+        if (player.playing) {
+          player.pause();
+          setPlaybackState('paused');
+        } else {
+          player.play();
+          setPlaybackState('playing');
+        }
+      } catch (e) {
+        console.log('[useAudioPlayer] Toggle error:', e);
       }
       return;
     }
 
+    // NEW STATION - Stop everything first!
+    const myPlayId = ++globalPlayId;
+    console.log('[useAudioPlayer] New PlayID:', myPlayId);
+
     try {
-      // STEP 1: Stop any current playback FIRST
-      console.log('[useAudioPlayer] Step 1: Stopping current playback...');
-      try {
-        player.pause();
-        console.log('[useAudioPlayer] Previous playback paused');
-      } catch (e) {
-        console.log('[useAudioPlayer] Pause error (ignored):', e);
+      // ==========================================
+      // STEP 1: STOP CURRENT PLAYBACK IMMEDIATELY
+      // This is the critical fix!
+      // ==========================================
+      console.log('[useAudioPlayer] STEP 1: Stopping current playback...');
+      
+      // Stop the global player
+      if (globalPlayer) {
+        try {
+          globalPlayer.pause();
+          console.log('[useAudioPlayer] Global player paused');
+        } catch (e) {
+          console.log('[useAudioPlayer] Global pause error (ignored):', e);
+        }
       }
       
-      // STEP 2: Set loading state immediately for UI feedback
+      // Also stop hook player (in case it's different)
+      if (hookPlayer && hookPlayer !== globalPlayer) {
+        try {
+          hookPlayer.pause();
+          console.log('[useAudioPlayer] Hook player paused');
+        } catch (e) {
+          console.log('[useAudioPlayer] Hook pause error (ignored):', e);
+        }
+      }
+
+      // Record listening time for previous station
+      if (listeningStartTime && currentPlayingStationId) {
+        const duration = Math.floor(
+          (new Date().getTime() - listeningStartTime.getTime()) / 1000
+        );
+        if (duration > 5) {
+          userService.recordListening(
+            currentPlayingStationId,
+            duration,
+            listeningStartTime.toISOString()
+          ).catch(() => {});
+        }
+      }
+
+      // Clear previous station tracking
+      listeningStartTime = null;
+
+      // ==========================================
+      // STEP 2: Update UI immediately
+      // ==========================================
+      console.log('[useAudioPlayer] STEP 2: Updating UI...');
       setPlaybackState('loading');
       setError(null);
       setCurrentStation(station);
       setMiniPlayerVisible(true);
+      
+      // Update global tracking
+      currentPlayingStationId = station._id;
 
       // Record click (non-blocking)
       stationService.recordClick(station._id).catch(() => {});
 
-      // STEP 3: Get unique play ID for race condition prevention
-      const myPlayId = ++globalPlayId;
-      playIdRef.current = myPlayId;
-      console.log('[useAudioPlayer] PlayID:', myPlayId);
-
-      // STEP 4: Resolve stream URL
-      console.log('[useAudioPlayer] Step 2: Resolving stream URL...');
+      // ==========================================
+      // STEP 3: Resolve stream URL
+      // ==========================================
+      console.log('[useAudioPlayer] STEP 3: Resolving stream URL...');
       const url = await resolveStreamUrl(station);
       if (!url) {
         throw new Error('Could not resolve stream URL');
       }
-      
-      // Check if we're still the current play request (user might have clicked another station)
+
+      // Check if still current request
       if (globalPlayId !== myPlayId) {
-        console.log('[useAudioPlayer] PlayID', myPlayId, '- STALE, aborting (new request made)');
+        console.log('[useAudioPlayer] Request stale (playId mismatch), aborting');
         return;
       }
 
-      console.log('[useAudioPlayer] Stream URL resolved:', url.substring(0, 60) + '...');
+      console.log('[useAudioPlayer] Stream URL:', url.substring(0, 60) + '...');
       setStreamUrl(url);
+
+      // ==========================================
+      // STEP 4: Replace audio source and play
+      // ==========================================
+      console.log('[useAudioPlayer] STEP 4: Loading new audio...');
       
-      // STEP 5: Replace the audio source and play
-      console.log('[useAudioPlayer] Step 3: Replacing audio source...');
-      player.replace({ uri: url });
+      // Use the global player
+      const activePlayer = globalPlayer || hookPlayer;
+      globalPlayer = activePlayer; // Ensure global is set
       
-      // Small delay to let the player initialize the new source
-      await new Promise(resolve => setTimeout(resolve, 200));
+      activePlayer.replace({ uri: url });
       
+      // Wait for source to load
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       // Check again if still current
       if (globalPlayId !== myPlayId) {
-        console.log('[useAudioPlayer] PlayID', myPlayId, '- STALE after replace, aborting');
+        console.log('[useAudioPlayer] Request stale after load, aborting');
+        try { activePlayer.pause(); } catch {}
         return;
       }
+
+      // ==========================================
+      // STEP 5: Start playback
+      // ==========================================
+      console.log('[useAudioPlayer] STEP 5: Starting playback...');
+      activePlayer.play();
       
-      // STEP 6: Start playback
-      console.log('[useAudioPlayer] Step 4: Starting playback...');
-      player.play();
-      
-      // Update tracking
-      currentPlayingStationId = station._id;
-      listeningStartRef.current = new Date();
+      listeningStartTime = new Date();
       setPlaybackState('playing');
-      
+
       console.log('[useAudioPlayer] ========== NOW PLAYING ==========');
 
-      // Record recently played (non-blocking)
+      // Background tasks
       userService.recordRecentlyPlayed(station._id).catch(() => {});
-
-      // Fetch now playing metadata (non-blocking)
       fetchNowPlaying(station._id);
 
     } catch (error) {
-      console.error('[useAudioPlayer] Failed to play station:', error);
-      setError(error instanceof Error ? error.message : 'Failed to play station');
+      console.error('[useAudioPlayer] Play failed:', error);
+      setError(error instanceof Error ? error.message : 'Failed to play');
       setPlaybackState('error');
     }
-  }, [player, status?.playing, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying]);
+  }, [hookPlayer, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying]);
 
-  // Pause playback
+  // Stop playback completely
+  const stopPlayback = useCallback(async () => {
+    console.log('[useAudioPlayer] ========== STOP PLAYBACK ==========');
+    
+    // Record listening time
+    if (listeningStartTime && currentPlayingStationId) {
+      const duration = Math.floor(
+        (new Date().getTime() - listeningStartTime.getTime()) / 1000
+      );
+      if (duration > 5) {
+        userService.recordListening(
+          currentPlayingStationId,
+          duration,
+          listeningStartTime.toISOString()
+        ).catch(() => {});
+      }
+    }
+
+    // Increment play ID to cancel pending operations
+    globalPlayId++;
+    currentPlayingStationId = null;
+    listeningStartTime = null;
+
+    // Stop all players
+    if (globalPlayer) {
+      try { globalPlayer.pause(); } catch {}
+    }
+    if (hookPlayer && hookPlayer !== globalPlayer) {
+      try { hookPlayer.pause(); } catch {}
+    }
+
+    setPlaybackState('idle');
+    setMiniPlayerVisible(false);
+  }, [hookPlayer, setPlaybackState, setMiniPlayerVisible]);
+
+  // Pause
   const pause = useCallback(() => {
-    console.log('[useAudioPlayer] Pause called');
+    console.log('[useAudioPlayer] Pause');
+    const player = globalPlayer || hookPlayer;
     try {
       player.pause();
       setPlaybackState('paused');
-      console.log('[useAudioPlayer] Paused successfully');
-    } catch (error) {
-      console.error('[useAudioPlayer] Error pausing:', error);
+    } catch (e) {
+      console.error('[useAudioPlayer] Pause error:', e);
     }
-  }, [player, setPlaybackState]);
+  }, [hookPlayer, setPlaybackState]);
 
-  // Resume playback
+  // Resume
   const resume = useCallback(() => {
-    console.log('[useAudioPlayer] Resume called');
+    console.log('[useAudioPlayer] Resume');
+    const player = globalPlayer || hookPlayer;
     try {
       player.play();
       setPlaybackState('playing');
-      console.log('[useAudioPlayer] Resumed successfully');
-    } catch (error) {
-      console.error('[useAudioPlayer] Error resuming:', error);
+    } catch (e) {
+      console.error('[useAudioPlayer] Resume error:', e);
     }
-  }, [player, setPlaybackState]);
+  }, [hookPlayer, setPlaybackState]);
 
-  // Toggle play/pause - SIMPLE AND DIRECT
+  // Toggle play/pause
   const togglePlayPause = useCallback(() => {
-    console.log('[useAudioPlayer] togglePlayPause called');
-    console.log('[useAudioPlayer] Current playbackState:', playbackState);
-    console.log('[useAudioPlayer] Player status.playing:', status?.playing);
+    console.log('[useAudioPlayer] Toggle play/pause');
+    const player = globalPlayer || hookPlayer;
+    const status = hookStatus;
     
-    // Use actual player status as source of truth
-    const isActuallyPlaying = status?.playing === true;
+    const isPlaying = status?.playing === true;
     
-    if (isActuallyPlaying) {
-      console.log('[useAudioPlayer] Currently playing -> Pausing');
+    if (isPlaying) {
       pause();
-    } else if (playbackState === 'paused' || (currentStation && currentPlayingStationId === currentStation._id)) {
-      console.log('[useAudioPlayer] Currently paused -> Resuming');
+    } else if (playbackState === 'paused') {
       resume();
     } else if ((playbackState === 'idle' || playbackState === 'error') && currentStation) {
-      // Need to restart playback
-      console.log('[useAudioPlayer] Idle/Error state with station -> Replaying');
       playStation(currentStation);
-    } else {
-      console.log('[useAudioPlayer] No action - state:', playbackState, 'station:', currentStation?.name);
     }
-  }, [playbackState, status?.playing, currentStation, pause, resume, playStation]);
+  }, [hookPlayer, hookStatus, playbackState, currentStation, pause, resume, playStation]);
 
   // Set volume
   const setVolume = useCallback((volume: number) => {
+    const player = globalPlayer || hookPlayer;
     try {
       player.volume = Math.max(0, Math.min(1, volume));
-      console.log('[useAudioPlayer] Volume set to:', volume);
-    } catch (error) {
-      console.error('[useAudioPlayer] Error setting volume:', error);
-    }
-  }, [player]);
+    } catch {}
+  }, [hookPlayer]);
 
   return {
     currentStation,
