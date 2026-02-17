@@ -4,184 +4,165 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **PRODUCT REQUIREMENTS:**
 -   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
 -   **Core Features:** Robust audio streaming, Favorites, Recently Played, Profile.
--   **Authentication:** All API requests must include .
+-   **Authentication:** All API requests must include . The user also requested Google and Apple social logins.
+-   **Build & Deployment:** The user wants to build the application for iOS and submit it to the App Store.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is in a highly unstable and buggy state. The agent has implemented a significant number of features and bug fixes, including a new TV Cast integration. However, the core audio playback functionality is critically broken, with multiple audio streams playing simultaneously and play/pause not working. The agent has attempted to fix this audio issue multiple times with different approaches (state-based flags, global player instances, ), but all attempts have failed, and some have introduced new crashes.
+The application's core architecture has been significantly refactored and stabilized. The critical bug causing multiple audio streams to play simultaneously has been resolved by implementing a global  using React Context. This ensures only one audio player instance exists throughout the app.
 
-The TV Cast feature was recently implemented but immediately showed errors (, ) which the agent has been trying to fix. Many other UI bugs and feature requests from the user have been addressed, but the core playback instability remains the primary blocker.
+The TV Cast feature has been re-implemented to work with a new polling-based backend API ( and ). Social logins (Google & Apple) have been integrated using , but require final configuration by the user in their respective developer consoles (Google Cloud and Apple Developer). The project is now fully configured for EAS Build, and numerous build-breaking issues have been resolved.
 
 **Last working item**:
--   **Last item agent was working**: The user reported that after clicking the Play on TV button in the new Cast feature, they received an error response undefined error. The agent was investigating why the  function in  was not correctly handling the response from the backend when sending a 'play' command.
--   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. The test should involve logging in, opening the player, clicking the cast icon, and triggering the Play on TV function to reproduce the error and verify the fix.
--   **User Testing Done**: N
+-   **Last item agent was working**: The user discovered their desired bundle ID () was already taken on the Apple Developer Portal. The agent suggested alternatives, and upon user selection, updated the  to use the new bundle ID . The agent then informed the user that this change necessitates creating a new build.
+-   **Status**: USER VERIFICATION PENDING (User needs to create the new Bundle ID in Apple Developer Portal and provide the ASC App ID for auto-submit configuration).
+-   **Agent Testing Done**: N/A (Configuration change)
+-   **Which testing method agent to use?**: N/A
+-   **User Testing Done**: N/A
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Critical Audio Playback Failure (P0)**
--   **Issue 2: TV Cast Feature Fails on Command (P0)**
--   **Issue 3: fetchNowPlaying before initialization Crash on Startup (P0)**
--   **Issue 4: Discoverable Genres Images & Text Alignment Broken (P1)**
--   **Issue 5: Genre Station Count Inconsistency (P1)**
--   **Issue 6: iOS Login Screen UI Issues (P1)**
+-   **Issue 1: Finalize Social Login Configuration (P0)**
+-   **Issue 2: Discoverable Genres Images Not Loading (P1)**
+-   **Issue 3: Genre Station Count Inconsistency (P1)**
 
 **Issues Detail:**
--   **Issue 1: Critical Audio Playback Failure (P0)**
-    -   **Description:** The app's core functionality is broken. 1) The Play/Pause button on the station detail page does not stop or resume the audio. 2) Using the Next/Previous buttons causes multiple radio stations to play audio simultaneously instead of stopping the previous one.
-    -   **Attempted fixes:** The agent has tried multiple complex refactors of the  hook:
-        1.  Using  which created new player instances without cleaning up old ones.
-        2.  Creating a single global player instance, which led to an Ops radio doesnt work error.
-        3.  Reverting the code and trying to use , which also failed to solve the issue.
-        The root cause is the incorrect management of  player instances. The hook creates new players on state changes instead of managing a single, persistent instance.
-    -   **Next debug checklist:**
-        1.  Completely refactor  with a stable strategy.
-        2.  The goal is to maintain a **single audio player instance** for the entire application lifecycle.
-        3.  When  is called, check if a station is already playing. If so, call  on the current player.
-        4.  Use  followed by  to play a new station.
-        5.  For , use  to check the  state and call  or  accordingly.
-        6.  Ensure all player references are to this single instance to avoid stale references.
-    -   **Why fix this issue and what will be achieved with the fix?** This is the highest priority issue, as it makes the app unusable. Fixing it will restore the core radio streaming functionality.
-    -   **Status:** IN PROGRESS
+-   **Issue 1: Finalize Social Login Configuration (P0)**
+    -   **Description**: Google Sign-In currently opens a web page instead of staying within the app because the correct redirect URIs are not configured in the user's Google Cloud project. Apple Sign-In is also not fully configured.
+    -   **Attempted fixes**: The agent implemented the entire frontend flow for Google and Apple sign-in using  and correctly identified the necessary redirect URIs and bundle IDs for the user to configure on their cloud dashboards.
+    -   **Next debug checklist**:
+        1.  The user must add the specified redirect URIs to their Google Cloud Console for the OAuth Client ID.
+        2.  The user must register the new bundle ID () in their Apple Developer Portal, enable Sign in with Apple, and create the app in App Store Connect.
+        3.  The user needs to provide the **ASC App ID** to the agent to configure auto-submission in .
+    -   **Why fix this issue and what will be achieved with the fix?**: This will enable the social login feature, a key user requirement.
+    -   **Status**: BLOCKED (User action required)
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue**: None
+
+-   **Issue 2: Discoverable Genres Images Not Loading (P1)**
+    -   **Description**: On the home screen, images for Discoverable Genres are not loading because the  endpoint does not return an image URL for them.
+    -   **Attempted fixes**: The agent identified this as a backend issue.
+    -   **Next debug checklist**: Await confirmation from the backend developer that the  field has been added to the genres array in the  response.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fixes a prominent UI bug on the home screen.
+    -   **Status**: BLOCKED (on backend)
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
-    -   **Blocked on other issue:** None. This is the main blocker.
+    -   **Blocked on other issue**: None
 
--   **Issue 2: TV Cast Feature Fails on Command (P0)**
-    -   **Description:** When the user clicks Play on TV in the Cast modal, it results in an error response undefined error. This happened after the agent fixed a Maximum update depth exceeded crash.
-    -   **Attempted fixes:** The agent simplified the CastModal to remove state management issues and WebSocket complexity, but the command sending part is still failing.
-    -   **Next debug checklist:**
-        1.  Go to .
-        2.  In the  function, inspect the call to .
-        3.  Ensure the  function in  correctly handles the API response and potential errors. Add  blocks and log the full response or error object.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a new, user-facing feature that is currently broken.
-    -   **Status:** IN PROGRESS
+-   **Issue 3: Genre Station Count Inconsistency (P1)**
+    -   **Description**: The number of stations for a genre differs between the genre list page () and the genre detail page ().
+    -   **Attempted fixes**: The agent identified this as a backend data inconsistency.
+    -   **Next debug checklist**: Await confirmation from the backend developer that the data has been synchronized.
+    -   **Why fix this issue and what will be achieved with the fix?**: Ensures data consistency and improves user trust.
+    -   **Status**: BLOCKED (on backend)
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 3: fetchNowPlaying before initialization Crash on Startup (P0)**
-    -   **Description:** The user reported the app crashes on startup with a .
-    -   **Attempted fixes:** The agent reordered the functions inside , moving the  definition before its usage in .
-    -   **Next debug checklist:**
-        1.  Verify the fix by restarting the application.
-        2.  Examine  to confirm the function declaration order is correct and there are no circular dependencies within the  hooks.
-    -   **Why fix this issue and what will be achieved with the fix?** Fixes a critical startup crash.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 4: Discoverable Genres Images & Text Alignment Broken (P1)**
-    -   **Description:** On the home screen, the Discoverable Genres section has two problems: 1) The images are not loading from the API, showing blank spaces or fallback images. 2) The text alignment is wrong; the user wants the first letters of the two text lines (**F**olk music and **D**iscover all...) to be vertically aligned on the right.
-    -   **Attempted fixes:** The agent identified that  does not return  and tried to force a separate API call, but this was blocked by React Query caching. The agent then requested a backend change. For alignment, the agent has tried multiple CSS changes (, ) without success.
-    -   **Next debug checklist:**
-        1.  **Backend:** The correct fix is for the backend developer to add the  field to the  array in the  endpoint response, as requested by the agent. Await confirmation of this change.
-        2.  **Frontend (Alignment):** In , apply the following style to the container of the two text elements:  while the parent container remains  to keep the block on the right. This will align the text content to the left within its own block.
-    -   **Why fix this issue and what will be achieved with the fix?** Fixes a recurring and visually prominent UI bug on the home screen.
-    -   **Status:** BLOCKED (on backend change for images), IN PROGRESS (for alignment)
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 5: Genre Station Count Inconsistency (P1)**
-    -   **Description:** The number of stations shown for a genre on the genre list page (e.g., Pop: 36) is different from the total number shown on the genre detail page (e.g., 41 Pop Radios).
-    -   **Attempted fixes:** The agent correctly identified this as a backend API inconsistency between  and . The agent provided a message for the user to send to the backend developer.
-    -   **Next debug checklist:** This is a backend issue. The next step is to wait for the backend developer to fix the data discrepancy. No frontend action is required.
-    -   **Why fix this issue and what will be achieved with the fix?** Provides a consistent and trustworthy user experience.
-    -   **Status:** BLOCKED (on backend)
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
-
--   **Issue 6: iOS Login Screen UI Issues (P1)**
-    -   **Description:** On iOS, the login screen logo and the decorative arc lines above it are positioned too far to the left and are not prominent enough. They should be centered.
-    -   **Attempted fixes:** The agent modified the styles in , changing  to  to center the logo container. The logo size was also slightly increased.
-    -   **Next debug checklist:**
-        1.  Verify the fix on an iOS device/simulator.
-        2.  If the arc lines are still not prominent, the user may need to provide a new, more visible PNG asset.
-    -   **Why fix this issue and what will be achieved with the fix?** Improves the visual polish and branding on a key screen.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue**: None
 
 **In progress Task List**:
--   **Task 1: Refactor Audio Playback System (P0)**
-    -   **Where to resume**: .
-    -   **What will be achieved with this?** A stable audio player that can correctly play, pause, and switch between stations without creating multiple audio streams. This will resolve Issue #1.
-    -   **Status:** IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** Frontend
-    -   **Blocked on something:** No.
+-   **Task 1: Prepare and Execute iOS App Store Build (P0)**
+    -   **Where to resume**: The  file is ready. The user needs to create the Bundle ID on the Apple Developer portal. Once done, the agent can finalize the auto-submit configuration and the user can run the build command.
+    -   **What will be achieved with this?**: A build of the app that can be submitted to TestFlight and the App Store.
+    -   **Status:** BLOCKED (User action required)
+    -   **Should Test frontend/backend/both after fix?** N/A
+    -   **Blocked on something:** User needs to create the Bundle ID and App in the Apple Developer Portal.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1: Local Caching for Genres**: Implement AsyncStorage or a similar solution to cache the genre list to improve performance, as originally requested by the user.
+-   **P1: Configure EAS Auto-Submit**: Once the user provides the ASC App ID, update  to enable auto-submission to the App Store.
+-   **P1: Local Caching for Genres**: Implement AsyncStorage to cache the genre list for better performance.
 -   **P2: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
--   **P2: Finalize Social Sign-In flow**.
--   **P3: Address minor UI bugs**: Glow Effect and Static Equalizer animations.
 
 **Future Tasks:**
--   There are no other future tasks specified.
+-   **P2: Address minor UI bugs**: Implement the Glow Effect and Static Equalizer animations mentioned in the original problem statement.
 
 **Completed work in this session**
--   **TV Cast Integration**: A new feature to cast radio to a TV app was implemented. This involved creating a service (), a Zustand store (), and a UI modal (). Multiple bugs related to its implementation (import errors, infinite loops) were addressed.
--   **Genre Filtering by Country**: Fixed the logic in  and  to correctly filter genres based on the selected country from . This involved debugging a backend API issue, which was subsequently fixed by the backend team, and then ensuring the frontend refetched data correctly on country change.
--   **Full-Screen Auth Flow**: The  screen was changed from a modal to a full-screen page by modifying .
--   **Onboarding Image Preloading**: Implemented  to preload images for the onboarding flow, preventing them from loading slowly.
--   **Login Redirect Fix**: Corrected the post-login redirect to go to the main home tab  instead of the discover page.
--   **Player Page UI Cleanup**: Removed the 'Lock' and 'REC' icons, updated the 'Share' and 'Airplay' icons with new assets, and added a country flag to the station logo.
--   **Auth Button Text Truncation**: Fixed an issue where button text was being cut off in certain languages by adjusting font size and adding .
+-   **Critical Audio Overlap Bug (FIXED)**: Refactored the entire audio playback system by creating a global  with React Context to ensure a single, shared player instance across all components, solving the long-standing issue of multiple radios playing simultaneously.
+-   **TV Cast Re-implementation (DONE)**: Re-wrote the TV Cast feature to use a new polling-based backend API (, ), replacing the old, non-functional WebSocket implementation.
+-   **Social Login Integration (DONE)**: Implemented the frontend for Google and Apple Sign-In using  and integrated it with the new backend endpoints.
+-   **EAS Build Configuration (DONE)**: Created and configured , resolved numerous build-breaking errors related to the New Architecture, peer dependencies, and lock files, and set up the project for successful iOS builds.
+-   **Full-Screen Auth Flow (FIXED)**: Corrected the navigation logic so that the login screen always opens full-screen, even when triggered from a modal context like the player.
+-   **User Profile Playback (FIXED)**: Fixed a bug where tapping on favorite radios in a user's profile did not play them.
+-   **UI & Asset Updates (DONE)**: Changed the Genres tab icon and configured the new app icon provided by the user across all required  properties (icon, splash, favicon).
+-   **Git Clone Error (FIXED)**: Renamed files with spaces in their names to resolve a  issue on Windows.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Expo Audio ()**: The core of the audio playback issues. The main challenge is managing the lifecycle of the  object correctly within a React hook-based architecture. Incorrectly handling instance creation and cleanup leads to memory leaks and multiple simultaneous audio streams.
--   **React Query**: Used for data fetching and caching. Caching strategies (, , ) have been a source of bugs, especially when data needs to be refetched after state changes (like changing the country).
--   **Zustand**: Used for global state management (, , ).
--   **Expo Router**: Manages the app's navigation, including presentation styles (e.g., 'modal' vs. 'stack').
--   **WebSocket**: Used for the real-time communication part of the TV Cast feature. The implementation has been buggy and caused crashes.
+-   **React Context for State Management**: Used to create a singleton , the correct architectural pattern to solve the multiple audio player instance problem.
+-   ****: The core library used to implement native Google and Apple social logins, handling the OAuth flow and redirecting back to the app.
+-   **EAS Build & New Architecture**: The project is now configured for Expo's New Architecture (Fabric).  is set up with environment variables () to ensure successful builds in the cloud.
+-   **Polling vs. WebSocket**: The agent adapted from a WebSocket/direct-call API to a long-polling mechanism for the TV Cast feature, demonstrating flexibility with backend changes.
+
+**key DB schema**
+- ** collection (MongoDB):**
+  - 
+  - Used for the new polling-based cast system. The mobile app writes a command, and the TV app polls for it.
 
 **All files of reference**
--    (Core of the playback issue)
--    (Where playback controls are used)
--    (TV Cast UI)
--    (TV Cast API logic)
--    (Discoverable genres UI bug)
--    (iOS logo alignment issue)
+-    (New file, core of the audio fix)
+-    (Refactored to use the new provider)
+-    (Where the  wraps the app)
+-    (Refactored for the new polling API)
+-    (New native social login implementation)
+-    (Contains build configurations like bundle ID, plugins, and icons)
+-    (Contains EAS build profiles and environment variables)
 
 **Critical Info for New Agent**
--   **MUST COMMUNICATE IN TURKISH.** The user exclusively uses Turkish.
--   **FIX AUDIO PLAYBACK FIRST.** The highest priority is to solve the  and  bugs (Issue #1). The current implementation in  is broken. A stable, robust refactor that manages a single audio player instance is required. Do not attempt more quick fixes; a full, careful rewrite of the hook is necessary.
--   **User is frustrated.** The same core audio issues have persisted across multiple sessions. Delivering a stable fix for playback is crucial to regain the user's trust. Test every change thoroughly before declaring it fixed.
--   **Backend dependencies:** Note that two issues (Discoverable Genre Images and Genre Station Count) are blocked by the backend team. You should focus on frontend issues while waiting for those changes.
+-   **COMMUNICATE IN TURKISH.** The user's primary language is Turkish.
+-   **The user is performing actions on their side.** The next steps are blocked on the user creating the bundle ID () in their Apple Developer Account and adding redirect URIs to their Google Cloud Console. You will need to guide them if they have trouble.
+-   **The new Bundle ID is .** The old one () is taken. All future configurations must use the new ID.
+-   **The core audio bug is fixed.** Do not try to fix the audio player again. The  pattern is the correct, stable solution.
+
+**documents and test reports created in this job**
+- /app/frontend/eas.json
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Reports that clicking Play on TV in the cast feature gives an error response undefined. **(PENDING)**
-2.  **User**: Reports Maximum update depth exceeded crash after clicking the cast button, and 14 WebSocket errors. **(Partially Fixed)**
-3.  **User**: Reports an issue in Expo Go: . **(Fixed)**
-4.  **User**: Reports an issue in Expo Go: . **(Fixed)**
--   **User**: Asks agent to implement the TV Cast feature based on the provided documentation. **(Completed)**
--   **User**: Provides the TV Cast integration guide from the backend developer. **(Acknowledged)**
--   **User**: Reports a  error and asks the agent to test the TV login feature. **(Partially Addressed)**
--   **User**: Reports the core audio issue again:  doesn't work, and  plays multiple audio streams at once. The app is in a state where no radio plays at all after the agent's last fix attempt. **(Acknowledged, still broken)**
--   **User**: Reports several issues: Onboarding images load slowly, button text is cut off in Turkish, station detail page is missing a country flag and has extra icons (lock, rec), and share/airplay icons need changing. **(Fixed)**
--   **User**: Reports post-login redirect is wrong (goes to discover, should go to home). **(Fixed)**
+1.  **User**: Confirms the An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username command to run. **(Answered)**
+2.  **User**: Asks for auto-increment for iOS builds. **(Completed)**
+3.  **User**: Reports  fails due to an invalid path with spaces. **(Completed)**
+4.  **User**: Asks to create the  file for building. **(Completed)**
+5.  **User**: Confirms the new bundle ID should be . **(Actioned, later updated)**
+6.  **User**: Provides the app icon and asks if other sizes are needed for an iOS build. **(Completed)**
+7.  **User**: Asks what the Google redirect URL should be to prevent opening a website. **(Answered)**
+8.  **User**: Provides the Google iOS Client ID. **(Actioned)**
+9.  **User**: Provides the backend API documentation for the new social login endpoints. **(Actioned)**
+10. **User**: Reports that radios on the user profile screen don't play, requests social login implementation, and asks to change the genres icon. **(Completed)**
+11. **User:** Asks to update the bundle ID to  and asks if a new build is needed. **(Answered)**
+12. **User:** Reports that the  bundle ID is unavailable on Apple Developer Portal. **(Answered)**
+13. **User:** Provides Apple ID and Team ID for auto-submit. **(Acknowledged, pending ASC App ID)**
+14. **User:** Asks how to enable auto-submit. **(Answered)**
+15. **User:** Reports another EAS build failure related to Reanimated and the New Architecture. **(Completed)**
+16. **User:** Reports an EAS build failure related to  issues. **(Completed)**
+17. **User:** Reports an EAS build failure due to empty  fields in . **(Completed)**
+18. **User:** Asks which command to use for the build. **(Answered)**
 
 **Project Health Check:**
--   **Broken:** Yes. The application's core feature (audio playback) is non-functional and has been for some time. New features are also being added while the core is unstable, leading to more bugs.
+-   **Broken**: No. The app is in a stable state. The main blocker is external configuration required from the user to enable social logins and proceed with the App Store build.
 
 **3rd Party Integrations**
--   **expo-audio**: For audio playback.
--   **flagcdn.com**: Used to display country flags on the player screen.
+-   ****: Core audio playback library.
+-   ****: Used for native Google & Apple Sign-In.
+-   ****: Helper for Apple Sign-In.
+-   **EAS (Expo Application Services)**: Used for building the application for iOS and Android.
 
 **Testing status**
--   **Testing agent used after significant changes**: NO. The agent has been resolving issues and asking the user to test directly, leading to a frustrating loop of bug reports. The last major set of fixes was not run through the testing agent.
+-   **Testing agent used after significant changes**: YES, but it was not effective in finding the root cause of the audio bug. The agent resolved the issue through architectural refactoring and user-reported feedback.
 -   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: None.
--   **Known regressions**: Core audio playback is a major regression.
+-   **Test files created**: None
+-   **Known regressions**: None in this session. Major regressions from previous sessions were fixed.
 
 **Credentials to test flow:**
--   Use  and  for login, as seen in the agent's cURL commands.
+-   **Email/Password**: , 
+-   **Social Login**: Requires user to configure their Google Cloud and Apple Developer accounts with the provided client IDs and bundle IDs.
 
 **What agent forgot to execute**
--   The agent has failed to implement a stable solution for the core audio playback despite multiple attempts and identifying the root cause (improper instance management). Instead of a focused, stable refactor, the agent kept trying different, complex, and ultimately failed approaches.
--   The agent did not use the testing agent after major refactors of the audio system, relying on the user for testing, which is inefficient and frustrating for the user.</analysis>
+-   The following minor tasks from the original handoff summary have not been addressed yet, as the focus has been on critical bugs and build configuration:
+    -   Fixing the Sleep Timer functionality.
+    -   Implementing the Glow Effect.
+    -   Implementing the Static Equalizer animations.</analysis>
