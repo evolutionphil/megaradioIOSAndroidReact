@@ -1,7 +1,7 @@
 // AudioProvider - Single shared audio player for the entire app
 // This ensures only ONE native audio player exists across all screens
 
-import React, { createContext, useContext, useCallback, useEffect, useRef, ReactNode } from 'react';
+import React, { createContext, useCallback, useEffect, useRef, useState, ReactNode } from 'react';
 import { 
   useAudioPlayer as useExpoPlayer, 
   useAudioPlayerStatus,
@@ -43,18 +43,11 @@ let currentPlayingStationId: string | null = null;
 let listeningStartTime: Date | null = null;
 
 // ============================================
-// SILENT AUDIO - Required for proper initialization on iOS
-// Local asset to avoid null initialization crash
+// INNER PROVIDER - Only created after audio mode is ready
 // ============================================
-const SILENT_AUDIO = require('../../assets/audio/silence.mp3');
-
-// ============================================
-// PROVIDER COMPONENT
-// ============================================
-export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // THE ONLY useAudioPlayer call in the entire app!
-  // Initialize with silent audio to avoid iOS crash with null
-  const player = useExpoPlayer(SILENT_AUDIO);
+const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Create player with empty source - will be replaced when playing
+  const player = useExpoPlayer({ uri: '' });
   const status = useAudioPlayerStatus(player);
   
   const playerRef = useRef<AudioPlayer>(player);
