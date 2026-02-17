@@ -79,6 +79,7 @@ export const socialAuthService = {
       // Prompt user to sign in
       const result = await request.promptAsync(GOOGLE_DISCOVERY, {
         showInRecents: true,
+        useProxy: true, // Use Expo's auth proxy
       });
 
       console.log('[SocialAuth] Auth result type:', result.type);
