@@ -53,16 +53,26 @@ const GOOGLE_DISCOVERY = {
 export const socialAuthService = {
   /**
    * Get the correct redirect URI for Expo
-   * For production builds, use native redirect
+   * For iOS, use reversed client ID format
+   * For Android, use custom scheme
    */
   getRedirectUri(): string {
-    // For production/standalone builds, use native scheme
-    const redirectUri = AuthSession.makeRedirectUri({
-      scheme: 'megaradio',
-      path: 'oauth',
-    });
-    console.log('[SocialAuth] Generated redirect URI:', redirectUri);
-    return redirectUri;
+    if (Platform.OS === 'ios') {
+      // iOS uses reversed client ID as scheme
+      // Client ID: 246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com
+      // Reversed: com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk
+      const redirectUri = 'com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk:/oauth2redirect/google';
+      console.log('[SocialAuth] iOS redirect URI:', redirectUri);
+      return redirectUri;
+    } else {
+      // Android uses custom scheme
+      const redirectUri = AuthSession.makeRedirectUri({
+        scheme: 'megaradio',
+        path: 'oauth',
+      });
+      console.log('[SocialAuth] Android redirect URI:', redirectUri);
+      return redirectUri;
+    }
   },
 
   /**
