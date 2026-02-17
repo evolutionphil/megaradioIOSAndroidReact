@@ -355,4 +355,40 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
   );
 };
 
+// ============================================
+// MAIN PROVIDER - Wrapper that ensures safe initialization
+// ============================================
+export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [isReady, setIsReady] = useState(false);
+  
+  useEffect(() => {
+    // Configure audio mode before creating the player
+    const initAudio = async () => {
+      try {
+        if (!audioModeConfigured) {
+          await setAudioModeAsync({
+            playsInSilentMode: true,
+            shouldPlayInBackground: true,
+          });
+          audioModeConfigured = true;
+          console.log('[AudioProvider] Audio mode configured in wrapper');
+        }
+      } catch (error) {
+        console.error('[AudioProvider] Failed to set audio mode:', error);
+      }
+      // Always mark as ready, even if audio mode fails
+      setIsReady(true);
+    };
+    
+    initAudio();
+  }, []);
+  
+  // Don't render inner provider until audio mode is configured
+  if (!isReady) {
+    return <>{children}</>;
+  }
+  
+  return <AudioProviderInner>{children}</AudioProviderInner>;
+};
+
 export default AudioProvider;
