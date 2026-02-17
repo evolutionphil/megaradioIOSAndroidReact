@@ -722,7 +722,7 @@ export default function PlayerScreen() {
       <CastModal
         visible={showCastModal}
         onClose={() => setShowCastModal(false)}
-        currentStationId={currentStation?._id}
+        currentStation={currentStation}
       />
     </View>
   );
