@@ -8,7 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "RCT_NEW_ARCH_ENABLED": "1"
+        "RCT_NEW_ARCH_ENABLED": "0"
       },
       "ios": {
         "resourceClass": "m-medium",
@@ -23,7 +23,7 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "RCT_NEW_ARCH_ENABLED": "1"
+        "RCT_NEW_ARCH_ENABLED": "0"
       },
       "ios": {
         "resourceClass": "m-medium",
@@ -36,7 +36,7 @@
     },
     "production": {
       "env": {
-        "RCT_NEW_ARCH_ENABLED": "1"
+        "RCT_NEW_ARCH_ENABLED": "0"
       },
       "ios": {
         "resourceClass": "m-medium",
