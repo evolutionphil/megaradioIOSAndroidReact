@@ -47,11 +47,12 @@ export const socialAuthService = {
    * Uses Expo AuthSession proxy for development
    */
   getRedirectUri(): string {
-    // This creates the correct redirect URI for Expo Go
-    // Format: https://auth.expo.io/@owner/slug or exp://...
+    // For Expo Go, use the proxy
     return AuthSession.makeRedirectUri({
       scheme: 'megaradio',
       path: 'oauth',
+      // Use Expo's auth proxy for development
+      useProxy: true,
     });
   },
 
