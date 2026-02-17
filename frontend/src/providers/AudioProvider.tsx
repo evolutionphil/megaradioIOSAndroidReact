@@ -260,6 +260,23 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       listeningStartTime = new Date();
       setPlaybackState('playing');
 
+      // STEP 6: Update Lock Screen / Control Center metadata
+      console.log('[AudioProvider] STEP 6: Updating lock screen metadata...');
+      try {
+        // Get station logo URL
+        const logoUrl = station.favicon || station.logo || '';
+        
+        playerRef.current.updateMetadataForUrl(url, {
+          title: station.name,
+          artist: station.country || 'Live Radio',
+          album: station.tags?.join(', ') || 'MegaRadio',
+          artwork: logoUrl || 'https://themegaradio.com/logo.png',
+        });
+        console.log('[AudioProvider] Lock screen metadata updated');
+      } catch (metaError) {
+        console.log('[AudioProvider] Could not update metadata:', metaError);
+      }
+
       console.log('[AudioProvider] ========== NOW PLAYING ==========');
 
       // Background tasks
