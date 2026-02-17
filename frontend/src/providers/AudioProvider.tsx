@@ -44,9 +44,10 @@ let listeningStartTime: Date | null = null;
 
 // ============================================
 // SILENT AUDIO - Required for proper initialization
-// Using a tiny valid audio to avoid null crash on iOS
+// Using a data URI with minimal valid MP3 to avoid null crash on iOS
+// This is a ~140 byte silent MP3 encoded as base64
 // ============================================
-const SILENT_AUDIO = { uri: 'https://themegaradio.com/audio/silence.mp3' };
+const SILENT_AUDIO_BASE64 = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYoRwmHAAAAAAD/+9DEAAAGRAFptBEAI5CKbXM0kABVt/t+sD5fWBgocg+D4Pg+sHygIAmD/E+XB9YPrB8QBAMf/5c/Lg+XB8uCAIf+XLnwfB8HwfWD4nB8HwfB9f/y4Pg+sEATygIAgGP/l6wfWD4Pg+D6//WD4Pg+D4Pg//rB8uD4Pg+D7///8uD4Pg+XB8H1n//+D6z/+sHwfB9YAAAAD/+1DEFQPAAADSAAAAgAAA0gAAABP/////////+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/7UMQ1A8AAANIAAAAgAADSAAAAE///////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/+1DEVQPAAADSAAAAIAAAAAAAABT//////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 
 // ============================================
 // PROVIDER COMPONENT
@@ -54,7 +55,7 @@ const SILENT_AUDIO = { uri: 'https://themegaradio.com/audio/silence.mp3' };
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // THE ONLY useAudioPlayer call in the entire app!
   // Initialize with silent audio to avoid iOS crash with null
-  const player = useExpoPlayer(SILENT_AUDIO);
+  const player = useExpoPlayer({ uri: SILENT_AUDIO_BASE64 });
   const status = useAudioPlayerStatus(player);
   
   const playerRef = useRef<AudioPlayer>(player);
