@@ -20,16 +20,13 @@ let audioModeConfigured = false;
 let globalPlayId = 0;
 let currentPlayingStationId: string | null = null;
 
-// Placeholder silent audio URL - needed to initialize player properly
-const SILENT_AUDIO_URL = 'https://themegaradio.com/api/silence.mp3';
-
 export const useAudioPlayer = () => {
   const listeningStartRef = useRef<Date | null>(null);
   const playIdRef = useRef<number>(0);
   
-  // Initialize player with a valid URL to avoid Android crashes
-  // expo-audio requires a valid source on initialization
-  const player = useExpoAudioPlayer(SILENT_AUDIO_URL);
+  // Initialize player - expo-audio SDK 54+ supports null/undefined initialization
+  // We use replace() to set the actual audio source when playing
+  const player = useExpoAudioPlayer(null as any);
   const status = useAudioPlayerStatus(player);
 
   const {
