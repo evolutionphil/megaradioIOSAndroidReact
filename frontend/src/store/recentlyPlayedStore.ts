@@ -75,15 +75,26 @@ export const useRecentlyPlayedStore = create<RecentlyPlayedState>((set, get) => 
       const data = response.data;
       
       // API returns array of stations with playedAt field
-      const stations = Array.isArray(data) ? data : (data.stations || []);
+      let stations = Array.isArray(data) ? data : (data.stations || []);
       
-      console.log('[RecentlyPlayedStore] API returned', stations.length, 'stations');
+      // DEDUPLICATION: Ensure no duplicate station IDs from API
+      const seenIds = new Set<string>();
+      stations = stations.filter((s: Station) => {
+        if (seenIds.has(s._id)) {
+          console.log('[RecentlyPlayedStore] Removing duplicate station:', s._id);
+          return false;
+        }
+        seenIds.add(s._id);
+        return true;
+      });
+      
+      console.log('[RecentlyPlayedStore] API returned', stations.length, 'unique stations');
       
       // Merge with local storage (API takes priority)
       const localData = await AsyncStorage.getItem(STORAGE_KEY);
       const localStations: Station[] = localData ? JSON.parse(localData) : [];
       
-      // Merge: API stations + local-only stations
+      // Merge: API stations + local-only stations (avoid duplicates)
       const apiIds = new Set(stations.map((s: Station) => s._id));
       const localOnly = localStations.filter(s => !apiIds.has(s._id));
       const merged = [...stations, ...localOnly].slice(0, MAX_RECENT);
