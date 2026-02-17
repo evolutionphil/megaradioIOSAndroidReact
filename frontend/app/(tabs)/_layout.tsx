@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
@@ -13,7 +14,6 @@ export const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
 // Tab icon URLs from uploaded images
 const TAB_ICONS = {
   discover: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/u83nevfq_image.png',
-  genres: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/620zikih_image.png',
   favorites: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/xf8ejdrl_image.png',
   profile: 'https://customer-assets.emergentagent.com/job_66205e02-6e8b-4c16-91b2-a96ddee62261/artifacts/dr5dt9ku_image.png',
 };
