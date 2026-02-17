@@ -924,12 +924,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.lg,
   },
   discoverableBannerTextContainer: {
     alignItems: 'flex-start',
-    paddingRight: spacing.md,
   },
   discoverableBannerTitle: {
     fontSize: typography.sizes.xxl,
