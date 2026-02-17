@@ -154,8 +154,18 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      // First check if we already have permission (non-blocking)
+      const { status: existingStatus } = await Location.getForegroundPermissionsAsync();
+      
+      let permissionGranted = existingStatus === 'granted';
+      
+      // Only request if not already granted
+      if (!permissionGranted) {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        permissionGranted = status === 'granted';
+      }
+      
+      if (!permissionGranted) {
         set({ loading: false, error: 'Permission denied' });
         return;
       }
