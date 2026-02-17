@@ -10,7 +10,7 @@
     "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.megaradio.app",
+      "bundleIdentifier": "com.themegaradio.app",
       "usesAppleSignIn": true,
       "infoPlist": {
         "UIBackgroundModes": ["audio", "fetch", "remote-notification"],
@@ -31,7 +31,7 @@
         "backgroundColor": "#FF4199"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.megaradio.app",
+      "package": "com.themegaradio.app",
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
