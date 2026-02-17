@@ -229,11 +229,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   logoContainer: {
-    position: 'absolute',
-    top: 100,
-    left: 0,
-    right: 0,
+    width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 80,
   },
   logoImage: {
     width: 340,
@@ -241,7 +240,7 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     gap: 14,
-    marginTop: 420,
+    marginTop: 20,
   },
   authButton: {
     flexDirection: 'row',
