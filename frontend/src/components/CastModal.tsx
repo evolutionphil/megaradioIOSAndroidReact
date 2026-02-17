@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useCastStore } from '../store/castStore';
 import { useAuthStore } from '../store/authStore';
-import { colors, typography, spacing } from '../theme';
+import { colors, typography, spacing } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 
