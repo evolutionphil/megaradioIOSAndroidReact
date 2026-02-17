@@ -116,21 +116,21 @@ export const useAudioPlayer = () => {
     }
   }, [player]);
   
-  // Sync playback state with actual player status
+  // Sync playback state with actual player status - removed infinite loop
   useEffect(() => {
     if (!player || !status) return;
     
-    if (status.playing && playbackState !== 'playing') {
+    // Only sync if state is inconsistent - use refs to avoid loops
+    if (status.playing && !isPlayingRef.current) {
       console.log('[useAudioPlayer] Status sync: now playing');
-      setPlaybackState('playing');
       isPlayingRef.current = true;
-    } else if (!status.playing && status.isBuffering && playbackState !== 'buffering') {
-      setPlaybackState('buffering');
-    } else if (!status.playing && !status.isBuffering && isPlayingRef.current && playbackState === 'playing') {
-      // Player stopped unexpectedly
-      console.log('[useAudioPlayer] Status sync: stopped unexpectedly');
+      setPlaybackState('playing');
+    } else if (!status.playing && isPlayingRef.current) {
+      console.log('[useAudioPlayer] Status sync: stopped');
+      isPlayingRef.current = false;
+      // Don't automatically set to paused - let explicit pause handle it
     }
-  }, [status, playbackState, player, setPlaybackState]);
+  }, [status?.playing]); // Only depend on playing status, not the whole status object
 
   // Set up audio mode ONCE globally
   useEffect(() => {
