@@ -2,7 +2,7 @@
 // This ensures only ONE native audio player exists across all screens
 // All components use this context instead of useAudioPlayer() directly
 
-import React, { createContext, useContext, useCallback, useEffect, useRef, ReactNode } from 'react';
+import React, { useCallback, useEffect, useRef, ReactNode } from 'react';
 import { 
   useAudioPlayer as useExpoPlayer, 
   useAudioPlayerStatus,
@@ -13,6 +13,7 @@ import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
+import { AudioContext, AudioContextType } from '../hooks/useAudioPlayer';
 
 // ============================================
 // TYPES
