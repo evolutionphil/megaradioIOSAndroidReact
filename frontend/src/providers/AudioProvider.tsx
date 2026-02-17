@@ -4,7 +4,7 @@
 
 import React, { createContext, useContext, useCallback, useEffect, useRef, ReactNode } from 'react';
 import { 
-  useAudioPlayer as useExpoAudioPlayer, 
+  useAudioPlayer as useExpoPlayer, 
   useAudioPlayerStatus,
   setAudioModeAsync,
   AudioPlayer,
