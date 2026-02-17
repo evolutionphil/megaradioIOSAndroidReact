@@ -1,29 +1,13 @@
-// useAudioPlayer - Backward compatible hook that uses AudioProvider context
+// useAudioPlayer - Backward compatible hook
 // All audio functionality is centralized in AudioProvider
-// Components can use this hook or useAudio() directly
+// This hook provides access to the shared audio context
 
-import { useContext, createContext } from 'react';
+import { useContext } from 'react';
+import { AudioContext, AudioContextType } from '../providers/AudioProvider';
 import { usePlayerStore } from '../store/playerStore';
 import type { Station } from '../types';
 
-// Re-export the context type for reference
-export interface AudioContextType {
-  playStation: (station: Station) => Promise<void>;
-  stopPlayback: () => Promise<void>;
-  pause: () => void;
-  resume: () => void;
-  togglePlayPause: () => void;
-  setVolume: (volume: number) => void;
-  currentStation: Station | null;
-  playbackState: string;
-  streamUrl: string | null;
-  isPlaying: boolean;
-}
-
-// Create context here - will be populated by AudioProvider
-export const AudioContext = createContext<AudioContextType | null>(null);
-
-// Hook to access audio context
+// Hook to access audio context (throws if not in provider)
 export const useAudio = (): AudioContextType => {
   const context = useContext(AudioContext);
   if (!context) {
@@ -37,9 +21,9 @@ export const useAudioPlayer = () => {
   const context = useContext(AudioContext);
   const store = usePlayerStore();
   
-  // If not in provider, return dummy functions (for safety during init)
+  // If not in provider, return store values with dummy functions
   if (!context) {
-    console.warn('[useAudioPlayer] Not in AudioProvider - returning store values');
+    console.warn('[useAudioPlayer] Not in AudioProvider');
     return {
       currentStation: store.currentStation,
       playbackState: store.playbackState,
