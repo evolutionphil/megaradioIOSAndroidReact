@@ -29,6 +29,15 @@ interface SocialAuthResponse {
 
 // Google OAuth Client IDs
 const GOOGLE_IOS_CLIENT_ID = '246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com';
+const GOOGLE_ANDROID_CLIENT_ID = '246210957471-4dmnb95bcduaocr8toiphv3guq9a8htl.apps.googleusercontent.com';
+
+// Get the correct client ID based on platform
+const getGoogleClientId = () => {
+  if (Platform.OS === 'android') {
+    return GOOGLE_ANDROID_CLIENT_ID;
+  }
+  return GOOGLE_IOS_CLIENT_ID;
+};
 
 // Google OAuth discovery document
 const GOOGLE_DISCOVERY = {
