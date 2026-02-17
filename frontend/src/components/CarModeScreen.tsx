@@ -560,7 +560,19 @@ const styles = StyleSheet.create({
   volumeRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15 * S, gap: GAP },
   muteBtn: { width: BTN, height: 56 * S, borderRadius: BR, backgroundColor: '#282828', justifyContent: 'center', alignItems: 'center' },
   volumeBox: { flex: 1, height: 56 * S, borderRadius: BR, backgroundColor: '#282828', flexDirection: 'row', alignItems: 'center', paddingLeft: 10 * S, paddingRight: 6 * S },
-  slider: { flex: 1, height: 40 * S, marginLeft: 4 * S },
+  slider: { flex: 1, height: 40 * S, marginLeft: 4 * S, justifyContent: 'center', position: 'relative' },
+  sliderTrack: { height: 4 * S, borderRadius: 2 * S, width: '100%', position: 'relative' },
+  sliderFill: { height: '100%', borderRadius: 2 * S, position: 'absolute', left: 0, top: 0 },
+  sliderThumb: { 
+    width: 16 * S, 
+    height: 16 * S, 
+    borderRadius: 8 * S, 
+    backgroundColor: '#FF4199', 
+    position: 'absolute', 
+    top: '50%', 
+    marginTop: -8 * S,
+    marginLeft: -8 * S,
+  },
 
   // Speaker icon styles removed - using Ionicons instead
 
