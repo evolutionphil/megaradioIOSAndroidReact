@@ -2,13 +2,13 @@
 // Uses expo-auth-session for Google and expo-apple-authentication for Apple
 
 import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
+import * as AuthSession from 'expo-auth-session';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 import authService from './authService';
 
-// Complete auth session for web browser
+// Complete auth session for web browser (required for Expo)
 WebBrowser.maybeCompleteAuthSession();
 
 // OAuth provider types
@@ -29,8 +29,13 @@ interface SocialAuthResponse {
 
 // Google OAuth Client IDs
 const GOOGLE_IOS_CLIENT_ID = '246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com';
-// Android client ID - add when available
-// const GOOGLE_ANDROID_CLIENT_ID = 'YOUR_ANDROID_CLIENT_ID';
+
+// Google OAuth discovery document
+const GOOGLE_DISCOVERY = {
+  authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+  tokenEndpoint: 'https://oauth2.googleapis.com/token',
+  userInfoEndpoint: 'https://openidconnect.googleapis.com/v1/userinfo',
+};
 
 /**
  * Social Authentication Service
@@ -38,71 +43,54 @@ const GOOGLE_IOS_CLIENT_ID = '246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps
  */
 export const socialAuthService = {
   /**
+   * Get the correct redirect URI for Expo
+   * Uses Expo AuthSession proxy for development
+   */
+  getRedirectUri(): string {
+    // This creates the correct redirect URI for Expo Go
+    // Format: https://auth.expo.io/@owner/slug or exp://...
+    return AuthSession.makeRedirectUri({
+      scheme: 'megaradio',
+      path: 'oauth',
+    });
+  },
+
+  /**
    * Google Sign-In using expo-auth-session
-   * Returns idToken to send to backend
+   * Works in Expo Go without native builds
    */
   async signInWithGoogle(): Promise<SocialAuthResponse> {
     try {
       console.log('[SocialAuth] Starting Google Sign-In...');
       
-      // Create Google auth request
-      const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        iosClientId: GOOGLE_IOS_CLIENT_ID,
-        // androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+      const redirectUri = this.getRedirectUri();
+      console.log('[SocialAuth] Redirect URI:', redirectUri);
+
+      // Create auth request
+      const request = new AuthSession.AuthRequest({
+        clientId: GOOGLE_IOS_CLIENT_ID,
+        scopes: ['openid', 'profile', 'email'],
+        redirectUri,
+        responseType: AuthSession.ResponseType.IdToken,
+        usePKCE: false,
       });
 
-      // This won't work directly - need to use the hook in a component
-      // For now, use the web-based approach that works with Expo Go
-      return await this.googleWebAuth();
-    } catch (error: any) {
-      console.error('[SocialAuth] Google Sign-In error:', error);
-      return {
-        success: false,
-        error: error.message || 'Google Sign-In failed',
-      };
-    }
-  },
+      // Prompt user to sign in
+      const result = await request.promptAsync(GOOGLE_DISCOVERY, {
+        showInRecents: true,
+      });
 
-  /**
-   * Google Sign-In via Web Browser (works in Expo Go)
-   */
-  async googleWebAuth(): Promise<SocialAuthResponse> {
-    try {
-      console.log('[SocialAuth] Starting Google Web Auth...');
-      
-      // Use Google OAuth endpoint
-      const redirectUri = 'com.megaradio.app:/oauth2redirect/google';
-      
-      // For Expo Go, we need to use a different approach
-      // Open Google OAuth in web browser
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${GOOGLE_IOS_CLIENT_ID}&` +
-        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-        `response_type=id_token&` +
-        `scope=openid%20email%20profile&` +
-        `nonce=${Math.random().toString(36).substring(7)}`;
+      console.log('[SocialAuth] Auth result type:', result.type);
 
-      const result = await WebBrowser.openAuthSessionAsync(
-        authUrl,
-        redirectUri,
-        { showInRecents: true }
-      );
-
-      console.log('[SocialAuth] Google auth result:', result.type);
-
-      if (result.type === 'success' && result.url) {
-        // Extract id_token from URL fragment
-        const url = result.url;
-        const fragmentMatch = url.match(/#(.+)/);
+      if (result.type === 'success') {
+        // Get id_token from params
+        const idToken = result.params?.id_token;
         
-        if (fragmentMatch) {
-          const params = new URLSearchParams(fragmentMatch[1]);
-          const idToken = params.get('id_token');
+        if (idToken) {
+          console.log('[SocialAuth] Got Google ID token, sending to backend...');
           
-          if (idToken) {
-            console.log('[SocialAuth] Got Google ID token, sending to backend...');
-            
-            // Send to backend
+          // Send to backend
+          try {
             const backendResponse = await authService.googleSignIn(idToken);
             
             if (backendResponse.token && backendResponse.user) {
@@ -117,17 +105,29 @@ export const socialAuthService = {
                 },
               };
             }
+          } catch (backendError: any) {
+            console.error('[SocialAuth] Backend error:', backendError);
+            return {
+              success: false,
+              error: backendError.response?.data?.error || 'Backend authentication failed',
+            };
           }
         }
         
-        return { success: false, error: 'Failed to get ID token from Google' };
-      } else if (result.type === 'cancel') {
+        return { success: false, error: 'No ID token received from Google' };
+      } else if (result.type === 'cancel' || result.type === 'dismiss') {
         return { success: false, error: 'Authentication cancelled' };
+      } else if (result.type === 'error') {
+        console.error('[SocialAuth] Auth error:', result.error);
+        return { 
+          success: false, 
+          error: result.error?.message || 'Google Sign-In failed' 
+        };
       }
       
       return { success: false, error: 'Google Sign-In failed' };
     } catch (error: any) {
-      console.error('[SocialAuth] Google web auth error:', error);
+      console.error('[SocialAuth] Google Sign-In error:', error);
       return {
         success: false,
         error: error.message || 'Google Sign-In failed',
@@ -137,7 +137,7 @@ export const socialAuthService = {
 
   /**
    * Apple Sign-In using expo-apple-authentication
-   * Only available on iOS
+   * Only available on iOS 13+
    */
   async signInWithApple(): Promise<SocialAuthResponse> {
     try {
@@ -149,7 +149,9 @@ export const socialAuthService = {
       if (!isAvailable) {
         return {
           success: false,
-          error: 'Apple Sign-In is only available on iOS devices',
+          error: Platform.OS === 'ios' 
+            ? 'Apple Sign-In requires iOS 13 or later'
+            : 'Apple Sign-In is only available on iOS devices',
         };
       }
 
@@ -183,23 +185,31 @@ export const socialAuthService = {
       console.log('[SocialAuth] Sending Apple credentials to backend...');
 
       // Send to backend
-      const backendResponse = await authService.appleSignIn(
-        identityToken,
-        authorizationCode,
-        userName || undefined,
-        email || undefined
-      );
+      try {
+        const backendResponse = await authService.appleSignIn(
+          identityToken,
+          authorizationCode,
+          userName || undefined,
+          email || undefined
+        );
 
-      if (backendResponse.token && backendResponse.user) {
+        if (backendResponse.token && backendResponse.user) {
+          return {
+            success: true,
+            token: backendResponse.token,
+            user: {
+              id: backendResponse.user._id,
+              email: backendResponse.user.email,
+              name: backendResponse.user.fullName,
+              avatar: backendResponse.user.avatar,
+            },
+          };
+        }
+      } catch (backendError: any) {
+        console.error('[SocialAuth] Backend error:', backendError);
         return {
-          success: true,
-          token: backendResponse.token,
-          user: {
-            id: backendResponse.user._id,
-            email: backendResponse.user.email,
-            name: backendResponse.user.fullName,
-            avatar: backendResponse.user.avatar,
-          },
+          success: false,
+          error: backendError.response?.data?.error || 'Backend authentication failed',
         };
       }
 
@@ -208,7 +218,7 @@ export const socialAuthService = {
       console.error('[SocialAuth] Apple Sign-In error:', error);
       
       // Handle specific Apple errors
-      if (error.code === 'ERR_REQUEST_CANCELED') {
+      if (error.code === 'ERR_REQUEST_CANCELED' || error.code === 'ERR_CANCELED') {
         return { success: false, error: 'Authentication cancelled' };
       }
       
@@ -220,8 +230,7 @@ export const socialAuthService = {
   },
 
   /**
-   * Facebook Sign-In (placeholder)
-   * Not implemented yet
+   * Facebook Sign-In (not implemented)
    */
   async signInWithFacebook(): Promise<SocialAuthResponse> {
     return {
@@ -239,6 +248,15 @@ export const socialAuthService = {
     } catch {
       return false;
     }
+  },
+
+  /**
+   * Get the redirect URI that needs to be configured in Google Cloud Console
+   */
+  getGoogleRedirectUriForConsole(): string {
+    const uri = this.getRedirectUri();
+    console.log('[SocialAuth] Configure this URI in Google Cloud Console:', uri);
+    return uri;
   },
 };
 
