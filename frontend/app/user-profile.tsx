@@ -36,6 +36,7 @@ export default function UserProfileScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string }>();
   const { user: currentUser, isAuthenticated } = useAuthStore();
+  const { playStation } = useAudioPlayer();
   const [allStations, setAllStations] = useState<FavoriteStation[]>([]);
   const [visibleCount, setVisibleCount] = useState(STATIONS_PER_PAGE);
   const [showShareModal, setShowShareModal] = useState(false);
