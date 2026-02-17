@@ -34,24 +34,34 @@ export const CastModal: React.FC<CastModalProps> = ({
     isPaired,
     isConnected,
     pairingCode,
+    sessionId,
     error,
     startCastSession,
     endCastSession,
     castToTV,
   } = useCastStore();
+  
+  const hasStartedRef = React.useRef(false);
 
-  // Start session when modal opens
+  // Start session when modal opens - only once
   useEffect(() => {
-    if (visible && token && !pairingCode) {
+    if (visible && token && !sessionId && !hasStartedRef.current && !isLoading) {
+      hasStartedRef.current = true;
       startCastSession(token);
     }
-  }, [visible, token]);
+    
+    // Reset ref when modal closes
+    if (!visible) {
+      hasStartedRef.current = false;
+    }
+  }, [visible, token, sessionId, isLoading]);
 
   // Handle close
   const handleClose = () => {
     if (!isPaired) {
       endCastSession();
     }
+    hasStartedRef.current = false;
     onClose();
   };
 
