@@ -120,12 +120,13 @@ export const CastModal: React.FC<CastModalProps> = ({
 
   const handleCastNow = async () => {
     if (!sessionId || !currentStationId) {
-      console.log('[CastModal] Missing sessionId or stationId');
+      console.log('[CastModal] Missing sessionId or stationId', { sessionId, currentStationId });
+      setError('Oturum veya istasyon bilgisi eksik');
       return;
     }
     
     try {
-      console.log('[CastModal] Sending play command to TV...');
+      console.log('[CastModal] Sending play command to TV...', { sessionId, stationId: currentStationId });
       const response = await fetch(`${BASE_URL}/api/cast/command`, {
         method: 'POST',
         headers: {
@@ -139,21 +140,35 @@ export const CastModal: React.FC<CastModalProps> = ({
         }),
       });
       
+      console.log('[CastModal] Response status:', response.status);
+      
+      // Get response text first to debug
+      const responseText = await response.text();
+      console.log('[CastModal] Raw response:', responseText);
+      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.log('[CastModal] Cast error response:', errorText);
-        setError('TV\'ye gönderilemedi');
+        console.log('[CastModal] Cast error - HTTP', response.status);
+        setError(`TV'ye gönderilemedi (${response.status})`);
         return;
       }
       
-      const data = await response.json();
+      // Try to parse JSON
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        console.log('[CastModal] JSON parse error:', parseErr);
+        setError('Sunucu yanıtı okunamadı');
+        return;
+      }
+      
       console.log('[CastModal] Cast response:', data);
       
       if (data.success) {
         console.log('[CastModal] Cast successful!');
         onClose();
       } else {
-        setError(data.error || 'TV\'ye gönderilemedi');
+        setError(data.error || data.message || 'TV\'ye gönderilemedi');
       }
     } catch (err: any) {
       console.log('[CastModal] Cast error:', err);
