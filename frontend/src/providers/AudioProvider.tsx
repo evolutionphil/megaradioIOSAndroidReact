@@ -3,10 +3,10 @@
 
 import React, { createContext, useCallback, useEffect, useRef, useState, ReactNode } from 'react';
 import { 
-  useAudioPlayer as useExpoPlayer, 
-  useAudioPlayerStatus,
+  createAudioPlayer,
   setAudioModeAsync,
   AudioPlayer,
+  AudioStatus,
 } from 'expo-audio';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
@@ -43,15 +43,12 @@ let currentPlayingStationId: string | null = null;
 let listeningStartTime: Date | null = null;
 
 // ============================================
-// INNER PROVIDER - Only created after audio mode is ready
+// PROVIDER COMPONENT
 // ============================================
-const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Create player with empty source - will be replaced when playing
-  const player = useExpoPlayer({ uri: '' });
-  const status = useAudioPlayerStatus(player);
-  
-  const playerRef = useRef<AudioPlayer>(player);
-  playerRef.current = player;
+export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [isReady, setIsReady] = useState(false);
+  const [status, setStatus] = useState<AudioStatus | null>(null);
+  const playerRef = useRef<AudioPlayer | null>(null);
 
   const {
     currentStation,
@@ -64,6 +61,63 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
     setError,
     setMiniPlayerVisible,
   } = usePlayerStore();
+
+  // Configure audio mode and create player ONCE at app start
+  useEffect(() => {
+    const setupAudio = async () => {
+      if (audioModeConfigured) {
+        setIsReady(true);
+        return;
+      }
+      
+      try {
+        console.log('[AudioProvider] Setting up audio mode...');
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: true,
+        });
+        audioModeConfigured = true;
+        console.log('[AudioProvider] Audio mode configured');
+      } catch (error) {
+        console.error('[AudioProvider] Failed to set audio mode:', error);
+        // Continue anyway - audio might still work
+      }
+      
+      // Create player instance using createAudioPlayer (not useAudioPlayer hook)
+      try {
+        if (!playerRef.current) {
+          console.log('[AudioProvider] Creating audio player...');
+          const player = createAudioPlayer();
+          
+          // Set up status listener
+          player.addListener('playbackStatusUpdate', (newStatus: AudioStatus) => {
+            setStatus(newStatus);
+          });
+          
+          playerRef.current = player;
+          console.log('[AudioProvider] Audio player created');
+        }
+      } catch (error) {
+        console.error('[AudioProvider] Failed to create audio player:', error);
+      }
+      
+      setIsReady(true);
+    };
+    
+    setupAudio();
+    
+    // Cleanup on unmount
+    return () => {
+      if (playerRef.current) {
+        try {
+          playerRef.current.release();
+          playerRef.current = null;
+        } catch (e) {
+          console.log('[AudioProvider] Cleanup error:', e);
+        }
+      }
+    };
+  }, []);
 
   // Sync playback state with actual player status
   useEffect(() => {
@@ -141,14 +195,21 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
     console.log('[AudioProvider] Current playing:', currentPlayingStationId);
     console.log('[AudioProvider] ========================================');
 
+    const player = playerRef.current;
+    if (!player) {
+      console.error('[AudioProvider] No player available');
+      setError('Audio player not ready');
+      return;
+    }
+
     // Same station? Toggle play/pause
     if (currentPlayingStationId === station._id) {
       console.log('[AudioProvider] Same station - toggling');
       if (status?.playing) {
-        playerRef.current.pause();
+        player.pause();
         setPlaybackState('paused');
       } else {
-        playerRef.current.play();
+        player.play();
         setPlaybackState('playing');
       }
       return;
@@ -162,7 +223,7 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
       // STEP 1: STOP CURRENT PLAYBACK IMMEDIATELY
       console.log('[AudioProvider] STEP 1: Stopping current playback...');
       try {
-        playerRef.current.pause();
+        player.pause();
         console.log('[AudioProvider] Player paused');
       } catch (e) {
         console.log('[AudioProvider] Pause error (ignored):', e);
@@ -212,7 +273,7 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // STEP 4: Replace audio source and play
       console.log('[AudioProvider] STEP 4: Loading new audio...');
-      playerRef.current.replace({ uri: url });
+      player.replace({ uri: url });
       
       // Wait for source to load
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -220,13 +281,13 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
       // Check again if still current
       if (globalPlayId !== myPlayId) {
         console.log('[AudioProvider] Request stale after load, aborting');
-        try { playerRef.current.pause(); } catch {}
+        try { player.pause(); } catch {}
         return;
       }
 
       // STEP 5: Start playback
       console.log('[AudioProvider] STEP 5: Starting playback...');
-      playerRef.current.play();
+      player.play();
       
       listeningStartTime = new Date();
       setPlaybackState('playing');
@@ -248,6 +309,8 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
   const stopPlayback = useCallback(async () => {
     console.log('[AudioProvider] ========== STOP PLAYBACK ==========');
     
+    const player = playerRef.current;
+    
     // Record listening time
     if (listeningStartTime && currentPlayingStationId) {
       const duration = Math.floor(
@@ -267,7 +330,9 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
     currentPlayingStationId = null;
 
     try {
-      playerRef.current.pause();
+      if (player) {
+        player.pause();
+      }
     } catch {}
 
     setPlaybackState('idle');
@@ -277,9 +342,12 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Pause
   const pause = useCallback(() => {
     console.log('[AudioProvider] Pause');
+    const player = playerRef.current;
     try {
-      playerRef.current.pause();
-      setPlaybackState('paused');
+      if (player) {
+        player.pause();
+        setPlaybackState('paused');
+      }
     } catch (e) {
       console.error('[AudioProvider] Pause error:', e);
     }
@@ -288,9 +356,12 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Resume
   const resume = useCallback(() => {
     console.log('[AudioProvider] Resume');
+    const player = playerRef.current;
     try {
-      playerRef.current.play();
-      setPlaybackState('playing');
+      if (player) {
+        player.play();
+        setPlaybackState('playing');
+      }
     } catch (e) {
       console.error('[AudioProvider] Resume error:', e);
     }
@@ -311,8 +382,11 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Set volume
   const setVolume = useCallback((volume: number) => {
+    const player = playerRef.current;
     try {
-      playerRef.current.volume = Math.max(0, Math.min(1, volume));
+      if (player) {
+        player.volume = Math.max(0, Math.min(1, volume));
+      }
     } catch {}
   }, []);
 
@@ -329,47 +403,13 @@ const AudioProviderInner: React.FC<{ children: ReactNode }> = ({ children }) => 
     isPlaying: status?.playing === true,
   };
 
+  // Always render children, even if audio isn't ready yet
+  // This prevents blank screen on startup
   return (
     <AudioContext.Provider value={value}>
       {children}
     </AudioContext.Provider>
   );
-};
-
-// ============================================
-// MAIN PROVIDER - Wrapper that ensures safe initialization
-// ============================================
-export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isReady, setIsReady] = useState(false);
-  
-  useEffect(() => {
-    // Configure audio mode before creating the player
-    const initAudio = async () => {
-      try {
-        if (!audioModeConfigured) {
-          await setAudioModeAsync({
-            playsInSilentMode: true,
-            shouldPlayInBackground: true,
-          });
-          audioModeConfigured = true;
-          console.log('[AudioProvider] Audio mode configured in wrapper');
-        }
-      } catch (error) {
-        console.error('[AudioProvider] Failed to set audio mode:', error);
-      }
-      // Always mark as ready, even if audio mode fails
-      setIsReady(true);
-    };
-    
-    initAudio();
-  }, []);
-  
-  // Don't render inner provider until audio mode is configured
-  if (!isReady) {
-    return <>{children}</>;
-  }
-  
-  return <AudioProviderInner>{children}</AudioProviderInner>;
 };
 
 export default AudioProvider;
