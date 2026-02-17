@@ -6,156 +6,182 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 -   **Core Features:** Robust audio streaming, Favorites, Recently Played, Profile.
 -   **Authentication:** All API requests must include .
 
-**New Bugs & Feature Requests (from latest user messages):**
-1.  **Critical Playback Error:** App crashes with a  when trying to play any radio station in Expo Go.
-2.  **Genre Filtering/Sorting:**
-    -   The main genre grid view () does not filter by the selected country.
-    -   The horizontal genre swiper on the home screen is not sorted by the number of stations in each genre (most popular should be first).
-    -   Genre content should update automatically when the country is changed in the settings.
-3.  **Guest User Experience:**
-    -   Clicking the favorite (heart) icon on a station's detail page () incorrectly prompts a guest user to log in, instead of saving to guest favorites.
-4.  **UI/UX Issues:**
-    -   The app crashes on start-up due to an  error on the onboarding screen.
-    -   Login/authentication screens should be full-screen pages, not pop-up modals.
-5.  **Feature Request:** The genre list should be cached locally to improve performance.
-
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The agent has attempted to fix a large number of bugs reported by the user. An initial batch of 6 bugs was declared fixed after a successful run by the testing agent, but the user immediately reported a new, more severe set of issues.
+The application is in a highly unstable and buggy state. The agent has implemented a significant number of features and bug fixes, including a new TV Cast integration. However, the core audio playback functionality is critically broken, with multiple audio streams playing simultaneously and play/pause not working. The agent has attempted to fix this audio issue multiple times with different approaches (state-based flags, global player instances, ), but all attempts have failed, and some have introduced new crashes.
 
-In response to the second bug report, the agent has implemented several (untested) fixes:
--   **Onboarding Crash:** The  error in  was fixed.
--   **Guest Favorites:** The favorite logic in  was updated to support guest users using .
--   **Genre Page:** The main genre list in  was modified to filter by country and sort by station count.
--   **Audio Playback Crash:** A complex, multi-file fix is currently in progress to address the critical  on Expo Go.
+The TV Cast feature was recently implemented but immediately showed errors (, ) which the agent has been trying to fix. Many other UI bugs and feature requests from the user have been addressed, but the core playback instability remains the primary blocker.
 
 **Last working item**:
--   **Last item agent was working**: Debugging the critical  that occurs when playing audio on Expo Go. The agent correctly identified the root cause as a race condition where a function holds a stale reference to a destroyed native audio player instance. The proposed solution involves a state-based asynchronous fix using a  flag and a  hook to ensure the  command is only called on a fully loaded player instance. This work is spread across  and .
+-   **Last item agent was working**: The user reported that after clicking the Play on TV button in the new Cast feature, they received an error response undefined error. The agent was investigating why the  function in  was not correctly handling the response from the backend when sending a 'play' command.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. The primary goal is to verify the audio playback fix on Expo Go. This is a complex native-level bug, so simple screenshot testing will not be sufficient. The agent should provide clear steps for the testing agent to reproduce the play action.
+-   **Which testing method agent to use?**: Frontend testing agent. The test should involve logging in, opening the player, clicking the cast icon, and triggering the Play on TV function to reproduce the error and verify the fix.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Critical Audio Playback Crash on Expo Go (P0)**
--   **Issue 2: Genre Filtering and Sorting Not Working Correctly (P0)**
--   **Issue 3: Guest Favorites Broken on Station Detail Page (P1)**
--   **Issue 4: Login/Auth screens are not full-screen (P1)**
+-   **Issue 1: Critical Audio Playback Failure (P0)**
+-   **Issue 2: TV Cast Feature Fails on Command (P0)**
+-   **Issue 3: fetchNowPlaying before initialization Crash on Startup (P0)**
+-   **Issue 4: Discoverable Genres Images & Text Alignment Broken (P1)**
+-   **Issue 5: Genre Station Count Inconsistency (P1)**
+-   **Issue 6: iOS Login Screen UI Issues (P1)**
 
 **Issues Detail:**
--   **Issue 1: Critical Audio Playback Crash on Expo Go (P0)**
-    -   **Attempted fixes:** A complex, state-based asynchronous fix is in progress. The agent modified  to include a  state and a  to listen for player readiness before calling . The changes also impact . This fix is incomplete and untested.
+-   **Issue 1: Critical Audio Playback Failure (P0)**
+    -   **Description:** The app's core functionality is broken. 1) The Play/Pause button on the station detail page does not stop or resume the audio. 2) Using the Next/Previous buttons causes multiple radio stations to play audio simultaneously instead of stopping the previous one.
+    -   **Attempted fixes:** The agent has tried multiple complex refactors of the  hook:
+        1.  Using  which created new player instances without cleaning up old ones.
+        2.  Creating a single global player instance, which led to an Ops radio doesnt work error.
+        3.  Reverting the code and trying to use , which also failed to solve the issue.
+        The root cause is the incorrect management of  player instances. The hook creates new players on state changes instead of managing a single, persistent instance.
     -   **Next debug checklist:**
-        1.  Review the changes in  and  to ensure the logic is sound.
-        2.  Complete the implementation by removing the old, problematic  logic from .
-        3.  Verify that the  function now correctly sets the  state and relies on the  in  to trigger playback.
-        4.  Thoroughly test on an Expo Go instance.
-    -   **Why fix this issue and what will be achieved with the fix?** This is the highest priority bug, as it makes the app's core functionality (playing radio) completely unusable.
+        1.  Completely refactor  with a stable strategy.
+        2.  The goal is to maintain a **single audio player instance** for the entire application lifecycle.
+        3.  When  is called, check if a station is already playing. If so, call  on the current player.
+        4.  Use  followed by  to play a new station.
+        5.  For , use  to check the  state and call  or  accordingly.
+        6.  Ensure all player references are to this single instance to avoid stale references.
+    -   **Why fix this issue and what will be achieved with the fix?** This is the highest priority issue, as it makes the app unusable. Fixing it will restore the core radio streaming functionality.
     -   **Status:** IN PROGRESS
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on other issue:** None. This is the main blocker.
 
--   **Issue 2: Genre Filtering and Sorting Not Working Correctly (P0)**
-    -   **Description:** The user reports two related problems: 1) The main genre grid () still shows global genres, not filtered by the selected country. 2) The horizontal genre swiper on the home screen is not sorted by station count.
-    -   **Attempted fixes:** For the grid page (), the agent implemented sorting and filtering logic (Msg 68-71). This fix is untested. The home screen swiper has not been addressed at all.
+-   **Issue 2: TV Cast Feature Fails on Command (P0)**
+    -   **Description:** When the user clicks Play on TV in the Cast modal, it results in an error response undefined error. This happened after the agent fixed a Maximum update depth exceeded crash.
+    -   **Attempted fixes:** The agent simplified the CastModal to remove state management issues and WebSocket complexity, but the command sending part is still failing.
     -   **Next debug checklist:**
-        1.  Test the  page to see if the agent's previous fix works as intended.
-        2.  Locate the component for the home screen's horizontal genre swiper.
-        3.  Implement logic to fetch genres and sort them by  in descending order for that component.
-        4.  Ensure genre lists app-wide react and refetch when the country is changed in the settings.
-    -   **Why fix this issue and what will be achieved with the fix?** Fixes core navigation and content discovery, ensuring users see relevant, prioritized content.
+        1.  Go to .
+        2.  In the  function, inspect the call to .
+        3.  Ensure the  function in  correctly handles the API response and potential errors. Add  blocks and log the full response or error object.
+    -   **Why fix this issue and what will be achieved with the fix?** This is a new, user-facing feature that is currently broken.
     -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Frontend
+
+-   **Issue 3: fetchNowPlaying before initialization Crash on Startup (P0)**
+    -   **Description:** The user reported the app crashes on startup with a .
+    -   **Attempted fixes:** The agent reordered the functions inside , moving the  definition before its usage in .
+    -   **Next debug checklist:**
+        1.  Verify the fix by restarting the application.
+        2.  Examine  to confirm the function declaration order is correct and there are no circular dependencies within the  hooks.
+    -   **Why fix this issue and what will be achieved with the fix?** Fixes a critical startup crash.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Frontend
+
+-   **Issue 4: Discoverable Genres Images & Text Alignment Broken (P1)**
+    -   **Description:** On the home screen, the Discoverable Genres section has two problems: 1) The images are not loading from the API, showing blank spaces or fallback images. 2) The text alignment is wrong; the user wants the first letters of the two text lines (**F**olk music and **D**iscover all...) to be vertically aligned on the right.
+    -   **Attempted fixes:** The agent identified that  does not return  and tried to force a separate API call, but this was blocked by React Query caching. The agent then requested a backend change. For alignment, the agent has tried multiple CSS changes (, ) without success.
+    -   **Next debug checklist:**
+        1.  **Backend:** The correct fix is for the backend developer to add the  field to the  array in the  endpoint response, as requested by the agent. Await confirmation of this change.
+        2.  **Frontend (Alignment):** In , apply the following style to the container of the two text elements:  while the parent container remains  to keep the block on the right. This will align the text content to the left within its own block.
+    -   **Why fix this issue and what will be achieved with the fix?** Fixes a recurring and visually prominent UI bug on the home screen.
+    -   **Status:** BLOCKED (on backend change for images), IN PROGRESS (for alignment)
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Frontend
 
--   **Issue 3: Guest Favorites Broken on Station Detail Page (P1)**
-    -   **Attempted fixes:** The agent modified  to use the  for guest users, preventing the login redirect. This fix is untested.
-    -   **Next debug checklist:**
-        1.  Start the app as a guest.
-        2.  Navigate to a station detail page.
-        3.  Tap the heart/favorite icon.
-        4.  Verify the station is added to favorites without triggering a login prompt.
-    -   **Why fix this issue and what will be achieved with the fix?** Restores a key engagement feature for guest users, which was recently implemented but regressed on this screen.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** Y
+-   **Issue 5: Genre Station Count Inconsistency (P1)**
+    -   **Description:** The number of stations shown for a genre on the genre list page (e.g., Pop: 36) is different from the total number shown on the genre detail page (e.g., 41 Pop Radios).
+    -   **Attempted fixes:** The agent correctly identified this as a backend API inconsistency between  and . The agent provided a message for the user to send to the backend developer.
+    -   **Next debug checklist:** This is a backend issue. The next step is to wait for the backend developer to fix the data discrepancy. No frontend action is required.
+    -   **Why fix this issue and what will be achieved with the fix?** Provides a consistent and trustworthy user experience.
+    -   **Status:** BLOCKED (on backend)
+    -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
 
--   **Issue 4: Login/Auth screens are not full-screen (P1)**
-    -   **Description:** A new UI requirement from the user. All authentication-related screens (login, register, etc.) should be presented as full-screen pages, not as modals or pop-ups.
-    -   **Attempted fixes:** None.
+-   **Issue 6: iOS Login Screen UI Issues (P1)**
+    -   **Description:** On iOS, the login screen logo and the decorative arc lines above it are positioned too far to the left and are not prominent enough. They should be centered.
+    -   **Attempted fixes:** The agent modified the styles in , changing  to  to center the logo container. The logo size was also slightly increased.
     -   **Next debug checklist:**
-        1.  Identify the navigation logic that presents auth screens. This is likely managed by Expo Router.
-        2.  Change the presentation style from  to a standard stack navigation.
-        3.  This might involve refactoring  or the root .
-    -   **Why fix this issue and what will be achieved with the fix?** Aligns the app with the user's desired UX flow.
-    -   **Status:** NOT STARTED
+        1.  Verify the fix on an iOS device/simulator.
+        2.  If the arc lines are still not prominent, the user may need to provide a new, more visible PNG asset.
+    -   **Why fix this issue and what will be achieved with the fix?** Improves the visual polish and branding on a key screen.
+    -   **Status:** IN PROGRESS
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
 
 **In progress Task List**:
--   **Task 1: Complete Audio Playback Refactor**
-    -   **Where to resume**:  and . The primary goal is to finalize the  state logic and remove the old -based attempts.
-    -   **What will be achieved with this?** This will resolve the app's most critical bug, making audio playback functional again on Expo Go.
+-   **Task 1: Refactor Audio Playback System (P0)**
+    -   **Where to resume**: .
+    -   **What will be achieved with this?** A stable audio player that can correctly play, pause, and switch between stations without creating multiple audio streams. This will resolve Issue #1.
     -   **Status:** IN PROGRESS
     -   **Should Test frontend/backend/both after fix?** Frontend
     -   **Blocked on something:** No.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1: Implement Full-Screen Auth Flow**: Refactor navigation to make login/register screens full-page.
--   **P1: Sort Home Screen Genres**: Implement sorting by station count for the home page genre swiper.
--   **P2: Local Caching for Genres**: Implement AsyncStorage or a similar solution to cache the genre list, as requested by the user.
+-   **P1: Local Caching for Genres**: Implement AsyncStorage or a similar solution to cache the genre list to improve performance, as originally requested by the user.
+-   **P2: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
+-   **P2: Finalize Social Sign-In flow**.
+-   **P3: Address minor UI bugs**: Glow Effect and Static Equalizer animations.
 
 **Future Tasks:**
--   **P1: API Performance Test**: Measure and report on the performance improvement from the new caching system by timing the  request.
--   **P1: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
--   Finalize the Social Sign-In flow.
--   Address minor UI bugs: Glow Effect and Static Equalizer animations.
+-   There are no other future tasks specified.
 
 **Completed work in this session**
--   **Initial Bug Batch (Fixes attempted, but new bugs arose):**
-    -   Fixed language selection route for guests in .
-    -   Fixed genre detail filtering by passing the correct country parameter in .
-    -   Fixed text alignment on .
-    -   Refactored  to better handle touch events.
-    -   Added logic to  to clear guest favorites on logout.
--   **Second Bug Batch (Fixes implemented, but untested):**
-    -   Fixed  crash on .
-    -   Added guest favorite support to the station detail page ().
-    -   Added country filtering and station count sorting to the main genre list page ().
+-   **TV Cast Integration**: A new feature to cast radio to a TV app was implemented. This involved creating a service (), a Zustand store (), and a UI modal (). Multiple bugs related to its implementation (import errors, infinite loops) were addressed.
+-   **Genre Filtering by Country**: Fixed the logic in  and  to correctly filter genres based on the selected country from . This involved debugging a backend API issue, which was subsequently fixed by the backend team, and then ensuring the frontend refetched data correctly on country change.
+-   **Full-Screen Auth Flow**: The  screen was changed from a modal to a full-screen page by modifying .
+-   **Onboarding Image Preloading**: Implemented  to preload images for the onboarding flow, preventing them from loading slowly.
+-   **Login Redirect Fix**: Corrected the post-login redirect to go to the main home tab  instead of the discover page.
+-   **Player Page UI Cleanup**: Removed the 'Lock' and 'REC' icons, updated the 'Share' and 'Airplay' icons with new assets, and added a country flag to the station logo.
+-   **Auth Button Text Truncation**: Fixed an issue where button text was being cut off in certain languages by adjusting font size and adding .
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Expo Go Native Module Issues**: The core problem is a  from , which points to a lifecycle mismatch between the JS code and the underlying native module. This is common when dealing with Expo Go's limitations.
--   **Asynchronous State Management**: The proposed fix for the audio issue relies on using React state () and effects () to manage a race condition, a critical pattern for handling asynchronous native events.
--   **Zustand State Sync**: The app uses Zustand for state management (, ), which needs to be correctly handled for both logged-in and guest users.
+-   **Expo Audio ()**: The core of the audio playback issues. The main challenge is managing the lifecycle of the  object correctly within a React hook-based architecture. Incorrectly handling instance creation and cleanup leads to memory leaks and multiple simultaneous audio streams.
+-   **React Query**: Used for data fetching and caching. Caching strategies (, , ) have been a source of bugs, especially when data needs to be refetched after state changes (like changing the country).
+-   **Zustand**: Used for global state management (, , ).
+-   **Expo Router**: Manages the app's navigation, including presentation styles (e.g., 'modal' vs. 'stack').
+-   **WebSocket**: Used for the real-time communication part of the TV Cast feature. The implementation has been buggy and caused crashes.
 
 **All files of reference**
--    (In-progress fix for playback)
--    (In-progress fix for playback)
--    (For genre filtering/sorting bug)
--    (For guest favorites bug)
--    (Recently fixed crash)
--   The component file for the **home screen's genre swiper** (Needs to be located)
+-    (Core of the playback issue)
+-    (Where playback controls are used)
+-    (TV Cast UI)
+-    (TV Cast API logic)
+-    (Discoverable genres UI bug)
+-    (iOS logo alignment issue)
 
 **Critical Info for New Agent**
--   **CONTINUE IN TURKISH.** The user is Turkish and providing feedback in Turkish.
--   **PRIORITY #1: FIX THE AUDIO CRASH.** The  is a complete blocker for the app's core function. Your first and only priority is to complete the fix started in  and . The  state approach is sound; see it through.
--   **User is Frustrated:** The user has reported the same or similar issues multiple times. They are questioning why things that used to work are now broken. It is crucial to deliver a stable, working version that addresses their main complaints before moving on to new features.
--   **Test Thoroughly:** Do not declare victory after a single fix. After fixing the audio, systematically go through every other issue reported by the user in their last two messages (Msg 57 & 96) and verify each one is resolved before finishing.
+-   **MUST COMMUNICATE IN TURKISH.** The user exclusively uses Turkish.
+-   **FIX AUDIO PLAYBACK FIRST.** The highest priority is to solve the  and  bugs (Issue #1). The current implementation in  is broken. A stable, robust refactor that manages a single audio player instance is required. Do not attempt more quick fixes; a full, careful rewrite of the hook is necessary.
+-   **User is frustrated.** The same core audio issues have persisted across multiple sessions. Delivering a stable fix for playback is crucial to regain the user's trust. Test every change thoroughly before declaring it fixed.
+-   **Backend dependencies:** Note that two issues (Discoverable Genre Images and Genre Station Count) are blocked by the backend team. You should focus on frontend issues while waiting for those changes.
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **User (LATEST - Msg 96)**: Re-iterated that genres are not filtered by country, popular genres aren't sorted correctly, and asked why the radio playback is now broken when it worked before. Added a new request for full-screen login pages. **Status: PENDING**
--   **Agent**: Acknowledged the user's points and was about to continue debugging.
--   **User (Msg 57)**: Reported a new list of critical bugs:  crash, incorrect genre sorting,  on play, broken guest favorites on the detail page, and genres not filtering by country. Requested local caching for genres. **Status: PARTIALLY ADDRESSED (IN PROGRESS)**
--   **Agent (before new bugs)**: Finished the previous task, believing all 6 initial bugs were resolved after testing agent confirmation.
--   **User**: Confirmed and approved the agent's plan to fix the next set of future tasks.
--   **Testing Agent**: Returned a success message stating all 6 bugs from the initial report were fixed.
--   **Agent**: Sent the initial 6 bug fixes to the testing agent for verification.
+1.  **User**: Reports that clicking Play on TV in the cast feature gives an error response undefined. **(PENDING)**
+2.  **User**: Reports Maximum update depth exceeded crash after clicking the cast button, and 14 WebSocket errors. **(Partially Fixed)**
+3.  **User**: Reports an issue in Expo Go: . **(Fixed)**
+4.  **User**: Reports an issue in Expo Go: . **(Fixed)**
+-   **User**: Asks agent to implement the TV Cast feature based on the provided documentation. **(Completed)**
+-   **User**: Provides the TV Cast integration guide from the backend developer. **(Acknowledged)**
+-   **User**: Reports a  error and asks the agent to test the TV login feature. **(Partially Addressed)**
+-   **User**: Reports the core audio issue again:  doesn't work, and  plays multiple audio streams at once. The app is in a state where no radio plays at all after the agent's last fix attempt. **(Acknowledged, still broken)**
+-   **User**: Reports several issues: Onboarding images load slowly, button text is cut off in Turkish, station detail page is missing a country flag and has extra icons (lock, rec), and share/airplay icons need changing. **(Fixed)**
+-   **User**: Reports post-login redirect is wrong (goes to discover, should go to home). **(Fixed)**
 
 **Project Health Check:**
--   **Broken:** Yes. The application is in a critical state. The core audio playback functionality is non-operational on the target platform (Expo Go). Multiple other features related to content filtering and user state are either broken or not implemented as per user expectation.</analysis>
+-   **Broken:** Yes. The application's core feature (audio playback) is non-functional and has been for some time. New features are also being added while the core is unstable, leading to more bugs.
+
+**3rd Party Integrations**
+-   **expo-audio**: For audio playback.
+-   **flagcdn.com**: Used to display country flags on the player screen.
+
+**Testing status**
+-   **Testing agent used after significant changes**: NO. The agent has been resolving issues and asking the user to test directly, leading to a frustrating loop of bug reports. The last major set of fixes was not run through the testing agent.
+-   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Test files created**: None.
+-   **Known regressions**: Core audio playback is a major regression.
+
+**Credentials to test flow:**
+-   Use  and  for login, as seen in the agent's cURL commands.
+
+**What agent forgot to execute**
+-   The agent has failed to implement a stable solution for the core audio playback despite multiple attempts and identifying the root cause (improper instance management). Instead of a focused, stable refactor, the agent kept trying different, complex, and ultimately failed approaches.
+-   The agent did not use the testing agent after major refactors of the audio system, relying on the user for testing, which is inefficient and frustrating for the user.</analysis>

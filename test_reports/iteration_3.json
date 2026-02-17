@@ -20,7 +20,7 @@
     "/app/test_reports/iteration_3.json"
   ],
   "action_items": [
-    "Configure themegaradio.com API to allow CORS from https://megaradio-preview.preview.emergentagent.com",
+    "Configure themegaradio.com API to allow CORS from https://audio-player-rebuild.preview.emergentagent.com",
     "Alternative: Set up backend proxy for API calls to bypass CORS"
   ],
   "critical_code_review_comments": [
