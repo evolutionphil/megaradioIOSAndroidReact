@@ -20,6 +20,7 @@ import api from '../src/services/api';
 import { useAuthStore } from '../src/store/authStore';
 import { useUserFavorites, useUserProfile } from '../src/hooks/useQueries';
 import { getPreloadedFavorites } from '../src/services/preloadService';
+import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 
 interface FavoriteStation {
   id: string;
