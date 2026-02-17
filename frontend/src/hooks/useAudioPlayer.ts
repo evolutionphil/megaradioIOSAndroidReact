@@ -1,14 +1,13 @@
 // useAudioPlayer - Audio playback with expo-audio (Expo SDK 54+)
-// Uses a singleton pattern to ensure only ONE audio player exists at a time
+// STABLE IMPLEMENTATION - Uses a single player instance with replace() for changing sources
 // Migrated from deprecated expo-av
 
-import { useCallback, useRef, useEffect, useState } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { 
   useAudioPlayer as useExpoAudioPlayer, 
   useAudioPlayerStatus,
   setAudioModeAsync,
 } from 'expo-audio';
-import type { AudioPlayer } from 'expo-audio';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
@@ -17,82 +16,20 @@ import type { Station } from '../types';
 // Global state to track initialization
 let audioModeConfigured = false;
 
-// SINGLETON: Global audio player manager
-class AudioManager {
-  private static instance: AudioManager;
-  private currentStationId: string | null = null;
-  private currentUrl: string | null = null;
-  private _playId = 0;
-  private playerRef: AudioPlayer | null = null;
+// Global tracking for race condition prevention
+let globalPlayId = 0;
+let currentPlayingStationId: string | null = null;
 
-  private constructor() {
-    console.log('[AudioManager] Singleton instance created');
-  }
-
-  static getInstance(): AudioManager {
-    if (!AudioManager.instance) {
-      AudioManager.instance = new AudioManager();
-    }
-    return AudioManager.instance;
-  }
-
-  getCurrentStationId(): string | null {
-    return this.currentStationId;
-  }
-
-  getCurrentUrl(): string | null {
-    return this.currentUrl;
-  }
-
-  setPlayer(player: AudioPlayer | null): void {
-    this.playerRef = player;
-  }
-
-  getPlayer(): AudioPlayer | null {
-    return this.playerRef;
-  }
-
-  setCurrentStation(stationId: string | null, url: string | null): void {
-    this.currentStationId = stationId;
-    this.currentUrl = url;
-  }
-
-  incrementPlayId(): number {
-    return ++this._playId;
-  }
-
-  getPlayId(): number {
-    return this._playId;
-  }
-
-  async stop(): Promise<void> {
-    this._playId++;
-    console.log('[AudioManager] stop called, playId now:', this._playId);
-    
-    if (this.playerRef) {
-      try {
-        this.playerRef.pause();
-        console.log('[AudioManager] Player paused');
-      } catch (e) {
-        console.log('[AudioManager] Pause error (ignored):', e);
-      }
-    }
-    this.currentStationId = null;
-    this.currentUrl = null;
-  }
-}
-
-// Get singleton instance
-const audioManager = AudioManager.getInstance();
+// Placeholder silent audio URL - needed to initialize player properly
+const SILENT_AUDIO_URL = 'https://themegaradio.com/api/silence.mp3';
 
 export const useAudioPlayer = () => {
   const listeningStartRef = useRef<Date | null>(null);
-  const currentStationIdRef = useRef<string | null>(null);
-  const isPlayingRef = useRef<boolean>(false);
+  const playIdRef = useRef<number>(0);
   
-  // expo-audio hook - creates player instance with a dummy source
-  // Using a silent audio or null initially, then use replace() to change source
-  const player = useExpoAudioPlayer(undefined);
+  // Initialize player with a valid URL to avoid Android crashes
+  // expo-audio requires a valid source on initialization
+  const player = useExpoAudioPlayer(SILENT_AUDIO_URL);
   const status = useAudioPlayerStatus(player);
 
   const {
@@ -108,35 +45,10 @@ export const useAudioPlayer = () => {
     reset,
   } = usePlayerStore();
 
-  // Register player with AudioManager whenever it changes
-  useEffect(() => {
-    if (player) {
-      console.log('[useAudioPlayer] Registering player with AudioManager');
-      audioManager.setPlayer(player);
-    }
-  }, [player]);
-  
-  // Sync playback state with actual player status - removed infinite loop
-  useEffect(() => {
-    if (!player || !status) return;
-    
-    // Only sync if state is inconsistent - use refs to avoid loops
-    if (status.playing && !isPlayingRef.current) {
-      console.log('[useAudioPlayer] Status sync: now playing');
-      isPlayingRef.current = true;
-      setPlaybackState('playing');
-    } else if (!status.playing && isPlayingRef.current) {
-      console.log('[useAudioPlayer] Status sync: stopped');
-      isPlayingRef.current = false;
-      // Don't automatically set to paused - let explicit pause handle it
-    }
-  }, [status?.playing]); // Only depend on playing status, not the whole status object
-
   // Set up audio mode ONCE globally
   useEffect(() => {
     const setupAudio = async () => {
       if (audioModeConfigured) {
-        console.log('[useAudioPlayer] Audio mode already configured, skipping');
         return;
       }
       
@@ -146,7 +58,7 @@ export const useAudioPlayer = () => {
           shouldPlayInBackground: true,
         });
         audioModeConfigured = true;
-        console.log('[useAudioPlayer] Audio mode configured (expo-audio)');
+        console.log('[useAudioPlayer] Audio mode configured');
       } catch (error) {
         console.error('[useAudioPlayer] Failed to set audio mode:', error);
       }
@@ -154,19 +66,23 @@ export const useAudioPlayer = () => {
     setupAudio();
   }, []);
 
-  // Handle playback status updates from expo-audio
+  // Sync playback state with actual player status
   useEffect(() => {
     if (!status) return;
-
-    // Map expo-audio status to our playback states
-    if (status.playing) {
-      setPlaybackState('playing');
-    } else if (status.isBuffering) {
+    
+    // Only update state based on actual player status
+    const isActuallyPlaying = status.playing === true;
+    const isBuffering = status.isBuffering === true;
+    
+    if (isBuffering && playbackState !== 'buffering') {
       setPlaybackState('buffering');
-    } else if (status.currentTime > 0 && !status.playing) {
+    } else if (isActuallyPlaying && playbackState !== 'playing') {
+      setPlaybackState('playing');
+    } else if (!isActuallyPlaying && !isBuffering && playbackState === 'playing') {
+      // Only switch to paused if we were playing and now stopped
       setPlaybackState('paused');
     }
-  }, [status, setPlaybackState, setError]);
+  }, [status?.playing, status?.isBuffering]);
 
   // Resolve stream URL - follows redirects and handles HTTP/HTTPS
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
