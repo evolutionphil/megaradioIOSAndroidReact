@@ -1,0 +1,420 @@
+// AudioProvider - Single shared audio player for the entire app
+// This ensures only ONE native audio player exists across all screens
+// All components use this context instead of useAudioPlayer() directly
+
+import React, { createContext, useContext, useCallback, useEffect, useRef, ReactNode } from 'react';
+import { 
+  useAudioPlayer as useExpoAudioPlayer, 
+  useAudioPlayerStatus,
+  setAudioModeAsync,
+  AudioPlayer,
+} from 'expo-audio';
+import { usePlayerStore } from '../store/playerStore';
+import stationService from '../services/stationService';
+import userService from '../services/userService';
+import type { Station } from '../types';
+
+// ============================================
+// TYPES
+// ============================================
+interface AudioContextType {
+  playStation: (station: Station) => Promise<void>;
+  stopPlayback: () => Promise<void>;
+  pause: () => void;
+  resume: () => void;
+  togglePlayPause: () => void;
+  setVolume: (volume: number) => void;
+  currentStation: Station | null;
+  playbackState: string;
+  streamUrl: string | null;
+  isPlaying: boolean;
+}
+
+// ============================================
+// CONTEXT
+// ============================================
+const AudioContext = createContext<AudioContextType | null>(null);
+
+// ============================================
+// GLOBAL STATE (module level - truly singleton)
+// ============================================
+let audioModeConfigured = false;
+let globalPlayId = 0;
+let currentPlayingStationId: string | null = null;
+let listeningStartTime: Date | null = null;
+
+// ============================================
+// PROVIDER COMPONENT
+// ============================================
+export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // THE ONLY useAudioPlayer call in the entire app!
+  const player = useExpoAudioPlayer(null as any);
+  const status = useAudioPlayerStatus(player);
+  
+  const playerRef = useRef<AudioPlayer>(player);
+  playerRef.current = player;
+
+  const {
+    currentStation,
+    playbackState,
+    streamUrl,
+    setCurrentStation,
+    setPlaybackState,
+    setStreamUrl,
+    setNowPlaying,
+    setError,
+    setMiniPlayerVisible,
+    reset,
+  } = usePlayerStore();
+
+  // Configure audio mode ONCE at app start
+  useEffect(() => {
+    const setupAudio = async () => {
+      if (audioModeConfigured) return;
+      
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: true,
+        });
+        audioModeConfigured = true;
+        console.log('[AudioProvider] Audio mode configured');
+      } catch (error) {
+        console.error('[AudioProvider] Failed to set audio mode:', error);
+      }
+    };
+    setupAudio();
+  }, []);
+
+  // Sync playback state with actual player status
+  useEffect(() => {
+    if (!status) return;
+    
+    const isPlaying = status.playing === true;
+    const isBuffering = status.isBuffering === true;
+    
+    if (isBuffering && playbackState !== 'buffering') {
+      setPlaybackState('buffering');
+    } else if (isPlaying && playbackState !== 'playing') {
+      setPlaybackState('playing');
+    } else if (!isPlaying && !isBuffering && playbackState === 'playing') {
+      setPlaybackState('paused');
+    }
+  }, [status?.playing, status?.isBuffering, playbackState, setPlaybackState]);
+
+  // Resolve stream URL helper
+  const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
+    try {
+      const streamData = await stationService.resolveStream(station.url);
+
+      if (streamData.candidates && streamData.candidates.length > 0) {
+        let resolvedUrl = streamData.candidates[0];
+        
+        const isKnownWorkingHttps = resolvedUrl.includes('stream.laut.fm') || 
+                                     resolvedUrl.includes('radiohost.de') ||
+                                     resolvedUrl.includes('streamtheworld.com');
+        
+        if (resolvedUrl.startsWith('http://') || !isKnownWorkingHttps) {
+          resolvedUrl = stationService.getProxyUrl(resolvedUrl);
+        }
+
+        return resolvedUrl;
+      }
+
+      let fallbackUrl = station.url_resolved || station.url;
+      return stationService.getProxyUrl(fallbackUrl);
+    } catch (error) {
+      let fallbackUrl = station.url_resolved || station.url;
+      return stationService.getProxyUrl(fallbackUrl);
+    }
+  }, []);
+
+  // Fetch now playing helper
+  const fetchNowPlaying = useCallback(async (stationId: string) => {
+    const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+    
+    try {
+      const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
+      if (response.ok) {
+        const metadata = await response.json();
+        if (metadata && (metadata.title || metadata.artist)) {
+          setNowPlaying(metadata);
+          return;
+        }
+      }
+    } catch {}
+    
+    try {
+      const metadata = await stationService.getNowPlaying(stationId);
+      if (metadata) {
+        setNowPlaying(metadata);
+      }
+    } catch {}
+  }, [setNowPlaying]);
+
+  // ============================================
+  // PLAY STATION - THE CORE FUNCTION
+  // ============================================
+  const playStation = useCallback(async (station: Station) => {
+    console.log('[AudioProvider] ========================================');
+    console.log('[AudioProvider] PLAY STATION:', station.name);
+    console.log('[AudioProvider] Station ID:', station._id);
+    console.log('[AudioProvider] Current playing:', currentPlayingStationId);
+    console.log('[AudioProvider] ========================================');
+
+    // Same station? Toggle play/pause
+    if (currentPlayingStationId === station._id) {
+      console.log('[AudioProvider] Same station - toggling');
+      if (status?.playing) {
+        playerRef.current.pause();
+        setPlaybackState('paused');
+      } else {
+        playerRef.current.play();
+        setPlaybackState('playing');
+      }
+      return;
+    }
+
+    // NEW STATION - increment play ID for race condition prevention
+    const myPlayId = ++globalPlayId;
+    console.log('[AudioProvider] New PlayID:', myPlayId);
+
+    try {
+      // ==========================================
+      // STEP 1: STOP CURRENT PLAYBACK IMMEDIATELY
+      // ==========================================
+      console.log('[AudioProvider] STEP 1: Stopping current playback...');
+      try {
+        playerRef.current.pause();
+        console.log('[AudioProvider] Player paused');
+      } catch (e) {
+        console.log('[AudioProvider] Pause error (ignored):', e);
+      }
+
+      // Record listening time for previous station
+      if (listeningStartTime && currentPlayingStationId) {
+        const duration = Math.floor(
+          (new Date().getTime() - listeningStartTime.getTime()) / 1000
+        );
+        if (duration > 5) {
+          userService.recordListening(
+            currentPlayingStationId,
+            duration,
+            listeningStartTime.toISOString()
+          ).catch(() => {});
+        }
+        listeningStartTime = null;
+      }
+
+      // ==========================================
+      // STEP 2: Update UI immediately
+      // ==========================================
+      console.log('[AudioProvider] STEP 2: Updating UI...');
+      setPlaybackState('loading');
+      setError(null);
+      setCurrentStation(station);
+      setMiniPlayerVisible(true);
+      currentPlayingStationId = station._id;
+
+      // Record click (non-blocking)
+      stationService.recordClick(station._id).catch(() => {});
+
+      // ==========================================
+      // STEP 3: Resolve stream URL
+      // ==========================================
+      console.log('[AudioProvider] STEP 3: Resolving stream URL...');
+      const url = await resolveStreamUrl(station);
+      if (!url) {
+        throw new Error('Could not resolve stream URL');
+      }
+
+      // Check if still current request
+      if (globalPlayId !== myPlayId) {
+        console.log('[AudioProvider] Request stale, aborting');
+        return;
+      }
+
+      console.log('[AudioProvider] Stream URL:', url.substring(0, 60) + '...');
+      setStreamUrl(url);
+
+      // ==========================================
+      // STEP 4: Replace audio source and play
+      // ==========================================
+      console.log('[AudioProvider] STEP 4: Loading new audio...');
+      playerRef.current.replace({ uri: url });
+      
+      // Wait for source to load
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Check again if still current
+      if (globalPlayId !== myPlayId) {
+        console.log('[AudioProvider] Request stale after load, aborting');
+        try { playerRef.current.pause(); } catch {}
+        return;
+      }
+
+      // ==========================================
+      // STEP 5: Start playback
+      // ==========================================
+      console.log('[AudioProvider] STEP 5: Starting playback...');
+      playerRef.current.play();
+      
+      listeningStartTime = new Date();
+      setPlaybackState('playing');
+
+      console.log('[AudioProvider] ========== NOW PLAYING ==========');
+
+      // Background tasks
+      userService.recordRecentlyPlayed(station._id).catch(() => {});
+      fetchNowPlaying(station._id);
+
+    } catch (error) {
+      console.error('[AudioProvider] Play failed:', error);
+      setError(error instanceof Error ? error.message : 'Failed to play');
+      setPlaybackState('error');
+    }
+  }, [status?.playing, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying]);
+
+  // Stop playback completely
+  const stopPlayback = useCallback(async () => {
+    console.log('[AudioProvider] ========== STOP PLAYBACK ==========');
+    
+    // Record listening time
+    if (listeningStartTime && currentPlayingStationId) {
+      const duration = Math.floor(
+        (new Date().getTime() - listeningStartTime.getTime()) / 1000
+      );
+      if (duration > 5) {
+        userService.recordListening(
+          currentPlayingStationId,
+          duration,
+          listeningStartTime.toISOString()
+        ).catch(() => {});
+      }
+      listeningStartTime = null;
+    }
+
+    globalPlayId++;
+    currentPlayingStationId = null;
+
+    try {
+      playerRef.current.pause();
+    } catch {}
+
+    setPlaybackState('idle');
+    setMiniPlayerVisible(false);
+  }, [setPlaybackState, setMiniPlayerVisible]);
+
+  // Pause
+  const pause = useCallback(() => {
+    console.log('[AudioProvider] Pause');
+    try {
+      playerRef.current.pause();
+      setPlaybackState('paused');
+    } catch (e) {
+      console.error('[AudioProvider] Pause error:', e);
+    }
+  }, [setPlaybackState]);
+
+  // Resume
+  const resume = useCallback(() => {
+    console.log('[AudioProvider] Resume');
+    try {
+      playerRef.current.play();
+      setPlaybackState('playing');
+    } catch (e) {
+      console.error('[AudioProvider] Resume error:', e);
+    }
+  }, [setPlaybackState]);
+
+  // Toggle play/pause
+  const togglePlayPause = useCallback(() => {
+    console.log('[AudioProvider] Toggle play/pause, status:', status?.playing);
+    
+    if (status?.playing) {
+      pause();
+    } else if (playbackState === 'paused') {
+      resume();
+    } else if ((playbackState === 'idle' || playbackState === 'error') && currentStation) {
+      playStation(currentStation);
+    }
+  }, [status?.playing, playbackState, currentStation, pause, resume, playStation]);
+
+  // Set volume
+  const setVolume = useCallback((volume: number) => {
+    try {
+      playerRef.current.volume = Math.max(0, Math.min(1, volume));
+    } catch {}
+  }, []);
+
+  const value: AudioContextType = {
+    playStation,
+    stopPlayback,
+    pause,
+    resume,
+    togglePlayPause,
+    setVolume,
+    currentStation,
+    playbackState,
+    streamUrl,
+    isPlaying: status?.playing === true,
+  };
+
+  return (
+    <AudioContext.Provider value={value}>
+      {children}
+    </AudioContext.Provider>
+  );
+};
+
+// ============================================
+// HOOK TO USE AUDIO CONTEXT
+// ============================================
+export const useAudio = (): AudioContextType => {
+  const context = useContext(AudioContext);
+  if (!context) {
+    throw new Error('useAudio must be used within an AudioProvider');
+  }
+  return context;
+};
+
+// ============================================
+// BACKWARD COMPATIBLE HOOK (wraps useAudio)
+// This allows existing components to work without changes
+// ============================================
+export const useAudioPlayer = () => {
+  const context = useContext(AudioContext);
+  
+  // If not in provider, return dummy functions (for safety)
+  if (!context) {
+    console.warn('[useAudioPlayer] Not in AudioProvider - returning dummy functions');
+    const store = usePlayerStore();
+    return {
+      currentStation: store.currentStation,
+      playbackState: store.playbackState,
+      streamUrl: store.streamUrl,
+      playStation: async () => console.warn('AudioProvider not found'),
+      stopPlayback: async () => {},
+      pause: () => {},
+      resume: () => {},
+      togglePlayPause: () => {},
+      setVolume: () => {},
+      reset: store.reset,
+    };
+  }
+  
+  return {
+    currentStation: context.currentStation,
+    playbackState: context.playbackState,
+    streamUrl: context.streamUrl,
+    playStation: context.playStation,
+    stopPlayback: context.stopPlayback,
+    pause: context.pause,
+    resume: context.resume,
+    togglePlayPause: context.togglePlayPause,
+    setVolume: context.setVolume,
+    reset: usePlayerStore().reset,
+  };
+};
+
+export default AudioProvider;
