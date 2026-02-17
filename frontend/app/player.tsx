@@ -248,11 +248,12 @@ const GridItem = React.memo(({
 export default function PlayerScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, token } = useAuthStore();
   const [showCarMode, setShowCarMode] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSleepTimer, setShowSleepTimer] = useState(false);
   const [showSleepCounter, setShowSleepCounter] = useState(false);
+  const [showCastModal, setShowCastModal] = useState(false);
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
@@ -276,6 +277,15 @@ export default function PlayerScreen() {
   // Fetch data with refetchOnWindowFocus disabled to prevent flickering
   const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
   const { data: popularData } = usePopularStations(undefined, 12);
+
+  // Handle cast button - requires login
+  const handleCastPress = () => {
+    if (!isAuthenticated) {
+      router.push('/auth-options');
+      return;
+    }
+    setShowCastModal(true);
+  };
 
   // Use favoritesStore for guest/authenticated favorites
   const { isFavorite: checkIsFavorite, toggleFavorite } = useFavoritesStore();
