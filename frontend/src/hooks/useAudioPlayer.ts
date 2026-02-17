@@ -2,11 +2,17 @@
 // All audio functionality is now centralized in AudioProvider
 // This hook simply provides access to the shared audio context
 
-import { useAudioPlayer as useAudioPlayerFromProvider, useAudio } from '../providers/AudioProvider';
+// Import from provider
+import { AudioProvider, useAudio, useAudioPlayer as useAudioPlayerHook } from '../providers/AudioProvider';
 
-// Named export
-export const useAudioPlayer = useAudioPlayerFromProvider;
+// Re-export for backward compatibility
 export { useAudio };
+export { AudioProvider };
 
-// Default export for backward compatibility
-export default useAudioPlayerFromProvider;
+// Named export - the main hook
+export function useAudioPlayer() {
+  return useAudioPlayerHook();
+}
+
+// Default export
+export default useAudioPlayer;
