@@ -1,5 +1,5 @@
-// Cast Modal - TV Cast pairing UI
-import React, { useEffect } from 'react';
+// Cast Modal - Simple TV Cast pairing UI (without WebSocket)
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import { useCastStore } from '../store/castStore';
 import { useAuthStore } from '../store/authStore';
 import { colors, typography, spacing } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
+const BASE_URL = 'https://themegaradio.com';
 
 interface CastModalProps {
   visible: boolean;
@@ -29,51 +29,131 @@ export const CastModal: React.FC<CastModalProps> = ({
   currentStationId,
 }) => {
   const { token } = useAuthStore();
-  const {
-    isLoading,
-    isPaired,
-    isConnected,
-    pairingCode,
-    sessionId,
-    error,
-    startCastSession,
-    endCastSession,
-    castToTV,
-  } = useCastStore();
-  
-  const hasStartedRef = React.useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pairingCode, setPairingCode] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPaired, setIsPaired] = useState(false);
+  const hasStartedRef = useRef(false);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Start session when modal opens - only once
+  // Create session when modal opens
   useEffect(() => {
-    if (visible && token && !sessionId && !hasStartedRef.current && !isLoading) {
+    if (visible && token && !hasStartedRef.current) {
       hasStartedRef.current = true;
-      startCastSession(token);
+      createSession();
     }
     
-    // Reset ref when modal closes
     if (!visible) {
+      // Cleanup when modal closes
       hasStartedRef.current = false;
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
     }
-  }, [visible, token, sessionId, isLoading]);
+    
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, [visible, token]);
 
-  // Handle close
+  const createSession = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${BASE_URL}/api/cast/session/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ mobileDeviceId: 'expo-mobile' }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setPairingCode(data.pairingCode);
+        setSessionId(data.sessionId);
+        setIsLoading(false);
+        
+        // Start polling for pairing status
+        startPolling(data.sessionId);
+      } else {
+        throw new Error(data.error || 'Session oluşturulamadı');
+      }
+    } catch (err: any) {
+      console.log('[CastModal] Error:', err);
+      setError(err.message || 'Bağlantı hatası');
+      setIsLoading(false);
+    }
+  };
+
+  const startPolling = (sid: string) => {
+    // Poll every 3 seconds to check if TV paired
+    pollingRef.current = setInterval(async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/cast/session/${sid}/status`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && (data.status === 'paired' || data.status === 'active' || data.tvConnected)) {
+          setIsPaired(true);
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+        }
+      } catch (err) {
+        console.log('[CastModal] Polling error:', err);
+      }
+    }, 3000);
+  };
+
+  const handleCastNow = async () => {
+    if (!sessionId || !currentStationId) return;
+    
+    try {
+      await fetch(`${BASE_URL}/api/cast/command`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          sessionId,
+          command: 'play',
+          data: { stationId: currentStationId },
+        }),
+      });
+      
+      onClose();
+    } catch (err) {
+      console.log('[CastModal] Cast error:', err);
+    }
+  };
+
   const handleClose = () => {
-    if (!isPaired) {
-      endCastSession();
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
     }
     hasStartedRef.current = false;
+    setPairingCode(null);
+    setSessionId(null);
+    setIsPaired(false);
+    setError(null);
     onClose();
   };
 
-  // Cast current station when paired
-  const handleCastNow = async () => {
-    if (currentStationId) {
-      await castToTV(currentStationId);
-      onClose();
-    }
-  };
-
-  // Format pairing code with spaces
   const formatCode = (code: string) => {
     return code.split('').join(' ');
   };
@@ -108,7 +188,10 @@ export const CastModal: React.FC<CastModalProps> = ({
                 <Text style={styles.errorText}>{error}</Text>
                 <TouchableOpacity
                   style={styles.retryButton}
-                  onPress={() => token && startCastSession(token)}
+                  onPress={() => {
+                    hasStartedRef.current = false;
+                    createSession();
+                  }}
                 >
                   <Text style={styles.retryButtonText}>Tekrar Dene</Text>
                 </TouchableOpacity>
