@@ -717,6 +717,13 @@ export default function PlayerScreen() {
         remainingSeconds={sleepTimerRemaining}
         onStop={cancelSleepTimer}
       />
+      
+      {/* Cast Modal */}
+      <CastModal
+        visible={showCastModal}
+        onClose={() => setShowCastModal(false)}
+        currentStationId={currentStation?._id}
+      />
     </View>
   );
 }
