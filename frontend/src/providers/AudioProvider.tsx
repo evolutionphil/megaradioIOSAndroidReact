@@ -1,8 +1,7 @@
 // AudioProvider - Single shared audio player for the entire app
 // This ensures only ONE native audio player exists across all screens
-// All components use this context instead of useAudioPlayer() directly
 
-import React, { useCallback, useEffect, useRef, ReactNode } from 'react';
+import React, { createContext, useContext, useCallback, useEffect, useRef, ReactNode } from 'react';
 import { 
   useAudioPlayer as useExpoPlayer, 
   useAudioPlayerStatus,
@@ -13,7 +12,27 @@ import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
-import { AudioContext, AudioContextType } from '../hooks/useAudioPlayer';
+
+// ============================================
+// TYPES
+// ============================================
+export interface AudioContextType {
+  playStation: (station: Station) => Promise<void>;
+  stopPlayback: () => Promise<void>;
+  pause: () => void;
+  resume: () => void;
+  togglePlayPause: () => void;
+  setVolume: (volume: number) => void;
+  currentStation: Station | null;
+  playbackState: string;
+  streamUrl: string | null;
+  isPlaying: boolean;
+}
+
+// ============================================
+// CONTEXT - exported for use in useAudioPlayer hook
+// ============================================
+export const AudioContext = createContext<AudioContextType | null>(null);
 
 // ============================================
 // GLOBAL STATE (module level - truly singleton)
@@ -44,7 +63,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setNowPlaying,
     setError,
     setMiniPlayerVisible,
-    reset,
   } = usePlayerStore();
 
   // Configure audio mode ONCE at app start
@@ -160,9 +178,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     console.log('[AudioProvider] New PlayID:', myPlayId);
 
     try {
-      // ==========================================
       // STEP 1: STOP CURRENT PLAYBACK IMMEDIATELY
-      // ==========================================
       console.log('[AudioProvider] STEP 1: Stopping current playback...');
       try {
         playerRef.current.pause();
@@ -186,9 +202,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         listeningStartTime = null;
       }
 
-      // ==========================================
       // STEP 2: Update UI immediately
-      // ==========================================
       console.log('[AudioProvider] STEP 2: Updating UI...');
       setPlaybackState('loading');
       setError(null);
@@ -199,9 +213,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       // Record click (non-blocking)
       stationService.recordClick(station._id).catch(() => {});
 
-      // ==========================================
       // STEP 3: Resolve stream URL
-      // ==========================================
       console.log('[AudioProvider] STEP 3: Resolving stream URL...');
       const url = await resolveStreamUrl(station);
       if (!url) {
@@ -217,9 +229,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Stream URL:', url.substring(0, 60) + '...');
       setStreamUrl(url);
 
-      // ==========================================
       // STEP 4: Replace audio source and play
-      // ==========================================
       console.log('[AudioProvider] STEP 4: Loading new audio...');
       playerRef.current.replace({ uri: url });
       
@@ -233,9 +243,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         return;
       }
 
-      // ==========================================
       // STEP 5: Start playback
-      // ==========================================
       console.log('[AudioProvider] STEP 5: Starting playback...');
       playerRef.current.play();
       
@@ -345,56 +353,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       {children}
     </AudioContext.Provider>
   );
-};
-
-// ============================================
-// HOOK TO USE AUDIO CONTEXT
-// ============================================
-export const useAudio = (): AudioContextType => {
-  const context = useContext(AudioContext);
-  if (!context) {
-    throw new Error('useAudio must be used within an AudioProvider');
-  }
-  return context;
-};
-
-// ============================================
-// BACKWARD COMPATIBLE HOOK (wraps useAudio)
-// This allows existing components to work without changes
-// ============================================
-export const useAudioPlayer = () => {
-  const context = useContext(AudioContext);
-  
-  // If not in provider, return dummy functions (for safety)
-  if (!context) {
-    console.warn('[useAudioPlayer] Not in AudioProvider - returning dummy functions');
-    const store = usePlayerStore();
-    return {
-      currentStation: store.currentStation,
-      playbackState: store.playbackState,
-      streamUrl: store.streamUrl,
-      playStation: async () => console.warn('AudioProvider not found'),
-      stopPlayback: async () => {},
-      pause: () => {},
-      resume: () => {},
-      togglePlayPause: () => {},
-      setVolume: () => {},
-      reset: store.reset,
-    };
-  }
-  
-  return {
-    currentStation: context.currentStation,
-    playbackState: context.playbackState,
-    streamUrl: context.streamUrl,
-    playStation: context.playStation,
-    stopPlayback: context.stopPlayback,
-    pause: context.pause,
-    resume: context.resume,
-    togglePlayPause: context.togglePlayPause,
-    setVolume: context.setVolume,
-    reset: usePlayerStore().reset,
-  };
 };
 
 export default AudioProvider;
