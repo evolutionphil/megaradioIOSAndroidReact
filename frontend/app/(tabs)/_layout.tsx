@@ -67,7 +67,7 @@ export default function TabLayout() {
           name="genres"
           options={{
             title: t('tab_genres', 'Genres'),
-            tabBarIcon: () => <TabIcon iconUrl={TAB_ICONS.genres} size={28} />,
+            tabBarIcon: ({ color }) => <Ionicons name="grid-outline" size={24} color={color} />,
           }}
         />
         <Tabs.Screen
