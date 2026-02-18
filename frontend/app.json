@@ -46,6 +46,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.visiongo.megaradio",
+      "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
