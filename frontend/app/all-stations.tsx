@@ -75,11 +75,6 @@ export default function AllStationsScreen() {
     }
   }, []);
 
-  // Debug: Log when sort option changes
-  useEffect(() => {
-    console.log('[AllStations] Sort option changed:', sortOption);
-  }, [sortOption]);
-
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
   const { data, isLoading, refetch, isFetching } = useStations({
     limit: 100,
