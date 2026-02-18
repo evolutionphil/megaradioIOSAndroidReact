@@ -265,14 +265,21 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       try {
         // Get station logo URL
         const logoUrl = station.favicon || station.logo || '';
+        const artworkUrl = logoUrl || 'https://themegaradio.com/logo.png';
         
-        playerRef.current.updateMetadataForUrl(url, {
+        // Update lock screen metadata for iOS Control Center / Android notification
+        playerRef.current.updateLockScreenMetadata({
           title: station.name,
           artist: station.country || 'Live Radio',
-          album: station.tags?.join(', ') || 'MegaRadio',
-          artwork: logoUrl || 'https://themegaradio.com/logo.png',
+          albumTitle: station.tags?.slice(0, 2).join(', ') || 'MegaRadio',
+          artworkUrl: artworkUrl,
         });
-        console.log('[AudioProvider] Lock screen metadata updated');
+        
+        console.log('[AudioProvider] Lock screen metadata updated:', {
+          title: station.name,
+          artist: station.country || 'Live Radio',
+          artworkUrl: artworkUrl.substring(0, 50) + '...'
+        });
       } catch (metaError) {
         console.log('[AudioProvider] Could not update metadata:', metaError);
       }
