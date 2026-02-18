@@ -517,7 +517,16 @@ export default function PlayerScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { 
+          transform: [{ translateY }],
+          opacity,
+        }
+      ]}
+      {...panResponder.panHandlers}
+    >
       <View style={[styles.safeArea, { paddingTop: insets.top }]}>
         <ScrollView
           style={styles.scrollView}
@@ -527,7 +536,7 @@ export default function PlayerScreen() {
           {/* Header */}
           <View style={styles.headerContainer}>
             <View style={styles.header}>
-              <TouchableOpacity style={styles.headerButton} onPress={handleClose}>
+              <TouchableOpacity style={styles.headerButton} onPress={dismissWithAnimation}>
                 <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
               </TouchableOpacity>
               <View style={styles.headerCenter}>
