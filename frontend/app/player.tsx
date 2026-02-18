@@ -814,7 +814,7 @@ export default function PlayerScreen() {
         onClose={() => setShowOptionsSheet(false)}
         station={currentStation}
       />
-    </View>
+    </Animated.View>
   );
 }
 
