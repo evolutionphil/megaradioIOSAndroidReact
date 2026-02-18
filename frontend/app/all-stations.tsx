@@ -87,13 +87,26 @@ export default function AllStationsScreen() {
     }
   }, [sortOption]);
 
-  const { data, isLoading, refetch } = useStations({
+  // Debug: Log when sort option changes
+  useEffect(() => {
+    console.log('[AllStations] Sort option changed:', sortOption);
+    console.log('[AllStations] Sort params:', sortParams);
+  }, [sortOption, sortParams]);
+
+  const { data, isLoading, refetch, isFetching } = useStations({
     sort: sortParams.sort,
     order: sortParams.order,
     limit: 100,
     genre: genreSlug || undefined,
     country: countryCode || undefined,
   });
+
+  // Debug: Log when data changes
+  useEffect(() => {
+    console.log('[AllStations] Data updated, stations count:', data?.stations?.length);
+    console.log('[AllStations] First 3 stations:', data?.stations?.slice(0, 3).map(s => s.name));
+    console.log('[AllStations] isFetching:', isFetching, 'isLoading:', isLoading);
+  }, [data, isFetching, isLoading]);
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
