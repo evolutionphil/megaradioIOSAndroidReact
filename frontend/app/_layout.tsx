@@ -37,7 +37,8 @@ const GlobalMiniPlayer = () => {
     return null;
   }
   
-  return <MiniPlayer />;
+  // Use isGlobal=true for non-tab screens (no tab bar offset)
+  return <MiniPlayer isGlobal={true} />;
 };
 
 // Prevent splash screen from auto-hiding until fonts are loaded
