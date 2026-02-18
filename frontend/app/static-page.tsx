@@ -6,6 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,10 +16,16 @@ import { useTranslation } from 'react-i18next';
 import { colors, spacing, typography } from '../src/constants/theme';
 import appService, { AppPage, AppPages } from '../src/services/appService';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Assets
+const ABOUT_HERO = require('../assets/images/about-hero.png');
+const MEGA_LOGO = require('../assets/images/mega-logo-arc.png');
+
 type PageType = 'about' | 'terms' | 'privacy';
 
 const PAGE_TITLES: Record<PageType, string> = {
-  about: 'About Us',
+  about: 'MegaRadio',
   terms: 'Terms & Conditions',
   privacy: 'Privacy Policy',
 };
@@ -47,11 +55,10 @@ export default function StaticPageScreen() {
           setPage(pages[pageType]);
         } else {
           console.log('[StaticPage] Page not found for type:', pageType);
-          setError('Page not found');
+          // Don't set error - we'll show placeholder content
         }
       } catch (e) {
         console.error('[StaticPage] Error loading page:', e);
-        setError('Failed to load page');
       } finally {
         setIsLoading(false);
       }
@@ -62,6 +69,71 @@ export default function StaticPageScreen() {
 
   const defaultTitle = PAGE_TITLES[pageType] || 'Page';
 
+  // About Us page has special design
+  if (pageType === 'about') {
+    return (
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea} edges={['top']}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity 
+              onPress={() => router.back()} 
+              style={styles.backButton}
+              data-testid="about-back-btn"
+            >
+              <Ionicons name="chevron-back" size={28} color={colors.text} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>MegaRadio</Text>
+            <View style={styles.headerSpacer} />
+          </View>
+        </SafeAreaView>
+
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.aboutContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Hero Image with Logo Overlay */}
+          <View style={styles.heroContainer}>
+            <Image 
+              source={ABOUT_HERO} 
+              style={styles.heroImage}
+              resizeMode="cover"
+            />
+            <View style={styles.logoOverlay}>
+              <Image 
+                source={MEGA_LOGO} 
+                style={styles.megaLogo}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+
+          {/* Content */}
+          <View style={styles.textContainer}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : page?.content ? (
+              <Text style={styles.aboutText}>{page.content}</Text>
+            ) : (
+              <>
+                <Text style={styles.aboutText}>
+                  MegaRadio is your gateway to thousands of radio stations from around the world. 
+                  Discover new music, stay updated with news, and enjoy your favorite genres - all in one app.
+                </Text>
+                <Text style={styles.aboutText}>
+                  With MegaRadio, you can explore stations by genre, location, or popularity. 
+                  Save your favorites, track your listening history, and connect with other music lovers.
+                </Text>
+              </>
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Terms and Privacy pages - standard design
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
@@ -114,7 +186,10 @@ export default function StaticPageScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#0A0A0A',
+  },
+  safeArea: {
+    backgroundColor: '#0A0A0A',
   },
   header: {
     flexDirection: 'row',
@@ -122,8 +197,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.border,
   },
   backButton: {
     width: 40,
@@ -139,6 +212,47 @@ const styles = StyleSheet.create({
   headerSpacer: {
     width: 40,
   },
+  scrollView: {
+    flex: 1,
+  },
+  
+  // About Us specific styles
+  aboutContent: {
+    paddingBottom: 100,
+  },
+  heroContainer: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_WIDTH * 0.85,
+    position: 'relative',
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  logoOverlay: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  megaLogo: {
+    width: 200,
+    height: 60,
+  },
+  textContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+  },
+  aboutText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.text,
+    lineHeight: 24,
+    marginBottom: spacing.lg,
+  },
+
+  // Standard page styles
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -153,9 +267,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: typography.sizes.md,
     color: colors.textMuted,
-  },
-  scrollView: {
-    flex: 1,
   },
   contentContainer: {
     padding: spacing.lg,
