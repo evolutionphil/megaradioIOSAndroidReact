@@ -202,26 +202,23 @@ export default function HomeScreen() {
     return genreBackgrounds[index % genreBackgrounds.length];
   };
 
-  const FALLBACK_LOGO = require('../../assets/megaradio-icon.png');
+  // Import shared logo utility for consistent logo handling
+  const { getStationLogoUrl } = require('../../src/utils/logoUtils');
   
-  const getLogoUrl = (station: Station) => {
-    if (station.logoAssets?.webp96) {
-      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
-    }
-    const raw = station.favicon || station.logo || null;
-    if (raw && raw.startsWith('/')) return `https://themegaradio.com${raw}`;
-    return raw;
-  };
-
   const renderStationLogo = (station: Station, size: number = 100) => {
-    const logoUrl = getLogoUrl(station);
+    const logoUrl = getStationLogoUrl(station);
     return (
       <Image 
-        source={logoUrl ? { uri: logoUrl } : FALLBACK_LOGO} 
+        source={{ uri: logoUrl }} 
         style={{ width: '100%', height: '100%' }} 
         resizeMode="cover" 
       />
     );
+  };
+
+  // Helper for direct logo URL access
+  const getLogoUrl = (station: Station): string => {
+    return getStationLogoUrl(station);
   };
 
   return (
