@@ -103,13 +103,7 @@ export const MiniPlayer: React.FC = () => {
 
         {/* Station Logo - Tappable to open player */}
         <TouchableOpacity style={styles.logoContainer} onPress={handlePress} activeOpacity={0.8}>
-          {logoUrl ? (
-            <Image source={{ uri: logoUrl }} style={styles.logo} resizeMode="cover" />
-          ) : (
-            <View style={styles.placeholderLogo}>
-              <Ionicons name="radio" size={24} color="#FFFFFF" />
-            </View>
-          )}
+          <Image source={{ uri: logoUrl }} style={styles.logo} resizeMode="cover" />
         </TouchableOpacity>
 
         {/* Station Info - Tappable to open player */}
