@@ -966,16 +966,27 @@ const styles = StyleSheet.create({
   discoverableBannerTextContainer: {
     alignItems: 'flex-end',
   },
-  discoverableBannerTitle: {
+  discoverableBannerRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 8,
+  },
+  discoverableBannerLabel: {
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
     textAlign: 'right',
   },
+  discoverableBannerTitle: {
+    fontSize: typography.sizes.xxl,
+    fontWeight: typography.weights.bold,
+    color: colors.primary,
+    textAlign: 'right',
+  },
   discoverableBannerSubtitle: {
     fontSize: typography.sizes.sm,
     color: 'rgba(255,255,255,0.9)',
-    marginTop: 4,
+    marginTop: 2,
     textAlign: 'right',
   },
 
