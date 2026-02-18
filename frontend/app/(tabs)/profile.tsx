@@ -132,6 +132,13 @@ export default function ProfileScreen() {
     }
   }, [user]);
 
+  // Fetch app info (social media links, etc.)
+  useEffect(() => {
+    appService.getAppInfo().then(info => {
+      if (info) setAppInfo(info);
+    });
+  }, []);
+
   // Handle private profile toggle
   const handlePrivateProfileToggle = async (value: boolean) => {
     if (!user) return;
