@@ -617,25 +617,34 @@ export default function ProfileScreen() {
 
         {/* About */}
         <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
-        {[t('mega_radio', 'Mega Radio'), t('privacy_policy', 'Privacy Policy'), t('terms_conditions', 'Terms and Conditions')].map((title, i) => (
-          <React.Fragment key={i}>
-            <TouchableOpacity style={s.row}>
-              <Text style={s.rowTitle}>{title}</Text>
-              <Ionicons name="chevron-forward" size={20} color="#666" />
-            </TouchableOpacity>
-            {i < 2 && <View style={s.divider} />}
-          </React.Fragment>
-        ))}
+        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'about' } })}>
+          <Text style={s.rowTitle}>{t('about_us', 'About Us')}</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={s.divider} />
+        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'privacy' } })}>
+          <Text style={s.rowTitle}>{t('privacy_policy', 'Privacy Policy')}</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={s.divider} />
+        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'terms' } })}>
+          <Text style={s.rowTitle}>{t('terms_conditions', 'Terms and Conditions')}</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
 
         {/* Social */}
         <Text style={[s.sectionLabel, { textAlign: 'center', backgroundColor: 'transparent' }]}>{t('social_media', 'Social Media')}</Text>
         <View style={s.socialRow}>
           {[
-            { name: 'facebook-f' as const, bg: '#3b5998' },
-            { name: 'instagram' as const, bg: '#C13584' },
-            { name: 'twitter' as const, bg: '#1DA1F2' },
+            { name: 'facebook-f' as const, bg: '#3b5998', url: appInfo?.social?.facebook },
+            { name: 'instagram' as const, bg: '#C13584', url: appInfo?.social?.instagram },
+            { name: 'twitter' as const, bg: '#1DA1F2', url: appInfo?.social?.twitter },
           ].map((soc) => (
-            <TouchableOpacity key={soc.name} style={[s.socialBtn, { backgroundColor: soc.bg }]}>
+            <TouchableOpacity 
+              key={soc.name} 
+              style={[s.socialBtn, { backgroundColor: soc.bg }]}
+              onPress={() => soc.url && Linking.openURL(soc.url)}
+            >
               <FontAwesome5 name={soc.name} size={22} color="#FFF" />
             </TouchableOpacity>
           ))}
