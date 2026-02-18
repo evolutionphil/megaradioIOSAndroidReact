@@ -128,8 +128,8 @@ export default function HomeScreen() {
   // Use native country name for stations list API
   const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: country || undefined });
   
-  // Nearby stations - 30km radius (reasonable for "nearby")
-  const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 30, 12);
+  // Nearby stations - 50km radius
+  const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 50, 12);
 
   // Preload user favorites when public profiles are loaded
   useEffect(() => {
