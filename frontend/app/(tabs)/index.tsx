@@ -346,7 +346,10 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>{t('popular_stations')}</Text>
             </View>
             {popularLoading ? (
-              <SectionSkeleton itemCount={4} horizontal={false} title={false} />
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={styles.loadingText}>{t('loading', 'Loading...')}</Text>
+              </View>
             ) : popularStations.length === 0 ? (
               <Text style={styles.emptyText}>{t('no_stations_found')}</Text>
             ) : (
