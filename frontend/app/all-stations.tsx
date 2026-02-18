@@ -114,14 +114,54 @@ export default function AllStationsScreen() {
   const stations = data?.stations || [];
   const totalCount = data?.totalCount || stations.length;
 
-  // Filter stations by search
+  // Client-side sorting function (backend doesn't support all sort options)
+  const sortStations = useCallback((stationsToSort: Station[], option: SortOption): Station[] => {
+    const sorted = [...stationsToSort];
+    
+    switch (option) {
+      case 'az':
+        return sorted.sort((a, b) => a.name.localeCompare(b.name, 'tr', { sensitivity: 'base' }));
+      case 'za':
+        return sorted.sort((a, b) => b.name.localeCompare(a.name, 'tr', { sensitivity: 'base' }));
+      case 'popular':
+        return sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+      case 'newest':
+        return sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
+      case 'oldest':
+        return sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateA - dateB;
+        });
+      default:
+        return sorted;
+    }
+  }, []);
+
+  // Filter stations by search and then apply client-side sorting
   const filteredStations = useMemo(() => {
-    if (!searchQuery.trim()) return stations;
-    return stations.filter(s => 
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.country?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [stations, searchQuery]);
+    let result = stations;
+    
+    // First, filter by search query if present
+    if (searchQuery.trim()) {
+      result = result.filter(s => 
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.country?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Then apply client-side sorting
+    const sortedResult = sortStations(result, sortOption);
+    
+    console.log('[AllStations] filteredStations computed with sortOption:', sortOption);
+    console.log('[AllStations] First 5 after sort:', sortedResult.slice(0, 5).map(s => s.name));
+    
+    return sortedResult;
+  }, [stations, searchQuery, sortOption, sortStations]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
