@@ -733,6 +733,13 @@ export default function PlayerScreen() {
         onClose={() => setShowCastModal(false)}
         currentStation={currentStation}
       />
+
+      {/* Player Options Sheet */}
+      <PlayerOptionsSheet
+        visible={showOptionsSheet}
+        onClose={() => setShowOptionsSheet(false)}
+        station={currentStation}
+      />
     </View>
   );
 }
