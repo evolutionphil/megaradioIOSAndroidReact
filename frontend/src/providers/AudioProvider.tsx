@@ -432,6 +432,18 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         console.log('[AudioProvider] Failed to start stats session:', e);
       }
 
+      // STEP 8: Start now playing interval to update lock screen periodically
+      console.log('[AudioProvider] STEP 8: Starting now playing interval...');
+      if (nowPlayingIntervalRef.current) {
+        clearInterval(nowPlayingIntervalRef.current);
+      }
+      // Update now playing every 30 seconds
+      nowPlayingIntervalRef.current = setInterval(() => {
+        if (currentPlayingStationId) {
+          fetchNowPlaying(currentPlayingStationId);
+        }
+      }, 30000);
+
     } catch (error) {
       console.error('[AudioProvider] Play failed:', error);
       setError(error instanceof Error ? error.message : 'Failed to play');
