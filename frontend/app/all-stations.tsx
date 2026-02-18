@@ -93,9 +93,8 @@ export default function AllStationsScreen() {
     console.log('[AllStations] Sort params:', sortParams);
   }, [sortOption, sortParams]);
 
+  // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
   const { data, isLoading, refetch, isFetching } = useStations({
-    sort: sortParams.sort,
-    order: sortParams.order,
     limit: 100,
     genre: genreSlug || undefined,
     country: countryCode || undefined,
