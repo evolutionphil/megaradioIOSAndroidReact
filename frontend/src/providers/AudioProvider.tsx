@@ -53,6 +53,7 @@ let listeningStartTime: Date | null = null;
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isReady, setIsReady] = useState(false);
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const nowPlayingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   // Use the hook-based API - more compatible with legacy architecture
   // Initialize with undefined/null to avoid playing anything at start
