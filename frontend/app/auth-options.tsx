@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import socialAuthService, { SocialProvider } from '../src/services/socialAuthService';
@@ -28,9 +28,27 @@ const MEGA_LOGO_ARC = require('../assets/images/mega-logo-arc.png');
 
 export default function AuthOptionsScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ returnTo?: string; returnParams?: string }>();
   const { t } = useTranslation();
   const { saveAuth } = useAuthStore();
   const [loadingProvider, setLoadingProvider] = useState<SocialProvider | null>(null);
+
+  // Parse return params for redirect after login
+  const returnTo = params.returnTo;
+  const returnParams = params.returnParams ? JSON.parse(params.returnParams) : null;
+
+  const navigateAfterLogin = () => {
+    if (returnTo && returnParams) {
+      // Navigate back to the screen that triggered login
+      router.replace({
+        pathname: returnTo as any,
+        params: returnParams
+      });
+    } else {
+      // Default: go to home
+      router.replace('/(tabs)');
+    }
+  };
 
   const showError = (message: string) => {
     if (Platform.OS === 'web') {
@@ -59,7 +77,7 @@ export default function AuthOptionsScreen() {
       }
       
       if (result.success && result.token && result.user) {
-        // Save auth and navigate to home
+        // Save auth and navigate
         await saveAuth(
           {
             id: result.user.id,
@@ -69,7 +87,7 @@ export default function AuthOptionsScreen() {
           } as any,
           result.token
         );
-        router.replace('/(tabs)');
+        navigateAfterLogin();
       } else if (result.error === 'Authentication cancelled') {
         // User cancelled - do nothing
         console.log('User cancelled authentication');
