@@ -44,6 +44,8 @@ import { useLocationStore } from '../../src/store/locationStore';
 import { useRecentlyPlayedStore } from '../../src/store/recentlyPlayedStore';
 import type { Station, Genre } from '../../src/types';
 
+const FALLBACK_LOGO = require('../../assets/megaradio-icon.png');
+
 // Fixed padding for all elements - same as Jazz banner
 const SIDE_PADDING = 15;
 const HORIZONTAL_PADDING = 0; // Padding inside sections (already handled by ScrollView)
