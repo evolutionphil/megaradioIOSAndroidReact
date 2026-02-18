@@ -110,8 +110,7 @@ export default function LoginScreen() {
         // Use router.replace with dismissAll for clean navigation
         // This ensures the login screen is completely removed from the stack
         setTimeout(() => {
-          // Navigate to home tab (index) where Popular Stations are shown
-          router.replace('/(tabs)');
+          navigateAfterLogin();
         }, 100);
       } else {
         console.error('Invalid response structure:', response);
