@@ -391,7 +391,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setError(error instanceof Error ? error.message : 'Failed to play');
       setPlaybackState('error');
     }
-  }, [status?.playing, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying]);
+  }, [status?.playing, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking]);
 
   // Stop playback completely
   const stopPlayback = useCallback(async () => {
