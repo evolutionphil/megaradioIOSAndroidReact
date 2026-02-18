@@ -26,6 +26,7 @@ import { CarModeScreen } from '../src/components/CarModeScreen';
 import { ShareModal } from '../src/components/ShareModal';
 import { SleepTimerModal, SleepCounterModal } from '../src/components/SleepTimerModal';
 import { GlowEffect } from '../src/components/GlowEffect';
+import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
 import CastModal from '../src/components/CastModal';
 import type { Station } from '../src/types';
 
