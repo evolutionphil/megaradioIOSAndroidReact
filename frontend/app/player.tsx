@@ -255,6 +255,7 @@ export default function PlayerScreen() {
   const [showSleepTimer, setShowSleepTimer] = useState(false);
   const [showSleepCounter, setShowSleepCounter] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
+  const [showOptionsSheet, setShowOptionsSheet] = useState(false);
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
