@@ -86,13 +86,13 @@ export const socialAuthService = {
       const redirectUri = this.getRedirectUri();
       console.log('[SocialAuth] Redirect URI:', redirectUri);
 
-      // Create auth request
+      // Create auth request with CODE flow (iOS doesn't support id_token directly)
       const request = new AuthSession.AuthRequest({
         clientId: getGoogleClientId(),
         scopes: ['openid', 'profile', 'email'],
         redirectUri,
-        responseType: AuthSession.ResponseType.IdToken,
-        usePKCE: false,
+        responseType: AuthSession.ResponseType.Code,
+        usePKCE: true,
       });
 
       // Prompt user to sign in
@@ -103,38 +103,59 @@ export const socialAuthService = {
       console.log('[SocialAuth] Auth result type:', result.type);
 
       if (result.type === 'success') {
-        // Get id_token from params
-        const idToken = result.params?.id_token;
+        // Get authorization code from params
+        const code = result.params?.code;
         
-        if (idToken) {
-          console.log('[SocialAuth] Got Google ID token, sending to backend...');
+        if (code) {
+          console.log('[SocialAuth] Got authorization code, exchanging for tokens...');
           
-          // Send to backend
           try {
-            const backendResponse = await authService.googleSignIn(idToken);
-            
-            if (backendResponse.token && backendResponse.user) {
-              return {
-                success: true,
-                token: backendResponse.token,
-                user: {
-                  id: backendResponse.user._id,
-                  email: backendResponse.user.email,
-                  name: backendResponse.user.fullName,
-                  avatar: backendResponse.user.avatar,
+            // Exchange code for tokens
+            const tokenResponse = await AuthSession.exchangeCodeAsync(
+              {
+                clientId: getGoogleClientId(),
+                code,
+                redirectUri,
+                extraParams: {
+                  code_verifier: request.codeVerifier || '',
                 },
-              };
+              },
+              GOOGLE_DISCOVERY
+            );
+
+            const idToken = tokenResponse.idToken;
+            
+            if (idToken) {
+              console.log('[SocialAuth] Got ID token, sending to backend...');
+              
+              // Send to backend
+              const backendResponse = await authService.googleSignIn(idToken);
+              
+              if (backendResponse.token && backendResponse.user) {
+                return {
+                  success: true,
+                  token: backendResponse.token,
+                  user: {
+                    id: backendResponse.user._id,
+                    email: backendResponse.user.email,
+                    name: backendResponse.user.fullName,
+                    avatar: backendResponse.user.avatar,
+                  },
+                };
+              }
+            } else {
+              return { success: false, error: 'No ID token received from Google' };
             }
-          } catch (backendError: any) {
-            console.error('[SocialAuth] Backend error:', backendError);
+          } catch (tokenError: any) {
+            console.error('[SocialAuth] Token exchange error:', tokenError);
             return {
               success: false,
-              error: backendError.response?.data?.error || 'Backend authentication failed',
+              error: tokenError.message || 'Failed to exchange authorization code',
             };
           }
         }
         
-        return { success: false, error: 'No ID token received from Google' };
+        return { success: false, error: 'No authorization code received from Google' };
       } else if (result.type === 'cancel' || result.type === 'dismiss') {
         return { success: false, error: 'Authentication cancelled' };
       } else if (result.type === 'error') {
