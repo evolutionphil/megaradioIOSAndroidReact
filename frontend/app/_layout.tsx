@@ -211,6 +211,7 @@ export default function RootLayout() {
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
           <AudioProvider>
+            <PlayAtLoginHandler />
             <View style={styles.container}>
               <StatusBar style="light" />
               <Stack
