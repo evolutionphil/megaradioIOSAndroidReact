@@ -160,4 +160,16 @@ const styles = StyleSheet.create({
     color: colors.text,
     lineHeight: 24,
   },
+  emptyContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 60,
+    gap: spacing.md,
+  },
+  emptyText: {
+    fontSize: typography.sizes.md,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
 });
