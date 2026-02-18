@@ -326,6 +326,14 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       userService.recordRecentlyPlayed(station._id).catch(() => {});
       fetchNowPlaying(station._id);
 
+      // Save as last played station for "Play at Login" feature
+      try {
+        await AsyncStorage.setItem(LAST_PLAYED_STATION_KEY, JSON.stringify(station));
+        console.log('[AudioProvider] Saved as last played station');
+      } catch (e) {
+        console.log('[AudioProvider] Failed to save last played:', e);
+      }
+
     } catch (error) {
       console.error('[AudioProvider] Play failed:', error);
       setError(error instanceof Error ? error.message : 'Failed to play');
