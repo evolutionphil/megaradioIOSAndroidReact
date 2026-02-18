@@ -227,6 +227,8 @@ export default function RootLayout() {
                 <Stack.Screen name="users" options={{ headerShown: false }} />
                 <Stack.Screen name="public-profiles" options={{ headerShown: false }} />
               </Stack>
+              {/* Global MiniPlayer - shown on all screens except player */}
+              <GlobalMiniPlayer />
               <RadioErrorModal />
             </View>
           </AudioProvider>
