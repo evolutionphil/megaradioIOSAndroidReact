@@ -286,7 +286,7 @@ export default function HomeScreen() {
             <View style={styles.headerRight}>
               <Pressable 
                 style={styles.headerIcon} 
-                onPress={() => router.push('/notifications')}
+                onPress={handleNotificationPress}
                 data-testid="notifications-btn"
               >
                 <Ionicons name="notifications-outline" size={22} color={colors.text} />
