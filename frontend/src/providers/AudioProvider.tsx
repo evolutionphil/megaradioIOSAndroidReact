@@ -502,6 +502,14 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     currentPlayingStationId = null;
 
     try {
+      // Deactivate lock screen controls
+      await playerRef.current.setActiveForLockScreen(false);
+      console.log('[AudioProvider] Lock screen deactivated');
+    } catch (e) {
+      console.log('[AudioProvider] Could not deactivate lock screen:', e);
+    }
+
+    try {
       playerRef.current.pause();
     } catch {}
 
