@@ -328,6 +328,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingTop: 8,
+    paddingBottom: 90, // Space for MiniPlayer
     flexGrow: 1,
   },
   userItem: {
