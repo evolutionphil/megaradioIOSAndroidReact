@@ -563,14 +563,6 @@ const styles = StyleSheet.create({
     marginTop: -8 * S,
     marginLeft: -8 * S,
   },
-
-  // Speaker icon styles removed - using Ionicons instead
-
-  recRow: { alignItems: 'center', paddingBottom: 8 * S },
-  recBtn: { flexDirection: 'row', alignItems: 'center', gap: 10 * S },
-  recDotOuter: { width: 25 * S, height: 25 * S, borderRadius: 13 * S, borderWidth: 2 * S, borderColor: '#FF6161', justifyContent: 'center', alignItems: 'center' },
-  recDotInner: { width: 17 * S, height: 17 * S, borderRadius: 9 * S, backgroundColor: '#FF6161' },
-  recText: { fontSize: 13 * S, fontWeight: '400', color: '#FFF' },
 });
 
 export default CarModeScreen;
