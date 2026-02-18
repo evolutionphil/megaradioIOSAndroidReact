@@ -82,13 +82,6 @@ export default function AllStationsScreen() {
     country: countryCode || undefined,
   });
 
-  // Debug: Log when data changes
-  useEffect(() => {
-    console.log('[AllStations] Data updated, stations count:', data?.stations?.length);
-    console.log('[AllStations] First 3 stations:', data?.stations?.slice(0, 3).map(s => s.name));
-    console.log('[AllStations] isFetching:', isFetching, 'isLoading:', isLoading);
-  }, [data, isFetching, isLoading]);
-
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
