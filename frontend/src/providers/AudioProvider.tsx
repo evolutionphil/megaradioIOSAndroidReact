@@ -412,42 +412,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       
       listeningStartTime = new Date();
       setPlaybackState('playing');
-          artworkUrl = `https://themegaradio.com${station.logo}`;
-        } else if (station.favicon && station.favicon.startsWith('/')) {
-          artworkUrl = `https://themegaradio.com${station.favicon}`;
-        }
-        
-        // Ensure HTTPS for iOS App Transport Security
-        if (artworkUrl.startsWith('http://')) {
-          artworkUrl = artworkUrl.replace('http://', 'https://');
-        }
-        
-        console.log('[AudioProvider] Lock Screen Artwork URL:', artworkUrl);
-        
-        // First, activate the player for lock screen controls
-        // This is REQUIRED for iOS Control Center and Android notification bar
-        await playerRef.current.setActiveForLockScreen(true, {
-          title: station.name,
-          artist: 'MegaRadio',
-          album: station.country || 'Live Radio',
-          artworkUrl: artworkUrl,
-        });
-        
-        console.log('[AudioProvider] Lock screen activated with metadata:', {
-          title: station.name,
-          artist: 'MegaRadio',
-          album: station.country || 'Live Radio',
-          artworkUrl: artworkUrl
-        });
-      } catch (metaError) {
-        console.log('[AudioProvider] Could not setup lock screen:', metaError);
-        // Fallback: try updateLockScreenMetadata only
-        try {
-          playerRef.current.updateLockScreenMetadata({
-            title: station.name,
-            artist: 'MegaRadio',
-            album: station.country || 'Live Radio',
-          });
+
+      console.log('[AudioProvider] ========== NOW PLAYING ==========');
         } catch (e) {
           console.log('[AudioProvider] Fallback metadata update also failed:', e);
         }
