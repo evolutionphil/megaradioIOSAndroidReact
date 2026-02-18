@@ -9,14 +9,16 @@ import api from './api';
 const PUSH_TOKEN_KEY = '@megaradio_push_token';
 const NOTIFICATIONS_ENABLED_KEY = '@megaradio_notifications_enabled';
 
-// Configure how notifications should be handled when app is in foreground
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Only configure notification handler on native platforms
+if (Platform.OS !== 'web') {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
 
 export interface PushNotificationService {
   registerForPushNotifications: () => Promise<string | null>;
