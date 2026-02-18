@@ -106,7 +106,18 @@ export default function AuthOptionsScreen() {
   const handleGoogleLogin = () => handleSocialLogin('google');
 
   const handleMailLogin = () => {
-    router.push('/login');
+    // Pass return params to login screen
+    if (returnTo && returnParams) {
+      router.push({
+        pathname: '/login',
+        params: {
+          returnTo,
+          returnParams: JSON.stringify(returnParams)
+        }
+      });
+    } else {
+      router.push('/login');
+    }
   };
 
   const handleContinueWithoutLogin = () => {
