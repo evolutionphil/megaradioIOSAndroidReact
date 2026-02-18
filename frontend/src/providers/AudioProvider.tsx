@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
+import statsService from '../services/statsService';
 import type { Station } from '../types';
 
 // Storage key for last played station
