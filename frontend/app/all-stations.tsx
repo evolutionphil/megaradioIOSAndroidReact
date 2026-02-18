@@ -136,12 +136,7 @@ export default function AllStationsScreen() {
     }
     
     // Then apply client-side sorting
-    const sortedResult = sortStations(result, sortOption);
-    
-    console.log('[AllStations] filteredStations computed with sortOption:', sortOption);
-    console.log('[AllStations] First 5 after sort:', sortedResult.slice(0, 5).map(s => s.name));
-    
-    return sortedResult;
+    return sortStations(result, sortOption);
   }, [stations, searchQuery, sortOption, sortStations]);
 
   const onRefresh = useCallback(async () => {
