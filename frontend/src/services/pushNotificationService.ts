@@ -1,12 +1,15 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import api from './api';
 
 const PUSH_TOKEN_KEY = '@megaradio_push_token';
+const NOTIFICATIONS_ENABLED_KEY = '@megaradio_notifications_enabled';
 
-// Configure how notifications should be handled
+// Configure how notifications should be handled when app is in foreground
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -21,6 +24,9 @@ export interface PushNotificationService {
   getStoredPushToken: () => Promise<string | null>;
   addNotificationListener: (callback: (notification: Notifications.Notification) => void) => () => void;
   addNotificationResponseListener: (callback: (response: Notifications.NotificationResponse) => void) => () => void;
+  handleNotificationNavigation: (data: any) => void;
+  isNotificationsEnabled: () => Promise<boolean>;
+  setNotificationsEnabled: (enabled: boolean) => Promise<void>;
 }
 
 const pushNotificationService: PushNotificationService = {
@@ -52,15 +58,21 @@ const pushNotificationService: PushNotificationService = {
     }
 
     try {
+      // Get project ID from Expo constants (automatically set by EAS Build)
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+      
+      console.log('[PushNotification] Project ID:', projectId);
+      
       // Get Expo Push Token
       const tokenData = await Notifications.getExpoPushTokenAsync({
-        projectId: 'your-project-id', // Will be auto-filled by EAS
+        projectId: projectId,
       });
       token = tokenData.data;
       console.log('[PushNotification] Token:', token);
 
       // Store token locally
       await AsyncStorage.setItem(PUSH_TOKEN_KEY, token);
+      await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, 'true');
 
       // Android specific channel setup
       if (Platform.OS === 'android') {
@@ -77,6 +89,20 @@ const pushNotificationService: PushNotificationService = {
           description: 'Notifications about your favorite radio stations',
           importance: Notifications.AndroidImportance.HIGH,
           sound: 'default',
+        });
+
+        // Create channel for new stations
+        await Notifications.setNotificationChannelAsync('new-stations', {
+          name: 'New Stations',
+          description: 'Notifications about new radio stations',
+          importance: Notifications.AndroidImportance.DEFAULT,
+        });
+
+        // Create channel for favorites
+        await Notifications.setNotificationChannelAsync('favorites', {
+          name: 'Favorites',
+          description: 'Updates about your favorite stations',
+          importance: Notifications.AndroidImportance.HIGH,
         });
       }
 
