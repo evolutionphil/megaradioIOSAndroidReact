@@ -127,12 +127,7 @@ export default function GenreDetailScreen() {
     }
     
     // Then apply client-side sorting
-    const sortedResult = sortStations(result, sortOption);
-    
-    console.log('[GenreDetail] filteredStations computed with sortOption:', sortOption);
-    console.log('[GenreDetail] First 5 after sort:', sortedResult.slice(0, 5).map(s => s.name));
-    
-    return sortedResult;
+    return sortStations(result, sortOption);
   }, [stations, searchQuery, sortOption, sortStations]);
 
   const onRefresh = useCallback(async () => {
