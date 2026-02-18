@@ -76,7 +76,7 @@ export default function AllStationsScreen() {
   }, []);
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
-  const { data, isLoading, refetch, isFetching } = useStations({
+  const { data, isLoading, refetch } = useStations({
     limit: 100,
     genre: genreSlug || undefined,
     country: countryCode || undefined,
