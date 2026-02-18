@@ -21,9 +21,9 @@ import api from '../../src/services/api';
 import type { Genre } from '../../src/types';
 
 const GENRES_CACHE_KEY = '@megaradio_genres_cache';
-const GENRES_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days - genres don't change often
+const GENRES_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
+const PAGE_SIZE = 30;
 
-// Get cache key with country code
 const getGenresCacheKey = (countryCode?: string | null) => {
   return countryCode ? `${GENRES_CACHE_KEY}_${countryCode}` : GENRES_CACHE_KEY;
 };
@@ -37,81 +37,121 @@ export default function GenresTabScreen() {
 
   // State
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [page, setPage] = useState(1);
   const [totalGenres, setTotalGenres] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  // Fetch genres filtered by country using precomputed endpoint
-  const fetchGenres = useCallback(async (forceRefresh: boolean = false) => {
+  // Fetch genres with pagination
+  const fetchGenres = useCallback(async (pageNum: number, reset: boolean = false) => {
     try {
-      setIsLoading(true);
+      if (pageNum === 1) {
+        setIsLoading(true);
+      } else {
+        setIsLoadingMore(true);
+      }
 
-      // Check cache first (unless force refresh)
-      if (!forceRefresh) {
+      // Build params
+      const params: any = {
+        limit: PAGE_SIZE,
+        page: pageNum,
+      };
+      
+      // Add country filter if available
+      if (countryCode) {
+        params.country = countryCode;
+      }
+
+      console.log('[Genres] Fetching page:', pageNum, 'country:', countryCode);
+
+      const response = await api.get('https://themegaradio.com/api/genres', { params });
+      const data = response.data;
+
+      const newGenres = data.data || data.genres || [];
+      const total = data.total || data.count || 0;
+
+      console.log('[Genres] Got', newGenres.length, 'genres, total:', total);
+
+      setTotalGenres(total);
+      setHasMore(newGenres.length === PAGE_SIZE && (reset ? newGenres.length : genres.length + newGenres.length) < total);
+
+      if (reset) {
+        setGenres(newGenres);
+        // Cache first page
+        try {
+          const cacheKey = getGenresCacheKey(countryCode);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify({
+            data: newGenres,
+            total,
+            timestamp: Date.now(),
+          }));
+        } catch (e) {
+          console.log('[Genres] Cache error:', e);
+        }
+      } else {
+        // Append new genres, avoiding duplicates
+        setGenres(prev => {
+          const existingIds = new Set(prev.map(g => g._id || g.slug));
+          const uniqueNew = newGenres.filter((g: Genre) => !existingIds.has(g._id || g.slug));
+          return [...prev, ...uniqueNew];
+        });
+      }
+    } catch (error) {
+      console.error('[Genres] Fetch error:', error);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
+  }, [countryCode, genres.length]);
+
+  // Load cached data on mount
+  useEffect(() => {
+    const loadCache = async () => {
+      try {
         const cacheKey = getGenresCacheKey(countryCode);
         const cached = await AsyncStorage.getItem(cacheKey);
         if (cached) {
           const { data, total, timestamp } = JSON.parse(cached);
           const isStale = Date.now() - timestamp > GENRES_CACHE_TTL;
           if (!isStale && Array.isArray(data) && data.length > 0) {
-            console.log('[Genres] Using cached data:', data.length, 'genres');
+            console.log('[Genres] Using cache:', data.length, 'genres');
             setGenres(data);
             setTotalGenres(total || data.length);
             setIsLoading(false);
-            return;
+            return true;
           }
         }
-      }
-
-      // Fetch from API - use precomputed endpoint with country filter
-      const params: any = {};
-      if (countryCode) {
-        params.country = countryCode;
-      }
-
-      console.log('[Genres] Fetching from API with country:', countryCode);
-
-      const response = await api.get('https://themegaradio.com/api/genres/precomputed', { params });
-      const data = response.data;
-
-      console.log('[Genres] API Response:', { count: data.count, cached: data.cached, dataLen: data.data?.length });
-
-      const newGenres = data.data || [];
-      const total = data.count || newGenres.length;
-
-      setGenres(newGenres);
-      setTotalGenres(total);
-
-      // Cache the data (7 days TTL)
-      try {
-        const cacheKey = getGenresCacheKey(countryCode);
-        await AsyncStorage.setItem(cacheKey, JSON.stringify({
-          data: newGenres,
-          total,
-          timestamp: Date.now(),
-        }));
-        console.log('[Genres] Cached', newGenres.length, 'genres for', countryCode || 'global');
       } catch (e) {
-        console.log('[Genres] Cache error:', e);
+        console.log('[Genres] Cache load error:', e);
       }
-    } catch (error) {
-      console.error('[Genres] Fetch error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+      return false;
+    };
+
+    loadCache().then(hasCached => {
+      // Always fetch fresh data (but show cache first if available)
+      setPage(1);
+      fetchGenres(1, true);
+    });
   }, [countryCode]);
 
-  // Fetch on mount and when country changes
-  useEffect(() => {
-    fetchGenres();
-  }, [fetchGenres]);
+  // Load more when reaching end
+  const loadMore = useCallback(() => {
+    if (!isLoadingMore && hasMore && !searchQuery.trim() && !isLoading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchGenres(nextPage, false);
+    }
+  }, [isLoadingMore, hasMore, page, fetchGenres, searchQuery, isLoading]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchGenres(true); // Force refresh
+    setPage(1);
+    await fetchGenres(1, true);
     setRefreshing(false);
   };
 
-  // Sort genres by station count (descending) and filter by search
+  // Sort by station count and filter by search
   const filteredAndSortedGenres = useMemo(() => {
     let result = [...genres];
     
@@ -122,7 +162,7 @@ export default function GenresTabScreen() {
       return countB - countA;
     });
     
-    // Filter by search query
+    // Filter by search
     if (searchQuery.trim()) {
       result = result.filter((g: any) => 
         g.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -132,7 +172,6 @@ export default function GenresTabScreen() {
     return result;
   }, [genres, searchQuery]);
 
-  // Navigate directly to genre-detail page
   const handleGenrePress = (genre: Genre) => {
     router.push({
       pathname: '/genre-detail',
@@ -145,7 +184,7 @@ export default function GenresTabScreen() {
       style={styles.genreRow}
       onPress={() => handleGenrePress(item)}
       activeOpacity={0.7}
-      data-testid={`genre-tab-item-${item.slug}`}
+      data-testid={`genre-item-${item.slug}`}
     >
       <View style={styles.genreInfo}>
         <Text style={styles.genreName}>{item.name}</Text>
@@ -157,6 +196,16 @@ export default function GenresTabScreen() {
     </TouchableOpacity>
   );
 
+  const renderFooter = () => {
+    if (!isLoadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={colors.primary} />
+        <Text style={styles.loadingMoreText}>{t('loading_more', 'Yükleniyor...')}</Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.mainContainer}>
       <LinearGradient colors={gradients.background as any} style={styles.gradient}>
@@ -166,7 +215,7 @@ export default function GenresTabScreen() {
             <Text style={styles.title}>{t('genres', 'Genres')}</Text>
             {totalGenres > 0 && (
               <Text style={styles.totalCount}>
-                {totalGenres} {t('genres', 'Genres')}
+                {genres.length} / {totalGenres}
               </Text>
             )}
           </View>
@@ -177,7 +226,7 @@ export default function GenresTabScreen() {
               <Ionicons name="search" size={18} color={colors.textMuted} />
               <TextInput
                 style={styles.searchInput}
-                placeholder={t('search_genre', 'Search genre')}
+                placeholder={t('search_genre', 'Tür ara')}
                 placeholderTextColor={colors.textMuted}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
@@ -210,10 +259,13 @@ export default function GenresTabScreen() {
                   tintColor={colors.primary}
                 />
               }
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.3}
+              ListFooterComponent={renderFooter}
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                   <Text style={styles.emptyText}>
-                    {searchQuery ? t('no_genres_found', 'No genres found') : t('no_genres', 'No genres available')}
+                    {searchQuery ? t('no_genres_found', 'Tür bulunamadı') : t('no_genres', 'Tür yok')}
                   </Text>
                 </View>
               }
@@ -310,6 +362,17 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: typography.sizes.md,
+    color: colors.textMuted,
+  },
+  footerLoader: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    gap: spacing.sm,
+  },
+  loadingMoreText: {
+    fontSize: typography.sizes.sm,
     color: colors.textMuted,
   },
 });
