@@ -1,7 +1,7 @@
 // NotificationHandler - Manages push notification registration and handling
 // Must be used at the top level of the app to catch all notifications
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useAuthStore } from '../store/authStore';
