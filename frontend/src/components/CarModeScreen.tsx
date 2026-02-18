@@ -454,16 +454,6 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
             </View>
           </View>
         </View>
-
-        {/* ── REC Button ─────────────── */}
-        <View style={styles.recRow}>
-          <TouchableOpacity style={styles.recBtn} data-testid="car-mode-rec-btn">
-            <View style={styles.recDotOuter}>
-              <View style={styles.recDotInner} />
-            </View>
-            <Text style={styles.recText}>REC</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );
