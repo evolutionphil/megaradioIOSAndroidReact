@@ -203,7 +203,7 @@ export default function GenresTabScreen() {
             <Text style={styles.title}>{t('genres', 'Genres')}</Text>
             {totalGenres > 0 && (
               <Text style={styles.totalCount}>
-                {genres.length} / {totalGenres}
+                {totalGenres} {t('genres', 'Genres')}
               </Text>
             )}
           </View>
