@@ -8,10 +8,14 @@ import {
   setAudioModeAsync,
   AudioPlayer,
 } from 'expo-audio';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import type { Station } from '../types';
+
+// Storage key for last played station
+const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
 
 // ============================================
 // TYPES
