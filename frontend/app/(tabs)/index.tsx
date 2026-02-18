@@ -1023,4 +1023,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: spacing.lg,
   },
+  
+  // Loading Container
+  loadingContainer: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: spacing.sm,
+    fontSize: typography.sizes.sm,
+    color: colors.textMuted,
+  },
 });
