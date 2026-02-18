@@ -83,16 +83,11 @@ export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
-  const [hasExecutedPlayAtLogin, setHasExecutedPlayAtLogin] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
   const preloadStarted = useRef(false);
   
   const segments = useSegments();
   const navigationState = useRootNavigationState();
-  
-  // Auth and favorites stores for play at login
-  const { isAuthenticated } = useAuthStore();
-  const { favorites } = useFavoritesStore();
 
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
