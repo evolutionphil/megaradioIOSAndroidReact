@@ -33,10 +33,7 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "config": {
-        "usesNonExemptEncryption": false,
-        "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
-        }
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
