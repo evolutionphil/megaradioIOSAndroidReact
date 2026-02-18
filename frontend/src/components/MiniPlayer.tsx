@@ -206,6 +206,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderTopWidth: 0,
   },
+  containerGlobal: {
+    bottom: 0, // No tab bar offset for global (non-tab) screens
+  },
   content: {
     flex: 1,
     flexDirection: 'row',
