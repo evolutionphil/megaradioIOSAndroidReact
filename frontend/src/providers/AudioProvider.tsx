@@ -52,6 +52,7 @@ let listeningStartTime: Date | null = null;
 // ============================================
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isReady, setIsReady] = useState(false);
+  const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   // Use the hook-based API - more compatible with legacy architecture
   // Initialize with undefined/null to avoid playing anything at start
@@ -73,6 +74,38 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setError,
     setMiniPlayerVisible,
   } = usePlayerStore();
+
+  // Start stats tracking interval when playing
+  const startStatsTracking = useCallback(() => {
+    // Clear any existing interval
+    if (statsIntervalRef.current) {
+      clearInterval(statsIntervalRef.current);
+    }
+    
+    // Update listening time every minute
+    statsIntervalRef.current = setInterval(() => {
+      statsService.updateListeningTime().catch(console.error);
+      console.log('[AudioProvider] Stats: Updated listening time');
+    }, 60000); // Every 60 seconds
+    
+    console.log('[AudioProvider] Stats: Started tracking interval');
+  }, []);
+
+  // Stop stats tracking interval
+  const stopStatsTracking = useCallback(() => {
+    if (statsIntervalRef.current) {
+      clearInterval(statsIntervalRef.current);
+      statsIntervalRef.current = null;
+      console.log('[AudioProvider] Stats: Stopped tracking interval');
+    }
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopStatsTracking();
+    };
+  }, [stopStatsTracking]);
 
   // Configure audio mode ONCE at app start
   useEffect(() => {
