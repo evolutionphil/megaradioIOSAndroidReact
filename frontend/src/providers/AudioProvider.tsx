@@ -397,6 +397,15 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const stopPlayback = useCallback(async () => {
     console.log('[AudioProvider] ========== STOP PLAYBACK ==========');
     
+    // Stop stats tracking and end session
+    stopStatsTracking();
+    try {
+      await statsService.endSession();
+      console.log('[AudioProvider] Stats session ended');
+    } catch (e) {
+      console.log('[AudioProvider] Failed to end stats session:', e);
+    }
+    
     // Record listening time
     if (listeningStartTime && currentPlayingStationId) {
       const duration = Math.floor(
@@ -421,7 +430,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     setPlaybackState('idle');
     setMiniPlayerVisible(false);
-  }, [setPlaybackState, setMiniPlayerVisible]);
+  }, [setPlaybackState, setMiniPlayerVisible, stopStatsTracking]);
 
   // Pause
   const pause = useCallback(() => {
