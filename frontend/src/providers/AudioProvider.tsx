@@ -333,22 +333,39 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       // STEP 6: Update Lock Screen / Control Center metadata
       console.log('[AudioProvider] STEP 6: Updating lock screen metadata...');
       try {
-        // Get station logo URL
-        const logoUrl = station.favicon || station.logo || '';
-        const artworkUrl = logoUrl || 'https://themegaradio.com/logo.png';
+        // Get station logo URL - ensure it's a valid HTTPS URL
+        let artworkUrl = 'https://themegaradio.com/logo.png'; // Default fallback
+        
+        // Check various logo sources
+        if (station.favicon && station.favicon.startsWith('http')) {
+          artworkUrl = station.favicon;
+        } else if (station.logo && station.logo.startsWith('http')) {
+          artworkUrl = station.logo;
+        } else if (station.logo && station.logo.startsWith('/')) {
+          artworkUrl = `https://themegaradio.com${station.logo}`;
+        } else if (station.favicon && station.favicon.startsWith('/')) {
+          artworkUrl = `https://themegaradio.com${station.favicon}`;
+        }
+        
+        // Ensure HTTPS
+        if (artworkUrl.startsWith('http://')) {
+          artworkUrl = artworkUrl.replace('http://', 'https://');
+        }
+        
+        console.log('[AudioProvider] Artwork URL:', artworkUrl);
         
         // Update lock screen metadata for iOS Control Center / Android notification
         playerRef.current.updateLockScreenMetadata({
           title: station.name,
-          artist: station.country || 'Live Radio',
-          albumTitle: station.tags?.slice(0, 2).join(', ') || 'MegaRadio',
+          artist: station.country || 'MegaRadio',
+          albumTitle: 'MegaRadio',
           artworkUrl: artworkUrl,
         });
         
         console.log('[AudioProvider] Lock screen metadata updated:', {
           title: station.name,
-          artist: station.country || 'Live Radio',
-          artworkUrl: artworkUrl.substring(0, 50) + '...'
+          artist: station.country || 'MegaRadio',
+          artworkUrl: artworkUrl
         });
       } catch (metaError) {
         console.log('[AudioProvider] Could not update metadata:', metaError);
