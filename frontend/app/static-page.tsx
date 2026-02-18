@@ -30,7 +30,7 @@ export default function StaticPageScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const pageType = params.type || 'about';
+  const pageType = (params.type || 'about') as keyof AppPages;
 
   useEffect(() => {
     const loadPage = async () => {
@@ -38,13 +38,19 @@ export default function StaticPageScreen() {
       setError(null);
       
       try {
+        console.log('[StaticPage] Loading page type:', pageType);
         const pages = await appService.getPages();
+        console.log('[StaticPage] Pages response:', pages ? Object.keys(pages) : 'null');
+        
         if (pages && pages[pageType]) {
+          console.log('[StaticPage] Found page:', pages[pageType].title);
           setPage(pages[pageType]);
         } else {
+          console.log('[StaticPage] Page not found for type:', pageType);
           setError('Page not found');
         }
       } catch (e) {
+        console.error('[StaticPage] Error loading page:', e);
         setError('Failed to load page');
       } finally {
         setIsLoading(false);
