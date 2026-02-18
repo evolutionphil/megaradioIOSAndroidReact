@@ -53,39 +53,38 @@ export default function GenresTabScreen() {
         setIsLoadingMore(true);
       }
 
-      const params: any = {
-        limit: PAGE_SIZE,
-        page: pageNum,
-      };
-      
+      // Use precomputed endpoint with country filter for better performance
+      const params: any = {};
       if (countryCode) {
         params.country = countryCode;
       }
 
-      const response = await api.get('https://themegaradio.com/api/genres', { params });
+      console.log('[Genres] Fetching with params:', params);
+
+      const response = await api.get('https://themegaradio.com/api/genres/precomputed', { params });
       const data = response.data;
 
-      const newGenres = data.data || data.genres || [];
-      const total = data.total || data.count || 0;
+      console.log('[Genres] Response:', { success: data.success, count: data.count });
+
+      const newGenres = data.data || [];
+      const total = data.count || newGenres.length;
 
       setTotalGenres(total);
-      setHasMore(newGenres.length === PAGE_SIZE && (reset ? newGenres.length : genres.length + newGenres.length) < total);
+      // Precomputed endpoint returns all genres at once, no pagination needed
+      setHasMore(false);
 
-      if (reset) {
-        setGenres(newGenres);
-        // Cache first page
-        try {
-          const cacheKey = getGenresCacheKey(countryCode);
-          await AsyncStorage.setItem(cacheKey, JSON.stringify({
-            data: newGenres,
-            total,
-            timestamp: Date.now(),
-          }));
-        } catch (e) {
-          console.log('[Genres] Cache error:', e);
-        }
-      } else {
-        setGenres(prev => [...prev, ...newGenres]);
+      setGenres(newGenres);
+      
+      // Cache the data
+      try {
+        const cacheKey = getGenresCacheKey(countryCode);
+        await AsyncStorage.setItem(cacheKey, JSON.stringify({
+          data: newGenres,
+          total,
+          timestamp: Date.now(),
+        }));
+      } catch (e) {
+        console.log('[Genres] Cache error:', e);
       }
     } catch (error) {
       console.error('[Genres] Fetch error:', error);
@@ -93,7 +92,7 @@ export default function GenresTabScreen() {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  }, [countryCode, genres.length]);
+  }, [countryCode]);
 
   // Load cached genres on mount
   useEffect(() => {
