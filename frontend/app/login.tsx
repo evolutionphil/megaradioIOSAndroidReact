@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import authService from '../src/services/authService';
@@ -24,8 +24,24 @@ const PASSWORD_ICON = require('../assets/icons/password-input.png');
 
 export default function LoginScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ returnTo?: string; returnParams?: string }>();
   const { t } = useTranslation();
   const { saveAuth } = useAuthStore();
+
+  // Parse return params for redirect after login
+  const returnTo = params.returnTo;
+  const returnParams = params.returnParams ? JSON.parse(params.returnParams) : null;
+
+  const navigateAfterLogin = () => {
+    if (returnTo && returnParams) {
+      router.replace({
+        pathname: returnTo as any,
+        params: returnParams
+      });
+    } else {
+      router.replace('/(tabs)');
+    }
+  };
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
