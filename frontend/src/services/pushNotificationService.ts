@@ -118,11 +118,11 @@ const pushNotificationService: PushNotificationService = {
    */
   async sendPushTokenToBackend(token: string, userId?: string): Promise<void> {
     try {
-      await api.post('https://themegaradio.com/api/user/push-token', {
+      await api.post('/api/user/push-token', {
         token,
         userId,
         platform: Platform.OS,
-        deviceName: Device.deviceName,
+        deviceName: Device.deviceName || Device.modelName || 'Unknown',
       });
       console.log('[PushNotification] Token sent to backend');
     } catch (error) {
@@ -155,6 +155,65 @@ const pushNotificationService: PushNotificationService = {
   addNotificationResponseListener(callback: (response: Notifications.NotificationResponse) => void): () => void {
     const subscription = Notifications.addNotificationResponseReceivedListener(callback);
     return () => subscription.remove();
+  },
+
+  /**
+   * Handle navigation based on notification data
+   */
+  handleNotificationNavigation(data: any): void {
+    console.log('[PushNotification] Handling navigation with data:', data);
+    
+    if (!data) return;
+
+    // Navigate based on notification type
+    if (data.screen === 'player' && data.stationId) {
+      // Navigate to player with station ID
+      router.push({
+        pathname: '/player',
+        params: { stationId: data.stationId }
+      });
+    } else if (data.screen === 'genre' && data.genreSlug) {
+      // Navigate to genre detail
+      router.push({
+        pathname: '/genre-detail',
+        params: { slug: data.genreSlug }
+      });
+    } else if (data.screen === 'user-profile' && data.userId) {
+      // Navigate to user profile
+      router.push({
+        pathname: '/user-profile',
+        params: { userId: data.userId }
+      });
+    } else if (data.screen === 'notifications') {
+      // Navigate to notifications
+      router.push('/notifications');
+    } else if (data.url) {
+      // Handle deep link URL
+      router.push(data.url);
+    }
+  },
+
+  /**
+   * Check if notifications are enabled
+   */
+  async isNotificationsEnabled(): Promise<boolean> {
+    try {
+      const enabled = await AsyncStorage.getItem(NOTIFICATIONS_ENABLED_KEY);
+      return enabled === 'true';
+    } catch {
+      return false;
+    }
+  },
+
+  /**
+   * Set notifications enabled/disabled
+   */
+  async setNotificationsEnabled(enabled: boolean): Promise<void> {
+    try {
+      await AsyncStorage.setItem(NOTIFICATIONS_ENABLED_KEY, enabled ? 'true' : 'false');
+    } catch (error) {
+      console.error('[PushNotification] Failed to set notifications enabled:', error);
+    }
   },
 };
 
