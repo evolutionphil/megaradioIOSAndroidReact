@@ -267,13 +267,21 @@ export default function HomeScreen() {
               </View>
             </TouchableOpacity>
             <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.headerIcon} onPress={() => router.push('/notifications')}>
+              <Pressable 
+                style={styles.headerIcon} 
+                onPress={() => router.push('/notifications')}
+                data-testid="notifications-btn"
+              >
                 <Ionicons name="notifications-outline" size={22} color={colors.text} />
                 <View style={styles.notificationDot} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.headerIcon} onPress={() => router.push('/search')}>
+              </Pressable>
+              <Pressable 
+                style={styles.headerIcon} 
+                onPress={() => router.push('/search')}
+                data-testid="search-btn"
+              >
                 <Ionicons name="search" size={22} color={colors.text} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
 
