@@ -1,5 +1,5 @@
 // AnimatedSplash - MegaRadio branded splash screen
-// Matches the exact design: logo + rings + gradient wave at bottom
+// Exact match to design: dark gradient background, centered logo with rings, pink dots at bottom-left
 
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Image, StatusBar } from 'react-native';
@@ -17,19 +17,19 @@ const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
 }) => {
   // Animation values
   const logoOpacity = useRef(new Animated.Value(0)).current;
-  const logoScale = useRef(new Animated.Value(0.8)).current;
+  const logoScale = useRef(new Animated.Value(0.85)).current;
   const ringsOpacity = useRef(new Animated.Value(0)).current;
-  const waveOpacity = useRef(new Animated.Value(0)).current;
-  const waveTranslate = useRef(new Animated.Value(100)).current;
+  const dotsOpacity = useRef(new Animated.Value(0)).current;
+  const dotsTranslateY = useRef(new Animated.Value(50)).current;
 
   useEffect(() => {
-    // Start animations sequence
+    // Animation sequence
     const startAnimations = () => {
       // Logo fade in and scale
       Animated.parallel([
         Animated.timing(logoOpacity, {
           toValue: 1,
-          duration: 800,
+          duration: 700,
           useNativeDriver: true,
         }),
         Animated.spring(logoScale, {
@@ -40,26 +40,26 @@ const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
         }),
       ]).start();
 
-      // Rings fade in (delayed)
+      // Rings fade in (slightly delayed)
       Animated.timing(ringsOpacity, {
         toValue: 1,
-        duration: 600,
-        delay: 400,
+        duration: 500,
+        delay: 300,
         useNativeDriver: true,
       }).start();
 
-      // Wave slide up from bottom
+      // Dots fade in and slide up
       Animated.parallel([
-        Animated.timing(waveOpacity, {
+        Animated.timing(dotsOpacity, {
           toValue: 1,
-          duration: 800,
-          delay: 300,
+          duration: 600,
+          delay: 400,
           useNativeDriver: true,
         }),
-        Animated.timing(waveTranslate, {
+        Animated.timing(dotsTranslateY, {
           toValue: 0,
-          duration: 800,
-          delay: 300,
+          duration: 600,
+          delay: 400,
           useNativeDriver: true,
         }),
       ]).start();
@@ -76,52 +76,96 @@ const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
     }
   }, [isLoading]);
 
+  // Generate dotted pattern for bottom-left corner
+  const renderDots = () => {
+    const dots = [];
+    const rows = 20;
+    const cols = 12;
+    const baseSize = 3;
+    const spacing = 14;
+    
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        // Calculate distance from bottom-left corner
+        const distFromCorner = Math.sqrt(Math.pow(rows - row, 2) + Math.pow(col, 2));
+        const maxDist = Math.sqrt(Math.pow(rows, 2) + Math.pow(cols, 2));
+        
+        // Opacity fades as we move away from corner
+        const dotOpacity = Math.max(0, 1 - (distFromCorner / maxDist) * 1.3);
+        
+        // Size gets smaller as we move away
+        const dotSize = baseSize * (1 - (distFromCorner / maxDist) * 0.5);
+        
+        if (dotOpacity > 0.1) {
+          dots.push(
+            <View
+              key={`dot-${row}-${col}`}
+              style={{
+                position: 'absolute',
+                left: col * spacing,
+                bottom: row * spacing,
+                width: dotSize,
+                height: dotSize,
+                borderRadius: dotSize / 2,
+                backgroundColor: '#FF4199',
+                opacity: dotOpacity * 0.9,
+              }}
+            />
+          );
+        }
+      }
+    }
+    return dots;
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0D0D0D" />
+      <StatusBar barStyle="light-content" backgroundColor="#0A0A0A" />
       
-      {/* Main content area with rounded corners */}
-      <View style={styles.contentArea}>
-        {/* Background rings (subtle circular lines) */}
-        <Animated.View style={[styles.ringsContainer, { opacity: ringsOpacity }]}>
-          <View style={[styles.ring, styles.ring1]} />
-          <View style={[styles.ring, styles.ring2]} />
-          <View style={[styles.ring, styles.ring3]} />
-        </Animated.View>
-
-        {/* Logo */}
-        <Animated.View
-          style={[
-            styles.logoContainer,
-            {
-              opacity: logoOpacity,
-              transform: [{ scale: logoScale }],
-            },
-          ]}
-        >
-          <Image
-            source={require('../../assets/images/megaradio-logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </Animated.View>
+      {/* Dark gradient background */}
+      <View style={styles.backgroundGradient}>
+        {/* Top area - pure dark */}
+        <View style={styles.backgroundTop} />
+        {/* Bottom area - magenta tint */}
+        <View style={styles.backgroundBottom} />
       </View>
 
-      {/* Wave/dots pattern at bottom */}
+      {/* Concentric rings around logo */}
+      <Animated.View style={[styles.ringsContainer, { opacity: ringsOpacity }]}>
+        <View style={[styles.ring, styles.ring1]} />
+        <View style={[styles.ring, styles.ring2]} />
+        <View style={[styles.ring, styles.ring3]} />
+        <View style={[styles.ring, styles.ring4]} />
+      </Animated.View>
+
+      {/* Logo - centered */}
       <Animated.View
         style={[
-          styles.waveContainer,
+          styles.logoContainer,
           {
-            opacity: waveOpacity,
-            transform: [{ translateY: waveTranslate }],
+            opacity: logoOpacity,
+            transform: [{ scale: logoScale }],
           },
         ]}
       >
         <Image
-          source={require('../../assets/images/splash-wave.png')}
-          style={styles.waveImage}
-          resizeMode="cover"
+          source={require('../../assets/images/megaradio-logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
         />
+      </Animated.View>
+
+      {/* Dotted pattern - bottom left corner */}
+      <Animated.View
+        style={[
+          styles.dotsContainer,
+          {
+            opacity: dotsOpacity,
+            transform: [{ translateY: dotsTranslateY }],
+          },
+        ]}
+      >
+        {renderDots()}
       </Animated.View>
     </View>
   );
@@ -130,67 +174,72 @@ const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0A0A0A',
+  },
+  backgroundGradient: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  backgroundTop: {
+    flex: 0.65,
     backgroundColor: '#0D0D0D',
   },
-  contentArea: {
-    flex: 1,
-    backgroundColor: '#1A1A1A',
-    marginHorizontal: 16,
-    marginTop: 60,
-    marginBottom: 0,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
+  backgroundBottom: {
+    flex: 0.35,
+    backgroundColor: '#150A12', // Dark magenta tint
   },
   ringsContainer: {
     position: 'absolute',
-    width: width * 0.9,
-    height: width * 0.9,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   ring: {
     position: 'absolute',
-    borderRadius: 9999,
     borderWidth: 1,
-    borderColor: 'rgba(255, 65, 153, 0.15)',
+    borderColor: 'rgba(255, 65, 153, 0.12)',
   },
   ring1: {
-    width: width * 0.5,
-    height: width * 0.35,
-    borderRadius: width * 0.25,
+    width: width * 0.45,
+    height: width * 0.25,
+    borderRadius: width * 0.225,
   },
   ring2: {
-    width: width * 0.65,
-    height: width * 0.45,
-    borderRadius: width * 0.325,
+    width: width * 0.6,
+    height: width * 0.35,
+    borderRadius: width * 0.3,
   },
   ring3: {
-    width: width * 0.8,
+    width: width * 0.75,
+    height: width * 0.45,
+    borderRadius: width * 0.375,
+  },
+  ring4: {
+    width: width * 0.9,
     height: width * 0.55,
-    borderRadius: width * 0.4,
+    borderRadius: width * 0.45,
   },
   logoContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  logo: {
-    width: width * 0.6,
-    height: width * 0.25,
-  },
-  waveContainer: {
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
-    height: height * 0.35,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  waveImage: {
-    width: '100%',
-    height: '100%',
+  logo: {
+    width: width * 0.5,
+    height: width * 0.2,
+  },
+  dotsContainer: {
+    position: 'absolute',
+    left: 20,
+    bottom: 40,
+    width: width * 0.5,
+    height: height * 0.4,
   },
 });
 
