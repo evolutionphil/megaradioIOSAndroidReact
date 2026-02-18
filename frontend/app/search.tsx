@@ -295,6 +295,8 @@ export default function SearchScreen() {
   // Render search result card
   const renderResultCard = ({ item }: { item: SearchResultItem }) => {
     const isPlaying = item.type === 'radio' && isStationPlaying(item.data);
+    const isLoading = item.type === 'radio' && currentStation?._id === item.data._id && 
+      (playbackState === 'loading' || playbackState === 'buffering');
 
     return (
       <TouchableOpacity
@@ -327,13 +329,20 @@ export default function SearchScreen() {
         </View>
 
         {/* Action Button */}
-        <TouchableOpacity style={styles.heartButton}>
+        <TouchableOpacity 
+          style={[styles.playButton, isPlaying && styles.playButtonActive]}
+          onPress={() => handleItemPress(item)}
+        >
           {item.type === 'radio' ? (
-            <Ionicons
-              name={isPlaying ? 'heart' : 'heart-outline'}
-              size={24}
-              color="#FFFFFF"
-            />
+            isLoading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Ionicons
+                name={isPlaying ? 'pause' : 'play'}
+                size={20}
+                color="#FFFFFF"
+              />
+            )
           ) : (
             <Ionicons name="chevron-forward" size={24} color="#FFFFFF" />
           )}
