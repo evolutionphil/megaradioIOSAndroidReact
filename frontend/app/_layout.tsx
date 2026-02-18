@@ -17,15 +17,10 @@ import { initializeApp as initializeTvData } from '../src/services/tvInitService
 import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
-import { useAuthStore } from '../src/store/authStore';
 import { AudioProvider } from '../src/providers/AudioProvider';
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
-import stationService from '../src/services/stationService';
-
-// Storage keys
-const PLAY_AT_LOGIN_KEY = 'play_at_login_setting';
-const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
+import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
