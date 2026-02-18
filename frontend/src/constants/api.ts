@@ -120,9 +120,6 @@ export const API_ENDPOINTS = {
   // Image proxy
   image: (encodedUrl: string) => `/api/image/${encodedUrl}`,
   
-  // Public profiles
-  publicProfiles: '/api/public-profiles',
-  
   // Advertisements
   advertisements: '/api/advertisements',
 };
