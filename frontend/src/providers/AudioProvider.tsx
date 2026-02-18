@@ -345,7 +345,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Stream URL:', url.substring(0, 60) + '...');
       setStreamUrl(url);
 
-      // STEP 4: Replace audio source and play
+      // STEP 4: Replace audio source
       console.log('[AudioProvider] STEP 4: Loading new audio...');
       playerRef.current.replace({ uri: url });
       
@@ -359,15 +359,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         return;
       }
 
-      // STEP 5: Start playback
-      console.log('[AudioProvider] STEP 5: Starting playback...');
-      playerRef.current.play();
-      
-      listeningStartTime = new Date();
-      setPlaybackState('playing');
-
-      // STEP 6: Setup Lock Screen / Control Center / Notification Bar
-      console.log('[AudioProvider] STEP 6: Setting up lock screen controls...');
+      // STEP 5: Setup Lock Screen / Control Center BEFORE starting playback
+      console.log('[AudioProvider] STEP 5: Setting up lock screen controls...');
       try {
         // Get station logo URL - ensure it's a valid HTTPS URL
         let artworkUrl = 'https://themegaradio.com/logo.png'; // Default fallback
@@ -378,6 +371,47 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         } else if (station.favicon && station.favicon.startsWith('http')) {
           artworkUrl = station.favicon;
         } else if (station.logo && station.logo.startsWith('/')) {
+          artworkUrl = `https://themegaradio.com${station.logo}`;
+        } else if (station.favicon && station.favicon.startsWith('/')) {
+          artworkUrl = `https://themegaradio.com${station.favicon}`;
+        }
+        
+        // Ensure HTTPS for iOS App Transport Security
+        if (artworkUrl.startsWith('http://')) {
+          artworkUrl = artworkUrl.replace('http://', 'https://');
+        }
+        
+        console.log('[AudioProvider] Lock Screen Artwork URL:', artworkUrl);
+        
+        // Activate player for lock screen controls BEFORE starting playback
+        // This is REQUIRED for iOS Control Center and Android notification bar
+        await playerRef.current.setActiveForLockScreen(true, {
+          title: station.name,
+          artist: 'MegaRadio',
+          album: station.country || 'Live Radio',
+          artworkUrl: artworkUrl,
+        }, {
+          // Options for lock screen controls (live radio doesn't need seek)
+          showSeekForward: false,
+          showSeekBackward: false,
+        });
+        
+        console.log('[AudioProvider] Lock screen ACTIVATED with metadata:', {
+          title: station.name,
+          artist: 'MegaRadio',
+          album: station.country || 'Live Radio',
+          artworkUrl: artworkUrl
+        });
+      } catch (metaError) {
+        console.log('[AudioProvider] Could not setup lock screen:', metaError);
+      }
+
+      // STEP 6: Start playback AFTER lock screen is setup
+      console.log('[AudioProvider] STEP 6: Starting playback...');
+      playerRef.current.play();
+      
+      listeningStartTime = new Date();
+      setPlaybackState('playing');
           artworkUrl = `https://themegaradio.com${station.logo}`;
         } else if (station.favicon && station.favicon.startsWith('/')) {
           artworkUrl = `https://themegaradio.com${station.favicon}`;
