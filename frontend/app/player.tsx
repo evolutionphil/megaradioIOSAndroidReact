@@ -484,7 +484,10 @@ export default function PlayerScreen() {
                 >
                   <Ionicons name="car-outline" size={22} color="#FFFFFF" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.headerIcon}>
+                <TouchableOpacity 
+                  style={styles.headerIcon}
+                  onPress={() => setShowOptionsSheet(true)}
+                >
                   <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
                 </TouchableOpacity>
               </View>
