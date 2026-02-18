@@ -78,13 +78,7 @@ export const StationCard: React.FC<StationCardProps> = ({
           end={{ x: 0, y: 1 }}
         >
           <View style={styles.largeLogo}>
-            {logoUrl ? (
-              <Image source={{ uri: logoUrl }} style={styles.largeLogoImage} resizeMode="cover" />
-            ) : (
-              <View style={styles.largePlaceholder}>
-                <Ionicons name="radio" size={40} color={colors.textMuted} />
-              </View>
-            )}
+            <Image source={{ uri: logoUrl }} style={styles.largeLogoImage} resizeMode="cover" />
             {isPlaying && !isLoading && (
               <View style={styles.largePlayingIndicator}>
                 <Ionicons name="volume-high" size={16} color={colors.text} />
