@@ -11,7 +11,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n, { initI18n } from '../src/services/i18nService';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
-import { AnimatedSplash } from '../src/components/AnimatedSplash';
+import AnimatedSplash from '../src/components/AnimatedSplash';
 import { preloadEssentialData } from '../src/services/preloadService';
 import { initializeApp as initializeTvData } from '../src/services/tvInitService';
 import { useLocationStore } from '../src/store/locationStore';
