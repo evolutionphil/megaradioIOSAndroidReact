@@ -153,7 +153,14 @@ export default function UserProfileScreen() {
 
   const handleFollowToggle = async () => {
     if (!isAuthenticated) {
-      Alert.alert('Login Required', 'Please login to follow users.');
+      // Navigate to login with return URL to come back after login
+      router.push({
+        pathname: '/auth-options',
+        params: {
+          returnTo: '/user-profile',
+          returnParams: JSON.stringify({ userId, userName, userAvatar: rawAvatar })
+        }
+      });
       return;
     }
 
