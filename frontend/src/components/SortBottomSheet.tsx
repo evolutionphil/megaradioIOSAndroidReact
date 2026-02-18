@@ -44,10 +44,12 @@ export const SortBottomSheet: React.FC<SortBottomSheetProps> = ({
   
   const handleSortSelect = (option: SortOption) => {
     onSortChange(option);
+    onClose(); // Close modal after selection
   };
 
   const handleViewModeSelect = (mode: ViewMode) => {
     onViewModeChange(mode);
+    // Don't close modal for view mode change - user might want to change sort too
   };
 
   return (
