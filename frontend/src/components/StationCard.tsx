@@ -109,13 +109,7 @@ export const StationCard: React.FC<StationCardProps> = ({
         activeOpacity={0.7}
       >
         <View style={styles.compactLogo}>
-          {logoUrl ? (
-            <Image source={{ uri: logoUrl }} style={styles.compactLogoImage} resizeMode="cover" />
-          ) : (
-            <View style={styles.compactPlaceholder}>
-              <Ionicons name="radio" size={16} color={colors.textMuted} />
-            </View>
-          )}
+          <Image source={{ uri: logoUrl }} style={styles.compactLogoImage} resizeMode="cover" />
         </View>
         <Text style={styles.compactName} numberOfLines={1}>{station.name}</Text>
       </TouchableOpacity>
@@ -129,17 +123,11 @@ export const StationCard: React.FC<StationCardProps> = ({
       activeOpacity={0.7}
     >
       <View style={styles.logoContainer}>
-        {logoUrl ? (
-          <Image
-            source={{ uri: logoUrl }}
-            style={styles.logo}
-            resizeMode="cover"
-          />
-        ) : (
-          <View style={styles.placeholderLogo}>
-            <Ionicons name="radio" size={24} color={colors.textMuted} />
-          </View>
-        )}
+        <Image
+          source={{ uri: logoUrl }}
+          style={styles.logo}
+          resizeMode="cover"
+        />
         {isPlaying && !isLoading && (
           <View style={styles.playingBadge}>
             <View style={styles.equalizerContainer}>
