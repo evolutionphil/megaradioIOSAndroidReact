@@ -89,7 +89,16 @@ export default function StaticPageScreen() {
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.content}>{page?.content}</Text>
+          {page?.content ? (
+            <Text style={styles.content}>{page.content}</Text>
+          ) : (
+            <View style={styles.emptyContent}>
+              <Ionicons name="document-text-outline" size={48} color={colors.textMuted} />
+              <Text style={styles.emptyText}>
+                {t('content_coming_soon', 'İçerik yakında eklenecek')}
+              </Text>
+            </View>
+          )}
         </ScrollView>
       )}
     </SafeAreaView>
