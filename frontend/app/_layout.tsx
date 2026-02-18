@@ -18,6 +18,25 @@ import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
 import { AudioProvider } from '../src/providers/AudioProvider';
+import { MiniPlayer } from '../src/components/MiniPlayer';
+import { usePlayerStore } from '../src/store/playerStore';
+
+// Global MiniPlayer wrapper - shows on non-tab screens
+const GlobalMiniPlayer = () => {
+  const segments = useSegments();
+  const { isMiniPlayerVisible, currentStation } = usePlayerStore();
+  
+  // Don't show on tabs (they have their own MiniPlayer), player screen, or auth screens
+  const isTabScreen = segments[0] === '(tabs)';
+  const isPlayerScreen = segments.includes('player');
+  const isAuthScreen = ['login', 'signup', 'auth-options', 'onboarding'].includes(segments[0] as string);
+  
+  if (isTabScreen || isPlayerScreen || isAuthScreen || !isMiniPlayerVisible || !currentStation) {
+    return null;
+  }
+  
+  return <MiniPlayer />;
+};
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync().catch(() => {});
