@@ -95,7 +95,13 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Ses kayd\u0131 yapabilmek i\u00e7in mikrofon eri\u015fimi gereklidir."
+          "microphonePermission": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
+          "ios": {
+            "allowsBackgroundAudioPlayback": true
+          },
+          "android": {
+            "allowsBackgroundAudioPlayback": true
+          }
         }
       ]
     ],
