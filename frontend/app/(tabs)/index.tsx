@@ -957,23 +957,23 @@ const styles = StyleSheet.create({
   discoverableBannerContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingHorizontal: spacing.lg,
   },
   discoverableBannerTextContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   discoverableBannerTitle: {
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
-    textAlign: 'center',
+    textAlign: 'right',
   },
   discoverableBannerSubtitle: {
     fontSize: typography.sizes.sm,
     color: 'rgba(255,255,255,0.9)',
     marginTop: 4,
-    textAlign: 'center',
+    textAlign: 'right',
   },
 
   // Users List - Full width with specified dimensions
