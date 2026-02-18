@@ -2,8 +2,7 @@
 // Shows logo with animated sound wave rings and gradient background
 
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Image, StatusBar } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, StyleSheet, Animated, Dimensions, Image, StatusBar, Platform } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -152,15 +151,9 @@ const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0D0D0D" />
       
-      {/* Dark background */}
+      {/* Dark background with gradient effect using View */}
       <View style={styles.background}>
-        {/* Gradient overlay at bottom */}
-        <LinearGradient
-          colors={['transparent', 'rgba(255, 65, 153, 0.15)', 'rgba(255, 65, 153, 0.25)']}
-          style={styles.gradientOverlay}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-        />
+        <View style={styles.gradientOverlay} />
       </View>
 
       {/* Sound wave rings */}
@@ -247,6 +240,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: height * 0.5,
+    backgroundColor: 'rgba(255, 65, 153, 0.1)',
   },
   ringsContainer: {
     position: 'absolute',
