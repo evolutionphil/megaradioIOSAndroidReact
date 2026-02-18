@@ -9,9 +9,10 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 - **Storage**: AsyncStorage for local caching
 - **API**: MegaRadio API (https://themegaradio.com)
 - **Auth**: API Key + JWT tokens
+- **Build**: EAS Build with Legacy Architecture (New Arch disabled for stability)
 
 ## Core Features (Implemented)
-1. **Radio Streaming**: In-app audio playback with expo-audio
+1. **Radio Streaming**: In-app audio playback with expo-audio + Lock Screen/Control Center integration
 2. **Tab Navigation**: Discover | Genres | Favorites | Profile
 3. **Local Caching**: TV init data and genres cached with stale-while-revalidate pattern
 4. **Guest User Support**: Settings, profile, and favorites accessible without login
@@ -19,76 +20,84 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 6. **Genres**: Browse all genres sorted by station count
 7. **Popular Stations**: Shows popular stations from user's country
 8. **TV Cast**: Cast radio to TV app (Samsung/LG Smart TVs)
+9. **Client-Side Sorting**: A-Z, Z-A, Popular, Newest, Oldest sorting for all station lists
 
 ## Implementation Status
 
-### Latest Session - February 2026
+### Latest Session - December 2025 (Current)
+
+#### A-Z Sorting Bug Fix (P0) - ✅ FIXED
+**Problem**: Sorting options (A-Z, Z-A, Popular, Newest, Oldest) were not working on any station list page.
+**Root Cause**: Backend API doesn't reliably support `sort` and `order` query parameters.
+**Solution**: Implemented client-side sorting in `all-stations.tsx` and `genre-detail.tsx`:
+- Added `sortStations()` callback function with Turkish locale support (`'tr'`)
+- Applied sorting to `filteredStations` useMemo after search filtering
+- Removed unused API sort parameters since backend ignores them
+
+**Files Modified**:
+- `frontend/app/all-stations.tsx` - Added client-side sorting
+- `frontend/app/genre-detail.tsx` - Added client-side sorting
+- `frontend/src/hooks/useQueries.ts` - Cleaned up debug logs
+
+### Previous Session - iOS Build Stabilization
 
 #### Critical Bug Fixes (P0) - VERIFIED
-1. **Audio Playback System Rewritten** - ✅ FIXED
-   - Single player instance with `replace()` method
-   - Play/Pause now uses actual `status.playing` as source of truth
-   - Next/Previous stops current audio before playing new station
-   - Race condition prevention with `globalPlayId`
+1. **iOS Build Crash Fix** - ✅ FIXED
+   - Disabled Expo New Architecture
+   - Downgraded react-native-reanimated v4 to v3
+   - Removed incompatible packages (react-native-worklets, @react-native-community/slider)
 
-2. **TV Cast Modal Error Handling** - ✅ FIXED
-   - Improved error parsing (raw text -> JSON with fallback)
-   - Better error messages for Turkish users
+2. **Background Audio & Lock Screen** - ✅ FIXED
+   - Integrated `updateLockScreenMetadata` API
+   - Shows Now Playing info on iOS Lock Screen and Android Notification
 
-#### UI Bug Fixes (P1) - VERIFIED
-3. **Discoverable Genres Text Alignment** - ✅ FIXED
-   - Text container positioned bottom-right
-   - Genre name and subtitle left-aligned within container
+3. **Global MiniPlayer** - ✅ FIXED
+   - Moved from tabs layout to root layout for visibility on all screens
 
-4. **iOS Login Screen Logo Centering** - ✅ FIXED
-   - Removed `position: 'absolute'`
-   - Using flex layout with `alignItems: 'center'`
+4. **Logo Fallback** - ✅ FIXED
+   - Default logo displayed for stations without one
 
-### Previous Session Fixes (December 2025)
-- [x] Migrated from expo-av to expo-audio
-- [x] Genre country filtering
-- [x] MiniPlayer button events
-- [x] Guest favorites support
-- [x] Full-screen auth flow
-- [x] Onboarding image preloading
+5. **Clickable Notification Icon** - ✅ FIXED
+   - Added navigation handler to bell icon
 
 ## Key Files
-- `frontend/src/hooks/useAudioPlayer.ts` - Audio playback (REWRITTEN)
-- `frontend/src/components/CastModal.tsx` - TV Cast modal (IMPROVED)
-- `frontend/app/(tabs)/index.tsx` - Home screen with discoverable genres
-- `frontend/app/auth-options.tsx` - Login screen (FIXED)
-- `frontend/app/player.tsx` - Player with controls
-
-## Audio Playback Technical Note
-**Previous Issue**: Multiple audio streams playing simultaneously, Play/Pause not working
-**Root Cause**: Old implementation may have created multiple player instances
-**Solution Applied**: Single useExpoAudioPlayer instance with:
-- `replace()` method to change audio sources
-- `player.pause()` before switching stations
-- `status?.playing` as source of truth for togglePlayPause
-- `globalPlayId` for race condition prevention
+- `frontend/app/all-stations.tsx` - All stations with client-side sorting
+- `frontend/app/genre-detail.tsx` - Genre detail with client-side sorting
+- `frontend/src/components/SortBottomSheet.tsx` - Sort modal UI
+- `frontend/src/store/favoritesStore.ts` - Favorites with built-in sorting
+- `frontend/src/hooks/useAudioPlayer.ts` - Audio playback
+- `frontend/src/providers/AudioProvider.tsx` - Lock screen metadata
+- `frontend/app/_layout.tsx` - Root layout with global MiniPlayer
 
 ## API Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
 - **Test User**: user@emergent.properties / string
 
-## Known Server Issues (Not App Bugs)
-- Discoverable genre images failing to load from themegaradio.com - app correctly falls back to gradient backgrounds
+## Known Issues
+
+### Blocked on User Action
+1. **Social Logins (Google & Apple)** - P0
+   - Google: User needs to configure Android OAuth Client in Google Cloud Console
+   - Apple: User needs to set `APPLE_CLIENT_ID` and `APPLE_TEAM_ID` on backend
+
+### Blocked on Backend
+1. **Discoverable Genres Images** - P1 (backend not returning images)
+2. **Genre Station Count Inconsistency** - P1 (backend data issue)
 
 ## Backlog
 
 ### P1 - High Priority
-1. **Real Device Audio Testing** - Test audio playback on Expo Go (iOS/Android)
-2. **Sleep Timer Fix** - Investigate and fix sleep timer functionality
+1. **Local Genre Caching** - Add AsyncStorage caching for genre list
+2. **Android App Store Build** - Create production build for Android
 
 ### P2 - Medium Priority
-1. **Local Genre Caching** - Add AsyncStorage caching for genre list
-2. **Glow Effect and Static Equalizer** - UI improvements for player screen
-3. **Social Sign-In Finalization** - Complete OAuth integration
+1. **Sleep Timer Fix** - Investigate and fix sleep timer functionality
+2. **Glow Effect and Static Equalizer** - UI animations for player screen
 
-## Test Reports
-- `/app/test_reports/iteration_23.json` - Latest fixes verification (100% success)
-- `/app/test_reports/iteration_22.json` - Previous testing session
+## Build Notes
+- **Architecture**: Legacy (New Arch disabled via `newArchEnabled: false` in app.json)
+- **Reanimated**: v3 (v4 caused crashes)
+- **EAS Build**: Use `eas build --platform ios` for production builds
 
 ## User Language
 Turkish (Türkçe)
