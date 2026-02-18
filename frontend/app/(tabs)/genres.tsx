@@ -37,67 +37,67 @@ export default function GenresTabScreen() {
 
   // Pagination state
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [page, setPage] = useState(1);
   const [totalGenres, setTotalGenres] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
-  // Fetch genres with pagination (API returns all genres, we do client-side filtering/pagination)
-  const fetchGenres = useCallback(async (pageNum: number, reset: boolean = false) => {
+  // Fetch genres filtered by country using precomputed endpoint
+  const fetchGenres = useCallback(async (forceRefresh: boolean = false) => {
     try {
-      if (pageNum === 1) {
-        setIsLoading(true);
-      } else {
-        setIsLoadingMore(true);
+      setIsLoading(true);
+
+      // Check cache first (unless force refresh)
+      if (!forceRefresh) {
+        const cacheKey = getGenresCacheKey(countryCode);
+        const cached = await AsyncStorage.getItem(cacheKey);
+        if (cached) {
+          const { data, total, timestamp } = JSON.parse(cached);
+          const isStale = Date.now() - timestamp > GENRES_CACHE_TTL;
+          if (!isStale && Array.isArray(data) && data.length > 0) {
+            console.log('[Genres] Using cached data:', data.length, 'genres');
+            setGenres(data);
+            setTotalGenres(total || data.length);
+            setIsLoading(false);
+            return;
+          }
+        }
       }
 
-      // Fetch genres - API doesn't support country filtering well, 
-      // so we fetch all and filter client-side if needed
-      const params: any = {
-        limit: PAGE_SIZE,
-        page: pageNum,
-      };
+      // Fetch from API - use precomputed endpoint with country filter
+      const params: any = {};
+      if (countryCode) {
+        params.country = countryCode;
+      }
 
-      console.log('[Genres] Fetching page:', pageNum);
+      console.log('[Genres] Fetching from API with country:', countryCode);
 
-      const response = await api.get('https://themegaradio.com/api/genres', { params });
+      const response = await api.get('https://themegaradio.com/api/genres/precomputed', { params });
       const data = response.data;
 
-      console.log('[Genres] Response:', { total: data.total, count: data.count, dataLen: data.data?.length });
+      console.log('[Genres] API Response:', { count: data.count, cached: data.cached, dataLen: data.data?.length });
 
-      const newGenres = data.data || data.genres || [];
-      const total = data.total || data.count || 0;
+      const newGenres = data.data || [];
+      const total = data.count || newGenres.length;
 
+      setGenres(newGenres);
       setTotalGenres(total);
-      setHasMore(newGenres.length === PAGE_SIZE);
 
-      if (reset) {
-        setGenres(newGenres);
-        // Cache first page
-        try {
-          const cacheKey = getGenresCacheKey(countryCode);
-          await AsyncStorage.setItem(cacheKey, JSON.stringify({
-            data: newGenres,
-            total,
-            timestamp: Date.now(),
-          }));
-        } catch (e) {
-          console.log('[Genres] Cache error:', e);
-        }
-      } else {
-        // Append new genres, avoiding duplicates
-        setGenres(prev => {
-          const existingIds = new Set(prev.map(g => g._id || g.slug));
-          const uniqueNew = newGenres.filter((g: Genre) => !existingIds.has(g._id || g.slug));
-          return [...prev, ...uniqueNew];
-        });
+      // Cache the data (7 days TTL)
+      try {
+        const cacheKey = getGenresCacheKey(countryCode);
+        await AsyncStorage.setItem(cacheKey, JSON.stringify({
+          data: newGenres,
+          total,
+          timestamp: Date.now(),
+        }));
+        console.log('[Genres] Cached', newGenres.length, 'genres for', countryCode || 'global');
+      } catch (e) {
+        console.log('[Genres] Cache error:', e);
       }
     } catch (error) {
       console.error('[Genres] Fetch error:', error);
     } finally {
       setIsLoading(false);
-      setIsLoadingMore(false);
     }
   }, [countryCode]);
 
