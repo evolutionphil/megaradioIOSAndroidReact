@@ -44,7 +44,7 @@ export default function GenresTabScreen() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Fetch genres with pagination
+  // Fetch genres with pagination (API returns all genres, we do client-side filtering/pagination)
   const fetchGenres = useCallback(async (pageNum: number, reset: boolean = false) => {
     try {
       if (pageNum === 1) {
@@ -53,38 +53,46 @@ export default function GenresTabScreen() {
         setIsLoadingMore(true);
       }
 
-      // Use precomputed endpoint with country filter for better performance
-      const params: any = {};
-      if (countryCode) {
-        params.country = countryCode;
-      }
+      // Fetch genres - API doesn't support country filtering well, 
+      // so we fetch all and filter client-side if needed
+      const params: any = {
+        limit: PAGE_SIZE,
+        page: pageNum,
+      };
 
-      console.log('[Genres] Fetching with params:', params);
+      console.log('[Genres] Fetching page:', pageNum);
 
-      const response = await api.get('https://themegaradio.com/api/genres/precomputed', { params });
+      const response = await api.get('https://themegaradio.com/api/genres', { params });
       const data = response.data;
 
-      console.log('[Genres] Response:', { success: data.success, count: data.count });
+      console.log('[Genres] Response:', { total: data.total, count: data.count, dataLen: data.data?.length });
 
-      const newGenres = data.data || [];
-      const total = data.count || newGenres.length;
+      const newGenres = data.data || data.genres || [];
+      const total = data.total || data.count || 0;
 
       setTotalGenres(total);
-      // Precomputed endpoint returns all genres at once, no pagination needed
-      setHasMore(false);
+      setHasMore(newGenres.length === PAGE_SIZE);
 
-      setGenres(newGenres);
-      
-      // Cache the data
-      try {
-        const cacheKey = getGenresCacheKey(countryCode);
-        await AsyncStorage.setItem(cacheKey, JSON.stringify({
-          data: newGenres,
-          total,
-          timestamp: Date.now(),
-        }));
-      } catch (e) {
-        console.log('[Genres] Cache error:', e);
+      if (reset) {
+        setGenres(newGenres);
+        // Cache first page
+        try {
+          const cacheKey = getGenresCacheKey(countryCode);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify({
+            data: newGenres,
+            total,
+            timestamp: Date.now(),
+          }));
+        } catch (e) {
+          console.log('[Genres] Cache error:', e);
+        }
+      } else {
+        // Append new genres, avoiding duplicates
+        setGenres(prev => {
+          const existingIds = new Set(prev.map(g => g._id || g.slug));
+          const uniqueNew = newGenres.filter((g: Genre) => !existingIds.has(g._id || g.slug));
+          return [...prev, ...uniqueNew];
+        });
       }
     } catch (error) {
       console.error('[Genres] Fetch error:', error);
