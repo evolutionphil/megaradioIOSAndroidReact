@@ -21,6 +21,7 @@ import { AudioProvider } from '../src/providers/AudioProvider';
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
+import { NotificationHandler } from '../src/components/NotificationHandler';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
@@ -212,6 +213,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <AudioProvider>
             <PlayAtLoginHandler />
+            <NotificationHandler />
             <View style={styles.container}>
               <StatusBar style="light" />
               <Stack
