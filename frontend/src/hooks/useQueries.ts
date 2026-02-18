@@ -67,17 +67,9 @@ export const queryKeys = {
 
 // Station hooks with backend-recommended caching
 export const useStations = (params: StationQueryParams = {}) => {
-  console.log('[useStations] Called with params:', JSON.stringify(params));
-  
   return useQuery({
     queryKey: [...queryKeys.stations, params],
-    queryFn: async () => {
-      console.log('[useStations] queryFn executing, fetching from API with:', JSON.stringify(params));
-      const result = await stationService.getStations(params);
-      console.log('[useStations] API returned', result?.stations?.length, 'stations');
-      console.log('[useStations] First 3:', result?.stations?.slice(0, 3).map((s: Station) => s.name));
-      return result;
-    },
+    queryFn: () => stationService.getStations(params),
     staleTime: CACHE_TTL.STATIONS_LIST,
     gcTime: CACHE_TTL.STATIONS_LIST * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
