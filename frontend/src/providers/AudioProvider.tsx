@@ -50,7 +50,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
   // Use the hook-based API - more compatible with legacy architecture
   // Initialize with undefined/null to avoid playing anything at start
-  const player = useAudioPlayer(undefined);
+  // showNowPlayingNotification: true enables lock screen controls
+  const player = useAudioPlayer(undefined, { showNowPlayingNotification: true });
   const status = useAudioPlayerStatus(player);
   
   const playerRef = useRef<AudioPlayer>(player);
