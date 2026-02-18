@@ -96,6 +96,9 @@ export default function ProfileScreen() {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [localAvatar, setLocalAvatar] = useState<string | null>(null);
 
+  // App info from API
+  const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
+
   const userName = user?.name || user?.fullName || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
   
