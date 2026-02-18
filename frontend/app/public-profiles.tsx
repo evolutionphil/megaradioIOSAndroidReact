@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: spacing.md,
-    paddingBottom: spacing.xl,
+    paddingBottom: 90, // Space for MiniPlayer
   },
   profileCard: {
     flexDirection: 'row',
