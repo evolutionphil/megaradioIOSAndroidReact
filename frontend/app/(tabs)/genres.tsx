@@ -132,12 +132,13 @@ export default function GenresTabScreen() {
 
   // Load more when reaching end
   const loadMore = useCallback(() => {
-    if (!isLoadingMore && hasMore && !searchQuery.trim()) {
+    if (!isLoadingMore && hasMore && !searchQuery.trim() && !isLoading) {
       const nextPage = page + 1;
+      console.log('[Genres] Loading more, page:', nextPage);
       setPage(nextPage);
       fetchGenres(nextPage, false);
     }
-  }, [isLoadingMore, hasMore, page, fetchGenres, searchQuery]);
+  }, [isLoadingMore, hasMore, page, fetchGenres, searchQuery, isLoading]);
 
   const onRefresh = async () => {
     setRefreshing(true);
