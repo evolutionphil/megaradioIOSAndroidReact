@@ -35,11 +35,10 @@ export default function GenresTabScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
 
-  // Pagination state
+  // State
   const [genres, setGenres] = useState<Genre[]>([]);
   const [totalGenres, setTotalGenres] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Fetch genres filtered by country using precomputed endpoint
   const fetchGenres = useCallback(async (forceRefresh: boolean = false) => {
@@ -101,48 +100,14 @@ export default function GenresTabScreen() {
     }
   }, [countryCode]);
 
-  // Load cached genres on mount
+  // Fetch on mount and when country changes
   useEffect(() => {
-    const loadCachedGenres = async () => {
-      try {
-        const cacheKey = getGenresCacheKey(countryCode);
-        const cached = await AsyncStorage.getItem(cacheKey);
-        if (cached) {
-          const { data, total, timestamp } = JSON.parse(cached);
-          const isStale = Date.now() - timestamp > GENRES_CACHE_TTL;
-          if (!isStale && Array.isArray(data)) {
-            setGenres(data);
-            setTotalGenres(total || data.length);
-            setHasMore(data.length < (total || 0));
-          }
-        }
-      } catch (error) {
-        console.log('[Genres] Error loading cache:', error);
-      }
-    };
-    loadCachedGenres();
-  }, [countryCode]);
-
-  // Initial fetch
-  useEffect(() => {
-    setPage(1);
-    fetchGenres(1, true);
-  }, [countryCode]);
-
-  // Load more when reaching end
-  const loadMore = useCallback(() => {
-    if (!isLoadingMore && hasMore && !searchQuery.trim() && !isLoading) {
-      const nextPage = page + 1;
-      console.log('[Genres] Loading more, page:', nextPage);
-      setPage(nextPage);
-      fetchGenres(nextPage, false);
-    }
-  }, [isLoadingMore, hasMore, page, fetchGenres, searchQuery, isLoading]);
+    fetchGenres();
+  }, [fetchGenres]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    setPage(1);
-    await fetchGenres(1, true);
+    await fetchGenres(true); // Force refresh
     setRefreshing(false);
   };
 
@@ -191,16 +156,6 @@ export default function GenresTabScreen() {
       <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
     </TouchableOpacity>
   );
-
-  const renderFooter = () => {
-    if (!isLoadingMore) return null;
-    return (
-      <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color={colors.primary} />
-        <Text style={styles.loadingMoreText}>{t('loading_more', 'Loading more...')}</Text>
-      </View>
-    );
-  };
 
   return (
     <View style={styles.mainContainer}>
@@ -255,9 +210,6 @@ export default function GenresTabScreen() {
                   tintColor={colors.primary}
                 />
               }
-              onEndReached={loadMore}
-              onEndReachedThreshold={0.3}
-              ListFooterComponent={renderFooter}
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                   <Text style={styles.emptyText}>
@@ -358,17 +310,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: typography.sizes.md,
-    color: colors.textMuted,
-  },
-  footerLoader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    gap: spacing.sm,
-  },
-  loadingMoreText: {
-    fontSize: typography.sizes.sm,
     color: colors.textMuted,
   },
 });
