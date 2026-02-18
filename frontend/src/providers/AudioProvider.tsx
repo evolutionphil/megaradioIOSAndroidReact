@@ -414,12 +414,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setPlaybackState('playing');
 
       console.log('[AudioProvider] ========== NOW PLAYING ==========');
-        } catch (e) {
-          console.log('[AudioProvider] Fallback metadata update also failed:', e);
-        }
-      }
-
-      console.log('[AudioProvider] ========== NOW PLAYING ==========');
 
       // Background tasks
       userService.recordRecentlyPlayed(station._id).catch(() => {});
