@@ -368,6 +368,24 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         console.log('[AudioProvider] Failed to save last played:', e);
       }
 
+      // STEP 7: Start statistics tracking
+      console.log('[AudioProvider] STEP 7: Starting statistics tracking...');
+      try {
+        // End any previous session first
+        await statsService.endSession();
+        // Start new session
+        await statsService.startSession(
+          station._id,
+          station.name,
+          station.favicon || station.logo
+        );
+        // Start the tracking interval
+        startStatsTracking();
+        console.log('[AudioProvider] Stats session started for:', station.name);
+      } catch (e) {
+        console.log('[AudioProvider] Failed to start stats session:', e);
+      }
+
     } catch (error) {
       console.error('[AudioProvider] Play failed:', error);
       setError(error instanceof Error ? error.message : 'Failed to play');
