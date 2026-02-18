@@ -21,8 +21,7 @@ import api from '../../src/services/api';
 import type { Genre } from '../../src/types';
 
 const GENRES_CACHE_KEY = '@megaradio_genres_cache';
-const GENRES_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
-const PAGE_SIZE = 30;
+const GENRES_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days - genres don't change often
 
 // Get cache key with country code
 const getGenresCacheKey = (countryCode?: string | null) => {
