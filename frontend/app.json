@@ -2,7 +2,7 @@
   "expo": {
     "name": "MegaRadio",
     "slug": "megaradio",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": ["megaradio", "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"],
