@@ -608,6 +608,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  playButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#1E1E1E',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playButtonActive: {
+    backgroundColor: '#FF4199',
+  },
 
   // Loading
   loadingContainer: {
