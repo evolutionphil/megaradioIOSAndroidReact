@@ -11,8 +11,13 @@ export const NotificationHandler: React.FC = () => {
   const hasRegistered = useRef(false);
   const { isAuthenticated, user } = useAuthStore();
   
-  // Register for push notifications
+  // Skip all notification logic on web platform
+  const isWeb = Platform.OS === 'web';
+  
+  // Register for push notifications (native only)
   useEffect(() => {
+    if (isWeb) return; // Skip on web
+    
     const registerForNotifications = async () => {
       // Only register once per app session
       if (hasRegistered.current) return;
@@ -42,10 +47,12 @@ export const NotificationHandler: React.FC = () => {
     };
     
     registerForNotifications();
-  }, [isAuthenticated, user?._id]);
+  }, [isAuthenticated, user?._id, isWeb]);
   
-  // Re-send token when user logs in
+  // Re-send token when user logs in (native only)
   useEffect(() => {
+    if (isWeb) return; // Skip on web
+    
     const updateTokenWithUser = async () => {
       if (!isAuthenticated || !user?._id) return;
       
@@ -57,10 +64,15 @@ export const NotificationHandler: React.FC = () => {
     };
     
     updateTokenWithUser();
-  }, [isAuthenticated, user?._id]);
+  }, [isAuthenticated, user?._id, isWeb]);
   
-  // Set up notification listeners
+  // Set up notification listeners (native only)
   useEffect(() => {
+    if (isWeb) {
+      console.log('[NotificationHandler] Skipping notification setup on web');
+      return;
+    }
+    
     console.log('[NotificationHandler] Setting up notification listeners...');
     
     // Listener for when notification is received while app is in foreground
@@ -90,20 +102,25 @@ export const NotificationHandler: React.FC = () => {
       }
     );
     
-    // Handle notification that opened the app (cold start)
+    // Handle notification that opened the app (cold start) - native only
     const checkInitialNotification = async () => {
-      const lastNotificationResponse = await Notifications.getLastNotificationResponseAsync();
-      
-      if (lastNotificationResponse) {
-        console.log('[NotificationHandler] App opened from notification');
-        const data = lastNotificationResponse.notification.request.content.data;
+      try {
+        const lastNotificationResponse = await Notifications.getLastNotificationResponseAsync();
         
-        // Wait a bit for navigation to be ready
-        setTimeout(() => {
-          if (data) {
-            pushNotificationService.handleNotificationNavigation(data);
-          }
-        }, 1000);
+        if (lastNotificationResponse) {
+          console.log('[NotificationHandler] App opened from notification');
+          const data = lastNotificationResponse.notification.request.content.data;
+          
+          // Wait a bit for navigation to be ready
+          setTimeout(() => {
+            if (data) {
+              pushNotificationService.handleNotificationNavigation(data);
+            }
+          }, 1000);
+        }
+      } catch (error) {
+        // This method is not available on web, silently ignore
+        console.log('[NotificationHandler] getLastNotificationResponseAsync not available');
       }
     };
     
@@ -115,7 +132,7 @@ export const NotificationHandler: React.FC = () => {
       foregroundSubscription();
       responseSubscription();
     };
-  }, []);
+  }, [isWeb]);
   
   // This component doesn't render anything
   return null;
