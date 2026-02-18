@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,12 +16,13 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
-import { useGenres, usePrecomputedGenres } from '../../src/hooks/useQueries';
 import { useLocationStore } from '../../src/store/locationStore';
+import api from '../../src/services/api';
 import type { Genre } from '../../src/types';
 
 const GENRES_CACHE_KEY = '@megaradio_genres_cache';
 const GENRES_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+const PAGE_SIZE = 30;
 
 // Get cache key with country code
 const getGenresCacheKey = (countryCode?: string | null) => {
@@ -33,67 +34,110 @@ export default function GenresTabScreen() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [cachedGenres, setCachedGenres] = useState<Genre[]>([]);
-  const { country, countryCode } = useLocationStore();
+  const { countryCode } = useLocationStore();
 
-  // Use precomputed genres with country filter (countryCode = ISO code like "TR", "US")
-  const { data: genresData, isLoading, refetch } = usePrecomputedGenres(countryCode || undefined);
+  // Pagination state
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalGenres, setTotalGenres] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  // Extract genres from API response
-  const apiGenres = genresData?.data || [];
+  // Fetch genres with pagination
+  const fetchGenres = useCallback(async (pageNum: number, reset: boolean = false) => {
+    try {
+      if (pageNum === 1) {
+        setIsLoading(true);
+      } else {
+        setIsLoadingMore(true);
+      }
 
-  // Refetch when countryCode changes
-  useEffect(() => {
-    console.log('[Genres] Country changed, refetching...', countryCode);
-    refetch();
-  }, [countryCode]);
+      const params: any = {
+        limit: PAGE_SIZE,
+        page: pageNum,
+      };
+      
+      if (countryCode) {
+        params.country = countryCode;
+      }
 
-  // Load cached genres on mount and when country changes
+      const response = await api.get('https://themegaradio.com/api/genres', { params });
+      const data = response.data;
+
+      const newGenres = data.data || data.genres || [];
+      const total = data.total || data.count || 0;
+
+      setTotalGenres(total);
+      setHasMore(newGenres.length === PAGE_SIZE && (reset ? newGenres.length : genres.length + newGenres.length) < total);
+
+      if (reset) {
+        setGenres(newGenres);
+        // Cache first page
+        try {
+          const cacheKey = getGenresCacheKey(countryCode);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify({
+            data: newGenres,
+            total,
+            timestamp: Date.now(),
+          }));
+        } catch (e) {
+          console.log('[Genres] Cache error:', e);
+        }
+      } else {
+        setGenres(prev => [...prev, ...newGenres]);
+      }
+    } catch (error) {
+      console.error('[Genres] Fetch error:', error);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
+  }, [countryCode, genres.length]);
+
+  // Load cached genres on mount
   useEffect(() => {
     const loadCachedGenres = async () => {
       try {
         const cacheKey = getGenresCacheKey(countryCode);
         const cached = await AsyncStorage.getItem(cacheKey);
         if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
+          const { data, total, timestamp } = JSON.parse(cached);
           const isStale = Date.now() - timestamp > GENRES_CACHE_TTL;
           if (!isStale && Array.isArray(data)) {
-            setCachedGenres(data);
-          } else {
-            setCachedGenres([]);
+            setGenres(data);
+            setTotalGenres(total || data.length);
+            setHasMore(data.length < (total || 0));
           }
-        } else {
-          setCachedGenres([]);
         }
       } catch (error) {
         console.log('[Genres] Error loading cache:', error);
-        setCachedGenres([]);
       }
     };
     loadCachedGenres();
   }, [countryCode]);
 
-  // Cache genres when API data arrives
+  // Initial fetch
   useEffect(() => {
-    if (apiGenres.length > 0) {
-      const cacheGenres = async () => {
-        try {
-          const cacheKey = getGenresCacheKey(countryCode);
-          await AsyncStorage.setItem(cacheKey, JSON.stringify({
-            data: apiGenres,
-            timestamp: Date.now(),
-          }));
-          setCachedGenres(apiGenres);
-        } catch (error) {
-          console.log('[Genres] Error caching:', error);
-        }
-      };
-      cacheGenres();
-    }
-  }, [apiGenres, countryCode]);
+    setPage(1);
+    fetchGenres(1, true);
+  }, [countryCode]);
 
-  // Use API genres if available, otherwise use cached
-  const genres = apiGenres.length > 0 ? apiGenres : cachedGenres;
+  // Load more when reaching end
+  const loadMore = useCallback(() => {
+    if (!isLoadingMore && hasMore && !searchQuery.trim()) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchGenres(nextPage, false);
+    }
+  }, [isLoadingMore, hasMore, page, fetchGenres, searchQuery]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setPage(1);
+    await fetchGenres(1, true);
+    setRefreshing(false);
+  };
 
   // Sort genres by station count (descending) and filter by search
   const filteredAndSortedGenres = useMemo(() => {
@@ -115,12 +159,6 @@ export default function GenresTabScreen() {
     
     return result;
   }, [genres, searchQuery]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
 
   // Navigate directly to genre-detail page
   const handleGenrePress = (genre: Genre) => {
@@ -147,6 +185,16 @@ export default function GenresTabScreen() {
     </TouchableOpacity>
   );
 
+  const renderFooter = () => {
+    if (!isLoadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={colors.primary} />
+        <Text style={styles.loadingMoreText}>{t('loading_more', 'Loading more...')}</Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.mainContainer}>
       <LinearGradient colors={gradients.background as any} style={styles.gradient}>
@@ -154,6 +202,11 @@ export default function GenresTabScreen() {
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>{t('genres', 'Genres')}</Text>
+            {totalGenres > 0 && (
+              <Text style={styles.totalCount}>
+                {genres.length} / {totalGenres}
+              </Text>
+            )}
           </View>
 
           {/* Search Bar */}
@@ -195,6 +248,9 @@ export default function GenresTabScreen() {
                   tintColor={colors.primary}
                 />
               }
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.3}
+              ListFooterComponent={renderFooter}
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                   <Text style={styles.emptyText}>
@@ -222,6 +278,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
   },
@@ -229,6 +288,10 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
+  },
+  totalCount: {
+    fontSize: typography.sizes.sm,
+    color: colors.textMuted,
   },
   searchContainer: {
     paddingHorizontal: spacing.lg,
@@ -288,6 +351,17 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: typography.sizes.md,
+    color: colors.textMuted,
+  },
+  footerLoader: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    gap: spacing.sm,
+  },
+  loadingMoreText: {
+    fontSize: typography.sizes.sm,
     color: colors.textMuted,
   },
 });
