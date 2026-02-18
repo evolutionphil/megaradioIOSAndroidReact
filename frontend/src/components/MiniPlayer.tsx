@@ -15,6 +15,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { ChevronUpIcon, HeartOutlineIcon, HeartFilledIcon, PauseIcon, PlayIcon } from './TabBarIcons';
+import { getStationLogoUrl } from '../utils/logoUtils';
 
 // Check if we're on web
 const isWeb = Platform.OS === 'web';
@@ -45,15 +46,8 @@ export const MiniPlayer: React.FC = () => {
     return null;
   }
 
-  // Get logo URL
-  const getLogoUrl = () => {
-    if (currentStation.logoAssets?.webp96) {
-      return `https://themegaradio.com/station-logos/${currentStation.logoAssets.folder}/${currentStation.logoAssets.webp96}`;
-    }
-    return currentStation.favicon || currentStation.logo || null;
-  };
-
-  const logoUrl = getLogoUrl();
+  // Get logo URL using shared utility
+  const logoUrl = getStationLogoUrl(currentStation);
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
 
