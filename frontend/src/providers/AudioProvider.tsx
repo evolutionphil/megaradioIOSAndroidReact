@@ -138,7 +138,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, []);
 
-  // Fetch now playing helper
+  // Fetch now playing helper - also updates lock screen metadata
   const fetchNowPlaying = useCallback(async (stationId: string) => {
     const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
     
@@ -148,6 +148,23 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         const metadata = await response.json();
         if (metadata && (metadata.title || metadata.artist)) {
           setNowPlaying(metadata);
+          
+          // Update lock screen with current song info
+          try {
+            const station = usePlayerStore.getState().currentStation;
+            if (station && playerRef.current) {
+              const logoUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
+              playerRef.current.updateLockScreenMetadata({
+                title: metadata.title || station.name,
+                artist: metadata.artist || station.country || 'Live Radio',
+                albumTitle: station.name,
+                artworkUrl: logoUrl,
+              });
+              console.log('[AudioProvider] Lock screen updated with now playing:', metadata.title);
+            }
+          } catch (e) {
+            console.log('[AudioProvider] Could not update lock screen:', e);
+          }
           return;
         }
       }
@@ -157,6 +174,20 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const metadata = await stationService.getNowPlaying(stationId);
       if (metadata) {
         setNowPlaying(metadata);
+        
+        // Update lock screen with current song info
+        try {
+          const station = usePlayerStore.getState().currentStation;
+          if (station && playerRef.current) {
+            const logoUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
+            playerRef.current.updateLockScreenMetadata({
+              title: metadata.title || station.name,
+              artist: metadata.artist || station.country || 'Live Radio',
+              albumTitle: station.name,
+              artworkUrl: logoUrl,
+            });
+          }
+        } catch (e) {}
       }
     } catch {}
   }, [setNowPlaying]);
