@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
   // Results List
   resultsList: {
     paddingHorizontal: 15,
-    paddingBottom: 100,
+    paddingBottom: 180, // Extra padding for MiniPlayer
     gap: 15,
   },
 
