@@ -26,6 +26,7 @@ import { useLanguageStore } from '../../src/store/languageStore';
 import api from '../../src/services/api';
 import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
+import appService, { AppInfo } from '../../src/services/appService';
 
 // Language display names
 const LANGUAGE_NAMES: Record<string, string> = {
