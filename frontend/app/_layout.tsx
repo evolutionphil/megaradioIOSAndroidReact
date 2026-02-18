@@ -205,7 +205,7 @@ export default function RootLayout() {
 
   // Show animated custom splash screen
   if (showSplash) {
-    return <AnimatedSplash onAnimationEnd={() => setShowSplash(false)} />;
+    return <AnimatedSplash onAnimationComplete={() => setShowSplash(false)} />;
   }
 
   return (
