@@ -134,7 +134,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isGlobal && styles.containerGlobal]}>
       <View style={styles.content}>
         {/* Chevron Up Button */}
         <TouchableOpacity style={styles.chevronButton} onPress={handlePress}>
