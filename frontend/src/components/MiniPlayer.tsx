@@ -60,7 +60,11 @@ const isWeb = Platform.OS === 'web';
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
 const MINI_PLAYER_HEIGHT = 70;
 
-export const MiniPlayer: React.FC = () => {
+interface MiniPlayerProps {
+  isGlobal?: boolean; // If true, position at bottom: 0 (for non-tab screens)
+}
+
+export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   const router = useRouter();
   const {
     currentStation,
