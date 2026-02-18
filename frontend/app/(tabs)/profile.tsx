@@ -628,17 +628,17 @@ export default function ProfileScreen() {
 
         {/* About */}
         <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
-        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'about' } })}>
+        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'about' } } as any)}>
           <Text style={s.rowTitle}>{t('about_us', 'About Us')}</Text>
           <Ionicons name="chevron-forward" size={20} color="#666" />
         </TouchableOpacity>
         <View style={s.divider} />
-        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'privacy' } })}>
+        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'privacy' } } as any)}>
           <Text style={s.rowTitle}>{t('privacy_policy', 'Privacy Policy')}</Text>
           <Ionicons name="chevron-forward" size={20} color="#666" />
         </TouchableOpacity>
         <View style={s.divider} />
-        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'terms' } })}>
+        <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'terms' } } as any)}>
           <Text style={s.rowTitle}>{t('terms_conditions', 'Terms and Conditions')}</Text>
           <Ionicons name="chevron-forward" size={20} color="#666" />
         </TouchableOpacity>
