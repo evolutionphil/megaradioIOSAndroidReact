@@ -64,9 +64,25 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const preloadStarted = useRef(false);
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
   const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
+
+  // Handle notification icon press
+  const handleNotificationPress = useCallback(() => {
+    if (!isAuthenticated) {
+      // Redirect to login with return URL
+      router.push({
+        pathname: '/auth-options',
+        params: {
+          returnTo: '/notifications',
+          returnParams: JSON.stringify({})
+        }
+      });
+    } else {
+      router.push('/notifications');
+    }
+  }, [isAuthenticated, router]);
 
   // Debug avatar
   useEffect(() => {
