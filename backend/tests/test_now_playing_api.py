@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 
 # Backend URL from environment - DO NOT add default
-BASE_URL = os.environ.get('EXPO_PUBLIC_BACKEND_URL', 'https://radio-player-app-7.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('EXPO_PUBLIC_BACKEND_URL', 'https://streaming-preview-16.preview.emergentagent.com').rstrip('/')
 
 # Sample station IDs for testing
 SAMPLE_STATION_IDS = [
