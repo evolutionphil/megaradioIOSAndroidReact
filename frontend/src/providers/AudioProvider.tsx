@@ -98,6 +98,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       statsIntervalRef.current = null;
       console.log('[AudioProvider] Stats: Stopped tracking interval');
     }
+    if (nowPlayingIntervalRef.current) {
+      clearInterval(nowPlayingIntervalRef.current);
+      nowPlayingIntervalRef.current = null;
+    }
   }, []);
 
   // Cleanup on unmount
