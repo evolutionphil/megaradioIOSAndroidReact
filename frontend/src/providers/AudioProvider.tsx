@@ -359,45 +359,57 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       listeningStartTime = new Date();
       setPlaybackState('playing');
 
-      // STEP 6: Update Lock Screen / Control Center metadata
-      console.log('[AudioProvider] STEP 6: Updating lock screen metadata...');
+      // STEP 6: Setup Lock Screen / Control Center / Notification Bar
+      console.log('[AudioProvider] STEP 6: Setting up lock screen controls...');
       try {
         // Get station logo URL - ensure it's a valid HTTPS URL
         let artworkUrl = 'https://themegaradio.com/logo.png'; // Default fallback
         
-        // Check various logo sources
-        if (station.favicon && station.favicon.startsWith('http')) {
-          artworkUrl = station.favicon;
-        } else if (station.logo && station.logo.startsWith('http')) {
+        // Check various logo sources - prioritize high quality images
+        if (station.logo && station.logo.startsWith('http')) {
           artworkUrl = station.logo;
+        } else if (station.favicon && station.favicon.startsWith('http')) {
+          artworkUrl = station.favicon;
         } else if (station.logo && station.logo.startsWith('/')) {
           artworkUrl = `https://themegaradio.com${station.logo}`;
         } else if (station.favicon && station.favicon.startsWith('/')) {
           artworkUrl = `https://themegaradio.com${station.favicon}`;
         }
         
-        // Ensure HTTPS
+        // Ensure HTTPS for iOS App Transport Security
         if (artworkUrl.startsWith('http://')) {
           artworkUrl = artworkUrl.replace('http://', 'https://');
         }
         
-        console.log('[AudioProvider] Artwork URL:', artworkUrl);
+        console.log('[AudioProvider] Lock Screen Artwork URL:', artworkUrl);
         
-        // Update lock screen metadata for iOS Control Center / Android notification
-        playerRef.current.updateLockScreenMetadata({
+        // First, activate the player for lock screen controls
+        // This is REQUIRED for iOS Control Center and Android notification bar
+        await playerRef.current.setActiveForLockScreen(true, {
           title: station.name,
-          artist: station.country || 'MegaRadio',
-          albumTitle: 'MegaRadio',
+          artist: 'MegaRadio',
+          album: station.country || 'Live Radio',
           artworkUrl: artworkUrl,
         });
         
-        console.log('[AudioProvider] Lock screen metadata updated:', {
+        console.log('[AudioProvider] Lock screen activated with metadata:', {
           title: station.name,
-          artist: station.country || 'MegaRadio',
+          artist: 'MegaRadio',
+          album: station.country || 'Live Radio',
           artworkUrl: artworkUrl
         });
       } catch (metaError) {
-        console.log('[AudioProvider] Could not update metadata:', metaError);
+        console.log('[AudioProvider] Could not setup lock screen:', metaError);
+        // Fallback: try updateLockScreenMetadata only
+        try {
+          playerRef.current.updateLockScreenMetadata({
+            title: station.name,
+            artist: 'MegaRadio',
+            album: station.country || 'Live Radio',
+          });
+        } catch (e) {
+          console.log('[AudioProvider] Fallback metadata update also failed:', e);
+        }
       }
 
       console.log('[AudioProvider] ========== NOW PLAYING ==========');
