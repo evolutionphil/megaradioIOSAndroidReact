@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, typography } from '../src/constants/theme';
-import appService, { AppPage } from '../src/services/appService';
+import appService, { AppPage, AppPages } from '../src/services/appService';
 
 type PageType = 'about' | 'terms' | 'privacy';
 
