@@ -191,14 +191,27 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           try {
             const station = usePlayerStore.getState().currentStation;
             if (station && playerRef.current) {
-              const logoUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
+              // Get proper artwork URL
+              let artworkUrl = 'https://themegaradio.com/logo.png';
+              if (station.favicon && station.favicon.startsWith('http')) {
+                artworkUrl = station.favicon;
+              } else if (station.logo && station.logo.startsWith('http')) {
+                artworkUrl = station.logo;
+              } else if (station.logo && station.logo.startsWith('/')) {
+                artworkUrl = `https://themegaradio.com${station.logo}`;
+              }
+              
+              // Build display text
+              const songTitle = metadata.title || station.name;
+              const artistName = metadata.artist || station.name;
+              
               playerRef.current.updateLockScreenMetadata({
-                title: metadata.title || station.name,
-                artist: metadata.artist || station.country || 'Live Radio',
+                title: songTitle,
+                artist: artistName,
                 albumTitle: station.name,
-                artworkUrl: logoUrl,
+                artworkUrl: artworkUrl,
               });
-              console.log('[AudioProvider] Lock screen updated with now playing:', metadata.title);
+              console.log('[AudioProvider] Lock screen updated with now playing:', songTitle, '-', artistName);
             }
           } catch (e) {
             console.log('[AudioProvider] Could not update lock screen:', e);
@@ -217,12 +230,23 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         try {
           const station = usePlayerStore.getState().currentStation;
           if (station && playerRef.current) {
-            const logoUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
+            let artworkUrl = 'https://themegaradio.com/logo.png';
+            if (station.favicon && station.favicon.startsWith('http')) {
+              artworkUrl = station.favicon;
+            } else if (station.logo && station.logo.startsWith('http')) {
+              artworkUrl = station.logo;
+            } else if (station.logo && station.logo.startsWith('/')) {
+              artworkUrl = `https://themegaradio.com${station.logo}`;
+            }
+            
+            const songTitle = metadata.title || station.name;
+            const artistName = metadata.artist || station.name;
+            
             playerRef.current.updateLockScreenMetadata({
-              title: metadata.title || station.name,
-              artist: metadata.artist || station.country || 'Live Radio',
+              title: songTitle,
+              artist: artistName,
               albumTitle: station.name,
-              artworkUrl: logoUrl,
+              artworkUrl: artworkUrl,
             });
           }
         } catch (e) {}
