@@ -10,6 +10,7 @@ import {
   Dimensions,
   ScrollView,
   Platform,
+  PanResponder,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
@@ -30,8 +31,9 @@ import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
 import CastModal from '../src/components/CastModal';
 import type { Station } from '../src/types';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const FALLBACK_LOGO = require('../assets/megaradio-icon.png');
+const DISMISS_THRESHOLD = 150; // Minimum swipe distance to dismiss
 // 3 column grid calculation
 const LOGO_SIZE = 190;
 const GRID_PADDING = 16;
