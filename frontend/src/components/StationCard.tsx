@@ -5,6 +5,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, borderRadius, spacing, typography, shadows, gradients } from '../constants/theme';
 import type { Station } from '../types';
 
+// Default station logo URL - fallback when no logo available
+const DEFAULT_STATION_LOGO = 'https://themegaradio.com/images/default-station.png';
+
 interface StationCardProps {
   station: Station;
   onPress: (station: Station) => void;
@@ -22,44 +25,41 @@ export const StationCard: React.FC<StationCardProps> = ({
   style,
   variant = 'default',
 }) => {
-  // Helper function to build reliable logo URL
-  const getLogoUrl = (): string | null => {
+  // Helper function to build reliable logo URL with fallback
+  const getLogoUrl = (): string => {
     try {
+      // Priority 1: logoAssets (best quality, our own CDN)
       if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
         const folder = encodeURIComponent(station.logoAssets.folder);
         const file = encodeURIComponent(station.logoAssets.webp96);
         return `https://themegaradio.com/station-logos/${folder}/${file}`;
       }
-      if (station.favicon) {
+      
+      // Priority 2: favicon field
+      if (station.favicon && station.favicon.trim()) {
         const favicon = station.favicon.trim();
         if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-          try {
-            new URL(favicon);
-            return favicon;
-          } catch {
-            return null;
-          }
+          return favicon;
         } else if (favicon.startsWith('/')) {
           return `https://themegaradio.com${favicon}`;
         }
       }
-      if (station.logo) {
+      
+      // Priority 3: logo field
+      if (station.logo && station.logo.trim()) {
         const logo = station.logo.trim();
         if (logo.startsWith('http://') || logo.startsWith('https://')) {
-          try {
-            new URL(logo);
-            return logo;
-          } catch {
-            return null;
-          }
+          return logo;
         } else if (logo.startsWith('/')) {
           return `https://themegaradio.com${logo}`;
         }
       }
     } catch (e) {
-      // Silently fail for invalid URLs
+      console.log('[StationCard] Logo URL error:', e);
     }
-    return null;
+    
+    // Fallback: Default station logo
+    return DEFAULT_STATION_LOGO;
   };
 
   const logoUrl = getLogoUrl();
