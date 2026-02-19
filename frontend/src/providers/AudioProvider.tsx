@@ -341,48 +341,49 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [getArtworkUrl]);
 
   // Fetch now playing helper - updates both UI state and lock screen
+  // API returns: { station: { id, name, url }, metadata: { title?, artist?, station?, genre? } }
   const fetchNowPlaying = useCallback(async (stationId: string) => {
     const station = usePlayerStore.getState().currentStation;
     if (!station) return;
     
     try {
       // Use the correct metadata API endpoint via stationService
-      const metadata = await stationService.getNowPlaying(stationId);
-      console.log('[AudioProvider] Now Playing response:', metadata);
+      const response = await stationService.getNowPlaying(stationId);
+      console.log('[AudioProvider] Now Playing response:', response);
       
-      // Check if we have valid metadata
       // API returns { station: {...}, metadata: {...} } format
-      const metadataObj = metadata?.metadata || metadata;
+      const metadataObj = response?.metadata;
       
-      if (metadataObj && (metadataObj.title || metadataObj.artist || metadataObj.song)) {
-        // Parse song info - API might return "Artist - Song" format
-        let songTitle = metadataObj.song || metadataObj.title || '';
-        let artistName = metadataObj.artist || '';
+      // Check if we have valid metadata (title or artist)
+      if (metadataObj && (metadataObj.title || metadataObj.artist)) {
+        const songTitle = metadataObj.title || station.name;
+        const artistName = metadataObj.artist || '';
+        const genre = metadataObj.genre || '';
         
-        // If title contains " - ", split it into artist and song
-        if (songTitle && songTitle.includes(' - ') && !artistName) {
-          const parts = songTitle.split(' - ');
-          artistName = parts[0].trim();
-          songTitle = parts.slice(1).join(' - ').trim();
+        // Build display text based on available data
+        let displayText = songTitle;
+        if (artistName && songTitle !== station.name) {
+          displayText = `${artistName} - ${songTitle}`;
         }
         
-        // Fallback to station name if no song title
-        if (!songTitle) {
-          songTitle = station.name;
-        }
-        if (!artistName) {
-          artistName = 'MegaRadio';
-        }
+        console.log('[AudioProvider] Metadata found:', { title: songTitle, artist: artistName, genre });
         
-        // Update UI state
+        // Update UI state with full metadata
         setNowPlaying({
           title: songTitle,
+          artist: artistName,
+          song: songTitle,
           station: station.name,
+          album: genre,
           timestamp: Date.now(),
         });
         
         // Update lock screen on native
-        await updateLockScreenMetadata(station, songTitle, artistName);
+        await updateLockScreenMetadata(
+          station, 
+          songTitle, 
+          artistName || station.country || 'MegaRadio'
+        );
         return;
       }
       
