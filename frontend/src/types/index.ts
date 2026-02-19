@@ -9,13 +9,15 @@ export interface Station {
   favicon?: string;
   logo?: string;
   logoAssets?: {
+    folder?: string;
     webp96?: string;
     webp192?: string;
     webp384?: string;
   };
   tags?: string;
   country?: string;
-  countrycode?: string;
+  countrycode?: string;  // API returns lowercase
+  countryCode?: string;  // Support both cases
   state?: string;
   language?: string;
   languagecodes?: string;
