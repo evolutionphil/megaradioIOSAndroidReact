@@ -219,6 +219,7 @@ export default function RootLayout() {
           <AudioProvider>
             <PlayAtLoginHandler />
             <NotificationHandler />
+            <CarPlayHandler />
             <View style={styles.container}>
               <StatusBar style="light" />
               <Stack
