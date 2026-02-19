@@ -487,9 +487,13 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     console.log('[AudioProvider] New PlayID:', myPlayId);
 
     try {
-      // STEP 1: STOP CURRENT PLAYBACK
+      // STEP 1: STOP CURRENT PLAYBACK & CLEAR OLD METADATA
       console.log('[AudioProvider] STEP 1: Stopping current playback...');
       await TrackPlayer.reset();
+      
+      // IMPORTANT: Clear previous station's metadata immediately
+      // This prevents showing old station's info while loading new one
+      setNowPlaying(null);
 
       // Record listening time for previous station
       if (listeningStartTime && currentPlayingStationId) {
