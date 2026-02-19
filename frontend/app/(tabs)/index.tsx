@@ -519,13 +519,12 @@ export default function HomeScreen() {
 
           {/* Discoverable Genres Swiper - Horizontal Carousel */}
           {discoverableGenresList.length > 0 && (
-            <FlatList
+            <ScrollView
               horizontal
-              data={discoverableGenresList}
-              keyExtractor={(item: any) => item._id}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING, gap: 12, marginBottom: spacing.lg }}
-              renderItem={({ item: genre, index }) => {
+            >
+              {discoverableGenresList.map((genre: any, index: number) => {
                 // Use API image - discoverableImage from API
                 const apiImageUrl = genre.discoverableImage 
                   ? `https://themegaradio.com${genre.discoverableImage}`
@@ -543,6 +542,7 @@ export default function HomeScreen() {
                 
                 return (
                   <TouchableOpacity 
+                    key={genre._id}
                     style={styles.discoverableBannerItem}
                     onPress={() => handleGenrePress(genre)}
                   >
@@ -571,8 +571,8 @@ export default function HomeScreen() {
                     </View>
                   </TouchableOpacity>
                 );
-              }}
-            />
+              })}
+            </ScrollView>
           )}
 
           {/* Favorites From Users - Real API data with specified dimensions */}
