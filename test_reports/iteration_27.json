@@ -1,0 +1,100 @@
+{
+  "summary": "Backend-only testing for Android radio streaming issues. Tested HTTP streams (Arabesk FM, PENNY live, Austrian Rock Radio) and verified API endpoints, stream resolution, and app configuration. All 22 backend tests PASSED - APIs return correct data, streams are accessible, usesCleartextTraffic is properly configured.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/stream-proxy (themegaradio.com)",
+        "issue": "Proxy endpoint timed out during testing - may have issues",
+        "priority": "LOW",
+        "note": "Not needed for native Android apps which can play HTTP directly with usesCleartextTraffic=true"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "arabesk_fm": {
+      "api_status": "PASS - Station found, url and urlResolved both HTTP",
+      "stream_accessible": "PASS - Returns 200 with audio/aacp content-type",
+      "icy_metadata": "PASS - Returns 'Artik Gelsene' by 'Gokhan Guney'",
+      "exoplayer_compatible": "PASS - audio/aacp (AAC+) supported"
+    },
+    "penny_live": {
+      "api_status": "PASS - Station found, url and urlResolved both HTTP",
+      "stream_accessible": "PASS - Returns 200 with audio/mpeg content-type",
+      "icy_metadata": "PASS - Returns 'Natasha Bedingfield-Unwritten'",
+      "exoplayer_compatible": "PASS - audio/mpeg supported"
+    },
+    "austrian_rock_radio": {
+      "api_status": "PASS - Station found (search: 'Austria rock' not 'Austria Rock Radio')",
+      "stream_accessible": "PASS - Returns 200 with audio/mpeg content-type",
+      "exoplayer_compatible": "PASS - audio/mpeg supported"
+    },
+    "android_config": {
+      "usesCleartextTraffic": "PASS - Set to true in app.json",
+      "permissions": "PASS - INTERNET, ACCESS_NETWORK_STATE, FOREGROUND_SERVICE_MEDIA_PLAYBACK all present"
+    },
+    "url_resolution_logic": {
+      "urlResolved_handling": "PASS - Code handles both camelCase (API) and snake_case",
+      "playlist_detection": "PASS - Correctly identifies .pls/.m3u/.m3u8/.asx",
+      "fallback_mechanism": "PASS - Builds candidates array for retry on failure"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_android_stream_issues.py",
+    "/app/test_reports/pytest/pytest_android_stream_issues.xml"
+  ],
+  "action_items": [
+    "VERIFY NATIVE BUILD: usesCleartextTraffic must be set in the actual APK. Rebuild Android app with 'expo build:android' or 'eas build'",
+    "CHECK LOGS ON DEVICE: Run 'adb logcat *:E | grep -i exoplayer' during playback failure to see actual error",
+    "TEST SPECIFIC STATIONS: Test Arabesk FM, PENNY live, Austrian Rock Radio on actual Android device after rebuild",
+    "VERIFY EXPO CONFIG PLUGIN: Ensure expo-build-properties plugin is applying usesCleartextTraffic correctly"
+  ],
+  "critical_code_review_comments": [
+    "AudioProvider.tsx correctly handles urlResolved (camelCase) from API - GOOD",
+    "Fallback mechanism is in place via tryNextCandidate() - GOOD",
+    "TrackPlayer setup looks correct with isLiveStream: true - GOOD",
+    "POTENTIAL ISSUE: TrackPlayer.setupPlayer() iosCategoryMode is 'spokenAudio' - consider changing to 'default' for music streams",
+    "VERIFY: After app.json changes, the Android app MUST be rebuilt for usesCleartextTraffic to take effect"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_android_stream_issues.py"
+  ],
+  "success_rate": {
+    "backend": "100% (22/22 tests passed)",
+    "frontend": "N/A - backend only testing"
+  },
+  "seed_data_creation": "None",
+  "test_credentials": {
+    "api_key": "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw"
+  },
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All backend APIs work correctly. HTTP streams (Arabesk FM, PENNY live, Austrian Rock Radio) are accessible with proper audio content types compatible with ExoPlayer. usesCleartextTraffic is correctly set in app.json. Issue is likely that the Android build needs to be rebuilt for the config change to take effect.",
+  "rca_of_the_issue": {
+    "issue": "Many radio stations NOT working on Android but work on iOS and web",
+    "stations_tested": "Arabesk FM (HTTP), PENNY live (HTTP), Austrian Rock Radio (HTTP)",
+    "api_status": "ALL WORKING - Streams accessible, return audio content types, ICY metadata works",
+    "config_status": "CORRECT - usesCleartextTraffic: true in app.json",
+    "likely_root_cause": [
+      "1. Android app may not have been rebuilt after app.json usesCleartextTraffic was added",
+      "2. ExoPlayer cleartext traffic requires manifest update which only happens at build time",
+      "3. iOS ATS settings were recently added (iteration_26) - similar rebuild needed for iOS"
+    ],
+    "verification_steps": [
+      "1. Rebuild Android app: 'eas build --platform android' or 'expo build:android'",
+      "2. Install new APK on test device",
+      "3. Test Arabesk FM, PENNY live, Austrian Rock Radio",
+      "4. Check device logs: 'adb logcat *:E | grep -i cleartext'"
+    ],
+    "additional_debug": [
+      "If still failing after rebuild, check adb logcat for ExoPlayer errors",
+      "Verify AndroidManifest.xml in built APK has usesCleartextTraffic='true'",
+      "Consider adding network_security_config.xml for fine-grained HTTP domain control"
+    ]
+  }
+}
