@@ -3,171 +3,144 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 
 **PRODUCT REQUIREMENTS:**
 -   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
--   **Core Features:** Robust audio streaming, Favorites, Recently Played, Profile.
--   **Authentication:** All API requests must include . The user also requested Google and Apple social logins.
--   **Build & Deployment:** The user wants to build the application for iOS and submit it to the App Store.
+-   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile.
+-   **Authentication:** All API requests must include . Google and Apple social logins were also requested.
+-   **Build & Deployment:** The user wants to build the application for iOS and Android and submit it to the respective app stores.
+-   **Platform Expansion:** The user has requested support for CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is in a stable, buildable state using Expo's Legacy Architecture. A significant number of features and bug fixes were implemented in this session.
-
--   **Core Functionality:** Client-side A-Z sorting has been implemented as a fix for a non-functional backend sort. The Play at Login feature is fully functional, automatically playing a station on app startup based on user settings. Statistics tracking is integrated to monitor listening duration.
--   **UI/UX Improvements:** The search results UI, discoverable genres text alignment, and car mode UI have been fixed. A swipe down to dismiss gesture was added to the player screen. A new About Us page design was implemented.
--   **Navigation & Flow:** Guest user flows for Follow and Notifications have been improved to redirect to the login page and then return to the original screen. Static pages (About, Terms, Privacy) are now handled within the app instead of linking to the external website.
--   **Sharing:** An advanced sharing mechanism with deep linking (), link copying, and native share functionality has been implemented via a new bottom sheet on the player screen.
--   **Push Notifications:** The initial setup has begun, with the  package configured in  and a new  file created.
+The application is a functional Expo (React Native) app. The audio backend has been migrated to  to support background audio and lock-screen controls, though it suffers from critical bugs. Standalone, native applications for Apple Watch (SwiftUI) and Wear OS (Kotlin/Compose) have been fully coded and are located in the  directory, awaiting manual integration by the user via Xcode and Android Studio. An initial implementation for CarPlay was created but has been disabled to resolve a recurring iOS build failure. Several UI bugs, including a splash screen visual glitch, have been resolved.
 
 **Last working item**:
--   **Last item agent was working**: The user requested the implementation of push notifications. The agent explained how Expo Push Notifications work, updated  with the necessary configuration, and created the  file. The agent was about to implement the logic for registering the device, obtaining the push token, and handling notifications.
+-   **Last item agent was working**: The agent was about to begin a deep-dive investigation into critical streaming failures using a testing agent. The user reported that several core features are broken:
+    1.  Certain radio stations (e.g., Energy NRJ Wien) fail to play.
+    2.  Now Playing metadata (song/artist info) is not appearing for any station.
+    3.  Station logos are missing from the lock screen player.
+    The user correctly identified that the app's unnecessary use of a proxy for all stream URLs (even HTTPS) might be the root cause.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Manual testing. This feature requires coordination with the backend. The agent needs to implement the logic to get the push token and send it to a backend endpoint. Then, the backend developer must use Expo's push API to send a test notification to that token.
+-   **Which testing method agent to use?**: . This is a critical, multi-faceted streaming problem involving native modules, networking, and platform-specific behavior. A thorough test is required.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Social Logins (Google & Apple) are failing (P0)**
--   **Issue 2: Backend-Dependent Features (P1)**
--   **Issue 3: Discoverable Genres Images Not Loading (P1)**
--   **Issue 4: Genre Station Count Inconsistency (P1)**
+-   **Issue 1: Critical Streaming Failures (P0)**
+-   **Issue 2: iOS Build Fails with CarPlay Entitlement Error (P0)**
+-   **Issue 3: Genre Station Count Inconsistency (P1)**
+-   **Issue 4: Slow Genre Page Loading (P1)**
 
 **Issues Detail:**
--   **Issue 1: Social Logins (Google & Apple) are failing (P0)**
-    -   **Description**: Google Sign-In fails with an access blocked error, and Apple Sign-In fails with an Authentication failed error from the backend.
-    -   **Attempted fixes**: The agent guided the user on the necessary frontend () and backend configuration (Google Cloud Console, Apple Dev Console).
-    -   **Next debug checklist**: Confirm with the user that all backend and cloud configurations (OAuth clients for Android/iOS, Apple environment variables) have been correctly set up as per the previous session's handoff.
-    -   **Status**: BLOCKED (on user/backend configuration)
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Frontend
+-   **Issue 1: Critical Streaming Failures (P0)**
+    -   **Description**: The app's core functionality is broken. Certain stations don't play, and metadata/artwork is missing, making the app unusable. The user suspects the proxy implementation in the streaming logic is the cause.
+    -   **Attempted fixes**: The agent identified a flaw where  in  was forcing all streams through a proxy, even secure HTTPS streams. A fix was implemented to bypass the proxy for HTTPS but it has not been tested or verified.
+    -   **Next debug checklist**:
+        1.  Invoke the  to perform a comprehensive analysis of the entire streaming flow, focusing on Energy NRJ Wien and Radyo Maximium.
+        2.  Verify in  that the  function *never* proxies  URLs.
+        3.  Confirm that  in  is being called with the correct  URL.
+        4.  Trace the  logic to ensure metadata is being fetched and correctly propagated to the UI and lock screen.
+    -   **Why fix this issue?**: The app's primary purpose is to stream radio. This bug makes the app non-functional.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a native development build to test ).
 
--   **Issue 2: Backend-Dependent Features (P1)**
-    -   **Description**: Several features are correctly implemented on the frontend but are awaiting backend data or configuration.
-        -   **Genre Filtering**: The  endpoint does not filter by country.
-        -   **Static Content**:  and  return empty content/data.
-        -   **Deep Linking**: The web server is missing the  and  files required for Universal Links/App Links.
-    -   **Attempted fixes**: The agent provided the user with detailed, formatted markdown documents explaining the exact requirements for the backend developer, including API responses, file contents, and example code.
-    -   **Next debug checklist**: Check with the user if the backend developer has implemented the requested changes. Once confirmed, test each feature: genre filtering, static page content rendering, and deep link sharing.
-    -   **Status**: BLOCKED (on backend development)
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Both
+-   **Issue 2: iOS Build Fails with CarPlay Entitlement Error (P0)**
+    -   **Description**: The user cannot create an iOS App Store build. The An Expo user account is required to proceed.
 
--   **Issue 3: Discoverable Genres Images Not Loading (P1)**
-    -   **Description**: Images for Discoverable Genres on the home screen do not load. This is a known backend issue.
-    -   **Status**: BLOCKED (on backend)
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Frontend
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username process fails with  (exit status 65). The error log clearly indicates the provisioning profile includes the  entitlement, which has not yet been approved by Apple.
+    -   **Attempted fixes**: Multiple fixes failed, including removing the CarPlay package, commenting out code, and instructing the user to clear EAS credentials. The issue is that the App ID itself in the Apple Developer Portal has the capability enabled, causing EAS to generate a faulty profile.
+    -   **Next debug checklist**: This is **blocked on user action**. The user has been given a detailed, step-by-step guide to:
+        1.  Log in to .
+        2.  Navigate to Identifiers and select .
+        3.  Manually uncheck the CarPlay Audio App capability and save.
+        4.  Navigate to Profiles, delete all existing profiles for the app.
+        5.  Run An Expo user account is required to proceed.
 
--   **Issue 4: Genre Station Count Inconsistency (P1)**
-    -   **Description**: Station counts for genres differ between the list and detail pages. This is a known backend data issue.
-    -   **Status**: BLOCKED (on backend)
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username to force generation of a new, clean profile.
+        The next agent must first confirm with the user if these exact steps were followed.
+    -   **Why fix this issue?**: This is a hard blocker for releasing the iOS application.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Not applicable (build configuration issue).
+
+-   **Issue 3: Genre Station Count Inconsistency (P1)**
+    -   **Description**: The station count on the genre list page (e.g., Pop: 43) does not match the actual number of stations on the genre detail page (e.g., 55). This is a backend data issue.
+    -   **Attempted fixes**: As a temporary workaround, the agent hid the station count from the genre list cards in .
+    -   **Status**: BLOCKED (on backend fix).
+
+-   **Issue 4: Slow Genre Page Loading (P1)**
+    -   **Description**: The Discovery page loads very slowly, which was identified as a backend performance issue.
+    -   **Status**: BLOCKED (on backend caching implementation).
 
 **In progress Task List**:
--   **Task 1: Implement Push Notifications (P0)**
-    -   **Where to resume**:
-        1.  In , implement the functions to request permissions, get the , and send it to the backend.
-        2.  In a central component like  or , call the notification registration logic when a user logs in.
-        3.  Add listeners for received notifications () and response handling () to navigate within the app when a notification is tapped.
-    -   **What will be achieved with this?** The app will be able to receive and handle push notifications sent from the backend.
+-   **Task 1: Debug and Finalize  Integration (P0)**
+    -   **Where to resume**: This task has been merged into Issue 1: Critical Streaming Failures. The focus is on debugging  to make it fully functional.
+    -   **What will be achieved with this?**: A stable, native audio experience where all stations play correctly and display metadata/artwork on the UI and lock screen.
     -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** Both
-    -   **Blocked on something**: Requires a backend endpoint to store the user's push token.
+    -   **Should Test frontend/backend/both after fix?**: Frontend (native build).
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1: Local Caching for Genres**: Implement AsyncStorage to cache the genre list for better performance (Partially done for the first page, can be expanded).
--   **P1: Prepare and Execute Android App Store Build**: Create a production build for Android and test all functionality.
+-   **P1: CarPlay & Android Auto Integration**: Once Apple approves the  entitlement, the agent will need to re-install  and re-enable the code in  and .
+-   **P2: tvOS & Android TV Support**: Awaiting UI/UX designs from the user. The implementation will use  to render a different UI within the same codebase.
+-   **P2: User Guidance for Watch App Integration**: The user will need to follow the provided Xcode/Android Studio guides to integrate the native Watch apps. The agent may need to provide support.
 
 **Future Tasks:**
 -   **P2: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
--   **P2: Implement UI animations**: Add the Glow Effect and Static Equalizer animations as per original designs.
+-   **P2: Implement UI animations**: Add the Static Equalizer animation to the player screen as per the original designs.
 
 **Completed work in this session**
--   **A-Z Sorting (FIXED)**: Implemented client-side sorting on  and .
--   **Search and Player UI/UX (FIXED)**: Replaced favorite icon with play icon in search results and ensured the global mini-player works correctly.
--   **Guest User Navigation (FIXED)**: Implemented login-then-return flow for Follow and Notifications actions.
--   **Play at Login Feature (IMPLEMENTED)**: Fully implemented the feature to auto-play a station on app start.
--   **Statistics Tracking (IMPLEMENTED)**: Integrated  into  to track listening sessions.
--   **Static Pages & About Us Design (IMPLEMENTED)**: Created in-app static pages for About/Terms/Privacy and updated the About Us page with a new design.
--   **Advanced Sharing & Deep Linking (IMPLEMENTED)**: Created a station action sheet with share, copy link, and native share options, generating deep links.
--   **Player Swipe to Dismiss (IMPLEMENTED)**: Added gesture to close the player screen by swiping down.
--   **Code Analysis & Fixes (DONE)**: Performed a code audit, fixing minor bugs like a missing fallback logo and duplicate keys.
--   **Backend Documentation (CREATED)**: Provided comprehensive markdown guides for the backend developer on APIs and deep linking setup.
--   **Genres Page (IMPROVED)**: Implemented pagination and lazy loading.
--   **Nearby Radius (UPDATED)**: Changed the search radius from 150km to 50km.
+-   ** Migration**: Refactored  to replace  and enable proper background/lock-screen controls.
+-   **Apple Watch & Wear OS App Creation**: Developed complete, standalone, multi-screen native applications for Apple Watch (SwiftUI) and Wear OS (Kotlin/Compose) based on user designs. The code is in .
+-   **Build Issue Diagnosis**: Investigated and diagnosed the root cause of the recurring iOS build failure, providing the user with a definitive manual fix for their Apple Developer account.
+-   **CarPlay & TV Platform Research**: Researched and implemented initial (now disabled) code for CarPlay and provided a clear strategy for implementing tvOS/Android TV support.
+-   **UI Fixes**: Resolved a visual glitch on the splash screen and temporarily hid inconsistent station counts on genre cards.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Client-Side Logic**: Used when backend capabilities were missing (e.g., sorting).
--   **Stateful Navigation**: Managed complex navigation flows (login and return) using Expo Router and Zustand state.
--   **Gesture Handling**: Implemented swipe to dismiss using React Native's  and  APIs.
--   **Deep Linking**: Generated  deep links for sharing and provided specifications for web-to-app routing (Universal Links/App Links).
--   **API Integration & Caching**: Used React Query for API data fetching, pagination (), and caching ().
--   **Code Modularity**: Created new, single-responsibility components (, , ) to encapsulate logic.
-
-**key DB schema**
--   No changes were made to the database schema. The agent noted that for the Nearby feature to work, station documents must contain a  field with GeoJSON Point coordinates, and a  index is required on that field.
-
-**changes in tech stack**
--   Added  for the Copy Link functionality.
--   Began integration of .
+-   ****: The core of the app's audio system. It is partially functional and is the source of the main streaming bugs. Requires a native development build for testing.
+-   **EAS Build Credentials**: The root of the P0 build blocker. The issue is not in the code but in the provisioning profile cached by EAS, which was generated from a misconfigured App ID on the Apple Developer Portal.
+-   **Native Module Integration (Watch/CarPlay)**: The Watch apps are fully native and exist outside the Expo managed workflow. The user is responsible for integrating them via Xcode/Android Studio.
 
 **All files of reference**
--    (Swipe to dismiss, action sheet integration)
--    (Statistics and Play at Login logic)
--    (Client-side sorting implementation)
--    (Pagination and lazy loading)
--    (Navigation fixes for static pages)
--    (New component for About, Terms, Privacy)
--    (New component for startup logic)
--    (New component for sharing)
--    (New service for push notifications - in progress)
--    (New service for static content)
--    (Doc for backend dev)
--    (Doc for backend dev)
+-    **(CRITICAL)**: Location of all streaming logic and bugs.
+-    **(CRITICAL)**: Contains all build configurations. The  key and plugins are relevant to the build failure.
+-   : Contains the complete, standalone code for the Apple Watch and Wear OS apps.
+-   The user was provided with a detailed, step-by-step guide on how to build the Watch App using Xcode.
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **Push Notifications (P0)**: Your immediate task is to complete the push notification implementation.
--   **Backend Blockers**: Many features are blocked pending backend work (Genre Filtering, Static Content, Deep Links, Social Login). Detailed markdown documents have been provided to the user for their backend developer. Do not attempt to work on these blocked features until the user confirms the backend is ready.
--   **Legacy Architecture**: The app MUST remain on Expo's Legacy Architecture to avoid build crashes. Do not attempt to enable the New Architecture.
-
-**documents and test reports created in this job**
--   
--   
+-   Your immediate priority is to address the two **P0 blockers**:
+    1.  **Critical Streaming Failures**: The app is currently unusable for many stations. Begin by using  to perform a deep analysis of . Verify the fix for the HTTPS proxy issue and investigate why metadata and artwork are failing.
+    2.  **iOS Build Failure**: This is blocked on the user performing manual steps in their Apple Developer Portal account. Your first action should be to ask the user if they have completed the guide provided. Do not waste time trying to fix this with code changes, as the problem lies in the external configuration.
+-   The Watch app code is complete but is **not part of the Expo project**. Do not attempt to build or test it. The user has been instructed on how to integrate it manually.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Asks for a general analysis of the app's performance and completeness before a new build, requesting a detailed check of all aspects. (Addressed)
-2.  **User**: Asks if Expo's service can be used for push notifications and what is required. (Addressed)
-3.  **User**: Provides the correct SHA256 fingerprint for the Android app. (Acknowledged & Used)
-4.  **User**: Provides keystore details containing the SHA256 fingerprint. (Acknowledged)
-5.  **User**: Asks for a detailed explanation for the backend developer about deep linking and missing API content. (Addressed)
-6.  **User**: Requests a swipe down to dismiss feature for the station detail page. (Implemented)
-7.  **User**: Provides a design for a new more options pop-up on the station detail page and requests advanced share logic with deep linking. (Implemented)
-8.  **User**: Asks to update the About Us page with a provided design. (Implemented)
-9.  **User**: Reports that clicking About Us still navigates to the external website and asks to clear cache. (Addressed)
-10. **User**: Requests to change the nearby stations radius to 50km after discussing the default of 150km. (Implemented)
+-   User (repeatedly): The iOS build is still failing with the same CarPlay entitlement error, even after I followed your instructions to clear credentials. This is happening on every attempt.
+-   Agent: Apologizes for the persistence and realizes the root cause must be on the Apple Developer Portal itself, not just EAS. Provides a final, detailed manual guide for the user to log into Apple's site, disable the CarPlay capability on the App ID, delete the associated profiles, and then try a clean build.
+-   User: Now there's another critical problem. A station that works on the web (Energy NRJ Wien) doesn't play in the app. Also, station logos don't appear on the lock screen, and the now playing song info is missing on all radios. Please investigate this with the agent; it's critical. The app is native, so mixed content shouldn't be an issue, right?
+-   Agent: Acknowledges these are critical bugs, agrees with the user's assessment that a proxy for mixed content is unnecessary and likely the problem, and initiates a deep analysis with the  to resolve all streaming-related issues at once.
 
 **Project Health Check:**
--   **Broken**: Social Logins (Google/Apple).
--   **Mocked/Blocked**: Several key features depend on pending backend updates, including Genre Filtering, Static Page Content, App Info, and full Deep Link functionality. The frontend logic is in place but cannot function without the backend.
+-   **Broken**:
+    -   Core Audio Streaming (some stations don't play, metadata/artwork missing).
+    -   iOS Production Builds (blocked by entitlement error).
+-   **Mocked**: N/A
 
 **3rd Party Integrations**
--   ****: Core audio playback.
--   ** / **: For social logins (currently broken).
--   ****: For copy link functionality.
--   ****: For push notifications (implementation in progress).
--   **EAS (Expo Application Services)**: Used for building the application.
--   ****: v3 is used for animations.
+-   ****: The core audio engine. Integration is in-progress but buggy.
+-   ****: Installed but then uninstalled and disabled to fix build errors. The code is preserved but inactive.
+-   **EAS (Expo Application Services)**: Used for building the application. It is currently failing for iOS production builds.
 
 **Testing status**
--   **Testing agent used after significant changes**: NO
+-   **Testing agent used after significant changes**: YES (was called at the end of the last session to investigate streaming bugs, but the investigation has not yet started).
 -   **Troubleshoot agent used after agent stuck in loop**: NO
 -   **Test files created**: None.
--   **Known regressions**: None.
+-   **Known regressions**: The core audio streaming functionality has regressed and is now critically buggy.
 
 **What agent forgot to execute**
-The agent was comprehensive and addressed all user requests in the session. All remaining tasks are either future-scope items or blocked on external dependencies (backend development).</analysis>
+-   The agent implemented fixes for the streaming proxy and artwork but did not test them, leading to the user reporting the same critical issues again. The plan to use a testing agent was correct but was interrupted before it could be executed.</analysis>
