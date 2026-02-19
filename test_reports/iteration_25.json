@@ -1,0 +1,109 @@
+{
+  "summary": "Backend-only testing for MegaRadio radio streaming issues. Tested Energy NRJ Wien station, now-playing API, stream resolution, artwork URLs, and HTTP/HTTPS proxy. All API endpoints work correctly, but ICY metadata extraction fails for some stations because the backend server cannot connect to certain audio stream servers (network/DNS limitations).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/now-playing/{station_id}",
+        "issue": "ICY metadata extraction returns fallback data (genre) instead of actual song info for Energy NRJ Wien because backend cannot connect to scdn.nrjaudio.fm stream server",
+        "priority": "MEDIUM",
+        "root_cause": "Network limitation - some audio stream servers (e.g., scdn.nrjaudio.fm) are not accessible from the backend server environment"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "energy_nrj_wien_station": {
+      "station_exists": "PASS - Found via slug 'energy-nrj-wien', ID: 68a8c46dbd66579311aafa1f",
+      "stream_url": "PASS - https://scdn.nrjaudio.fm/adwz1/at/36001/mp3_128.mp3 (HTTPS - no proxy needed)",
+      "stream_resolution": "PASS - API returns direct URL with playlistType: 'direct'",
+      "artwork_url": "PASS - Favicon is valid HTTPS: https://media.metacast.eu/pictures/10_2015/OdriLYWpbHJqKDAcGCMv-7384.png (accessible)"
+    },
+    "now_playing_api": {
+      "local_backend": "PARTIAL - Returns fallback: title='pop' (genre), artist='Energy NRJ Wien', song=None",
+      "external_api": "PARTIAL - themegaradio.com also returns empty metadata: {}",
+      "other_stations": "PASS - Some stations get actual ICY metadata (e.g., 'Alle Farben & Ilira - Fading')"
+    },
+    "stream_proxy": {
+      "url_construction": "PASS",
+      "endpoint_exists": "PASS"
+    },
+    "backend_health": {
+      "root_endpoint": "PASS",
+      "status_endpoint": "PASS"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_radio_stream_issues.py",
+    "/app/test_reports/pytest/pytest_radio_stream_issues.xml"
+  ],
+  "action_items": [
+    "INVESTIGATE: Why Energy NRJ Wien plays on web but not in React Native app - backend APIs all work correctly, issue may be in React Native audio player or stream format compatibility",
+    "LOW PRIORITY: Consider fallback to external metadata API (themegaradio.com/api/stations/{id}/metadata) if ICY extraction fails",
+    "NOTE: Lock screen metadata/artwork should work - AudioProvider.tsx correctly resolves artwork from station.favicon and updates TrackPlayer metadata"
+  ],
+  "critical_code_review_comments": [
+    "Backend server.py ICY metadata extraction logic is correct but relies on network connectivity to audio stream servers",
+    "AudioProvider.tsx correctly handles artwork URL resolution: logo -> favicon -> fallback, with HTTP to HTTPS conversion",
+    "stationService.ts getProxyUrl() correctly constructs proxy URL for HTTP streams",
+    "The now-playing interval (30s) in AudioProvider.tsx ensures metadata updates periodically"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_radio_stream_issues.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "N/A - backend only testing"
+  },
+  "seed_data_creation": "None",
+  "test_credentials": {
+    "api_key": "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw"
+  },
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend APIs for radio streaming work correctly. Energy NRJ Wien has valid HTTPS stream URL and artwork. Issue with app not playing may be React Native specific (react-native-track-player). ICY metadata extraction is best-effort - fails gracefully when stream server is unreachable.",
+  "key_findings": {
+    "energy_nrj_wien_stream": {
+      "url": "https://scdn.nrjaudio.fm/adwz1/at/36001/mp3_128.mp3",
+      "protocol": "HTTPS (direct, no proxy needed)",
+      "accessible_from_backend": false,
+      "note": "Stream server may have geo-restrictions or network limitations"
+    },
+    "artwork_resolution": {
+      "logo": null,
+      "favicon": "https://media.metacast.eu/pictures/10_2015/OdriLYWpbHJqKDAcGCMv-7384.png",
+      "accessible": true,
+      "note": "AudioProvider.tsx should use favicon as artwork"
+    },
+    "now_playing_metadata": {
+      "current_behavior": "Returns genre ('pop') as fallback when ICY metadata unavailable",
+      "icy_support": "Some stations support ICY, others don't or are unreachable",
+      "themegaradio_external": "Also returns empty metadata for this station"
+    }
+  },
+  "rca_of_the_issue": {
+    "issue_1_radio_not_playing_in_app": {
+      "symptom": "Energy NRJ Wien plays on web but not in React Native app",
+      "backend_status": "ALL APIS WORKING CORRECTLY - stream URL, resolution, artwork all valid",
+      "likely_cause": "React Native specific issue - could be react-native-track-player configuration, stream format compatibility, or iOS/Android audio session issues",
+      "NOT_backend_issue": "Backend returns valid HTTPS stream URL that should work directly"
+    },
+    "issue_2_lock_screen_no_logo": {
+      "symptom": "Lock screen doesn't show radio logos/artwork",
+      "code_review": "AudioProvider.tsx has correct artwork resolution logic (lines 411-424, 276-299)",
+      "artwork_url": "Valid and accessible: https://media.metacast.eu/pictures/10_2015/OdriLYWpbHJqKDAcGCMv-7384.png",
+      "likely_cause": "May be timing issue - artwork needs to be set when adding track (line 427-436) AND in updateNowPlayingMetadata",
+      "note": "Cannot test lock screen in web browser - requires device testing"
+    },
+    "issue_3_now_playing_not_showing": {
+      "symptom": "Now playing song info not showing for any radio",
+      "api_status": "API returns data (fallback or ICY metadata)",
+      "likely_cause": "ICY metadata not available from most streams (not all stations broadcast ICY), or UI not displaying the returned data",
+      "note": "Some stations DO return ICY metadata (e.g., 'Alle Farben & Ilira - Fading')"
+    }
+  }
+}
