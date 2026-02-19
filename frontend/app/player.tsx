@@ -350,16 +350,8 @@ export default function PlayerScreen() {
   const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
   const { data: popularData } = usePopularStations(undefined, 12);
 
-  // Handle cast button - requires login
+  // Handle cast button - show cast modal (login check happens inside modal)
   const handleCastPress = () => {
-    if (!isAuthenticated) {
-      // Player modal'ı kapat ve full-screen login'e git
-      router.dismiss(); // Modal'ı kapat
-      setTimeout(() => {
-        router.push('/auth-options');
-      }, 100);
-      return;
-    }
     setShowCastModal(true);
   };
 
