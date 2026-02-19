@@ -29,6 +29,11 @@
             ]
           }
         ],
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false,
+          "NSAllowsArbitraryLoadsForMedia": true,
+          "NSAllowsArbitraryLoadsInWebContent": false
+        },
         "NSLocationWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
         "NSPhotoLibraryUsageDescription": "Profil fotoğrafı yükleyebilmek için fotoğraf galerinize erişim gereklidir.",
