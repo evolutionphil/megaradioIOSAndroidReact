@@ -99,6 +99,7 @@ export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isChecking, setIsChecking] = useState(true);
   const currentItem = ONBOARDING_DATA[currentIndex];
+  const insets = useSafeAreaInsets();
   
   // Check if onboarding is already complete - redirect if so
   useEffect(() => {
