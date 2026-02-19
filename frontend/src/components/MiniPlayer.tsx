@@ -208,7 +208,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: TAB_BAR_HEIGHT,
+    // bottom is set dynamically via inline style
     left: 0,
     right: 0,
     height: MINI_PLAYER_HEIGHT,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
   },
   containerGlobal: {
-    bottom: 0, // No tab bar offset for global (non-tab) screens
+    // bottom: 0 is handled inline
   },
   content: {
     flex: 1,
