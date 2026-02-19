@@ -70,15 +70,17 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     } catch {}
   };
 
-  const handleWhatsAppShare = () => {
-    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(shareMessage)}`;
-    Linking.canOpenURL(whatsappUrl).then((supported) => {
-      if (supported) {
-        Linking.openURL(whatsappUrl);
-      } else {
-        Linking.openURL(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`);
-      }
-    });
+  const handleWhatsAppShare = async () => {
+    // Use native Share API instead of direct URL scheme
+    // This opens the system share sheet and lets user choose their WhatsApp app
+    onClose();
+    try {
+      await Share.share({
+        message: shareMessage,
+        url: Platform.OS === 'ios' ? stationUrl : undefined,
+        title: shareText,
+      });
+    } catch {}
   };
 
   const handleCopyLink = async () => {
