@@ -22,7 +22,8 @@ import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
-import { CarPlayHandler } from '../src/components/CarPlayHandler';
+// CarPlay disabled until Apple approves entitlement
+// import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
