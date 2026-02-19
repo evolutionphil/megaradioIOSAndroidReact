@@ -291,15 +291,18 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 let songTitle = metadata.song || metadata.title || station.name;
                 let artistName = metadata.artist || 'MegaRadio';
                 
-                // Get artwork URL
+                // Get artwork URL - favicon is more reliable
                 let artworkUrl = 'https://themegaradio.com/logo.png';
-                if (station.logo && station.logo.startsWith('http')) {
-                  artworkUrl = station.logo;
-                } else if (station.favicon && station.favicon.startsWith('http')) {
+                if (station.favicon && station.favicon.startsWith('http')) {
                   artworkUrl = station.favicon;
+                } else if (station.logo && station.logo.startsWith('http')) {
+                  artworkUrl = station.logo;
+                } else if (station.favicon && station.favicon.startsWith('/')) {
+                  artworkUrl = `https://themegaradio.com${station.favicon}`;
                 } else if (station.logo && station.logo.startsWith('/')) {
                   artworkUrl = `https://themegaradio.com${station.logo}`;
                 }
+                // Ensure HTTPS for lock screen compatibility
                 if (artworkUrl.startsWith('http://')) {
                   artworkUrl = artworkUrl.replace('http://', 'https://');
                 }
@@ -310,6 +313,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                   album: station.name,
                   artwork: artworkUrl,
                 };
+                
+                console.log('[AudioProvider] Updating lock screen metadata:', newMetadata);
                 
                 // Update NOW PLAYING metadata (for live streams, doesn't change track)
                 await TrackPlayer.updateNowPlayingMetadata(newMetadata);
