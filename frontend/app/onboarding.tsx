@@ -200,7 +200,7 @@ export default function OnboardingScreen() {
         style={styles.gradientOverlay}
       >
         {/* Content section - no animation */}
-        <View style={styles.contentSection}>
+        <View style={[styles.contentSection, { paddingBottom: insets.bottom + 20 }]}>
           {/* Title */}
           <Text style={styles.title}>{currentItem.title}</Text>
           
