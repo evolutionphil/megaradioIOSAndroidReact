@@ -49,15 +49,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: width * 0.7,
-    height: width * 0.7,
+    width: width * 0.65,
+    height: width * 0.65,
   },
   dots: {
     position: 'absolute',
-    left: -20,
-    bottom: -20,
-    width: width,
-    height: height * 0.45,
+    left: 0,
+    bottom: 0,
+    width: width * 0.85,
+    height: height * 0.38,
   },
 });
 
