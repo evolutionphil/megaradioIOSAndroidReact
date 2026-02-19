@@ -907,17 +907,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  liveIndicator: {
-    position: 'absolute',
-    bottom: 12,
-    right: 12,
-  },
-  liveIndicatorBar: {
-    width: 40,
-    height: 6,
-    backgroundColor: '#FF3B30',
-    borderRadius: 3,
-  },
   countryFlagContainer: {
     position: 'absolute',
     bottom: 8,
