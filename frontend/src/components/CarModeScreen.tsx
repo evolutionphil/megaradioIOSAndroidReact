@@ -342,13 +342,15 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
 
   // Get iOS status bar height for proper safe area
   const statusBarHeight = Platform.OS === 'ios' ? 54 : StatusBar.currentHeight || 0;
+  // Calculate bottom padding including system navigation bar
+  const bottomPadding = Platform.OS === 'ios' ? 34 : Math.max(20, insets.bottom + 10);
 
   return (
     <View style={styles.overlay} data-testid="car-mode-screen">
       <StatusBar barStyle="light-content" backgroundColor="#1B1C1E" />
       
       {/* Main content with manual safe area padding */}
-      <View style={[styles.contentContainer, { paddingTop: statusBarHeight }]}>
+      <View style={[styles.contentContainer, { paddingTop: statusBarHeight, paddingBottom: bottomPadding }]}>
         {/* ── Header ─────────────────── */}
         <View style={styles.header}>
           <Text style={[styles.headerTitle, ub]}>Araç Modu</Text>
