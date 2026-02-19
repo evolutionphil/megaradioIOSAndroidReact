@@ -35,7 +35,7 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
       <Image
         source={require('../../assets/images/splash-dots.png')}
         style={styles.dots}
-        resizeMode="contain"
+        resizeMode="cover"
       />
     </View>
   );
