@@ -475,19 +475,26 @@ export default function PlayerScreen() {
   }, [similarStations, popularStations, currentStation?._id]);
 
   // Get current song name - from nowPlaying metadata
+  // API returns: { title, artist, station, genre }
   const getCurrentSongInfo = () => {
-    // First try nowPlaying data
-    if (nowPlaying?.title) {
-      return nowPlaying.title;
-    }
-    if (nowPlaying?.song) {
-      if (nowPlaying?.artist) {
-        return `${nowPlaying.artist} - ${nowPlaying.song}`;
+    // Check if we have metadata
+    if (nowPlaying) {
+      // If both artist and title exist, show "Artist - Title"
+      if (nowPlaying.artist && nowPlaying.title && nowPlaying.title !== currentStation?.name) {
+        return `${nowPlaying.artist} - ${nowPlaying.title}`;
       }
-      return nowPlaying.song;
-    }
-    if (nowPlaying?.artist) {
-      return nowPlaying.artist;
+      // If only title exists (and it's not station name)
+      if (nowPlaying.title && nowPlaying.title !== currentStation?.name) {
+        return nowPlaying.title;
+      }
+      // If only artist exists
+      if (nowPlaying.artist) {
+        return nowPlaying.artist;
+      }
+      // Check song field as fallback
+      if (nowPlaying.song) {
+        return nowPlaying.song;
+      }
     }
     // Fallback to genre/country
     if (currentStation?.genres?.[0]) {
