@@ -127,6 +127,23 @@ npx expo prebuild
 - **Native Cihazda Test Gerekli**: `react-native-track-player` sadece native build'de çalışıyor, web preview'da test edilemez
 - **API Testleri Başarılı**: Stream URL'leri ve metadata endpoint'leri curl ile doğrulandı
 
+#### ⚠️ Backend Sorunu - Metadata API Boş Döndürüyor
+**Endpoint:** `/api/stations/{id}/metadata`
+**Dönen yanıt:** `{"station":{},"metadata":{}}`
+
+Test edilen istasyonlar:
+- MANGORADIO: `{"station":{},"metadata":{}}`
+- Energy NRJ Wien: `{"station":{},"metadata":{}}`
+- Arabesk FM: `{"station":{},"metadata":{}}`
+- Radyo Maximum: `{"station":{},"metadata":{}}`
+
+**Sonuç:** Metadata API backend'de düzeltilmeli. Web'de çalışıyorsa farklı bir endpoint veya mantık kullanılıyor olabilir. Frontend hazır - API doğru veri döndürdüğünde çalışacak.
+
+### UI Düzeltmeleri (December 2025)
+1. **Kırmızı çizgi kaldırıldı** - Logo altındaki gereksiz "live indicator bar" kaldırıldı
+2. **Ülke bayrağı düzeltmesi** - `countryCode` (camelCase) desteği eklendi
+3. **Station tipi güncellendi** - `logoAssets.folder`, `countryCode` eklendi
+
 ---
 
 ## User Language
