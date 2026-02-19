@@ -1,13 +1,17 @@
-// AudioProvider - Single shared audio player for the entire app
-// This ensures only ONE native audio player exists across all screens
+// AudioProvider - Single shared audio player using react-native-track-player
+// This provides TRUE background audio and lock screen controls for iOS/Android
 
 import React, { createContext, useCallback, useEffect, useRef, useState, ReactNode } from 'react';
-import { 
-  useAudioPlayer,
-  useAudioPlayerStatus,
-  setAudioModeAsync,
-  AudioPlayer,
-} from 'expo-audio';
+import TrackPlayer, { 
+  Capability, 
+  State, 
+  Event, 
+  usePlaybackState, 
+  useProgress,
+  AppKilledPlaybackBehavior,
+  useTrackPlayerEvents,
+} from 'react-native-track-player';
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePlayerStore } from '../store/playerStore';
 import stationService from '../services/stationService';
@@ -42,10 +46,79 @@ export const AudioContext = createContext<AudioContextType | null>(null);
 // ============================================
 // GLOBAL STATE (module level - truly singleton)
 // ============================================
-let audioModeConfigured = false;
+let trackPlayerInitialized = false;
 let globalPlayId = 0;
 let currentPlayingStationId: string | null = null;
 let listeningStartTime: Date | null = null;
+
+// ============================================
+// TRACK PLAYER SETUP
+// ============================================
+async function setupTrackPlayer(): Promise<boolean> {
+  if (trackPlayerInitialized) {
+    console.log('[AudioProvider] Track Player already initialized');
+    return true;
+  }
+
+  try {
+    console.log('[AudioProvider] Initializing Track Player...');
+    
+    // Check if already setup (in case of hot reload)
+    try {
+      const state = await TrackPlayer.getPlaybackState();
+      if (state.state !== State.None) {
+        console.log('[AudioProvider] Track Player was already setup');
+        trackPlayerInitialized = true;
+        return true;
+      }
+    } catch {
+      // Not setup yet, continue
+    }
+
+    await TrackPlayer.setupPlayer({
+      // iOS specific options
+      iosCategory: 'playback',
+      iosCategoryMode: 'spokenAudio', // or 'default' for music
+      iosCategoryOptions: [
+        'allowAirPlay',
+        'allowBluetooth',
+        'allowBluetoothA2DP',
+        'duckOthers', // Lower other app's audio instead of stopping
+        'interruptSpokenAudioAndMixWithOthers',
+      ],
+      // Wait for buffer before playing
+      waitForBuffer: true,
+    });
+
+    // Configure player capabilities (what controls show on lock screen)
+    await TrackPlayer.updateOptions({
+      // Android specific
+      android: {
+        appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
+      },
+      // What buttons to show in notification/control center
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.Stop,
+      ],
+      // What buttons are shown in compact notification (Android)
+      compactCapabilities: [
+        Capability.Play,
+        Capability.Pause,
+      ],
+      // Not used for live radio
+      progressUpdateEventInterval: 0,
+    });
+
+    trackPlayerInitialized = true;
+    console.log('[AudioProvider] Track Player initialized successfully!');
+    return true;
+  } catch (error) {
+    console.error('[AudioProvider] Failed to initialize Track Player:', error);
+    return false;
+  }
+}
 
 // ============================================
 // PROVIDER COMPONENT
@@ -55,18 +128,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const nowPlayingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Use the hook-based API - more compatible with legacy architecture
-  // Initialize with undefined/null to avoid playing anything at start
-  // showNowPlayingNotification: true enables lock screen controls
-  const player = useAudioPlayer(undefined, { showNowPlayingNotification: true });
-  const status = useAudioPlayerStatus(player);
+  // Use Track Player hooks for state
+  const playbackState = usePlaybackState();
   
-  const playerRef = useRef<AudioPlayer>(player);
-  playerRef.current = player;
-
   const {
     currentStation,
-    playbackState,
+    playbackState: storePlaybackState,
     streamUrl,
     setCurrentStation,
     setPlaybackState,
@@ -76,18 +143,50 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setMiniPlayerVisible,
   } = usePlayerStore();
 
+  // Listen to Track Player events
+  useTrackPlayerEvents([Event.PlaybackState, Event.PlaybackError], async (event) => {
+    if (event.type === Event.PlaybackState) {
+      console.log('[AudioProvider] Playback state changed:', event.state);
+      
+      switch (event.state) {
+        case State.Playing:
+          setPlaybackState('playing');
+          break;
+        case State.Paused:
+          setPlaybackState('paused');
+          break;
+        case State.Stopped:
+          setPlaybackState('idle');
+          break;
+        case State.Buffering:
+        case State.Loading:
+          setPlaybackState('buffering');
+          break;
+        case State.Error:
+          setPlaybackState('error');
+          break;
+        default:
+          break;
+      }
+    }
+    
+    if (event.type === Event.PlaybackError) {
+      console.error('[AudioProvider] Playback error:', event);
+      setError('Stream playback error');
+      setPlaybackState('error');
+    }
+  });
+
   // Start stats tracking interval when playing
   const startStatsTracking = useCallback(() => {
-    // Clear any existing interval
     if (statsIntervalRef.current) {
       clearInterval(statsIntervalRef.current);
     }
     
-    // Update listening time every minute
     statsIntervalRef.current = setInterval(() => {
       statsService.updateListeningTime().catch(console.error);
       console.log('[AudioProvider] Stats: Updated listening time');
-    }, 60000); // Every 60 seconds
+    }, 60000);
     
     console.log('[AudioProvider] Stats: Started tracking interval');
   }, []);
@@ -112,47 +211,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
   }, [stopStatsTracking]);
 
-  // Configure audio mode ONCE at app start
+  // Initialize Track Player
   useEffect(() => {
-    const setupAudio = async () => {
-      if (audioModeConfigured) {
-        setIsReady(true);
-        return;
-      }
-      
-      try {
-        console.log('[AudioProvider] Setting up audio mode...');
-        await setAudioModeAsync({
-          playsInSilentMode: true,
-          shouldPlayInBackground: true,
-        });
-        audioModeConfigured = true;
-        console.log('[AudioProvider] Audio mode configured');
-      } catch (error) {
-        console.error('[AudioProvider] Failed to set audio mode:', error);
-      }
-      
+    // Skip on web
+    if (Platform.OS === 'web') {
+      console.log('[AudioProvider] Web platform - Track Player not available');
       setIsReady(true);
-    };
-    
-    setupAudio();
-  }, []);
-
-  // Sync playback state with actual player status
-  useEffect(() => {
-    if (!status) return;
-    
-    const isPlaying = status.playing === true;
-    const isBuffering = status.isBuffering === true;
-    
-    if (isBuffering && playbackState !== 'buffering') {
-      setPlaybackState('buffering');
-    } else if (isPlaying && playbackState !== 'playing') {
-      setPlaybackState('playing');
-    } else if (!isPlaying && !isBuffering && playbackState === 'playing') {
-      setPlaybackState('paused');
+      return;
     }
-  }, [status?.playing, status?.isBuffering, playbackState, setPlaybackState]);
+    
+    setupTrackPlayer().then((success) => {
+      if (success) {
+        console.log('[AudioProvider] Ready to play!');
+      }
+      setIsReady(true);
+    });
+  }, []);
 
   // Resolve stream URL helper
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
@@ -181,7 +255,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, []);
 
-  // Fetch now playing helper - also updates lock screen metadata
+  // Fetch now playing helper
   const fetchNowPlaying = useCallback(async (stationId: string) => {
     const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
     
@@ -192,11 +266,14 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         if (metadata && (metadata.title || metadata.artist)) {
           setNowPlaying(metadata);
           
-          // Update lock screen with current song info
+          // Update track metadata for lock screen
           try {
             const station = usePlayerStore.getState().currentStation;
-            if (station && playerRef.current) {
-              // Get proper artwork URL
+            if (station) {
+              const songTitle = metadata.title || station.name;
+              const artistName = metadata.artist || 'MegaRadio';
+              
+              // Get artwork URL
               let artworkUrl = 'https://themegaradio.com/logo.png';
               if (station.logo && station.logo.startsWith('http')) {
                 artworkUrl = station.logo;
@@ -209,18 +286,15 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 artworkUrl = artworkUrl.replace('http://', 'https://');
               }
               
-              // Build display text - show song info if available
-              const songTitle = metadata.title || station.name;
-              const artistName = metadata.artist || 'MegaRadio';
-              
-              // Update lock screen with new song info
-              playerRef.current.updateLockScreenMetadata({
+              // Update the current track's metadata
+              await TrackPlayer.updateNowPlayingMetadata({
                 title: songTitle,
                 artist: artistName,
                 album: station.name,
-                artworkUrl: artworkUrl,
+                artwork: artworkUrl,
               });
-              console.log('[AudioProvider] Lock screen updated with now playing:', songTitle, '-', artistName);
+              
+              console.log('[AudioProvider] Lock screen updated:', songTitle, '-', artistName);
             }
           } catch (e) {
             console.log('[AudioProvider] Could not update lock screen:', e);
@@ -230,38 +304,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
     } catch {}
     
+    // Fallback to station service
     try {
       const metadata = await stationService.getNowPlaying(stationId);
       if (metadata) {
         setNowPlaying(metadata);
-        
-        // Update lock screen with current song info
-        try {
-          const station = usePlayerStore.getState().currentStation;
-          if (station && playerRef.current) {
-            let artworkUrl = 'https://themegaradio.com/logo.png';
-            if (station.logo && station.logo.startsWith('http')) {
-              artworkUrl = station.logo;
-            } else if (station.favicon && station.favicon.startsWith('http')) {
-              artworkUrl = station.favicon;
-            } else if (station.logo && station.logo.startsWith('/')) {
-              artworkUrl = `https://themegaradio.com${station.logo}`;
-            }
-            if (artworkUrl.startsWith('http://')) {
-              artworkUrl = artworkUrl.replace('http://', 'https://');
-            }
-            
-            const songTitle = metadata.title || station.name;
-            const artistName = metadata.artist || 'MegaRadio';
-            
-            playerRef.current.updateLockScreenMetadata({
-              title: songTitle,
-              artist: artistName,
-              album: station.name,
-              artworkUrl: artworkUrl,
-            });
-          }
-        } catch (e) {}
       }
     } catch {}
   }, [setNowPlaying]);
@@ -276,15 +323,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     console.log('[AudioProvider] Current playing:', currentPlayingStationId);
     console.log('[AudioProvider] ========================================');
 
+    // Web fallback - just update UI state
+    if (Platform.OS === 'web') {
+      console.log('[AudioProvider] Web platform - playback not supported');
+      setCurrentStation(station);
+      setMiniPlayerVisible(true);
+      return;
+    }
+
     // Same station? Toggle play/pause
     if (currentPlayingStationId === station._id) {
       console.log('[AudioProvider] Same station - toggling');
-      if (status?.playing) {
-        playerRef.current.pause();
-        setPlaybackState('paused');
+      const state = await TrackPlayer.getPlaybackState();
+      if (state.state === State.Playing) {
+        await TrackPlayer.pause();
       } else {
-        playerRef.current.play();
-        setPlaybackState('playing');
+        await TrackPlayer.play();
       }
       return;
     }
@@ -294,14 +348,9 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     console.log('[AudioProvider] New PlayID:', myPlayId);
 
     try {
-      // STEP 1: STOP CURRENT PLAYBACK IMMEDIATELY
+      // STEP 1: STOP CURRENT PLAYBACK
       console.log('[AudioProvider] STEP 1: Stopping current playback...');
-      try {
-        playerRef.current.pause();
-        console.log('[AudioProvider] Player paused');
-      } catch (e) {
-        console.log('[AudioProvider] Pause error (ignored):', e);
-      }
+      await TrackPlayer.reset();
 
       // Record listening time for previous station
       if (listeningStartTime && currentPlayingStationId) {
@@ -345,73 +394,37 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Stream URL:', url.substring(0, 60) + '...');
       setStreamUrl(url);
 
-      // STEP 4: Replace audio source
-      console.log('[AudioProvider] STEP 4: Loading new audio...');
-      playerRef.current.replace({ uri: url });
-      
-      // Wait for source to load
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      // Check again if still current
-      if (globalPlayId !== myPlayId) {
-        console.log('[AudioProvider] Request stale after load, aborting');
-        try { playerRef.current.pause(); } catch {}
-        return;
+      // STEP 4: Get artwork URL
+      let artworkUrl = 'https://themegaradio.com/logo.png';
+      if (station.logo && station.logo.startsWith('http')) {
+        artworkUrl = station.logo;
+      } else if (station.favicon && station.favicon.startsWith('http')) {
+        artworkUrl = station.favicon;
+      } else if (station.logo && station.logo.startsWith('/')) {
+        artworkUrl = `https://themegaradio.com${station.logo}`;
+      }
+      if (artworkUrl.startsWith('http://')) {
+        artworkUrl = artworkUrl.replace('http://', 'https://');
       }
 
-      // STEP 5: Setup Lock Screen / Control Center BEFORE starting playback
-      console.log('[AudioProvider] STEP 5: Setting up lock screen controls...');
-      try {
-        // Get station logo URL - ensure it's a valid HTTPS URL
-        let artworkUrl = 'https://themegaradio.com/logo.png'; // Default fallback
-        
-        // Check various logo sources - prioritize high quality images
-        if (station.logo && station.logo.startsWith('http')) {
-          artworkUrl = station.logo;
-        } else if (station.favicon && station.favicon.startsWith('http')) {
-          artworkUrl = station.favicon;
-        } else if (station.logo && station.logo.startsWith('/')) {
-          artworkUrl = `https://themegaradio.com${station.logo}`;
-        } else if (station.favicon && station.favicon.startsWith('/')) {
-          artworkUrl = `https://themegaradio.com${station.favicon}`;
-        }
-        
-        // Ensure HTTPS for iOS App Transport Security
-        if (artworkUrl.startsWith('http://')) {
-          artworkUrl = artworkUrl.replace('http://', 'https://');
-        }
-        
-        console.log('[AudioProvider] Lock Screen Artwork URL:', artworkUrl);
-        
-        // Activate player for lock screen controls BEFORE starting playback
-        // This is REQUIRED for iOS Control Center and Android notification bar
-        await playerRef.current.setActiveForLockScreen(true, {
-          title: station.name,
-          artist: 'MegaRadio',
-          album: station.country || 'Live Radio',
-          artworkUrl: artworkUrl,
-        }, {
-          // Options for lock screen controls (live radio doesn't need seek)
-          showSeekForward: false,
-          showSeekBackward: false,
-        });
-        
-        console.log('[AudioProvider] Lock screen ACTIVATED with metadata:', {
-          title: station.name,
-          artist: 'MegaRadio',
-          album: station.country || 'Live Radio',
-          artworkUrl: artworkUrl
-        });
-      } catch (metaError) {
-        console.log('[AudioProvider] Could not setup lock screen:', metaError);
-      }
+      // STEP 5: Add track to player with metadata
+      console.log('[AudioProvider] STEP 5: Adding track with metadata...');
+      await TrackPlayer.add({
+        id: station._id,
+        url: url,
+        title: station.name,
+        artist: 'MegaRadio',
+        album: station.country || 'Live Radio',
+        artwork: artworkUrl,
+        // For live streams
+        isLiveStream: true,
+      });
 
-      // STEP 6: Start playback AFTER lock screen is setup
+      // STEP 6: Start playback
       console.log('[AudioProvider] STEP 6: Starting playback...');
-      playerRef.current.play();
+      await TrackPlayer.play();
       
       listeningStartTime = new Date();
-      setPlaybackState('playing');
 
       console.log('[AudioProvider] ========== NOW PLAYING ==========');
 
@@ -419,7 +432,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       userService.recordRecentlyPlayed(station._id).catch(() => {});
       fetchNowPlaying(station._id);
 
-      // Save as last played station for "Play at Login" feature
+      // Save as last played station
       try {
         await AsyncStorage.setItem(LAST_PLAYED_STATION_KEY, JSON.stringify(station));
         console.log('[AudioProvider] Saved as last played station');
@@ -430,27 +443,23 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       // STEP 7: Start statistics tracking
       console.log('[AudioProvider] STEP 7: Starting statistics tracking...');
       try {
-        // End any previous session first
         await statsService.endSession();
-        // Start new session
         await statsService.startSession(
           station._id,
           station.name,
           station.favicon || station.logo
         );
-        // Start the tracking interval
         startStatsTracking();
         console.log('[AudioProvider] Stats session started for:', station.name);
       } catch (e) {
         console.log('[AudioProvider] Failed to start stats session:', e);
       }
 
-      // STEP 8: Start now playing interval to update lock screen periodically
+      // STEP 8: Start now playing interval
       console.log('[AudioProvider] STEP 8: Starting now playing interval...');
       if (nowPlayingIntervalRef.current) {
         clearInterval(nowPlayingIntervalRef.current);
       }
-      // Update now playing every 30 seconds
       nowPlayingIntervalRef.current = setInterval(() => {
         if (currentPlayingStationId) {
           fetchNowPlaying(currentPlayingStationId);
@@ -462,13 +471,13 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setError(error instanceof Error ? error.message : 'Failed to play');
       setPlaybackState('error');
     }
-  }, [status?.playing, resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking]);
+  }, [resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking]);
 
   // Stop playback completely
   const stopPlayback = useCallback(async () => {
     console.log('[AudioProvider] ========== STOP PLAYBACK ==========');
     
-    // Stop stats tracking and end session
+    // Stop stats tracking
     stopStatsTracking();
     try {
       await statsService.endSession();
@@ -495,16 +504,15 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     globalPlayId++;
     currentPlayingStationId = null;
 
-    try {
-      // Deactivate lock screen controls
-      await playerRef.current.setActiveForLockScreen(false);
-      console.log('[AudioProvider] Lock screen deactivated');
-    } catch (e) {
-      console.log('[AudioProvider] Could not deactivate lock screen:', e);
+    // Web check
+    if (Platform.OS === 'web') {
+      setPlaybackState('idle');
+      setMiniPlayerVisible(false);
+      return;
     }
 
     try {
-      playerRef.current.pause();
+      await TrackPlayer.reset();
     } catch {}
 
     setPlaybackState('idle');
@@ -512,46 +520,72 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [setPlaybackState, setMiniPlayerVisible, stopStatsTracking]);
 
   // Pause
-  const pause = useCallback(() => {
+  const pause = useCallback(async () => {
     console.log('[AudioProvider] Pause');
-    try {
-      playerRef.current.pause();
+    if (Platform.OS === 'web') {
       setPlaybackState('paused');
+      return;
+    }
+    try {
+      await TrackPlayer.pause();
     } catch (e) {
       console.error('[AudioProvider] Pause error:', e);
     }
   }, [setPlaybackState]);
 
   // Resume
-  const resume = useCallback(() => {
+  const resume = useCallback(async () => {
     console.log('[AudioProvider] Resume');
-    try {
-      playerRef.current.play();
+    if (Platform.OS === 'web') {
       setPlaybackState('playing');
+      return;
+    }
+    try {
+      await TrackPlayer.play();
     } catch (e) {
       console.error('[AudioProvider] Resume error:', e);
     }
   }, [setPlaybackState]);
 
   // Toggle play/pause
-  const togglePlayPause = useCallback(() => {
-    console.log('[AudioProvider] Toggle play/pause, status:', status?.playing);
+  const togglePlayPause = useCallback(async () => {
+    console.log('[AudioProvider] Toggle play/pause');
     
-    if (status?.playing) {
-      pause();
-    } else if (playbackState === 'paused') {
-      resume();
-    } else if ((playbackState === 'idle' || playbackState === 'error') && currentStation) {
-      playStation(currentStation);
+    if (Platform.OS === 'web') {
+      if (storePlaybackState === 'playing') {
+        setPlaybackState('paused');
+      } else if (currentStation) {
+        setPlaybackState('playing');
+      }
+      return;
     }
-  }, [status?.playing, playbackState, currentStation, pause, resume, playStation]);
+    
+    try {
+      const state = await TrackPlayer.getPlaybackState();
+      
+      if (state.state === State.Playing) {
+        await TrackPlayer.pause();
+      } else if (state.state === State.Paused) {
+        await TrackPlayer.play();
+      } else if (currentStation) {
+        // Try to play current station
+        await playStation(currentStation);
+      }
+    } catch (e) {
+      console.error('[AudioProvider] Toggle error:', e);
+    }
+  }, [storePlaybackState, currentStation, playStation, setPlaybackState]);
 
   // Set volume
-  const setVolume = useCallback((volume: number) => {
+  const setVolume = useCallback(async (volume: number) => {
+    if (Platform.OS === 'web') return;
     try {
-      playerRef.current.volume = Math.max(0, Math.min(1, volume));
+      await TrackPlayer.setVolume(Math.max(0, Math.min(1, volume)));
     } catch {}
   }, []);
+
+  // Determine if playing from playback state
+  const isPlaying = playbackState.state === State.Playing;
 
   const value: AudioContextType = {
     playStation,
@@ -561,12 +595,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     togglePlayPause,
     setVolume,
     currentStation,
-    playbackState,
+    playbackState: storePlaybackState,
     streamUrl,
-    isPlaying: status?.playing === true,
+    isPlaying,
   };
 
-  // Always render children
   return (
     <AudioContext.Provider value={value}>
       {children}
