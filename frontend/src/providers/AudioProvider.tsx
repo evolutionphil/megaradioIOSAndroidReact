@@ -231,55 +231,106 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Resolve stream URL helper
   // CRITICAL: For native apps, we prefer urlResolved (more reliable) over stream/resolve API
   // Native apps don't have mixed content restrictions, so HTTP streams work directly
+  // 
+  // Priority order:
+  // 1. urlResolved (pre-resolved by backend, most reliable)
+  // 2. stream/resolve API (for .pls/.m3u playlists)
+  // 3. Original url (fallback)
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
-    // Get urlResolved - API returns camelCase "urlResolved", but types use "url_resolved"
-    // Handle both cases for compatibility
+    // Get urlResolved - API returns camelCase "urlResolved"
     const urlResolved = (station as any).urlResolved || station.url_resolved;
+    const originalUrl = station.url;
     
-    // For native apps: prefer urlResolved directly (more reliable than resolve API)
-    if (Platform.OS !== 'web' && urlResolved) {
-      console.log('[AudioProvider] Native: Using urlResolved directly:', urlResolved.substring(0, 60));
-      // Native apps can play HTTP directly - no proxy needed
-      return urlResolved;
+    console.log('[AudioProvider] Resolving stream for:', station.name);
+    console.log('[AudioProvider] urlResolved:', urlResolved ? urlResolved.substring(0, 60) : 'N/A');
+    console.log('[AudioProvider] originalUrl:', originalUrl ? originalUrl.substring(0, 60) : 'N/A');
+    
+    // NATIVE APPS: Always prefer urlResolved if available
+    // This is the pre-resolved URL from backend and is most reliable
+    if (Platform.OS !== 'web') {
+      if (urlResolved) {
+        console.log('[AudioProvider] Native: Using urlResolved (recommended)');
+        return urlResolved;
+      }
+      
+      // No urlResolved - check if original URL is a playlist that needs resolution
+      if (originalUrl) {
+        const isPlaylist = originalUrl.endsWith('.pls') || 
+                          originalUrl.endsWith('.m3u') || 
+                          originalUrl.endsWith('.m3u8');
+        
+        if (isPlaylist) {
+          console.log('[AudioProvider] Native: Playlist detected, using resolve API');
+          try {
+            const streamData = await stationService.resolveStream(originalUrl);
+            if (streamData.candidates && streamData.candidates.length > 0) {
+              console.log('[AudioProvider] Native: Resolved to:', streamData.candidates[0].substring(0, 60));
+              return streamData.candidates[0];
+            }
+          } catch (error) {
+            console.log('[AudioProvider] Native: Resolve failed, using original URL');
+          }
+        }
+        
+        // Direct stream URL - use as is
+        console.log('[AudioProvider] Native: Using original URL directly');
+        return originalUrl;
+      }
+      
+      console.error('[AudioProvider] Native: No valid URL found!');
+      return null;
     }
     
+    // WEB: Need to handle mixed content (HTTP on HTTPS page)
     try {
-      const streamData = await stationService.resolveStream(station.url);
-
-      if (streamData.candidates && streamData.candidates.length > 0) {
-        let resolvedUrl = streamData.candidates[0];
-        
-        // For WEB only: use proxy for HTTP streams (mixed content restriction)
-        // Native apps can play HTTP directly
-        if (Platform.OS === 'web' && resolvedUrl.startsWith('http://')) {
-          console.log('[AudioProvider] Web: HTTP stream detected, using proxy');
-          resolvedUrl = stationService.getProxyUrl(resolvedUrl);
-        } else {
-          console.log('[AudioProvider] Stream URL:', resolvedUrl.substring(0, 60));
+      // First try urlResolved
+      if (urlResolved) {
+        if (urlResolved.startsWith('http://')) {
+          console.log('[AudioProvider] Web: HTTP urlResolved, using proxy');
+          return stationService.getProxyUrl(urlResolved);
         }
-
-        return resolvedUrl;
-      }
-
-      // Fallback to urlResolved or original url
-      let fallbackUrl = urlResolved || station.url;
-      
-      // For WEB only: proxy HTTP URLs
-      if (Platform.OS === 'web' && fallbackUrl.startsWith('http://')) {
-        return stationService.getProxyUrl(fallbackUrl);
+        console.log('[AudioProvider] Web: Using HTTPS urlResolved');
+        return urlResolved;
       }
       
-      return fallbackUrl;
+      // Try resolve API
+      if (originalUrl) {
+        const streamData = await stationService.resolveStream(originalUrl);
+        if (streamData.candidates && streamData.candidates.length > 0) {
+          let resolvedUrl = streamData.candidates[0];
+          
+          if (resolvedUrl.startsWith('http://')) {
+            console.log('[AudioProvider] Web: HTTP resolved URL, using proxy');
+            return stationService.getProxyUrl(resolvedUrl);
+          }
+          
+          console.log('[AudioProvider] Web: Using HTTPS resolved URL');
+          return resolvedUrl;
+        }
+      }
+      
+      // Fallback to original
+      if (originalUrl) {
+        if (originalUrl.startsWith('http://')) {
+          return stationService.getProxyUrl(originalUrl);
+        }
+        return originalUrl;
+      }
+      
+      return null;
     } catch (error) {
-      console.log('[AudioProvider] Stream resolution error, using fallback:', error);
-      let fallbackUrl = urlResolved || station.url;
+      console.log('[AudioProvider] Web: Stream resolution error:', error);
       
-      // For WEB only: proxy HTTP URLs
-      if (Platform.OS === 'web' && fallbackUrl.startsWith('http://')) {
-        return stationService.getProxyUrl(fallbackUrl);
+      // Fallback
+      const fallbackUrl = urlResolved || originalUrl;
+      if (fallbackUrl) {
+        if (Platform.OS === 'web' && fallbackUrl.startsWith('http://')) {
+          return stationService.getProxyUrl(fallbackUrl);
+        }
+        return fallbackUrl;
       }
       
-      return fallbackUrl;
+      return null;
     }
   }, []);
 
