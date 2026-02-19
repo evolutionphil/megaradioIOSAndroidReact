@@ -63,6 +63,15 @@ export default function ProfileScreen() {
   const { user, logout: clearAuth } = useAuthStore();
   const { country, setCountryManual } = useLocationStore();
   const { currentLanguage, languageVersion } = useLanguageStore();
+  const { isMiniPlayerVisible } = usePlayerStore();
+  const insets = useSafeAreaInsets();
+  
+  // Calculate bottom padding for mini-player and tab bar
+  const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
+  const MINI_PLAYER_HEIGHT = 70;
+  const bottomPadding = isMiniPlayerVisible 
+    ? TAB_BAR_HEIGHT + MINI_PLAYER_HEIGHT + insets.bottom + 20
+    : TAB_BAR_HEIGHT + insets.bottom + 20;
 
   const [notifications, setNotifications] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
