@@ -75,6 +75,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
     playbackState,
     nowPlaying,
     isMiniPlayerVisible,
+    hideMiniPlayer,
   } = usePlayerStore();
   
   // Calculate tab bar height including system navigation bar for Android
@@ -83,15 +84,62 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   const baseTabBarHeight = Platform.OS === 'ios' ? 85 : 65;
   const tabBarHeight = baseTabBarHeight + systemNavBarHeight;
   
-  // Use the shared audio player hook
-  const { pause, resume } = useAudioPlayer();
+  // Use the shared audio player hook - get all functions at once
+  const { pause, resume, stop } = useAudioPlayer();
   
   // Favorites store
   const { isFavorite, toggleFavorite } = useFavoritesStore();
   
+  // Swipe-to-dismiss refs - must be before any early return
+  const translateX = useRef(new Animated.Value(0)).current;
+  const SWIPE_THRESHOLD = 120;
+  
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        // Only respond to horizontal left swipes
+        return gestureState.dx < -10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        // Only allow left swipe (negative dx)
+        if (gestureState.dx < 0) {
+          translateX.setValue(gestureState.dx);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx < -SWIPE_THRESHOLD || gestureState.vx < -0.5) {
+          // Dismiss: animate off screen and stop playback
+          Animated.timing(translateX, {
+            toValue: -400,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(async () => {
+            try {
+              await stop();
+              hideMiniPlayer();
+            } catch (e) {
+              console.error('[MiniPlayer] Stop error:', e);
+            }
+            translateX.setValue(0);
+          });
+        } else {
+          // Snap back
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 100,
+            friction: 10,
+          }).start();
+        }
+      },
+    })
+  ).current;
+  
   // Check if current station is favorited
   const isCurrentFavorite = currentStation ? isFavorite(currentStation._id) : false;
 
+  // Early return AFTER all hooks
   if (!isMiniPlayerVisible || !currentStation) {
     return null;
   }
@@ -142,12 +190,6 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
       console.log('[MiniPlayer] No currentStation available');
     }
   };
-  
-  // Swipe-to-dismiss functionality (swipe right to left)
-  const translateX = useRef(new Animated.Value(0)).current;
-  const SWIPE_THRESHOLD = 120;
-  
-  const { stop } = useAudioPlayer();
   const { hideMiniPlayer } = usePlayerStore();
   
   const panResponder = useRef(
