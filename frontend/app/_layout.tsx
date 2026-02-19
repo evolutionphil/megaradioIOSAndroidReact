@@ -200,36 +200,29 @@ export default function RootLayout() {
   }, [showSplash, isNavigationReady, hasCheckedOnboarding, segments]);
 
   // Handle notification tap - when user taps notification, open player
+  // Also handle case where user dismisses player modal and lands on empty route
   useEffect(() => {
     if (Platform.OS === 'web') return;
     
-    // Check if we have a playing station and should navigate to player
-    const checkAndNavigateToPlayer = () => {
-      const { currentStation, isMiniPlayerVisible } = usePlayerStore.getState();
-      const currentSegment = segments[0];
-      
-      // If we have a station playing and user just opened the app (from notification),
-      // and they're not already on player screen, navigate to player
-      if (currentStation && isMiniPlayerVisible && currentSegment !== 'player' && isNavigationReady) {
-        // Small delay to ensure navigation is ready
-        setTimeout(() => {
-          console.log('[Layout] Notification tap detected, navigating to player...');
-          router.push('/player');
-        }, 100);
-      }
-    };
-    
     // Check on app start (when coming from notification)
-    if (isNavigationReady && !showSplash) {
-      // Only check once when app becomes ready
+    if (isNavigationReady && !showSplash && hasCheckedOnboarding) {
+      const currentSegment = segments[0];
       const hasStation = usePlayerStore.getState().currentStation;
-      if (hasStation && segments[0] !== 'player' && segments[0] !== '(tabs)') {
-        // App was opened from notification with no valid route - go to player
+      
+      // If no valid segment (empty route after dismissing player), go to tabs
+      if (!currentSegment || currentSegment === '') {
+        console.log('[Layout] Empty route detected, redirecting to tabs...');
+        router.replace('/(tabs)');
+        return;
+      }
+      
+      // If app was opened from notification with no valid route - go to player
+      if (hasStation && currentSegment !== 'player' && currentSegment !== '(tabs)' && currentSegment !== 'onboarding') {
         console.log('[Layout] App opened from notification, redirecting to player...');
         router.replace('/player');
       }
     }
-  }, [isNavigationReady, showSplash, segments]);
+  }, [isNavigationReady, showSplash, hasCheckedOnboarding, segments]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
