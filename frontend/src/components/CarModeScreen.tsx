@@ -236,6 +236,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   const { playStation, togglePlayPause, setVolume } = useAudioPlayer();
   const [volume, setVolumeState] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
