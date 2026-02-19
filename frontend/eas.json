@@ -15,6 +15,9 @@
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleDebug"
+      },
+      "env": {
+        "CI": "1"
       }
     },
     "preview": {
@@ -26,6 +29,9 @@
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
+      },
+      "env": {
+        "CI": "1"
       }
     },
     "production": {
@@ -38,6 +44,9 @@
         "buildType": "app-bundle",
         "gradleCommand": ":app:bundleRelease",
         "autoIncrement": true
+      },
+      "env": {
+        "CI": "1"
       }
     }
   },
