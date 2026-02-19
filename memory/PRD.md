@@ -90,5 +90,44 @@ npx expo prebuild
 - **P2**: Sleep Timer
 - **P2**: UI animasyonları
 
+---
+
+## Changelog
+
+### December 2025 - Streaming Sorunları Düzeltmesi
+
+#### Düzeltilen Sorunlar:
+
+1. **`/api/now-playing/{id}` Endpoint Hatası**
+   - **Sorun**: Yanlış endpoint kullanılıyordu (HTML döndürüyordu)
+   - **Çözüm**: `stationService.getNowPlaying()` fonksiyonu düzeltildi, artık doğru `/api/stations/{id}/metadata` endpoint'ini kullanıyor
+
+2. **Metadata Parse Hatası**
+   - **Sorun**: API `{ station: {...}, metadata: {...} }` formatında döndürüyor, eski kod bunu doğru parse edemiyordu
+   - **Çözüm**: `fetchNowPlaying` fonksiyonu yeniden yazıldı, `metadata.metadata` veya `metadata` formatlarını destekliyor
+
+3. **Lock Screen Artwork Sorunu**
+   - **Sorun**: Artwork URL'leri düzgün oluşturulmuyordu
+   - **Çözüm**: `getArtworkUrl` helper fonksiyonu oluşturuldu, tüm durumları (http, https, relative path) doğru işliyor
+
+4. **Metadata Güncelleme**
+   - **Sorun**: Lock screen metadata güncellenmiyor veya yanlış gösteriliyordu
+   - **Çözüm**: `updateLockScreenMetadata` helper fonksiyonu oluşturuldu, hem `updateNowPlayingMetadata` hem de `updateMetadataForTrack` çağrılıyor
+
+5. **NowPlayingMetadata Tipi**
+   - **Sorun**: Tip eksik alanlar içeriyordu (song, artist)
+   - **Çözüm**: TypeScript tipi genişletildi: `title`, `song`, `artist`, `station`, `album`, `timestamp`
+
+#### Değişen Dosyalar:
+- `/app/frontend/src/providers/AudioProvider.tsx` (fetchNowPlaying, getArtworkUrl, updateLockScreenMetadata)
+- `/app/frontend/src/services/stationService.ts` (getNowPlaying)
+- `/app/frontend/src/types/index.ts` (NowPlayingMetadata)
+
+#### Test Durumu:
+- **Native Cihazda Test Gerekli**: `react-native-track-player` sadece native build'de çalışıyor, web preview'da test edilemez
+- **API Testleri Başarılı**: Stream URL'leri ve metadata endpoint'leri curl ile doğrulandı
+
+---
+
 ## User Language
 Turkish (Türkçe)
