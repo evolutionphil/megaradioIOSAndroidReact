@@ -5,117 +5,80 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ## Tech Stack
 - **Frontend**: Expo SDK 54, TypeScript, Expo Router, React Query, Zustand
-- **Audio**: expo-audio (migrated from expo-av)
+- **Audio**: react-native-track-player (Control Center/Lock Screen support) + expo-audio (fallback)
 - **Storage**: AsyncStorage for local caching
 - **API**: MegaRadio API (https://themegaradio.com)
-- **Auth**: API Key + JWT tokens
+- **Auth**: API Key + JWT tokens + Google/Apple Sign-In
 - **Build**: EAS Build with Legacy Architecture (New Arch disabled for stability)
 - **Notifications**: expo-notifications, expo-device
 
-## Core Features (Implemented)
-1. **Radio Streaming**: In-app audio playback with expo-audio + Lock Screen/Control Center integration
-2. **Tab Navigation**: Discover | Genres | Favorites | Profile
-3. **Local Caching**: TV init data and genres cached with stale-while-revalidate pattern
-4. **Guest User Support**: Settings, profile, and favorites accessible without login
-5. **Favorites**: Add/remove favorites (syncs on login, works for guests too)
-6. **Genres**: Browse all genres sorted by station count with country filtering
-7. **Popular Stations**: Shows popular stations from user's country
-8. **TV Cast**: Cast radio to TV app (Samsung/LG Smart TVs)
-9. **Client-Side Sorting**: A-Z, Z-A, Popular, Newest, Oldest sorting for all station lists
-10. **Push Notifications**: Full implementation with device token registration and navigation handling
-11. **Play at Login**: Auto-play station on app startup based on user settings
-12. **Statistics Tracking**: Track listening duration per station
-13. **Deep Linking**: megaradio:// scheme for sharing stations
-14. **Swipe to Dismiss**: Player screen can be dismissed by swiping down
+## Latest Session - February 2025
 
-## Implementation Status
+### react-native-track-player Entegrasyonu ✅
+**Amaç**: iOS Control Center ve Lock Screen'de düzgün çalışan media player
 
-### Latest Session - December 2025 (Current)
+**Yapılan Değişiklikler**:
+1. `react-native-track-player` paketi eklendi (v4.1.2)
+2. `/frontend/service.js` - Playback service (remote events)
+3. `/frontend/index.js` - Entry point with RNTP registration
+4. `/frontend/src/services/trackPlayerService.ts` - RNTP wrapper service
+5. `/frontend/src/services/audioServiceFactory.ts` - Service factory (RNTP/expo-audio)
+6. `package.json` - Main entry updated, RNTP exclude added
 
-#### Push Notifications (P0) - ✅ COMPLETED
-**Implementation**:
-- Added `expo-notifications` and `expo-device` packages
-- Created `NotificationHandler.tsx` component for handling all notification logic
-- Updated `pushNotificationService.ts` with:
-  - Token registration with Expo Push Token API
-  - Android notification channels (default, radio, new-stations, favorites)
-  - Navigation handling when notification is tapped
-  - Foreground notification handling
-  - Cold start notification handling
-- Integrated into `_layout.tsx` for app-wide notification support
+**iOS Ayarları**:
+- `iosCategory: 'playback'` - Diğer uygulamaları durdurur
+- `iosCategoryOptions: []` - mixWithOthers YOK
+- Background Modes: `audio`, `fetch`, `remote-notification`
 
-**Files Created/Modified**:
-- `frontend/src/components/NotificationHandler.tsx` - NEW
-- `frontend/src/services/pushNotificationService.ts` - UPDATED
-- `frontend/app/_layout.tsx` - UPDATED
-- `frontend/app.json` - UPDATED (notification plugin config)
+### Splash Screen Yeniden Tasarlandı ✅
+- Koyu gradient arka plan
+- MegaRadio logo ortada
+- 4 eliptik ses dalgası halkası
+- Sol-alt köşede pembe noktalı desen
 
-#### Backend API Verification - ✅ CONFIRMED WORKING
-**Status**: All previously blocked backend features are now working:
-- **Genre Filtering**: `?country=TR` parameter works correctly
-- **Static Pages API**: `/api/app/pages` returns About, Terms, Privacy content
-- **App Info API**: `/api/app/info` returns app metadata
-- **Google Auth Endpoint**: Endpoint is responding (requires valid token)
+### Diğer Düzeltmeler ✅
+- Google Sign-In: `responseType: Code` (PKCE flow)
+- MiniPlayer: Non-tab sayfalarda `bottom: 0`
+- Discoverable Genres: Sağa hizalı metin
+- Popular Stations: Loading spinner eklendi
 
-### Previous Sessions Summary
-
-#### A-Z Sorting Bug Fix (P0) - ✅ FIXED
-- Implemented client-side sorting with Turkish locale support
-
-#### iOS Build Stabilization - ✅ FIXED
-- Disabled Expo New Architecture
-- Downgraded react-native-reanimated v4 to v3
-- Fixed lock screen metadata
-
-#### Advanced Sharing & Deep Linking - ✅ IMPLEMENTED
-- Station sharing with deep links (megaradio://)
-- Copy link functionality
-- Native share sheet integration
-
-#### Swipe to Dismiss Player - ✅ IMPLEMENTED
-- PanResponder-based gesture handling
+## Core Features
+1. **Radio Streaming**: react-native-track-player ile iOS/Android native playback
+2. **Control Center/Lock Screen**: Title, Artist, Artwork, Play/Pause kontrolleri
+3. **Tab Navigation**: Discover | Genres | Favorites | Profile
+4. **Guest User Support**: Login olmadan kullanım
+5. **Push Notifications**: Expo Push ile bildirimler
+6. **Deep Linking**: megaradio:// scheme
 
 ## Key Files
-- `frontend/app/_layout.tsx` - Root layout with global MiniPlayer and NotificationHandler
-- `frontend/src/components/NotificationHandler.tsx` - Push notification handling
-- `frontend/src/services/pushNotificationService.ts` - Push notification service
-- `frontend/app/all-stations.tsx` - All stations with client-side sorting
-- `frontend/app/genre-detail.tsx` - Genre detail with client-side sorting
-- `frontend/app/player.tsx` - Player with swipe to dismiss
-- `frontend/src/components/PlayerOptionsSheet.tsx` - Share/favorite options
-- `frontend/src/providers/AudioProvider.tsx` - Audio playback and lock screen
-- `frontend/src/store/playerStore.ts` - Sleep timer logic
+- `frontend/index.js` - Entry point with RNTP service registration
+- `frontend/service.js` - Track Player playback service
+- `frontend/src/services/trackPlayerService.ts` - RNTP API wrapper
+- `frontend/src/providers/AudioProvider.tsx` - Audio context provider
+- `frontend/src/components/AnimatedSplash.tsx` - Splash screen
 
 ## API Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
-- **Test User**: user@emergent.properties / string
 
-## Known Issues
+## Build Commands
+```bash
+# iOS Build
+eas build --platform ios --profile production
 
-### Requires Testing on Physical Device
-1. **Push Notifications** - Works only on physical iOS/Android devices (not simulators)
-2. **Social Logins (Google & Apple)** - Needs proper OAuth configuration
+# Android Build
+eas build --platform android --profile production
+```
 
-### Backend Requirements
-1. **Push Token Endpoint** - Backend needs `POST /api/user/push-token` endpoint to store device tokens
-2. **Discoverable Genres Images** - Backend needs to return images (P1)
+## Beklenen Davranış (Yeni Build'de)
+1. MegaRadio başladığında → YouTube/Spotify DURUR
+2. Control Center'da → MegaRadio player görünür
+3. Lock Screen'de → Artwork + Title + Artist görünür
+4. Play/Pause butonları → Çalışır
 
 ## Backlog
-
-### P1 - High Priority
-1. **Local Genre Caching** - Add AsyncStorage caching for genre list
-2. **Android App Store Build** - Create production build for Android
-3. **Test Push Notifications** - Full end-to-end test with backend
-
-### P2 - Medium Priority
-1. **Sleep Timer Enhancement** - Add more timer presets
-2. **Glow Effect Enhancement** - Animated glow based on audio
-
-## Build Notes
-- **Architecture**: Legacy (New Arch disabled via `newArchEnabled: false` in app.json)
-- **Reanimated**: v3 (v4 caused crashes)
-- **EAS Build**: Use `eas build --platform ios` for production builds
-- **Push Notifications**: Requires EAS build (Expo Go doesn't support all features)
+- P1: Sleep Timer geliştirmeleri
+- P2: UI animasyonları (Glow Effect)
+- P2: Genre station count backend sorunu
 
 ## User Language
 Turkish (Türkçe)
