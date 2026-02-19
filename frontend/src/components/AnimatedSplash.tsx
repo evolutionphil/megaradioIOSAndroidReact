@@ -1,5 +1,5 @@
 // Splash Screen - Simple, static, no animations
-// Black background, logo+waves centered, dots bottom-left
+// Black background, logo+waves centered, dots bottom-left flush with screen edge
 
 import React from 'react';
 import { View, Image, StyleSheet, StatusBar, Dimensions } from 'react-native';
@@ -31,7 +31,7 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
         resizeMode="contain"
       />
       
-      {/* Dots - Bottom Left */}
+      {/* Dots - Bottom Left - Flush with screen edge */}
       <Image
         source={require('../../assets/images/splash-dots.png')}
         style={styles.dots}
@@ -45,19 +45,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'relative',
   },
   logo: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     width: width * 0.65,
     height: width * 0.65,
+    transform: [
+      { translateX: -(width * 0.65) / 2 },
+      { translateY: -(width * 0.65) / 2 },
+    ],
   },
   dots: {
     position: 'absolute',
-    left: -50,
-    bottom: -30,
-    width: width * 0.8,
-    height: height * 0.5,
+    left: 0,
+    bottom: 0,
+    width: width,
+    height: height * 0.55,
   },
 });
 
