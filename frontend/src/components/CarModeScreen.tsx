@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePlayerStore } from '../store/playerStore';
 import { GlowEffect } from './GlowEffect';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
