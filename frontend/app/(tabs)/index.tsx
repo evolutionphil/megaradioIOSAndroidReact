@@ -562,11 +562,11 @@ export default function HomeScreen() {
                       />
                     )}
                     {/* Dark overlay for text readability */}
-                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.3)' }]} />
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.2)' }]} />
                     <View style={styles.discoverableBannerContent}>
                       <View style={styles.discoverableBannerTextContainer}>
                         <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
-                        <Text style={styles.discoverableBannerSubtitle}>{t('discoverable_genres', 'Discoverable Genres')}</Text>
+                        <Text style={styles.discoverableBannerSubtitle}>{t('discover_all_stations', 'Discover all the stations')}</Text>
                       </View>
                     </View>
                   </TouchableOpacity>
