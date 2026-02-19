@@ -169,6 +169,12 @@ Test sonuçları:
 - **Yapılandırma:** `automotive_app_desc.xml` ve AndroidManifest.xml güncelleniyor
 - **Durum:** Build sırasında otomatik entegre edilecek
 
+### Kotlin 2.1 Uyumluluk Patch'i (December 2025)
+- **Sorun:** `react-native-track-player` Kotlin 2.1 null safety ile uyumsuz
+- **Çözüm:** `patch-package` ile `MusicModule.kt` nullable Bundle sorunu düzeltildi
+- **Dosya:** `patches/react-native-track-player+4.1.2.patch`
+- **Otomatik:** `postinstall` script ile her `yarn install` sonrası uygulanıyor
+
 ### UI Düzeltmeleri (December 2025)
 1. **Kırmızı çizgi kaldırıldı** - Logo altındaki gereksiz "live indicator bar" kaldırıldı
 2. **Ülke bayrağı düzeltmesi** - `countryCode` (camelCase) desteği eklendi
