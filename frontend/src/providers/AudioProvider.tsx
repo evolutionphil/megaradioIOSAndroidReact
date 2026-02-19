@@ -228,7 +228,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
   }, []);
 
-  // Resolve stream URL helper
+  // Resolve stream URL helper - returns { url, candidates } for fallback support
   // Backend Developer Recommendation:
   // 1. urlResolved varsa ve boş değilse → urlResolved kullan
   // 2. url .pls/.m3u/.m3u8/.asx ise → /api/stream/resolve kullan
@@ -247,6 +247,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
            lowerUrl.endsWith('.asx');
   }, []);
   
+  // Store candidates for fallback
+  const streamCandidatesRef = useRef<string[]>([]);
+  const currentCandidateIndexRef = useRef<number>(0);
+  
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
     // Get urlResolved - API returns camelCase "urlResolved"
     const urlResolved = (station as any).urlResolved || station.url_resolved;
@@ -255,6 +259,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     console.log('[AudioProvider] Resolving stream for:', station.name);
     console.log('[AudioProvider] urlResolved:', urlResolved ? urlResolved.substring(0, 60) : 'EMPTY');
     console.log('[AudioProvider] originalUrl:', originalUrl ? originalUrl.substring(0, 60) : 'EMPTY');
+    
+    // Reset candidates
+    streamCandidatesRef.current = [];
+    currentCandidateIndexRef.current = 0;
     
     // Determine which URL to use as base
     let streamUrl = (urlResolved && urlResolved.trim() !== '') ? urlResolved : originalUrl;
@@ -272,8 +280,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         try {
           const streamData = await stationService.resolveStream(streamUrl);
           if (streamData.candidates && streamData.candidates.length > 0) {
+            // Store all candidates for fallback
+            streamCandidatesRef.current = streamData.candidates;
             const resolvedUrl = streamData.candidates[0];
             console.log('[AudioProvider] Native: Resolved to:', resolvedUrl.substring(0, 60));
+            console.log('[AudioProvider] Native: Total candidates:', streamData.candidates.length);
             return resolvedUrl;
           }
         } catch (error) {
@@ -281,12 +292,19 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           // Fallback: try original URL if we used urlResolved
           if (urlResolved && originalUrl && !isPlaylistUrl(originalUrl)) {
             console.log('[AudioProvider] Native: Falling back to original URL');
+            streamCandidatesRef.current = [originalUrl];
             return originalUrl;
           }
         }
       }
       
       // Direct stream URL - use as is
+      // Add both urlResolved and url as candidates for fallback
+      const candidates: string[] = [];
+      if (urlResolved && urlResolved.trim() !== '') candidates.push(urlResolved);
+      if (originalUrl && originalUrl !== urlResolved) candidates.push(originalUrl);
+      streamCandidatesRef.current = candidates;
+      
       console.log('[AudioProvider] Native: Using stream URL directly:', streamUrl.substring(0, 60));
       return streamUrl;
     }
@@ -298,6 +316,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         console.log('[AudioProvider] Web: Playlist detected, resolving...');
         const streamData = await stationService.resolveStream(streamUrl);
         if (streamData.candidates && streamData.candidates.length > 0) {
+          streamCandidatesRef.current = streamData.candidates;
           streamUrl = streamData.candidates[0];
         }
       }
@@ -321,6 +340,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return streamUrl;
     }
   }, [isPlaylistUrl]);
+  
+  // Try next candidate URL when playback fails
+  const tryNextCandidate = useCallback(async (): Promise<string | null> => {
+    currentCandidateIndexRef.current++;
+    const candidates = streamCandidatesRef.current;
+    
+    if (currentCandidateIndexRef.current < candidates.length) {
+      const nextUrl = candidates[currentCandidateIndexRef.current];
+      console.log('[AudioProvider] Trying next candidate:', currentCandidateIndexRef.current + 1, '/', candidates.length);
+      console.log('[AudioProvider] Next URL:', nextUrl.substring(0, 60));
+      return nextUrl;
+    }
+    
+    console.log('[AudioProvider] No more candidates to try');
+    return null;
+  }, []);
 
   // Helper to get artwork URL from station
   const getArtworkUrl = useCallback((station: Station): string => {
