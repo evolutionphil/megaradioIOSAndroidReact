@@ -1,0 +1,41 @@
+diff --git a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/module/MusicModule.kt b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/module/MusicModule.kt
+index b2409a0..611b5e7 100644
+--- a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/module/MusicModule.kt
++++ b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/module/MusicModule.kt
+@@ -545,7 +545,12 @@ class MusicModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
+         if (verifyServiceBoundOrReject(callback)) return@launch
+ 
+         if (index >= 0 && index < musicService.tracks.size) {
+-            callback.resolve(Arguments.fromBundle(musicService.tracks[index].originalItem))
++            val bundle = musicService.tracks[index].originalItem
++            if (bundle != null) {
++                callback.resolve(Arguments.fromBundle(bundle))
++            } else {
++                callback.resolve(null)
++            }
+         } else {
+             callback.resolve(null)
+         }
+@@ -582,12 +587,16 @@ class MusicModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
+     @ReactMethod
+     fun getActiveTrack(callback: Promise) = scope.launch {
+         if (verifyServiceBoundOrReject(callback)) return@launch
+-        callback.resolve(
+-            if (musicService.tracks.isEmpty()) null
+-            else Arguments.fromBundle(
+-                musicService.tracks[musicService.getCurrentTrackIndex()].originalItem
+-            )
+-        )
++        if (musicService.tracks.isEmpty()) {
++            callback.resolve(null)
++        } else {
++            val bundle = musicService.tracks[musicService.getCurrentTrackIndex()].originalItem
++            if (bundle != null) {
++                callback.resolve(Arguments.fromBundle(bundle))
++            } else {
++                callback.resolve(null)
++            }
++        }
+     }
+ 
+     @ReactMethod
