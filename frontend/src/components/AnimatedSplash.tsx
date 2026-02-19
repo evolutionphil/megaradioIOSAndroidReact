@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     bottom: 0,
-    width: width * 0.85,
-    height: height * 0.38,
+    width: width * 0.5,
+    height: height * 0.32,
   },
 });
 
