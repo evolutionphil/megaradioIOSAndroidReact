@@ -270,25 +270,25 @@ const createRootTemplate = async (): Promise<void> => {
     
     if (browseTemplate) {
       browseTemplate.tabTitle = 'Keşfet';
-      browseTemplate.tabImage = require('../assets/images/icon.png');
+      browseTemplate.tabSystemImageName = 'music.note.list';
       templates.push(browseTemplate);
     }
     
     if (favoritesTemplate) {
       favoritesTemplate.tabTitle = 'Favoriler';
-      favoritesTemplate.tabImage = require('../assets/images/icon.png');
+      favoritesTemplate.tabSystemImageName = 'heart.fill';
       templates.push(favoritesTemplate);
     }
     
     if (recentTemplate) {
       recentTemplate.tabTitle = 'Son Çalınanlar';
-      recentTemplate.tabImage = require('../assets/images/icon.png');
+      recentTemplate.tabSystemImageName = 'clock.fill';
       templates.push(recentTemplate);
     }
     
     if (genresTemplate) {
       genresTemplate.tabTitle = 'Türler';
-      genresTemplate.tabImage = require('../assets/images/icon.png');
+      genresTemplate.tabSystemImageName = 'square.grid.2x2.fill';
       templates.push(genresTemplate);
     }
     
