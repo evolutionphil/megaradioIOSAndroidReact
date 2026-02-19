@@ -433,7 +433,21 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
           </TouchableOpacity>
           <View style={styles.volumeBox}>
             <Ionicons name="volume-high" size={20 * S} color="#FFF" />
-            <View style={styles.slider}>
+            <View 
+              style={styles.slider}
+              onTouchStart={(e) => {
+                const { locationX } = e.nativeEvent;
+                const sliderWidth = (SCREEN_WIDTH - 30 * S - BTN - GAP - 16 * S) * 0.9; // Approximate slider width
+                const newVolume = Math.max(0, Math.min(1, locationX / sliderWidth));
+                handleVolumeChange(newVolume);
+              }}
+              onTouchMove={(e) => {
+                const { locationX } = e.nativeEvent;
+                const sliderWidth = (SCREEN_WIDTH - 30 * S - BTN - GAP - 16 * S) * 0.9;
+                const newVolume = Math.max(0, Math.min(1, locationX / sliderWidth));
+                handleVolumeChange(newVolume);
+              }}
+            >
               <View style={[styles.sliderTrack, { backgroundColor: '#373737' }]}>
                 <View 
                   style={[
@@ -445,15 +459,11 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
                   ]} 
                 />
               </View>
-              <TouchableOpacity 
+              <View 
                 style={[
                   styles.sliderThumb,
                   { left: `${(isMuted ? 0 : volume) * 100}%` }
                 ]}
-                onPress={() => {
-                  // Simple volume toggle between 0.5 and current
-                  handleVolumeChange(volume < 0.5 ? 1 : 0.5);
-                }}
               />
             </View>
           </View>
