@@ -146,7 +146,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   // Handle dismiss - stop playback and hide mini player
   const handleDismiss = async () => {
     try {
-      await stop();
+      await stopPlayback();
       hideMiniPlayer();
     } catch (e) {
       console.error('[MiniPlayer] Stop error:', e);
