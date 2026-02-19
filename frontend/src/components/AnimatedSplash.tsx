@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
     position: 'relative',
+    overflow: 'hidden',
   },
   logo: {
     position: 'absolute',
@@ -62,8 +63,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     bottom: 0,
-    width: width,
-    height: height * 0.55,
+    width: width * 1.2,
+    height: height * 0.6,
   },
 });
 
