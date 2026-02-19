@@ -637,10 +637,42 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     } catch (error) {
       console.error('[AudioProvider] Play failed:', error);
+      
+      // Try next candidate if available (Backend recommendation: fallback to candidates[1], candidates[2], etc.)
+      const nextUrl = await tryNextCandidate();
+      if (nextUrl) {
+        console.log('[AudioProvider] Retrying with next candidate...');
+        try {
+          await TrackPlayer.reset();
+          await TrackPlayer.add({
+            id: station._id,
+            url: nextUrl,
+            title: station.name,
+            artist: 'MegaRadio',
+            album: station.country || 'Live Radio',
+            artwork: getArtworkUrl(station),
+            isLiveStream: true,
+          });
+          await TrackPlayer.play();
+          console.log('[AudioProvider] Fallback playback started successfully');
+          
+          // Update stream URL and continue
+          setStreamUrl(nextUrl);
+          listeningStartTime = new Date();
+          
+          // Background tasks
+          userService.recordRecentlyPlayed(station._id).catch(() => {});
+          fetchNowPlaying(station._id);
+          return;
+        } catch (fallbackError) {
+          console.error('[AudioProvider] Fallback also failed:', fallbackError);
+        }
+      }
+      
       setError(error instanceof Error ? error.message : 'Failed to play');
       setPlaybackState('error');
     }
-  }, [resolveStreamUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking]);
+  }, [resolveStreamUrl, tryNextCandidate, getArtworkUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking]);
 
   // Stop playback completely
   const stopPlayback = useCallback(async () => {
