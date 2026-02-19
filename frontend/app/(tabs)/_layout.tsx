@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
