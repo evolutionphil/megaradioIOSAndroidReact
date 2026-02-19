@@ -94,34 +94,34 @@ npx expo prebuild
 
 ## Changelog
 
-### December 2025 - Streaming Sorunları Düzeltmesi
+### December 2025 - Backend Onaylı Streaming Düzeltmesi
 
-#### Stream URL Resolution (Güncellenmiş)
+#### Stream URL Resolution (Final - Backend Onaylı)
 
-**Native (iOS/Android) için:**
-```
-1. urlResolved varsa → Doğrudan kullan (en güvenilir)
-2. URL .pls/.m3u ise → stream/resolve API kullan
-3. Fallback → Orijinal URL'yi kullan
-4. Proxy KULLANILMAZ (native'de mixed content sorunu yok)
-```
-
-**Web için:**
-```
-1. urlResolved varsa:
-   - HTTPS ise → Doğrudan kullan
-   - HTTP ise → Proxy kullan
-2. stream/resolve API sonucu:
-   - HTTPS ise → Doğrudan kullan
-   - HTTP ise → Proxy kullan
+**Strateji:**
+```javascript
+1. streamUrl = urlResolved (boş değilse) || url
+2. if streamUrl.endsWith(.pls/.m3u/.m3u8/.asx):
+     response = GET /api/stream/resolve?url={streamUrl}
+     streamUrl = response.candidates[0]
+3. return streamUrl
 ```
 
-**Test edilen istasyonlar:**
-| İstasyon | urlResolved | Durum |
-|----------|-------------|-------|
-| Energy NRJ Wien | ✅ `streaming.nrjaudio.fm` | Çalışıyor |
-| MANGORADIO | ✅ `mangoradio.stream.laut.fm` | Çalışıyor |
-| Arabesk FM | ✅ `yayin.arabeskfm.biz:8042` | Çalışıyor |
+**Android HTTP Streams:**
+- `usesCleartextTraffic: true` eklendi (app.json)
+- HTTP stream'ler artık doğrudan çalışacak
+
+**Düzeltilen Slug'lar (Backend Onaylı):**
+| İstasyon | Doğru Slug | URL |
+|----------|------------|-----|
+| Virgin Radio Türkiye | `virgin-radio-trkiye` | PLS → resolve gerekli |
+| Best FM (Turkey) | `best-fm-2` | `http://46.20.7.126/;stream.mp3` |
+| Radyo Maximum | `radyo-maksimum` | `https://radyomaximum.kesintisizyayin.com:9970/;stream.mp3` |
+
+#### Düzeltilen UI Sorunları:
+1. **Android Navigation Bar** - `useSafeAreaInsets` ile tab bar padding düzeltildi
+2. **Notification Deep Link** - Notification tıklandığında player sayfasına yönlendirme eklendi
+3. **Metadata Karışıklığı** - İstasyon değiştiğinde önceki metadata temizleniyor
 
 #### Düzeltilen Sorunlar:
 
