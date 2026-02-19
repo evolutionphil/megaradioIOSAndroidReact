@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   contentSection: {
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: Platform.OS === 'ios' ? 60 : 40,
+    // paddingBottom is set dynamically via inline style with safe area insets
   },
   title: {
     fontFamily: 'Ubuntu-Bold',
