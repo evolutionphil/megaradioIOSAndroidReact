@@ -183,9 +183,9 @@ export default function OnboardingScreen() {
         />
       </View>
       
-      {/* Skip button - positioned at top right */}
+      {/* Skip button - positioned at top right with safe area */}
       <TouchableOpacity
-        style={styles.skipButton}
+        style={[styles.skipButton, { top: insets.top + 10 }]}
         onPress={handleSkip}
         activeOpacity={0.7}
         data-testid="onboarding-skip-btn"
