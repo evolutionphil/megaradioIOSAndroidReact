@@ -126,7 +126,12 @@ export const StationCard: React.FC<StationCardProps> = ({
         activeOpacity={0.7}
       >
         <View style={styles.compactLogo}>
-          <Image source={{ uri: logoUrl }} style={styles.compactLogoImage} resizeMode="cover" />
+          <Image 
+            source={{ uri: logoUrl }} 
+            style={styles.compactLogoImage} 
+            resizeMode="cover"
+            onError={handleImageError}
+          />
         </View>
         <Text style={styles.compactName} numberOfLines={1}>{station.name}</Text>
       </TouchableOpacity>
@@ -144,6 +149,7 @@ export const StationCard: React.FC<StationCardProps> = ({
           source={{ uri: logoUrl }}
           style={styles.logo}
           resizeMode="cover"
+          onError={handleImageError}
         />
         {isPlaying && !isLoading && (
           <View style={styles.playingBadge}>
