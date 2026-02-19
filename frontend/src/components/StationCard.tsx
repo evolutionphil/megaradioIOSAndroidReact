@@ -25,8 +25,13 @@ export const StationCard: React.FC<StationCardProps> = ({
   style,
   variant = 'default',
 }) => {
+  const [imageError, setImageError] = useState(false);
+  
   // Helper function to build reliable logo URL with fallback
   const getLogoUrl = (): string => {
+    // If image failed to load, use default
+    if (imageError) return DEFAULT_STATION_LOGO;
+    
     try {
       // Priority 1: logoAssets (best quality, our own CDN)
       if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
@@ -63,6 +68,13 @@ export const StationCard: React.FC<StationCardProps> = ({
   };
 
   const logoUrl = getLogoUrl();
+  
+  // Handle image load error - switch to default logo
+  const handleImageError = () => {
+    if (!imageError) {
+      setImageError(true);
+    }
+  };
 
   if (variant === 'large') {
     return (
