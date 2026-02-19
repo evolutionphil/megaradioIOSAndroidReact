@@ -142,13 +142,68 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
       console.log('[MiniPlayer] No currentStation available');
     }
   };
+  
+  // Swipe-to-dismiss functionality (swipe right to left)
+  const translateX = useRef(new Animated.Value(0)).current;
+  const SWIPE_THRESHOLD = 120;
+  
+  const { stop } = useAudioPlayer();
+  const { hideMiniPlayer } = usePlayerStore();
+  
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        // Only respond to horizontal left swipes
+        return gestureState.dx < -10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        // Only allow left swipe (negative dx)
+        if (gestureState.dx < 0) {
+          translateX.setValue(gestureState.dx);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx < -SWIPE_THRESHOLD || gestureState.vx < -0.5) {
+          // Dismiss: animate off screen and stop playback
+          Animated.timing(translateX, {
+            toValue: -400,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(async () => {
+            try {
+              await stop();
+              hideMiniPlayer();
+            } catch (e) {
+              console.error('[MiniPlayer] Stop error:', e);
+            }
+            translateX.setValue(0);
+          });
+        } else {
+          // Snap back
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 100,
+            friction: 10,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   return (
-    <View style={[
-      styles.container, 
-      { bottom: isGlobal ? 0 : tabBarHeight },
-      isGlobal && styles.containerGlobal
-    ]}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { 
+          bottom: isGlobal ? 0 : tabBarHeight,
+          transform: [{ translateX }],
+        },
+        isGlobal && styles.containerGlobal
+      ]}
+      {...panResponder.panHandlers}
+    >
       <View style={styles.content}>
         {/* Chevron Up Button */}
         <TouchableOpacity style={styles.chevronButton} onPress={handlePress}>
@@ -206,7 +261,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
