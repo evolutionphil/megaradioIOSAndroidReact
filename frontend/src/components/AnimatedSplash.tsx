@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   dots: {
     position: 'absolute',
-    left: 0,
+    left: -5, // Compensate for 5px transparent padding in image
     bottom: 0,
     width: width * 1.2,
     height: height * 0.6,
