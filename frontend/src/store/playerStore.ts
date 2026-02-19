@@ -23,6 +23,7 @@ interface PlayerState {
   setNowPlaying: (metadata: NowPlayingMetadata | null) => void;
   setVolume: (volume: number) => void;
   setMiniPlayerVisible: (visible: boolean) => void;
+  hideMiniPlayer: () => void;
   setError: (message: string | null) => void;
   startSleepTimer: (minutes: number, onExpire: () => void) => void;
   cancelSleepTimer: () => void;
