@@ -23,7 +23,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "eas-build-pre-install": "yarn install --no-frozen-lockfile || true"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.6",
