@@ -152,19 +152,15 @@ export const stationService = {
   },
 
   // Get now playing metadata
+  // Uses the /api/stations/{id}/metadata endpoint which returns { station: {...}, metadata: {...} }
   async getNowPlaying(stationId: string) {
     try {
-      // Try our local backend first
-      const response = await api.get(`/now-playing/${stationId}`);
+      const response = await api.get(API_ENDPOINTS.stations.nowPlaying(stationId));
+      console.log('[stationService] getNowPlaying response:', response.data);
       return response.data;
-    } catch {
-      // Fallback to external API
-      try {
-        const response = await api.get(API_ENDPOINTS.stations.nowPlaying(stationId));
-        return response.data;
-      } catch {
-        return null;
-      }
+    } catch (error) {
+      console.log('[stationService] getNowPlaying error:', error);
+      return null;
     }
   },
 };
