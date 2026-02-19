@@ -565,9 +565,8 @@ export default function HomeScreen() {
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.3)' }]} />
                     <View style={styles.discoverableBannerContent}>
                       <View style={styles.discoverableBannerTextContainer}>
-                        <Text style={styles.discoverableBannerLabel}>{t('discoverable_genres', 'Discoverable')}</Text>
-                        <Text style={styles.discoverableBannerSubtitle}>{t('genres', 'Genres')}</Text>
                         <Text style={styles.discoverableBannerTitle}>{genre.name}</Text>
+                        <Text style={styles.discoverableBannerSubtitle}>{t('discoverable_genres', 'Discoverable Genres')}</Text>
                       </View>
                     </View>
                   </TouchableOpacity>
