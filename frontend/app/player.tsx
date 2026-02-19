@@ -410,7 +410,12 @@ export default function PlayerScreen() {
   }, [recentStations, currentStation, similarData, playStation, addRecentStation]);
 
   const handleClose = () => {
-    router.back();
+    // Check if we can go back, otherwise navigate to tabs
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
   };
 
   const handleToggleFavorite = async () => {
