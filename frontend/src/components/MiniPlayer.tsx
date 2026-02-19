@@ -75,8 +75,11 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
     isMiniPlayerVisible,
   } = usePlayerStore();
   
-  // Calculate tab bar height with safe area for Android
-  const tabBarHeight = Platform.OS === 'ios' ? BASE_TAB_BAR_HEIGHT : BASE_TAB_BAR_HEIGHT + insets.bottom;
+  // Calculate tab bar height including system navigation bar for Android
+  // Tab bar height: iOS=85, Android=65 + system nav bar inset
+  const systemNavBarHeight = Platform.OS === 'android' ? insets.bottom : 0;
+  const baseTabBarHeight = Platform.OS === 'ios' ? 85 : 65;
+  const tabBarHeight = baseTabBarHeight + systemNavBarHeight;
   
   // Use the shared audio player hook
   const { pause, resume } = useAudioPlayer();
