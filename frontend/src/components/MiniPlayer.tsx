@@ -152,7 +152,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
             {currentStation.name}
           </Text>
           <Text style={styles.genreText} numberOfLines={1}>
-            {getGenre()}
+            {nowPlaying?.song || nowPlaying?.title || getGenre()}
           </Text>
         </TouchableOpacity>
 
