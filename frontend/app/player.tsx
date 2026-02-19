@@ -279,7 +279,12 @@ export default function PlayerScreen() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      router.back();
+      // Check if we can go back, otherwise navigate to tabs
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(tabs)');
+      }
     });
   }, [translateY, opacity, router]);
 
