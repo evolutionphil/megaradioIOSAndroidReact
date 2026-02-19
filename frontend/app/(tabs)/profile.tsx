@@ -557,7 +557,7 @@ export default function ProfileScreen() {
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: bottomPadding }}
-      >>
+      >
         {/* Header */}
         <View style={s.header}>
           <View style={s.avatarRow}>
