@@ -176,12 +176,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null,
       });
       
-      // Sync local favorites with server after login
+      // Load favorites from server after login
       // Import dynamically to avoid circular dependency
       const { useFavoritesStore } = await import('./favoritesStore');
-      setTimeout(() => {
-        useFavoritesStore.getState().syncWithServer();
-      }, 500);
+      
+      // First load favorites from server
+      console.log('[AuthStore] Login successful, loading favorites from server...');
+      setTimeout(async () => {
+        try {
+          await useFavoritesStore.getState().loadFavorites();
+          console.log('[AuthStore] Favorites loaded after login');
+        } catch (error) {
+          console.error('[AuthStore] Failed to load favorites:', error);
+        }
+      }, 300);
     } catch (error) {
       console.error('Error saving auth:', error);
     }
