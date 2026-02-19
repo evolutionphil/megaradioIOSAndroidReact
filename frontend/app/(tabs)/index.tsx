@@ -964,34 +964,31 @@ const styles = StyleSheet.create({
   discoverableBannerContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     paddingHorizontal: spacing.lg,
   },
   discoverableBannerTextContainer: {
-    alignItems: 'flex-end',
-  },
-  discoverableBannerRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 8,
+    alignItems: 'flex-start',
   },
   discoverableBannerLabel: {
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
-    textAlign: 'right',
+    textAlign: 'left',
   },
   discoverableBannerTitle: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.semiBold,
     color: colors.primary,
-    textAlign: 'right',
+    textAlign: 'left',
+    marginTop: 4,
   },
   discoverableBannerSubtitle: {
-    fontSize: typography.sizes.sm,
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.semiBold,
     color: 'rgba(255,255,255,0.9)',
-    marginTop: 2,
-    textAlign: 'right',
+    marginTop: -2,
+    textAlign: 'left',
   },
 
   // Users List - Full width with specified dimensions
