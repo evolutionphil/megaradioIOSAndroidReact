@@ -493,21 +493,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Stream URL:', url.substring(0, 60) + '...');
       setStreamUrl(url);
 
-      // STEP 4: Get artwork URL - favicon is more reliable
-      let artworkUrl = 'https://themegaradio.com/logo.png';
-      if (station.favicon && station.favicon.startsWith('http')) {
-        artworkUrl = station.favicon;
-      } else if (station.logo && station.logo.startsWith('http')) {
-        artworkUrl = station.logo;
-      } else if (station.favicon && station.favicon.startsWith('/')) {
-        artworkUrl = `https://themegaradio.com${station.favicon}`;
-      } else if (station.logo && station.logo.startsWith('/')) {
-        artworkUrl = `https://themegaradio.com${station.logo}`;
-      }
-      // Ensure HTTPS for lock screen compatibility
-      if (artworkUrl.startsWith('http://')) {
-        artworkUrl = artworkUrl.replace('http://', 'https://');
-      }
+      // STEP 4: Get artwork URL using helper
+      const artworkUrl = getArtworkUrl(station);
       console.log('[AudioProvider] Artwork URL:', artworkUrl);
 
       // STEP 5: Add track to player with metadata
