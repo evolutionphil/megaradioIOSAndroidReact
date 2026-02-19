@@ -217,7 +217,8 @@ export default function RootLayout() {
           <AudioProvider>
             <PlayAtLoginHandler />
             <NotificationHandler />
-            <CarPlayHandler />
+            {/* CarPlay disabled until Apple approves entitlement */}
+            {/* <CarPlayHandler /> */}
             <View style={styles.container}>
               <StatusBar style="light" />
               <Stack
