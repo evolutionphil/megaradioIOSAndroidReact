@@ -283,83 +283,134 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, []);
 
-  // Fetch now playing helper - updates both UI state and lock screen
-  const fetchNowPlaying = useCallback(async (stationId: string) => {
-    const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+  // Helper to get artwork URL from station
+  const getArtworkUrl = useCallback((station: Station): string => {
+    let artworkUrl = 'https://themegaradio.com/logo.png';
     
-    try {
-      const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
-      if (response.ok) {
-        const metadata = await response.json();
-        console.log('[AudioProvider] Now Playing API response:', metadata);
-        
-        if (metadata && (metadata.title || metadata.artist || metadata.song)) {
-          setNowPlaying(metadata);
-          
-          // Update lock screen/notification metadata (native only)
-          if (Platform.OS !== 'web') {
-            try {
-              const station = usePlayerStore.getState().currentStation;
-              if (station) {
-                // Parse song info - API returns "Artist - Song" format in title
-                let songTitle = metadata.song || metadata.title || station.name;
-                let artistName = metadata.artist || 'MegaRadio';
-                
-                // Get artwork URL - favicon is more reliable
-                let artworkUrl = 'https://themegaradio.com/logo.png';
-                if (station.favicon && station.favicon.startsWith('http')) {
-                  artworkUrl = station.favicon;
-                } else if (station.logo && station.logo.startsWith('http')) {
-                  artworkUrl = station.logo;
-                } else if (station.favicon && station.favicon.startsWith('/')) {
-                  artworkUrl = `https://themegaradio.com${station.favicon}`;
-                } else if (station.logo && station.logo.startsWith('/')) {
-                  artworkUrl = `https://themegaradio.com${station.logo}`;
-                }
-                // Ensure HTTPS for lock screen compatibility
-                if (artworkUrl.startsWith('http://')) {
-                  artworkUrl = artworkUrl.replace('http://', 'https://');
-                }
-                
-                const newMetadata = {
-                  title: songTitle,
-                  artist: artistName,
-                  album: station.name,
-                  artwork: artworkUrl,
-                };
-                
-                console.log('[AudioProvider] Updating lock screen metadata:', newMetadata);
-                
-                // Update NOW PLAYING metadata (for live streams, doesn't change track)
-                await TrackPlayer.updateNowPlayingMetadata(newMetadata);
-                
-                // Also update the track metadata for consistency
-                const activeIndex = await TrackPlayer.getActiveTrackIndex();
-                if (activeIndex !== null && activeIndex !== undefined) {
-                  await TrackPlayer.updateMetadataForTrack(activeIndex, newMetadata);
-                }
-                
-                console.log('[AudioProvider] Lock screen updated:', songTitle, '-', artistName);
-              }
-            } catch (e) {
-              console.log('[AudioProvider] Could not update lock screen:', e);
-            }
-          }
-          return;
-        }
-      }
-    } catch (err) {
-      console.log('[AudioProvider] Now playing fetch error:', err);
+    if (station.favicon && station.favicon.startsWith('http')) {
+      artworkUrl = station.favicon;
+    } else if (station.logo && station.logo.startsWith('http')) {
+      artworkUrl = station.logo;
+    } else if (station.favicon && station.favicon.startsWith('/')) {
+      artworkUrl = `https://themegaradio.com${station.favicon}`;
+    } else if (station.logo && station.logo.startsWith('/')) {
+      artworkUrl = `https://themegaradio.com${station.logo}`;
     }
     
-    // Fallback to station service
+    // Ensure HTTPS for lock screen compatibility
+    if (artworkUrl.startsWith('http://')) {
+      artworkUrl = artworkUrl.replace('http://', 'https://');
+    }
+    
+    return artworkUrl;
+  }, []);
+
+  // Update lock screen metadata helper
+  const updateLockScreenMetadata = useCallback(async (
+    station: Station,
+    songTitle: string,
+    artistName: string
+  ) => {
+    if (Platform.OS === 'web') return;
+    
     try {
-      const metadata = await stationService.getNowPlaying(stationId);
-      if (metadata) {
-        setNowPlaying(metadata);
+      const artworkUrl = getArtworkUrl(station);
+      
+      const newMetadata = {
+        title: songTitle,
+        artist: artistName,
+        album: station.name,
+        artwork: artworkUrl,
+      };
+      
+      console.log('[AudioProvider] Updating lock screen metadata:', newMetadata);
+      
+      // Update NOW PLAYING metadata (for live streams)
+      await TrackPlayer.updateNowPlayingMetadata(newMetadata);
+      
+      // Also update track metadata for consistency
+      const activeIndex = await TrackPlayer.getActiveTrackIndex();
+      if (activeIndex !== null && activeIndex !== undefined) {
+        await TrackPlayer.updateMetadataForTrack(activeIndex, newMetadata);
       }
-    } catch {}
-  }, [setNowPlaying]);
+      
+      console.log('[AudioProvider] Lock screen updated:', songTitle, '-', artistName);
+    } catch (e) {
+      console.log('[AudioProvider] Could not update lock screen:', e);
+    }
+  }, [getArtworkUrl]);
+
+  // Fetch now playing helper - updates both UI state and lock screen
+  const fetchNowPlaying = useCallback(async (stationId: string) => {
+    const station = usePlayerStore.getState().currentStation;
+    if (!station) return;
+    
+    try {
+      // Use the correct metadata API endpoint via stationService
+      const metadata = await stationService.getNowPlaying(stationId);
+      console.log('[AudioProvider] Now Playing response:', metadata);
+      
+      // Check if we have valid metadata
+      // API returns { station: {...}, metadata: {...} } format
+      const metadataObj = metadata?.metadata || metadata;
+      
+      if (metadataObj && (metadataObj.title || metadataObj.artist || metadataObj.song)) {
+        // Parse song info - API might return "Artist - Song" format
+        let songTitle = metadataObj.song || metadataObj.title || '';
+        let artistName = metadataObj.artist || '';
+        
+        // If title contains " - ", split it into artist and song
+        if (songTitle && songTitle.includes(' - ') && !artistName) {
+          const parts = songTitle.split(' - ');
+          artistName = parts[0].trim();
+          songTitle = parts.slice(1).join(' - ').trim();
+        }
+        
+        // Fallback to station name if no song title
+        if (!songTitle) {
+          songTitle = station.name;
+        }
+        if (!artistName) {
+          artistName = 'MegaRadio';
+        }
+        
+        // Update UI state
+        setNowPlaying({
+          title: songTitle,
+          station: station.name,
+          timestamp: Date.now(),
+        });
+        
+        // Update lock screen on native
+        await updateLockScreenMetadata(station, songTitle, artistName);
+        return;
+      }
+      
+      // No metadata from API - use station info as fallback
+      console.log('[AudioProvider] No metadata available, using station info');
+      setNowPlaying({
+        title: station.name,
+        station: station.name,
+        timestamp: Date.now(),
+      });
+      
+      // Update lock screen with station info
+      await updateLockScreenMetadata(station, station.name, station.country || 'Live Radio');
+      
+    } catch (err) {
+      console.log('[AudioProvider] Now playing fetch error:', err);
+      
+      // On error, still update with station info
+      if (station) {
+        setNowPlaying({
+          title: station.name,
+          station: station.name,
+          timestamp: Date.now(),
+        });
+        await updateLockScreenMetadata(station, station.name, station.country || 'Live Radio');
+      }
+    }
+  }, [setNowPlaying, updateLockScreenMetadata]);
 
   // ============================================
   // PLAY STATION - THE CORE FUNCTION
