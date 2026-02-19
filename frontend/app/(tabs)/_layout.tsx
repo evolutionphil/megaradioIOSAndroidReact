@@ -32,7 +32,12 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const { isMiniPlayerVisible, currentStation } = usePlayerStore();
   const { languageVersion } = useLanguageStore(); // Subscribe to language changes
+  const insets = useSafeAreaInsets();
   const showMiniPlayer = isMiniPlayerVisible && currentStation;
+
+  // Calculate tab bar height with safe area for Android edge-to-edge
+  const tabBarHeight = Platform.OS === 'ios' ? 85 : 65 + insets.bottom;
+  const tabBarPaddingBottom = Platform.OS === 'ios' ? 25 : 8 + insets.bottom;
 
   return (
     <View style={styles.container}>
@@ -41,6 +46,10 @@ export default function TabLayout() {
           headerShown: false,
           tabBarStyle: [
             styles.tabBar,
+            { 
+              height: tabBarHeight,
+              paddingBottom: tabBarPaddingBottom,
+            },
             showMiniPlayer && styles.tabBarWithPlayer,
           ],
           tabBarActiveTintColor: '#FFFFFF',
