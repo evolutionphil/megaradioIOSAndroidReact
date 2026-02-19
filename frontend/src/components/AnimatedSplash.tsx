@@ -31,11 +31,11 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
         resizeMode="contain"
       />
       
-      {/* Dots - Bottom Left - Flush with screen edge */}
+      {/* Dots - Bottom Left - Cropped to actual content */}
       <Image
-        source={require('../../assets/images/splash-dots.png')}
+        source={require('../../assets/images/splash-dots-cropped.png')}
         style={styles.dots}
-        resizeMode="cover"
+        resizeMode="contain"
       />
     </View>
   );
