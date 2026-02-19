@@ -97,8 +97,8 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
     return null;
   }
 
-  // Get logo URL using shared utility
-  const logoUrl = getStationLogoUrl(currentStation);
+  // Get logo URL using shared utility - use default if error
+  const logoUrl = logoError ? DEFAULT_STATION_LOGO : getStationLogoUrl(currentStation);
   const isPlaying = playbackState === 'playing';
   const isLoading = playbackState === 'loading' || playbackState === 'buffering';
 
