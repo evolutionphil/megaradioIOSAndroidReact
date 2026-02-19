@@ -25,6 +25,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { SectionSkeleton, UserItemSkeleton } from '../../src/components/Skeleton';
+import { ImageWithFallback } from '../../src/components/ImageWithFallback';
 import {
   usePopularStations,
   usePrecomputedGenres,
