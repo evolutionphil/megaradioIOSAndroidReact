@@ -96,7 +96,23 @@ npx expo prebuild
 
 ## Changelog
 
-### February 2025 - Android Bug Fixes
+### February 2025 - Android Bug Fixes (Session 2)
+
+#### Düzeltilen Sorunlar:
+
+1. **React Hooks Hatası (KRITIK)**
+   - **Sorun**: "Rendered more hooks than during the previous render" hatası - MiniPlayer bileşeninde hooks early return'den sonra çağrılıyordu
+   - **Çözüm**: Tüm hooks early return'den önce taşındı, PanResponder ve Animated kaldırıldı (swipe-to-dismiss daha sonra eklenecek)
+
+2. **JSX Tag Kapanış Hatası**
+   - **Sorun**: `</Animated.View>` yerine `</View>` olması gerekiyordu
+   - **Çözüm**: Tag düzeltildi
+
+3. **stopPlayback Fonksiyon Adı**
+   - **Sorun**: `stop` fonksiyonu yerine `stopPlayback` kullanılmalıydı
+   - **Çözüm**: useAudioPlayer hook'undan doğru fonksiyon adı kullanıldı
+
+### February 2025 - Android Bug Fixes (Session 1)
 
 #### Düzeltilen Sorunlar:
 
