@@ -111,7 +111,8 @@
             "allowsBackgroundAudioPlayback": true
           }
         }
-      ]
+      ],
+      "./plugins/removeCarPlayEntitlement.js"
     ],
     "experiments": {
       "typedRoutes": true
