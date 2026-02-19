@@ -464,8 +464,9 @@ export default function HomeScreen() {
                       onPress={() => handleStationPress(station)}
                     >
                       <View style={styles.gridImageContainer}>
-                        <Image 
-                          source={getLogoUrl(station) ? { uri: getLogoUrl(station) } : FALLBACK_LOGO} 
+                        <ImageWithFallback 
+                          uri={getLogoUrl(station)} 
+                          fallbackSource={FALLBACK_LOGO}
                           style={styles.gridImage} 
                           resizeMode="cover" 
                         />
@@ -493,8 +494,9 @@ export default function HomeScreen() {
                       onPress={() => handleStationPress(station)}
                     >
                       <View style={styles.gridImageContainer}>
-                        <Image 
-                          source={getLogoUrl(station) ? { uri: getLogoUrl(station) } : FALLBACK_LOGO} 
+                        <ImageWithFallback 
+                          uri={getLogoUrl(station)} 
+                          fallbackSource={FALLBACK_LOGO}
                           style={styles.gridImage} 
                           resizeMode="cover" 
                         />
