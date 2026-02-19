@@ -963,23 +963,25 @@ const styles = StyleSheet.create({
   discoverableBannerContent: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
     paddingHorizontal: spacing.lg,
+    paddingRight: spacing.xl,
   },
   discoverableBannerTextContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
   },
   discoverableBannerTitle: {
-    fontSize: typography.sizes.xxl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    textAlign: 'left',
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textAlign: 'right',
+    fontStyle: 'italic',
   },
   discoverableBannerSubtitle: {
-    fontSize: typography.sizes.sm,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 4,
-    textAlign: 'left',
+    fontSize: 16,
+    color: '#FFFFFF',
+    marginTop: 8,
+    textAlign: 'right',
   },
 
   // Users List - Full width with specified dimensions
