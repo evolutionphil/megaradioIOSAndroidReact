@@ -546,8 +546,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         console.log('[AudioProvider] Failed to start stats session:', e);
       }
 
-      // STEP 8: Start now playing interval
-      console.log('[AudioProvider] STEP 8: Starting now playing interval...');
+      // STEP 8: Start now playing polling (every 15 seconds as per API docs)
+      console.log('[AudioProvider] STEP 8: Starting now playing polling (15s interval)...');
       if (nowPlayingIntervalRef.current) {
         clearInterval(nowPlayingIntervalRef.current);
       }
@@ -555,7 +555,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         if (currentPlayingStationId) {
           fetchNowPlaying(currentPlayingStationId);
         }
-      }, 30000);
+      }, 15000); // 15 seconds as recommended by API docs
 
     } catch (error) {
       console.error('[AudioProvider] Play failed:', error);
