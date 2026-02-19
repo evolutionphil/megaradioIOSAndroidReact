@@ -1,78 +1,92 @@
 # MegaRadio - React Native Radio Streaming App
 
 ## Original Problem Statement
-Build a production-ready mobile radio streaming app called "MegaRadio" using React Native with Expo. The app should provide pixel-perfect UI implementation of Figma designs with robust radio streaming capabilities.
+Build a production-ready mobile radio streaming app called "MegaRadio" with support for iOS, Android, CarPlay, Android Auto, Apple Watch, and Wear OS.
 
 ## Tech Stack
-- **Frontend**: Expo SDK 54, TypeScript, Expo Router, React Query, Zustand
-- **Audio**: react-native-track-player v4.1.2 (Control Center/Lock Screen support)
-- **CarPlay/Android Auto**: @g4rb4g3/react-native-carplay v2.7.22
+- **Main App**: Expo SDK 54, TypeScript, Expo Router, react-native-track-player
+- **CarPlay/Android Auto**: @g4rb4g3/react-native-carplay
 - **Apple Watch**: SwiftUI (watchOS 9+)
-- **Storage**: AsyncStorage for local caching
+- **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
-- **Auth**: API Key + JWT tokens + Google/Apple Sign-In
-- **Build**: EAS Build
 
-## Latest Session - February 19, 2025
+## Watch Apps - February 19, 2025
 
-### ✅ Apple Watch Uygulaması Oluşturuldu
-**8 Ekran Tasarımı Uygulandı (SwiftUI):**
+### ✅ Apple Watch (SwiftUI)
+**Dosya Yapısı:** `/app/frontend/watch/ios/MegaRadioWatch/`
 
-| Dosya | Ekran |
-|-------|-------|
-| `ContentView.swift` | Splash + Home |
-| `GenresView.swift` | Genres List + Genre Stations |
-| `CountryView.swift` | Country List + Country Stations |
-| `FavoritesView.swift` | Favorites |
-| `NowPlayingView.swift` | Now Playing (Play/Pause/Skip) |
+| Dosya | İçerik |
+|-------|--------|
+| `MegaRadioWatchApp.swift` | Entry point, AppState, Models |
+| `ContentView.swift` | Splash + Home ekranları |
+| `GenresView.swift` | Genres + Genre Stations |
+| `CountryView.swift` | Countries + Country Stations |
+| `FavoritesView.swift` | Favorites listesi |
+| `NowPlayingView.swift` | Player (Play/Pause/Skip) |
+| `WatchConnectivityService.swift` | iPhone ↔ Watch iletişimi |
 
-**Diğer Dosyalar:**
-- `MegaRadioWatchApp.swift` - Ana uygulama ve AppState
-- `WatchConnectivityService.swift` - iPhone ↔ Watch iletişimi
-- `Assets.xcassets/AccentPink.colorset` - Pembe accent rengi (#FF4199)
+**Toplam:** 858 satır Swift kodu
 
-**Özellikler:**
-- Genres, Country, Favorites navigasyonu
-- Now Playing ekranı (oval kontroller)
-- WatchConnectivity ile iPhone app iletişimi
-- Siyah tema, pembe accent
+### ✅ Wear OS (Kotlin + Jetpack Compose)
+**Dosya Yapısı:** `/app/frontend/watch/android/wear/`
 
-### ✅ Önceki Oturumda Tamamlanan
-- CarPlay & Android Auto entegrasyonu
-- react-native-track-player tam migration
-- Splash screen düzeltmesi
-- Genre station count gizleme
+| Dosya | İçerik |
+|-------|--------|
+| `MainActivity.kt` | Entry point |
+| `MegaRadioWearApp.kt` | Navigation + Routes |
+| `Screens.kt` | Tüm ekranlar (8 adet) |
+| `Theme.kt` | MegaRadio renkleri |
+| `Models.kt` | Data models |
+| `PhoneConnectivityService.kt` | Android ↔ Watch iletişimi |
+| `build.gradle.kts` | Wear OS dependencies |
+| `AndroidManifest.xml` | Permissions |
 
-## Watch App Dosya Yapısı
+## 8 Ekran (Her İki Platform)
+1. **Splash** - MegaRadio logo
+2. **Home** - Genres, Country, Favorites menüsü
+3. **Genres** - Tür listesi
+4. **Genre Stations** - Seçilen türdeki radyolar
+5. **Countries** - Ülke listesi
+6. **Country Stations** - Seçilen ülkedeki radyolar
+7. **Favorites** - Favori radyolar
+8. **Now Playing** - Çalan radyo + kontroller
+
+## İletişim Mimarisi
 ```
-/app/frontend/watch/ios/MegaRadioWatch/
-├── MegaRadioWatchApp.swift      # Entry point + AppState
-├── ContentView.swift            # Splash + Home
-├── GenresView.swift             # Genres list + stations
-├── CountryView.swift            # Country list + stations
-├── FavoritesView.swift          # Favorites list
-├── NowPlayingView.swift         # Player controls
-├── WatchConnectivityService.swift # iPhone iletişimi
-└── Assets.xcassets/
-    └── AccentPink.colorset/     # #FF4199
+📱 Telefon (Login var)
+    ├── API calls (stations, favorites, genres)
+    ├── Audio playback (react-native-track-player)
+    │
+    ├──── WatchConnectivity ────→ 🍎 Apple Watch
+    │         (iOS)                   (SwiftUI)
+    │
+    └──── Wearable Data Layer ──→ ⌚ Wear OS
+              (Android)               (Compose)
 ```
 
-## Watch App Kurulum Adımları
+## Kurulum Adımları
 
-**Xcode'da:**
-1. iOS projesini aç
-2. File → New → Target → watchOS → Watch App
-3. `MegaRadioWatch` klasöründeki Swift dosyalarını ekle
-4. WatchConnectivity capability ekle
-5. Build & Run (Watch Simulator veya cihaz)
+### Apple Watch (Xcode)
+```bash
+cd MegaRadio
+npx expo prebuild
+open ios/MegaRadio.xcworkspace
+# File → New → Target → watchOS App
+# watch/ios/MegaRadioWatch/ dosyalarını ekle
+```
 
-## API Credentials
-- **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
+### Wear OS (Android Studio)
+```bash
+cd MegaRadio
+npx expo prebuild
+# Android Studio → Open → android/
+# File → New → Module → Wear OS
+# watch/android/wear/ içeriğini kopyala
+```
 
 ## Bekleyen İşler
 - **P0**: Apple CarPlay entitlement onayı
-- **P0**: Watch app'i Xcode'da build et
-- **P1**: Wear OS (Android Watch) uygulaması
+- **P0**: Watch apps'i native IDE'lerde build et
 - **P2**: Sleep Timer
 - **P2**: UI animasyonları
 
