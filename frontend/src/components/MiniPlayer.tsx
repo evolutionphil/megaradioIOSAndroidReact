@@ -83,7 +83,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   const tabBarHeight = baseTabBarHeight + systemNavBarHeight;
   
   // Use the shared audio player hook - get all functions at once
-  const { pause, resume, stop } = useAudioPlayer();
+  const { pause, resume, stopPlayback } = useAudioPlayer();
   
   // Favorites store
   const { isFavorite, toggleFavorite } = useFavoritesStore();
