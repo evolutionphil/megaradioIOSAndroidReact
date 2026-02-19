@@ -74,6 +74,15 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setMiniPlayerVisible: (visible) =>
     set({ isMiniPlayerVisible: visible }),
 
+  hideMiniPlayer: () =>
+    set({ 
+      isMiniPlayerVisible: false,
+      currentStation: null,
+      playbackState: 'idle',
+      streamUrl: null,
+      nowPlaying: null,
+    }),
+
   setError: (message) =>
     set({ errorMessage: message, playbackState: message ? 'error' : 'idle' }),
 
