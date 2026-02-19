@@ -5,80 +5,81 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Rea
 
 ## Tech Stack
 - **Frontend**: Expo SDK 54, TypeScript, Expo Router, React Query, Zustand
-- **Audio**: react-native-track-player (Control Center/Lock Screen support) + expo-audio (fallback)
+- **Audio**: react-native-track-player v4.1.2 (Control Center/Lock Screen support)
 - **Storage**: AsyncStorage for local caching
 - **API**: MegaRadio API (https://themegaradio.com)
 - **Auth**: API Key + JWT tokens + Google/Apple Sign-In
 - **Build**: EAS Build with Legacy Architecture (New Arch disabled for stability)
 - **Notifications**: expo-notifications, expo-device
 
-## Latest Session - February 2025
+## Latest Session - February 19, 2025
 
-### react-native-track-player Entegrasyonu ✅
-**Amaç**: iOS Control Center ve Lock Screen'de düzgün çalışan media player
+### ✅ react-native-track-player FULL Migration
+**AudioProvider.tsx tamamen yeniden yazıldı:**
+- `expo-audio` → `react-native-track-player` tam geçiş
+- iOS Control Center ve Lock Screen tam destek
+- Background audio session yönetimi
+- Audio interruption handling (başka app açıldığında)
+- `updateNowPlayingMetadata()` + `updateMetadataForTrack()` ile metadata güncelleme
+- Her 30 saniyede bir şarkı bilgisi güncelleme
 
-**Yapılan Değişiklikler**:
-1. `react-native-track-player` paketi eklendi (v4.1.2)
-2. `/frontend/service.js` - Playback service (remote events)
-3. `/frontend/index.js` - Entry point with RNTP registration
-4. `/frontend/src/services/trackPlayerService.ts` - RNTP wrapper service
-5. `/frontend/src/services/audioServiceFactory.ts` - Service factory (RNTP/expo-audio)
-6. `package.json` - Main entry updated, RNTP exclude added
+### ✅ Splash Screen Düzeltildi
+- `splash-full.png` kullanarak tam ekran arka plan
+- Logo ortada, dots/gradient alt kısımda
+- Sol tarafta siyah boşluk sorunu çözüldü
 
-**iOS Ayarları**:
-- `iosCategory: 'playback'` - Diğer uygulamaları durdurur
-- `iosCategoryOptions: []` - mixWithOthers YOK
-- Background Modes: `audio`, `fetch`, `remote-notification`
+### ✅ MiniPlayer Now Playing Gösterimi
+- Şarkı bilgisi (song/title) artık mini player'da görünüyor
 
-### Splash Screen Yeniden Tasarlandı ✅
-- Koyu gradient arka plan
-- MegaRadio logo ortada
-- 4 eliptik ses dalgası halkası
-- Sol-alt köşede pembe noktalı desen
+### ✅ service.js Güncellendi
+- Remote events: Play, Pause, Stop, Next, Previous
+- RemoteDuck handling (audio interruptions)
+- Playback state logging
 
-### Diğer Düzeltmeler ✅
-- Google Sign-In: `responseType: Code` (PKCE flow)
-- MiniPlayer: Non-tab sayfalarda `bottom: 0`
-- Discoverable Genres: Sağa hizalı metin
-- Popular Stations: Loading spinner eklendi
-
-## Core Features
-1. **Radio Streaming**: react-native-track-player ile iOS/Android native playback
-2. **Control Center/Lock Screen**: Title, Artist, Artwork, Play/Pause kontrolleri
-3. **Tab Navigation**: Discover | Genres | Favorites | Profile
-4. **Guest User Support**: Login olmadan kullanım
-5. **Push Notifications**: Expo Push ile bildirimler
-6. **Deep Linking**: megaradio:// scheme
+### ⏳ Bekleyen: CarPlay & Android Auto
+**Apple CarPlay Entitlement başvurusu yapılacak**
+- Paket: `@g4rb4g3/react-native-carplay`
+- Templates: Now Playing, List, Tab Bar
+- iOS entitlement gerekli: `com.apple.developer.carplay-audio`
 
 ## Key Files
-- `frontend/index.js` - Entry point with RNTP service registration
+- `frontend/src/providers/AudioProvider.tsx` - **TAM YENİDEN YAZILDI** (react-native-track-player)
 - `frontend/service.js` - Track Player playback service
-- `frontend/src/services/trackPlayerService.ts` - RNTP API wrapper
-- `frontend/src/providers/AudioProvider.tsx` - Audio context provider
-- `frontend/src/components/AnimatedSplash.tsx` - Splash screen
+- `frontend/index.js` - Entry point with RNTP registration
+- `frontend/src/components/AnimatedSplash.tsx` - Splash screen (splash-full.png)
+- `frontend/src/components/MiniPlayer.tsx` - Now playing gösterimi eklendi
 
 ## API Credentials
 - **API Key**: `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw`
 
 ## Build Commands
 ```bash
-# iOS Build
-eas build --platform ios --profile production
+# Development Build (TEST için ZORUNLU)
+eas build --profile development --platform ios
+eas build --profile development --platform android
 
-# Android Build
+# Production Build
+eas build --platform ios --profile production
 eas build --platform android --profile production
 ```
 
-## Beklenen Davranış (Yeni Build'de)
-1. MegaRadio başladığında → YouTube/Spotify DURUR
+## ⚠️ ÖNEMLİ: Test Gereksinimleri
+`react-native-track-player` **Expo Go'da ÇALIŞMAZ**.
+Test için mutlaka Development Build gerekli!
+
+## Beklenen Davranış (Development Build'de)
+1. MegaRadio başladığında → Diğer audio DURUR
 2. Control Center'da → MegaRadio player görünür
 3. Lock Screen'de → Artwork + Title + Artist görünür
 4. Play/Pause butonları → Çalışır
+5. Now Playing metadata → Her 30 saniyede güncellenir
 
-## Backlog
-- P1: Sleep Timer geliştirmeleri
-- P2: UI animasyonları (Glow Effect)
-- P2: Genre station count backend sorunu
+## Backlog (Öncelik Sırası)
+- **P0**: Development build oluştur ve test et
+- **P1**: CarPlay & Android Auto entegrasyonu
+- **P2**: Sleep Timer geliştirmeleri
+- **P2**: UI animasyonları (Glow Effect)
+- **P3**: Genre station count backend sorunu
 
 ## User Language
 Turkish (Türkçe)
