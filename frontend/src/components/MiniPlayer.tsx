@@ -216,7 +216,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </Animated.View>
+    </View>
   );
 };
 
