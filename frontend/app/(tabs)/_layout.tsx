@@ -115,10 +115,9 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: '#1B1C1E',
     borderTopWidth: 0,
-    height: TAB_BAR_HEIGHT,
-    paddingBottom: Platform.OS === 'ios' ? 25 : 8,
     paddingTop: 8,
     paddingHorizontal: 10,
+    // Height and paddingBottom set dynamically with safe area insets
   },
   tabBarWithPlayer: {
     // No change needed, MiniPlayer sits above
