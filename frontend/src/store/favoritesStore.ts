@@ -62,32 +62,20 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       if (authStatus && user?._id && token) {
         // Use authenticated endpoint GET /api/user/favorites (requires token)
         try {
-          const headers: Record<string, string> = {
-            'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-            'Authorization': `Bearer ${token}`,
-          };
-          
           console.log('[FavoritesStore] Fetching favorites with token...');
           
-          const response = await fetch('https://themegaradio.com/api/user/favorites?tv=1', {
-            headers,
-          });
+          // Use userService which uses api interceptor with automatic token
+          const favoritesResponse = await userService.getFavorites();
+          const favorites = favoritesResponse.favorites || favoritesResponse;
           
-          console.log('[FavoritesStore] Response status:', response.status);
+          console.log('[FavoritesStore] Favorites loaded:', Array.isArray(favorites) ? favorites.length : 0);
           
-          if (response.ok) {
-            const favorites = await response.json();
-            console.log('[FavoritesStore] Favorites loaded:', Array.isArray(favorites) ? favorites.length : 0);
-            
-            // Also load custom order from local storage
-            const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
-            const customOrder = orderJson ? JSON.parse(orderJson) : [];
-            
-            set({ favorites: Array.isArray(favorites) ? favorites : [], customOrder, isLoaded: true, isLoading: false });
-            return;
-          } else {
-            console.log('[FavoritesStore] Response not OK:', response.status, await response.text());
-          }
+          // Also load custom order from local storage
+          const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
+          const customOrder = orderJson ? JSON.parse(orderJson) : [];
+          
+          set({ favorites: Array.isArray(favorites) ? favorites : [], customOrder, isLoaded: true, isLoading: false });
+          return;
         } catch (apiError: any) {
           console.log('[FavoritesStore] API favorites failed:', apiError.message);
         }
