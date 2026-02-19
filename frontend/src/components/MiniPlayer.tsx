@@ -68,6 +68,7 @@ interface MiniPlayerProps {
 export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [logoError, setLogoError] = useState(false);
   const {
     currentStation,
     playbackState,
