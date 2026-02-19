@@ -1,8 +1,8 @@
-// Splash Screen - Simple, static, no animations
-// Black background, logo+waves centered, dots bottom-left flush with screen edge
+// Splash Screen - Using full background image with centered logo
+// No animations, simple and reliable
 
 import React from 'react';
-import { View, Image, StyleSheet, StatusBar, Dimensions } from 'react-native';
+import { View, Image, StyleSheet, StatusBar, Dimensions, ImageBackground } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,21 +22,23 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#000000" />
+      <StatusBar barStyle="light-content" backgroundColor="#000000" translucent />
       
-      {/* Logo + Waves - Center */}
-      <Image
-        source={require('../../assets/images/splash-logo-waves.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-      
-      {/* Dots - Bottom Left - Cropped to actual content */}
-      <Image
-        source={require('../../assets/images/splash-dots-cropped.png')}
-        style={styles.dots}
-        resizeMode="contain"
-      />
+      {/* Full screen background with dots/gradient */}
+      <ImageBackground
+        source={require('../../assets/images/splash-full.png')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        {/* Logo centered on top */}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('../../assets/images/splash-logo-waves.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -45,26 +47,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
-    position: 'relative',
-    overflow: 'hidden',
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  logoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
     width: width * 0.65,
     height: width * 0.65,
-    transform: [
-      { translateX: -(width * 0.65) / 2 },
-      { translateY: -(width * 0.65) / 2 },
-    ],
-  },
-  dots: {
-    position: 'absolute',
-    left: -10, // Push slightly left to compensate for image padding
-    bottom: -10, // Push slightly down 
-    width: width * 1.1,
-    height: width * 1.1 * (320 / 330),
   },
 });
 
