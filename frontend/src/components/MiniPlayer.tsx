@@ -90,52 +90,6 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   // Favorites store
   const { isFavorite, toggleFavorite } = useFavoritesStore();
   
-  // Swipe-to-dismiss refs - must be before any early return
-  const translateX = useRef(new Animated.Value(0)).current;
-  const SWIPE_THRESHOLD = 120;
-  
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        // Only respond to horizontal left swipes
-        return gestureState.dx < -10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
-      },
-      onPanResponderMove: (_, gestureState) => {
-        // Only allow left swipe (negative dx)
-        if (gestureState.dx < 0) {
-          translateX.setValue(gestureState.dx);
-        }
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx < -SWIPE_THRESHOLD || gestureState.vx < -0.5) {
-          // Dismiss: animate off screen and stop playback
-          Animated.timing(translateX, {
-            toValue: -400,
-            duration: 200,
-            useNativeDriver: true,
-          }).start(async () => {
-            try {
-              await stop();
-              hideMiniPlayer();
-            } catch (e) {
-              console.error('[MiniPlayer] Stop error:', e);
-            }
-            translateX.setValue(0);
-          });
-        } else {
-          // Snap back
-          Animated.spring(translateX, {
-            toValue: 0,
-            useNativeDriver: true,
-            tension: 100,
-            friction: 10,
-          }).start();
-        }
-      },
-    })
-  ).current;
-  
   // Check if current station is favorited
   const isCurrentFavorite = currentStation ? isFavorite(currentStation._id) : false;
 
@@ -190,19 +144,23 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
       console.log('[MiniPlayer] No currentStation available');
     }
   };
+  
+  // Handle dismiss - stop playback and hide mini player
+  const handleDismiss = async () => {
+    try {
+      await stop();
+      hideMiniPlayer();
+    } catch (e) {
+      console.error('[MiniPlayer] Stop error:', e);
+    }
+  };
 
   return (
-    <Animated.View 
-      style={[
-        styles.container, 
-        { 
-          bottom: isGlobal ? 0 : tabBarHeight,
-          transform: [{ translateX }],
-        },
-        isGlobal && styles.containerGlobal
-      ]}
-      {...panResponder.panHandlers}
-    >
+    <View style={[
+      styles.container, 
+      { bottom: isGlobal ? 0 : tabBarHeight },
+      isGlobal && styles.containerGlobal
+    ]}>
       <View style={styles.content}>
         {/* Chevron Up Button */}
         <TouchableOpacity style={styles.chevronButton} onPress={handlePress}>
