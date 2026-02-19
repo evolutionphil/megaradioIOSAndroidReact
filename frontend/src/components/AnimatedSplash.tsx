@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     bottom: 0,
-    width: width,
-    height: width * (681 / 375), // Maintain aspect ratio
+    width: width * 0.88, // 330/375 ratio
+    height: width * 0.88 * (320 / 330), // Maintain aspect ratio
   },
 });
 
