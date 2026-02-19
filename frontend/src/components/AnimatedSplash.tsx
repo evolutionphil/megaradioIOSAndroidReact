@@ -61,10 +61,10 @@ const styles = StyleSheet.create({
   },
   dots: {
     position: 'absolute',
-    left: 0,
-    bottom: 0,
-    width: width * 0.88, // 330/375 ratio
-    height: width * 0.88 * (320 / 330), // Maintain aspect ratio
+    left: -10, // Push slightly left to compensate for image padding
+    bottom: -10, // Push slightly down 
+    width: width * 1.1,
+    height: width * 1.1 * (320 / 330),
   },
 });
 
