@@ -969,24 +969,16 @@ const styles = StyleSheet.create({
   discoverableBannerTextContainer: {
     alignItems: 'flex-start',
   },
-  discoverableBannerLabel: {
+  discoverableBannerTitle: {
     fontSize: typography.sizes.xxl,
     fontWeight: typography.weights.bold,
     color: colors.text,
     textAlign: 'left',
   },
-  discoverableBannerTitle: {
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.semiBold,
-    color: colors.primary,
-    textAlign: 'left',
-    marginTop: 4,
-  },
   discoverableBannerSubtitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.semiBold,
-    color: 'rgba(255,255,255,0.9)',
-    marginTop: -2,
+    fontSize: typography.sizes.sm,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 4,
     textAlign: 'left',
   },
 
