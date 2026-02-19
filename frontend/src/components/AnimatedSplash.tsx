@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
   },
   dots: {
     position: 'absolute',
-    left: -10,
-    bottom: -10,
-    width: width * 0.6,
-    height: height * 0.4,
+    left: -30,
+    bottom: -20,
+    width: width * 0.7,
+    height: height * 0.45,
   },
 });
 
