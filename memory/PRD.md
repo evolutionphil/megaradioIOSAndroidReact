@@ -127,17 +127,20 @@ npx expo prebuild
 - **Native Cihazda Test Gerekli**: `react-native-track-player` sadece native build'de çalışıyor, web preview'da test edilemez
 - **API Testleri Başarılı**: Stream URL'leri ve metadata endpoint'leri curl ile doğrulandı
 
-#### ⚠️ Backend Sorunu - Metadata API Boş Döndürüyor
-**Endpoint:** `/api/stations/{id}/metadata`
-**Dönen yanıt:** `{"station":{},"metadata":{}}`
+#### ⚠️ Backend Sorunu - ÇÖZÜLDÜ ✅
+Metadata API düzgün çalışıyor:
+- **Endpoint:** `/api/stations/{slug}/metadata`
+- **Yanıt:** `{ station: { id, name, url }, metadata: { title, artist, station, genre } }`
+- **Polling:** 15 saniyede bir (güncellendi)
 
-Test edilen istasyonlar:
-- MANGORADIO: `{"station":{},"metadata":{}}`
-- Energy NRJ Wien: `{"station":{},"metadata":{}}`
-- Arabesk FM: `{"station":{},"metadata":{}}`
-- Radyo Maximum: `{"station":{},"metadata":{}}`
+Test sonuçları:
+- MANGORADIO: ✅ `{ title: "Nothing Breaks Like a Heart", artist: "Mark Ronson feat. Miley Cyrus" }`
+- Energy NRJ Wien: ⚠️ `{ metadata: {} }` (ICY metadata yayınlamıyor)
 
-**Sonuç:** Metadata API backend'de düzeltilmeli. Web'de çalışıyorsa farklı bir endpoint veya mantık kullanılıyor olabilir. Frontend hazır - API doğru veri döndürdüğünde çalışacak.
+### Android Auto Entegrasyonu (December 2025)
+- **Plugin eklendi:** `plugins/withAndroidAuto.js`
+- **Yapılandırma:** `automotive_app_desc.xml` ve AndroidManifest.xml güncelleniyor
+- **Durum:** Build sırasında otomatik entegre edilecek
 
 ### UI Düzeltmeleri (December 2025)
 1. **Kırmızı çizgi kaldırıldı** - Logo altındaki gereksiz "live indicator bar" kaldırıldı
