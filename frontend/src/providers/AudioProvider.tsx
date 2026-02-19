@@ -236,22 +236,36 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (streamData.candidates && streamData.candidates.length > 0) {
         let resolvedUrl = streamData.candidates[0];
         
-        const isKnownWorkingHttps = resolvedUrl.includes('stream.laut.fm') || 
-                                     resolvedUrl.includes('radiohost.de') ||
-                                     resolvedUrl.includes('streamtheworld.com');
-        
-        if (resolvedUrl.startsWith('http://') || !isKnownWorkingHttps) {
+        // Only use proxy for HTTP streams - HTTPS streams should work directly
+        if (resolvedUrl.startsWith('http://')) {
+          console.log('[AudioProvider] HTTP stream detected, using proxy');
           resolvedUrl = stationService.getProxyUrl(resolvedUrl);
+        } else {
+          console.log('[AudioProvider] HTTPS stream, using directly:', resolvedUrl.substring(0, 60));
         }
 
         return resolvedUrl;
       }
 
+      // Fallback to url_resolved or original url
       let fallbackUrl = station.url_resolved || station.url;
-      return stationService.getProxyUrl(fallbackUrl);
+      
+      // Only proxy HTTP URLs
+      if (fallbackUrl.startsWith('http://')) {
+        return stationService.getProxyUrl(fallbackUrl);
+      }
+      
+      return fallbackUrl;
     } catch (error) {
+      console.log('[AudioProvider] Stream resolution error, using fallback:', error);
       let fallbackUrl = station.url_resolved || station.url;
-      return stationService.getProxyUrl(fallbackUrl);
+      
+      // Only proxy HTTP URLs
+      if (fallbackUrl.startsWith('http://')) {
+        return stationService.getProxyUrl(fallbackUrl);
+      }
+      
+      return fallbackUrl;
     }
   }, []);
 
