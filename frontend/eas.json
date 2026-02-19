@@ -31,7 +31,8 @@
     "production": {
       "ios": {
         "resourceClass": "m-medium",
-        "autoIncrement": "buildNumber"
+        "autoIncrement": "buildNumber",
+        "credentialsSource": "remote"
       },
       "android": {
         "buildType": "app-bundle",
