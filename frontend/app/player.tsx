@@ -537,7 +537,10 @@ export default function PlayerScreen() {
       <View style={[styles.safeArea, { paddingTop: insets.top }]}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: 40 + insets.bottom }
+          ]}
           showsVerticalScrollIndicator={false}
         >
           {/* Header */}
