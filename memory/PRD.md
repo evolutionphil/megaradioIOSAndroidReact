@@ -96,6 +96,33 @@ npx expo prebuild
 
 ### December 2025 - Streaming Sorunları Düzeltmesi
 
+#### Stream URL Resolution (Güncellenmiş)
+
+**Native (iOS/Android) için:**
+```
+1. urlResolved varsa → Doğrudan kullan (en güvenilir)
+2. URL .pls/.m3u ise → stream/resolve API kullan
+3. Fallback → Orijinal URL'yi kullan
+4. Proxy KULLANILMAZ (native'de mixed content sorunu yok)
+```
+
+**Web için:**
+```
+1. urlResolved varsa:
+   - HTTPS ise → Doğrudan kullan
+   - HTTP ise → Proxy kullan
+2. stream/resolve API sonucu:
+   - HTTPS ise → Doğrudan kullan
+   - HTTP ise → Proxy kullan
+```
+
+**Test edilen istasyonlar:**
+| İstasyon | urlResolved | Durum |
+|----------|-------------|-------|
+| Energy NRJ Wien | ✅ `streaming.nrjaudio.fm` | Çalışıyor |
+| MANGORADIO | ✅ `mangoradio.stream.laut.fm` | Çalışıyor |
+| Arabesk FM | ✅ `yayin.arabeskfm.biz:8042` | Çalışıyor |
+
 #### Düzeltilen Sorunlar:
 
 1. **`/api/now-playing/{id}` Endpoint Hatası**
