@@ -74,11 +74,6 @@ export const GenreCard: React.FC<GenreCardProps> = ({
           <Text style={[styles.name, size === 'small' && styles.nameSmall]} numberOfLines={1}>
             {genre.name}
           </Text>
-          {size !== 'small' && genre.stationCount && (
-            <Text style={styles.count}>
-              {genre.stationCount} stations
-            </Text>
-          )}
         </View>
       </LinearGradient>
     </TouchableOpacity>
