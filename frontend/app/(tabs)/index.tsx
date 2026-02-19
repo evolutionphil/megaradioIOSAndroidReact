@@ -364,8 +364,9 @@ export default function HomeScreen() {
                       onPress={() => handleStationPress(station)}
                     >
                       <View style={styles.popularLogo}>
-                        <Image 
-                          source={logoUrl ? { uri: logoUrl } : FALLBACK_LOGO} 
+                        <ImageWithFallback 
+                          uri={logoUrl} 
+                          fallbackSource={FALLBACK_LOGO}
                           style={styles.popularLogoImage} 
                           resizeMode="cover" 
                         />
