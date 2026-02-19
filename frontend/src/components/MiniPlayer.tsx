@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, borderRadius, spacing, typography } from '../constants/theme';
 import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
