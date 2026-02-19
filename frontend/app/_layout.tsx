@@ -201,13 +201,17 @@ export default function RootLayout() {
 
   // Handle notification tap - when user taps notification, open player
   // Also handle case where user dismisses player modal and lands on empty route
+  // This effect should only run ONCE on app start, not on every navigation
+  const hasHandledNotification = useRef(false);
+  
   useEffect(() => {
     if (Platform.OS === 'web') return;
     
-    // Check on app start (when coming from notification)
-    if (isNavigationReady && !showSplash && hasCheckedOnboarding) {
+    // Only handle notification redirect once on app start
+    if (isNavigationReady && !showSplash && hasCheckedOnboarding && !hasHandledNotification.current) {
+      hasHandledNotification.current = true;
+      
       const currentSegment = segments[0];
-      const hasStation = usePlayerStore.getState().currentStation;
       
       // If no valid segment (empty route after dismissing player), go to tabs
       if (!currentSegment || currentSegment === '') {
@@ -216,13 +220,15 @@ export default function RootLayout() {
         return;
       }
       
-      // If app was opened from notification with no valid route - go to player
-      if (hasStation && currentSegment !== 'player' && currentSegment !== '(tabs)' && currentSegment !== 'onboarding') {
+      // Only redirect to player if app was opened from notification AND we're at root
+      // Don't redirect if user is navigating to other screens intentionally
+      const hasStation = usePlayerStore.getState().currentStation;
+      if (hasStation && currentSegment !== 'player' && currentSegment !== '(tabs)' && currentSegment !== 'onboarding' && currentSegment === '') {
         console.log('[Layout] App opened from notification, redirecting to player...');
         router.replace('/player');
       }
     }
-  }, [isNavigationReady, showSplash, hasCheckedOnboarding, segments]);
+  }, [isNavigationReady, showSplash, hasCheckedOnboarding]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
