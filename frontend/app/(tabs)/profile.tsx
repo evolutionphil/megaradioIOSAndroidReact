@@ -681,7 +681,6 @@ export default function ProfileScreen() {
         <TouchableOpacity style={s.logoutBtn} onPress={() => setShowLogoutModal(true)} data-testid="profile-logout-btn">
           <Text style={s.logoutText}>{t('log_out', 'Log Out')}</Text>
         </TouchableOpacity>
-        <View style={{ height: 80 }} />
       </ScrollView>
       
       {/* Logout Modal */}
