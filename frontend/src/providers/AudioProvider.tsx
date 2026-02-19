@@ -255,7 +255,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, []);
 
-  // Fetch now playing helper
+  // Fetch now playing helper - updates both UI state and lock screen
   const fetchNowPlaying = useCallback(async (stationId: string) => {
     const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
     
@@ -263,46 +263,61 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
       if (response.ok) {
         const metadata = await response.json();
-        if (metadata && (metadata.title || metadata.artist)) {
+        console.log('[AudioProvider] Now Playing API response:', metadata);
+        
+        if (metadata && (metadata.title || metadata.artist || metadata.song)) {
           setNowPlaying(metadata);
           
-          // Update track metadata for lock screen
-          try {
-            const station = usePlayerStore.getState().currentStation;
-            if (station) {
-              const songTitle = metadata.title || station.name;
-              const artistName = metadata.artist || 'MegaRadio';
-              
-              // Get artwork URL
-              let artworkUrl = 'https://themegaradio.com/logo.png';
-              if (station.logo && station.logo.startsWith('http')) {
-                artworkUrl = station.logo;
-              } else if (station.favicon && station.favicon.startsWith('http')) {
-                artworkUrl = station.favicon;
-              } else if (station.logo && station.logo.startsWith('/')) {
-                artworkUrl = `https://themegaradio.com${station.logo}`;
+          // Update lock screen/notification metadata (native only)
+          if (Platform.OS !== 'web') {
+            try {
+              const station = usePlayerStore.getState().currentStation;
+              if (station) {
+                // Parse song info - API returns "Artist - Song" format in title
+                let songTitle = metadata.song || metadata.title || station.name;
+                let artistName = metadata.artist || 'MegaRadio';
+                
+                // Get artwork URL
+                let artworkUrl = 'https://themegaradio.com/logo.png';
+                if (station.logo && station.logo.startsWith('http')) {
+                  artworkUrl = station.logo;
+                } else if (station.favicon && station.favicon.startsWith('http')) {
+                  artworkUrl = station.favicon;
+                } else if (station.logo && station.logo.startsWith('/')) {
+                  artworkUrl = `https://themegaradio.com${station.logo}`;
+                }
+                if (artworkUrl.startsWith('http://')) {
+                  artworkUrl = artworkUrl.replace('http://', 'https://');
+                }
+                
+                const newMetadata = {
+                  title: songTitle,
+                  artist: artistName,
+                  album: station.name,
+                  artwork: artworkUrl,
+                };
+                
+                // Update NOW PLAYING metadata (for live streams, doesn't change track)
+                await TrackPlayer.updateNowPlayingMetadata(newMetadata);
+                
+                // Also update the track metadata for consistency
+                const activeIndex = await TrackPlayer.getActiveTrackIndex();
+                if (activeIndex !== null && activeIndex !== undefined) {
+                  await TrackPlayer.updateMetadataForTrack(activeIndex, newMetadata);
+                }
+                
+                console.log('[AudioProvider] Lock screen updated:', songTitle, '-', artistName);
               }
-              if (artworkUrl.startsWith('http://')) {
-                artworkUrl = artworkUrl.replace('http://', 'https://');
-              }
-              
-              // Update the current track's metadata
-              await TrackPlayer.updateNowPlayingMetadata({
-                title: songTitle,
-                artist: artistName,
-                album: station.name,
-                artwork: artworkUrl,
-              });
-              
-              console.log('[AudioProvider] Lock screen updated:', songTitle, '-', artistName);
+            } catch (e) {
+              console.log('[AudioProvider] Could not update lock screen:', e);
             }
-          } catch (e) {
-            console.log('[AudioProvider] Could not update lock screen:', e);
           }
           return;
         }
       }
-    } catch {}
+    } catch (err) {
+      console.log('[AudioProvider] Now playing fetch error:', err);
+    }
     
     // Fallback to station service
     try {
