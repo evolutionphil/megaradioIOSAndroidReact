@@ -440,7 +440,10 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <SafeAreaView style={s.container} edges={['top']}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: bottomPadding }}
+        >
           {/* Guest Header */}
           <View style={s.header}>
             <View style={s.avatarRow}>
@@ -551,7 +554,10 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={s.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: bottomPadding }}
+      >>
         {/* Header */}
         <View style={s.header}>
           <View style={s.avatarRow}>
