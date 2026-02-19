@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 40,
+    // top is set dynamically via inline style with safe area insets
     right: 20,
     backgroundColor: 'rgba(80, 80, 80, 0.8)',
     paddingHorizontal: 20,
