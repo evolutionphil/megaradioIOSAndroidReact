@@ -22,6 +22,9 @@ import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
+import CarPlayService from '../src/services/carPlayService';
+import stationService from '../src/services/stationService';
+import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
