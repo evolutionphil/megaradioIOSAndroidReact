@@ -69,7 +69,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           
           console.log('[FavoritesStore] Fetching favorites with token...');
           
-          const response = await fetch('https://themegaradio.com/api/user/favorites', {
+          const response = await fetch('https://themegaradio.com/api/user/favorites?tv=1', {
             headers,
           });
           
