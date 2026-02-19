@@ -118,9 +118,12 @@ export interface StreamResolveResponse {
 
 // Metadata Types
 export interface NowPlayingMetadata {
-  title: string;
-  station: string;
-  timestamp: number;
+  title?: string;
+  song?: string;
+  artist?: string;
+  station?: string;
+  album?: string;
+  timestamp?: number;
 }
 
 // Location Types
