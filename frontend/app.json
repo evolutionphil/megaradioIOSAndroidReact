@@ -77,6 +77,17 @@
       "expo-router",
       "expo-apple-authentication",
       [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          },
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./assets/images/notification-icon.png",
