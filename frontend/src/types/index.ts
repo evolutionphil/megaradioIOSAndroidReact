@@ -4,6 +4,7 @@ export interface Station {
   name: string;
   url: string;
   url_resolved?: string;
+  urlResolved?: string;  // API returns camelCase, support both
   homepage?: string;
   favicon?: string;
   logo?: string;
