@@ -12,9 +12,6 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
       "usesAppleSignIn": true,
-      "entitlements": {
-        "com.apple.developer.carplay-audio": true
-      },
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
@@ -38,9 +35,6 @@
         "NSCameraUsageDescription": "Profil fotoğrafı çekebilmek için kamera erişimi gereklidir.",
         "NSMicrophoneUsageDescription": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
         "ITSAppUsesNonExemptEncryption": false
-      },
-      "config": {
-        "usesNonExemptEncryption": false
       }
     },
     "android": {
