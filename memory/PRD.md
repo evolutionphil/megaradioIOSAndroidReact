@@ -85,14 +85,61 @@ npx expo prebuild
 ```
 
 ## Bekleyen İşler
-- **P0**: Apple CarPlay entitlement onayı
-- **P0**: Watch apps'i native IDE'lerde build et
-- **P2**: Sleep Timer
+- **P0**: Apple CarPlay entitlement onayı (kullanıcı aksiyonu bekliyor)
+- **P0**: Google OAuth Android SHA-1 fingerprint (kullanıcı aksiyonu bekliyor)
+- **P0**: Yeni Android build ile test gerekiyor (usesCleartextTraffic düzeltmesi)
+- **P1**: Watch apps'i native IDE'lerde build et
+- **P2**: Sleep Timer tam test
 - **P2**: UI animasyonları
 
 ---
 
 ## Changelog
+
+### February 2025 - Android Bug Fixes
+
+#### Düzeltilen Sorunlar:
+
+1. **Siyah Ekran Sorunu (P0)**
+   - **Sorun**: Uygulama yeniden başlatıldığında ve player modal dismiss edildiğinde siyah ekran
+   - **Çözüm**: `_layout.tsx` ve `player.tsx`'de router.canGoBack() kontrolü eklendi, boş route durumunda tabs'a yönlendirme
+
+2. **Mini Player Layout (P0)**
+   - **Sorun**: Mini player tab bar'ı kapatıyordu
+   - **Çözüm**: `MiniPlayer.tsx`'de Android için system navigation bar inset'i dahil edildi
+
+3. **Mini Player Swipe-to-Dismiss (YENİ ÖZELLİK)**
+   - Sağdan sola kaydırarak mini player'ı kapatma özelliği eklendi
+   - `playerStore.ts`'ye `hideMiniPlayer()` fonksiyonu eklendi
+
+4. **Profil Sayfası Layout (P0)**
+   - **Sorun**: Login butonu mini-player tarafından kapanıyordu
+   - **Çözüm**: ScrollView'a dinamik bottom padding eklendi (mini-player + tab bar + system nav bar)
+
+5. **Car Mode Volume Slider (P0)**
+   - **Sorun**: Volume slider sistem nav bar arkasında kalıyordu ve çalışmıyordu
+   - **Çözüm**: `CarModeScreen.tsx`'e useSafeAreaInsets eklendi, touch-based volume control implement edildi
+
+6. **Cast Icon (P1)**
+   - **Sorun**: Cast icon tıklandığında login sayfasına yönlendiriyordu
+   - **Çözüm**: Artık doğrudan CastModal açılıyor, login kontrolü modal içinde yapılıyor
+
+7. **Share WhatsApp (P1)**
+   - **Sorun**: Paylaşım WhatsApp Business'a gidiyordu
+   - **Çözüm**: Native Share API kullanılıyor, kullanıcı hangi WhatsApp uygulamasını kullanacağını seçebilir
+
+8. **AnimatedSplash Safe Area (P0)**
+   - Android'de bottom padding eklendi
+
+#### Değişen Dosyalar:
+- `app/_layout.tsx` - Boş route kontrolü
+- `app/player.tsx` - canGoBack kontrolü, cast handler düzeltmesi
+- `app/(tabs)/profile.tsx` - Bottom padding, playerStore import
+- `src/components/MiniPlayer.tsx` - Swipe-to-dismiss, safe area düzeltmesi
+- `src/components/CarModeScreen.tsx` - Volume slider, safe area düzeltmesi
+- `src/components/AnimatedSplash.tsx` - Safe area düzeltmesi
+- `src/components/ShareModal.tsx` - Native Share API kullanımı
+- `src/store/playerStore.ts` - hideMiniPlayer fonksiyonu
 
 ### December 2025 - Backend Onaylı Streaming Düzeltmesi
 
