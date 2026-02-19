@@ -12,12 +12,19 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
       "usesAppleSignIn": true,
+      "entitlements": {
+        "com.apple.developer.carplay-audio": true
+      },
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
           "fetch",
           "remote-notification"
         ],
+        "UIRequiredDeviceCapabilities": [
+          "armv7"
+        ],
+        "UISupportedExternalAccessoryProtocols": [],
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
