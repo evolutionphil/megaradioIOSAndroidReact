@@ -1,0 +1,112 @@
+{
+  "summary": "Bug fix for Energy NRJ Wien 'Radio doesn't work' error on iOS. Found and fixed critical issue where API field 'urlResolved' (camelCase) was never used because code looked for 'url_resolved' (snake_case). Also added iOS ATS settings to allow HTTP media streams and optimized native apps to use urlResolved directly without proxy.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/stream-proxy (on themegaradio.com)",
+        "issue": "Returns 500 error - proxy endpoint is broken on the main API server",
+        "priority": "LOW",
+        "note": "Not a blocker since native apps don't need proxy and fix bypasses proxy usage"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Stream URL resolution",
+        "issue": "FIXED: API returns 'urlResolved' but code looked for 'url_resolved' - fallback to working URL never happened",
+        "fix_applied": "AudioProvider.tsx now handles both camelCase and snake_case field names",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": []
+  },
+  "test_results": {
+    "energy_nrj_wien_station": {
+      "primary_url_scdn": "NOT ACCESSIBLE from server (DNS resolution fails for scdn.nrjaudio.fm)",
+      "urlResolved_streaming": "WORKS - https://streaming.nrjaudio.fm/ouvfydoarp52 returns 200 with audio/mpeg",
+      "root_cause": "Code used url_resolved but API sends urlResolved - field never matched"
+    },
+    "proxy_endpoint": {
+      "status": "BROKEN - returns 500 on themegaradio.com",
+      "impact": "Not needed for native apps (can play HTTP directly)"
+    },
+    "ios_ats_settings": {
+      "before": "NOT CONFIGURED - HTTP media blocked",
+      "after": "NSAllowsArbitraryLoadsForMedia: true - HTTP audio/video allowed"
+    }
+  },
+  "fixes_applied": [
+    {
+      "file": "/app/frontend/src/providers/AudioProvider.tsx",
+      "change": "resolveStreamUrl() now: 1) Handles both urlResolved and url_resolved field names, 2) For native apps, uses urlResolved directly as PRIMARY source (more reliable), 3) Only uses proxy for WEB platform with HTTP streams"
+    },
+    {
+      "file": "/app/frontend/src/types/index.ts",
+      "change": "Added urlResolved field to Station interface (API returns camelCase)"
+    },
+    {
+      "file": "/app/frontend/app.json",
+      "change": "Added NSAppTransportSecurity with NSAllowsArbitraryLoadsForMedia:true for iOS HTTP stream support"
+    }
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_stream_proxy_issue.py",
+    "/app/test_reports/pytest/pytest_stream_proxy.xml"
+  ],
+  "action_items": [
+    "REQUIRES NEW BUILD: iOS app needs rebuild with new app.json ATS settings to take effect",
+    "Test Energy NRJ Wien on iOS device after rebuild - should now play using streaming.nrjaudio.fm URL",
+    "Consider fixing /api/stream-proxy on themegaradio.com backend for web fallback"
+  ],
+  "critical_code_review_comments": [
+    "FIXED: Field name mismatch - API returns urlResolved (camelCase) but Station type had url_resolved (snake_case)",
+    "FIXED: Native apps don't need proxy for HTTP streams - removed unnecessary proxy for non-web platforms",
+    "FIXED: iOS ATS settings were missing - now configured to allow HTTP media",
+    "The stream/resolve API returns the original URL (scdn.nrjaudio.fm) which often doesn't work - urlResolved (streaming.nrjaudio.fm) is more reliable"
+  ],
+  "updated_files": [
+    "/app/frontend/src/providers/AudioProvider.tsx",
+    "/app/frontend/src/types/index.ts",
+    "/app/frontend/app.json",
+    "/app/backend/tests/test_stream_proxy_issue.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed, 1 skipped)",
+    "frontend": "100% - app loads correctly"
+  },
+  "seed_data_creation": "None",
+  "test_credentials": {
+    "api_key": "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw"
+  },
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Fixed Energy NRJ Wien stream issue. Root cause was field name mismatch (urlResolved vs url_resolved). Also added iOS ATS settings. Native app requires rebuild to apply changes. Test on iOS device required.",
+  "rca_of_the_issue": {
+    "issue": "Energy NRJ Wien shows 'Oops! Radio doesn't work' on iOS",
+    "root_cause_1_field_mismatch": {
+      "problem": "API returns 'urlResolved' (camelCase) but Station type and code use 'url_resolved' (snake_case)",
+      "impact": "station.url_resolved was ALWAYS undefined - fallback to working URL never triggered",
+      "fix": "Now handles both field names with: (station as any).urlResolved || station.url_resolved"
+    },
+    "root_cause_2_stream_url_unreachable": {
+      "problem": "Primary stream URL scdn.nrjaudio.fm often unreachable (DNS issues)",
+      "impact": "stream/resolve API returns this URL as candidate, but it doesn't work",
+      "fix": "For native apps, now use urlResolved (streaming.nrjaudio.fm) DIRECTLY as primary source"
+    },
+    "root_cause_3_ios_ats_missing": {
+      "problem": "iOS App Transport Security was not configured - HTTP streams blocked",
+      "impact": "Any HTTP radio stream would fail on iOS",
+      "fix": "Added NSAllowsArbitraryLoadsForMedia: true to app.json"
+    },
+    "reproduction_steps": [
+      "1. Open MegaRadio app on iOS",
+      "2. Search for 'Energy NRJ Wien'",
+      "3. Tap to play - error appears",
+      "4. Error reason: Stream URL resolution returned scdn.nrjaudio.fm which fails, and fallback to streaming.nrjaudio.fm never happened due to field name mismatch"
+    ],
+    "verification": "Rebuild iOS app and test Energy NRJ Wien - should now play using streaming.nrjaudio.fm"
+  }
+}
