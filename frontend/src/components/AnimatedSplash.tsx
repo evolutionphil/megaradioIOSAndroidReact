@@ -2,7 +2,8 @@
 // No animations, simple and reliable
 
 import React from 'react';
-import { View, Image, StyleSheet, StatusBar, Dimensions, ImageBackground } from 'react-native';
+import { View, Image, StyleSheet, StatusBar, Dimensions, ImageBackground, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,6 +13,8 @@ interface SplashProps {
 }
 
 const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading = true }) => {
+  const insets = useSafeAreaInsets();
+  
   // Auto-complete after 2 seconds if not loading
   React.useEffect(() => {
     if (!isLoading && onAnimationComplete) {
@@ -21,7 +24,7 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
   }, [isLoading, onAnimationComplete]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: Platform.OS === 'android' ? insets.bottom : 0 }]}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" translucent />
       
       {/* Full screen background with dots/gradient */}
