@@ -58,7 +58,7 @@ const getStationLogoUrl = (station: Station | null | undefined): string => {
 const isWeb = Platform.OS === 'web';
 
 // Tab bar height - must match _layout.tsx
-const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
+const BASE_TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;
 const MINI_PLAYER_HEIGHT = 70;
 
 interface MiniPlayerProps {
@@ -67,12 +67,16 @@ interface MiniPlayerProps {
 
 export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const {
     currentStation,
     playbackState,
     nowPlaying,
     isMiniPlayerVisible,
   } = usePlayerStore();
+  
+  // Calculate tab bar height with safe area for Android
+  const tabBarHeight = Platform.OS === 'ios' ? BASE_TAB_BAR_HEIGHT : BASE_TAB_BAR_HEIGHT + insets.bottom;
   
   // Use the shared audio player hook
   const { pause, resume } = useAudioPlayer();
