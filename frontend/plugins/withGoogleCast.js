@@ -7,7 +7,7 @@ const withGoogleCastInfoPlist = (config) => {
     // Add Bonjour services for Cast device discovery
     config.modResults.NSBonjourServices = [
       '_googlecast._tcp',
-      '_CC1AD845._googlecast._tcp', // Default receiver
+      '_94952E1F._googlecast._tcp', // MegaRadio custom receiver
     ];
     
     // Local network usage description (German/Turkish friendly)
