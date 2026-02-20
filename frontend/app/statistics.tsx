@@ -140,23 +140,17 @@ export default function StatisticsScreen() {
 
           {/* Stats Row */}
           <View style={styles.statsRow}>
-            {/* Total Radio Station Card */}
-            <View style={styles.statCard} data-testid="total-stations-card">
-              <Text style={styles.cardLabel}>Total Radio Station</Text>
-              <Text style={styles.statValue}>{formatNumber(stats.totalStations)}</Text>
+            {/* Unique Stations Listened Card */}
+            <View style={styles.statCard} data-testid="unique-stations-card">
+              <Text style={styles.cardLabel}>Unique Stations</Text>
+              <Text style={styles.statValue}>{stats.uniqueStations}</Text>
             </View>
 
             {/* Music Played Card */}
             <View style={styles.statCard} data-testid="music-played-card">
-              <Text style={styles.cardLabel}>Music Played</Text>
+              <Text style={styles.cardLabel}>Songs Played</Text>
               <Text style={styles.statValue}>{formatNumber(stats.musicPlayed)}</Text>
             </View>
-          </View>
-
-          {/* Unique Stations Listened */}
-          <View style={styles.uniqueStationsCard} data-testid="unique-stations-card">
-            <Text style={styles.cardLabel}>Unique Stations Listened</Text>
-            <Text style={styles.statValue}>{stats.uniqueStations}</Text>
           </View>
         </>
       )}
