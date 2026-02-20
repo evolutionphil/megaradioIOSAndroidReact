@@ -391,6 +391,7 @@ export const NativeCastModal: React.FC<NativeCastModalProps> = ({
   station,
   streamUrl,
   nowPlaying,
+  onStopLocalAudio,
 }) => {
   const isGoogleCastAvailable = GoogleCast !== null && Platform.OS !== 'web';
 
@@ -418,6 +419,11 @@ export const NativeCastModal: React.FC<NativeCastModalProps> = ({
           {isGoogleCastAvailable ? (
             <NativeCastContent
               station={station}
+              streamUrl={streamUrl}
+              nowPlaying={nowPlaying}
+              onClose={onClose}
+              onStopLocalAudio={onStopLocalAudio}
+            />
               streamUrl={streamUrl}
               nowPlaying={nowPlaying}
               onClose={onClose}
