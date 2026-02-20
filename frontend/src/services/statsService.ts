@@ -204,6 +204,20 @@ export const statsService = {
       console.error('Failed to reset stats:', error);
     }
   },
+
+  /**
+   * Increment music played count
+   * Call this when metadata changes (new song starts)
+   */
+  async incrementMusicPlayed(): Promise<void> {
+    try {
+      const stats = await this.getStats();
+      stats.musicPlayed += 1;
+      await this.saveStats(stats);
+    } catch (error) {
+      console.error('Failed to increment music played:', error);
+    }
+  },
 };
 
 export default statsService;
