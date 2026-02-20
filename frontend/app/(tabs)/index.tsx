@@ -894,10 +894,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   gridItem: {
-    flex: 1,
+    // Fixed width calculation: (screenWidth - padding - gaps) / 3
+    // Don't use flex: 1 to avoid single item stretching
+    width: '31%', // Approximately 1/3 with gaps
+    maxWidth: 130, // Maximum size to prevent oversized items
   },
   gridItemMargin: {
-    marginRight: 8,
+    marginRight: '3.5%',
   },
   gridImageContainer: {
     width: '100%',
