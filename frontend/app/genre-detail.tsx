@@ -35,6 +35,11 @@ export default function GenreDetailScreen() {
   const slug = params.slug as string;
   const genreName = params.name as string || slug;
   const { width: windowWidth } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  
+  // Calculate bottom padding for MiniPlayer (70px height + system nav bar)
+  const MINI_PLAYER_HEIGHT = 70;
+  const bottomPadding = MINI_PLAYER_HEIGHT + insets.bottom;
 
   // Calculate grid item width dynamically with fallback
   const screenWidth = windowWidth > 100 ? windowWidth : 375;
