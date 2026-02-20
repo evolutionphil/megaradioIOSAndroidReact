@@ -240,14 +240,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FFFFFF',
   },
-  
-  // Unique Stations Card
-  uniqueStationsCard: {
-    backgroundColor: '#1E1E1E',
-    borderRadius: 16,
-    marginHorizontal: 16,
-    marginTop: 12,
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-  },
 });
