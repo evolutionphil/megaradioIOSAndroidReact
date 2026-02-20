@@ -179,17 +179,7 @@ export default function RootLayout() {
     }
   }, [navigationState?.key]);
 
-  // Handle splash screen timeout
-  useEffect(() => {
-    if (showSplash) {
-      const timer = setTimeout(() => {
-        setShowSplash(false);
-      }, 2800);
-      return () => clearTimeout(timer);
-    }
-  }, [showSplash]);
-
-  // Check onboarding status and navigate after splash
+  // Check onboarding status and navigate
   useEffect(() => {
     const checkAndNavigate = async () => {
       console.log('[Layout] Check: showSplash=', showSplash, 'isNavigationReady=', isNavigationReady, 'hasCheckedOnboarding=', hasCheckedOnboarding, 'segments=', segments);
