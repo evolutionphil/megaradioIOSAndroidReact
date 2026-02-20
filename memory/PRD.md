@@ -121,15 +121,47 @@ npx expo prebuild
    - **Sorun**: Android'de uygulama kapatıldığında audio durmuyor
    - **Çözüm**: `_layout.tsx`'e AppState listener eklendi, component unmount'ta TrackPlayer.reset() çağrılıyor
 
+6. **Station Detail Font Düzeltmesi**
+   - **Sorun**: "Son Çalınanlar" ve "Benzer Radyolar" başlıkları italic (eğik) fontla gösteriliyordu
+   - **Çözüm**: `fontStyle: 'italic'` kaldırıldı, `fontFamily: 'Ubuntu-Bold'` eklendi
+
+7. **Genre Card Text Centered**
+   - **Sorun**: Tür kartlarındaki yazılar sol hizalıydı
+   - **Çözüm**: `alignItems: 'center'` ve `textAlign: 'center'` eklendi
+
+8. **Play at Login Text Güncellenmesi**
+   - **Sorun**: Profile sayfasında Play at Login her zaman "Last Played" gösteriyordu
+   - **Çözüm**: AsyncStorage'dan seçili değeri okuyup dinamik gösterme eklendi
+
+9. **Statistics Page Güncellendi**
+   - **Sorun**: "Total Radio Stations 136k" yanlış, "Music Played 0" statik
+   - **Çözüm**: UI düzenlendi - Unique Stations ve Songs Played gösterilecek şekilde değiştirildi
+
+10. **Music/Songs Played Tracking**
+    - **Sorun**: Metadata değiştiğinde şarkı sayısı artmıyordu
+    - **Çözüm**: AudioProvider'da metadata değişikliği algılandığında `statsService.incrementMusicPlayed()` çağrılıyor
+
+11. **Cast Icon Header'a Eklendi**
+    - Station Detail sayfası header'ına direct cast butonu eklendi (tv-outline icon)
+
 #### Değişen Dosyalar:
 - `app.json` - Native splash screen ayarları güncellendi
 - `app/_layout.tsx` - AppState listener ve TrackPlayer cleanup eklendi
 - `app/genre-detail.tsx` - MiniPlayer için bottom padding eklendi
 - `app/search.tsx` - MiniPlayer için bottom padding eklendi  
-- `app/(tabs)/index.tsx` - Grid item boyutları düzeltildi
+- `app/(tabs)/index.tsx` - Grid item boyutları düzeltildi, avatar debug log eklendi
+- `app/(tabs)/profile.tsx` - Play at Login dinamik text eklendi
+- `app/player.tsx` - Font düzeltmesi, cast icon eklendi
+- `app/statistics.tsx` - UI düzenlendi (Unique Stations + Songs Played)
 - `src/components/AnimatedSplash.tsx` - Basitleştirildi, tek resim kullanıyor
 - `src/components/CarModeScreen.tsx` - VolumeSlider component eklendi
+- `src/components/GenreCard.tsx` - Text centered yapıldı
+- `src/providers/AudioProvider.tsx` - Music played tracking eklendi
+- `src/services/statsService.ts` - incrementMusicPlayed fonksiyonu eklendi
 - `assets/images/splash-native.png` - Kullanıcının splash screen resmi eklendi
+
+#### ⚠️ Kontrol Gereken:
+- **Avatar Görünmüyor**: Backend'den user.avatar veya user.profilePhoto gelmiyor olabilir. Console log eklendi - yeni build'de logları kontrol edin.
 
 ### February 2025 - Android Bug Fixes (Session 2)
 
