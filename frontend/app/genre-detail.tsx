@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 120,
+    paddingBottom: 180, // Extra padding for MiniPlayer + system nav bar
   },
 
   // Grid View
