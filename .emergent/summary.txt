@@ -11,136 +11,193 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is a functional Expo (React Native) app. The audio backend has been migrated to  to support background audio and lock-screen controls, though it suffers from critical bugs. Standalone, native applications for Apple Watch (SwiftUI) and Wear OS (Kotlin/Compose) have been fully coded and are located in the  directory, awaiting manual integration by the user via Xcode and Android Studio. An initial implementation for CarPlay was created but has been disabled to resolve a recurring iOS build failure. Several UI bugs, including a splash screen visual glitch, have been resolved.
+The application is a functional Expo (React Native) app. In this session, the agent resolved several critical bugs that were making the app unusable on Android. These include a React Hooks violation that caused a crash when playing a station, a major navigation bug that redirected all clicks to the player screen, and a black screen issue on app restart. A robust image fallback system was implemented to show a default logo for stations without a valid favicon.
+
+However, immediately after these fixes, the user reported a new set of critical bugs on Android, which is the current focus.
 
 **Last working item**:
--   **Last item agent was working**: The agent was about to begin a deep-dive investigation into critical streaming failures using a testing agent. The user reported that several core features are broken:
-    1.  Certain radio stations (e.g., Energy NRJ Wien) fail to play.
-    2.  Now Playing metadata (song/artist info) is not appearing for any station.
-    3.  Station logos are missing from the lock screen player.
-    The user correctly identified that the app's unnecessary use of a proxy for all stream URLs (even HTTPS) might be the root cause.
--   **Status**: IN PROGRESS
+-   **Last item agent was working**: Investigating a new list of critical bugs reported by the user for the Android version of the app.
+-   **Status**: NOT STARTED
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: . This is a critical, multi-faceted streaming problem involving native modules, networking, and platform-specific behavior. A thorough test is required.
--   **User Testing Done**: N
+-   **Which testing method agent to use?**: manual testing by screenshot tool
+-   **User Testing Done**: Y
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Critical Streaming Failures (P0)**
--   **Issue 2: iOS Build Fails with CarPlay Entitlement Error (P0)**
--   **Issue 3: Genre Station Count Inconsistency (P1)**
--   **Issue 4: Slow Genre Page Loading (P1)**
+-   **Issue 1: Car Mode Slider behaves erratically (P0)**
+-   **Issue 2: Mini Player is hidden behind the Android system navigation bar on multiple screens (P0)**
+-   **Issue 3: Recently Played and Stations Near You items appear too large when there are few stations (P0)**
+-   **Issue 4: Radio continues to play after the app is closed on Android (P0)**
+-   **Issue 5: Radio Stations Still Not Working on Android (P0)**
+-   **Issue 6: Google OAuth Fails on Android (P0 - Blocked)**
+-   **Issue 7: Cast Icon Malfunction on Android (P1)**
+-   **Issue 8: iOS Build Fails with CarPlay Entitlement (P1 - Blocked)**
 
 **Issues Detail:**
--   **Issue 1: Critical Streaming Failures (P0)**
-    -   **Description**: The app's core functionality is broken. Certain stations don't play, and metadata/artwork is missing, making the app unusable. The user suspects the proxy implementation in the streaming logic is the cause.
-    -   **Attempted fixes**: The agent identified a flaw where  in  was forcing all streams through a proxy, even secure HTTPS streams. A fix was implemented to bypass the proxy for HTTPS but it has not been tested or verified.
+-   **Issue 1: Car Mode Slider behaves erratically (P0)**
+    -   **Description**: The volume slider in car mode does not move in sync with the user's finger, making it difficult to control the volume. The agent previously tried a  implementation which seems to be the source of the issue.
     -   **Next debug checklist**:
-        1.  Invoke the  to perform a comprehensive analysis of the entire streaming flow, focusing on Energy NRJ Wien and Radyo Maximium.
-        2.  Verify in  that the  function *never* proxies  URLs.
-        3.  Confirm that  in  is being called with the correct  URL.
-        4.  Trace the  logic to ensure metadata is being fetched and correctly propagated to the UI and lock screen.
-    -   **Why fix this issue?**: The app's primary purpose is to stream radio. This bug makes the app non-functional.
-    -   **Status**: IN PROGRESS
+        -   Inspect  and the  component.
+        -   Replace the complex  logic with a simpler, more reliable slider component if available, or debug the width calculation and gesture handling in the existing implementation. The slider's position calculation seems to be incorrect.
+    -   **Why fix this issue?**: A key feature in car mode is unusable.
+    -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a native development build to test ).
+    -   **Should Test frontend/backend/both after fix?**: Frontend
 
--   **Issue 2: iOS Build Fails with CarPlay Entitlement Error (P0)**
-    -   **Description**: The user cannot create an iOS App Store build. The An Expo user account is required to proceed.
+-   **Issue 2: Mini Player is hidden behind the Android system navigation bar on multiple screens (P0)**
+    -   **Description**: On Android, the mini-player is obscured by the system navigation bar on genre detail pages (e.g., Pop) and the search screen.
+    -   **Next debug checklist**:
+        -   This is a recurring  safe area problem.
+        -   Inspect the root layout of the affected screens (, ).
+        -   The main container/ in these screens needs to have bottom padding applied from , accounting for the height of the mini-player. The fix needs to be applied consistently across all screens.
+    -   **Why fix this issue?**: Breaks UI and makes the mini-player inaccessible on several screens.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend
 
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username process fails with  (exit status 65). The error log clearly indicates the provisioning profile includes the  entitlement, which has not yet been approved by Apple.
-    -   **Attempted fixes**: Multiple fixes failed, including removing the CarPlay package, commenting out code, and instructing the user to clear EAS credentials. The issue is that the App ID itself in the Apple Developer Portal has the capability enabled, causing EAS to generate a faulty profile.
-    -   **Next debug checklist**: This is **blocked on user action**. The user has been given a detailed, step-by-step guide to:
-        1.  Log in to .
-        2.  Navigate to Identifiers and select .
-        3.  Manually uncheck the CarPlay Audio App capability and save.
-        4.  Navigate to Profiles, delete all existing profiles for the app.
-        5.  Run An Expo user account is required to proceed.
+-   **Issue 3: Recently Played and Stations Near You items appear too large when there are few stations (P0)**
+    -   **Description**: In the Recently Played and Stations Near You sections on the home screen, if there is only one item, it stretches to take up a large amount of space instead of maintaining a fixed size.
+    -   **Next debug checklist**:
+        -   Inspect .
+        -   The issue is likely in the styling of the  or the individual station items within these sections.
+        -   Ensure the items have a fixed  or  and that the container () doesn't force them to grow. Using a grid layout or ensuring items don't have  might solve this.
+    -   **Why fix this issue?**: Causes a broken and inconsistent UI on the main screen.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
 
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username to force generation of a new, clean profile.
-        The next agent must first confirm with the user if these exact steps were followed.
-    -   **Why fix this issue?**: This is a hard blocker for releasing the iOS application.
+-   **Issue 4: Radio continues to play after the app is closed on Android (P0)**
+    -   **Description**: When the user fully closes/swipes away the app from the recents screen on Android, the audio playback does not stop.
+    -   **Next debug checklist**:
+        -   This requires handling the app's lifecycle.
+        -   In a top-level component like , listen for the app state changes.
+        -   When the app is being terminated, call  or  to end the audio service. You might need to use 's background event handlers.
+    -   **Why fix this issue?**: This is a major bug that drains the user's battery and provides a poor user experience.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend (Native Build)
+
+-   **Issue 5: Radio Stations Still Not Working on Android (P0)**
+    -   **Description**: The user reported many stations failing on Android. A fix () was implemented, but it requires a new native build.
+    -   **Next debug checklist**: Confirm with the user that they have created and are testing a **brand new build** created after the  flag was added. If it still fails, use  to check ADB logs for native player errors.
+    -   **Why fix this issue?**: Core functionality is broken on Android.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (Native Build)
+
+-   **Issue 6: Google OAuth Fails on Android (P0 - Blocked)**
+    -   **Description**: Android login fails with an OAuth policy error because the SHA-1 fingerprint is missing from the Google Cloud project.
+    -   **Next debug checklist**: This is **blocked on user action**. The agent has already provided instructions. Confirm with the user if they have added the SHA-1 fingerprint to their Google Cloud Console.
+    -   **Why fix this issue?**: Blocks a primary login method.
     -   **Status**: BLOCKED
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Not applicable (build configuration issue).
+    -   **Should Test frontend/backend/both after fix?**: Not applicable.
 
--   **Issue 3: Genre Station Count Inconsistency (P1)**
-    -   **Description**: The station count on the genre list page (e.g., Pop: 43) does not match the actual number of stations on the genre detail page (e.g., 55). This is a backend data issue.
-    -   **Attempted fixes**: As a temporary workaround, the agent hid the station count from the genre list cards in .
-    -   **Status**: BLOCKED (on backend fix).
+-   **Issue 7: Cast Icon Malfunction on Android (P1)**
+    -   **Description**: Tapping the cast icon does nothing useful. The agent fixed a bug where it incorrectly navigated to the login screen, but the actual casting functionality is not implemented.
+    -   **Next debug checklist**: Implement the casting feature using a library like  when the cast button is pressed.
+    -   **Why fix this issue?**: A visible UI element is non-functional.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
 
--   **Issue 4: Slow Genre Page Loading (P1)**
-    -   **Description**: The Discovery page loads very slowly, which was identified as a backend performance issue.
-    -   **Status**: BLOCKED (on backend caching implementation).
-
-**In progress Task List**:
--   **Task 1: Debug and Finalize  Integration (P0)**
-    -   **Where to resume**: This task has been merged into Issue 1: Critical Streaming Failures. The focus is on debugging  to make it fully functional.
-    -   **What will be achieved with this?**: A stable, native audio experience where all stations play correctly and display metadata/artwork on the UI and lock screen.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Frontend (native build).
+-   **Issue 8: iOS Build Fails with CarPlay Entitlement (P1 - Blocked)**
+    -   **Description**: iOS builds for the App Store are blocked due to an unapproved CarPlay entitlement.
+    -   **Next debug checklist**: This is **blocked on user action**. The agent has provided instructions to disable the capability in the Apple Developer Portal. Confirm with the user if they have completed this.
+    -   **Why fix this issue?**: Blocks iOS app release.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Not applicable.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1: CarPlay & Android Auto Integration**: Once Apple approves the  entitlement, the agent will need to re-install  and re-enable the code in  and .
--   **P2: tvOS & Android TV Support**: Awaiting UI/UX designs from the user. The implementation will use  to render a different UI within the same codebase.
--   **P2: User Guidance for Watch App Integration**: The user will need to follow the provided Xcode/Android Studio guides to integrate the native Watch apps. The agent may need to provide support.
+-   **P1: Implement Cast Functionality**: Properly implement the cast feature using an appropriate library.
+-   **P1: Re-enable CarPlay Integration**: Once the user confirms the iOS build issue is resolved, reinstall  and re-enable the code.
 
 **Future Tasks:**
--   **P2: Fix Sleep Timer**: Investigate and fix the Sleep Timer functionality.
--   **P2: Implement UI animations**: Add the Static Equalizer animation to the player screen as per the original designs.
+-   **P2: Full Android Auto Integration**: Requires ejecting from Expo to implement a .
+-   **P2: tvOS & Android TV Support**.
+-   **P2: User Guidance for Watch App Integration**.
+-   **P2: Fix Sleep Timer**.
+-   **P2: Implement UI animations** (e.g., Static Equalizer).
 
 **Completed work in this session**
--   ** Migration**: Refactored  to replace  and enable proper background/lock-screen controls.
--   **Apple Watch & Wear OS App Creation**: Developed complete, standalone, multi-screen native applications for Apple Watch (SwiftUI) and Wear OS (Kotlin/Compose) based on user designs. The code is in .
--   **Build Issue Diagnosis**: Investigated and diagnosed the root cause of the recurring iOS build failure, providing the user with a definitive manual fix for their Apple Developer account.
--   **CarPlay & TV Platform Research**: Researched and implemented initial (now disabled) code for CarPlay and provided a clear strategy for implementing tvOS/Android TV support.
--   **UI Fixes**: Resolved a visual glitch on the splash screen and temporarily hid inconsistent station counts on genre cards.
+-   **Fixed Critical Crash**: Resolved a Hooks can only be called inside the body of a function component error in  that occurred when playing any station.
+-   **Fixed Critical Navigation Bug**: Corrected a flaw in  that caused all button clicks to redirect to the player screen when a station was active.
+-   **Implemented Image Fallback**: Created a reusable  component and updated various parts of the app to show a default logo when a station's favicon is missing or invalid.
+-   **Implemented Swipe-to-Dismiss**: Added a gesture to the mini-player to dismiss it by swiping, as requested by the user.
+-   **Fixed Multiple UI Bugs**:
+    -   Resolved the Black Screen on App Restart issue by fixing modal dismissal logic in .
+    -   Fixed the Profile page layout where the Sign Up button was obscured by the mini-player.
+    -   Corrected the layout of the Discoverable Genres banner on the home screen.
+-   **Improved Share Functionality**: Changed the share feature to use the native React Native  API for better compatibility.
+
+**Earlier issues found/mentioned but not fixed**
+-   **Issue 1: Genre Station Count Inconsistency (P1)**
+    -   **Description**: Backend data issue where genre counts are incorrect.
+    -   **Status**: BLOCKED (on backend fix).
+-   **Issue 2: Slow Genre Page Loading (P1)**
+    -   **Description**: Backend performance issue.
+    -   **Status**: BLOCKED (on backend fix).
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   ****: The core of the app's audio system. It is partially functional and is the source of the main streaming bugs. Requires a native development build for testing.
--   **EAS Build Credentials**: The root of the P0 build blocker. The issue is not in the code but in the provisioning profile cached by EAS, which was generated from a misconfigured App ID on the Apple Developer Portal.
--   **Native Module Integration (Watch/CarPlay)**: The Watch apps are fully native and exist outside the Expo managed workflow. The user is responsible for integrating them via Xcode/Android Studio.
+-   **React Hooks Rules**: A critical crash was caused by violating Hooks rules (calling hooks after an early return). All hooks must be called at the top level of a component.
+-   **Top-Level Navigation Effects**: A major bug was caused by an improper  in the root . Effects that handle navigation should have their dependencies carefully managed to avoid unintended side effects on every route change.
+-   **Image Fallback Pattern**: A robust pattern was implemented using an  component with  and an  callback to handle broken image URIs gracefully.
+-   **Android  UI**: This is a recurring source of bugs. UI components are rendered behind the system navigation bar.  is the correct tool, but it must be applied consistently to all screens and layouts, especially those containing the .
+-   **Expo Metro Cache**: The agent encountered a situation where code changes were not reflected, causing a persistent crash. Clearing the cache with [00:27:44] Starting project at /app/frontend
+[withAndroidAuto] Applying Android Auto configuration...
+[withAndroidAuto] Applying Android Auto configuration... was the solution.
 
 **All files of reference**
--    **(CRITICAL)**: Location of all streaming logic and bugs.
--    **(CRITICAL)**: Contains all build configurations. The  key and plugins are relevant to the build failure.
--   : Contains the complete, standalone code for the Apple Watch and Wear OS apps.
--   The user was provided with a detailed, step-by-step guide on how to build the Watch App using Xcode.
+-    (Bugs with item scaling)
+-    (Bug in Car Mode slider)
+-    (Contains app lifecycle logic, place to fix radio plays after close bug)
+-    (Related to the safe area/nav bar bug)
+-    (Newly created helper component)
+-    (Contains logic for selecting station logos)
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   Your immediate priority is to address the two **P0 blockers**:
-    1.  **Critical Streaming Failures**: The app is currently unusable for many stations. Begin by using  to perform a deep analysis of . Verify the fix for the HTTPS proxy issue and investigate why metadata and artwork are failing.
-    2.  **iOS Build Failure**: This is blocked on the user performing manual steps in their Apple Developer Portal account. Your first action should be to ask the user if they have completed the guide provided. Do not waste time trying to fix this with code changes, as the problem lies in the external configuration.
--   The Watch app code is complete but is **not part of the Expo project**. Do not attempt to build or test it. The user has been instructed on how to integrate it manually.
+-   Your immediate priority is to fix the new list of Android bugs reported by the user in **Chat Message 361**. Address them systematically, starting with the UI/UX issues.
+-   **Recurring Safe Area Bug**: The issue of the Mini Player being hidden by the system navigation bar is a recurring problem. When fixing it for the reported screens (genre detail, search), consider a more global solution or be prepared to check all other screens for the same issue.
+-   **App Lifecycle Bug**: The bug where the radio continues playing after the app is closed is critical. You will need to hook into Android's app lifecycle events, likely within  or a dedicated service file, to call .
+-   **Blocked Issues**: Do not attempt to code a fix for the Google OAuth or iOS Build issues. They are blocked on user action. Your role is to periodically check in with the user on their progress.
 
 **Last 10 User Messages and any pending HUMAN messages**
--   User (repeatedly): The iOS build is still failing with the same CarPlay entitlement error, even after I followed your instructions to clear credentials. This is happening on every attempt.
--   Agent: Apologizes for the persistence and realizes the root cause must be on the Apple Developer Portal itself, not just EAS. Provides a final, detailed manual guide for the user to log into Apple's site, disable the CarPlay capability on the App ID, delete the associated profiles, and then try a clean build.
--   User: Now there's another critical problem. A station that works on the web (Energy NRJ Wien) doesn't play in the app. Also, station logos don't appear on the lock screen, and the now playing song info is missing on all radios. Please investigate this with the agent; it's critical. The app is native, so mixed content shouldn't be an issue, right?
--   Agent: Acknowledges these are critical bugs, agrees with the user's assessment that a proxy for mixed content is unnecessary and likely the problem, and initiates a deep analysis with the  to resolve all streaming-related issues at once.
+10. **User**: Reports that the  layout is incorrect. (Status: **RESOLVED**)
+9.  **User**: Provides clarification on the desired  layout. (Status: **RESOLVED**)
+8.  **User**: Provides an image showing the exact desired layout for the  banner. (Status: **RESOLVED**)
+7.  **User**: Reports the fix for the  banner is not visible in the preview. (Status: **ADDRESSED**. Agent explained it's a web-preview-only issue due to CORS and layout.)
+6.  **User**: Asks agent to clear cache and try again. (Status: **ADDRESSED**)
+5.  **User**: Reports a critical navigation bug: when a station is playing, clicking any button (Sign Up, About Us, another genre) navigates to the player detail page. (Status: **RESOLVED**)
+4.  **User**: Reports a new, long list of Android-specific bugs:
+    -   Car mode slider is not smooth.
+    -   Mini player is behind the system nav bar on genre and search pages.
+    -   Recently played items are too big when there's only one.
+    -   Radio keeps playing after the app is closed.
+    (Status: **IN PROGRESS - AGENT IS ABOUT TO START**)
+3.  **User**: Reports the fix for the discoverable genres banner is still not visible. Provides an image of how it should look. (Status: **RESOLVED**)
+2.  **User**: Clarifies the desired layout for the discoverable genres banner is Genre Name on top and Discoverable Genres below. (Status: **RESOLVED**)
+1.  **User**: Reports a layout issue with the Discoverable Genres banner. (Status: **RESOLVED**)
 
 **Project Health Check:**
 -   **Broken**:
-    -   Core Audio Streaming (some stations don't play, metadata/artwork missing).
-    -   iOS Production Builds (blocked by entitlement error).
--   **Mocked**: N/A
+    -   Core Android UI/UX on multiple screens (Safe Area issues, item scaling).
+    -   Key Features on Android (Car Mode volume slider).
+    -   Core App Lifecycle on Android (Audio does not stop when app is terminated).
+    -   Google Login on Android (Blocked).
+    -   iOS Production Builds (Blocked).
 
 **3rd Party Integrations**
--   ****: The core audio engine. Integration is in-progress but buggy.
--   ****: Installed but then uninstalled and disabled to fix build errors. The code is preserved but inactive.
--   **EAS (Expo Application Services)**: Used for building the application. It is currently failing for iOS production builds.
+-   ****: The core audio engine. Requires proper lifecycle management to stop playback when the app is closed.
+-   ****: Currently uninstalled.
+-   ** / Google Sign-In**: Works on iOS. Broken on Android due to missing SHA-1 configuration.
+-   **EAS (Expo Application Services)**: Used for building.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES (was called at the end of the last session to investigate streaming bugs, but the investigation has not yet started).
--   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: None.
--   **Known regressions**: The core audio streaming functionality has regressed and is now critically buggy.
-
-**What agent forgot to execute**
--   The agent implemented fixes for the streaming proxy and artwork but did not test them, leading to the user reporting the same critical issues again. The plan to use a testing agent was correct but was interrupted before it could be executed.</analysis>
+-   **Testing agent used after significant changes**: NO
+-   **Test files created**: None
+-   **Known regressions**: The  /  layout issue is a persistent regression that appears on new screens after being fixed on others.</analysis>
