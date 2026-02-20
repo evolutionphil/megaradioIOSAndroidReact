@@ -223,7 +223,7 @@ export default function RootLayout() {
     if (Platform.OS === 'web') return;
     
     // Only handle notification redirect once on app start
-    if (isNavigationReady && !showSplash && hasCheckedOnboarding && !hasHandledNotification.current) {
+    if (isNavigationReady && hasCheckedOnboarding && !hasHandledNotification.current) {
       hasHandledNotification.current = true;
       
       const currentSegment = segments[0];
@@ -243,7 +243,7 @@ export default function RootLayout() {
         router.replace('/player');
       }
     }
-  }, [isNavigationReady, showSplash, hasCheckedOnboarding]);
+  }, [isNavigationReady, hasCheckedOnboarding]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
