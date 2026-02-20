@@ -435,16 +435,19 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
             <Ionicons name="volume-high" size={20 * S} color="#FFF" />
             <View 
               style={styles.slider}
+              onLayout={(e) => {
+                // Store slider width for accurate touch calculations
+                const { width } = e.nativeEvent.layout;
+                (styles.slider as any)._measuredWidth = width;
+              }}
               onTouchStart={(e) => {
-                const { locationX } = e.nativeEvent;
-                const sliderWidth = (SCREEN_WIDTH - 30 * S - BTN - GAP - 16 * S) * 0.9; // Approximate slider width
-                const newVolume = Math.max(0, Math.min(1, locationX / sliderWidth));
+                const sliderWidth = (styles.slider as any)._measuredWidth || 200;
+                const newVolume = Math.max(0, Math.min(1, e.nativeEvent.locationX / sliderWidth));
                 handleVolumeChange(newVolume);
               }}
               onTouchMove={(e) => {
-                const { locationX } = e.nativeEvent;
-                const sliderWidth = (SCREEN_WIDTH - 30 * S - BTN - GAP - 16 * S) * 0.9;
-                const newVolume = Math.max(0, Math.min(1, locationX / sliderWidth));
+                const sliderWidth = (styles.slider as any)._measuredWidth || 200;
+                const newVolume = Math.max(0, Math.min(1, e.nativeEvent.locationX / sliderWidth));
                 handleVolumeChange(newVolume);
               }}
             >
