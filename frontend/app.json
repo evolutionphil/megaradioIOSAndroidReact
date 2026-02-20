@@ -97,14 +97,6 @@
         }
       ],
       [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-native.png",
-          "resizeMode": "cover",
-          "backgroundColor": "#0D0D0D"
-        }
-      ],
-      [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "MegaRadio yak\u0131n\u0131zda radyo istasyonlar\u0131 bulabilmek i\u00e7in konumunuzu kullan\u0131r."
