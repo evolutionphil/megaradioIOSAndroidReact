@@ -109,6 +109,9 @@ export default function ProfileScreen() {
   // App info from API
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
 
+  // Play at login setting
+  const [playAtLoginSetting, setPlayAtLoginSetting] = useState<string>('last_played');
+
   const userName = user?.name || user?.fullName || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
   
