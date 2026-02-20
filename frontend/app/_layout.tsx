@@ -3,7 +3,7 @@ import { Stack, router, useSegments, useRootNavigationState } from 'expo-router'
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, ActivityIndicator, Platform } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Platform, AppState, AppStateStatus } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,6 +22,7 @@ import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
+import TrackPlayer from 'react-native-track-player';
 // CarPlay disabled until Apple approves entitlement
 // import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
