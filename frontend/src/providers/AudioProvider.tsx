@@ -50,6 +50,7 @@ let trackPlayerInitialized = false;
 let globalPlayId = 0;
 let currentPlayingStationId: string | null = null;
 let listeningStartTime: Date | null = null;
+let lastMetadataTitle: string | null = null; // Track last metadata to detect changes
 
 // ============================================
 // TRACK PLAYER SETUP
