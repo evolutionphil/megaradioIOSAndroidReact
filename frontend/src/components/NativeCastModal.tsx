@@ -1,7 +1,7 @@
 // NativeCastModal - Google Cast / Chromecast integration for direct streaming
 // This is SEPARATE from the existing CastModal (API-based casting to MegaRadio TV app)
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -26,6 +26,7 @@ let useCastState: any = null;
 let useDevices: any = null;
 let useRemoteMediaClient: any = null;
 let useCastSession: any = null;
+let CastContext: any = null;
 
 try {
   const googleCast = require('react-native-google-cast');
@@ -35,6 +36,17 @@ try {
   useDevices = googleCast.useDevices;
   useRemoteMediaClient = googleCast.useRemoteMediaClient;
   useCastSession = googleCast.useCastSession;
+  CastContext = googleCast.CastContext;
+  
+  // Start discovery immediately on import (not waiting for button tap)
+  if (CastContext) {
+    try {
+      const ctx = CastContext.getSessionManager?.();
+      console.log('[NativeCast] CastContext available, discovery should start automatically');
+    } catch (e) {
+      console.log('[NativeCast] CastContext init:', e);
+    }
+  }
 } catch (e) {
   console.log('[NativeCast] Google Cast not available (web or Expo Go)');
 }
