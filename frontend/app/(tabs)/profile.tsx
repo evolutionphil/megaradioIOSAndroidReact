@@ -626,7 +626,14 @@ export default function ProfileScreen() {
         {/* Settings */}
         <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
         {[
-          { title: t('play_at_login', 'Play at Login'), sub: t('last_played', 'Last Played'), onPress: () => router.push('/play-at-login') },
+          { 
+            title: t('play_at_login', 'Play at Login'), 
+            sub: playAtLoginSetting === 'last_played' ? t('last_played', 'Last Played') 
+               : playAtLoginSetting === 'random' ? t('random', 'Random')
+               : playAtLoginSetting === 'favorite' ? t('favorite', 'Favorite')
+               : t('off', 'Off'),
+            onPress: () => router.push('/play-at-login') 
+          },
           { title: t('country', 'Country'), sub: country || t('not_set', 'Not set'), onPress: () => setCurrentPage('country') },
           { title: t('language', 'Language'), sub: LANGUAGE_NAMES[currentLanguage] || currentLanguage, onPress: () => router.push('/languages' as any) },
           { title: t('statistics', 'Statistics'), onPress: () => router.push('/statistics') },
