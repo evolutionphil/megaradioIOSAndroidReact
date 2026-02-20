@@ -132,7 +132,9 @@
         "react-native-google-cast",
         {
           "receiverAppId": "CC1AD845",
-          "androidPlayServicesCastFrameworkVersion": "21.4.0"
+          "androidPlayServicesCastFrameworkVersion": "21.4.0",
+          "startDiscoveryAfterFirstTapOnCastButton": false,
+          "disableDiscoveryAutostart": false
         }
       ],
       "./plugins/withGoogleCast.js",
