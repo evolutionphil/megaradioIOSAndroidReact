@@ -561,6 +561,18 @@ export default function PlayerScreen() {
                 <TouchableOpacity 
                   style={styles.headerIcon} 
                   onPress={() => {
+                    console.log('[Player] Cast button pressed');
+                    setShowCastModal(true);
+                  }}
+                  accessibilityLabel="Cast"
+                  accessibilityRole="button"
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <Ionicons name="tv-outline" size={22} color="#FFFFFF" />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.headerIcon} 
+                  onPress={() => {
                     console.log('[Player] Car Mode button pressed');
                     setShowCarMode(true);
                   }}
