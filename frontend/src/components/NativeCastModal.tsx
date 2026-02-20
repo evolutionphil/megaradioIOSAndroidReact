@@ -424,10 +424,6 @@ export const NativeCastModal: React.FC<NativeCastModalProps> = ({
               onClose={onClose}
               onStopLocalAudio={onStopLocalAudio}
             />
-              streamUrl={streamUrl}
-              nowPlaying={nowPlaying}
-              onClose={onClose}
-            />
           ) : (
             <NativeCastUnavailable onClose={onClose} />
           )}
