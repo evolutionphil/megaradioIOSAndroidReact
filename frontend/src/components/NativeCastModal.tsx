@@ -185,6 +185,23 @@ const NativeCastContent: React.FC<{
     return 'audio/mp3';
   };
 
+  // Send custom message to receiver
+  const sendCustomMessage = useCallback(async (message: any) => {
+    if (!castSession) {
+      console.log('[NativeCast] No cast session available');
+      return false;
+    }
+    
+    try {
+      await castSession.sendMessage(MEGARADIO_NAMESPACE, message);
+      console.log('[NativeCast] Custom message sent:', message);
+      return true;
+    } catch (err) {
+      console.error('[NativeCast] Failed to send custom message:', err);
+      return false;
+    }
+  }, [castSession]);
+
   // Cast audio to selected device
   const handleCastAudio = useCallback(async () => {
     if (!remoteMediaClient || !station || !streamUrl) {
@@ -205,30 +222,47 @@ const NativeCastContent: React.FC<{
         onStopLocalAudio();
       }
 
-      // Prepare media info - use Generic metadata for better audio support
-      const mediaInfo = {
-        contentUrl: streamUrl,
-        contentType: contentType,
-        streamType: 'LIVE', // Use string 'LIVE' instead of 'live'
-        streamDuration: 0,
-        metadata: {
-          type: 'generic', // Use 'generic' for radio streams
-          title: nowPlaying?.title || station.name,
-          subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
-          images: station.favicon ? [{ 
-            url: station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`
-          }] : [],
-        },
+      // Try custom message channel first (for MegaRadio receiver)
+      const customMessage = {
+        type: 'LOAD',
+        stationId: station._id || station.stationuuid,
+        stationName: station.name,
+        streamUrl: streamUrl,
+        imageUrl: station.favicon ? 
+          (station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`) 
+          : null,
       };
+      
+      const sentViaCustomChannel = await sendCustomMessage(customMessage);
+      
+      if (!sentViaCustomChannel) {
+        // Fallback to standard media loading
+        console.log('[NativeCast] Falling back to standard media loading');
+        
+        // Prepare media info - use Generic metadata for better audio support
+        const mediaInfo = {
+          contentUrl: streamUrl,
+          contentType: contentType,
+          streamType: 'LIVE',
+          streamDuration: 0,
+          metadata: {
+            type: 'generic',
+            title: nowPlaying?.title || station.name,
+            subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
+            images: station.favicon ? [{ 
+              url: station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`
+            }] : [],
+          },
+        };
 
-      console.log('[NativeCast] Loading media:', JSON.stringify(mediaInfo, null, 2));
+        console.log('[NativeCast] Loading media:', JSON.stringify(mediaInfo, null, 2));
 
-      // Load and play
-      await remoteMediaClient.loadMedia({
-        mediaInfo,
-        autoplay: true,
-        playPosition: 0,
-      });
+        await remoteMediaClient.loadMedia({
+          mediaInfo,
+          autoplay: true,
+          playPosition: 0,
+        });
+      }
 
       console.log('[NativeCast] Audio casting started:', station.name);
       
@@ -244,7 +278,7 @@ const NativeCastContent: React.FC<{
     } finally {
       setIsCasting(false);
     }
-  }, [remoteMediaClient, station, streamUrl, nowPlaying, onClose, onStopLocalAudio]);
+  }, [remoteMediaClient, station, streamUrl, nowPlaying, onClose, onStopLocalAudio, sendCustomMessage]);
 
   // Pause casting
   const handlePause = useCallback(async () => {
