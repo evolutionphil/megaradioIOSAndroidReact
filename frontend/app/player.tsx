@@ -563,10 +563,10 @@ export default function PlayerScreen() {
                 <TouchableOpacity 
                   style={styles.headerIcon} 
                   onPress={() => {
-                    console.log('[Player] Cast button pressed');
-                    setShowCastModal(true);
+                    console.log('[Player] Native Cast button pressed');
+                    setShowNativeCastModal(true);
                   }}
-                  accessibilityLabel="Cast"
+                  accessibilityLabel="Direct Cast"
                   accessibilityRole="button"
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
