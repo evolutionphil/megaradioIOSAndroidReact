@@ -57,6 +57,7 @@ interface SearchGenre {
 export default function SearchScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
   const [allResults, setAllResults] = useState<SearchResultItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -64,7 +65,11 @@ export default function SearchScreen() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   const { playStation } = useAudioPlayer();
-  const { currentStation, playbackState } = usePlayerStore();
+  const { currentStation, playbackState, isMiniPlayerVisible } = usePlayerStore();
+  
+  // Calculate bottom padding for MiniPlayer (70px height + system nav bar)
+  const MINI_PLAYER_HEIGHT = 70;
+  const bottomPadding = isMiniPlayerVisible ? MINI_PLAYER_HEIGHT + insets.bottom + 20 : insets.bottom;
 
   // Convert station to search result
   const stationToResult = (station: Station): SearchResultItem => {
