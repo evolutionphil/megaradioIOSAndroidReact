@@ -26,7 +26,7 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
       
       {/* Single full-screen splash image - exact match to user's design */}
       <Image
-        source={require('../../assets/images/splash-native.png')}
+        source={require('../../assets/images/splash-full.png')}
         style={styles.splashImage}
         resizeMode="cover"
       />
