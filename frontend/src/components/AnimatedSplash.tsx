@@ -1,9 +1,8 @@
-// Splash Screen - Using full background image with centered logo
-// No animations, simple and reliable
+// Splash Screen - Single full-screen image matching the Figma design
+// Uses the exact user-provided splash screen image
 
 import React from 'react';
-import { View, Image, StyleSheet, StatusBar, Dimensions, ImageBackground, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, Image, StyleSheet, StatusBar, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,8 +12,6 @@ interface SplashProps {
 }
 
 const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading = true }) => {
-  const insets = useSafeAreaInsets();
-  
   // Auto-complete after 2 seconds if not loading
   React.useEffect(() => {
     if (!isLoading && onAnimationComplete) {
@@ -24,24 +21,15 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
   }, [isLoading, onAnimationComplete]);
 
   return (
-    <View style={[styles.container, { paddingBottom: Platform.OS === 'android' ? insets.bottom : 0 }]}>
-      <StatusBar barStyle="light-content" backgroundColor="#000000" translucent />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0D0D0D" translucent />
       
-      {/* Full screen background with dots/gradient */}
-      <ImageBackground
-        source={require('../../assets/images/splash-full.png')}
-        style={styles.background}
+      {/* Single full-screen splash image - exact match to user's design */}
+      <Image
+        source={require('../../assets/images/splash-native.png')}
+        style={styles.splashImage}
         resizeMode="cover"
-      >
-        {/* Logo centered on top */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../assets/images/splash-logo-waves.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
-      </ImageBackground>
+      />
     </View>
   );
 };
@@ -49,21 +37,14 @@ const AnimatedSplash: React.FC<SplashProps> = ({ onAnimationComplete, isLoading 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#0D0D0D',
   },
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: width * 0.65,
-    height: width * 0.65,
+  splashImage: {
+    width: width,
+    height: height,
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
 });
 
