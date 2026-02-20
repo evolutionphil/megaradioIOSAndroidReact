@@ -182,9 +182,9 @@ export default function RootLayout() {
   // Check onboarding status and navigate
   useEffect(() => {
     const checkAndNavigate = async () => {
-      console.log('[Layout] Check: showSplash=', showSplash, 'isNavigationReady=', isNavigationReady, 'hasCheckedOnboarding=', hasCheckedOnboarding, 'segments=', segments);
+      console.log('[Layout] Check: isNavigationReady=', isNavigationReady, 'hasCheckedOnboarding=', hasCheckedOnboarding, 'segments=', segments);
       
-      if (!showSplash && isNavigationReady && !hasCheckedOnboarding) {
+      if (isNavigationReady && !hasCheckedOnboarding) {
         setHasCheckedOnboarding(true);
         
         const onboardingComplete = await checkOnboardingComplete();
@@ -212,7 +212,7 @@ export default function RootLayout() {
     };
 
     checkAndNavigate();
-  }, [showSplash, isNavigationReady, hasCheckedOnboarding, segments]);
+  }, [isNavigationReady, hasCheckedOnboarding, segments]);
 
   // Handle notification tap - when user taps notification, open player
   // Also handle case where user dismisses player modal and lands on empty route
