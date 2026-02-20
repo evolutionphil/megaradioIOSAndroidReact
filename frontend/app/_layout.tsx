@@ -148,6 +148,36 @@ export default function RootLayout() {
     }
   }, []);
 
+  // Handle app state changes - stop audio when app is terminated (Android)
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    
+    const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+      console.log('[Layout] App state changed to:', nextAppState);
+      
+      // On Android, when app goes to background or inactive, we should check if it's being closed
+      // Note: 'inactive' state is primarily for iOS, Android uses 'background'
+      if (nextAppState === 'background') {
+        // App is going to background - Android might be terminating it
+        // We don't stop audio here because user might want background playback
+        console.log('[Layout] App went to background');
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+    // Handle app termination - clean up TrackPlayer
+    // This runs when the component unmounts (app is closing)
+    return () => {
+      subscription.remove();
+      console.log('[Layout] Cleanup: Stopping TrackPlayer on app close');
+      // Stop audio when app is closing
+      TrackPlayer.reset().catch(err => {
+        console.log('[Layout] TrackPlayer reset error:', err);
+      });
+    };
+  }, []);
+
   // Check if navigation is ready
   useEffect(() => {
     if (navigationState?.key) {
