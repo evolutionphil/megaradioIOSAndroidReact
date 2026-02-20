@@ -89,6 +89,7 @@ export default function GenreDetailScreen() {
   );
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
+  const { isMiniPlayerVisible } = usePlayerStore();
 
   const stations = data?.stations || [];
   const totalCount = data?.pagination?.total || stations.length;
