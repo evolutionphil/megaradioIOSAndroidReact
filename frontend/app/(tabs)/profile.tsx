@@ -152,6 +152,21 @@ export default function ProfileScreen() {
     });
   }, []);
 
+  // Load play at login setting
+  useEffect(() => {
+    const loadPlayAtLogin = async () => {
+      try {
+        const stored = await AsyncStorage.getItem('play_at_login_setting');
+        if (stored) {
+          setPlayAtLoginSetting(stored);
+        }
+      } catch (e) {
+        console.log('Failed to load play at login setting:', e);
+      }
+    };
+    loadPlayAtLogin();
+  }, []);
+
   // Handle private profile toggle
   const handlePrivateProfileToggle = async (value: boolean) => {
     if (!user) return;
