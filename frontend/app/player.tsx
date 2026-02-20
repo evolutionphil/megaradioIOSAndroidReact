@@ -823,11 +823,20 @@ export default function PlayerScreen() {
         onStop={cancelSleepTimer}
       />
       
-      {/* Cast Modal */}
+      {/* Cast Modal (MegaRadio API-based - login required) */}
       <CastModal
         visible={showCastModal}
         onClose={() => setShowCastModal(false)}
         currentStation={currentStation}
+      />
+
+      {/* Native Cast Modal (Google Cast / Chromecast - no login required) */}
+      <NativeCastModal
+        visible={showNativeCastModal}
+        onClose={() => setShowNativeCastModal(false)}
+        station={currentStation}
+        streamUrl={currentStation?.url_resolved || currentStation?.url || null}
+        nowPlaying={nowPlaying}
       />
 
       {/* Player Options Sheet */}
