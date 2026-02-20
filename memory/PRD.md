@@ -94,10 +94,13 @@ npx expo prebuild
 ## Tamamlanan Entegrasyonlar
 - **Native Google Cast / Chromecast**: react-native-google-cast v4.9.1 entegre edildi
   - Header'da yeni cast butonu (tv-outline icon)
-  - Chromecast cihazları otomatik keşif
+  - Chromecast cihazları otomatik keşif (startDiscoveryAfterFirstTapOnCastButton: false)
   - Doğrudan stream gönderimi (TV uygulaması gerekmez)
   - iOS ve Android desteği
   - Expo Config Plugin ile otomatik native setup
+  - Cast başladığında lokal audio otomatik durur
+  - audio/mp3 content type kullanılıyor (daha iyi Chromecast uyumu)
+  - Generic metadata type (radio streams için optimize)
 - **MegaRadio API Cast**: Mevcut sistem korundu (AirPlay butonu)
 
 ---
