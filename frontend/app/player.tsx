@@ -837,6 +837,7 @@ export default function PlayerScreen() {
         station={currentStation}
         streamUrl={currentStation?.url_resolved || currentStation?.url || null}
         nowPlaying={nowPlaying}
+        onStopLocalAudio={stopPlayback}
       />
 
       {/* Player Options Sheet */}
