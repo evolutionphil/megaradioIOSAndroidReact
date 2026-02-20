@@ -87,11 +87,18 @@ npx expo prebuild
 ## Bekleyen İşler
 - **P0**: Apple CarPlay entitlement onayı (kullanıcı aksiyonu bekliyor)
 - **P0**: Google OAuth Android SHA-1 fingerprint (kullanıcı aksiyonu bekliyor)
-- **P0**: Yeni Android build ile test gerekiyor (usesCleartextTraffic, splash screen, audio cleanup)
-- **P1**: Cast özelliğini implement etmek (react-native-google-cast)
-- **P1**: Watch apps'i native IDE'lerde build et
+- **P0**: Yeni Android/iOS build gerekiyor (Google Cast entegrasyonu için)
 - **P2**: Sleep Timer tam test
 - **P2**: UI animasyonları
+
+## Tamamlanan Entegrasyonlar
+- **Native Google Cast / Chromecast**: react-native-google-cast v4.9.1 entegre edildi
+  - Header'da yeni cast butonu (tv-outline icon)
+  - Chromecast cihazları otomatik keşif
+  - Doğrudan stream gönderimi (TV uygulaması gerekmez)
+  - iOS ve Android desteği
+  - Expo Config Plugin ile otomatik native setup
+- **MegaRadio API Cast**: Mevcut sistem korundu (AirPlay butonu)
 
 ---
 
