@@ -10,6 +10,7 @@ import {
   Platform,
   PanResponder,
   Animated,
+  LayoutChangeEvent,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
