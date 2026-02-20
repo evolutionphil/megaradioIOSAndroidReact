@@ -12,7 +12,7 @@ import {
   useWindowDimensions,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -23,6 +23,7 @@ import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useLocationStore } from '../src/store/locationStore';
 import { SortBottomSheet, SortOption, ViewMode } from '../src/components/SortBottomSheet';
+import { MiniPlayer } from '../src/components/MiniPlayer';
 import type { Station } from '../src/types';
 
 const GRID_COLUMNS = 3;
