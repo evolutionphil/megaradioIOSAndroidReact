@@ -135,6 +135,7 @@
           "androidPlayServicesCastFrameworkVersion": "21.4.0"
         }
       ],
+      "./plugins/withGoogleCast.js",
       "./plugins/withAndroidAuto.js",
       "./plugins/removeCarPlayEntitlement.js"
     ],
