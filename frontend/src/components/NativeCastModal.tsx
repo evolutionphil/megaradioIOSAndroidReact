@@ -62,6 +62,7 @@ interface NativeCastModalProps {
     title?: string;
     artist?: string;
   } | null;
+  onStopLocalAudio?: () => void; // Callback to stop local audio when casting starts
 }
 
 // Fallback component for when Google Cast is not available
