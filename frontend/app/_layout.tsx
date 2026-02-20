@@ -75,7 +75,6 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
 };
 
 export default function RootLayout() {
-  const [showSplash, setShowSplash] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
