@@ -187,6 +187,151 @@ const carouselStyles = StyleSheet.create({
   },
 });
 
+// ─── Volume Slider (Reliable PanResponder-based) ────────────────────────
+const VolumeSlider = ({
+  volume,
+  isMuted,
+  onVolumeChange,
+  onMuteToggle,
+}: {
+  volume: number;
+  isMuted: boolean;
+  onVolumeChange: (value: number) => void;
+  onMuteToggle: () => void;
+}) => {
+  const sliderWidth = useRef(0);
+  const sliderX = useRef(0);
+  
+  // Create panResponder that calculates position relative to slider
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (evt) => {
+        // Calculate volume from initial touch position
+        const touchX = evt.nativeEvent.pageX - sliderX.current;
+        const newVolume = Math.max(0, Math.min(1, touchX / sliderWidth.current));
+        onVolumeChange(newVolume);
+      },
+      onPanResponderMove: (evt) => {
+        // Update volume as user drags
+        const touchX = evt.nativeEvent.pageX - sliderX.current;
+        const newVolume = Math.max(0, Math.min(1, touchX / sliderWidth.current));
+        onVolumeChange(newVolume);
+      },
+    })
+  ).current;
+  
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const { width, x } = event.nativeEvent.layout;
+    sliderWidth.current = width;
+    // Get absolute position using measure
+    event.target.measureInWindow((px) => {
+      sliderX.current = px;
+    });
+  };
+
+  const displayVolume = isMuted ? 0 : volume;
+  
+  return (
+    <View style={volumeStyles.row}>
+      <TouchableOpacity 
+        style={volumeStyles.muteBtn} 
+        onPress={onMuteToggle} 
+        data-testid="car-mode-mute-btn"
+      >
+        <Ionicons
+          name={isMuted ? 'volume-mute' : 'volume-off'}
+          size={28 * S}
+          color="#FFF"
+        />
+      </TouchableOpacity>
+      
+      <View style={volumeStyles.box}>
+        <Ionicons name="volume-high" size={20 * S} color="#FFF" />
+        <View 
+          style={volumeStyles.sliderContainer}
+          onLayout={handleLayout}
+          {...panResponder.panHandlers}
+        >
+          <View style={volumeStyles.track}>
+            <View 
+              style={[
+                volumeStyles.fill, 
+                { width: `${displayVolume * 100}%` }
+              ]} 
+            />
+          </View>
+          <View 
+            style={[
+              volumeStyles.thumb,
+              { left: `${displayVolume * 100}%` }
+            ]}
+          />
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const volumeStyles = StyleSheet.create({
+  row: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 15 * S, 
+    gap: 19 * S 
+  },
+  muteBtn: { 
+    width: 100 * S, 
+    height: 56 * S, 
+    borderRadius: 10 * S, 
+    backgroundColor: '#282828', 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  box: { 
+    flex: 1, 
+    height: 56 * S, 
+    borderRadius: 10 * S, 
+    backgroundColor: '#282828', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingLeft: 10 * S, 
+    paddingRight: 10 * S 
+  },
+  sliderContainer: { 
+    flex: 1, 
+    height: 56 * S, 
+    marginLeft: 8 * S, 
+    justifyContent: 'center', 
+    position: 'relative' 
+  },
+  track: { 
+    height: 4 * S, 
+    borderRadius: 2 * S, 
+    backgroundColor: '#373737',
+    width: '100%' 
+  },
+  fill: { 
+    height: '100%', 
+    borderRadius: 2 * S, 
+    backgroundColor: '#FF4199',
+    position: 'absolute',
+    left: 0,
+    top: 0
+  },
+  thumb: { 
+    width: 20 * S, 
+    height: 20 * S, 
+    borderRadius: 10 * S, 
+    backgroundColor: '#FF4199', 
+    position: 'absolute', 
+    top: '50%', 
+    marginTop: -10 * S,
+    marginLeft: -10 * S,
+  },
+});
+
 // ─── Equalizer bars (animated) ──────────────────────────
 const EqualizerBars = () => {
   const anim1 = useRef(new Animated.Value(20)).current;
