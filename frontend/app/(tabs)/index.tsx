@@ -266,6 +266,17 @@ export default function HomeScreen() {
               data-testid="header-profile-btn"
             >
               <View style={styles.avatarContainer}>
+                {/* Debug: Log user avatar fields */}
+                {(() => {
+                  if (user) {
+                    console.log('[Home] User avatar fields:', { 
+                      avatar: user.avatar, 
+                      profilePhoto: user.profilePhoto,
+                      name: user.name 
+                    });
+                  }
+                  return null;
+                })()}
                 {user?.avatar || user?.profilePhoto ? (
                   <Image 
                     source={{ uri: (user.avatar || user.profilePhoto)?.startsWith('http') 
