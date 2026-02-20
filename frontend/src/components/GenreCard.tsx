@@ -111,12 +111,13 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 'auto',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   name: {
     fontSize: typography.sizes.md,
     fontWeight: typography.weights.bold,
     color: colors.text,
+    textAlign: 'center',
   },
   nameSmall: {
     fontSize: typography.sizes.sm,

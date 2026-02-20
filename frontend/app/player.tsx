@@ -1085,7 +1085,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    fontStyle: 'italic',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     marginBottom: 16,
   },
