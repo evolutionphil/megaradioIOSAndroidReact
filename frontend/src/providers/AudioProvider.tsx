@@ -443,6 +443,14 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         
         console.log('[AudioProvider] Metadata found:', { title: songTitle, artist: artistName, genre });
         
+        // Check if song changed (new metadata) - increment music played count
+        const newMetadataKey = `${songTitle}-${artistName}`;
+        if (lastMetadataTitle !== newMetadataKey && lastMetadataTitle !== null) {
+          console.log('[AudioProvider] New song detected, incrementing music played count');
+          statsService.incrementMusicPlayed().catch(console.error);
+        }
+        lastMetadataTitle = newMetadataKey;
+        
         // Update UI state with full metadata
         setNowPlaying({
           title: songTitle,
