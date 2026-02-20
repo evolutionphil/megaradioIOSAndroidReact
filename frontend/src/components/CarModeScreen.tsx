@@ -423,54 +423,12 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
         </View>
 
         {/* ── Volume: Mute | Slider ────── */}
-        <View style={styles.volumeRow}>
-          <TouchableOpacity style={styles.muteBtn} onPress={handleMuteToggle} data-testid="car-mode-mute-btn">
-            <Ionicons
-              name={isMuted ? 'volume-mute' : 'volume-off'}
-              size={28 * S}
-              color="#FFF"
-            />
-          </TouchableOpacity>
-          <View style={styles.volumeBox}>
-            <Ionicons name="volume-high" size={20 * S} color="#FFF" />
-            <View 
-              style={styles.slider}
-              onLayout={(e) => {
-                // Store slider width for accurate touch calculations
-                const { width } = e.nativeEvent.layout;
-                (styles.slider as any)._measuredWidth = width;
-              }}
-              onTouchStart={(e) => {
-                const sliderWidth = (styles.slider as any)._measuredWidth || 200;
-                const newVolume = Math.max(0, Math.min(1, e.nativeEvent.locationX / sliderWidth));
-                handleVolumeChange(newVolume);
-              }}
-              onTouchMove={(e) => {
-                const sliderWidth = (styles.slider as any)._measuredWidth || 200;
-                const newVolume = Math.max(0, Math.min(1, e.nativeEvent.locationX / sliderWidth));
-                handleVolumeChange(newVolume);
-              }}
-            >
-              <View style={[styles.sliderTrack, { backgroundColor: '#373737' }]}>
-                <View 
-                  style={[
-                    styles.sliderFill, 
-                    { 
-                      backgroundColor: '#FF4199',
-                      width: `${(isMuted ? 0 : volume) * 100}%` 
-                    }
-                  ]} 
-                />
-              </View>
-              <View 
-                style={[
-                  styles.sliderThumb,
-                  { left: `${(isMuted ? 0 : volume) * 100}%` }
-                ]}
-              />
-            </View>
-          </View>
-        </View>
+        <VolumeSlider
+          volume={volume}
+          isMuted={isMuted}
+          onVolumeChange={handleVolumeChange}
+          onMuteToggle={handleMuteToggle}
+        />
       </View>
     </View>
   );
