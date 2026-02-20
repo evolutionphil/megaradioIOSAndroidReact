@@ -115,7 +115,8 @@ const NativeCastContent: React.FC<{
   streamUrl: string | null;
   nowPlaying?: { title?: string; artist?: string } | null;
   onClose: () => void;
-}> = ({ station, streamUrl, nowPlaying, onClose }) => {
+  onStopLocalAudio?: () => void;
+}> = ({ station, streamUrl, nowPlaying, onClose, onStopLocalAudio }) => {
   const castState = useCastState?.() || 'NO_DEVICES_AVAILABLE';
   const devices = useDevices?.() || [];
   const remoteMediaClient = useRemoteMediaClient?.();
@@ -124,12 +125,27 @@ const NativeCastContent: React.FC<{
   const [isConnecting, setIsConnecting] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasStoppedLocalAudio = useRef(false);
+
+  // Stop local audio when connected to Cast device
+  useEffect(() => {
+    if (castState === 'CONNECTED' && !hasStoppedLocalAudio.current && onStopLocalAudio) {
+      console.log('[NativeCast] Connected to Cast device, stopping local audio');
+      onStopLocalAudio();
+      hasStoppedLocalAudio.current = true;
+    }
+    
+    // Reset flag when disconnected
+    if (castState === 'NOT_CONNECTED' || castState === 'NO_DEVICES_AVAILABLE') {
+      hasStoppedLocalAudio.current = false;
+    }
+  }, [castState, onStopLocalAudio]);
 
   // Get connection status text
   const getStatusText = () => {
     switch (castState) {
       case 'NO_DEVICES_AVAILABLE':
-        return 'Cihaz bulunamadı';
+        return 'Cihaz aranıyor...';
       case 'NOT_CONNECTED':
         return 'Bağlı değil';
       case 'CONNECTING':
@@ -145,6 +161,25 @@ const NativeCastContent: React.FC<{
     return castState === 'CONNECTED' ? '#4CAF50' : colors.textMuted;
   };
 
+  // Determine content type for stream URL
+  const getContentType = (url: string): string => {
+    const lowerUrl = url.toLowerCase();
+    if (lowerUrl.includes('.m3u8') || lowerUrl.includes('hls')) {
+      return 'application/x-mpegURL';
+    }
+    if (lowerUrl.includes('.mp3') || lowerUrl.includes('mp3')) {
+      return 'audio/mp3'; // Use audio/mp3 instead of audio/mpeg for better compatibility
+    }
+    if (lowerUrl.includes('.aac') || lowerUrl.includes('aac')) {
+      return 'audio/aac';
+    }
+    if (lowerUrl.includes('.ogg')) {
+      return 'audio/ogg';
+    }
+    // Default to MP3 for radio streams
+    return 'audio/mp3';
+  };
+
   // Cast audio to selected device
   const handleCastAudio = useCallback(async () => {
     if (!remoteMediaClient || !station || !streamUrl) {
@@ -156,26 +191,38 @@ const NativeCastContent: React.FC<{
     setError(null);
 
     try {
-      // Prepare media info
+      const contentType = getContentType(streamUrl);
+      console.log('[NativeCast] Casting with contentType:', contentType, 'URL:', streamUrl);
+      
+      // Stop local audio before starting cast
+      if (onStopLocalAudio) {
+        console.log('[NativeCast] Stopping local audio before cast');
+        onStopLocalAudio();
+      }
+
+      // Prepare media info - use Generic metadata for better audio support
       const mediaInfo = {
         contentUrl: streamUrl,
-        contentType: streamUrl.includes('.m3u8') ? 'application/x-mpegURL' : 'audio/mpeg',
-        streamType: 'live',
+        contentType: contentType,
+        streamType: 'LIVE', // Use string 'LIVE' instead of 'live'
         streamDuration: 0,
         metadata: {
-          type: 'MusicTrack',
-          metadataType: 'MusicTrack',
+          type: 'generic', // Use 'generic' for radio streams
           title: nowPlaying?.title || station.name,
-          artist: nowPlaying?.artist || station.country || 'MegaRadio',
-          images: station.favicon ? [{ url: station.favicon }] : [],
+          subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
+          images: station.favicon ? [{ 
+            url: station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`
+          }] : [],
         },
       };
+
+      console.log('[NativeCast] Loading media:', JSON.stringify(mediaInfo, null, 2));
 
       // Load and play
       await remoteMediaClient.loadMedia({
         mediaInfo,
         autoplay: true,
-        currentTime: 0,
+        playPosition: 0,
       });
 
       console.log('[NativeCast] Audio casting started:', station.name);
@@ -188,11 +235,11 @@ const NativeCastContent: React.FC<{
       );
     } catch (err: any) {
       console.error('[NativeCast] Cast error:', err);
-      setError('Cast başlatılamadı. Lütfen tekrar deneyin.');
+      setError(`Cast başlatılamadı: ${err.message || 'Bilinmeyen hata'}`);
     } finally {
       setIsCasting(false);
     }
-  }, [remoteMediaClient, station, streamUrl, nowPlaying, onClose]);
+  }, [remoteMediaClient, station, streamUrl, nowPlaying, onClose, onStopLocalAudio]);
 
   // Pause casting
   const handlePause = useCallback(async () => {
