@@ -87,7 +87,8 @@ npx expo prebuild
 ## Bekleyen İşler
 - **P0**: Apple CarPlay entitlement onayı (kullanıcı aksiyonu bekliyor)
 - **P0**: Google OAuth Android SHA-1 fingerprint (kullanıcı aksiyonu bekliyor)
-- **P0**: Yeni Android build ile test gerekiyor (usesCleartextTraffic düzeltmesi)
+- **P0**: Yeni Android build ile test gerekiyor (usesCleartextTraffic, splash screen, audio cleanup)
+- **P1**: Cast özelliğini implement etmek (react-native-google-cast)
 - **P1**: Watch apps'i native IDE'lerde build et
 - **P2**: Sleep Timer tam test
 - **P2**: UI animasyonları
