@@ -42,9 +42,6 @@ const GlobalMiniPlayer = () => {
   return <MiniPlayer isGlobal={true} />;
 };
 
-// Prevent splash screen from auto-hiding until fonts are loaded
-SplashScreen.preventAutoHideAsync().catch(() => {});
-
 // Create a client with optimized defaults for performance (based on backend recommendations)
 const queryClient = new QueryClient({
   defaultOptions: {
