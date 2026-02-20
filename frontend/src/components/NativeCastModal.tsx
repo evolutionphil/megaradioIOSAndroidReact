@@ -19,6 +19,9 @@ import { BlurView } from 'expo-blur';
 import { colors, typography, spacing } from '../constants/theme';
 import type { Station } from '../types';
 
+// Custom message namespace for MegaRadio
+const MEGARADIO_NAMESPACE = 'urn:x-cast:com.visiongo.megaradio';
+
 // Conditionally import Google Cast - it's only available in native builds
 let GoogleCast: any = null;
 let CastButton: any = null;
@@ -27,6 +30,7 @@ let useDevices: any = null;
 let useRemoteMediaClient: any = null;
 let useCastSession: any = null;
 let CastContext: any = null;
+let useCastChannel: any = null;
 
 try {
   const googleCast = require('react-native-google-cast');
@@ -37,6 +41,7 @@ try {
   useRemoteMediaClient = googleCast.useRemoteMediaClient;
   useCastSession = googleCast.useCastSession;
   CastContext = googleCast.CastContext;
+  useCastChannel = googleCast.useCastChannel;
   
   // Start discovery immediately on import (not waiting for button tap)
   if (CastContext) {
