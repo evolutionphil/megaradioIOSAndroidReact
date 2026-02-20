@@ -246,15 +246,11 @@ export default function RootLayout() {
   }, [isNavigationReady, hasCheckedOnboarding]);
 
   const onLayoutRootView = useCallback(async () => {
+    // Fonts loaded - app is ready
     if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+      console.log('[Layout] Fonts loaded, app ready');
     }
   }, [fontsLoaded, fontError]);
-
-  // Show animated custom splash screen
-  if (showSplash) {
-    return <AnimatedSplash onAnimationComplete={() => setShowSplash(false)} />;
-  }
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
