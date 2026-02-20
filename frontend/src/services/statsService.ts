@@ -7,7 +7,7 @@ const LAST_SESSION_KEY = 'last_listening_session';
 export interface ListeningStats {
   totalMinutes: number;
   totalStations: number;
-  musicPlayed: number;
+  musicPlayed: number;  // This tracks the number of different songs played (from metadata changes)
   lastUpdated: string;
 }
 
