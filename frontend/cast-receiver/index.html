@@ -559,6 +559,91 @@
             cast.framework.messages.Command.STREAM_MUTE
         );
 
+        // Custom message namespace for MegaRadio commands
+        const MEGARADIO_NAMESPACE = 'urn:x-cast:com.visiongo.megaradio';
+        
+        // Handle custom messages from sender app
+        context.addCustomMessageListener(MEGARADIO_NAMESPACE, (customEvent) => {
+            console.log('[MegaRadio Receiver] Custom message received:', customEvent.data);
+            
+            const message = customEvent.data;
+            
+            switch (message.type) {
+                case 'LOAD':
+                    // Load new station
+                    handleLoadCommand(message);
+                    break;
+                    
+                case 'STOP':
+                    playerManager.stop();
+                    break;
+                    
+                case 'PAUSE':
+                    playerManager.pause();
+                    break;
+                    
+                case 'RESUME':
+                    playerManager.play();
+                    break;
+                    
+                case 'VOLUME':
+                    if (typeof message.volume === 'number') {
+                        // Volume is 0-100, Cast SDK uses 0-1
+                        const volume = message.volume / 100;
+                        context.setSystemVolume({ level: volume, muted: false });
+                    }
+                    break;
+                    
+                default:
+                    console.log('[MegaRadio Receiver] Unknown command:', message.type);
+            }
+        });
+        
+        // Handle LOAD command from custom message
+        function handleLoadCommand(message) {
+            console.log('[MegaRadio Receiver] Loading station:', message.stationName);
+            
+            const mediaInfo = new cast.framework.messages.MediaInformation();
+            mediaInfo.contentUrl = message.streamUrl;
+            mediaInfo.streamType = cast.framework.messages.StreamType.LIVE;
+            
+            // Auto-detect content type
+            const url = message.streamUrl.toLowerCase();
+            if (url.includes('.m3u8') || url.includes('hls')) {
+                mediaInfo.contentType = 'application/x-mpegURL';
+            } else if (url.includes('.aac')) {
+                mediaInfo.contentType = 'audio/aac';
+            } else if (url.includes('.ogg')) {
+                mediaInfo.contentType = 'audio/ogg';
+            } else {
+                mediaInfo.contentType = 'audio/mpeg';
+            }
+            
+            // Set metadata
+            const metadata = new cast.framework.messages.GenericMediaMetadata();
+            metadata.title = message.stationName || 'MegaRadio';
+            metadata.subtitle = 'MegaRadio';
+            
+            if (message.imageUrl) {
+                metadata.images = [{ url: message.imageUrl }];
+            }
+            
+            mediaInfo.metadata = metadata;
+            
+            // Load the media
+            const loadRequest = new cast.framework.messages.LoadRequestData();
+            loadRequest.media = mediaInfo;
+            loadRequest.autoplay = true;
+            
+            playerManager.load(loadRequest)
+                .then(() => {
+                    console.log('[MegaRadio Receiver] Station loaded successfully');
+                })
+                .catch((error) => {
+                    console.error('[MegaRadio Receiver] Failed to load station:', error);
+                });
+        }
+
         // Start the receiver
         const options = new cast.framework.CastReceiverOptions();
         options.disableIdleTimeout = true; // Keep receiver alive
