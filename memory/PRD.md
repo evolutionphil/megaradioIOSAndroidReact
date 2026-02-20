@@ -96,6 +96,40 @@ npx expo prebuild
 
 ## Changelog
 
+### February 20, 2025 - Android Bug Fixes (Session 3)
+
+#### Düzeltilen Sorunlar:
+
+1. **Splash Screen Tutarsızlığı (P0)**
+   - **Sorun**: İki farklı splash screen görünüyordu (native ve animated)
+   - **Çözüm**: Native splash screen kullanıcının sağladığı resimle güncellendi, AnimatedSplash basitleştirildi
+
+2. **Car Mode Volume Slider (P0)**
+   - **Sorun**: Volume slider parmakla senkronize hareket etmiyordu, erratik davranış
+   - **Çözüm**: `onTouchStart/Move` yerine PanResponder-based VolumeSlider component oluşturuldu, `measureInWindow` ile doğru pozisyon hesaplama
+
+3. **Mini Player Safe Area (P0) - Genre Detail & Search**
+   - **Sorun**: Mini player Android sistem navigation bar'ın arkasında kalıyordu
+   - **Çözüm**: `genre-detail.tsx` ve `search.tsx` sayfalarında paddingBottom artırıldı (180px ve 200px)
+
+4. **Recently Played/Stations Near You Boyut Sorunu (P0)**
+   - **Sorun**: Tek öğe olduğunda çok büyük görünüyordu (flex: 1 ile tüm alanı dolduruyordu)
+   - **Çözüm**: Grid item'larda `flex: 1` yerine `width: 31%` ve `maxWidth: 130` kullanıldı
+
+5. **Uygulama Kapatıldığında Radyo Çalmaya Devam Ediyor (P0)**
+   - **Sorun**: Android'de uygulama kapatıldığında audio durmuyor
+   - **Çözüm**: `_layout.tsx`'e AppState listener eklendi, component unmount'ta TrackPlayer.reset() çağrılıyor
+
+#### Değişen Dosyalar:
+- `app.json` - Native splash screen ayarları güncellendi
+- `app/_layout.tsx` - AppState listener ve TrackPlayer cleanup eklendi
+- `app/genre-detail.tsx` - MiniPlayer için bottom padding eklendi
+- `app/search.tsx` - MiniPlayer için bottom padding eklendi  
+- `app/(tabs)/index.tsx` - Grid item boyutları düzeltildi
+- `src/components/AnimatedSplash.tsx` - Basitleştirildi, tek resim kullanıyor
+- `src/components/CarModeScreen.tsx` - VolumeSlider component eklendi
+- `assets/images/splash-native.png` - Kullanıcının splash screen resmi eklendi
+
 ### February 2025 - Android Bug Fixes (Session 2)
 
 #### Düzeltilen Sorunlar:
