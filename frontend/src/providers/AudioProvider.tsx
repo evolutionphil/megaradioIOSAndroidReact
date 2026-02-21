@@ -627,6 +627,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           station.name,
           station.favicon || station.logo
         );
+        // Track unique station
+        await statsService.trackUniqueStation(station._id);
         startStatsTracking();
         console.log('[AudioProvider] Stats session started for:', station.name);
       } catch (e) {
