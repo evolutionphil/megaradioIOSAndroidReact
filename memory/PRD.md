@@ -85,11 +85,11 @@ npx expo prebuild
 ```
 
 ## Bekleyen İşler
-- **P0**: Apple CarPlay entitlement onayı (kullanıcı aksiyonu bekliyor)
+- **P0**: Yeni EAS Build'ler gerekli (Casting, CarPlay, Android Auto testleri için)
 - **P0**: Google OAuth Android SHA-1 fingerprint (kullanıcı aksiyonu bekliyor)
-- **P0**: Yeni Android/iOS build gerekiyor (Google Cast entegrasyonu için)
 - **P2**: Sleep Timer tam test
 - **P2**: UI animasyonları
+- **P2**: Splash Screen yeniden tasarımı (tasarım bekleniyor)
 
 ## Tamamlanan Entegrasyonlar
 - **Native Google Cast / Chromecast**: react-native-google-cast v4.9.1 entegre edildi
@@ -107,7 +107,51 @@ npx expo prebuild
 
 ## Changelog
 
-### February 20, 2025 - Android Bug Fixes (Session 3)
+### December 2025 - P0/P1 Bug Fixes
+
+#### Düzeltilen Sorunlar:
+
+1. **Profile.tsx AsyncStorage Import Eksikliği (P0)**
+   - **Sorun**: Profile sayfasında `play_at_login_setting` okunurken AsyncStorage import edilmemişti
+   - **Çözüm**: AsyncStorage import'u eklendi
+
+2. **Genre Card Text Ortalama (P2)**
+   - **Sorun**: Genre kartlarındaki metin ve ikon ortalanmamıştı
+   - **Çözüm**: `GenreCard.tsx`'de gradient stilinde `justifyContent: 'center'`, `alignItems: 'center'` eklendi
+
+3. **Unique Stations İstatistiği Güncellenmiyordu (P1)**
+   - **Sorun**: "Dinlenen Benzersiz İstasyonlar" her zaman 0 gösteriyordu
+   - **Çözüm**: 
+     - `statsService.ts`'e `trackUniqueStation()` ve `getUniqueStationsListened()` fonksiyonları eklendi
+     - `AudioProvider.tsx`'de her istasyon çalındığında `trackUniqueStation()` çağrılıyor
+     - Benzersiz istasyonlar artık AsyncStorage'da ayrı bir set olarak takip ediliyor
+
+4. **Android Auto Favorites Persistence (P1)**
+   - **Sorun**: Android Auto'da favoriler statikti, kullanıcının gerçek favorileri gösterilmiyordu
+   - **Çözüm**:
+     - `favoritesStore.ts`'e `syncToAndroidAuto()` helper fonksiyonu eklendi
+     - Favoriler her güncellendiğinde AsyncStorage'a Android Auto için serialize ediliyor
+     - `MegaRadioAutoService.kt` (native Kotlin) güncellendi - SharedPreferences'tan favorileri okuyor
+     - `loadFavoritesFromStorage()` fonksiyonu eklendi (JSON parse ile favorileri yüklüyor)
+
+#### Değişen Dosyalar:
+- `app/(tabs)/profile.tsx` - AsyncStorage import eklendi
+- `src/components/GenreCard.tsx` - Stil düzeltmesi (centered layout)
+- `src/services/statsService.ts` - trackUniqueStation, getUniqueStationsListened eklendi
+- `src/providers/AudioProvider.tsx` - trackUniqueStation çağrısı eklendi
+- `app/statistics.tsx` - getUniqueStationsListened kullanımı
+- `src/store/favoritesStore.ts` - syncToAndroidAuto helper eklendi
+- `plugins/withAndroidAutoFull.js` - MegaRadioAutoService.kt güncellendi (SharedPreferences okuma)
+
+#### ⚠️ Test Gereksinimleri:
+- **Native Build Gerekli**: Tüm değişiklikler yeni EAS build gerektiriyor
+- **Android Auto Test**: Favorilerin Android Auto'da görünmesi için:
+  1. Uygulamada favori ekleyin
+  2. Arabaya bağlanın
+  3. MegaRadio > Favoriler'i açın
+- **İstatistik Test**: Farklı istasyonları dinleyin ve Statistics sayfasını kontrol edin
+
+### December 2025 - Android Bug Fixes (Session 3)
 
 #### Düzeltilen Sorunlar:
 
