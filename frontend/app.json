@@ -40,6 +40,9 @@
         "NSCameraUsageDescription": "Profil fotoğrafı çekebilmek için kamera erişimi gereklidir.",
         "NSMicrophoneUsageDescription": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "entitlements": {
+        "com.apple.developer.carplay-audio": true
       }
     },
     "android": {
