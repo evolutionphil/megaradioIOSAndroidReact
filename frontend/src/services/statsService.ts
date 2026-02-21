@@ -3,11 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const STATS_KEY = 'listening_stats';
 const HISTORY_KEY = 'listening_history';
 const LAST_SESSION_KEY = 'last_listening_session';
+const UNIQUE_STATIONS_KEY = 'unique_stations_set';
 
 export interface ListeningStats {
   totalMinutes: number;
   totalStations: number;
   musicPlayed: number;  // This tracks the number of different songs played (from metadata changes)
+  uniqueStationsListened: number; // This tracks unique stations the user has listened to
   lastUpdated: string;
 }
 
@@ -24,6 +26,7 @@ const defaultStats: ListeningStats = {
   totalMinutes: 0,
   totalStations: 136000, // Total available stations
   musicPlayed: 0,
+  uniqueStationsListened: 0,
   lastUpdated: new Date().toISOString(),
 };
 
@@ -216,6 +219,63 @@ export const statsService = {
       await this.saveStats(stats);
     } catch (error) {
       console.error('Failed to increment music played:', error);
+    }
+  },
+
+  /**
+   * Track a unique station listened
+   * Call this when a station starts playing
+   * Returns true if this is a new unique station
+   */
+  async trackUniqueStation(stationId: string): Promise<boolean> {
+    try {
+      // Get existing unique stations set
+      const storedSet = await AsyncStorage.getItem(UNIQUE_STATIONS_KEY);
+      const uniqueStations: string[] = storedSet ? JSON.parse(storedSet) : [];
+      
+      // Check if already tracked
+      if (uniqueStations.includes(stationId)) {
+        return false;
+      }
+      
+      // Add new station
+      uniqueStations.push(stationId);
+      await AsyncStorage.setItem(UNIQUE_STATIONS_KEY, JSON.stringify(uniqueStations));
+      
+      // Update stats with new count
+      const stats = await this.getStats();
+      stats.uniqueStationsListened = uniqueStations.length;
+      await this.saveStats(stats);
+      
+      console.log('[StatsService] New unique station tracked:', stationId, 'Total:', uniqueStations.length);
+      return true;
+    } catch (error) {
+      console.error('Failed to track unique station:', error);
+      return false;
+    }
+  },
+
+  /**
+   * Get count of unique stations listened
+   * This combines both live tracking and history-based count
+   */
+  async getUniqueStationsListened(): Promise<number> {
+    try {
+      // First check the dedicated unique stations tracking
+      const storedSet = await AsyncStorage.getItem(UNIQUE_STATIONS_KEY);
+      const uniqueStations: string[] = storedSet ? JSON.parse(storedSet) : [];
+      
+      // Also get from history as a fallback
+      const history = await this.getHistory();
+      const historyStations = new Set(history.map(s => s.stationId));
+      
+      // Combine both sets
+      const allUnique = new Set([...uniqueStations, ...Array.from(historyStations)]);
+      
+      return allUnique.size;
+    } catch (error) {
+      console.error('Failed to get unique stations listened:', error);
+      return 0;
     }
   },
 };
