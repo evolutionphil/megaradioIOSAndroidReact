@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
     padding: spacing.md,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconContainer: {
     width: 36,
@@ -108,10 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: spacing.xs,
   },
   content: {
-    marginTop: 'auto',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   name: {
     fontSize: typography.sizes.md,
