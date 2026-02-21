@@ -12,7 +12,9 @@ const path = require('path');
 // Kotlin MediaBrowserService code
 const MEDIA_BROWSER_SERVICE_KOTLIN = `package com.visiongo.megaradio
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -22,6 +24,8 @@ import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import com.doublesymmetry.trackplayer.service.MusicService
 import android.net.Uri
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * MegaRadio Android Auto MediaBrowserService
@@ -48,6 +52,9 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         const val GENRE_HIPHOP = "genre_hiphop"
         const val GENRE_TURKISH = "genre_turkish"
         const val GENRE_NEWS = "genre_news"
+        
+        // AsyncStorage key for favorites
+        const val ASYNC_STORAGE_FAVORITES_KEY = "megaradio_android_auto_favorites"
     }
 
     private var mediaSession: MediaSessionCompat? = null
@@ -92,6 +99,43 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         }
     }
 
+    // Read favorites from React Native AsyncStorage
+    private fun loadFavoritesFromStorage(): List<FavoriteStation> {
+        val favorites = mutableListOf<FavoriteStation>()
+        try {
+            // AsyncStorage on Android uses SharedPreferences under the hood
+            // The data is stored in a specific format
+            val prefs = applicationContext.getSharedPreferences(
+                "RN_AsyncLocalStorage",
+                Context.MODE_PRIVATE
+            )
+            
+            val favoritesJson = prefs.getString(ASYNC_STORAGE_FAVORITES_KEY, null)
+            
+            if (favoritesJson != null) {
+                Log.d(TAG, "Found favorites in storage: \${favoritesJson.take(100)}...")
+                val jsonArray = JSONArray(favoritesJson)
+                
+                for (i in 0 until jsonArray.length()) {
+                    val station = jsonArray.getJSONObject(i)
+                    favorites.add(FavoriteStation(
+                        id = station.optString("id", ""),
+                        name = station.optString("name", "Unknown"),
+                        country = station.optString("country", ""),
+                        streamUrl = station.optString("streamUrl", ""),
+                        favicon = station.optString("favicon", "")
+                    ))
+                }
+                Log.d(TAG, "Loaded \${favorites.size} favorites from storage")
+            } else {
+                Log.d(TAG, "No favorites found in storage")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading favorites from storage", e)
+        }
+        return favorites
+    }
+
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
@@ -134,9 +178,21 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
             }
             
             MEDIA_FAVORITES -> {
-                // TODO: Load favorites from SharedPreferences or React Native bridge
-                items.add(createPlayableItem("fav_1", "Power FM", "Türkiye", "https://powerfm.com/stream"))
-                items.add(createPlayableItem("fav_2", "Virgin Radio", "Türkiye", "https://virginradio.com/stream"))
+                // Load real favorites from SharedPreferences (synced from React Native)
+                val favorites = loadFavoritesFromStorage()
+                if (favorites.isEmpty()) {
+                    // Show placeholder if no favorites
+                    items.add(createPlayableItem("no_fav", "Henüz favori yok", "Uygulamadan ekleyin", ""))
+                } else {
+                    favorites.forEach { station ->
+                        items.add(createPlayableItem(
+                            station.id,
+                            station.name,
+                            station.country,
+                            station.streamUrl
+                        ))
+                    }
+                }
             }
             
             MEDIA_RECENT -> {
@@ -237,6 +293,15 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         mediaSession?.release()
         super.onDestroy()
     }
+    
+    // Data class for favorite stations
+    data class FavoriteStation(
+        val id: String,
+        val name: String,
+        val country: String,
+        val streamUrl: String,
+        val favicon: String
+    )
 }
 `;
 
