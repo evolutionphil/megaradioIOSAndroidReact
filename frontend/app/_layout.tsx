@@ -300,6 +300,8 @@ export default function RootLayout() {
               {/* Global MiniPlayer - shown on all screens except player */}
               <GlobalMiniPlayer />
               <RadioErrorModal />
+              {/* CarPlay Handler - initializes CarPlay & Android Auto */}
+              <CarPlayHandler />
             </View>
           </AudioProvider>
         </QueryClientProvider>
