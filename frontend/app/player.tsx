@@ -561,18 +561,15 @@ export default function PlayerScreen() {
                 <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
               <View style={styles.headerRight}>
-                <TouchableOpacity 
-                  style={styles.headerIcon} 
-                  onPress={() => {
-                    console.log('[Player] Native Cast button pressed');
-                    setShowNativeCastModal(true);
-                  }}
-                  accessibilityLabel="Direct Cast"
-                  accessibilityRole="button"
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                  <Ionicons name="tv-outline" size={22} color="#FFFFFF" />
-                </TouchableOpacity>
+                {/* Native Cast Button - directly shows system device picker */}
+                <NativeCastButton
+                  size={22}
+                  color="#FFFFFF"
+                  station={currentStation}
+                  streamUrl={currentStation?.url_resolved || currentStation?.url || null}
+                  nowPlaying={nowPlaying}
+                  onStopLocalAudio={stopPlayback}
+                />
                 <TouchableOpacity 
                   style={styles.headerIcon} 
                   onPress={() => {
