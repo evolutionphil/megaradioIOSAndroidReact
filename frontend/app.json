@@ -133,7 +133,8 @@
         }
       ],
       "./plugins/withGoogleCast.js",
-      "./plugins/withAndroidAuto.js"
+      "./plugins/withAndroidAuto.js",
+      "./plugins/withCarPlay.js"
     ],
     "experiments": {
       "typedRoutes": true
