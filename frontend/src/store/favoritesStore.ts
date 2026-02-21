@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform, NativeModules } from 'react-native';
 import { userService } from '../services/userService';
 import { useAuthStore } from './authStore';
 import type { Station } from '../types';
 
 const FAVORITES_KEY = '@megaradio_favorites';
 const FAVORITES_ORDER_KEY = '@megaradio_favorites_order';
+const ANDROID_AUTO_FAVORITES_KEY = 'megaradio_android_auto_favorites';
 
 export type SortOption = 'newest' | 'oldest' | 'az' | 'za' | 'custom';
 export type ViewMode = 'list' | 'grid';
@@ -36,6 +38,34 @@ interface FavoritesState {
 // Helper to check if user is authenticated
 const isAuthenticated = (): boolean => {
   return useAuthStore.getState().isAuthenticated;
+};
+
+// Helper to sync favorites to Android Auto via SharedPreferences
+// This is needed because Android Auto's MediaBrowserService runs in native code
+const syncToAndroidAuto = async (favorites: Station[]): Promise<void> => {
+  if (Platform.OS !== 'android') return;
+  
+  try {
+    // Format favorites for Android Auto consumption
+    const autoFavorites = favorites.slice(0, 20).map(station => ({
+      id: station._id,
+      name: station.name,
+      country: station.country || '',
+      streamUrl: (station as any).urlResolved || station.url || '',
+      favicon: station.favicon || station.logo || '',
+    }));
+    
+    // Store in AsyncStorage with a specific key that Android native code can read
+    // SharedPreferences on Android can access the same storage
+    await AsyncStorage.setItem(
+      ANDROID_AUTO_FAVORITES_KEY, 
+      JSON.stringify(autoFavorites)
+    );
+    
+    console.log('[FavoritesStore] Synced', autoFavorites.length, 'favorites to Android Auto');
+  } catch (error) {
+    console.error('[FavoritesStore] Error syncing to Android Auto:', error);
+  }
 };
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
@@ -75,6 +105,9 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           const customOrder = orderJson ? JSON.parse(orderJson) : [];
           
           set({ favorites: Array.isArray(favorites) ? favorites : [], customOrder, isLoaded: true, isLoading: false });
+          
+          // Sync to Android Auto
+          syncToAndroidAuto(Array.isArray(favorites) ? favorites : []);
           return;
         } catch (apiError: any) {
           console.log('[FavoritesStore] API favorites failed:', apiError.message);
@@ -103,6 +136,9 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       const customOrder = orderJson ? JSON.parse(orderJson) : [];
       
       set({ favorites, customOrder, isLoaded: true, isLoading: false });
+      
+      // Sync to Android Auto
+      syncToAndroidAuto(favorites);
     } catch (error) {
       console.error('Error loading from local storage:', error);
       set({ isLoaded: true, isLoading: false });
@@ -137,6 +173,10 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
+      
+      // Sync to Android Auto
+      syncToAndroidAuto(updatedFavorites);
+      
       console.log('[FavoritesStore] Save complete');
     } catch (error) {
       console.error('[FavoritesStore] Error adding favorite:', error);
@@ -164,6 +204,9 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
+      
+      // Sync to Android Auto
+      syncToAndroidAuto(updatedFavorites);
     } catch (error) {
       console.error('Error removing favorite:', error);
       // Revert on error
