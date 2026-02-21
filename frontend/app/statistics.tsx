@@ -62,6 +62,7 @@ export default function StatisticsScreen() {
     totalMinutes: 0,
     totalStations: 136000,
     musicPlayed: 0,
+    uniqueStationsListened: 0,
     lastUpdated: '',
     uniqueStations: 0,
   });
