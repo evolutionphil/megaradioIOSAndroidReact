@@ -21,8 +21,8 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
-// CarPlay disabled until Apple approves entitlement
-// import { CarPlayHandler } from '../src/components/CarPlayHandler';
+// CarPlay enabled after Apple approval
+import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
