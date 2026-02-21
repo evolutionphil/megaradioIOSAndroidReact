@@ -116,11 +116,16 @@ export default function ProfileScreen() {
   const userName = user?.name || user?.fullName || nameValue || 'Guest';
   const userEmail = user?.email || 'guest@megaradio.com';
   
+  // Debug log for avatar issue
+  console.log('[Profile] User object:', JSON.stringify(user, null, 2));
+  console.log('[Profile] Avatar fields - profilePhoto:', user?.profilePhoto, 'avatar:', user?.avatar);
+  
   // Build full avatar URL if relative
   let userAvatar = user?.profilePhoto || user?.avatar || null;
   if (userAvatar && !userAvatar.startsWith('http')) {
     userAvatar = `https://themegaradio.com${userAvatar}`;
   }
+  console.log('[Profile] Final userAvatar:', userAvatar);
   
   // Use real followers/following count from user data
   const followersCount = user?.followersCount || 0;
