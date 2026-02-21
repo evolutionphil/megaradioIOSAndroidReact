@@ -133,7 +133,7 @@
         }
       ],
       "./plugins/withGoogleCast.js",
-      "./plugins/withAndroidAuto.js",
+      "./plugins/withAndroidAutoFull.js",
       "./plugins/withCarPlay.js"
     ],
     "experiments": {
