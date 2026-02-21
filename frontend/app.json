@@ -133,14 +133,7 @@
         }
       ],
       "./plugins/withGoogleCast.js",
-      "./plugins/withAndroidAuto.js",
-      [
-        "react-native-carplay",
-        {
-          "iosAppClipBundleIdentifier": null,
-          "disableSync": false
-        }
-      ]
+      "./plugins/withAndroidAuto.js"
     ],
     "experiments": {
       "typedRoutes": true
