@@ -827,16 +827,6 @@ export default function PlayerScreen() {
         currentStation={currentStation}
       />
 
-      {/* Native Cast Modal (Google Cast / Chromecast - no login required) */}
-      <NativeCastModal
-        visible={showNativeCastModal}
-        onClose={() => setShowNativeCastModal(false)}
-        station={currentStation}
-        streamUrl={currentStation?.url_resolved || currentStation?.url || null}
-        nowPlaying={nowPlaying}
-        onStopLocalAudio={stopPlayback}
-      />
-
       {/* Player Options Sheet */}
       <PlayerOptionsSheet
         visible={showOptionsSheet}
