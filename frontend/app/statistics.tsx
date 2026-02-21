@@ -76,7 +76,7 @@ export default function StatisticsScreen() {
     try {
       const [storedStats, uniqueCount] = await Promise.all([
         statsService.getStats(),
-        statsService.getUniqueStationsCount(),
+        statsService.getUniqueStationsListened(),
       ]);
       setStats({
         ...storedStats,
