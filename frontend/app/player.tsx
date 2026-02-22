@@ -263,6 +263,12 @@ export default function PlayerScreen() {
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
+  // Responsive layout
+  const responsive = useResponsive();
+  const LOGO_SIZE = responsive.artworkSize;
+  const gridMetrics = responsive.getGridMetrics(GRID_PADDING);
+  const GRID_ITEM_WIDTH = gridMetrics.itemWidth;
+  
   // Swipe to dismiss animation
   const translateY = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(1)).current;
