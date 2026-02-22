@@ -6,17 +6,22 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../../src/constants/theme';
 import { useRecentlyPlayed } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
+import { useResponsive } from '../../src/hooks/useResponsive';
 import type { Station } from '../../src/types';
 
 export default function RecordsScreen() {
   const { data: recentlyPlayed, isLoading } = useRecentlyPlayed();
   const { playStation } = useAudioPlayer();
+  
+  // Responsive layout
+  const responsive = useResponsive();
 
   const getLogoUrl = (station: Station) => {
     if (station.logoAssets?.webp96) {
@@ -34,13 +39,13 @@ export default function RecordsScreen() {
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Records</Text>
+          <Text style={[styles.headerTitle, { fontSize: responsive.scale(24) }]}>Records</Text>
           <Text style={styles.headerSubtitle}>Your listening history</Text>
         </View>
 
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, { paddingHorizontal: responsive.sidePadding }]}
           showsVerticalScrollIndicator={false}
         >
           {isLoading ? (
