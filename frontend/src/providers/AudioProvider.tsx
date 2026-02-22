@@ -649,6 +649,36 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         }
       }, 15000); // 15 seconds as recommended by API docs
 
+      // STEP 9: Save current station and fetch similar stations for background service
+      // This enables Next/Previous controls in lock screen and Control Center
+      console.log('[AudioProvider] STEP 9: Saving station data for background controls...');
+      try {
+        // Save current station for background service
+        await AsyncStorage.setItem(CURRENT_STATION_KEY, JSON.stringify(station));
+        
+        // Add to playback history for Previous button
+        const historyJson = await AsyncStorage.getItem(PLAYBACK_HISTORY_KEY);
+        let history = historyJson ? JSON.parse(historyJson) : [];
+        history = history.filter((s: Station) => s._id !== station._id);
+        history.unshift(station);
+        history = history.slice(0, 50);
+        await AsyncStorage.setItem(PLAYBACK_HISTORY_KEY, JSON.stringify(history));
+        
+        // Fetch and save similar stations for Next button (non-blocking)
+        stationService.getSimilarStations(station._id, 10).then(async (similarStations) => {
+          if (similarStations && similarStations.length > 0) {
+            await AsyncStorage.setItem(SIMILAR_STATIONS_KEY, JSON.stringify(similarStations));
+            console.log('[AudioProvider] Saved', similarStations.length, 'similar stations for Next button');
+          }
+        }).catch((e) => {
+          console.log('[AudioProvider] Could not fetch similar stations:', e);
+        });
+        
+        console.log('[AudioProvider] Background controls data saved!');
+      } catch (e) {
+        console.log('[AudioProvider] Failed to save background data:', e);
+      }
+
     } catch (error) {
       console.error('[AudioProvider] Play failed:', error);
       
