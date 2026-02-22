@@ -256,7 +256,10 @@ export default function GenresTabScreen() {
               data={filteredAndSortedGenres}
               renderItem={renderGenreItem}
               keyExtractor={(item: any) => item._id || item.slug}
-              contentContainerStyle={styles.listContent}
+              key={`genres-${numColumns}`}
+              numColumns={numColumns}
+              contentContainerStyle={[styles.listContent, { paddingHorizontal: responsive.sidePadding }]}
+              columnWrapperStyle={numColumns > 1 ? { gap: 12 } : undefined}
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl
