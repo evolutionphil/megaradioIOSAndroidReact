@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Image,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../src/services/api';
 import { API_ENDPOINTS } from '../src/constants/api';
 import { useAuthStore } from '../src/store/authStore';
+import { useResponsive } from '../src/hooks/useResponsive';
 import { UserItemSkeleton } from '../src/components/Skeleton';
 
 interface PublicUser {
@@ -42,6 +44,10 @@ export default function UsersScreen() {
   const [showSearch, setShowSearch] = useState(false);
   const [followingStatus, setFollowingStatus] = useState<Record<string, boolean>>({});
   const [loadingFollow, setLoadingFollow] = useState<Record<string, boolean>>({});
+  
+  // Responsive layout
+  const responsive = useResponsive();
+  const numColumns = responsive.isTablet ? 2 : 1;
 
   // Fetch public profiles
   const { data: usersData, isLoading, refetch } = useQuery({
