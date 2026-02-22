@@ -53,34 +53,36 @@ export default function RecordsScreen() {
               <Text style={styles.loadingText}>Loading...</Text>
             </View>
           ) : recentlyPlayed && recentlyPlayed.length > 0 ? (
-            recentlyPlayed.map((station: Station) => (
-              <TouchableOpacity
-                key={station._id}
-                style={styles.stationItem}
-                onPress={() => handleStationPress(station)}
-              >
-                <View style={styles.stationLogo}>
-                  {getLogoUrl(station) ? (
-                    <Image
-                      source={{ uri: getLogoUrl(station)! }}
-                      style={styles.logoImage}
-                      resizeMode="cover"
-                    />
-                  ) : (
-                    <Ionicons name="radio" size={24} color="#5B5B5B" />
-                  )}
-                </View>
-                <View style={styles.stationInfo}>
-                  <Text style={styles.stationName} numberOfLines={1}>
-                    {station.name}
-                  </Text>
-                  <Text style={styles.stationCountry} numberOfLines={1}>
-                    {station.country || 'Radio'}
-                  </Text>
-                </View>
-                <Ionicons name="play" size={20} color="#FFFFFF" />
-              </TouchableOpacity>
-            ))
+            <View style={responsive.isTablet ? { flexDirection: 'row', flexWrap: 'wrap' } : undefined}>
+              {recentlyPlayed.map((station: Station) => (
+                <TouchableOpacity
+                  key={station._id}
+                  style={[styles.stationItem, responsive.isTablet && { width: '50%' }]}
+                  onPress={() => handleStationPress(station)}
+                >
+                  <View style={styles.stationLogo}>
+                    {getLogoUrl(station) ? (
+                      <Image
+                        source={{ uri: getLogoUrl(station)! }}
+                        style={styles.logoImage}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Ionicons name="radio" size={24} color="#5B5B5B" />
+                    )}
+                  </View>
+                  <View style={styles.stationInfo}>
+                    <Text style={styles.stationName} numberOfLines={1}>
+                      {station.name}
+                    </Text>
+                    <Text style={styles.stationCountry} numberOfLines={1}>
+                      {station.country || 'Radio'}
+                    </Text>
+                  </View>
+                  <Ionicons name="play" size={20} color="#FFFFFF" />
+                </TouchableOpacity>
+              ))}
+            </View>
           ) : (
             <View style={styles.emptyContainer}>
               <Ionicons name="disc-outline" size={64} color="#5B5B5B" />
