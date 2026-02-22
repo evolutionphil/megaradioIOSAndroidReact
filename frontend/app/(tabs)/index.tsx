@@ -432,82 +432,25 @@ export default function HomeScreen() {
             )}
           </View>
 
-          {/* Recently Played - 3 Column Grid, 6 stations */}
+          {/* Recently Played - Responsive Grid */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('homepage_recently_played')}</Text>
+              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('homepage_recently_played')}</Text>
             </View>
             {recentStations.length > 0 ? (
-              <>
-                {/* Row 1 - 3 items */}
-                <View style={styles.gridRow}>
-                  {recentStations.slice(0, 3).map((station: Station, index: number) => (
-                    <TouchableOpacity
-                      key={station._id}
-                      style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
-                      onPress={() => handleStationPress(station)}
-                    >
-                      <View style={styles.gridImageContainer}>
-                        <ImageWithFallback 
-                          uri={getLogoUrl(station)} 
-                          fallbackSource={FALLBACK_LOGO}
-                          style={styles.gridImage} 
-                          resizeMode="cover" 
-                        />
-                      </View>
-                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.stationGridCountry} numberOfLines={1}>
-                        {station.country || 'Radio'}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                {/* Row 2 - next 3 items if available */}
-                {recentStations.length > 3 && (
-                  <View style={styles.gridRow}>
-                    {recentStations.slice(3, 6).map((station: Station, index: number) => (
-                      <TouchableOpacity
-                        key={station._id}
-                        style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
-                        onPress={() => handleStationPress(station)}
-                      >
-                        <View style={styles.gridImageContainer}>
-                          <ImageWithFallback 
-                            uri={getLogoUrl(station)} 
-                            fallbackSource={FALLBACK_LOGO}
-                            style={styles.gridImage} 
-                            resizeMode="cover" 
-                          />
-                        </View>
-                        <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                        <Text style={styles.stationGridCountry} numberOfLines={1}>
-                          {station.country || 'Radio'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                )}
-              </>
+              renderResponsiveGrid(recentStations, responsive.isTablet ? 8 : 6)
             ) : (
               <Text style={styles.emptyText}>{t('no_recently_played')}</Text>
             )}
           </View>
 
-          {/* Radios Near You - 3 Column Grid, multiple rows */}
+          {/* Radios Near You - Responsive Grid */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('stations_near_you')}{country ? ` - ${country}` : ''}</Text>
+              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('stations_near_you')}{country ? ` - ${country}` : ''}</Text>
             </View>
-            {/* Render rows of 3 items each - use nearby GPS stations */}
             {nearbyStations.length > 0 ? (
-              Array.from({ length: Math.ceil(Math.min(nearbyStations.length, 12) / 3) }).map((_, rowIndex) => (
-                <View key={`row-${rowIndex}`} style={styles.gridRow}>
-                  {nearbyStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
-                    <TouchableOpacity
-                      key={`nearby-${station._id}-${rowIndex}`}
-                      style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
-                      onPress={() => handleStationPress(station)}
-                    >
+              renderResponsiveGrid(nearbyStations, responsive.isTablet ? 16 : 12)
                       <View style={styles.gridImageContainer}>
                         <ImageWithFallback 
                           uri={getLogoUrl(station)} 
