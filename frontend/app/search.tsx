@@ -312,7 +312,7 @@ export default function SearchScreen() {
 
     return (
       <TouchableOpacity
-        style={styles.radioCard}
+        style={[styles.radioCard, numColumns > 1 && { flex: 1, marginBottom: 12 }]}
         onPress={() => handleItemPress(item)}
         activeOpacity={0.7}
         data-testid={`search-result-${item._id}`}
