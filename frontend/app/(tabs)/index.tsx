@@ -313,9 +313,9 @@ export default function HomeScreen() {
                 })()}
                 {user?.avatar || user?.profilePhoto ? (
                   <Image 
-                    source={{ uri: (user.avatar || user.profilePhoto)?.startsWith('http') 
-                      ? (user.avatar || user.profilePhoto) 
-                      : `https://themegaradio.com${user.avatar || user.profilePhoto}` 
+                    source={{ uri: (user.avatar || user.profilePhoto || '').startsWith('http') 
+                      ? (user.avatar || user.profilePhoto || '') 
+                      : `https://themegaradio.com${user.avatar || user.profilePhoto || ''}` 
                     }} 
                     style={styles.avatarImage}
                   />
