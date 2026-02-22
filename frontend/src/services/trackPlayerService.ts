@@ -51,12 +51,15 @@ export async function setupPlayer(): Promise<boolean> {
         Capability.Play,
         Capability.Pause,
         Capability.Stop,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
       ],
       
       // Compact capabilities (for small notifications)
       compactCapabilities: [
         Capability.Play,
         Capability.Pause,
+        Capability.SkipToNext,
       ],
       
       // Notification config
@@ -64,6 +67,8 @@ export async function setupPlayer(): Promise<boolean> {
         Capability.Play,
         Capability.Pause,
         Capability.Stop,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
       ],
       
       // Icon for notification
