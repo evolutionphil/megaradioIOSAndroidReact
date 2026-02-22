@@ -31,7 +31,7 @@ import { SleepTimerModal, SleepCounterModal } from '../src/components/SleepTimer
 import { GlowEffect } from '../src/components/GlowEffect';
 import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
 import CastModal from '../src/components/CastModal';
-import { NativeCastButton } from '../src/components/NativeCastButton';
+import { UniversalCastButton } from '../src/components/UniversalCastButton';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
