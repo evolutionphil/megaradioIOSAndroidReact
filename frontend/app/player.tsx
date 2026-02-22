@@ -918,20 +918,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   artworkWrapper: {
-    width: LOGO_SIZE,
-    height: LOGO_SIZE,
     borderRadius: 16,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
     position: 'relative',
   },
   artwork: {
-    width: LOGO_SIZE,
-    height: LOGO_SIZE,
+    width: '100%',
+    height: '100%',
   },
   artworkPlaceholder: {
-    width: LOGO_SIZE,
-    height: LOGO_SIZE,
     backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
