@@ -451,52 +451,8 @@ export default function HomeScreen() {
             </View>
             {nearbyStations.length > 0 ? (
               renderResponsiveGrid(nearbyStations, responsive.isTablet ? 16 : 12)
-                      <View style={styles.gridImageContainer}>
-                        <ImageWithFallback 
-                          uri={getLogoUrl(station)} 
-                          fallbackSource={FALLBACK_LOGO}
-                          style={styles.gridImage} 
-                          resizeMode="cover" 
-                        />
-                      </View>
-                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.stationGridCountry} numberOfLines={1}>
-                        {station.country || 'Radio'}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                  {nearbyStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
-                    Array.from({ length: 3 - nearbyStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                      <View key={`empty-nearby-${i}`} style={styles.gridItem} />
-                    ))
-                  }
-                </View>
-              ))
             ) : popularStations.length > 0 ? (
-              Array.from({ length: Math.ceil(Math.min(popularStations.length, 12) / 3) }).map((_, rowIndex) => (
-                <View key={`row-${rowIndex}`} style={styles.gridRow}>
-                  {popularStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
-                    <TouchableOpacity
-                      key={`nearby-${station._id}-${rowIndex}`}
-                      style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
-                      onPress={() => handleStationPress(station)}
-                    >
-                      <View style={styles.gridImageContainer}>
-                        <ImageWithFallback 
-                          uri={getLogoUrl(station)} 
-                          fallbackSource={FALLBACK_LOGO}
-                          style={styles.gridImage} 
-                          resizeMode="cover" 
-                        />
-                      </View>
-                      <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                      <Text style={styles.stationGridCountry} numberOfLines={1}>
-                        {station.country || 'Radio'}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ))
+              renderResponsiveGrid(popularStations, responsive.isTablet ? 16 : 12)
             ) : (
               <Text style={styles.emptyText}>{t('enable_location')}</Text>
             )}
