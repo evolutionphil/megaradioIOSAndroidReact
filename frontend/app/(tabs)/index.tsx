@@ -487,7 +487,7 @@ export default function HomeScreen() {
                 return (
                   <TouchableOpacity 
                     key={genre._id}
-                    style={styles.discoverableBannerItem}
+                    style={[styles.discoverableBannerItem, { width: bannerWidth, height: bannerHeight }]}
                     onPress={() => handleGenrePress(genre)}
                   >
                     {apiImageUrl ? (
