@@ -22,11 +22,11 @@ import { useGenreStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useLocationStore } from '../src/store/locationStore';
+import { useResponsive } from '../src/hooks/useResponsive';
 import { SortBottomSheet, SortOption, ViewMode } from '../src/components/SortBottomSheet';
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import type { Station } from '../src/types';
 
-const GRID_COLUMNS = 3;
 const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
 
 export default function GenreDetailScreen() {
@@ -37,13 +37,15 @@ export default function GenreDetailScreen() {
   const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   
+  // Responsive layout
+  const responsive = useResponsive();
+  const gridMetrics = responsive.getGridMetrics();
+  const GRID_COLUMNS = gridMetrics.columns;
+  const GRID_ITEM_WIDTH = gridMetrics.itemWidth;
+  
   // Calculate bottom padding for MiniPlayer (70px height + system nav bar)
   const MINI_PLAYER_HEIGHT = 70;
   const bottomPadding = MINI_PLAYER_HEIGHT + insets.bottom;
-
-  // Calculate grid item width dynamically with fallback
-  const screenWidth = windowWidth > 100 ? windowWidth : 375;
-  const GRID_ITEM_WIDTH = Math.floor((screenWidth - 32 - 16) / GRID_COLUMNS);
 
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
