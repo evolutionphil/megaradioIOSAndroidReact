@@ -120,6 +120,31 @@ npx expo prebuild
    - User listesi 2 kolonlu tablet layout
    - FlatList numColumns dinamik
 
+### YouTube-Style Universal Cast Button - Aralık 2025
+
+**Kullanıcı İsteği:** Cast ikonuna basınca hem AirPlay hem Chromecast cihazları tek yerden seçilebilmeli
+
+**Çözüm:**
+
+1. **react-airplay** kütüphanesi eklendi:
+   - iOS'ta native AirPlay picker açıyor
+   - AirPlay bağlantı durumunu takip ediyor
+   - `useAirplayConnectivity()` hook'u ile bağlantı kontrolü
+
+2. **UniversalCastButton bileşeni oluşturuldu** (`src/components/UniversalCastButton.tsx`):
+   - iOS: Native AirPlay picker (Apple TV, HomePod, AirPlay hoparlörler)
+   - Android: Native Chromecast picker
+   - Bağlıyken yeşil renk ve pulse animasyonu
+   - Tek buton, tüm cihazlar
+
+3. **withAirPlay.js plugin eklendi:**
+   - AirPlay Bonjour services (`_airplay._tcp`, `_raop._tcp`)
+   - Background audio modes
+
+**Nasıl Çalışıyor:**
+- iOS'ta: Cast ikonuna dokun → Native AirPlay picker açılır → Apple TV/HomePod/AirPlay hoparlör seç
+- Android'de: Cast ikonuna dokun → Native Chromecast picker açılır → Chromecast/Android TV seç
+
 ### Background Player Controls (Next/Previous) Fix - Aralık 2025
 
 **Sorun:** 
