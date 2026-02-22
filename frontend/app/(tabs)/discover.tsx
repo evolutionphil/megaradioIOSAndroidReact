@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,6 +24,7 @@ import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useLocationStore } from '../../src/store/locationStore';
 import { useAuthStore } from '../../src/store/authStore';
+import { useResponsive } from '../../src/hooks/useResponsive';
 import type { Station, Genre } from '../../src/types';
 
 export default function DiscoverScreen() {
@@ -31,12 +33,16 @@ export default function DiscoverScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
   const { isAuthenticated } = useAuthStore();
+  
+  // Responsive layout
+  const responsive = useResponsive();
+  const gridMetrics = responsive.getGridMetrics();
 
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
   const { data: stationsData, isLoading: stationsLoading, refetch: refetchStations } = useStations({
     sort: 'votes',
     order: 'desc',
-    limit: 50,
+    limit: responsive.isTablet ? 80 : 50,
     country: countryCode || undefined,
   });
 
