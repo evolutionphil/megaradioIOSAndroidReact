@@ -242,9 +242,11 @@ export default function UsersScreen() {
 
       {/* Content */}
       {isLoading ? (
-        <View style={styles.listContent}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <UserItemSkeleton key={i} />
+        <View style={[styles.listContent, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
+          {Array.from({ length: responsive.isTablet ? 12 : 8 }).map((_, i) => (
+            <View key={i} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
+              <UserItemSkeleton />
+            </View>
           ))}
         </View>
       ) : (
@@ -252,7 +254,10 @@ export default function UsersScreen() {
           data={filteredUsers}
           renderItem={renderUser}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.listContent}
+          key={`users-${numColumns}`}
+          numColumns={numColumns}
+          contentContainerStyle={[styles.listContent, { paddingHorizontal: responsive.sidePadding }]}
+          columnWrapperStyle={numColumns > 1 ? { gap: 12 } : undefined}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -260,7 +265,7 @@ export default function UsersScreen() {
               tintColor="#FF4081"
             />
           }
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ItemSeparatorComponent={numColumns === 1 ? () => <View style={styles.separator} /> : undefined}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyTitle}>{t('no_users') || 'No users found'}</Text>
