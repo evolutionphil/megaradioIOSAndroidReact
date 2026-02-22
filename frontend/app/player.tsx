@@ -566,12 +566,12 @@ export default function PlayerScreen() {
                 <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
               <View style={styles.headerRight}>
-                {/* Native Cast Button - directly shows system device picker */}
+                {/* Native Cast Button - Chromecast & AirPlay */}
                 <NativeCastButton
                   size={22}
                   color="#FFFFFF"
                   station={currentStation}
-                  streamUrl={currentStation?.url_resolved || currentStation?.url || null}
+                  streamUrl={streamUrl || currentStation?.urlResolved || currentStation?.url_resolved || currentStation?.url || null}
                   nowPlaying={nowPlaying}
                   onStopLocalAudio={stopPlayback}
                 />
