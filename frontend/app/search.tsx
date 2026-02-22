@@ -65,6 +65,10 @@ export default function SearchScreen() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  
+  // Responsive layout
+  const responsive = useResponsive();
+  const numColumns = responsive.isTablet ? 2 : 1;
 
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState, isMiniPlayerVisible } = usePlayerStore();
