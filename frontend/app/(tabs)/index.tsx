@@ -112,17 +112,8 @@ export default function HomeScreen() {
   // Use window width if available, otherwise use Dimensions API
   const screenWidth = windowWidth > 0 ? windowWidth : Dimensions.get('window').width || 375;
   
-  // Calculate grid item size dynamically
-  const GRID_ITEM_SIZE = getGridItemSize(screenWidth);
-  const GRID_GAP = 6;
-  
-  // Calculate grid item width dynamically
-  // For 375px screen: (375 - 30 - 16) / 3 = ~109px
-  const contentWidth = screenWidth - (SIDE_PADDING * 2);
-  const gridGap = 8;
-  // Ensure minimum of 80px and maximum of 150px per item
-  const calculatedWidth = Math.floor((contentWidth - (gridGap * 2)) / 3);
-  const gridItemWidth = Math.max(80, Math.min(150, calculatedWidth));
+  // Calculate grid item width dynamically using responsive hook
+  const { columns: gridColumns, gap: gridGap, itemWidth: gridItemWidth } = gridMetrics;
 
   // Use English name for popular stations API, native for stations API
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 8);
