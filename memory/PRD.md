@@ -101,21 +101,32 @@ npx expo prebuild
    - Responsive artwork, banner, genre kart boyutları
    - Scale helper fonksiyonu
 
-2. **HomeScreen Responsive** (`app/(tabs)/index.tsx`)
-   - Dinamik kolon sayısı (Phone: 3, Tablet: 4-5)
-   - Responsive padding ve gap değerleri
-   - Genre kartları büyütüldü (130px → 180px tablet)
-   - Banner'lar büyütüldü (300px → 480px tablet)
-   - Section başlıkları büyütüldü
-   - User listesi 2 kolon olarak düzenlendi
+2. **Responsive Güncellenen Sayfalar:**
+   - `app/(tabs)/index.tsx` - HomeScreen: Dinamik grid, banner, genre kartları
+   - `app/(tabs)/discover.tsx` - Discover: Genre grid, station listesi
+   - `app/(tabs)/favorites.tsx` - Favorites: Dinamik FlatList kolonları
+   - `app/(tabs)/genres.tsx` - Genres: Multi-column layout
+   - `app/player.tsx` - Player: Büyütülmüş artwork, responsive grid
+   - `app/search.tsx` - Search: 2 kolonlu sonuç listesi
+   - `app/all-stations.tsx` - All Stations: Responsive grid ve list view
 
-3. **PlayerScreen Responsive** (`app/player.tsx`)
+3. **Tablet-Specific Değişiklikler:**
+   - Grid kolonları: Phone 3 → Tablet 4-5
+   - Side padding: Phone 15px → Tablet 32-40px
    - Artwork boyutu: Phone 190px → Tablet 280-350px
-   - Grid item'lar dinamik genişlik
-   - Daha fazla istasyon gösterimi
+   - Genre kartları: Phone 130px → Tablet 160-180px
+   - Banner genişliği: Phone 300px → Tablet 400-480px
+   - Section başlıkları ölçekleniyor (1.2-1.3x)
+   - User listesi 2 kolonlu tablet layout
+   - FlatList numColumns dinamik
 
-4. **Design Guidelines** (`/app/design_guidelines.json`)
-   - Tüm responsive kurallar dokümante edildi
+### CarPlay Crash Fix (Aralık 2025)
+
+**Sorun:** CarPlay bağlandığında uygulama crash oluyordu
+**Sebep:** iOS, CarPlay scene oluşturulurken SYNCHRONOUS olarak root template bekliyor. Mevcut kod async veri çekiyordu.
+**Çözüm:** `carPlayService.ts` güncellendi:
+- `registerOnConnect` callback'inde önce placeholder template SYNCHRONOUS olarak ayarlanıyor
+- Sonra async olarak gerçek veriler yükleniyor ve template güncelleniyor
 
 ## Tamamlanan Entegrasyonlar
 - **Native Google Cast / Chromecast**: react-native-google-cast v4.9.1 entegre edildi
