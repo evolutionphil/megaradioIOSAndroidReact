@@ -348,7 +348,7 @@ export default function AllStationsScreen() {
           ) : (
             <ScrollView
               style={styles.scrollView}
-              contentContainerStyle={styles.scrollContent}
+              contentContainerStyle={[styles.scrollContent, { paddingHorizontal: responsive.sidePadding }]}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -360,18 +360,22 @@ export default function AllStationsScreen() {
             >
               {viewMode === 'grid' ? (
                 <View style={styles.gridContainer}>
-                  {/* Render items in rows of 3 */}
+                  {/* Render items in rows based on responsive columns */}
                   {Array.from({ length: Math.ceil(filteredStations.length / GRID_COLUMNS) }).map((_, rowIndex) => (
-                    <View key={`row-${rowIndex}`} style={styles.gridRow}>
+                    <View key={`row-${rowIndex}`} style={[styles.gridRow, { gap: gridMetrics.gap }]}>
                       {filteredStations.slice(rowIndex * GRID_COLUMNS, (rowIndex + 1) * GRID_COLUMNS).map(renderGridItem)}
                     </View>
                   ))}
                 </View>
               ) : (
-                <View style={styles.listContainer}>
-                  {filteredStations.map(renderListItem)}
+                <View style={[styles.listContainer, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
+                  {filteredStations.map((station, index) => (
+                    <View key={station._id} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
+                      {renderListItem(station, index)}
+                    </View>
+                  ))}
                 </View>
-              )}
+              )}}
 
               {filteredStations.length === 0 && !isLoading && (
                 <View style={styles.emptyState}>
