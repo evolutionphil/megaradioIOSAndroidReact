@@ -85,11 +85,37 @@ npx expo prebuild
 ```
 
 ## Bekleyen İşler
-- **P0**: Yeni EAS Build'ler gerekli (Casting, CarPlay, Android Auto testleri için)
+- **P0**: Yeni EAS Build'ler gerekli (Casting, CarPlay, Android Auto, Tablet Responsive testleri için)
 - **P0**: Google OAuth Android SHA-1 fingerprint (kullanıcı aksiyonu bekliyor)
 - **P2**: Sleep Timer tam test
 - **P2**: UI animasyonları
 - **P2**: Splash Screen yeniden tasarımı (tasarım bekleniyor)
+
+## Tablet Responsive Tasarım (Aralık 2025)
+
+### Uygulanan Değişiklikler:
+
+1. **useResponsive Hook** (`src/hooks/useResponsive.ts`)
+   - Breakpoints: Phone (<768px), Tablet (768-1024px), Large Tablet (>1024px)
+   - Dinamik grid hesaplama (3 → 4 → 5 kolon)
+   - Responsive artwork, banner, genre kart boyutları
+   - Scale helper fonksiyonu
+
+2. **HomeScreen Responsive** (`app/(tabs)/index.tsx`)
+   - Dinamik kolon sayısı (Phone: 3, Tablet: 4-5)
+   - Responsive padding ve gap değerleri
+   - Genre kartları büyütüldü (130px → 180px tablet)
+   - Banner'lar büyütüldü (300px → 480px tablet)
+   - Section başlıkları büyütüldü
+   - User listesi 2 kolon olarak düzenlendi
+
+3. **PlayerScreen Responsive** (`app/player.tsx`)
+   - Artwork boyutu: Phone 190px → Tablet 280-350px
+   - Grid item'lar dinamik genişlik
+   - Daha fazla istasyon gösterimi
+
+4. **Design Guidelines** (`/app/design_guidelines.json`)
+   - Tüm responsive kurallar dokümante edildi
 
 ## Tamamlanan Entegrasyonlar
 - **Native Google Cast / Chromecast**: react-native-google-cast v4.9.1 entegre edildi
