@@ -52,16 +52,6 @@ const FALLBACK_LOGO = require('../../assets/megaradio-icon.png');
 const SIDE_PADDING = 15;
 const HORIZONTAL_PADDING = 0; // Padding inside sections (already handled by ScrollView)
 
-// Calculate grid item size based on screen width
-// iPhone 13 Pro Max: 428px width
-// 3 items per row with minimal gap
-const getGridItemSize = (screenWidth: number) => {
-  const availableWidth = screenWidth - (SIDE_PADDING * 2);
-  const gap = 6; // Minimal gap between items
-  const itemWidth = Math.floor((availableWidth - (gap * 2)) / 3);
-  return Math.max(itemWidth, 125); // Minimum 125px for larger phones
-};
-
 export default function HomeScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -71,6 +61,18 @@ export default function HomeScreen() {
   const { user, isAuthenticated } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
   const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
+  
+  // Use responsive hook for tablet support
+  const responsive = useResponsive();
+  const gridMetrics = responsive.getGridMetrics();
+  
+  // Calculate responsive values
+  const sidePadding = responsive.sidePadding;
+  const genreCardWidth = responsive.genreCardWidth;
+  const genreCardHeight = responsive.genreCardHeight;
+  const bannerWidth = responsive.bannerWidth;
+  const bannerHeight = responsive.bannerHeight;
+  const headingSize = Math.round(typography.sizes.xxl * responsive.headingScale);
 
   // Handle notification icon press
   const handleNotificationPress = useCallback(() => {
