@@ -1,123 +1,124 @@
 // NowPlayingView.swift
-// Now Playing screen with playback controls
+// Shows currently playing station on Apple Watch
 
 import SwiftUI
 
-// MARK: - Now Playing View
 struct NowPlayingView: View {
-    @EnvironmentObject var appState: AppState
-    let station: Station
+    @EnvironmentObject var connectivityService: WatchConnectivityService
+    @State private var isPlaying = false
     
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
                 // Station Logo
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.purple.opacity(0.8))
-                        .frame(width: 80, height: 80)
-                    
-                    // Placeholder logo - in real app, load from URL
-                    Text(String(station.name.prefix(2)).uppercased())
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
-                }
-                
-                // Station Info
-                VStack(spacing: 4) {
-                    Text(station.name)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                    
-                    Text(station.locationText)
-                        .font(.system(size: 12))
+                if let logoUrl = connectivityService.currentStation?.logoUrl,
+                   let url = URL(string: logoUrl) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    } placeholder: {
+                        Image(systemName: "radio")
+                            .font(.system(size: 40))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else {
+                    Image(systemName: "radio")
+                        .font(.system(size: 40))
                         .foregroundColor(.gray)
+                        .frame(width: 80, height: 80)
+                        .background(Color.gray.opacity(0.2))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
-                Spacer()
-                    .frame(height: 8)
+                // Station Name
+                Text(connectivityService.currentStation?.name ?? "Radyo Seçilmedi")
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                
+                // Now Playing Info
+                if let nowPlaying = connectivityService.nowPlaying {
+                    VStack(spacing: 4) {
+                        Text(nowPlaying.title ?? "")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                        
+                        if let artist = nowPlaying.artist {
+                            Text(artist)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+                }
                 
                 // Playback Controls
                 HStack(spacing: 20) {
-                    // Previous Button
+                    // Previous
                     Button(action: {
-                        appState.previousStation()
+                        connectivityService.sendCommand(.previous)
                     }) {
-                        ZStack {
-                            Ellipse()
-                                .fill(Color(white: 0.25))
-                                .frame(width: 44, height: 40)
-                            
-                            Image(systemName: "backward.fill")
-                                .font(.system(size: 14))
-                                .foregroundColor(.white)
-                        }
+                        Image(systemName: "backward.fill")
+                            .font(.title2)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .buttonStyle(.plain)
                     
-                    // Play/Pause Button
+                    // Play/Pause
                     Button(action: {
-                        appState.togglePlayPause()
+                        isPlaying.toggle()
+                        connectivityService.sendCommand(isPlaying ? .play : .pause)
                     }) {
-                        ZStack {
-                            Ellipse()
-                                .fill(Color(white: 0.25))
-                                .frame(width: 56, height: 50)
-                            
-                            Image(systemName: appState.isPlaying ? "pause.fill" : "play.fill")
-                                .font(.system(size: 20))
-                                .foregroundColor(.white)
-                        }
+                        Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                            .font(.system(size: 44))
+                            .foregroundColor(.pink)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .buttonStyle(.plain)
                     
-                    // Next Button
+                    // Next
                     Button(action: {
-                        appState.nextStation()
+                        connectivityService.sendCommand(.next)
                     }) {
-                        ZStack {
-                            Ellipse()
-                                .fill(Color(white: 0.25))
-                                .frame(width: 44, height: 40)
-                            
-                            Image(systemName: "forward.fill")
-                                .font(.system(size: 14))
-                                .foregroundColor(.white)
-                        }
+                        Image(systemName: "forward.fill")
+                            .font(.title2)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .buttonStyle(.plain)
                 }
+                .padding(.top, 8)
+                
+                // Volume Control
+                VStack(spacing: 4) {
+                    HStack {
+                        Image(systemName: "speaker.fill")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        
+                        Slider(value: Binding(
+                            get: { connectivityService.volume },
+                            set: { connectivityService.setVolume($0) }
+                        ), in: 0...1)
+                        
+                        Image(systemName: "speaker.wave.3.fill")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.horizontal)
             }
-            .padding(.top, 10)
-            .padding(.horizontal)
+            .padding()
         }
-        .navigationTitle(station.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text(station.name)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color("AccentPink"))
-                    .lineLimit(1)
-            }
-        }
-        .background(Color.black)
-        .onAppear {
-            appState.playStation(station)
+        .navigationTitle("Çalıyor")
+        .onReceive(connectivityService.$isPlaying) { playing in
+            isPlaying = playing
         }
     }
 }
 
 #Preview {
-    NavigationStack {
-        NowPlayingView(station: Station(
-            id: "1",
-            name: "Metro FM",
-            country: "Turkey",
-            city: "Istanbul",
-            logoUrl: nil
-        ))
-    }
-    .environmentObject(AppState())
+    NowPlayingView()
+        .environmentObject(WatchConnectivityService())
 }
