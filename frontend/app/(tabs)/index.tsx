@@ -328,7 +328,7 @@ export default function HomeScreen() {
                   {genres.map((genre, index) => (
                     <TouchableOpacity
                       key={genre._id}
-                      style={styles.genreCard}
+                      style={[styles.genreCard, { width: genreCardWidth, height: genreCardHeight }]}
                       onPress={() => handleGenrePress(genre)}
                     >
                       <ImageBackground
