@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   FlatList,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { useLocationStore } from '../../src/store/locationStore';
+import { useResponsive } from '../../src/hooks/useResponsive';
 import api from '../../src/services/api';
 import type { Genre } from '../../src/types';
 
@@ -34,6 +36,10 @@ export default function GenresTabScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
+  
+  // Responsive layout
+  const responsive = useResponsive();
+  const numColumns = responsive.isLargeTablet ? 4 : responsive.isTablet ? 3 : 2;
 
   // State
   const [genres, setGenres] = useState<Genre[]>([]);
