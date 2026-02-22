@@ -11,6 +11,7 @@ import {
   ScrollView,
   Platform,
   PanResponder,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
@@ -23,6 +24,7 @@ import { useRecentlyPlayedStore } from '../src/store/recentlyPlayedStore';
 import { useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
 import { useAuthStore } from '../src/store/authStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
+import { useResponsive } from '../src/hooks/useResponsive';
 import { CarModeScreen } from '../src/components/CarModeScreen';
 import { ShareModal } from '../src/components/ShareModal';
 import { SleepTimerModal, SleepCounterModal } from '../src/components/SleepTimerModal';
@@ -35,11 +37,10 @@ import type { Station } from '../src/types';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const FALLBACK_LOGO = require('../assets/megaradio-icon.png');
 const DISMISS_THRESHOLD = 150; // Minimum swipe distance to dismiss
-// 3 column grid calculation
-const LOGO_SIZE = 190;
+// Base sizes - will be scaled for tablets
+const BASE_LOGO_SIZE = 190;
 const GRID_PADDING = 16;
 const GRID_GAP = 12;
-const GRID_ITEM_WIDTH = Math.floor((SCREEN_WIDTH - (GRID_PADDING * 2) - (GRID_GAP * 2)) / 3);
 
 // Custom Icon Components
 const ShareIcon = ({ size = 24, color = '#888888' }) => (
