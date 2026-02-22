@@ -157,7 +157,7 @@ export default function UsersScreen() {
 
     return (
       <TouchableOpacity
-        style={styles.userItem}
+        style={[styles.userItem, numColumns > 1 && { flex: 1, marginBottom: 12 }]}
         onPress={() => handleUserPress(item)}
         data-testid={`user-item-${item._id}`}
       >
