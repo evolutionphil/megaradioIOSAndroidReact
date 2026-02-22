@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { SectionSkeleton, UserItemSkeleton } from '../../src/components/Skeleton';
 import { ImageWithFallback } from '../../src/components/ImageWithFallback';
+import { useResponsive } from '../../src/hooks/useResponsive';
 import {
   usePopularStations,
   usePrecomputedGenres,
