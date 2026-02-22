@@ -11,6 +11,7 @@ import {
   FlatList,
   Image,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import stationService from '../src/services/stationService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
+import { useResponsive } from '../src/hooks/useResponsive';
 import type { Station, Genre } from '../src/types';
 import api from '../src/services/api';
 import { API_ENDPOINTS } from '../src/constants/api';
