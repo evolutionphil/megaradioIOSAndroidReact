@@ -120,6 +120,33 @@ npx expo prebuild
    - User listesi 2 kolonlu tablet layout
    - FlatList numColumns dinamik
 
+### Background Player Controls (Next/Previous) Fix - Aralık 2025
+
+**Sorun:** 
+- iPhone kilit ekranında ve Control Center'da Next/Previous butonları aktif değildi
+- Background'da radyo değiştirme çalışmıyordu
+
+**Çözüm:**
+
+1. **trackPlayerService.ts** - Capability'ler eklendi:
+   - `Capability.SkipToNext`
+   - `Capability.SkipToPrevious`
+
+2. **service.js** - Background event handler'lar güncellendi:
+   - `Event.RemoteNext` → Similar Stations'dan sonraki radyoyu çalıyor
+   - `Event.RemotePrevious` → Playback History'den önceki radyoyu çalıyor
+   - AsyncStorage ile app ↔ background service iletişimi
+
+3. **AudioProvider.tsx** - Yeni data kaydetme:
+   - `@megaradio_current_station` → Şu anki istasyon
+   - `@megaradio_similar_stations` → Sonraki için benzer istasyonlar
+   - `@megaradio_playback_history` → Önceki için dinleme geçmişi
+
+**Nasıl Çalışıyor:**
+- Uygulama bir radyo çaldığında, benzer istasyonları API'den çekip AsyncStorage'a kaydediyor
+- Background service (kilit ekranı/Control Center) Next basıldığında AsyncStorage'dan similar stations okuyor
+- Previous basıldığında playback history'den önceki radyoyu çalıyor
+
 ### CarPlay Crash Fix (Aralık 2025)
 
 **Sorun:** CarPlay bağlandığında uygulama crash oluyordu
