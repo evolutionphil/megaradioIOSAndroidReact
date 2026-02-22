@@ -123,7 +123,7 @@ export default function DiscoverScreen() {
 
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, { paddingHorizontal: responsive.sidePadding }]}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
