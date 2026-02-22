@@ -182,8 +182,8 @@ export default function DiscoverScreen() {
               showSeeAll={true}
               onSeeAll={() => router.push('/genres')}
             />
-            <View style={styles.genresGrid}>
-              {genres.slice(0, 8).map((genre) => (
+            <View style={[styles.genresGrid, responsive.isTablet && { gap: gridMetrics.gap }]}>
+              {genres.slice(0, responsive.isTablet ? 12 : 8).map((genre) => (
                 <GenreCard
                   key={genre._id}
                   genre={genre}
@@ -191,8 +191,8 @@ export default function DiscoverScreen() {
                     pathname: '/genre-detail',
                     params: { slug: g.slug, name: g.name },
                   })}
-                  size="small"
-                  style={styles.genreGridItem}
+                  size={responsive.isTablet ? 'medium' : 'small'}
+                  style={[styles.genreGridItem, { width: responsive.isTablet ? `${100 / 4 - 2}%` : '48%' }]}
                 />
               ))}
             </View>
@@ -207,21 +207,24 @@ export default function DiscoverScreen() {
               onSeeAll={() => router.push('/all-stations')}
             />
             {stationsLoading ? (
-              <View style={styles.stationsList}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StationListItemSkeleton key={i} />
+              <View style={[styles.stationsList, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
+                {Array.from({ length: responsive.isTablet ? 8 : 5 }).map((_, i) => (
+                  <View key={i} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
+                    <StationListItemSkeleton />
+                  </View>
                 ))}
               </View>
             ) : stations.length > 0 ? (
-              <View style={styles.stationsList}>
-                {stations.slice(0, 10).map((station) => (
-                  <StationCard
-                    key={station._id}
-                    station={station}
-                    onPress={handleStationPress}
-                    isPlaying={isStationPlaying(station)}
-                    isLoading={isStationLoading(station)}
-                  />
+              <View style={[styles.stationsList, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
+                {stations.slice(0, responsive.isTablet ? 16 : 10).map((station) => (
+                  <View key={station._id} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
+                    <StationCard
+                      station={station}
+                      onPress={handleStationPress}
+                      isPlaying={isStationPlaying(station)}
+                      isLoading={isStationLoading(station)}
+                    />
+                  </View>
                 ))}
               </View>
             ) : (
