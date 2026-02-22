@@ -1,0 +1,117 @@
+{
+  "project_name": "MegaRadio",
+  "app_type": "mobile_web_app",
+  "framework": "React Native / Expo",
+  "theme": {
+    "mode": "dark",
+    "palette": {
+      "background": "#000000",
+      "surface": "#1A1A1D",
+      "primary": "#8B5CF6",
+      "text": "#FFFFFF",
+      "textSecondary": "#AEAEB2"
+    }
+  },
+  "responsiveness": {
+    "breakpoints": {
+      "phone": 0,
+      "tablet": 768,
+      "desktop": 1024
+    },
+    "grid_system": {
+      "strategy": "dynamic_columns",
+      "rules": [
+        {
+          "min_width": 0,
+          "columns": 3,
+          "gap": 8,
+          "margin": "1.5%",
+          "description": "Standard Phone Layout"
+        },
+        {
+          "min_width": 768,
+          "columns": 4,
+          "gap": 12,
+          "margin": "1.5%",
+          "description": "iPad Portrait / Small Tablet"
+        },
+        {
+          "min_width": 1024,
+          "columns": 5,
+          "gap": 16,
+          "margin": "1.5%",
+          "description": "iPad Landscape / Large Tablet"
+        }
+      ]
+    },
+    "scaling": {
+      "strategy": "selective_scaling",
+      "rules": [
+        "Do NOT scale body text linearly (it becomes too big). Keep body text readable (14-16px).",
+        "Scale Headings (h1, h2) by 1.2x on Tablet.",
+        "Scale Artwork/Heroes by 1.5x - 2x on Tablet.",
+        "Increase whitespace/padding by 2x on Tablet."
+      ]
+    }
+  },
+  "component_guidelines": {
+    "HomeScreen": {
+      "path": "/app/frontend/app/(tabs)/index.tsx",
+      "changes_needed": [
+        "Replace fixed 'getGridItemSize' logic with dynamic column calculation based on breakpoints.",
+        "Update 'gridItem' width calculation to use variable column count (3 vs 4 vs 5).",
+        "Increase 'SIDE_PADDING' from 15 to 32 on Tablets.",
+        "Genre Cards: Allow width to grow or increase fixed width to 160px on Tablet."
+      ]
+    },
+    "PlayerScreen": {
+      "path": "/app/frontend/app/player.tsx",
+      "changes_needed": [
+        "LOGO_SIZE: Change from fixed 190 to dynamic (Phone: 190, Tablet: 350).",
+        "Layout: On Tablet, consider using a split view (Artwork Left, Controls Right) OR just centered with larger artwork.",
+        "Equalizer & Controls: Scale buttons slightly (1.2x) for better touch targets on large screens."
+      ]
+    },
+    "DiscoverScreen": {
+      "path": "/app/frontend/app/(tabs)/discover.tsx",
+      "changes_needed": [
+        "Discover Banner: Increase width from 300 to 450 on Tablet.",
+        "Genre Chips: Increase padding and font size slightly."
+      ]
+    },
+    "StationCard": {
+      "path": "/app/frontend/src/components/StationCard.tsx",
+      "changes_needed": [
+        "Remove fixed widths in 'largeContainer' (150px) if possible, or scale it to 200px on Tablet."
+      ]
+    },
+    "GenreCard": {
+      "path": "/app/frontend/src/components/GenreCard.tsx",
+      "changes_needed": [
+        "Update fixed width/height for Tablet variant.",
+        "Phone: 140x90 -> Tablet: 180x120"
+      ]
+    }
+  },
+  "utility_functions": {
+    "isTablet": "const isTablet = width >= 768;",
+    "getGridMetrics": "function getGridMetrics(width) { if(width >= 1024) return { cols: 5, gap: 16 }; if(width >= 768) return { cols: 4, gap: 12 }; return { cols: 3, gap: 8 }; }"
+  },
+  "implementation_steps": [
+    "1. Modify 'HomeScreen' to use 'useWindowDimensions' and new grid logic.",
+    "2. Update 'PlayerScreen' to scale artwork and adjust layout for Tablet.",
+    "3. Refactor 'StationCard' and 'GenreCard' to accept size props or adapt to context.",
+    "4. Verify 'DiscoverScreen' horizontal scrolls look good with larger items on Tablet.",
+    "5. Ensure all interactive elements have 'data-testid' attributes."
+  ],
+  "universal_guidelines": [
+    "Maintain the Dark Theme aesthetic (Black/Dark Grey backgrounds).",
+    "Do NOT break the existing Phone layout. Use conditional logic (isTablet ? ... : ...).",
+    "Use 'useWindowDimensions' for all responsive calculations.",
+    "Respect existing file extensions (.tsx).",
+    "Avoid 'transition: all' in animations."
+  ],
+  "image_assets": {
+    "instructions": "Use existing image URLs or fallbacks. Do not replace working images."
+  }
+}
