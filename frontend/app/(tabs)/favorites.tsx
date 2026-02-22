@@ -435,10 +435,13 @@ const getGenreDisplay = (station: Station): string => {
           data={filteredFavorites}
           renderItem={renderStationItem}
           keyExtractor={(item) => item._id}
-          key={viewMode} // Force re-render when view mode changes
-          numColumns={viewMode === 'grid' ? 3 : 1}
-          contentContainerStyle={viewMode === 'grid' ? styles.gridContent : styles.listContent}
-          columnWrapperStyle={viewMode === 'grid' ? styles.gridRow : undefined}
+          key={`${viewMode}-${responsive.isTablet ? 'tablet' : 'phone'}`} // Force re-render when view mode or device changes
+          numColumns={viewMode === 'grid' ? (responsive.isTablet ? 5 : 3) : (responsive.isTablet ? 2 : 1)}
+          contentContainerStyle={[
+            viewMode === 'grid' ? styles.gridContent : styles.listContent,
+            { paddingHorizontal: responsive.sidePadding }
+          ]}
+          columnWrapperStyle={viewMode === 'grid' || (viewMode === 'list' && responsive.isTablet) ? styles.gridRow : undefined}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             viewMode === 'list' ? (
