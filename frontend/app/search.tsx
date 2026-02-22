@@ -441,7 +441,10 @@ export default function SearchScreen() {
               data={filteredResults}
               renderItem={renderResultCard}
               keyExtractor={(item) => `${item.type}-${item._id}`}
-              contentContainerStyle={styles.resultsList}
+              key={`search-${numColumns}`}
+              numColumns={numColumns}
+              contentContainerStyle={[styles.resultsList, { paddingHorizontal: responsive.sidePadding }]}
+              columnWrapperStyle={numColumns > 1 ? { gap: 12 } : undefined}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             />
