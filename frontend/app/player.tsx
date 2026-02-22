@@ -566,10 +566,11 @@ export default function PlayerScreen() {
                 <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
               <View style={styles.headerRight}>
-                {/* Native Cast Button - Chromecast & AirPlay */}
-                <NativeCastButton
+                {/* Universal Cast Button - AirPlay (iOS) + Chromecast (Android) */}
+                <UniversalCastButton
                   size={22}
                   color="#FFFFFF"
+                  activeColor="#4CAF50"
                   station={currentStation}
                   streamUrl={streamUrl || currentStation?.urlResolved || currentStation?.url_resolved || currentStation?.url || null}
                   nowPlaying={nowPlaying}
