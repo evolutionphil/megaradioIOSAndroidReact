@@ -12,6 +12,7 @@ import {
   PanResponder,
   Dimensions,
   Keyboard,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -21,6 +22,7 @@ import { useFavoritesStore, SortOption, ViewMode } from '../../src/store/favorit
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
+import { useResponsive } from '../../src/hooks/useResponsive';
 import type { Station } from '../../src/types';
 
 const FALLBACK_LOGO = 'https://themegaradio.com/static/default-station.png';
@@ -36,6 +38,10 @@ const getLogoUrl = (station: Station): string => {
 export default function FavoritesScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  
+  // Responsive layout
+  const responsive = useResponsive();
+  const gridMetrics = responsive.getGridMetrics();
   
   // Store
   const {
