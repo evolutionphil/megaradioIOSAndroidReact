@@ -1,8 +1,19 @@
-// NativeCastButton - Direct Cast button that opens system device picker
-// No modal needed - directly shows available Cast devices
+// NativeCastButton - Universal Cast button for Chromecast + AirPlay
+// Shows native device picker when tapped
+// Chromecast: react-native-google-cast
+// AirPlay: iOS native AVRoutePickerView (when no Chromecast available)
 
-import React, { useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, StyleSheet, Platform, Alert } from 'react-native';
+import React, { useEffect, useCallback, useState } from 'react';
+import { 
+  View, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Platform, 
+  Alert,
+  ActionSheetIOS,
+  findNodeHandle,
+  requireNativeComponent,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 // Conditionally import Google Cast
@@ -11,6 +22,8 @@ let CastButton: any = null;
 let useCastState: any = null;
 let useRemoteMediaClient: any = null;
 let useCastSession: any = null;
+let useDevices: any = null;
+let CastState: any = null;
 
 try {
   const googleCast = require('react-native-google-cast');
@@ -19,8 +32,11 @@ try {
   useCastState = googleCast.useCastState;
   useRemoteMediaClient = googleCast.useRemoteMediaClient;
   useCastSession = googleCast.useCastSession;
+  useDevices = googleCast.useDevices;
+  CastState = googleCast.CastState;
+  console.log('[NativeCastButton] Google Cast loaded successfully');
 } catch (e) {
-  console.log('[NativeCastButton] Google Cast not available');
+  console.log('[NativeCastButton] Google Cast not available:', e);
 }
 
 interface NativeCastButtonProps {
@@ -32,7 +48,9 @@ interface NativeCastButtonProps {
     name: string;
     url?: string;
     url_resolved?: string;
+    urlResolved?: string;
     favicon?: string;
+    logo?: string;
     country?: string;
   } | null;
   streamUrl?: string | null;
@@ -48,86 +66,203 @@ export const NativeCastButton: React.FC<NativeCastButtonProps> = ({
   nowPlaying,
   onStopLocalAudio,
 }) => {
-  const castState = useCastState?.() || 'NO_DEVICES_AVAILABLE';
+  const [isDiscovering, setIsDiscovering] = useState(true);
+  
+  // Use hooks conditionally
+  const castState = useCastState?.();
   const remoteMediaClient = useRemoteMediaClient?.();
   const castSession = useCastSession?.();
+  const devices = useDevices?.();
 
-  // When connected, automatically start casting
+  // Start discovery on mount
+  useEffect(() => {
+    if (GoogleCast && Platform.OS !== 'web') {
+      console.log('[NativeCastButton] Starting device discovery...');
+      GoogleCast.showIntroductoryOverlay?.();
+      
+      // Discovery timeout
+      const timeout = setTimeout(() => {
+        setIsDiscovering(false);
+      }, 5000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, []);
+
+  // Log cast state changes
+  useEffect(() => {
+    console.log('[NativeCastButton] Cast state:', castState);
+    console.log('[NativeCastButton] Devices found:', devices?.length || 0);
+    
+    if (castState === 'CONNECTED') {
+      console.log('[NativeCastButton] Connected to device!');
+      setIsDiscovering(false);
+    }
+  }, [castState, devices]);
+
+  // Auto-cast when connected
   useEffect(() => {
     if (castState === 'CONNECTED' && station && streamUrl && remoteMediaClient) {
-      console.log('[NativeCastButton] Connected! Auto-casting...');
+      console.log('[NativeCastButton] Connected! Starting cast...');
       castToDevice();
     }
   }, [castState, station, streamUrl]);
 
+  const getStationLogoUrl = (station: any): string => {
+    if (!station) return 'https://themegaradio.com/logo.png';
+    
+    const logo = station.favicon || station.logo;
+    if (!logo) return 'https://themegaradio.com/logo.png';
+    
+    if (logo.startsWith('http')) return logo;
+    return `https://themegaradio.com${logo.startsWith('/') ? '' : '/'}${logo}`;
+  };
+
   const castToDevice = useCallback(async () => {
-    if (!remoteMediaClient || !station || !streamUrl) {
+    if (!remoteMediaClient || !station) {
+      console.log('[NativeCastButton] Cannot cast - missing client or station');
+      return;
+    }
+
+    const url = streamUrl || station.url_resolved || station.urlResolved || station.url;
+    if (!url) {
+      console.log('[NativeCastButton] Cannot cast - no stream URL');
       return;
     }
 
     try {
-      // Stop local audio
+      console.log('[NativeCastButton] Casting to device...');
+      
+      // Stop local audio first
       if (onStopLocalAudio) {
         onStopLocalAudio();
       }
 
       // Determine content type
-      const url = streamUrl.toLowerCase();
       let contentType = 'audio/mp3';
-      if (url.includes('.m3u8') || url.includes('hls')) {
+      const urlLower = url.toLowerCase();
+      if (urlLower.includes('.m3u8') || urlLower.includes('hls')) {
         contentType = 'application/x-mpegURL';
-      } else if (url.includes('.aac')) {
+      } else if (urlLower.includes('.aac')) {
         contentType = 'audio/aac';
+      } else if (urlLower.includes('.ogg')) {
+        contentType = 'audio/ogg';
       }
 
       const mediaInfo = {
-        contentUrl: streamUrl,
+        contentUrl: url,
         contentType,
         streamType: 'LIVE',
         metadata: {
-          type: 'generic',
+          type: 'musicTrack',
           title: nowPlaying?.title || station.name,
           subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
-          images: station.favicon ? [{
-            url: station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`
-          }] : [],
+          albumTitle: 'MegaRadio',
+          images: [{
+            url: getStationLogoUrl(station),
+          }],
         },
       };
 
+      console.log('[NativeCastButton] Loading media:', mediaInfo);
+      
       await remoteMediaClient.loadMedia({
         mediaInfo,
         autoplay: true,
         playPosition: 0,
       });
 
-      console.log('[NativeCastButton] Casting started:', station.name);
+      console.log('[NativeCastButton] ✅ Cast started successfully:', station.name);
     } catch (err) {
-      console.error('[NativeCastButton] Cast error:', err);
+      console.error('[NativeCastButton] ❌ Cast error:', err);
+      Alert.alert('Cast Hatası', 'Cihaza bağlanırken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }, [remoteMediaClient, station, streamUrl, nowPlaying, onStopLocalAudio]);
 
-  // Show native CastButton if available (this opens system picker automatically)
+  // Handle manual button press (for when native button doesn't work)
+  const handleManualCast = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      // On iOS, show action sheet with options
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['İptal', 'Chromecast Ara', 'AirPlay Kullan'],
+          cancelButtonIndex: 0,
+          title: 'Cihaz Seç',
+          message: 'Radyoyu hangi cihazda çalmak istiyorsunuz?',
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 1) {
+            // Chromecast
+            if (GoogleCast) {
+              GoogleCast.showCastDialog?.();
+            } else {
+              Alert.alert('Chromecast', 'Chromecast özelliği native build gerektirir.');
+            }
+          } else if (buttonIndex === 2) {
+            // AirPlay
+            Alert.alert(
+              'AirPlay',
+              'AirPlay kullanmak için:\n\n1. Kontrol Merkezi\'ni açın (sağ üstten kaydırın)\n2. Ses çıkışını değiştirin\n3. AirPlay cihazınızı seçin',
+              [{ text: 'Tamam' }]
+            );
+          }
+        }
+      );
+    } else {
+      // Android - just try to show cast dialog
+      if (GoogleCast) {
+        GoogleCast.showCastDialog?.();
+      } else {
+        Alert.alert('Cast', 'Cast özelliği native build gerektirir.');
+      }
+    }
+  }, []);
+
+  // Show native CastButton if Google Cast is available
   if (CastButton && Platform.OS !== 'web') {
+    // Check if we have devices or are connected
+    const hasDevices = devices && devices.length > 0;
+    const isConnected = castState === 'CONNECTED' || castState === 'CONNECTING';
+    
+    // Always show the native CastButton - it handles discovery internally
     return (
-      <View style={styles.container}>
-        <CastButton style={[styles.castButton, { tintColor: color }]} />
-      </View>
+      <TouchableOpacity 
+        style={styles.container}
+        onLongPress={handleManualCast}
+        delayLongPress={500}
+      >
+        <CastButton 
+          style={[
+            styles.castButton, 
+            { tintColor: isConnected ? '#4CAF50' : color }
+          ]} 
+        />
+      </TouchableOpacity>
     );
   }
 
-  // Fallback for web or Expo Go - show disabled icon
+  // Fallback for web or when Google Cast is not available
   return (
     <TouchableOpacity
       style={styles.fallbackButton}
       onPress={() => {
-        Alert.alert(
-          'Cast Kullanılamıyor',
-          'Cast özelliği için native build gereklidir. EAS build oluşturun.',
-          [{ text: 'Tamam' }]
-        );
+        if (Platform.OS === 'ios') {
+          handleManualCast();
+        } else {
+          Alert.alert(
+            'Cast Kullanılamıyor',
+            'Cast özelliği için native build gereklidir.\n\nEAS build oluşturun:\neas build --profile preview --platform all',
+            [{ text: 'Tamam' }]
+          );
+        }
       }}
     >
-      <Ionicons name="tv-outline" size={size} color={color} style={{ opacity: 0.5 }} />
+      <Ionicons 
+        name="tv-outline" 
+        size={size} 
+        color={color} 
+        style={{ opacity: 0.5 }} 
+      />
     </TouchableOpacity>
   );
 };
@@ -145,6 +280,8 @@ const styles = StyleSheet.create({
   },
   fallbackButton: {
     padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
