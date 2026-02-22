@@ -23,10 +23,10 @@ import { useStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useLocationStore } from '../src/store/locationStore';
+import { useResponsive } from '../src/hooks/useResponsive';
 import { SortBottomSheet, SortOption, ViewMode } from '../src/components/SortBottomSheet';
 import type { Station } from '../src/types';
 
-const GRID_COLUMNS = 3;
 const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
 
 export default function AllStationsScreen() {
@@ -37,9 +37,11 @@ export default function AllStationsScreen() {
   const genreName = params.genreName as string | undefined;
   const { width: windowWidth } = useWindowDimensions();
   
-  // Calculate grid item width dynamically with fallback
-  const screenWidth = windowWidth > 100 ? windowWidth : 375;
-  const GRID_ITEM_WIDTH = Math.floor((screenWidth - 32 - 16) / GRID_COLUMNS); // 32 = padding, 16 = gaps
+  // Responsive layout
+  const responsive = useResponsive();
+  const gridMetrics = responsive.getGridMetrics();
+  const GRID_COLUMNS = gridMetrics.columns;
+  const GRID_ITEM_WIDTH = gridMetrics.itemWidth;
 
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
