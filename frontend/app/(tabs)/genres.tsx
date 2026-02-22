@@ -187,7 +187,7 @@ export default function GenresTabScreen() {
 
   const renderGenreItem = ({ item }: { item: Genre }) => (
     <TouchableOpacity
-      style={styles.genreRow}
+      style={[styles.genreRow, numColumns > 1 && { flex: 1 / numColumns, marginBottom: 12 }]}
       onPress={() => handleGenrePress(item)}
       activeOpacity={0.7}
       data-testid={`genre-item-${item.slug}`}
