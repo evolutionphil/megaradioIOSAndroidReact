@@ -1108,14 +1108,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 
-  // Grid Items
+  // Grid Items - sizes are set dynamically in the component
   gridItem: {
-    width: GRID_ITEM_WIDTH,
     marginBottom: 16,
   },
   gridImageWrapper: {
-    width: GRID_ITEM_WIDTH,
-    height: GRID_ITEM_WIDTH,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#1E1E1E',
