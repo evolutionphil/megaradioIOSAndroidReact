@@ -237,6 +237,46 @@ export default function HomeScreen() {
     return getStationLogoUrl(station);
   };
 
+  // Render a responsive grid of stations
+  const renderResponsiveGrid = (stations: Station[], maxItems: number = 12) => {
+    const displayStations = stations.slice(0, maxItems);
+    const rows = Math.ceil(displayStations.length / gridColumns);
+    
+    return Array.from({ length: rows }).map((_, rowIndex) => {
+      const rowStations = displayStations.slice(rowIndex * gridColumns, (rowIndex + 1) * gridColumns);
+      return (
+        <View key={`grid-row-${rowIndex}`} style={[styles.gridRow, { gap: gridGap }]}>
+          {rowStations.map((station: Station) => (
+            <TouchableOpacity
+              key={station._id}
+              style={[styles.gridItem, { width: gridItemWidth }]}
+              onPress={() => handleStationPress(station)}
+            >
+              <View style={[styles.gridImageContainer, { width: gridItemWidth, height: gridItemWidth }]}>
+                <ImageWithFallback 
+                  uri={getLogoUrl(station)} 
+                  fallbackSource={FALLBACK_LOGO}
+                  style={styles.gridImage} 
+                  resizeMode="cover" 
+                />
+              </View>
+              <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
+              <Text style={styles.stationGridCountry} numberOfLines={1}>
+                {station.country || 'Radio'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+          {/* Fill empty slots */}
+          {rowStations.length < gridColumns && 
+            Array.from({ length: gridColumns - rowStations.length }).map((_, i) => (
+              <View key={`empty-${rowIndex}-${i}`} style={[styles.gridItem, { width: gridItemWidth }]} />
+            ))
+          }
+        </View>
+      );
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Background Glow - SVG RadialGradient for real soft glow */}
