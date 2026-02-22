@@ -522,16 +522,19 @@ export default function HomeScreen() {
           {/* Favorites From Users - Real API data with specified dimensions */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('homepage_favorites_from_users')}</Text>
+              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('homepage_favorites_from_users')}</Text>
               <TouchableOpacity onPress={() => router.push('/users')} data-testid="see-all-users-btn">
                 <Text style={styles.seeAllText}>{t('homepage_see_all')}</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.usersList}>
-              {(publicProfiles && publicProfiles.length > 0 ? publicProfiles : []).slice(0, 6).map((profileUser: any, index: number) => (
+            <View style={[styles.usersList, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap', gap: gridGap }]}>
+              {(publicProfiles && publicProfiles.length > 0 ? publicProfiles : []).slice(0, responsive.isTablet ? 8 : 6).map((profileUser: any, index: number) => (
                 <TouchableOpacity 
                   key={profileUser._id || index} 
-                  style={styles.userItem}
+                  style={[
+                    styles.userItem, 
+                    responsive.isTablet && { width: `${100 / 2 - 2}%` }
+                  ]}
                   onPress={() => router.push({
                     pathname: '/user-profile',
                     params: {
@@ -559,41 +562,16 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* All Stations - 3 Column Grid with specified dimensions (100x144) */}
+          {/* All Stations - Responsive Grid */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('homepage_all_stations')}</Text>
+              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('homepage_all_stations')}</Text>
             </View>
             {allStationsLoading ? (
               <SectionSkeleton itemCount={9} horizontal={false} title={false} />
             ) : (
               <>
-                {/* Render rows of 3 items each */}
-                {Array.from({ length: Math.ceil(Math.min(allStations.length, 21) / 3) }).map((_, rowIndex) => (
-                  <View key={`all-row-${rowIndex}`} style={styles.gridRow}>
-                    {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).map((station: Station, index: number) => (
-                      <TouchableOpacity
-                        key={station._id}
-                        style={[styles.gridItem, index !== 2 && styles.gridItemMargin]}
-                        onPress={() => handleStationPress(station)}
-                      >
-                        <View style={styles.gridImageContainer}>
-                          {renderStationLogo(station, 120)}
-                        </View>
-                        <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
-                        <Text style={styles.stationGridCountry} numberOfLines={1}>
-                          {station.country || 'Radio'}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                    {/* Fill empty slots if last row has less than 3 items */}
-                    {allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 && 
-                      Array.from({ length: 3 - allStations.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, i) => (
-                        <View key={`empty-${i}`} style={styles.gridItem} />
-                      ))
-                    }
-                  </View>
-                ))}
+                {renderResponsiveGrid(allStations, responsive.isTablet ? 25 : 21)}
                 <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push('/all-stations')}>
                   <Text style={styles.seeMoreText}>{t('see_more')}</Text>
                 </TouchableOpacity>
