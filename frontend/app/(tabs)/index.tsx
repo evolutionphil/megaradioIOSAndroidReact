@@ -315,7 +315,7 @@ export default function HomeScreen() {
           {/* Genres Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{t('genres')}</Text>
+              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('genres')}</Text>
               <TouchableOpacity onPress={() => router.push('/discover')}>
                 <Text style={styles.seeAllText}>{t('homepage_see_all')}</Text>
               </TouchableOpacity>
