@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../constants/theme';
 
-export type SortOption = 'popular' | 'newest' | 'oldest' | 'az' | 'za';
+export type SortOption = 'popular' | 'az' | 'za';
 export type ViewMode = 'grid' | 'list';
 
 interface SortBottomSheetProps {
@@ -36,8 +36,6 @@ export const SortBottomSheet: React.FC<SortBottomSheetProps> = ({
   
   const SORT_OPTIONS: { key: SortOption; label: string }[] = [
     { key: 'popular', label: t('popular', 'Popular') },
-    { key: 'newest', label: t('sort_newest_first', 'Newest first') },
-    { key: 'oldest', label: t('sort_oldest_first', 'Oldest first') },
     { key: 'az', label: t('sort_az', 'A-Z') },
     { key: 'za', label: t('sort_za', 'Z-A') },
   ];
