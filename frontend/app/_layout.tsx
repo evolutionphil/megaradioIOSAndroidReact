@@ -375,8 +375,10 @@ export default function RootLayout() {
                 {/* Global MiniPlayer - shown on all screens except player */}
                 <GlobalMiniPlayer />
                 <RadioErrorModal />
-                {/* CarPlay Handler - initializes CarPlay & Android Auto */}
-                <CarPlayHandler />
+                {/* DISABLED: @g4rb4g3/react-native-carplay crashes in EAS production builds */}
+                {/* See: https://github.com/birkir/react-native-carplay/issues/199 */}
+                {/* CarPlay will be re-enabled when library is fixed */}
+                {/* <CarPlayHandler /> */}
               </View>
             </AudioProvider>
           </QueryClientProvider>
