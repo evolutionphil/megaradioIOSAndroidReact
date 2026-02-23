@@ -206,22 +206,35 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     set({ favorites: updatedFavorites, customOrder: updatedOrder });
 
     try {
-      if (isAuthenticated()) {
-        // Remove from server
-        await userService.removeFavorite(stationId);
-      }
-      
-      // Always update local storage
+      // First save to local storage
+      console.log('[FavoritesStore] Removing from AsyncStorage, new count:', updatedFavorites.length);
       await Promise.all([
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
+      console.log('[FavoritesStore] Local remove complete');
+      
+      // Then try to sync with server if authenticated
+      if (isAuthenticated()) {
+        console.log('[FavoritesStore] User is authenticated, syncing remove to API...');
+        try {
+          const result = await userService.removeFavorite(stationId);
+          console.log('[FavoritesStore] API remove SUCCESS:', result);
+        } catch (apiError: any) {
+          console.error('[FavoritesStore] API remove FAILED:', apiError?.response?.status, apiError?.response?.data || apiError.message);
+          // Don't revert - local storage is the source of truth
+        }
+      } else {
+        console.log('[FavoritesStore] User not authenticated, skipping API sync');
+      }
       
       // Sync to Android Auto
       syncToAndroidAuto(updatedFavorites);
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-      // Revert on error
+      
+      console.log('[FavoritesStore] removeFavorite complete');
+    } catch (error: any) {
+      console.error('[FavoritesStore] Error removing favorite:', error?.message || error);
+      // Revert on local storage error
       set({ favorites, customOrder });
     }
   },
