@@ -107,18 +107,6 @@ export default function GenreDetailScreen() {
         return sorted.sort((a, b) => b.name.localeCompare(a.name, 'tr', { sensitivity: 'base' }));
       case 'popular':
         return sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0));
-      case 'newest':
-        return sorted.sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return dateB - dateA;
-        });
-      case 'oldest':
-        return sorted.sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return dateA - dateB;
-        });
       default:
         return sorted;
     }
