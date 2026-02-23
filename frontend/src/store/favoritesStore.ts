@@ -83,43 +83,67 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     try {
       const { user, token, isAuthenticated: authStatus } = useAuthStore.getState();
       
-      console.log('[FavoritesStore] loadFavorites called');
+      console.log('[FavoritesStore] ========== loadFavorites START ==========');
       console.log('[FavoritesStore] isAuthenticated:', authStatus);
       console.log('[FavoritesStore] user:', user?._id);
       console.log('[FavoritesStore] token exists:', !!token);
-      console.log('[FavoritesStore] token prefix:', token?.substring(0, 10));
+      console.log('[FavoritesStore] token prefix:', token?.substring(0, 20));
       
       if (authStatus && user?._id && token) {
         // Use authenticated endpoint GET /api/user/favorites (requires token)
         try {
-          console.log('[FavoritesStore] Fetching favorites with token...');
+          console.log('[FavoritesStore] Fetching favorites from API with token...');
           
           // Use userService which uses api interceptor with automatic token
           const favoritesResponse = await userService.getFavorites();
-          const favorites = favoritesResponse.favorites || favoritesResponse;
+          console.log('[FavoritesStore] Raw API response type:', typeof favoritesResponse);
+          console.log('[FavoritesStore] Raw API response keys:', Object.keys(favoritesResponse || {}));
           
-          console.log('[FavoritesStore] Favorites loaded:', Array.isArray(favorites) ? favorites.length : 0);
+          // The API might return { favorites: [...] } or just [...]
+          let favorites: Station[];
+          if (Array.isArray(favoritesResponse)) {
+            favorites = favoritesResponse;
+          } else if (favoritesResponse?.favorites && Array.isArray(favoritesResponse.favorites)) {
+            favorites = favoritesResponse.favorites;
+          } else if (favoritesResponse?.stations && Array.isArray(favoritesResponse.stations)) {
+            favorites = favoritesResponse.stations;
+          } else {
+            console.log('[FavoritesStore] Unexpected response format:', JSON.stringify(favoritesResponse).substring(0, 200));
+            favorites = [];
+          }
+          
+          console.log('[FavoritesStore] Parsed favorites count:', favorites.length);
           
           // Also load custom order from local storage
           const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
           const customOrder = orderJson ? JSON.parse(orderJson) : [];
           
-          set({ favorites: Array.isArray(favorites) ? favorites : [], customOrder, isLoaded: true, isLoading: false });
+          set({ favorites, customOrder, isLoaded: true, isLoading: false });
+          console.log('[FavoritesStore] ========== loadFavorites SUCCESS ==========');
+          
+          // Also save to local storage as backup
+          await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
           
           // Sync to Android Auto
-          syncToAndroidAuto(Array.isArray(favorites) ? favorites : []);
+          syncToAndroidAuto(favorites);
           return;
         } catch (apiError: any) {
           console.log('[FavoritesStore] API favorites failed:', apiError.message);
+          console.log('[FavoritesStore] API error status:', apiError.response?.status);
+          console.log('[FavoritesStore] API error data:', JSON.stringify(apiError.response?.data || {}).substring(0, 200));
         }
       } else {
         console.log('[FavoritesStore] Not authenticated or missing token, using local storage');
+        console.log('[FavoritesStore] - authStatus:', authStatus);
+        console.log('[FavoritesStore] - user?._id:', user?._id);
+        console.log('[FavoritesStore] - token:', token ? 'exists' : 'missing');
       }
       
       // Fallback to local storage for guests or API failure
+      console.log('[FavoritesStore] Falling back to local storage');
       await get().loadFromLocal();
     } catch (error) {
-      console.error('Error loading favorites:', error);
+      console.error('[FavoritesStore] Error loading favorites:', error);
       set({ isLoading: false, isLoaded: true, error: 'Failed to load favorites' });
     }
   },
