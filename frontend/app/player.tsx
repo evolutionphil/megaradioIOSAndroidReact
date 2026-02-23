@@ -602,7 +602,7 @@ export default function PlayerScreen() {
           {/* Album Art */}
           <View style={styles.artworkContainer}>
             <View style={{ width: LOGO_SIZE, height: LOGO_SIZE }}>
-              <GlowEffect size={LOGO_SIZE + 120} top={-60} left={-60} opacity={0.45} />
+              <GlowEffect size={LOGO_SIZE + 180} top={-90} left={-90} opacity={0.65} color="255, 65, 153" />
               <View style={[styles.artworkWrapper, { width: LOGO_SIZE, height: LOGO_SIZE }]}>
               {logoUrl ? (
                 <Image
@@ -640,11 +640,31 @@ export default function PlayerScreen() {
             
             {/* Spotify & YouTube icons */}
             <View style={styles.socialIcons}>
-              <TouchableOpacity style={[styles.socialButton, styles.spotifyButton]}>
+              <TouchableOpacity 
+                style={[styles.socialButton, styles.spotifyButton]}
+                onPress={() => {
+                  const songInfo = getCurrentSongInfo();
+                  const query = encodeURIComponent(songInfo || currentStation.name);
+                  Linking.openURL(`spotify://search/${query}`).catch(() => {
+                    // Fallback to web if app not installed
+                    Linking.openURL(`https://open.spotify.com/search/${query}`);
+                  });
+                }}
+              >
                 <Ionicons name="musical-notes" size={18} color="#FFFFFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.socialButton, styles.youtubeButton]}>
-                <Ionicons name="play-circle" size={18} color="#FFFFFF" />
+              <TouchableOpacity 
+                style={[styles.socialButton, styles.youtubeButton]}
+                onPress={() => {
+                  const songInfo = getCurrentSongInfo();
+                  const query = encodeURIComponent(songInfo || currentStation.name);
+                  Linking.openURL(`youtube://results?search_query=${query}`).catch(() => {
+                    // Fallback to web if app not installed
+                    Linking.openURL(`https://www.youtube.com/results?search_query=${query}`);
+                  });
+                }}
+              >
+                <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
           </View>
