@@ -599,9 +599,14 @@ export default function ProfileScreen() {
               {avatarUploading ? (
                 <ActivityIndicator size="small" color="#FF4199" />
               ) : (localAvatar || userAvatar) ? (
-                <Image source={{ uri: localAvatar || userAvatar }} style={s.avatarImage} />
+                <Image source={{ uri: localAvatar || userAvatar || '' }} style={s.avatarImage} />
               ) : (
-                <Ionicons name="person" size={32} color="#888" />
+                <LinearGradient
+                  colors={['#FF4199', '#FF8C42']}
+                  style={s.avatarFallback}
+                >
+                  <Ionicons name="person" size={32} color="#FFF" />
+                </LinearGradient>
               )}
               {/* Camera badge */}
               <View style={s.cameraBadge}>
