@@ -75,27 +75,23 @@ export default function FavoritesScreen() {
   // Animation for bottom sheet
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
-  // Load favorites on mount and when auth state changes
+  // Auth loaded flag - wait for auth to load before fetching favorites
+  const { isAuthLoaded } = useAuthStore();
+
+  // Load favorites ONLY after auth is fully loaded from storage
   useEffect(() => {
-    const loadWithAuthCheck = async () => {
-      console.log('[Favorites] useEffect triggered');
-      console.log('[Favorites] isAuthenticated:', isAuthenticated, 'user:', user?._id);
-      
-      // If authenticated but no token yet, wait for auth to load
-      if (isAuthenticated && !useAuthStore.getState().token) {
-        console.log('[Favorites] Waiting for token to load...');
-        // Give auth store time to load from secure storage
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-      
-      const token = useAuthStore.getState().token;
-      console.log('[Favorites] Token after wait:', token ? token.substring(0, 15) + '...' : 'NULL');
-      
-      loadFavorites();
-    };
+    // Wait until auth is loaded from secure storage
+    if (!isAuthLoaded) {
+      console.log('[Favorites] Waiting for auth to load from storage...');
+      return;
+    }
     
-    loadWithAuthCheck();
-  }, [isAuthenticated, user?._id]);
+    const { token, isAuthenticated: authStatus } = useAuthStore.getState();
+    console.log('[Favorites] Auth loaded! isAuthenticated:', authStatus, 'token:', token ? token.substring(0, 15) + '...' : 'NULL');
+    
+    // Now safe to load favorites - auth state is fully hydrated
+    loadFavorites();
+  }, [isAuthLoaded, isAuthenticated, user?._id]);
 
   // Get sorted favorites
   const sortedFavorites = getSortedFavorites();

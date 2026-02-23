@@ -157,6 +157,8 @@ export default function RootLayout() {
   }, []);
 
   // Setup Track Player once (only on native platforms, not web, and don't block UI)
+  // NOTE: Full Track Player setup with capabilities is done in AudioProvider.tsx
+  // This is just a fallback check - AudioProvider handles the real setup
   useEffect(() => {
     if (Platform.OS === 'web') {
       console.log('[Layout] Web platform - skipping Track Player setup');
@@ -165,42 +167,22 @@ export default function RootLayout() {
 
     let mounted = true;
     
-    const setupPlayer = async () => {
+    const checkPlayerStatus = async () => {
       try {
-        // Check if already initialized
+        // Just check if already initialized - AudioProvider does the real setup
         const currentState = await TrackPlayer.getPlaybackState().catch(() => null);
         
         if (currentState) {
-          console.log('[Layout] Track Player already initialized');
-          return;
+          console.log('[Layout] Track Player already initialized by AudioProvider');
+        } else {
+          console.log('[Layout] Track Player not yet initialized - AudioProvider will handle it');
         }
-        
-        await TrackPlayer.setupPlayer();
-        console.log('[Layout] Track Player setup complete');
-        
-        // Setup capabilities
-        await TrackPlayer.updateOptions({
-          capabilities: [
-            TrackPlayer.CAPABILITY_PLAY,
-            TrackPlayer.CAPABILITY_PAUSE,
-            TrackPlayer.CAPABILITY_STOP,
-            TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-            TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-          ],
-          compactCapabilities: [
-            TrackPlayer.CAPABILITY_PLAY,
-            TrackPlayer.CAPABILITY_PAUSE,
-          ],
-        });
       } catch (error: any) {
-        // Only log if not already initialized error
-        if (!error?.message?.includes('already been initialized')) {
-          console.error('[Layout] Track Player setup error:', error);
-        }
+        console.log('[Layout] Track Player status check:', error?.message || 'Not initialized yet');
       }
     };
 
-    setupPlayer();
+    checkPlayerStatus();
     
     return () => {
       mounted = false;
