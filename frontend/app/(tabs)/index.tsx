@@ -29,6 +29,7 @@ import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { SectionSkeleton, UserItemSkeleton } from '../../src/components/Skeleton';
 import { ImageWithFallback } from '../../src/components/ImageWithFallback';
+import { AvatarWithFallback } from '../../src/components/AvatarWithFallback';
 import { useResponsive } from '../../src/hooks/useResponsive';
 sendLog('TABS_INDEX_IMPORTS_DONE');
 import {
