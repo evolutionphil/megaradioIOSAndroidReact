@@ -47,6 +47,7 @@ export async function setupPlayer(): Promise<boolean> {
       },
       
       // Capabilities shown in Control Center / Lock Screen
+      // IMPORTANT: For iOS, SkipToNext/Previous show as forward/backward buttons
       capabilities: [
         Capability.Play,
         Capability.Pause,
@@ -55,14 +56,14 @@ export async function setupPlayer(): Promise<boolean> {
         Capability.SkipToPrevious,
       ],
       
-      // Compact capabilities (for small notifications)
+      // Compact capabilities (for small notifications on Android)
       compactCapabilities: [
         Capability.Play,
         Capability.Pause,
         Capability.SkipToNext,
       ],
       
-      // Notification config
+      // Notification config (Android)
       notificationCapabilities: [
         Capability.Play,
         Capability.Pause,
@@ -71,7 +72,7 @@ export async function setupPlayer(): Promise<boolean> {
         Capability.SkipToPrevious,
       ],
       
-      // Icon for notification
+      // Icon for notification (Android)
       icon: Platform.OS === 'android' 
         ? require('../../assets/images/notification-icon.png') 
         : undefined,
