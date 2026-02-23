@@ -924,20 +924,23 @@ const styles = StyleSheet.create({
     paddingRight: spacing.xl,
   },
   discoverableBannerTextContainer: {
-    alignItems: 'flex-end',
+    alignItems: 'flex-start', // Left align so F and D are on same line
   },
   discoverableBannerTitle: {
-    fontSize: 28,
+    fontSize: 26,
+    fontFamily: typography.fonts.bold, // Ubuntu Bold
     fontWeight: '700',
     color: '#FFFFFF',
-    textAlign: 'right',
-    fontStyle: 'italic',
+    textAlign: 'left',
+    letterSpacing: 0.5,
   },
   discoverableBannerSubtitle: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    marginTop: 8,
-    textAlign: 'right',
+    fontSize: 14,
+    fontFamily: typography.fonts.regular, // Ubuntu Regular
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 2,
+    textAlign: 'left',
+    letterSpacing: 0.3,
   },
 
   // Users List - Full width with specified dimensions
