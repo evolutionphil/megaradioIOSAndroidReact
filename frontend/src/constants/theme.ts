@@ -87,7 +87,7 @@ export const typography = {
     regular: 'Ubuntu-Regular',
     medium: 'Ubuntu-Medium',
     bold: 'Ubuntu-Bold',
-    boldItalic: 'Ubuntu-BoldItalic',
+    // No italic fonts - Ubuntu only
   },
   sizes: {
     xs: 10,
