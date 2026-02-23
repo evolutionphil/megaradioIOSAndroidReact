@@ -34,39 +34,34 @@ sendLog('LAYOUT_ALL_IMPORTS_DONE');
 // CarPlay DISABLED - causes crash on Expo production builds
 // import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
-// Global MiniPlayer wrapper - shows on non-tab screens
-const GlobalMiniPlayer = () => {
-  const segments = useSegments();
-  const { isMiniPlayerVisible, currentStation } = usePlayerStore();
-  
-  // Don't show on tabs (they have their own MiniPlayer), player screen, or auth screens
-  const isTabScreen = segments[0] === '(tabs)';
-  const isPlayerScreen = segments.includes('player');
-  const isAuthScreen = ['login', 'signup', 'auth-options', 'onboarding'].includes(segments[0] as string);
-  
-  if (isTabScreen || isPlayerScreen || isAuthScreen || !isMiniPlayerVisible) {
-    return null;
-  }
-  
-  return <MiniPlayer />;
-};
+sendLog('BEFORE_QUERY_CLIENT');
 
 // Create a client with optimized defaults for performance (based on backend recommendations)
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 10 * 60 * 1000, // 10 minutes - default for most data
-      gcTime: 30 * 60 * 1000, // 30 minutes - keep unused data in cache
-      retry: 2,
-      refetchOnWindowFocus: false, // Don't refetch when app comes to foreground
-      refetchOnReconnect: true, // Refetch when network reconnects
-      refetchOnMount: false, // Don't refetch if data exists in cache
-      networkMode: 'offlineFirst', // Use cached data first, then fetch
+let queryClient: QueryClient;
+try {
+  queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 10 * 60 * 1000, // 10 minutes - default for most data
+        gcTime: 30 * 60 * 1000, // 30 minutes - keep unused data in cache
+        retry: 2,
+        refetchOnWindowFocus: false, // Don't refetch when app comes to foreground
+        refetchOnReconnect: true, // Refetch when network reconnects
+        refetchOnMount: false, // Don't refetch if data exists in cache
+        networkMode: 'offlineFirst', // Use cached data first, then fetch
+      },
     },
-  },
-});
+  });
+  sendLog('QUERY_CLIENT_CREATED');
+} catch (e: any) {
+  sendLog('QUERY_CLIENT_ERROR', { error: e?.message || String(e) });
+  // Create minimal client as fallback
+  queryClient = new QueryClient();
+}
 
 const ONBOARDING_COMPLETE_KEY = '@megaradio_onboarding_complete';
+
+sendLog('BEFORE_HELPER_FUNCTIONS');
 
 // Storage helper for cross-platform support
 const checkOnboardingComplete = async (): Promise<boolean> => {
@@ -82,6 +77,8 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
     return false;
   }
 };
+
+sendLog('BEFORE_ROOT_LAYOUT_DEFINITION');
 
 export default function RootLayout() {
   sendLog('ROOT_LAYOUT_FUNCTION_START');
