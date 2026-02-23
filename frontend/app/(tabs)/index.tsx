@@ -1,3 +1,6 @@
+import { sendLog } from '../../src/services/remoteLog';
+sendLog('TABS_INDEX_FILE_LOADING');
+
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import {
   View,
@@ -27,6 +30,7 @@ import { colors, gradients, spacing, borderRadius, typography } from '../../src/
 import { SectionSkeleton, UserItemSkeleton } from '../../src/components/Skeleton';
 import { ImageWithFallback } from '../../src/components/ImageWithFallback';
 import { useResponsive } from '../../src/hooks/useResponsive';
+sendLog('TABS_INDEX_IMPORTS_DONE');
 import {
   usePopularStations,
   usePrecomputedGenres,
