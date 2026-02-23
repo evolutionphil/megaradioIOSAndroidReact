@@ -120,10 +120,15 @@ export default function ProfileScreen() {
   console.log('[Profile] User object:', JSON.stringify(user, null, 2));
   console.log('[Profile] Avatar fields - profilePhoto:', user?.profilePhoto, 'avatar:', user?.avatar);
   
-  // Build full avatar URL if relative
-  let userAvatar = user?.profilePhoto || user?.avatar || null;
-  if (userAvatar && !userAvatar.startsWith('http')) {
-    userAvatar = `https://themegaradio.com${userAvatar}`;
+  // Build full avatar URL if relative, with proper empty string check
+  const rawAvatar = user?.profilePhoto || user?.avatar;
+  const hasValidAvatar = rawAvatar && rawAvatar.trim().length > 0;
+  let userAvatar: string | null = null;
+  
+  if (hasValidAvatar) {
+    userAvatar = rawAvatar.startsWith('http') 
+      ? rawAvatar 
+      : `https://themegaradio.com${rawAvatar}`;
   }
   console.log('[Profile] Final userAvatar:', userAvatar);
   
