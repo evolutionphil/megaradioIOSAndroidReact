@@ -43,7 +43,7 @@ export default function NearbyStationsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   
   // Player state
-  const { currentStation, playbackState, play. } = usePlayerStore();
+  const { currentStation, playbackState, play } = usePlayerStore();
 
   // Fetch nearby stations - larger radius (200km) and more stations
   const { data: nearbyData, isLoading, refetch } = useNearbyStations(latitude, longitude, 200, 100);
