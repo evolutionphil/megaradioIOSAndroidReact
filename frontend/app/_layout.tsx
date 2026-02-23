@@ -116,6 +116,20 @@ export default function RootLayout() {
     sendLog('ROOT_LAYOUT_MOUNTED');
   }, []);
 
+  // Load stored authentication on app startup
+  useEffect(() => {
+    const loadAuth = async () => {
+      console.log('[Layout] Loading stored authentication...');
+      try {
+        await useAuthStore.getState().loadStoredAuth();
+        console.log('[Layout] Auth loaded, isAuthenticated:', useAuthStore.getState().isAuthenticated);
+      } catch (error) {
+        console.error('[Layout] Failed to load stored auth:', error);
+      }
+    };
+    loadAuth();
+  }, []);
+
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
     'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
