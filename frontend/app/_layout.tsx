@@ -84,6 +84,8 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
 };
 
 export default function RootLayout() {
+  sendLog('ROOT_LAYOUT_FUNCTION_START');
+  
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
@@ -91,6 +93,11 @@ export default function RootLayout() {
   
   const segments = useSegments();
   const navigationState = useRootNavigationState();
+
+  // Log on first render
+  useEffect(() => {
+    sendLog('ROOT_LAYOUT_MOUNTED');
+  }, []);
 
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
