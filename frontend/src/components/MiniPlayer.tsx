@@ -83,6 +83,9 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   const baseTabBarHeight = Platform.OS === 'ios' ? 85 : 65;
   const tabBarHeight = baseTabBarHeight + systemNavBarHeight;
   
+  // For global (non-tab) screens, add safe area bottom padding
+  const globalBottomPadding = Platform.OS === 'ios' ? insets.bottom : 0;
+  
   // Use the shared audio player hook - get all functions at once
   const { pause, resume, stopPlayback } = useAudioPlayer();
   
