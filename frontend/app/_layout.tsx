@@ -197,6 +197,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (navigationState?.key) {
       setIsNavigationReady(true);
+      RemoteLog.navigationReady();
     }
   }, [navigationState?.key]);
 
