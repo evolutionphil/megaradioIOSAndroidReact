@@ -341,6 +341,7 @@ export default function PlayerScreen() {
     currentStation,
     playbackState,
     nowPlaying,
+    streamUrl,
     sleepTimerActive,
     sleepTimerRemaining,
     startSleepTimer,

@@ -373,13 +373,13 @@ export default function GenreDetailScreen() {
                 </View>
               ) : (
                 <View style={[styles.listContainer, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
-                  {filteredStations.map((station, index) => (
+                  {filteredStations.map((station) => (
                     <View key={station._id} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
-                      {renderListItem(station, index)}
+                      {renderListItem(station)}
                     </View>
                   ))}
                 </View>
-              )}}
+              )}
 
               {filteredStations.length === 0 && !isLoading && (
                 <View style={styles.emptyState}>
