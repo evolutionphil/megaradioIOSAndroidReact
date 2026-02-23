@@ -1,4 +1,4 @@
-import { useWindowDimensions, Platform } from 'react-native';
+import { useWindowDimensions, Platform, Dimensions } from 'react-native';
 
 // Breakpoints for different device sizes
 export const BREAKPOINTS = {
