@@ -347,37 +347,8 @@ const CarPlayService: CarPlayServiceType = {
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       
-      // CRITICAL: Set a placeholder root template SYNCHRONOUSLY
-      // iOS requires immediate template when CarPlay connects
-      // If we delay with async operations, CPTemplateApplicationScene crashes
-      try {
-        const loadingTemplate = new ListTemplate({
-          title: 'MegaRadio',
-          sections: [{
-            header: 'Yükleniyor...',
-            items: [{
-              text: 'İstasyonlar yükleniyor...',
-              detailText: 'Lütfen bekleyin',
-            }],
-          }],
-        });
-        
-        // Set loading template immediately (synchronous)
-        loadingTemplate.tabTitle = 'MegaRadio';
-        loadingTemplate.tabSystemImageName = 'radio';
-        
-        const placeholderTabBar = new TabBarTemplate({
-          templates: [loadingTemplate],
-        });
-        
-        CarPlay.setRootTemplate(placeholderTabBar, false);
-        console.log('[CarPlay] Placeholder template set synchronously');
-        
-        // NOW load actual data asynchronously and replace
-        createRootTemplate();
-      } catch (error) {
-        console.error('[CarPlay] Error setting placeholder template:', error);
-      }
+      // Create and show root template
+      createRootTemplate();
     });
     
     // Register CarPlay disconnection handler
