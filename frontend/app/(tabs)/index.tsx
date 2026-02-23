@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 180,
+    // paddingBottom is now dynamically calculated based on MiniPlayer visibility
     paddingHorizontal: SIDE_PADDING,
   },
 
