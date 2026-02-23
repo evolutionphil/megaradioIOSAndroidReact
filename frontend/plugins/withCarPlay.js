@@ -1,7 +1,7 @@
-// Custom Config Plugin for CarPlay Entitlements & Scene Configuration
-const { withEntitlementsPlist, withInfoPlist, withXcodeProject } = require('@expo/config-plugins');
+// Custom Config Plugin for CarPlay Entitlements
+// NOTE: Scene configuration removed - causes crash in Expo
+const { withEntitlementsPlist, withInfoPlist } = require('@expo/config-plugins');
 
-// Add CarPlay entitlement
 const withCarPlayEntitlement = (config) => {
   // Add entitlement
   config = withEntitlementsPlist(config, (config) => {
@@ -9,9 +9,8 @@ const withCarPlayEntitlement = (config) => {
     return config;
   });
   
-  // Add UIBackgroundModes and CarPlay scene configuration
+  // Add UIBackgroundModes only - NO scene configuration
   config = withInfoPlist(config, (config) => {
-    // Background modes
     const backgroundModes = config.modResults.UIBackgroundModes || [];
     
     if (!backgroundModes.includes('audio')) {
@@ -23,27 +22,8 @@ const withCarPlayEntitlement = (config) => {
     
     config.modResults.UIBackgroundModes = backgroundModes;
     
-    // CarPlay Scene Configuration
-    // This tells iOS that the app supports CarPlay audio
-    if (!config.modResults.UIApplicationSceneManifest) {
-      config.modResults.UIApplicationSceneManifest = {
-        UIApplicationSupportsMultipleScenes: true,
-        UISceneConfigurations: {}
-      };
-    }
-    
-    const sceneManifest = config.modResults.UIApplicationSceneManifest;
-    if (!sceneManifest.UISceneConfigurations) {
-      sceneManifest.UISceneConfigurations = {};
-    }
-    
-    // Add CarPlay scene configuration
-    sceneManifest.UISceneConfigurations.CPTemplateApplicationSceneSessionRoleApplication = [
-      {
-        UISceneConfigurationName: 'CarPlay',
-        UISceneDelegateClassName: '$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate'
-      }
-    ];
+    // DO NOT add UIApplicationSceneManifest - it causes crash
+    // The react-native-carplay package handles this internally
     
     return config;
   });
