@@ -323,34 +323,12 @@ export default function HomeScreen() {
               data-testid="header-profile-btn"
             >
               <View style={styles.avatarContainer}>
-                {/* Avatar with fallback */}
-                {(() => {
-                  const avatarUrl = user?.avatar || user?.profilePhoto;
-                  // Check for valid avatar URL (not null, undefined, or empty string)
-                  const hasValidAvatar = avatarUrl && avatarUrl.trim().length > 0;
-                  
-                  if (hasValidAvatar) {
-                    const fullUrl = avatarUrl.startsWith('http') 
-                      ? avatarUrl 
-                      : `https://themegaradio.com${avatarUrl}`;
-                    return (
-                      <Image 
-                        source={{ uri: fullUrl }} 
-                        style={styles.avatarImage}
-                      />
-                    );
-                  }
-                  
-                  // Fallback: User icon with gradient background
-                  return (
-                    <LinearGradient
-                      colors={['#FF4199', '#FF8C42'] as any}
-                      style={styles.avatarGradient}
-                    >
-                      <Ionicons name="person" size={22} color="#FFF" />
-                    </LinearGradient>
-                  );
-                })()}
+                {/* Avatar with fallback - always show gradient if image fails */}
+                <AvatarWithFallback 
+                  uri={user?.avatar || user?.profilePhoto}
+                  size={44}
+                  style={styles.avatarImage}
+                />
               </View>
               <View>
                 <Text style={styles.welcomeText}>Welcome Back</Text>
