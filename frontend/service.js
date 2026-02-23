@@ -266,6 +266,40 @@ module.exports = async function() {
     }
   });
 
+  // Handle JumpForward - iOS shows this as forward button for live streams
+  // We use it to play next station (same as RemoteNext)
+  TrackPlayer.addEventListener(Event.RemoteJumpForward, async () => {
+    console.log('[TrackPlayer Service] Remote Jump Forward - Playing next station...');
+    try {
+      const nextStation = await getNextStation();
+      if (nextStation) {
+        console.log('[TrackPlayer Service] Playing next station:', nextStation.name);
+        await playStation(nextStation);
+      } else {
+        console.log('[TrackPlayer Service] No next station available');
+      }
+    } catch (e) {
+      console.error('[TrackPlayer Service] Remote Jump Forward error:', e);
+    }
+  });
+
+  // Handle JumpBackward - iOS shows this as backward button for live streams
+  // We use it to play previous station (same as RemotePrevious)
+  TrackPlayer.addEventListener(Event.RemoteJumpBackward, async () => {
+    console.log('[TrackPlayer Service] Remote Jump Backward - Playing previous station...');
+    try {
+      const previousStation = await getPreviousStation();
+      if (previousStation) {
+        console.log('[TrackPlayer Service] Playing previous station:', previousStation.name);
+        await playStation(previousStation);
+      } else {
+        console.log('[TrackPlayer Service] No previous station available');
+      }
+    } catch (e) {
+      console.error('[TrackPlayer Service] Remote Jump Backward error:', e);
+    }
+  });
+
   // Handle remote duck event (when other app plays audio)
   // This is CRITICAL for iOS - handles audio interruptions properly
   TrackPlayer.addEventListener(Event.RemoteDuck, async (event) => {
