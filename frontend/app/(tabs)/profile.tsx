@@ -600,19 +600,17 @@ export default function ProfileScreen() {
             >
               {avatarUploading ? (
                 <ActivityIndicator size="small" color="#FF4199" />
-              ) : (localAvatar || userAvatar) ? (
+              ) : localAvatar ? (
                 <Image 
-                  source={{ uri: localAvatar || userAvatar || '' }} 
+                  source={{ uri: localAvatar }} 
                   style={s.avatarImage}
-                  onError={() => console.log('[Profile Avatar] Failed to load')}
+                  onError={() => console.log('[Profile Avatar] Local preview failed to load')}
                 />
               ) : (
-                <LinearGradient
-                  colors={['#FF4199', '#FF8C42']}
-                  style={s.avatarFallback}
-                >
-                  <Ionicons name="person" size={28} color="#FFF" />
-                </LinearGradient>
+                <AvatarWithFallback 
+                  uri={rawAvatar} 
+                  size={56} 
+                />
               )}
               {/* Camera badge */}
               <View style={s.cameraBadge}>
