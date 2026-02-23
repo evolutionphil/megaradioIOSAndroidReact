@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
   headerSpacer: {
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
   totalListeningValue: {
     fontSize: 32,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
   waveContainer: {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 32,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
 });

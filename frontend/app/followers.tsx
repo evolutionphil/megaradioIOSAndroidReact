@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
   searchBtn: {
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 17,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     flex: 1,
   },
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   },
   removeText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
   divider: {

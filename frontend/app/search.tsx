@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 15,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: '#000000',
     fontFamily: 'System',
   },
@@ -530,7 +530,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 15,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'System',
   },
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
   },
   filterChipText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     textAlign: 'center',
     fontFamily: 'System',
@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
   },
   radioName: {
     fontSize: 15,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'System',
     marginBottom: 6,
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'System',
   },
@@ -686,7 +686,7 @@ const styles = StyleSheet.create({
   },
   initialTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'System',
   },

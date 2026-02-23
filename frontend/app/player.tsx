@@ -893,12 +893,12 @@ const styles = StyleSheet.create({
   },
   hdText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#000000',
   },
   headerTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
   headerRight: {
@@ -972,7 +972,7 @@ const styles = StyleSheet.create({
   },
   stationName: {
     fontSize: 28,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     marginBottom: 4,
     textAlign: 'center',
@@ -1026,7 +1026,7 @@ const styles = StyleSheet.create({
   },
   timerOnText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
   skipButton: {
@@ -1088,7 +1088,7 @@ const styles = StyleSheet.create({
   },
   recText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
 
@@ -1099,7 +1099,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     marginBottom: 16,
@@ -1131,7 +1131,7 @@ const styles = StyleSheet.create({
   },
   gridStationName: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
   gridStationLocation: {
@@ -1149,7 +1149,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 24,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     marginTop: 16,
     marginBottom: 8,
@@ -1167,7 +1167,7 @@ const styles = StyleSheet.create({
   },
   goBackButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
 });

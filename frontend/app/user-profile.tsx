@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   },
   headerName: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     marginBottom: 4,
   },
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
     color: '#888888',
   },
   statNumber: {
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
   shareBtn: {
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   },
   stationName: {
     fontSize: 17,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     marginBottom: 4,
   },
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
   },
   seeMoreText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FF4081',
   },
 
@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
   },
   shareOptionText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
 });

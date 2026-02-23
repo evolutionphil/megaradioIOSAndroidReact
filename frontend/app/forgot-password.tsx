@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   sendButtonText: {
     fontSize: typography.sizes.lg,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.text,
   },
   footer: {
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: typography.sizes.md,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.text,
     textDecorationLine: 'underline',
   },

@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     fontFamily: 'Ubuntu-Bold',
   },
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
   mainText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'Ubuntu-Medium',
     marginBottom: 2,
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'Ubuntu-Medium',
     marginBottom: 8,
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
   loginBtnText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
     fontFamily: 'Ubuntu-Medium',
   },
