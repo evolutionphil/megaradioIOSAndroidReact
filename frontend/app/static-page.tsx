@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   },
   aboutText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.text,
     lineHeight: 24,
     marginBottom: spacing.lg,

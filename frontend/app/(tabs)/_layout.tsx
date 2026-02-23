@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   tabBarLabel: {
     fontSize: 11,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     marginTop: 4,
   },
 });
