@@ -742,6 +742,7 @@ const s = StyleSheet.create({
   avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', position: 'relative' as const },
   avatarImage: { width: 56, height: 56, borderRadius: 28 },
+  avatarFallback: { width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center' },
   cameraBadge: { position: 'absolute' as const, bottom: 0, right: 0, width: 20, height: 20, borderRadius: 10, backgroundColor: '#FF4199', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#0D0D0F' },
   name: { fontSize: 20, fontWeight: '700', color: '#FFF' },
   userName: { fontSize: 20, fontWeight: '700', color: '#FFF' },
