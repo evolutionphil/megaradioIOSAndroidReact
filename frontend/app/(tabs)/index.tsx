@@ -66,6 +66,10 @@ export default function HomeScreen() {
   const { user, isAuthenticated } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
   const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
+  const insets = useSafeAreaInsets();
+  
+  // MiniPlayer visibility for scroll padding
+  const { isMiniPlayerVisible } = usePlayerStore();
   
   // Use responsive hook for tablet support
   const responsive = useResponsive();
