@@ -302,7 +302,13 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={[styles.scrollContent, { paddingHorizontal: sidePadding }]}
+          contentContainerStyle={[
+            styles.scrollContent, 
+            { 
+              paddingHorizontal: sidePadding,
+              paddingBottom: scrollBottomPadding,
+            }
+          ]}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
           }
