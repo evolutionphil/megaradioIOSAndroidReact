@@ -267,8 +267,11 @@ export default function RootLayout() {
     // Fonts loaded - app is ready
     if (fontsLoaded || fontError) {
       console.log('[Layout] Fonts loaded, app ready');
+      sendLog('FONTS_LOADED', { fontsLoaded, fontError: fontError?.message });
     }
   }, [fontsLoaded, fontError]);
+
+  sendLog('ROOT_LAYOUT_RENDER_START');
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
