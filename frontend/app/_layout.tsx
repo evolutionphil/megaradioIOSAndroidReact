@@ -1,12 +1,18 @@
+// LOGGING: Import at very top
+import { sendLog } from '../src/services/remoteLog';
+sendLog('LAYOUT_FILE_LOADING');
+
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, Platform, AppState, AppStateStatus } from 'react-native';
+import { View, StyleSheet, Platform, AppState, AppStateStatus, Text } from 'react-native';
 import { useFonts } from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18nextProvider } from 'react-i18next';
+sendLog('LAYOUT_IMPORTS_1');
+
 import i18n, { initI18n } from '../src/services/i18nService';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
@@ -15,12 +21,16 @@ import { initializeApp as initializeTvData } from '../src/services/tvInitService
 import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
+sendLog('LAYOUT_IMPORTS_2');
+
 import { AudioProvider } from '../src/providers/AudioProvider';
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
+sendLog('LAYOUT_ALL_IMPORTS_DONE');
+
 // CarPlay DISABLED - causes crash on Expo production builds
 // import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
