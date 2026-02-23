@@ -593,18 +593,23 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Artwork URL:', artworkUrl);
 
       // STEP 5: Add track to player with metadata
-      // For iOS Control Center Next/Previous to be ENABLED, we need multiple tracks in queue
-      // We add placeholder tracks before and after the main track
+      // For iOS Control Center Next/Previous to be ENABLED:
+      // - DON'T use isLiveStream: true (iOS hides skip buttons for live streams)
+      // - Use a very long duration to simulate a long track
+      // - Add placeholder tracks before and after
       console.log('[AudioProvider] STEP 5: Adding track with metadata...');
+      
+      // Long duration (24 hours in seconds) - tricks iOS into showing skip buttons
+      const fakeDuration = 86400;
       
       // Add a "previous" placeholder (will be replaced when user presses Previous)
       await TrackPlayer.add({
         id: 'placeholder_previous',
-        url: url, // Same URL, will be replaced on Previous press
+        url: url,
         title: 'Previous Station',
         artist: 'MegaRadio',
         artwork: artworkUrl,
-        isLiveStream: true,
+        duration: fakeDuration,
       });
       
       // Add the actual current station
@@ -615,17 +620,17 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         artist: 'MegaRadio',
         album: station.country || 'Live Radio',
         artwork: artworkUrl,
-        isLiveStream: true,
+        duration: fakeDuration,
       });
       
       // Add a "next" placeholder (will be replaced when user presses Next)
       await TrackPlayer.add({
         id: 'placeholder_next',
-        url: url, // Same URL, will be replaced on Next press
+        url: url,
         title: 'Next Station',
         artist: 'MegaRadio',
         artwork: artworkUrl,
-        isLiveStream: true,
+        duration: fakeDuration,
       });
       
       // Skip to the actual track (index 1)
