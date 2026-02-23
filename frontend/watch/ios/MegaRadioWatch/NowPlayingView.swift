@@ -4,87 +4,88 @@
 import SwiftUI
 
 struct NowPlayingView: View {
-    @EnvironmentObject var connectivityService: WatchConnectivityService
-    @State private var isPlaying = false
+    @EnvironmentObject var appState: AppState
+    var station: Station? = nil
+    
+    private var displayStation: Station? {
+        station ?? appState.currentStation
+    }
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 // Station Logo
-                if let logoUrl = connectivityService.currentStation?.logoUrl,
+                if let logoUrl = displayStation?.logoUrl,
                    let url = URL(string: logoUrl) {
                     AsyncImage(url: url) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     } placeholder: {
-                        Image(systemName: "radio")
-                            .font(.system(size: 40))
-                            .foregroundColor(.gray)
+                        radioPlaceholder
                     }
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .frame(width: 70, height: 70)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 } else {
-                    Image(systemName: "radio")
-                        .font(.system(size: 40))
-                        .foregroundColor(.gray)
-                        .frame(width: 80, height: 80)
-                        .background(Color.gray.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    radioPlaceholder
                 }
                 
                 // Station Name
-                Text(connectivityService.currentStation?.name ?? "Radyo Seçilmedi")
-                    .font(.headline)
+                Text(displayStation?.name ?? "Radyo Secilmedi")
+                    .font(.system(size: 16, weight: .semibold))
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
+                    .foregroundColor(.white)
                 
                 // Now Playing Info
-                if let nowPlaying = connectivityService.nowPlaying {
-                    VStack(spacing: 4) {
-                        Text(nowPlaying.title ?? "")
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
+                if let nowPlaying = appState.nowPlaying {
+                    VStack(spacing: 2) {
+                        if let title = nowPlaying.title {
+                            Text(title)
+                                .font(.system(size: 13))
+                                .foregroundColor(.white)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                        }
                         
                         if let artist = nowPlaying.artist {
                             Text(artist)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(.system(size: 11))
+                                .foregroundColor(.gray)
                                 .lineLimit(1)
                         }
                     }
                 }
                 
                 // Playback Controls
-                HStack(spacing: 20) {
+                HStack(spacing: 16) {
                     // Previous
                     Button(action: {
-                        connectivityService.sendCommand(.previous)
+                        WatchConnectivityService.shared.sendCommand(.previous)
                     }) {
                         Image(systemName: "backward.fill")
-                            .font(.title2)
+                            .font(.system(size: 18))
+                            .foregroundColor(.white)
                     }
                     .buttonStyle(.plain)
                     
                     // Play/Pause
                     Button(action: {
-                        isPlaying.toggle()
-                        connectivityService.sendCommand(isPlaying ? .play : .pause)
+                        appState.togglePlayPause()
                     }) {
-                        Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                            .font(.system(size: 44))
-                            .foregroundColor(.pink)
+                        Image(systemName: appState.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(Color("AccentPink"))
                     }
                     .buttonStyle(.plain)
                     
                     // Next
                     Button(action: {
-                        connectivityService.sendCommand(.next)
+                        WatchConnectivityService.shared.sendCommand(.next)
                     }) {
                         Image(systemName: "forward.fill")
-                            .font(.title2)
+                            .font(.system(size: 18))
+                            .foregroundColor(.white)
                     }
                     .buttonStyle(.plain)
                 }
@@ -92,33 +93,48 @@ struct NowPlayingView: View {
                 
                 // Volume Control
                 VStack(spacing: 4) {
-                    HStack {
+                    HStack(spacing: 6) {
                         Image(systemName: "speaker.fill")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
                         
                         Slider(value: Binding(
-                            get: { connectivityService.volume },
-                            set: { connectivityService.setVolume($0) }
+                            get: { appState.volume },
+                            set: { WatchConnectivityService.shared.setVolume($0) }
                         ), in: 0...1)
+                        .tint(Color("AccentPink"))
                         
                         Image(systemName: "speaker.wave.3.fill")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 8)
+                .padding(.top, 4)
             }
-            .padding()
+            .padding(.horizontal, 8)
+            .padding(.vertical, 12)
         }
-        .navigationTitle("Çalıyor")
-        .onReceive(connectivityService.$isPlaying) { playing in
-            isPlaying = playing
+        .background(Color.black)
+        .onAppear {
+            // If a station was passed, play it
+            if let station = station {
+                appState.playStation(station)
+            }
         }
+    }
+    
+    private var radioPlaceholder: some View {
+        Image(systemName: "radio")
+            .font(.system(size: 30))
+            .foregroundColor(.gray)
+            .frame(width: 70, height: 70)
+            .background(Color(white: 0.15))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 
 #Preview {
     NowPlayingView()
-        .environmentObject(WatchConnectivityService())
+        .environmentObject(AppState())
 }
