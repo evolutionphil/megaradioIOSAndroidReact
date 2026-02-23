@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFF',
   },
   headerCount: {
@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
 
@@ -652,7 +652,7 @@ const styles = StyleSheet.create({
   },
   gridName: {
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
     textAlign: 'center',
     marginBottom: 2,
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
   },
   stationName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
     marginBottom: 2,
   },
@@ -736,7 +736,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 22,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFF',
     textAlign: 'center',
     marginBottom: 16,
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   },
   discoverText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FF4081',
   },
 
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
   publicProfilesText: {
     flex: 1,
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
 
@@ -819,7 +819,7 @@ const styles = StyleSheet.create({
   },
   sortOptionText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
   radioOuter: {
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
   },
   viewModeLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
   viewModeButtons: {
@@ -897,7 +897,7 @@ const styles = StyleSheet.create({
   },
   reorderCancelText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
   reorderSaveBtn: {
@@ -908,7 +908,7 @@ const styles = StyleSheet.create({
   },
   reorderSaveText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFF',
   },
 });
