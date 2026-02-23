@@ -576,7 +576,10 @@ export default function HomeScreen() {
             ) : (
               <>
                 {renderResponsiveGrid(allStations, responsive.isTablet ? 25 : 21)}
-                <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push('/all-stations')}>
+                <TouchableOpacity style={styles.seeMoreButton} onPress={() => router.push({
+                  pathname: '/all-stations',
+                  params: { country: country || undefined, countryCode: countryCode || undefined }
+                })}>
                   <Text style={styles.seeMoreText}>{t('see_more')}</Text>
                 </TouchableOpacity>
               </>
