@@ -101,13 +101,13 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "MegaRadio yak\u0131n\u0131zda radyo istasyonlar\u0131 bulabilmek i\u00e7in konumunuzu kullan\u0131r."
+          "locationAlwaysAndWhenInUsePermission": "MegaRadio uses your location to find nearby radio stations."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Profil foto\u011fraf\u0131 y\u00fckleyebilmek i\u00e7in foto\u011fraf galerinize eri\u015fim gereklidir."
+          "photosPermission": "Photo library access is required to upload a profile picture."
         }
       ],
       [
