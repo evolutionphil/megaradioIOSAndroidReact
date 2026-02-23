@@ -150,6 +150,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     
     // Check if already exists
     if (favorites.some(f => f._id === station._id)) {
+      console.log('[FavoritesStore] Station already in favorites:', station._id);
       return;
     }
 
@@ -162,25 +163,36 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     set({ favorites: updatedFavorites, customOrder: updatedOrder });
 
     try {
-      if (isAuthenticated()) {
-        // Add to server
-        await userService.addFavorite(station._id);
-      }
-      
-      // Always save to local storage as backup
+      // First save to local storage
       console.log('[FavoritesStore] Saving to AsyncStorage:', FAVORITES_KEY, 'favorites count:', updatedFavorites.length);
       await Promise.all([
         AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites)),
         AsyncStorage.setItem(FAVORITES_ORDER_KEY, JSON.stringify(updatedOrder)),
       ]);
+      console.log('[FavoritesStore] Local save complete');
+      
+      // Then try to sync with server if authenticated
+      if (isAuthenticated()) {
+        console.log('[FavoritesStore] User is authenticated, syncing to API...');
+        try {
+          const result = await userService.addFavorite(station._id);
+          console.log('[FavoritesStore] API sync SUCCESS:', result);
+        } catch (apiError: any) {
+          console.error('[FavoritesStore] API sync FAILED:', apiError?.response?.status, apiError?.response?.data || apiError.message);
+          // Don't revert - local storage is the source of truth
+          // API sync will happen on next app open
+        }
+      } else {
+        console.log('[FavoritesStore] User not authenticated, skipping API sync');
+      }
       
       // Sync to Android Auto
       syncToAndroidAuto(updatedFavorites);
       
-      console.log('[FavoritesStore] Save complete');
-    } catch (error) {
-      console.error('[FavoritesStore] Error adding favorite:', error);
-      // Revert on error
+      console.log('[FavoritesStore] addFavorite complete');
+    } catch (error: any) {
+      console.error('[FavoritesStore] Error adding favorite:', error?.message || error);
+      // Revert on local storage error
       set({ favorites, customOrder });
     }
   },
