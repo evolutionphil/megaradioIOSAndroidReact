@@ -77,8 +77,24 @@ export default function FavoritesScreen() {
 
   // Load favorites on mount and when auth state changes
   useEffect(() => {
-    console.log('[Favorites] useEffect triggered, isAuthenticated:', isAuthenticated, 'user:', user?._id, 'isLoaded:', isLoaded);
-    loadFavorites();
+    const loadWithAuthCheck = async () => {
+      console.log('[Favorites] useEffect triggered');
+      console.log('[Favorites] isAuthenticated:', isAuthenticated, 'user:', user?._id);
+      
+      // If authenticated but no token yet, wait for auth to load
+      if (isAuthenticated && !useAuthStore.getState().token) {
+        console.log('[Favorites] Waiting for token to load...');
+        // Give auth store time to load from secure storage
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
+      const token = useAuthStore.getState().token;
+      console.log('[Favorites] Token after wait:', token ? token.substring(0, 15) + '...' : 'NULL');
+      
+      loadFavorites();
+    };
+    
+    loadWithAuthCheck();
   }, [isAuthenticated, user?._id]);
 
   // Get sorted favorites
