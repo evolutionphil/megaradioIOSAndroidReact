@@ -11,187 +11,239 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is a functional Expo (React Native) app. In this session, the agent performed a massive overhaul of several key areas.
+The application is a functional Expo (React Native) app that has undergone significant feature implementation and refactoring.
 
-Major bug fixes were implemented for Android, including a fix for the car mode volume slider, safe area issues with the mini-player, item scaling on the home screen, and ensuring audio stops when the app is closed.
+In this session, the agent performed a massive overhaul to make the entire application UI responsive for tablets. A custom  hook was created and applied across all major screens and components to adapt layouts, fonts, and grid columns dynamically.
 
-The most significant work involved implementing full native support for **Google Cast (Chromecast), Apple AirPlay, CarPlay, and Android Auto**. This involved creating a custom-branded Chromecast receiver, which the user's backend developer deployed, and writing several Expo Config Plugins to inject native code (Kotlin for Android Auto) and configure project settings (, ) without ejecting from Expo.
-
-The agent also removed the splash screen entirely at the user's request and provided a detailed template response to help the user resolve an App Store rejection related to content rights.
-
-The final action was a UX improvement to the cast functionality, making the header icon directly open the system's native device picker instead of an intermediate modal.
+Several major bugs and feature gaps were addressed:
+-   **CarPlay Crash:** A critical crash that occurred when opening the app in CarPlay was diagnosed using user-provided crash logs and fixed by addressing a race condition in the template setup logic.
+-   **Background Controls:** Lock screen and background controls for Next and Previous stations were implemented. This involved adding the necessary capabilities to  and using  to provide the background service with the current playlist context.
+-   **Unified Casting:** The casting feature was rebuilt to provide a YouTube-like experience. A single cast button now intelligently shows an AirPlay picker on iOS (using ) and a Chromecast picker on Android, resolving user confusion and improving functionality.
+-   **Bug Fixes:** Several pending issues were resolved, including implementing the Unique Stations Listened statistic, centering text on genre cards, and adding the logic for Android Auto favorites persistence via .
+-   **Xcode & Build Support:** The agent provided extensive, step-by-step guidance to the user, who is a beginner with Xcode, on how to generate the native iOS project (env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories
+- Updating package.json
+✔ Updated package.json
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+[withAndroidAuto] Added Android Auto meta-data
+- Running prebuild
+[withAndroidAuto] Added MegaRadioAutoService
+- Running prebuild
+✔ Finished prebuild
+- Installing CocoaPods...
+✔ Skipped installing CocoaPods because operating system is not on macOS.), troubleshoot common CocoaPods and Xcode SDK errors, and add an Apple Watch () target to the project. The agent also diagnosed and fixed several Swift build errors in the watchOS code.
 
 **Last working item**:
--   **Last item agent was working**: Improving the native casting UX. The agent modified the player screen header so that tapping the cast icon directly opens the system's native device selector (for Chromecast/AirPlay), removing the extra step of opening a modal first.
--   **Status**: IN PROGRESS
+-   **Last item agent was working**: Fixing Swift compiler errors for the watchOS target build in Xcode. The user provided a build log showing multiple errors, including duplicate type definitions and the use of APIs unavailable on watchOS.
+-   **Status**: USER VERIFICATION PENDING
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Manual testing on a physical device after the user creates a new EAS build.
+-   **Which testing method agent to use?**: Manual testing by the user in Xcode. The agent cannot perform a native build.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Test recent major feature implementations (Casting, CarPlay, Android Auto) (P0)
--   Issue 2: Avatar not visible on Profile and Discovery screens (P0)
+-   Issue 1: Test all recent major implementations (Tablet UI, CarPlay, Background Controls, Casting) (P0)
+-   Issue 2: watchOS build fails in Xcode (P0)
 -   Issue 3: Google OAuth still fails on Android (P0 - Blocked)
--   Issue 4: Statistics for Unique Stations Listened are not updating (P1)
--   Issue 5: Implement Android Auto Favorites persistence (P1)
--   Issue 6: Genre card text is not centered (P2)
+-   Issue 4: Avatar not visible on Profile and Discovery screens (P0 - Blocked)
+-   Issue 5: Fix Sleep Timer (P2)
 
 **Issues Detail:**
--   **Issue 1: Test recent major feature implementations (Casting, CarPlay, Android Auto) (P0)**
-    -   **Description**: The agent has implemented full native support for casting, CarPlay, and Android Auto, along with a UX fix for the cast button. These changes require new native builds to be tested.
+-   **Issue 1: Test all recent major implementations (Tablet UI, CarPlay, Background Controls, Casting) (P0)**
+    -   **Description**: A massive number of features and fixes were implemented in this session. They are all native or have significant UI impact and require a new EAS build to be tested by the user.
     -   **Next debug checklist**:
         -   Instruct the user to generate new  builds for both iOS and Android using EAS.
         -   Ask the user to test:
-            -   Tapping the header cast icon opens the system device picker directly.
-            -   Casting to a Chromecast device displays the new custom-branded receiver.
-            -   Connecting to a car with Android Auto shows the MegaRadio app with browsing capabilities.
-            -   Connecting to a car with CarPlay shows the MegaRadio app with browsing capabilities.
-    -   **Why fix this issue and what will be achieved with the fix?**: To verify that the app's core new features are working correctly for the user.
+            -   The UI on a physical tablet to confirm responsiveness.
+            -   Connecting to CarPlay to confirm the crash is fixed.
+            -   Using the lock screen controls (Next/Previous) while a station is playing.
+            -   Tapping the  on iOS to open the AirPlay picker and on Android for the Chromecast picker.
+    -   **Why fix this issue and what will be achieved with the fix?**: To verify that the core work of this entire session is functional and meets user expectations.
     -   **Status**: USER VERIFICATION PENDING
     -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires native build)
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires new native build)
 
--   **Issue 2: Avatar not visible on Profile and Discovery screens (P0)**
-    -   **Description**: Despite a successful login, the user's avatar is not displayed on the profile or discovery screens.
-    -   **Attempted fixes**: The agent added a  to check the user object from . The code correctly looks for  or .
-    -   **Next debug checklist**:
-        -   Check the application logs for the output of the  in  after the user logs in.
-        -   Confirm with the user if the backend API response for a logged-in user includes a URL for  or . This is likely a backend data issue.
-    -   **Why fix this issue and what will be achieved with the fix?**: Improves user experience and personalization.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend
+-   **Issue 2: watchOS build fails in Xcode (P0)**
+    -   **Description**: The user is getting Swift compiler errors when building the  target. Errors included duplicate type definitions () and use of APIs not available on watchOS.
+    -   **Attempted fixes**: The agent analyzed the build log, created a new , refactored the conflicting files, and provided the user with detailed instructions on how to , clean the Xcode project by removing old file references, add the new files, and attempt the build again.
+    -   **Next debug checklist**: The user must follow the agent's last set of instructions to clean their Xcode project and re-attempt the build. If it fails, they must provide the new build log.
+    -   **Why fix this issue and what will be achieved with the fix?**: Unblocks the user from building and testing the Apple Watch companion app.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (native build)
 
 -   **Issue 3: Google OAuth still fails on Android (P0 - Blocked)**
-    -   **Description**: Android login fails with an OAuth policy error. This is a known issue from a previous session.
-    -   **Next debug checklist**: This is **blocked on user action**. The agent must re-confirm with the user that they have added the correct SHA-1 fingerprint from their Expo build credentials to their Google Cloud Console project for the Android OAuth client.
+    -   **Description**: Android login fails with an OAuth policy error. This has been a persistent issue.
+    -   **Next debug checklist**: This is **blocked on user action**. The user must add the correct SHA-1 fingerprint from their Expo build credentials to their Google Cloud Console project for the Android OAuth client. The agent should remind the user of this requirement.
     -   **Why fix this issue and what will be achieved with the fix?**: Enables a primary login method on Android.
     -   **Status**: BLOCKED
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Not applicable.
+    -   **Should Test frontend/backend/both after fix?**: N/A
 
--   **Issue 4: Statistics for Unique Stations Listened are not updating (P1)**
-    -   **Description**: The profile screen shows Unique Stations Listened as 0. The agent implemented a fix for Music Played but this statistic remains broken.
-    -   **Next debug checklist**:
-        -   Inspect .
-        -   Ensure that the  function from  is called when a new, unique station starts playing. A list of played station IDs may need to be maintained in the session.
-    -   **Why fix this issue and what will be achieved with the fix?**: Corrects a user-facing statistic on the profile page.
+-   **Issue 4: Avatar not visible on Profile and Discovery screens (P0 - Blocked)**
+    -   **Description**: The user's avatar is not displayed after logging in.
+    -   **Attempted fixes**: The agent added detailed  statements in . The frontend code correctly looks for  or . The agent concluded this is a backend data issue.
+    -   **Next debug checklist**: This is **blocked on the user's backend developer**. The user needs to be informed that the frontend code is correct, but the login API endpoint is likely not returning an  field in the user object. The logs added by the agent can help their backend developer debug this.
+    -   **Why fix this issue and what will be achieved with the fix?**: Improves user experience and personalization.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+
+-   **Issue 5: Fix Sleep Timer (P2)**
+    -   **Description**: The sleep timer functionality is not yet implemented.
+    -   **Next debug checklist**: Inspect the relevant UI components and implement a timer that calls  after a user-specified duration.
+    -   **Why fix this issue and what will be achieved with the fix?**: Adds a user-requested feature.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: Frontend
 
--   **Issue 5: Implement Android Auto Favorites persistence (P1)**
-    -   **Description**: The native Android Auto service () has a placeholder () for loading user favorites. This functionality is not yet implemented.
-    -   **Next debug checklist**:
-        -   Favorites need to be passed from the React Native side to the native Kotlin service.
-        -   One approach is to save favorites to  from the RN side whenever they change.
-        -   The  can then read from these  to build the favorites list.
-    -   **Why fix this issue and what will be achieved with the fix?**: Completes the Android Auto integration by enabling a key feature.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires native build)
-
--   **Issue 6: Genre card text is not centered (P2)**
-    -   **Description**: The user reported that the text inside genre cards on the Discover page () is not centered, making the design look poor.
-    -   **Next debug checklist**:
-        -   Inspect .
-        -   Apply centering styles (e.g., , ) to the  and its container.
-    -   **Why fix this issue and what will be achieved with the fix?**: Fixes a minor UI/UX issue reported by the user.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend
+**In progress Task List**:
+-   **Task 1: Complete watchOS Integration**
+    -   **Where to resume**: The user is currently trying to get a successful build. Once that's done, the logic for communication between the phone app and the watch app (e.g., sending now playing info, controlling playback via ) needs to be tested and verified.
+    -   **What will be achieved with this?**: A functional Apple Watch companion app that can display information from and interact with the main phone app.
+    -   **Status**: IN PROGRESS
+    -   **Blocked on something**: A successful watchOS build in Xcode by the user.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1: Re-implement Splash Screen**: The splash screen was completely removed. The agent should wait for the user to provide a new design and then implement it.
--   **P1: Resolve App Store Rejection**: Follow up with the user to see if they submitted the agent-provided response to Apple and what the outcome was.
+-   **P1: Re-implement Splash Screen**: Wait for the user to provide a new design.
+-   **P1: Resolve App Store Rejection**: Follow up with the user on the status of their App Store submission regarding the content rights issue.
 
 **Future Tasks:**
--   **P2: Fix Sleep Timer**.
 -   **P2: Implement UI animations** (e.g., Static Equalizer on player screen).
 -   **P2: tvOS & Android TV Support**.
--   **P2: User Guidance for Watch App Integration**.
 
 **Completed work in this session**
--   **Implemented Full Native Casting**:
-    -   Created and deployed a custom-branded Chromecast receiver ().
-    -   Integrated the user's Application ID ().
-    -   Fixed playback issues and improved device discovery speed.
-    -   **Changed cast button to directly open the native device picker.**
--   **Enabled Full CarPlay & Android Auto**:
-    -   Re-enabled CarPlay using  after the user received entitlement approval.
-    -   Created a native Kotlin  via an Expo plugin () for full Android Auto browsing.
--   **Fixed Critical Android Bugs**:
-    -   Resolved the erratic Car Mode slider with a new  component.
-    -   Fixed the Mini Player being hidden by the system navigation bar.
-    -   Corrected the item scaling issue in Recently Played and Stations Near You.
-    -   Ensured audio playback stops when the app is terminated on Android.
--   **Addressed Miscellaneous Bugs & Features**:
-    -   Made the 'Play at Login' text on the profile screen dynamic.
-    -   Fixed font styles on the station detail page.
-    -   Implemented a counter for Music Played based on track metadata changes.
--   **Project Maintenance**:
-    -   **Removed Splash Screen**: Completely deleted all splash screen files and logic at the user's request due to persistent bugs.
-    -   **Resolved App Store Rejection**: Provided the user with a detailed template response for a Guideline 5.2.3 (Intellectual Property) rejection.
-    -   Fixed an [withAndroidAuto] Applying full Android Auto configuration... validation error by creating a  plugin.
+-   **Tablet Responsiveness**: Refactored the entire application UI to be responsive on tablets using a new  hook. Affected files include all screens under  and various components.
+-   **CarPlay Crash Fix**: Fixed a native crash when launching the app in CarPlay by adding a  block and ensuring proper template initialization in .
+-   **Background Playback Controls**: Implemented Next/Previous station functionality from the lock screen and control center by updating , , and .
+-   **Unified Casting UI**: Replaced the old casting modal with a single  component that uses  for AirPlay on iOS and  on Android.
+-   **Statistics Fix**: Implemented tracking for Unique Stations Listened in .
+-   **Android Auto Favorites**: Implemented persistence logic for Android Auto favorites using  via the  plugin.
+-   **watchOS Build Fixes**: Diagnosed and fixed multiple Swift compiler errors by refactoring  files, resolving duplicate definitions and API incompatibilities.
+-   **Extensive User Support**: Provided detailed, beginner-friendly instructions for using Xcode, env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories | reusing /android, /ios
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+✔ Finished prebuild, and troubleshooting native build errors.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Expo Config Plugins**: The primary method used to add native capabilities (CarPlay, Android Auto, Google Cast) without ejecting from the Expo managed workflow. The agent created multiple custom plugins to inject Kotlin code, modify , and update .
--   **Chromecast Custom Receiver**: A self-contained HTML/CSS/JS application () that runs on the Chromecast device, providing a branded experience. It communicates with the mobile app and listens for custom commands.
--   **Android Auto **: A native Android service, written in Kotlin and injected via a config plugin, that allows the app to expose its media catalog for browsing directly on the Android Auto screen.
--   **Native Casting UI ()**: The agent transitioned from a modal-based UI to using the library's built-in , which directly invokes the OS-level device picker for a more standard and fluid user experience.
--   **App Lifecycle Management ()**: Used React Native's  listener in the root layout to detect when the app goes into the background or is terminated, triggering  to correctly stop audio playback.
+-   **Tablet Responsiveness**: Using a custom  hook with  to provide different style values based on screen width breakpoints.
+-   **Crash Log Analysis**: Reading user-provided  files to debug native iOS crashes.
+-   **Background Audio Controls**: Using 's headless service and leveraging  to pass state from the main app to the background service.
+-   **Unified Casting Button**: Using platform-specific rendering to show different native casting components ( vs ) under a single logical UI element.
+-   **Expo Prebuild & Native Configuration**: Guiding the user through [withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native project directories (./ios and ./android) and updating .gitignore
+✔ Created native projects | /android, /ios already created
+- Adding Metro bundler config
+⚠️  Skipped Metro config updates:
+› Existing Metro config found; not overwriting.
+› You will need to extend the default @expo/metro-config in your Metro config.
+  Learn more: https://docs.expo.dev/guides/customizing-metro
+
+- Updating your package.json scripts, dependencies, and main file
+- Updating your package.json scripts, dependencies, and main file
+- Updating your package.json scripts, dependencies, and main file to generate the native  directory required for Xcode development.
+-   **Xcode Project Setup for Expo**: Guiding a novice user on opening the  file, adding watchOS Targets, managing signing, and troubleshooting  and SDK errors.
+-   **Swift for watchOS**: Debugging and fixing Swift compiler errors related to duplicate type definitions and API availability.
 
 **All files of reference**
--    (Contains all plugin configurations)
--    (Location of the main player and new cast button)
--    (Root layout, contains app lifecycle and CarPlay logic)
--    (The core of the native Android Auto integration)
--    (The core of the CarPlay integration)
--    (The code for the UI that appears on the TV)
--    (Related to the avatar and stats issues)
+-    (Core of tablet UI)
+-   All screen files under  (Tablet UI refactoring)
+-    (CarPlay crash fix)
+-    (Background controls state management)
+-    (Background controls logic)
+-    (New unified cast button)
+-    (New AirPlay config plugin)
+-   All Swift files in  (watchOS implementation and fixes)
+-   User-provided artifacts: , 
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   The user **MUST create new EAS builds** for both iOS and Android. A huge number of recent changes (Casting, CarPlay, Android Auto, UI fixes) are native and can **ONLY** be tested on a new build installed on a physical device.
--   **Do not work on the splash screen.** It was removed intentionally. Wait for the user to provide a new design before starting any work on it.
--   **Google OAuth on Android is BLOCKED.** The issue is not in the codebase. The user must add their app's SHA-1 fingerprint to the Google Cloud Console. Remind them of this.
--   The agent created several custom Expo Config Plugins in the  directory. Be aware of these files, as they control all native functionality.
+-   The user is currently blocked on building the **watchOS target in Xcode**. The agent has provided a fix and detailed instructions. The next step is to get confirmation from the user if the build succeeded. Do not proceed with other tasks until this is resolved.
+-   A **massive amount of work** (Tablet UI, CarPlay fix, background controls, new cast button) has been implemented but is **COMPLETELY UNTESTED** by the user. After the watchOS issue is resolved, the highest priority is to guide the user to create a new EAS build and test all these new features thoroughly.
+-   The **Google OAuth on Android** issue is still blocked on the user. They need to update their Google Cloud Console settings.
+-   The **Avatar issue** is now considered a backend problem. The user needs to verify the API response from their end with their backend developer.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Reports an [withAndroidAuto] Applying full Android Auto configuration... error related to . (Status: **RESOLVED**)
-2.  **User**: Requests that the cast button should directly open the device picker, without an intermediate modal. (Status: **RESOLVED & IMPLEMENTED**)
-3.  **User**: Confirms the agent should write full native code for Android Auto and re-analyze CarPlay. (Status: **ADDRESSED**)
-4.  **User**: Announces that CarPlay entitlement has been approved and asks for the next steps. (Status: **ADDRESSED & IMPLEMENTED**)
-5.  **User**: Shares the rejection message from Apple (Guideline 5.2.3) regarding content rights. (Status: **ADDRESSED**, agent provided a response template).
-6.  **User**: Confirms there is no splash screen and asks what the initial screen will be. (Status: **ADDRESSED**)
-7.  **User**: Confirms the backend developer has finished deploying and asks the agent to test. (Status: **ADDRESSED & TESTED**)
-8.  **User**: Asks for the HTML content of the custom receiver to give to the backend developer. (Status: **ADDRESSED**)
-9.  **User**: Provides the Google Cast Application ID (). (Status: **ADDRESSED & IMPLEMENTED**)
-10. **User**: Asks for the backend integration instructions to be written directly in the chat for the backend developer. (Status: **ADDRESSED**)
+1.  **User**: Okay, Xcode is open now. How do I build for watchOS and upload to TestFlight? (Status: **ADDRESSED**)
+2.  **User**: Xcode says  after prebuild. (Status: **ADDRESSED**; agent diagnosed missing Xcode setup and provided solution).
+3.  **User**: The Xcode path is correct (). (Status: **ADDRESSED**; agent provided next steps).
+4.  **User**:  finished but  failed. (Status: **ADDRESSED**; agent diagnosed as Xcode setup issue).
+5.  **User**:  failed with . (Status: **ADDRESSED**; agent instructed user to run yarn install v1.22.22
+[1/4] Resolving packages...
+success Already up-to-date.
+$ patch-package
+patch-package 8.0.1
+Applying patches...
+react-native-track-player@4.1.2 ✔
+Done in 0.38s. first).
+6.  **User**: I need to go into the  directory, right? Explain in detail which folder. (Status: **ADDRESSED**; agent clarified the project structure).
+7.  **User**: How do I build for watchOS in Xcode, explain it step-by-step for a beginner. (Status: **ADDRESSED**; agent provided a detailed guide).
+8.  **User**: I'm getting many issues while trying to build for watchOS. (Status: **ADDRESSED**, agent requested and analyzed logs).
+9.  **User**: After I , I don't need to do anything else manually, like deleting files, right? (Status: **ADDRESSED**, agent clarified that Xcode project references might need cleaning).
+10. **User**: Did you check the watchOS stuff in extreme detail? I don't want to have problems. (Status: **ADDRESSED**, agent performed a full review of the watchOS Swift files).
 
 **Project Health Check:**
 -   **Broken**:
     -   Google Login on Android (Blocked on user action).
+    -   watchOS build (Fix has been provided, pending user verification).
 -   **Needs Verification**:
-    -   The entire native casting flow (Chromecast/AirPlay) on a new build.
-    -   The entire Android Auto native integration on a new build.
-    -   The entire CarPlay integration on a new build.
-    -   Avatar display logic.
-    -   Statistics counting for unique stations.
-    -   The fix for the car mode slider.
+    -   The entire set of features implemented in this session requires a new EAS build for testing.
+    -   Tablet Responsiveness (all screens).
+    -   CarPlay Crash Fix.
+    -   Background Playback Controls (Next/Previous).
+    -   Unified Casting Button (AirPlay/Chromecast).
 
 **3rd Party Integrations**
 -   ****: Core audio engine.
 -   ****: For CarPlay integration.
 -   ****: For Google Cast (Chromecast) integration.
+-   ****: **(New)** For native AirPlay integration on iOS.
 -   ** / Google Sign-In**: Used for authentication (currently broken on Android).
 -   **EAS (Expo Application Services)**: Used for building native binaries.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES (The  was used to diagnose casting issues).
+-   **Testing agent used after significant changes**: YES ( for CarPlay/Casting,  for responsiveness).
 -   **Test files created**: None.
--   **Known regressions**: None, but many new native features are untested.</analysis>
+-   **Known regressions**: None identified, but many major features are untested.</analysis>
