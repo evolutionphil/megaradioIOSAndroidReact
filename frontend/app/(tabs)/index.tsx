@@ -337,7 +337,6 @@ export default function HomeScreen() {
                       <Image 
                         source={{ uri: fullUrl }} 
                         style={styles.avatarImage}
-                        defaultSource={require('../../assets/images/default-avatar.png')}
                       />
                     );
                   }
