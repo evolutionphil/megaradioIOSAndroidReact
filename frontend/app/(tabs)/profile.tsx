@@ -599,11 +599,19 @@ export default function ProfileScreen() {
             >
               {avatarUploading ? (
                 <ActivityIndicator size="small" color="#FF4199" />
-              ) : (
-                <AvatarWithFallback 
-                  uri={localAvatar || userAvatar}
-                  size={56}
+              ) : (localAvatar || userAvatar) ? (
+                <Image 
+                  source={{ uri: localAvatar || userAvatar || '' }} 
+                  style={s.avatarImage}
+                  onError={() => console.log('[Profile Avatar] Failed to load')}
                 />
+              ) : (
+                <LinearGradient
+                  colors={['#FF4199', '#FF8C42']}
+                  style={s.avatarFallback}
+                >
+                  <Ionicons name="person" size={28} color="#FFF" />
+                </LinearGradient>
               )}
               {/* Camera badge */}
               <View style={s.cameraBadge}>
