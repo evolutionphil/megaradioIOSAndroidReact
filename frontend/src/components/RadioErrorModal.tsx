@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   errorTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
     textAlign: 'center',
     marginBottom: 4,

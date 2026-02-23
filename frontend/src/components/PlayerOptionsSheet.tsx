@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   optionText: {
     flex: 1,
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
   badge: {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: '#888',
   },
   badgeTextPink: {

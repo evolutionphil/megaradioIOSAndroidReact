@@ -182,7 +182,7 @@ const carouselStyles = StyleSheet.create({
   },
   placeholderText: {
     fontSize: 40 * S,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#555',
   },
 });
@@ -484,7 +484,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   // Use carousel index to determine displayed station (matches the visual carousel card)
   const displayedStation = stations.length > 0 ? stations[carouselIndex] : currentStation;
 
-  const ub = { fontWeight: '700' as const };
+  const ub = { fontFamily: 'Ubuntu-Bold' as const };
 
   // Get iOS status bar height for proper safe area
   const statusBarHeight = Platform.OS === 'ios' ? 54 : StatusBar.currentHeight || 0;

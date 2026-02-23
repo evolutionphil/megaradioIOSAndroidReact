@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   },
   stationName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
   genreText: {

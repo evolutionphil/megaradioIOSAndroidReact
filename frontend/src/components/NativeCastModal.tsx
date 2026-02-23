@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: colors.text,
   },
   closeButton: {
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: typography.sizes.sm,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
   },
 
   // Native Cast Button
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   },
   stationName: {
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: colors.text,
   },
   nowPlayingText: {
@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
   },
   deviceListTitle: {
     fontSize: typography.sizes.sm,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.textMuted,
     marginBottom: spacing.sm,
   },
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   },
   deviceName: {
     fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.text,
   },
   deviceModel: {
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
   },
   castButtonText: {
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
 
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   },
   unavailableTitle: {
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: colors.text,
     marginBottom: spacing.sm,
   },
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
   },
   closeBtnText: {
     fontSize: typography.sizes.md,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
 

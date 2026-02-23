@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   headerSpacer: { width: 40 },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFF',
     textAlign: 'center',
   },
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   // Station info
   stationName: {
     fontSize: 22,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFF',
     textAlign: 'center',
     marginBottom: 4,
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
 });

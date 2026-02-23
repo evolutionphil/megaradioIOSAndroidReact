@@ -75,9 +75,9 @@ const NumberPicker = ({
 const pStyles = StyleSheet.create({
   wrapper: { flex: 1, height: ITEM_H * VISIBLE, overflow: 'hidden' },
   item: { height: ITEM_H, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4 },
-  num: { fontSize: 32, fontWeight: '700', color: '#444', textAlign: 'center', minWidth: 40 },
+  num: { fontSize: 32, fontFamily: 'Ubuntu-Bold', color: '#444', textAlign: 'center', minWidth: 40 },
   numSelected: { fontSize: 38, color: '#FFF' },
-  suffix: { fontSize: 16, fontWeight: '600', color: '#FFF', marginTop: 6 },
+  suffix: { fontSize: 16, fontFamily: 'Ubuntu-Medium', color: '#FFF', marginTop: 6 },
 });
 
 // Sleep Timer Setup Modal (for setting timer)
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
   },
   handle: { width: 40, height: 4, borderRadius: 2, backgroundColor: '#555', alignSelf: 'center', marginTop: 10, marginBottom: 6 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  title: { fontSize: 18, fontWeight: '700', color: '#FFF' },
-  closeText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  title: { fontSize: 18, fontFamily: 'Ubuntu-Bold', color: '#FFF' },
+  closeText: { fontSize: 16, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
 
   pickerRow: { flexDirection: 'row', height: ITEM_H * VISIBLE, marginBottom: 16 },
   band: {
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 
   btnWrap: { paddingBottom: 8, paddingHorizontal: 16 },
   pinkBtn: { height: 52, borderRadius: 26, backgroundColor: '#FF4199', justifyContent: 'center', alignItems: 'center' },
-  pinkBtnText: { fontSize: 17, fontWeight: '700', color: '#FFF' },
+  pinkBtnText: { fontSize: 17, fontFamily: 'Ubuntu-Bold', color: '#FFF' },
 
   // Counter modal styles
   counterContent: { 
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
   counterTime: { 
     fontSize: 52, 
-    fontWeight: '700', 
+    fontFamily: 'Ubuntu-Bold', 
     color: '#FFF',
     letterSpacing: 2,
   },
