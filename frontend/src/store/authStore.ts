@@ -16,6 +16,9 @@ interface AuthState {
   // Authentication status
   isAuthenticated: boolean;
   
+  // Auth loaded from storage flag
+  isAuthLoaded: boolean;
+  
   // Loading state
   isLoading: boolean;
   
