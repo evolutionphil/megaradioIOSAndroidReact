@@ -50,8 +50,14 @@ export function useResponsive(): ResponsiveMetrics {
   const dimensions = useWindowDimensions();
   
   // Fallback to safe defaults if dimensions not available yet
-  const width = dimensions.width > 0 ? dimensions.width : 375;
-  const height = dimensions.height > 0 ? dimensions.height : 812;
+  // Use Dimensions.get as backup for initial render
+  const fallbackDimensions = Dimensions.get('window');
+  const width = (dimensions.width && dimensions.width > 0) 
+    ? dimensions.width 
+    : (fallbackDimensions.width > 0 ? fallbackDimensions.width : 375);
+  const height = (dimensions.height && dimensions.height > 0) 
+    ? dimensions.height 
+    : (fallbackDimensions.height > 0 ? fallbackDimensions.height : 812);
   // Device type detection
   const isLargeTablet = width >= BREAKPOINTS.largeTablet;
   const isTablet = width >= BREAKPOINTS.tablet;
