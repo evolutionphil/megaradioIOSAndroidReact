@@ -2,6 +2,9 @@
 // This provides TRUE background audio and lock screen controls for iOS/Android
 
 import React, { createContext, useCallback, useEffect, useRef, useState, ReactNode } from 'react';
+import { sendLog } from '../services/remoteLog';
+sendLog('AUDIO_PROVIDER_FILE_LOADING');
+
 import TrackPlayer, { 
   Capability, 
   State, 
@@ -18,6 +21,7 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import statsService from '../services/statsService';
 import type { Station } from '../types';
+sendLog('AUDIO_PROVIDER_IMPORTS_DONE');
 
 // Storage keys - MUST match keys in service.js
 const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
