@@ -26,6 +26,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useLocationStore } from '../../src/store/locationStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { usePlayerStore } from '../../src/store/playerStore';
+import { AvatarWithFallback } from '../../src/components/AvatarWithFallback';
 import api from '../../src/services/api';
 import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
