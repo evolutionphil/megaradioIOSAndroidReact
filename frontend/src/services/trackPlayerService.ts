@@ -47,14 +47,23 @@ export async function setupPlayer(): Promise<boolean> {
       },
       
       // Capabilities shown in Control Center / Lock Screen
-      // IMPORTANT: For iOS, SkipToNext/Previous show as forward/backward buttons
+      // For iOS live streams: JumpForward/JumpBackward are used instead of SkipToNext/Previous
+      // These will trigger the remote-jump-forward / remote-jump-backward events
+      // which we handle to switch stations
       capabilities: [
         Capability.Play,
         Capability.Pause,
         Capability.Stop,
         Capability.SkipToNext,
         Capability.SkipToPrevious,
+        Capability.JumpForward,
+        Capability.JumpBackward,
       ],
+      
+      // Jump intervals - iOS shows these as forward/backward buttons
+      // We'll intercept these events to change stations instead of seeking
+      forwardJumpInterval: 30,
+      backwardJumpInterval: 15,
       
       // Compact capabilities (for small notifications on Android)
       compactCapabilities: [
