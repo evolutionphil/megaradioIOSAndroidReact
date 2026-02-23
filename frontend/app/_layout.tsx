@@ -254,22 +254,16 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // Show loading screen while fonts are loading
-  if (!fontsLoaded && !fontError) {
-    console.log('[Layout] Waiting for fonts to load...');
-    return (
-      <View style={[styles.container, styles.loading]}>
-        <StatusBar style="light" />
-        <ActivityIndicator size="large" color="#FF4199" />
-        <Text style={{ color: '#FFFFFF', marginTop: 16, fontSize: 14 }}>Loading MegaRadio...</Text>
-      </View>
-    );
-  }
-
-  // Font loading error - show error but continue
-  if (fontError) {
-    console.error('[Layout] Font loading error:', fontError);
-  }
+  // Don't block on fonts - continue to render app
+  // Fonts will load in background and UI will update when ready
+  useEffect(() => {
+    if (fontsLoaded) {
+      console.log('[Layout] Fonts loaded successfully');
+    }
+    if (fontError) {
+      console.error('[Layout] Font loading error (continuing anyway):', fontError);
+    }
+  }, [fontsLoaded, fontError]);
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
