@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFF',
   },
 
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   },
   languageName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFF',
   },
   languageNative: {
@@ -345,6 +345,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     color: '#FFF',
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
   },
 });

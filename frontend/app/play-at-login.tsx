@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
   },
   headerSpacer: {
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 17,
-    fontWeight: '600',
+    fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
   },
   radioContainer: {

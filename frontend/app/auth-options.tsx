@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: typography.sizes.md,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.text,
     marginRight: 40,
     flexShrink: 1,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     fontSize: typography.sizes.lg,
-    fontWeight: '500',
+    fontFamily: 'Ubuntu-Medium',
     color: colors.text,
     textDecorationLine: 'underline',
   },
