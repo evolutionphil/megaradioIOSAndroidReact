@@ -32,8 +32,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TrackPlayer from 'react-native-track-player';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
-// CarPlay - re-enabled with safer implementation
-import { CarPlayHandler } from '../src/components/CarPlayHandler';
+// CarPlay - DISABLED due to crash on CarPlay connect (CPTemplateApplicationScene delegate issue)
+// This is a native iOS limitation with Expo managed workflow
+// import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 sendLog('BEFORE_QUERY_CLIENT');
 
@@ -297,8 +298,8 @@ export default function RootLayout() {
           <AudioProvider>
             <PlayAtLoginHandler />
             <NotificationHandler />
-            {/* CarPlay Handler - safe implementation without scene delegate */}
-            <CarPlayHandler />
+            {/* CarPlay DISABLED - causes crash when CarPlay connects (CPTemplateApplicationScene issue) */}
+            {/* <CarPlayHandler /> */}
             <View style={styles.container}>
               <StatusBar style="light" />
               <Stack
