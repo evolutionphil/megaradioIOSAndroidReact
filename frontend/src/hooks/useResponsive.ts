@@ -47,8 +47,11 @@ export interface ResponsiveMetrics {
  * Returns device metrics and helper functions for adaptive layouts
  */
 export function useResponsive(): ResponsiveMetrics {
-  const { width, height } = useWindowDimensions();
+  const dimensions = useWindowDimensions();
   
+  // Fallback to safe defaults if dimensions not available yet
+  const width = dimensions.width > 0 ? dimensions.width : 375;
+  const height = dimensions.height > 0 ? dimensions.height : 812;
   // Device type detection
   const isLargeTablet = width >= BREAKPOINTS.largeTablet;
   const isTablet = width >= BREAKPOINTS.tablet;
