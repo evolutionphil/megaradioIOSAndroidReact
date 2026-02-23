@@ -23,11 +23,6 @@ import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
 // CarPlay enabled after Apple approval
 import { CarPlayHandler } from '../src/components/CarPlayHandler';
-// Remote logging for TestFlight debugging
-import RemoteLog from '../src/services/remoteLogService';
-
-// Log app start immediately
-RemoteLog.appStart();
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
