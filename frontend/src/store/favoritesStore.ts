@@ -87,32 +87,16 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       console.log('[FavoritesStore] isAuthenticated:', authStatus);
       console.log('[FavoritesStore] user:', user?._id);
       console.log('[FavoritesStore] token exists:', !!token);
-      console.log('[FavoritesStore] token prefix:', token?.substring(0, 20));
       
       if (authStatus && user?._id && token) {
         // Use authenticated endpoint GET /api/user/favorites (requires token)
         try {
           console.log('[FavoritesStore] Fetching favorites from API with token...');
           
-          // Use userService which uses api interceptor with automatic token
-          const favoritesResponse = await userService.getFavorites();
-          console.log('[FavoritesStore] Raw API response type:', typeof favoritesResponse);
-          console.log('[FavoritesStore] Raw API response keys:', Object.keys(favoritesResponse || {}));
+          // userService.getFavorites() now returns Station[] directly
+          const favorites = await userService.getFavorites();
           
-          // The API might return { favorites: [...] } or just [...]
-          let favorites: Station[];
-          if (Array.isArray(favoritesResponse)) {
-            favorites = favoritesResponse;
-          } else if (favoritesResponse?.favorites && Array.isArray(favoritesResponse.favorites)) {
-            favorites = favoritesResponse.favorites;
-          } else if (favoritesResponse?.stations && Array.isArray(favoritesResponse.stations)) {
-            favorites = favoritesResponse.stations;
-          } else {
-            console.log('[FavoritesStore] Unexpected response format:', JSON.stringify(favoritesResponse).substring(0, 200));
-            favorites = [];
-          }
-          
-          console.log('[FavoritesStore] Parsed favorites count:', favorites.length);
+          console.log('[FavoritesStore] Favorites loaded from API:', favorites.length);
           
           // Also load custom order from local storage
           const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
@@ -130,13 +114,9 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         } catch (apiError: any) {
           console.log('[FavoritesStore] API favorites failed:', apiError.message);
           console.log('[FavoritesStore] API error status:', apiError.response?.status);
-          console.log('[FavoritesStore] API error data:', JSON.stringify(apiError.response?.data || {}).substring(0, 200));
         }
       } else {
-        console.log('[FavoritesStore] Not authenticated or missing token, using local storage');
-        console.log('[FavoritesStore] - authStatus:', authStatus);
-        console.log('[FavoritesStore] - user?._id:', user?._id);
-        console.log('[FavoritesStore] - token:', token ? 'exists' : 'missing');
+        console.log('[FavoritesStore] Not authenticated, using local storage');
       }
       
       // Fallback to local storage for guests or API failure
