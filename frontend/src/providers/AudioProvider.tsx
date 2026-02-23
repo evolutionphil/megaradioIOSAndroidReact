@@ -105,18 +105,28 @@ async function setupTrackPlayer(): Promise<boolean> {
         appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
       },
       // What buttons to show in notification/control center
+      // IMPORTANT: SkipToNext/Previous needed for iOS lock screen buttons
+      // JumpForward/Backward also needed for iOS (shows as 30s/15s buttons)
       capabilities: [
         Capability.Play,
         Capability.Pause,
         Capability.Stop,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
+        Capability.JumpForward,
+        Capability.JumpBackward,
       ],
       // What buttons are shown in compact notification (Android)
       compactCapabilities: [
         Capability.Play,
         Capability.Pause,
+        Capability.SkipToNext,
       ],
-      // Not used for live radio
-      progressUpdateEventInterval: 0,
+      // Jump intervals for iOS
+      forwardJumpInterval: 30,
+      backwardJumpInterval: 15,
+      // Not used for live radio - but set to non-zero for iOS to enable skip
+      progressUpdateEventInterval: 1,
     });
 
     trackPlayerInitialized = true;
