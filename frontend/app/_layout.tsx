@@ -297,8 +297,8 @@ export default function RootLayout() {
           <AudioProvider>
             <PlayAtLoginHandler />
             <NotificationHandler />
-            {/* CarPlay DISABLED - causes crash due to SceneDelegate issue */}
-            {/* <CarPlayHandler /> */}
+            {/* CarPlay Handler - safe implementation without scene delegate */}
+            <CarPlayHandler />
             <View style={styles.container}>
               <StatusBar style="light" />
               <Stack
