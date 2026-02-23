@@ -47,9 +47,12 @@ const playStation = async (station) => {
     // Reset queue
     await TrackPlayer.reset();
     
-    // For iOS Control Center Next/Previous buttons to be ENABLED,
-    // we need to add placeholder tracks before and after the current track
+    // For iOS Control Center Next/Previous buttons to be ENABLED:
+    // - DON'T use isLiveStream: true (iOS hides skip buttons)
+    // - Use a very long duration (24 hours)
+    // - Add placeholder tracks before and after
     const artwork = getStationLogoUrl(station);
+    const fakeDuration = 86400; // 24 hours in seconds
     
     // Add "previous" placeholder
     await TrackPlayer.add({
@@ -58,8 +61,7 @@ const playStation = async (station) => {
       title: 'Previous Station',
       artist: 'MegaRadio',
       artwork: artwork,
-      isLiveStream: true,
-      duration: 0,
+      duration: fakeDuration,
     });
     
     // Add actual station
@@ -69,8 +71,7 @@ const playStation = async (station) => {
       title: station.name,
       artist: station.country || 'Radio',
       artwork: artwork,
-      isLiveStream: true,
-      duration: 0,
+      duration: fakeDuration,
     });
     
     // Add "next" placeholder
@@ -80,8 +81,7 @@ const playStation = async (station) => {
       title: 'Next Station',
       artist: 'MegaRadio',
       artwork: artwork,
-      isLiveStream: true,
-      duration: 0,
+      duration: fakeDuration,
     });
     
     // Skip to the actual track (index 1)
