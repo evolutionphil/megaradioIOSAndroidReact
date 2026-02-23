@@ -849,6 +849,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     isPlaying,
   };
 
+  sendLog('AUDIO_PROVIDER_RENDERING');
+
   return (
     <AudioContext.Provider value={value}>
       {children}
