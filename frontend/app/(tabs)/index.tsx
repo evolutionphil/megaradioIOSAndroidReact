@@ -460,7 +460,11 @@ export default function HomeScreen() {
             ) : (
               <Text style={styles.emptyText}>{t('enable_location')}</Text>
             )}
-            <TouchableOpacity style={styles.seeMoreButton}>
+            <TouchableOpacity 
+              style={styles.seeMoreButton}
+              onPress={() => router.push('/nearby-stations')}
+              data-testid="nearby-see-more-btn"
+            >
               <Text style={styles.seeMoreText}>{t('see_more')}</Text>
             </TouchableOpacity>
           </View>
