@@ -80,6 +80,23 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
 
 sendLog('BEFORE_ROOT_LAYOUT_DEFINITION');
 
+// Global MiniPlayer wrapper - MOVED INSIDE to avoid module-level hook issues
+const GlobalMiniPlayer = React.memo(() => {
+  const segments = useSegments();
+  const { isMiniPlayerVisible } = usePlayerStore();
+  
+  // Don't show on tabs (they have their own MiniPlayer), player screen, or auth screens
+  const isTabScreen = segments[0] === '(tabs)';
+  const isPlayerScreen = segments.includes('player');
+  const isAuthScreen = ['login', 'signup', 'auth-options', 'onboarding'].includes(segments[0] as string);
+  
+  if (isTabScreen || isPlayerScreen || isAuthScreen || !isMiniPlayerVisible) {
+    return null;
+  }
+  
+  return <MiniPlayer />;
+});
+
 export default function RootLayout() {
   sendLog('ROOT_LAYOUT_FUNCTION_START');
   
