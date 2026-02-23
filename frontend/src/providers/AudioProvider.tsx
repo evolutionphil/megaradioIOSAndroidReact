@@ -593,7 +593,21 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Artwork URL:', artworkUrl);
 
       // STEP 5: Add track to player with metadata
+      // For iOS Control Center Next/Previous to be ENABLED, we need multiple tracks in queue
+      // We add placeholder tracks before and after the main track
       console.log('[AudioProvider] STEP 5: Adding track with metadata...');
+      
+      // Add a "previous" placeholder (will be replaced when user presses Previous)
+      await TrackPlayer.add({
+        id: 'placeholder_previous',
+        url: url, // Same URL, will be replaced on Previous press
+        title: 'Previous Station',
+        artist: 'MegaRadio',
+        artwork: artworkUrl,
+        isLiveStream: true,
+      });
+      
+      // Add the actual current station
       await TrackPlayer.add({
         id: station._id,
         url: url,
@@ -601,9 +615,21 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         artist: 'MegaRadio',
         album: station.country || 'Live Radio',
         artwork: artworkUrl,
-        // For live streams
         isLiveStream: true,
       });
+      
+      // Add a "next" placeholder (will be replaced when user presses Next)
+      await TrackPlayer.add({
+        id: 'placeholder_next',
+        url: url, // Same URL, will be replaced on Next press
+        title: 'Next Station',
+        artist: 'MegaRadio',
+        artwork: artworkUrl,
+        isLiveStream: true,
+      });
+      
+      // Skip to the actual track (index 1)
+      await TrackPlayer.skip(1);
 
       // STEP 6: Start playback
       console.log('[AudioProvider] STEP 6: Starting playback...');
