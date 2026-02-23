@@ -1,9 +1,3 @@
-// FIRST: Import remote logging before anything else
-import { RemoteLog } from '../src/services/remoteLogService';
-
-// Log immediately when module loads
-RemoteLog.info('MODULE_LOAD_START', { file: '_layout.tsx' });
-
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -21,19 +15,14 @@ import { initializeApp as initializeTvData } from '../src/services/tvInitService
 import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
-
-RemoteLog.info('IMPORTS_BEFORE_AUDIO');
-
 import { AudioProvider } from '../src/providers/AudioProvider';
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
-// CarPlay enabled after Apple approval
-import { CarPlayHandler } from '../src/components/CarPlayHandler';
-
-RemoteLog.info('ALL_IMPORTS_DONE');
+// CarPlay DISABLED - causes crash on Expo production builds
+// import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
@@ -45,12 +34,11 @@ const GlobalMiniPlayer = () => {
   const isPlayerScreen = segments.includes('player');
   const isAuthScreen = ['login', 'signup', 'auth-options', 'onboarding'].includes(segments[0] as string);
   
-  if (isTabScreen || isPlayerScreen || isAuthScreen || !isMiniPlayerVisible || !currentStation) {
+  if (isTabScreen || isPlayerScreen || isAuthScreen || !isMiniPlayerVisible) {
     return null;
   }
   
-  // Use isGlobal=true for non-tab screens (no tab bar offset)
-  return <MiniPlayer isGlobal={true} />;
+  return <MiniPlayer />;
 };
 
 // Create a client with optimized defaults for performance (based on backend recommendations)
@@ -86,9 +74,6 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
 };
 
 export default function RootLayout() {
-  // Log component render
-  RemoteLog.info('ROOT_LAYOUT_RENDER');
-  
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
@@ -109,80 +94,111 @@ export default function RootLayout() {
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
 
-  // Start preloading essential data asynchronously (doesn't block UI)
+  // Initialize i18n
   useEffect(() => {
-    if (!preloadStarted.current) {
-      preloadStarted.current = true;
-      
-      // Initialize i18n first
-      initI18n().then(() => {
+    const init = async () => {
+      try {
+        await initI18n();
         setI18nReady(true);
-        console.log('[Layout] i18n initialized');
-      }).catch(err => {
-        console.log('[Layout] i18n init error:', err);
+      } catch (error) {
+        console.error('Failed to initialize i18n:', error);
         setI18nReady(true); // Continue anyway
-      });
-      
-      // Fetch TV init data - single request for all essential data
-      // Get country and language from stores
-      const { countryCode, countryEnglish } = useLocationStore.getState();
-      const { currentLanguage } = useLanguageStore.getState();
-      
-      const country = countryCode || countryEnglish || 'TR'; // Default to Turkey
-      const lang = currentLanguage || 'tr';
-      
-      console.log('[Layout] Starting TV init with country:', country, 'lang:', lang);
-      
-      initializeTvData(queryClient, country, lang)
-        .then((data) => {
-          if (data) {
-            console.log('[Layout] TV init complete - loaded genres:', data.genres?.length, 'stations:', data.popularStations?.length);
-          }
-        })
-        .catch(err => {
-          console.log('[Layout] TV init error (non-blocking):', err);
+      }
+    };
+    init();
+  }, []);
+
+  // Setup Track Player once (only on native platforms, not web, and don't block UI)
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      console.log('[Layout] Web platform - skipping Track Player setup');
+      return;
+    }
+
+    let mounted = true;
+    
+    const setupPlayer = async () => {
+      try {
+        // Check if already initialized
+        const currentState = await TrackPlayer.getPlaybackState().catch(() => null);
+        
+        if (currentState) {
+          console.log('[Layout] Track Player already initialized');
+          return;
+        }
+        
+        await TrackPlayer.setupPlayer();
+        console.log('[Layout] Track Player setup complete');
+        
+        // Setup capabilities
+        await TrackPlayer.updateOptions({
+          capabilities: [
+            TrackPlayer.CAPABILITY_PLAY,
+            TrackPlayer.CAPABILITY_PAUSE,
+            TrackPlayer.CAPABILITY_STOP,
+            TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
+            TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+          ],
+          compactCapabilities: [
+            TrackPlayer.CAPABILITY_PLAY,
+            TrackPlayer.CAPABILITY_PAUSE,
+          ],
         });
-      
-      // Also run legacy preload in background for public profiles
-      preloadEssentialData(queryClient).catch(err => {
-        console.log('[Layout] Preload error (non-blocking):', err);
-      });
-      
-      // Load favorites (works for both guest and authenticated users)
-      console.log('[Layout] Loading favorites from storage...');
-      useFavoritesStore.getState().loadFavorites().catch(err => {
-        console.log('[Layout] Favorites load error (non-blocking):', err);
-      });
+      } catch (error: any) {
+        // Only log if not already initialized error
+        if (!error?.message?.includes('already been initialized')) {
+          console.error('[Layout] Track Player setup error:', error);
+        }
+      }
+    };
+
+    setupPlayer();
+    
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Preload TV data if on TV platform
+  useEffect(() => {
+    const preloadTV = async () => {
+      if (Platform.isTV && !preloadStarted.current) {
+        preloadStarted.current = true;
+        try {
+          console.log('[Layout] Preloading TV data...');
+          await initializeTvData();
+          console.log('[Layout] TV init complete');
+        } catch (error) {
+          console.error('[Layout] TV init error:', error);
+        }
+      }
+    };
+    preloadTV();
+  }, []);
+
+  // Preload essential data in background
+  useEffect(() => {
+    if (!preloadStarted.current && !Platform.isTV) {
+      preloadStarted.current = true;
+      preloadEssentialData().catch(console.error);
     }
   }, []);
 
-  // Handle app state changes - stop audio when app is terminated (Android)
+  // App state listener for background/foreground
   useEffect(() => {
-    if (Platform.OS !== 'android') return;
-    
-    const handleAppStateChange = async (nextAppState: AppStateStatus) => {
-      console.log('[Layout] App state changed to:', nextAppState);
-      
-      // On Android, when app goes to background or inactive, we should check if it's being closed
-      // Note: 'inactive' state is primarily for iOS, Android uses 'background'
-      if (nextAppState === 'background') {
-        // App is going to background - Android might be terminating it
-        // We don't stop audio here because user might want background playback
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        console.log('[Layout] App came to foreground');
+      } else if (nextAppState === 'background') {
         console.log('[Layout] App went to background');
       }
     };
 
+    // This runs when the component unmounts - remove the listener
     const subscription = AppState.addEventListener('change', handleAppStateChange);
     
-    // Handle app termination - clean up TrackPlayer
-    // This runs when the component unmounts (app is closing)
     return () => {
       subscription.remove();
-      console.log('[Layout] Cleanup: Stopping TrackPlayer on app close');
-      // Stop audio when app is closing
-      TrackPlayer.reset().catch(err => {
-        console.log('[Layout] TrackPlayer reset error:', err);
-      });
     };
   }, []);
 
@@ -193,71 +209,42 @@ export default function RootLayout() {
     }
   }, [navigationState?.key]);
 
-  // Check onboarding status and navigate
+  // Handle routing based on onboarding status (after navigation is ready)
   useEffect(() => {
-    const checkAndNavigate = async () => {
-      console.log('[Layout] Check: isNavigationReady=', isNavigationReady, 'hasCheckedOnboarding=', hasCheckedOnboarding, 'segments=', segments);
+    const checkAndRoute = async () => {
+      if (!isNavigationReady || hasCheckedOnboarding) return;
       
-      if (isNavigationReady && !hasCheckedOnboarding) {
+      try {
+        const onboardingComplete = await checkOnboardingComplete();
         setHasCheckedOnboarding(true);
         
-        const onboardingComplete = await checkOnboardingComplete();
-        const currentSegment = segments[0];
-        console.log('[Layout] Onboarding complete:', onboardingComplete, 'Current segment:', currentSegment);
+        // Don't redirect if user is navigating to a specific route
+        if (segments.length > 0 && !['(tabs)', 'onboarding'].includes(segments[0] as string)) {
+          return;
+        }
         
         if (onboardingComplete) {
-          // If onboarding is complete and user is on onboarding page, redirect to home
-          if (currentSegment === 'onboarding') {
-            console.log('[Layout] Onboarding complete, redirecting to home...');
-            router.replace('/(tabs)');
-          } else {
-            console.log('[Layout] Onboarding complete, staying on current page');
-          }
+          console.log('[Layout] Onboarding complete, going to home...');
+          router.replace('/(tabs)');
         } else {
-          // Onboarding not complete - redirect to onboarding if not already there
-          if (currentSegment !== 'onboarding') {
-            console.log('[Layout] Navigating to onboarding...');
-            router.replace('/onboarding');
-          } else {
-            console.log('[Layout] Already on onboarding page');
-          }
+          console.log('[Layout] Going to onboarding...');
+          router.replace('/onboarding');
         }
+        
+        // Initialize language from store
+        const { currentLanguage } = useLanguageStore.getState();
+        if (currentLanguage) {
+          i18n.changeLanguage(currentLanguage);
+        }
+      } catch (error) {
+        console.error('Error during routing:', error);
+        setHasCheckedOnboarding(true);
+        router.replace('/onboarding');
       }
     };
 
-    checkAndNavigate();
+    checkAndRoute();
   }, [isNavigationReady, hasCheckedOnboarding, segments]);
-
-  // Handle notification tap - when user taps notification, open player
-  // Also handle case where user dismisses player modal and lands on empty route
-  // This effect should only run ONCE on app start, not on every navigation
-  const hasHandledNotification = useRef(false);
-  
-  useEffect(() => {
-    if (Platform.OS === 'web') return;
-    
-    // Only handle notification redirect once on app start
-    if (isNavigationReady && hasCheckedOnboarding && !hasHandledNotification.current) {
-      hasHandledNotification.current = true;
-      
-      const currentSegment = segments[0];
-      
-      // If no valid segment (empty route after dismissing player), go to tabs
-      if (!currentSegment || currentSegment === '') {
-        console.log('[Layout] Empty route detected, redirecting to tabs...');
-        router.replace('/(tabs)');
-        return;
-      }
-      
-      // Only redirect to player if app was opened from notification AND we're at root
-      // Don't redirect if user is navigating to other screens intentionally
-      const hasStation = usePlayerStore.getState().currentStation;
-      if (hasStation && currentSegment !== 'player' && currentSegment !== '(tabs)' && currentSegment !== 'onboarding' && currentSegment === '') {
-        console.log('[Layout] App opened from notification, redirecting to player...');
-        router.replace('/player');
-      }
-    }
-  }, [isNavigationReady, hasCheckedOnboarding]);
 
   const onLayoutRootView = useCallback(async () => {
     // Fonts loaded - app is ready
@@ -273,7 +260,7 @@ export default function RootLayout() {
           <AudioProvider>
             <PlayAtLoginHandler />
             <NotificationHandler />
-            {/* CarPlay disabled until Apple approves entitlement */}
+            {/* CarPlay DISABLED - causes crash due to SceneDelegate issue */}
             {/* <CarPlayHandler /> */}
             <View style={styles.container}>
               <StatusBar style="light" />
@@ -314,8 +301,6 @@ export default function RootLayout() {
               {/* Global MiniPlayer - shown on all screens except player */}
               <GlobalMiniPlayer />
               <RadioErrorModal />
-              {/* CarPlay Handler - initializes CarPlay & Android Auto */}
-              <CarPlayHandler />
             </View>
           </AudioProvider>
         </QueryClientProvider>
@@ -328,9 +313,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  loading: {
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
