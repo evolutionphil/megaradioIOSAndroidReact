@@ -83,12 +83,6 @@ export default function RootLayout() {
   const segments = useSegments();
   const navigationState = useRootNavigationState();
 
-  // Log component mount
-  useEffect(() => {
-    RemoteLog.info('LAYOUT_MOUNTED', { platform: Platform.OS });
-    return () => RemoteLog.info('LAYOUT_UNMOUNTED');
-  }, []);
-
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
     'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
@@ -100,16 +94,6 @@ export default function RootLayout() {
     'Ubuntu-Bold': require('../assets/fonts/Ubuntu-Bold.ttf'),
     'Ubuntu-BoldItalic': require('../assets/fonts/Ubuntu-BoldItalic.ttf'),
   });
-
-  // Log font loading status
-  useEffect(() => {
-    if (fontsLoaded) {
-      RemoteLog.info('FONTS_LOADED');
-    }
-    if (fontError) {
-      RemoteLog.error('FONT_ERROR', { error: fontError.message });
-    }
-  }, [fontsLoaded, fontError]);
 
   // Start preloading essential data asynchronously (doesn't block UI)
   useEffect(() => {
