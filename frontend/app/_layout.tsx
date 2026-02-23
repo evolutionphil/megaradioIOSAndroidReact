@@ -1,3 +1,9 @@
+// FIRST: Import remote logging before anything else
+import { RemoteLog } from '../src/services/remoteLogService';
+
+// Log immediately when module loads
+RemoteLog.info('MODULE_LOAD_START', { file: '_layout.tsx' });
+
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -15,6 +21,9 @@ import { initializeApp as initializeTvData } from '../src/services/tvInitService
 import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
+
+RemoteLog.info('IMPORTS_BEFORE_AUDIO');
+
 import { AudioProvider } from '../src/providers/AudioProvider';
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
@@ -23,6 +32,8 @@ import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
 // CarPlay enabled after Apple approval
 import { CarPlayHandler } from '../src/components/CarPlayHandler';
+
+RemoteLog.info('ALL_IMPORTS_DONE');
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
