@@ -86,6 +86,9 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
 };
 
 export default function RootLayout() {
+  // Log component render
+  RemoteLog.info('ROOT_LAYOUT_RENDER');
+  
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
