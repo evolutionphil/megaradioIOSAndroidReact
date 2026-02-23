@@ -110,6 +110,7 @@ const initialState = {
   user: null,
   token: null,
   isAuthenticated: false,
+  isAuthLoaded: false,  // Track if auth was loaded from storage
   isLoading: true,
   error: null,
   deviceInfo: getDeviceInfo(),
