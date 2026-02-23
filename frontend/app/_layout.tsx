@@ -84,6 +84,7 @@ sendLog('BEFORE_ROOT_LAYOUT_DEFINITION');
 const GlobalMiniPlayer = React.memo(() => {
   const segments = useSegments();
   const { isMiniPlayerVisible } = usePlayerStore();
+  const insets = useSafeAreaInsets();
   
   // Don't show on tabs (they have their own MiniPlayer), player screen, or auth screens
   const isTabScreen = segments[0] === '(tabs)';
@@ -94,7 +95,8 @@ const GlobalMiniPlayer = React.memo(() => {
     return null;
   }
   
-  return <MiniPlayer />;
+  // For non-tab screens, show MiniPlayer above the safe area bottom
+  return <MiniPlayer isGlobal={true} />;
 });
 
 export default function RootLayout() {
