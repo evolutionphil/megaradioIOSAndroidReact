@@ -82,40 +82,22 @@ export const CarPlayHandler: React.FC = () => {
       return;
     }
 
-    // Wrap initialization in try-catch to prevent crashes
-    const initCarPlay = async () => {
-      try {
-        console.log('[CarPlayHandler] Initializing CarPlay service...');
+    console.log('[CarPlayHandler] Initializing CarPlay service...');
 
-        // Initialize CarPlay with callbacks
-        CarPlayService.initialize(
-          playStation,
-          getPopularStations,
-          getFavoriteStations,
-          getRecentStations,
-          getGenresList,
-          getStationsByGenre
-        );
-      } catch (error) {
-        console.error('[CarPlayHandler] Failed to initialize CarPlay:', error);
-        // Don't crash the app if CarPlay fails
-      }
-    };
-
-    // Delay CarPlay initialization to let the app fully load first
-    const timeout = setTimeout(() => {
-      initCarPlay();
-    }, 2000);
+    // Initialize CarPlay with callbacks
+    CarPlayService.initialize(
+      playStation,
+      getPopularStations,
+      getFavoriteStations,
+      getRecentStations,
+      getGenresList,
+      getStationsByGenre
+    );
 
     // Cleanup on unmount
     return () => {
-      clearTimeout(timeout);
-      try {
-        console.log('[CarPlayHandler] Cleaning up CarPlay service');
-        CarPlayService.disconnect();
-      } catch (error) {
-        console.error('[CarPlayHandler] Cleanup error:', error);
-      }
+      console.log('[CarPlayHandler] Cleaning up CarPlay service');
+      CarPlayService.disconnect();
     };
   }, [playStation]);
 
