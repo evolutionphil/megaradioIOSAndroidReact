@@ -58,8 +58,8 @@ export default function FavoritesScreen() {
     updateCustomOrder,
   } = useFavoritesStore();
 
-  // Auth state
-  const { isAuthenticated, user } = useAuthStore();
+  // Auth state - including isAuthLoaded flag to wait for storage hydration
+  const { isAuthenticated, user, isAuthLoaded } = useAuthStore();
 
   // Player
   const { playStation } = useAudioPlayer();
