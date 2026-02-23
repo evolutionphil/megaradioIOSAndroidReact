@@ -1,6 +1,5 @@
-// Cast Modal - Simple TV Cast (Polling-based, no pairing code!)
-// Same account login = automatic cast
-import React, { useState } from 'react';
+// Cast Modal - Apple AirPlay style modern popup
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,14 +10,17 @@ import {
   Dimensions,
   Alert,
   Platform,
+  Animated,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../store/authStore';
 import { castService } from '../services/castService';
-import { colors, typography, spacing } from '../constants/theme';
+import { colors, typography, spacing, borderRadius } from '../constants/theme';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 interface CastModalProps {
   visible: boolean;
@@ -35,6 +37,52 @@ export const CastModal: React.FC<CastModalProps> = ({
   const [isCasting, setIsCasting] = useState(false);
   const [castSuccess, setCastSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Animation values
+  const slideAnim = useRef(new Animated.Value(height)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    if (visible) {
+      // Slide up animation
+      Animated.parallel([
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          useNativeDriver: true,
+          damping: 20,
+          stiffness: 150,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // Reset animations
+      slideAnim.setValue(height);
+      fadeAnim.setValue(0);
+    }
+  }, [visible]);
+
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: height,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setError(null);
+      setCastSuccess(false);
+      onClose();
+    });
+  };
 
   const showAlert = (title: string, message: string) => {
     if (Platform.OS === 'web') {
@@ -47,7 +95,7 @@ export const CastModal: React.FC<CastModalProps> = ({
   // TV'ye cast et
   const handleCastToTV = async () => {
     if (!token || !currentStation) {
-      setError('Lütfen önce giriş yapın ve bir radyo seçin');
+      setError('Lütfen önce giriş yapın');
       return;
     }
 
@@ -60,321 +108,361 @@ export const CastModal: React.FC<CastModalProps> = ({
       
       if (success) {
         setCastSuccess(true);
-        // 2 saniye sonra modalı kapat
         setTimeout(() => {
-          onClose();
-          setCastSuccess(false);
-        }, 2000);
+          handleClose();
+        }, 1500);
       } else {
-        setError('TV\'ye gönderilemedi. TV açık ve aynı hesapla giriş yapılmış olmalı.');
+        setError('TV bulunamadı. TV açık ve giriş yapılmış olmalı.');
       }
     } catch (err: any) {
       console.error('[CastModal] Cast error:', err);
-      setError('Bağlantı hatası. Lütfen tekrar deneyin.');
+      setError('Bağlantı hatası');
     } finally {
       setIsCasting(false);
     }
   };
 
-  // TV'yi duraklat
   const handlePauseTV = async () => {
     if (!token) return;
-    
     setIsCasting(true);
-    const success = await castService.sendPause(token);
+    await castService.sendPause(token);
     setIsCasting(false);
-    
-    if (success) {
-      showAlert('Başarılı', 'TV duraklatıldı');
-    }
   };
 
-  // TV'yi durdur
   const handleStopTV = async () => {
     if (!token) return;
-    
     setIsCasting(true);
     const success = await castService.sendStop(token);
     setIsCasting(false);
-    
-    if (success) {
-      showAlert('Başarılı', 'TV durduruldu');
-      onClose();
-    }
+    if (success) handleClose();
   };
 
-  const handleClose = () => {
-    setError(null);
-    setCastSuccess(false);
-    onClose();
+  // Get station logo
+  const getLogoUrl = () => {
+    if (!currentStation) return null;
+    if (currentStation.logoAssets?.webp96) {
+      return `https://themegaradio.com/station-logos/${currentStation.logoAssets.folder}/${currentStation.logoAssets.webp96}`;
+    }
+    return currentStation.favicon || currentStation.logo;
   };
 
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="fade"
+      animationType="none"
       onRequestClose={handleClose}
     >
-      <BlurView intensity={80} tint="dark" style={styles.overlay}>
-        <View style={styles.container}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>TV'de Çal</Text>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color={colors.text} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Content */}
-          <View style={styles.content}>
-            {/* Success State */}
-            {castSuccess ? (
-              <View style={styles.successContainer}>
-                <View style={styles.successIcon}>
-                  <Ionicons name="checkmark-circle" size={64} color="#4CAF50" />
-                </View>
-                <Text style={styles.successTitle}>TV'ye Gönderildi!</Text>
-                <Text style={styles.successSubtitle}>
-                  {currentStation?.name} TV'nizde çalmaya başlayacak
-                </Text>
+      <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
+        <TouchableOpacity style={StyleSheet.absoluteFill} onPress={handleClose} activeOpacity={1} />
+        
+        <Animated.View 
+          style={[
+            styles.container,
+            { transform: [{ translateY: slideAnim }] }
+          ]}
+        >
+          {/* Drag Handle */}
+          <View style={styles.dragHandle} />
+          
+          {/* Success State */}
+          {castSuccess ? (
+            <View style={styles.successState}>
+              <View style={styles.successIconWrapper}>
+                <LinearGradient
+                  colors={['#4CAF50', '#2E7D32']}
+                  style={styles.successIconBg}
+                >
+                  <Ionicons name="checkmark" size={32} color="#FFF" />
+                </LinearGradient>
               </View>
-            ) : (
-              <>
-                {/* TV Icon */}
-                <View style={styles.tvIconContainer}>
-                  <Ionicons name="tv" size={48} color={colors.primary} />
-                </View>
-
-                {/* Station Info */}
-                {currentStation && (
-                  <View style={styles.stationInfo}>
-                    <Text style={styles.stationName}>{currentStation.name}</Text>
-                    <Text style={styles.stationCountry}>
-                      {currentStation.country || 'Radio'}
+              <Text style={styles.successTitle}>TV'ye Gönderildi</Text>
+              <Text style={styles.successSubtitle}>{currentStation?.name}</Text>
+            </View>
+          ) : (
+            <>
+              {/* Header with Station Info */}
+              <View style={styles.header}>
+                <View style={styles.stationPreview}>
+                  {getLogoUrl() ? (
+                    <Image source={{ uri: getLogoUrl() }} style={styles.stationLogo} />
+                  ) : (
+                    <View style={styles.stationLogoPlaceholder}>
+                      <Ionicons name="radio" size={24} color={colors.textMuted} />
+                    </View>
+                  )}
+                  <View style={styles.stationDetails}>
+                    <Text style={styles.stationName} numberOfLines={1}>
+                      {currentStation?.name || 'Radyo Seçilmedi'}
+                    </Text>
+                    <Text style={styles.stationMeta}>
+                      {currentStation?.country || 'Live Radio'}
                     </Text>
                   </View>
-                )}
-
-                {/* Info Text */}
-                <Text style={styles.infoText}>
-                  Aynı hesapla giriş yapılmış TV'nizde bu radyoyu çalın
-                </Text>
-
-                {/* Error Message */}
-                {error && (
-                  <View style={styles.errorBanner}>
-                    <Ionicons name="alert-circle" size={20} color="#FF6B6B" />
-                    <Text style={styles.errorText}>{error}</Text>
-                  </View>
-                )}
-
-                {/* Cast Button */}
-                <TouchableOpacity
-                  style={[styles.castButton, isCasting && styles.castButtonDisabled]}
-                  onPress={handleCastToTV}
-                  disabled={isCasting || !currentStation}
-                >
-                  {isCasting ? (
-                    <ActivityIndicator size="small" color="#FFFFFF" />
-                  ) : (
-                    <>
-                      <Ionicons name="play" size={24} color="#FFFFFF" />
-                      <Text style={styles.castButtonText}>TV'de Çal</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
-
-                {/* Control Buttons */}
-                <View style={styles.controlButtons}>
-                  <TouchableOpacity
-                    style={styles.controlButton}
-                    onPress={handlePauseTV}
-                    disabled={isCasting}
-                  >
-                    <Ionicons name="pause" size={20} color={colors.textMuted} />
-                    <Text style={styles.controlButtonText}>Duraklat</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.controlButton}
-                    onPress={handleStopTV}
-                    disabled={isCasting}
-                  >
-                    <Ionicons name="stop" size={20} color={colors.textMuted} />
-                    <Text style={styles.controlButtonText}>Durdur</Text>
-                  </TouchableOpacity>
                 </View>
-              </>
-            )}
-          </View>
-
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              TV'nizde aynı hesapla giriş yapılmış olmalı
-            </Text>
-          </View>
-        </View>
-      </BlurView>
+              </View>
+              
+              {/* TV Device Option */}
+              <TouchableOpacity
+                style={styles.deviceOption}
+                onPress={handleCastToTV}
+                disabled={isCasting}
+                activeOpacity={0.7}
+              >
+                <View style={styles.deviceIconWrapper}>
+                  <LinearGradient
+                    colors={['#FF4199', '#FF8C42']}
+                    style={styles.deviceIcon}
+                  >
+                    <Ionicons name="tv-outline" size={22} color="#FFF" />
+                  </LinearGradient>
+                </View>
+                <View style={styles.deviceInfo}>
+                  <Text style={styles.deviceName}>TV'de Çal</Text>
+                  <Text style={styles.deviceSubtitle}>MegaRadio TV uygulaması</Text>
+                </View>
+                {isCasting ? (
+                  <ActivityIndicator size="small" color={colors.accentPink} />
+                ) : (
+                  <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+                )}
+              </TouchableOpacity>
+              
+              {/* Error Message */}
+              {error && (
+                <View style={styles.errorContainer}>
+                  <Ionicons name="alert-circle" size={16} color="#FF6B6B" />
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              )}
+              
+              {/* Divider */}
+              <View style={styles.divider} />
+              
+              {/* Control Buttons */}
+              <View style={styles.controlsRow}>
+                <TouchableOpacity
+                  style={styles.controlBtn}
+                  onPress={handlePauseTV}
+                  disabled={isCasting}
+                >
+                  <Ionicons name="pause" size={20} color={colors.text} />
+                  <Text style={styles.controlLabel}>Duraklat</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.controlDivider} />
+                
+                <TouchableOpacity
+                  style={styles.controlBtn}
+                  onPress={handleStopTV}
+                  disabled={isCasting}
+                >
+                  <Ionicons name="stop" size={20} color={colors.text} />
+                  <Text style={styles.controlLabel}>Durdur</Text>
+                </TouchableOpacity>
+              </View>
+              
+              {/* Footer Info */}
+              <View style={styles.footer}>
+                <Ionicons name="information-circle-outline" size={14} color={colors.textMuted} />
+                <Text style={styles.footerText}>
+                  TV'nizde aynı hesapla giriş yapılmış olmalı
+                </Text>
+              </View>
+            </>
+          )}
+        </Animated.View>
+      </Animated.View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: {
+  backdrop: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
   },
   container: {
-    width: width - 40,
-    maxWidth: 400,
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    overflow: 'hidden',
+    backgroundColor: '#1C1C1E',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+    minHeight: 300,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  title: {
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-  },
-  closeButton: {
-    padding: spacing.xs,
-  },
-  content: {
-    padding: spacing.xl,
-    alignItems: 'center',
+  dragHandle: {
+    width: 36,
+    height: 5,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 16,
   },
   
-  // TV Icon
-  tvIconContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+  // Header
+  header: {
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  stationPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  stationLogo: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    backgroundColor: '#2C2C2E',
+  },
+  stationLogoPlaceholder: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    backgroundColor: '#2C2C2E',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.lg,
   },
-  
-  // Station Info
-  stationInfo: {
-    alignItems: 'center',
-    marginBottom: spacing.md,
+  stationDetails: {
+    flex: 1,
   },
   stationName: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
+    fontSize: 17,
+    fontFamily: 'Ubuntu-Bold',
+    color: '#FFF',
   },
-  stationCountry: {
-    fontSize: typography.sizes.sm,
-    color: colors.textMuted,
-    marginTop: 4,
-  },
-  
-  // Info Text
-  infoText: {
-    fontSize: typography.sizes.sm,
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
-    paddingHorizontal: spacing.md,
+  stationMeta: {
+    fontSize: 13,
+    fontFamily: 'Ubuntu-Regular',
+    color: 'rgba(255,255,255,0.5)',
+    marginTop: 2,
   },
   
-  // Error Banner
-  errorBanner: {
+  // Device Option
+  deviceOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
-    padding: spacing.md,
-    borderRadius: 8,
-    marginBottom: spacing.lg,
-    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  deviceIconWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  deviceIcon: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deviceInfo: {
+    flex: 1,
+  },
+  deviceName: {
+    fontSize: 17,
+    fontFamily: 'Ubuntu-Medium',
+    color: '#FFF',
+  },
+  deviceSubtitle: {
+    fontSize: 13,
+    fontFamily: 'Ubuntu-Regular',
+    color: 'rgba(255,255,255,0.5)',
+    marginTop: 1,
+  },
+  
+  // Error
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
   errorText: {
-    flex: 1,
-    fontSize: typography.sizes.sm,
+    fontSize: 13,
+    fontFamily: 'Ubuntu-Regular',
     color: '#FF6B6B',
   },
   
-  // Cast Button
-  castButton: {
+  // Divider
+  divider: {
+    height: 0.5,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginHorizontal: 20,
+    marginVertical: 8,
+  },
+  
+  // Controls
+  controlsRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  controlBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xxl,
-    paddingVertical: spacing.md,
-    borderRadius: 30,
-    width: '100%',
-    marginBottom: spacing.lg,
+    gap: 8,
+    paddingVertical: 10,
   },
-  castButtonDisabled: {
-    opacity: 0.6,
+  controlDivider: {
+    width: 0.5,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginVertical: 4,
   },
-  castButtonText: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.bold,
-    color: '#FFFFFF',
-  },
-  
-  // Control Buttons
-  controlButtons: {
-    flexDirection: 'row',
-    gap: spacing.xl,
-  },
-  controlButton: {
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  controlButtonText: {
-    fontSize: typography.sizes.sm,
-    color: colors.textMuted,
-  },
-  
-  // Success State
-  successContainer: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-  },
-  successIcon: {
-    marginBottom: spacing.lg,
-  },
-  successTitle: {
-    fontSize: typography.sizes.xl,
-    fontWeight: typography.weights.bold,
-    color: colors.text,
-    marginBottom: spacing.sm,
-  },
-  successSubtitle: {
-    fontSize: typography.sizes.md,
-    color: colors.textMuted,
-    textAlign: 'center',
+  controlLabel: {
+    fontSize: 15,
+    fontFamily: 'Ubuntu-Medium',
+    color: '#FFF',
   },
   
   // Footer
   footer: {
-    padding: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingTop: 12,
   },
   footerText: {
-    fontSize: typography.sizes.xs,
-    color: colors.textMuted,
+    fontSize: 12,
+    fontFamily: 'Ubuntu-Regular',
+    color: 'rgba(255,255,255,0.4)',
+  },
+  
+  // Success State
+  successState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  successIconWrapper: {
+    marginBottom: 16,
+  },
+  successIconBg: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successTitle: {
+    fontSize: 20,
+    fontFamily: 'Ubuntu-Bold',
+    color: '#FFF',
+    marginBottom: 4,
+  },
+  successSubtitle: {
+    fontSize: 15,
+    fontFamily: 'Ubuntu-Regular',
+    color: 'rgba(255,255,255,0.6)',
   },
 });
 
