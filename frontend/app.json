@@ -34,11 +34,11 @@
           "NSAllowsArbitraryLoadsForMedia": true,
           "NSAllowsArbitraryLoadsInWebContent": false
         },
-        "NSLocationWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio yakınızda radyo istasyonları bulabilmek için konumunuzu kullanır.",
-        "NSPhotoLibraryUsageDescription": "Profil fotoğrafı yükleyebilmek için fotoğraf galerinize erişim gereklidir.",
-        "NSCameraUsageDescription": "Profil fotoğrafı çekebilmek için kamera erişimi gereklidir.",
-        "NSMicrophoneUsageDescription": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
+        "NSLocationWhenInUseUsageDescription": "MegaRadio uses your location to find nearby radio stations.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio uses your location to find nearby radio stations.",
+        "NSPhotoLibraryUsageDescription": "Photo library access is required to upload a profile picture.",
+        "NSCameraUsageDescription": "Camera access is required to take a profile picture.",
+        "NSMicrophoneUsageDescription": "Microphone access is required for audio recording.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "entitlements": {
