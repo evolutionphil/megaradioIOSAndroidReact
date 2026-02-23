@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +15,13 @@ export const AvatarWithFallback: React.FC<AvatarWithFallbackProps> = ({
   style 
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+  
+  // Reset error state when URI changes
+  useEffect(() => {
+    setImageError(false);
+    setImageLoading(true);
+  }, [uri]);
   
   // Check if we have a valid URL
   const hasValidUri = uri && typeof uri === 'string' && uri.trim().length > 0;
@@ -35,17 +42,20 @@ export const AvatarWithFallback: React.FC<AvatarWithFallbackProps> = ({
     overflow: 'hidden' as const,
   };
   
+  // Render gradient fallback
+  const renderFallback = () => (
+    <LinearGradient
+      colors={['#FF4199', '#FF8C42']}
+      style={[containerStyle, style]}
+    >
+      <View style={styles.fallbackContent}>
+        <Ionicons name="person" size={size * 0.5} color="#FFF" />
+      </View>
+    </LinearGradient>
+  );
+  
   if (showFallback) {
-    return (
-      <LinearGradient
-        colors={['#FF4199', '#FF8C42']}
-        style={[containerStyle, style]}
-      >
-        <View style={styles.fallbackContent}>
-          <Ionicons name="person" size={size * 0.5} color="#FFF" />
-        </View>
-      </LinearGradient>
-    );
+    return renderFallback();
   }
   
   return (
@@ -56,11 +66,17 @@ export const AvatarWithFallback: React.FC<AvatarWithFallbackProps> = ({
         onError={() => {
           console.log('[AvatarWithFallback] Image failed to load:', fullUri);
           setImageError(true);
+          setImageLoading(false);
         }}
         onLoad={() => {
           console.log('[AvatarWithFallback] Image loaded successfully');
+          setImageLoading(false);
         }}
       />
+      {/* Show fallback overlay while loading or on error */}
+      {imageLoading && (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: '#333' }]} />
+      )}
     </View>
   );
 };
