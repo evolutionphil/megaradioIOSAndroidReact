@@ -4,9 +4,11 @@ import type { Station, FavoritesResponse, User } from '../types';
 
 export const userService = {
   // Get user's favorites
-  async getFavorites(): Promise<FavoritesResponse> {
+  // Note: API returns Station[] directly, not { favorites: Station[] }
+  async getFavorites(): Promise<Station[]> {
     const response = await api.get(API_ENDPOINTS.user.favorites);
-    return response.data;
+    // API returns array directly
+    return Array.isArray(response.data) ? response.data : (response.data.favorites || []);
   },
 
   // Add station to favorites
