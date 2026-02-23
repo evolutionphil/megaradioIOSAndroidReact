@@ -28,6 +28,7 @@ import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TrackPlayer from 'react-native-track-player';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
