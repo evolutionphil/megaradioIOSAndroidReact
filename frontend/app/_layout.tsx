@@ -32,8 +32,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TrackPlayer from 'react-native-track-player';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
-// CarPlay DISABLED - causes crash on Expo production builds
-// import { CarPlayHandler } from '../src/components/CarPlayHandler';
+// CarPlay - re-enabled with safer implementation
+import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 sendLog('BEFORE_QUERY_CLIENT');
 
