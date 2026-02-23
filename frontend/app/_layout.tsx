@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef, Component, ErrorInfo, ReactNode } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, Platform, AppState, AppStateStatus, ActivityIndicator, Text } from 'react-native';
+import { View, StyleSheet, Platform, AppState, AppStateStatus, ActivityIndicator, Text, ScrollView } from 'react-native';
 import { useFonts } from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18nextProvider } from 'react-i18next';
@@ -23,6 +23,56 @@ import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
 // CarPlay enabled after Apple approval
 import { CarPlayHandler } from '../src/components/CarPlayHandler';
+
+// Error Boundary to catch and display errors instead of black screen
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+}
+
+class AppErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('[ErrorBoundary] Caught error:', error.message);
+    console.error('[ErrorBoundary] Stack:', errorInfo.componentStack);
+    this.setState({ errorInfo });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ flex: 1, backgroundColor: '#1a1a2e', padding: 20, paddingTop: 60 }}>
+          <StatusBar style="light" />
+          <Text style={{ color: '#FF4199', fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+            App Error
+          </Text>
+          <Text style={{ color: '#FFFFFF', fontSize: 16, marginBottom: 10 }}>
+            {this.state.error?.message || 'Unknown error'}
+          </Text>
+          <ScrollView style={{ flex: 1, marginTop: 10 }}>
+            <Text style={{ color: '#888888', fontSize: 12, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>
+              {this.state.error?.stack || ''}
+            </Text>
+            <Text style={{ color: '#666666', fontSize: 10, marginTop: 20 }}>
+              {this.state.errorInfo?.componentStack || ''}
+            </Text>
+          </ScrollView>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
