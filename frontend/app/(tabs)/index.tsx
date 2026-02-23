@@ -929,7 +929,6 @@ const styles = StyleSheet.create({
   discoverableBannerTitle: {
     fontSize: 26,
     fontFamily: typography.fonts.bold, // Ubuntu Bold
-    fontWeight: '700',
     color: '#FFFFFF',
     textAlign: 'left',
     letterSpacing: 0.5,
