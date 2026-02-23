@@ -49,6 +49,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useLocationStore } from '../../src/store/locationStore';
 import { useRecentlyPlayedStore } from '../../src/store/recentlyPlayedStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AvatarWithFallback } from '../../src/components/AvatarWithFallback';
 import type { Station, Genre } from '../../src/types';
 
 const FALLBACK_LOGO = require('../../assets/megaradio-icon.png');
