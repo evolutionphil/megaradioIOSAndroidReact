@@ -157,7 +157,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   return (
     <View style={[
       styles.container, 
-      { bottom: isGlobal ? insets.bottom : tabBarHeight },
+      { bottom: isGlobal ? 0 : tabBarHeight },
       isGlobal && styles.containerGlobal
     ]}>
       <View style={styles.content}>
