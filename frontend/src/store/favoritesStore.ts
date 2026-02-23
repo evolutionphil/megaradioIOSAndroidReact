@@ -85,25 +85,41 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       
       console.log('[FavoritesStore] ========== loadFavorites START ==========');
       console.log('[FavoritesStore] isAuthenticated:', authStatus);
-      console.log('[FavoritesStore] user:', user?._id);
-      console.log('[FavoritesStore] token exists:', !!token);
+      console.log('[FavoritesStore] user._id:', user?._id);
+      console.log('[FavoritesStore] token:', token ? token.substring(0, 20) + '...' : 'NULL');
       
       if (authStatus && user?._id && token) {
-        // Use authenticated endpoint GET /api/user/favorites (requires token)
         try {
-          console.log('[FavoritesStore] Fetching favorites from API with token...');
+          console.log('[FavoritesStore] Calling userService.getFavorites()...');
           
-          // userService.getFavorites() now returns Station[] directly
           const favorites = await userService.getFavorites();
           
-          console.log('[FavoritesStore] Favorites loaded from API:', favorites.length);
+          console.log('[FavoritesStore] Response received!');
+          console.log('[FavoritesStore] Type:', typeof favorites);
+          console.log('[FavoritesStore] Is Array:', Array.isArray(favorites));
+          console.log('[FavoritesStore] Length:', Array.isArray(favorites) ? favorites.length : 'N/A');
+          
+          if (!Array.isArray(favorites)) {
+            console.log('[FavoritesStore] WARNING: favorites is not an array!');
+            console.log('[FavoritesStore] Keys:', Object.keys(favorites || {}));
+            // Try to extract from object
+            const extractedFavorites = (favorites as any)?.favorites || (favorites as any)?.stations || [];
+            console.log('[FavoritesStore] Extracted length:', extractedFavorites.length);
+            
+            const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
+            const customOrder = orderJson ? JSON.parse(orderJson) : [];
+            set({ favorites: extractedFavorites, customOrder, isLoaded: true, isLoading: false });
+            await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(extractedFavorites));
+            syncToAndroidAuto(extractedFavorites);
+            return;
+          }
           
           // Also load custom order from local storage
           const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
           const customOrder = orderJson ? JSON.parse(orderJson) : [];
           
           set({ favorites, customOrder, isLoaded: true, isLoading: false });
-          console.log('[FavoritesStore] ========== loadFavorites SUCCESS ==========');
+          console.log('[FavoritesStore] ========== SUCCESS: ' + favorites.length + ' favorites ==========');
           
           // Also save to local storage as backup
           await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
@@ -112,18 +128,22 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           syncToAndroidAuto(favorites);
           return;
         } catch (apiError: any) {
-          console.log('[FavoritesStore] API favorites failed:', apiError.message);
-          console.log('[FavoritesStore] API error status:', apiError.response?.status);
+          console.log('[FavoritesStore] API ERROR:', apiError.message);
+          console.log('[FavoritesStore] Status:', apiError.response?.status);
+          console.log('[FavoritesStore] Data:', JSON.stringify(apiError.response?.data || {}).substring(0, 200));
         }
       } else {
-        console.log('[FavoritesStore] Not authenticated, using local storage');
+        console.log('[FavoritesStore] NOT AUTHENTICATED - falling back to local');
+        console.log('[FavoritesStore] - authStatus:', authStatus);
+        console.log('[FavoritesStore] - user._id:', user?._id);
+        console.log('[FavoritesStore] - token:', token ? 'EXISTS' : 'NULL');
       }
       
-      // Fallback to local storage for guests or API failure
-      console.log('[FavoritesStore] Falling back to local storage');
+      // Fallback to local storage
+      console.log('[FavoritesStore] Loading from local storage...');
       await get().loadFromLocal();
     } catch (error) {
-      console.error('[FavoritesStore] Error loading favorites:', error);
+      console.error('[FavoritesStore] FATAL ERROR:', error);
       set({ isLoading: false, isLoaded: true, error: 'Failed to load favorites' });
     }
   },
