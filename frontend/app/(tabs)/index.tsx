@@ -323,33 +323,35 @@ export default function HomeScreen() {
               data-testid="header-profile-btn"
             >
               <View style={styles.avatarContainer}>
-                {/* Debug: Log user avatar fields */}
+                {/* Avatar with fallback */}
                 {(() => {
-                  if (user) {
-                    console.log('[Home] User avatar fields:', { 
-                      avatar: user.avatar, 
-                      profilePhoto: user.profilePhoto,
-                      name: user.name 
-                    });
+                  const avatarUrl = user?.avatar || user?.profilePhoto;
+                  // Check for valid avatar URL (not null, undefined, or empty string)
+                  const hasValidAvatar = avatarUrl && avatarUrl.trim().length > 0;
+                  
+                  if (hasValidAvatar) {
+                    const fullUrl = avatarUrl.startsWith('http') 
+                      ? avatarUrl 
+                      : `https://themegaradio.com${avatarUrl}`;
+                    return (
+                      <Image 
+                        source={{ uri: fullUrl }} 
+                        style={styles.avatarImage}
+                        defaultSource={require('../../assets/images/default-avatar.png')}
+                      />
+                    );
                   }
-                  return null;
+                  
+                  // Fallback: User icon with gradient background
+                  return (
+                    <LinearGradient
+                      colors={['#FF4199', '#FF8C42'] as any}
+                      style={styles.avatarGradient}
+                    >
+                      <Ionicons name="person" size={22} color="#FFF" />
+                    </LinearGradient>
+                  );
                 })()}
-                {user?.avatar || user?.profilePhoto ? (
-                  <Image 
-                    source={{ uri: (user.avatar || user.profilePhoto || '').startsWith('http') 
-                      ? (user.avatar || user.profilePhoto || '') 
-                      : `https://themegaradio.com${user.avatar || user.profilePhoto || ''}` 
-                    }} 
-                    style={styles.avatarImage}
-                  />
-                ) : (
-                  <LinearGradient
-                    colors={['#00FF87', '#60EFFF'] as any}
-                    style={styles.avatarGradient}
-                  >
-                    <Ionicons name="person" size={20} color="#000" />
-                  </LinearGradient>
-                )}
               </View>
               <View>
                 <Text style={styles.welcomeText}>Welcome Back</Text>
