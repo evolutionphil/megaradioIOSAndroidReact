@@ -35,6 +35,9 @@ export default function AllStationsScreen() {
   const { t } = useTranslation();
   const genreSlug = params.genre as string | undefined;
   const genreName = params.genreName as string | undefined;
+  // Get country from params (passed from See More) or fall back to location store
+  const paramCountry = params.country as string | undefined;
+  const paramCountryCode = params.countryCode as string | undefined;
   const { width: windowWidth } = useWindowDimensions();
   
   // Responsive layout
@@ -50,7 +53,10 @@ export default function AllStationsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   
-  const { countryCode } = useLocationStore();
+  // Use param country if available, otherwise use location store
+  const { countryCode: storeCountryCode, country: storeCountry } = useLocationStore();
+  const countryCode = paramCountryCode || storeCountryCode;
+  const country = paramCountry || storeCountry;
 
   // Load saved view mode preference on mount
   useEffect(() => {
