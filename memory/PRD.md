@@ -455,5 +455,48 @@ Test sonuçları:
 
 ---
 
+## December 2025 - Critical Bug Fixes (Session 4)
+
+### Düzeltilen Sorunlar:
+
+1. **Favoriler Race Condition (P0)**
+   - **Sorun**: Uygulama açıldığında favoriler API çağrısı, auth token yüklenmeden yapılıyordu. Bu yüzden 40+ favori yerine sadece 4 tane (local storage'dan) yükleniyordu.
+   - **Kök Neden**: `favorites.tsx`'deki `useEffect`, `isAuthLoaded` flag'ini kontrol etmiyordu. Auth store'dan token alınmadan `loadFavorites()` çağrılıyordu.
+   - **Çözüm**: 
+     - `favorites.tsx`'de `isAuthLoaded` flag'i eklendi
+     - `useEffect` artık `isAuthLoaded` true olana kadar bekliyor
+     - Token tamamen yüklendikten sonra API çağrısı yapılıyor
+
+2. **iOS Kilit Ekranı Kontrolleri (P0)**
+   - **Sorun**: iOS kilit ekranında ve Control Center'da Next/Previous butonları aktif değildi
+   - **Kök Neden**: `_layout.tsx`'deki TrackPlayer setup kodu, `AudioProvider.tsx`'deki doğru capability'leri override ediyordu. Ayrıca eski `TrackPlayer.CAPABILITY_*` formatı kullanılıyordu.
+   - **Çözüm**: 
+     - `_layout.tsx`'deki TrackPlayer setup kodu sadeleştirildi - artık sadece status check yapıyor
+     - Gerçek setup `AudioProvider.tsx`'de yapılıyor (doğru `Capability.*` enum'ları ile)
+     - `SkipToNext`, `SkipToPrevious`, `JumpForward`, `JumpBackward` capability'leri zaten ekli
+
+3. **Avatar Fallback (P0)**
+   - **Sorun**: Geçersiz avatar URL'lerinde boş alan görünüyordu
+   - **Kök Neden**: Inline avatar kodu hata durumunu düzgün handle etmiyordu
+   - **Çözüm**:
+     - `AvatarWithFallback.tsx` komponenti iyileştirildi (useEffect ile state reset, loading overlay)
+     - `index.tsx` (Discovery) ve `profile.tsx` artık `AvatarWithFallback` komponenti kullanıyor
+     - Image yüklenemezse gradient fallback (pembe-turuncu) ve person ikonu gösteriliyor
+
+### Değişen Dosyalar:
+- `app/(tabs)/favorites.tsx` - isAuthLoaded flag eklendi, race condition düzeltildi
+- `app/_layout.tsx` - TrackPlayer setup sadeleştirildi (AudioProvider'a devredildi)
+- `app/(tabs)/index.tsx` - AvatarWithFallback import ve kullanımı
+- `app/(tabs)/profile.tsx` - AvatarWithFallback import ve kullanımı
+- `src/components/AvatarWithFallback.tsx` - Geliştirildi (state yönetimi, loading overlay)
+
+### ⚠️ Test Gereksinimleri:
+- **Yeni EAS Build Gerekli**: Tüm değişiklikler native build gerektiriyor
+- **Favoriler Test**: Login yapıp favoriler sekmesini kontrol edin - tüm favoriler (40+) yüklenmeli
+- **Kilit Ekranı Test**: Bir radyo çalın, telefonu kilitleyin, kilit ekranında Next/Previous butonlarını test edin
+- **Avatar Test**: Geçersiz avatar URL'li bir kullanıcı ile giriş yapın, gradient fallback görünmeli
+
+---
+
 ## User Language
 Turkish (Türkçe)
