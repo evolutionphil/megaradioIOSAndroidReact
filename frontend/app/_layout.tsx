@@ -21,8 +21,9 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
-// CarPlay enabled after Apple approval
-import { CarPlayHandler } from '../src/components/CarPlayHandler';
+// DISABLED: @g4rb4g3/react-native-carplay crashes in EAS production builds
+// See: https://github.com/birkir/react-native-carplay/issues/199
+// import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 // Error Boundary to catch and display errors instead of black screen
 interface ErrorBoundaryState {
