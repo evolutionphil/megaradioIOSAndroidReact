@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useEffect, useRef, Component, ErrorInfo, ReactNode } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, Platform, AppState, AppStateStatus, ActivityIndicator, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, Platform, AppState, AppStateStatus } from 'react-native';
 import { useFonts } from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18nextProvider } from 'react-i18next';
@@ -21,59 +21,8 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
-// DISABLED: @g4rb4g3/react-native-carplay crashes in EAS production builds
-// See: https://github.com/birkir/react-native-carplay/issues/199
-// import { CarPlayHandler } from '../src/components/CarPlayHandler';
-
-// Error Boundary to catch and display errors instead of black screen
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-  errorInfo: ErrorInfo | null;
-}
-
-class AppErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
-  }
-
-  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('[ErrorBoundary] Caught error:', error.message);
-    console.error('[ErrorBoundary] Stack:', errorInfo.componentStack);
-    this.setState({ errorInfo });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <View style={{ flex: 1, backgroundColor: '#1a1a2e', padding: 20, paddingTop: 60 }}>
-          <StatusBar style="light" />
-          <Text style={{ color: '#FF4199', fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
-            App Error
-          </Text>
-          <Text style={{ color: '#FFFFFF', fontSize: 16, marginBottom: 10 }}>
-            {this.state.error?.message || 'Unknown error'}
-          </Text>
-          <ScrollView style={{ flex: 1, marginTop: 10 }}>
-            <Text style={{ color: '#888888', fontSize: 12, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>
-              {this.state.error?.stack || ''}
-            </Text>
-            <Text style={{ color: '#666666', fontSize: 10, marginTop: 20 }}>
-              {this.state.errorInfo?.componentStack || ''}
-            </Text>
-          </ScrollView>
-        </View>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+// CarPlay enabled after Apple approval
+import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 // Global MiniPlayer wrapper - shows on non-tab screens
 const GlobalMiniPlayer = () => {
@@ -129,7 +78,6 @@ export default function RootLayout() {
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
-  const [appReady, setAppReady] = useState(false);
   const preloadStarted = useRef(false);
   
   const segments = useSegments();
@@ -224,23 +172,12 @@ export default function RootLayout() {
     };
   }, []);
 
-  // Check if navigation is ready - with timeout fallback
+  // Check if navigation is ready
   useEffect(() => {
     if (navigationState?.key) {
-      console.log('[Layout] Navigation ready via key');
       setIsNavigationReady(true);
     }
-    
-    // Safety timeout - force ready after 3 seconds even if navigationState not ready
-    const timeout = setTimeout(() => {
-      if (!isNavigationReady) {
-        console.log('[Layout] Navigation timeout - forcing ready state');
-        setIsNavigationReady(true);
-      }
-    }, 3000);
-    
-    return () => clearTimeout(timeout);
-  }, [navigationState?.key, isNavigationReady]);
+  }, [navigationState?.key]);
 
   // Check onboarding status and navigate
   useEffect(() => {
@@ -312,80 +249,64 @@ export default function RootLayout() {
     // Fonts loaded - app is ready
     if (fontsLoaded || fontError) {
       console.log('[Layout] Fonts loaded, app ready');
-      setAppReady(true);
-    }
-  }, [fontsLoaded, fontError]);
-
-  // Don't block on fonts - continue to render app
-  // Fonts will load in background and UI will update when ready
-  useEffect(() => {
-    if (fontsLoaded) {
-      console.log('[Layout] Fonts loaded successfully');
-    }
-    if (fontError) {
-      console.error('[Layout] Font loading error (continuing anyway):', fontError);
     }
   }, [fontsLoaded, fontError]);
 
   return (
-    <AppErrorBoundary>
-      <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
-        <I18nextProvider i18n={i18n}>
-          <QueryClientProvider client={queryClient}>
-            <AudioProvider>
-              <PlayAtLoginHandler />
-              <NotificationHandler />
-              {/* CarPlay disabled until Apple approves entitlement */}
-              {/* <CarPlayHandler /> */}
-              <View style={styles.container}>
-                <StatusBar style="light" />
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: colors.background },
-                    animation: 'slide_from_right',
+    <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
+      <I18nextProvider i18n={i18n}>
+        <QueryClientProvider client={queryClient}>
+          <AudioProvider>
+            <PlayAtLoginHandler />
+            <NotificationHandler />
+            {/* CarPlay disabled until Apple approves entitlement */}
+            {/* <CarPlayHandler /> */}
+            <View style={styles.container}>
+              <StatusBar style="light" />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.background },
+                  animation: 'slide_from_right',
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
+                <Stack.Screen
+                  name="player"
+                  options={{
+                    presentation: 'fullScreenModal',
+                    animation: 'slide_from_bottom',
                   }}
-                >
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
-                  <Stack.Screen
-                    name="player"
-                    options={{
-                      presentation: 'fullScreenModal',
-                      animation: 'slide_from_bottom',
-                    }}
-                  />
-                  <Stack.Screen name="search" options={{ headerShown: false }} />
-                  <Stack.Screen name="login" options={{ headerShown: false }} />
-                  <Stack.Screen name="signup" options={{ headerShown: false }} />
-                  <Stack.Screen name="statistics" options={{ headerShown: false }} />
-                  <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
-                  <Stack.Screen name="followers" options={{ headerShown: false }} />
-                  <Stack.Screen name="follows" options={{ headerShown: false }} />
-                  <Stack.Screen name="user-profile" options={{ headerShown: false }} />
-                  <Stack.Screen name="languages" options={{ headerShown: false }} />
-                  <Stack.Screen name="auth-options" options={{ headerShown: false }} />
-                  <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
-                  <Stack.Screen name="genres" options={{ headerShown: false }} />
-                  <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
-                  <Stack.Screen name="all-stations" options={{ headerShown: false }} />
-                  <Stack.Screen name="notifications" options={{ headerShown: false }} />
-                  <Stack.Screen name="users" options={{ headerShown: false }} />
-                  <Stack.Screen name="public-profiles" options={{ headerShown: false }} />
-                </Stack>
-                {/* Global MiniPlayer - shown on all screens except player */}
-                <GlobalMiniPlayer />
-                <RadioErrorModal />
-                {/* DISABLED: @g4rb4g3/react-native-carplay crashes in EAS production builds */}
-                {/* See: https://github.com/birkir/react-native-carplay/issues/199 */}
-                {/* CarPlay will be re-enabled when library is fixed */}
-                {/* <CarPlayHandler /> */}
-              </View>
-            </AudioProvider>
-          </QueryClientProvider>
-        </I18nextProvider>
-      </GestureHandlerRootView>
-    </AppErrorBoundary>
+                />
+                <Stack.Screen name="search" options={{ headerShown: false }} />
+                <Stack.Screen name="login" options={{ headerShown: false }} />
+                <Stack.Screen name="signup" options={{ headerShown: false }} />
+                <Stack.Screen name="statistics" options={{ headerShown: false }} />
+                <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
+                <Stack.Screen name="followers" options={{ headerShown: false }} />
+                <Stack.Screen name="follows" options={{ headerShown: false }} />
+                <Stack.Screen name="user-profile" options={{ headerShown: false }} />
+                <Stack.Screen name="languages" options={{ headerShown: false }} />
+                <Stack.Screen name="auth-options" options={{ headerShown: false }} />
+                <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+                <Stack.Screen name="genres" options={{ headerShown: false }} />
+                <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
+                <Stack.Screen name="all-stations" options={{ headerShown: false }} />
+                <Stack.Screen name="notifications" options={{ headerShown: false }} />
+                <Stack.Screen name="users" options={{ headerShown: false }} />
+                <Stack.Screen name="public-profiles" options={{ headerShown: false }} />
+              </Stack>
+              {/* Global MiniPlayer - shown on all screens except player */}
+              <GlobalMiniPlayer />
+              <RadioErrorModal />
+              {/* CarPlay Handler - initializes CarPlay & Android Auto */}
+              <CarPlayHandler />
+            </View>
+          </AudioProvider>
+        </QueryClientProvider>
+      </I18nextProvider>
+    </GestureHandlerRootView>
   );
 }
 
