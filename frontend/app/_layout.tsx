@@ -78,6 +78,7 @@ export default function RootLayout() {
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
+  const [appReady, setAppReady] = useState(false);
   const preloadStarted = useRef(false);
   
   const segments = useSegments();
