@@ -160,7 +160,12 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
   return (
     <View style={[
       styles.container, 
-      { bottom: isGlobal ? 0 : tabBarHeight },
+      { 
+        bottom: isGlobal ? 0 : tabBarHeight,
+        // Add extra height for safe area when in global mode on iOS
+        height: isGlobal ? MINI_PLAYER_HEIGHT + globalBottomPadding : MINI_PLAYER_HEIGHT,
+        paddingBottom: isGlobal ? globalBottomPadding : 0,
+      },
       isGlobal && styles.containerGlobal
     ]}>
       <View style={styles.content}>
