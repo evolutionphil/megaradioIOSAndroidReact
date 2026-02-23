@@ -75,9 +75,6 @@ export default function FavoritesScreen() {
   // Animation for bottom sheet
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
-  // Auth loaded flag - wait for auth to load before fetching favorites
-  const { isAuthLoaded } = useAuthStore();
-
   // Load favorites ONLY after auth is fully loaded from storage
   useEffect(() => {
     // Wait until auth is loaded from secure storage
