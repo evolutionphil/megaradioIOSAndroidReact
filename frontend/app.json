@@ -134,6 +134,7 @@
       "./plugins/withGoogleCast.js",
       "./plugins/withAirPlay.js",
       "./plugins/withAndroidAutoFull.js",
+      "./plugins/withCarPlay.js",
       "./plugins/withCleartextTraffic.js"
     ],
     "experiments": {
