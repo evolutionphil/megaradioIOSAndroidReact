@@ -17,6 +17,13 @@
         "gradleCommand": ":app:assembleDebug"
       }
     },
+    "simulator": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium",
+        "simulator": true
+      }
+    },
     "preview": {
       "distribution": "internal",
       "ios": {
