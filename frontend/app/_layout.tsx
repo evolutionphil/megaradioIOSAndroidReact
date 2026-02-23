@@ -173,12 +173,23 @@ export default function RootLayout() {
     };
   }, []);
 
-  // Check if navigation is ready
+  // Check if navigation is ready - with timeout fallback
   useEffect(() => {
     if (navigationState?.key) {
+      console.log('[Layout] Navigation ready via key');
       setIsNavigationReady(true);
     }
-  }, [navigationState?.key]);
+    
+    // Safety timeout - force ready after 3 seconds even if navigationState not ready
+    const timeout = setTimeout(() => {
+      if (!isNavigationReady) {
+        console.log('[Layout] Navigation timeout - forcing ready state');
+        setIsNavigationReady(true);
+      }
+    }, 3000);
+    
+    return () => clearTimeout(timeout);
+  }, [navigationState?.key, isNavigationReady]);
 
   // Check onboarding status and navigate
   useEffect(() => {
