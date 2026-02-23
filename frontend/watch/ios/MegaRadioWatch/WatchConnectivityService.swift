@@ -7,11 +7,18 @@ import WatchConnectivity
 class WatchConnectivityService: NSObject, ObservableObject {
     static let shared = WatchConnectivityService()
     
+    // Published properties for UI binding
+    @Published var currentStation: Station?
+    @Published var nowPlaying: NowPlaying?
+    @Published var isPlaying: Bool = false
+    @Published var volume: Double = 0.5
+    @Published var isPhoneReachable: Bool = false
+    
+    // Data lists
     @Published var receivedStations: [Station] = []
     @Published var receivedFavorites: [Station] = []
     @Published var receivedGenres: [Genre] = []
     @Published var receivedCountries: [Country] = []
-    @Published var isPhoneReachable: Bool = false
     
     private var session: WCSession?
     
@@ -25,8 +32,45 @@ class WatchConnectivityService: NSObject, ObservableObject {
         }
     }
     
-    // MARK: - Send Messages to iPhone
+    // MARK: - Volume Control
+    func setVolume(_ newVolume: Double) {
+        volume = newVolume
+        guard let session = session, session.isReachable else { return }
+        
+        let message: [String: Any] = [
+            "command": "setVolume",
+            "volume": newVolume
+        ]
+        session.sendMessage(message, replyHandler: nil) { error in
+            print("[WatchConnectivity] Error setting volume: \(error)")
+        }
+    }
     
+    // MARK: - Send Command
+    func sendCommand(_ command: PlaybackCommand) {
+        guard let session = session, session.isReachable else {
+            print("[WatchConnectivity] iPhone not reachable")
+            return
+        }
+        
+        let message: [String: Any] = ["command": command.rawValue]
+        
+        session.sendMessage(message, replyHandler: nil) { error in
+            print("[WatchConnectivity] Error sending command \(command.rawValue): \(error)")
+        }
+        
+        // Update local state
+        switch command {
+        case .play:
+            isPlaying = true
+        case .pause, .stop:
+            isPlaying = false
+        default:
+            break
+        }
+    }
+    
+    // MARK: - Send Messages to iPhone
     func sendPlayCommand(stationId: String) {
         guard let session = session, session.isReachable else {
             print("[WatchConnectivity] iPhone not reachable")
@@ -41,6 +85,8 @@ class WatchConnectivityService: NSObject, ObservableObject {
         session.sendMessage(message, replyHandler: nil) { error in
             print("[WatchConnectivity] Error sending play command: \(error)")
         }
+        
+        isPlaying = true
     }
     
     func sendPauseCommand() {
@@ -50,6 +96,8 @@ class WatchConnectivityService: NSObject, ObservableObject {
         session.sendMessage(message, replyHandler: nil) { error in
             print("[WatchConnectivity] Error sending pause command: \(error)")
         }
+        
+        isPlaying = false
     }
     
     func sendResumeCommand() {
@@ -59,6 +107,8 @@ class WatchConnectivityService: NSObject, ObservableObject {
         session.sendMessage(message, replyHandler: nil) { error in
             print("[WatchConnectivity] Error sending resume command: \(error)")
         }
+        
+        isPlaying = true
     }
     
     func requestStations(forGenre genre: String? = nil, forCountry country: String? = nil) {
@@ -73,7 +123,6 @@ class WatchConnectivityService: NSObject, ObservableObject {
         }
         
         session.sendMessage(message, replyHandler: { response in
-            // Handle response with stations data
             if let stationsData = response["stations"] as? [[String: Any]] {
                 let stations = stationsData.compactMap { self.parseStation($0) }
                 DispatchQueue.main.async {
@@ -134,7 +183,6 @@ class WatchConnectivityService: NSObject, ObservableObject {
     }
     
     // MARK: - Parse Helpers
-    
     private func parseStation(_ data: [String: Any]) -> Station? {
         guard let id = data["id"] as? String,
               let name = data["name"] as? String else {
@@ -146,7 +194,9 @@ class WatchConnectivityService: NSObject, ObservableObject {
             name: name,
             country: data["country"] as? String,
             city: data["city"] as? String,
-            logoUrl: data["logoUrl"] as? String
+            logoUrl: data["logoUrl"] as? String,
+            streamUrl: data["streamUrl"] as? String,
+            genre: data["genre"] as? String
         )
     }
     
@@ -189,26 +239,47 @@ extension WatchConnectivityService: WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        // Handle incoming messages from iPhone
+        DispatchQueue.main.async {
+            self.handleIncomingMessage(message)
+        }
+    }
+    
+    private func handleIncomingMessage(_ message: [String: Any]) {
         if let command = message["command"] as? String {
             switch command {
             case "nowPlaying":
-                // Update now playing info
                 if let stationData = message["station"] as? [String: Any],
                    let station = parseStation(stationData) {
-                    // Notify UI about now playing update
+                    currentStation = station
                     NotificationCenter.default.post(
                         name: .nowPlayingUpdated,
                         object: station
                     )
                 }
-            case "playbackStateChanged":
-                if let isPlaying = message["isPlaying"] as? Bool {
-                    NotificationCenter.default.post(
-                        name: .playbackStateChanged,
-                        object: isPlaying
+                
+                // Parse now playing info
+                if let title = message["title"] as? String {
+                    nowPlaying = NowPlaying(
+                        title: title,
+                        artist: message["artist"] as? String,
+                        albumArt: message["albumArt"] as? String
                     )
                 }
+                
+            case "playbackStateChanged":
+                if let playing = message["isPlaying"] as? Bool {
+                    isPlaying = playing
+                    NotificationCenter.default.post(
+                        name: .playbackStateChanged,
+                        object: playing
+                    )
+                }
+                
+            case "volumeChanged":
+                if let newVolume = message["volume"] as? Double {
+                    volume = newVolume
+                }
+                
             default:
                 break
             }

@@ -4,14 +4,14 @@
 import SwiftUI
 
 struct MainContentView: View {
-    @StateObject private var connectivityService = WatchConnectivityService()
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         TabView {
             // Now Playing Tab
             NowPlayingView()
                 .tabItem {
-                    Label("Çalıyor", systemImage: "play.circle.fill")
+                    Label("Caliyor", systemImage: "play.circle.fill")
                 }
             
             // Favorites Tab
@@ -23,19 +23,19 @@ struct MainContentView: View {
             // Genres Tab
             GenresView()
                 .tabItem {
-                    Label("Türler", systemImage: "music.note.list")
+                    Label("Turler", systemImage: "music.note.list")
                 }
             
             // Countries Tab
             CountryView()
                 .tabItem {
-                    Label("Ülkeler", systemImage: "globe")
+                    Label("Ulkeler", systemImage: "globe")
                 }
         }
-        .environmentObject(connectivityService)
     }
 }
 
 #Preview {
     MainContentView()
+        .environmentObject(AppState())
 }
