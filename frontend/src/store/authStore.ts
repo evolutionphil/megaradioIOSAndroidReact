@@ -143,10 +143,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
     
     try {
+      console.log('[AuthStore] Loading stored auth...');
       const [storedToken, storedUser] = await Promise.all([
         secureStorage.getItem(TOKEN_KEY),
         secureStorage.getItem(USER_KEY),
       ]);
+      
+      console.log('[AuthStore] Token found:', !!storedToken);
+      console.log('[AuthStore] User found:', !!storedUser);
       
       if (storedToken && storedUser) {
         const user = JSON.parse(storedUser) as User;
@@ -154,14 +158,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           token: storedToken,
           user,
           isAuthenticated: true,
+          isAuthLoaded: true,
           isLoading: false,
         });
+        console.log('[AuthStore] Auth restored successfully');
       } else {
-        set({ isLoading: false });
+        set({ isLoading: false, isAuthLoaded: true });
+        console.log('[AuthStore] No stored auth found');
       }
     } catch (error) {
-      console.error('Error loading stored auth:', error);
-      set({ isLoading: false });
+      console.error('[AuthStore] Error loading stored auth:', error);
+      set({ isLoading: false, isAuthLoaded: true });
     }
   },
 
