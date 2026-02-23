@@ -83,6 +83,14 @@ export default function HomeScreen() {
   const bannerHeight = responsive.bannerHeight;
   const headingSize = Math.round(typography.sizes.xxl * responsive.headingScale);
 
+  // Calculate bottom padding for scroll content
+  // Tab bar height (~85) + MiniPlayer height (~70) + extra spacing
+  const TAB_BAR_HEIGHT = 85;
+  const MINI_PLAYER_HEIGHT = 70;
+  const scrollBottomPadding = isMiniPlayerVisible 
+    ? TAB_BAR_HEIGHT + MINI_PLAYER_HEIGHT + spacing.lg  // ~175
+    : TAB_BAR_HEIGHT + spacing.lg;  // ~105
+
   // Handle notification icon press
   const handleNotificationPress = useCallback(() => {
     if (!isAuthenticated) {
