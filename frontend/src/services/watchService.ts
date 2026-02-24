@@ -3,7 +3,8 @@
 
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
-const { WatchConnectivityBridge } = NativeModules;
+// Only import on iOS
+const WatchConnectivityBridge = Platform.OS === 'ios' ? NativeModules.WatchConnectivityBridge : null;
 
 // Types
 interface WatchStation {
@@ -43,10 +44,19 @@ class WatchService {
   private isInitialized = false;
 
   constructor() {
+    // Only initialize on iOS with native module available
     if (Platform.OS === 'ios' && WatchConnectivityBridge) {
-      this.eventEmitter = new NativeEventEmitter(WatchConnectivityBridge);
-      this.setupListeners();
-      this.isInitialized = true;
+      try {
+        this.eventEmitter = new NativeEventEmitter(WatchConnectivityBridge);
+        this.setupListeners();
+        this.isInitialized = true;
+        console.log('[WatchService] Initialized successfully');
+      } catch (error) {
+        console.log('[WatchService] Initialization failed:', error);
+        this.isInitialized = false;
+      }
+    } else {
+      console.log('[WatchService] Not available (non-iOS or no native module)');
     }
   }
 
@@ -74,56 +84,72 @@ class WatchService {
 
   // Update favorites on Watch
   updateFavorites(favorites: any[]) {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
 
-    const watchStations: WatchStation[] = favorites.map(station => ({
-      id: station._id || station.id,
-      name: station.name || '',
-      logo: station.logo || station.favicon || '',
-      streamUrl: station.streamUrl || station.url_resolved || '',
-      genre: station.genres?.[0] || station.genre || '',
-      country: station.country || '',
-    }));
+    try {
+      const watchStations: WatchStation[] = favorites.map(station => ({
+        id: station._id || station.id || '',
+        name: station.name || '',
+        logo: station.logo || station.favicon || '',
+        streamUrl: station.streamUrl || station.url_resolved || '',
+        genre: station.genres?.[0] || station.genre || '',
+        country: station.country || '',
+      }));
 
-    console.log('[WatchService] Updating favorites:', watchStations.length);
-    WatchConnectivityBridge?.updateFavorites(watchStations);
+      console.log('[WatchService] Updating favorites:', watchStations.length);
+      WatchConnectivityBridge.updateFavorites(watchStations);
+    } catch (error) {
+      console.log('[WatchService] Error updating favorites:', error);
+    }
   }
 
   // Update now playing info on Watch
   updateNowPlaying(nowPlaying: WatchNowPlaying) {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
 
-    console.log('[WatchService] Updating now playing:', nowPlaying.stationName);
-    WatchConnectivityBridge?.updateNowPlaying({
-      stationId: nowPlaying.stationId || '',
-      stationName: nowPlaying.stationName || '',
-      stationLogo: nowPlaying.stationLogo || '',
-      songTitle: nowPlaying.songTitle || '',
-      artistName: nowPlaying.artistName || '',
-      isPlaying: nowPlaying.isPlaying,
-    });
+    try {
+      console.log('[WatchService] Updating now playing:', nowPlaying.stationName);
+      WatchConnectivityBridge.updateNowPlaying({
+        stationId: nowPlaying.stationId || '',
+        stationName: nowPlaying.stationName || '',
+        stationLogo: nowPlaying.stationLogo || '',
+        songTitle: nowPlaying.songTitle || '',
+        artistName: nowPlaying.artistName || '',
+        isPlaying: nowPlaying.isPlaying,
+      });
+    } catch (error) {
+      console.log('[WatchService] Error updating now playing:', error);
+    }
   }
 
   // Update genres on Watch
   updateGenres(genres: any[]) {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
 
-    const watchGenres: WatchGenre[] = genres.map(genre => ({
-      name: genre.name || '',
-      icon: genre.icon || 'radio',
-      stationCount: genre.stationCount || genre.count || 0,
-    }));
+    try {
+      const watchGenres: WatchGenre[] = genres.map(genre => ({
+        name: genre.name || '',
+        icon: genre.icon || 'radio',
+        stationCount: genre.stationCount || genre.count || 0,
+      }));
 
-    console.log('[WatchService] Updating genres:', watchGenres.length);
-    WatchConnectivityBridge?.updateGenres(watchGenres);
+      console.log('[WatchService] Updating genres:', watchGenres.length);
+      WatchConnectivityBridge.updateGenres(watchGenres);
+    } catch (error) {
+      console.log('[WatchService] Error updating genres:', error);
+    }
   }
 
   // Update playback state
   updatePlaybackState(isPlaying: boolean) {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
 
-    console.log('[WatchService] Updating playback state:', isPlaying);
-    WatchConnectivityBridge?.updatePlaybackState(isPlaying);
+    try {
+      console.log('[WatchService] Updating playback state:', isPlaying);
+      WatchConnectivityBridge.updatePlaybackState(isPlaying);
+    } catch (error) {
+      console.log('[WatchService] Error updating playback state:', error);
+    }
   }
 
   // Add command listener
@@ -137,7 +163,9 @@ class WatchService {
   // Remove all listeners
   removeAllListeners() {
     this.commandListeners.clear();
-    this.eventEmitter?.removeAllListeners('onWatchCommand');
+    if (this.eventEmitter) {
+      this.eventEmitter.removeAllListeners('onWatchCommand');
+    }
   }
 }
 
