@@ -22,6 +22,7 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import statsService from '../services/statsService';
 import watchService from '../services/watchService';
+import { adMobService } from '../services/adMobService';
 import type { Station } from '../types';
 sendLog('AUDIO_PROVIDER_IMPORTS_DONE');
 
