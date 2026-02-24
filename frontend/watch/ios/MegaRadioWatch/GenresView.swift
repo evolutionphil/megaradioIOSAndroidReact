@@ -52,56 +52,58 @@ struct GenresView: View {
             Group {
                 if sessionManager.genres.isEmpty {
                     // Empty state
-                    VStack(spacing: 12) {
-                        Image(systemName: "music.note.list")
-                            .font(.system(size: 36))
-                            .foregroundColor(.gray)
-                        
-                        Text("Türler yükleniyor...")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.white)
-                        
+                    VStack(spacing: 8) {
                         if !sessionManager.isReachable {
-                            HStack {
-                                Image(systemName: "iphone.slash")
-                                    .font(.system(size: 10))
-                                Text("iPhone bağlı değil")
-                                    .font(.system(size: 10))
-                            }
-                            .foregroundColor(.orange)
-                            .padding(.top, 8)
+                            Image(systemName: "iphone.slash")
+                                .font(.system(size: 28))
+                                .foregroundColor(.orange)
+                            
+                            Text("iPhone'a bağlan")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(.white)
+                            
+                            Text("Türleri görmek için iPhone'da MegaRadio açık olmalı")
+                                .font(.system(size: 10))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                        } else {
+                            ProgressView()
+                                .tint(.pink)
+                            
+                            Text("Türler yükleniyor...")
+                                .font(.system(size: 12))
+                                .foregroundColor(.gray)
                         }
                         
                         Button(action: {
                             sessionManager.requestGenres()
                         }) {
                             Text("Yenile")
-                                .font(.system(size: 12))
+                                .font(.system(size: 11))
                         }
-                        .padding(.top, 4)
+                        .padding(.top, 8)
                     }
                     .padding()
                 } else {
                     // Genres list
                     List(sessionManager.genres) { genre in
-                        NavigationLink(destination: GenreDetailView(genre: genre)) {
-                            HStack(spacing: 10) {
-                                Image(systemName: iconForGenre(genre.name))
-                                    .foregroundColor(.pink)
-                                    .frame(width: 24)
+                        HStack(spacing: 10) {
+                            Image(systemName: iconForGenre(genre.name))
+                                .foregroundColor(.pink)
+                                .frame(width: 20)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(genre.name)
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.white)
                                 
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(genre.name)
-                                        .font(.system(size: 13, weight: .medium))
-                                        .foregroundColor(.white)
-                                    
-                                    Text("\(genre.stationCount) istasyon")
-                                        .font(.system(size: 10))
-                                        .foregroundColor(.gray)
-                                }
-                                
-                                Spacer()
+                                Text("\(genre.stationCount) istasyon")
+                                    .font(.system(size: 9))
+                                    .foregroundColor(.gray)
                             }
+                            
+                            Spacer()
                         }
                         .listRowBackground(Color.clear)
                     }
@@ -114,35 +116,6 @@ struct GenresView: View {
         .onAppear {
             sessionManager.requestGenres()
         }
-    }
-}
-
-// MARK: - Genre Detail View (placeholder for future implementation)
-struct GenreDetailView: View {
-    let genre: WatchGenre
-    @EnvironmentObject var sessionManager: WatchSessionManager
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "radio.fill")
-                .font(.system(size: 40))
-                .foregroundColor(.pink)
-            
-            Text(genre.name)
-                .font(.system(size: 16, weight: .semibold))
-            
-            Text("\(genre.stationCount) istasyon")
-                .font(.system(size: 12))
-                .foregroundColor(.gray)
-            
-            Text("iPhone'dan dinleyin")
-                .font(.system(size: 11))
-                .foregroundColor(.gray)
-                .padding(.top, 8)
-        }
-        .padding()
-        .navigationTitle(genre.name)
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
