@@ -11,7 +11,7 @@
         "resourceClass": "m-medium",
         "simulator": false,
         "autoIncrement": "buildNumber",
-        "image": "macos-sonoma-14.5-xcode-15.4"
+        "image": "macos-sequoia-15.6-xcode-16.4"
       },
       "android": {
         "buildType": "apk",
@@ -23,7 +23,7 @@
       "ios": {
         "resourceClass": "m-medium",
         "simulator": true,
-        "image": "macos-sonoma-14.5-xcode-15.4"
+        "image": "macos-sequoia-15.6-xcode-16.4"
       }
     },
     "preview": {
@@ -31,7 +31,7 @@
       "ios": {
         "resourceClass": "m-medium",
         "autoIncrement": "buildNumber",
-        "image": "macos-sonoma-14.5-xcode-15.4"
+        "image": "macos-sequoia-15.6-xcode-16.4"
       },
       "android": {
         "buildType": "apk",
@@ -43,7 +43,7 @@
         "resourceClass": "m-medium",
         "autoIncrement": "buildNumber",
         "credentialsSource": "remote",
-        "image": "macos-sonoma-14.5-xcode-15.4"
+        "image": "macos-sequoia-15.6-xcode-16.4"
       },
       "android": {
         "buildType": "app-bundle",
