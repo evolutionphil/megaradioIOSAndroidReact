@@ -39,6 +39,7 @@
       }
     },
     "production": {
+      "node": "20.19.4",
       "ios": {
         "resourceClass": "m-medium",
         "autoIncrement": "buildNumber",
