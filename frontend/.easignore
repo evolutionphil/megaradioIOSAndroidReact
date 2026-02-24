@@ -1,0 +1,27 @@
+# Dependencies (EAS yeniden yükler)
+node_modules/
+
+# Git
+.git/
+
+# Documentation
+*.md
+!README.md
+
+# Test files
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Development
+.expo/
+.vscode/
+*.log
+
+# Large assets not needed for build
+cast-receiver/
+
+# Watch app files (only needed for iOS)
+watch/
