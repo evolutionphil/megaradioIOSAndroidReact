@@ -139,8 +139,10 @@ interface LocationState {
   longitude: number | null;
   loading: boolean;
   error: string | null;
+  isManuallySet: boolean; // Track if country was manually selected
+  loadStoredCountry: () => Promise<void>;
   fetchLocation: () => Promise<void>;
-  setCountryManual: (country: string) => void;
+  setCountryManual: (country: string) => Promise<void>;
   getCountryForApi: (apiType: 'popular' | 'stations') => string | undefined;
 }
 
@@ -152,8 +154,34 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   longitude: null,
   loading: false,
   error: null,
+  isManuallySet: false,
+
+  // Load stored country from AsyncStorage on app startup
+  loadStoredCountry: async () => {
+    try {
+      const storedData = await AsyncStorage.getItem(COUNTRY_KEY);
+      if (storedData) {
+        const { country, countryCode, countryEnglish } = JSON.parse(storedData);
+        console.log('[LocationStore] Loaded stored country:', country);
+        set({
+          country,
+          countryCode,
+          countryEnglish,
+          isManuallySet: true,
+        });
+      }
+    } catch (error) {
+      console.error('[LocationStore] Failed to load stored country:', error);
+    }
+  },
 
   fetchLocation: async () => {
+    // If user manually set a country, don't override with geolocation
+    if (get().isManuallySet) {
+      console.log('[LocationStore] Country manually set, skipping geolocation');
+      return;
+    }
+    
     if (get().loading) return;
     set({ loading: true, error: null });
 
