@@ -130,6 +130,20 @@ export default function RootLayout() {
     loadAuth();
   }, []);
 
+  // Load stored country selection on app startup
+  useEffect(() => {
+    const loadCountry = async () => {
+      console.log('[Layout] Loading stored country selection...');
+      try {
+        await useLocationStore.getState().loadStoredCountry();
+        console.log('[Layout] Country loaded:', useLocationStore.getState().country);
+      } catch (error) {
+        console.error('[Layout] Failed to load stored country:', error);
+      }
+    };
+    loadCountry();
+  }, []);
+
   // Load icon fonts by requiring TTF files directly + custom fonts
   const [fontsLoaded, fontError] = useFonts({
     'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
