@@ -3,10 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } fr
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, borderRadius, spacing, typography, shadows, gradients } from '../constants/theme';
+import { getStationLogoUrl, DEFAULT_STATION_LOGO } from '../utils/stationLogoHelper';
 import type { Station } from '../types';
-
-// Default station logo URL - fallback when no logo available
-const DEFAULT_STATION_LOGO = 'https://themegaradio.com/images/default-station.png';
 
 interface StationCardProps {
   station: Station;
