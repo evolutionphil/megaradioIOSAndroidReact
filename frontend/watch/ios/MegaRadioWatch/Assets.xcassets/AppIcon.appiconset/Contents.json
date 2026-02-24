@@ -1,87 +1,87 @@
 {
   "images" : [
     {
-      "filename" : "icon-24@2x.png",
+      "filename" : "icon-48.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "24x24",
       "subtype" : "38mm"
     },
     {
-      "filename" : "icon-27.5@2x.png",
+      "filename" : "icon-55.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "27.5x27.5",
       "subtype" : "40mm"
     },
     {
-      "filename" : "icon-29@2x.png",
+      "filename" : "icon-58.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
-      "filename" : "icon-30@2x.png",
+      "filename" : "icon-60.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "30x30",
       "subtype" : "42mm"
     },
     {
-      "filename" : "icon-32@2x.png",
+      "filename" : "icon-64.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "32x32",
       "subtype" : "44mm"
     },
     {
-      "filename" : "icon-33@2x.png",
+      "filename" : "icon-66.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "33x33",
       "subtype" : "45mm"
     },
     {
-      "filename" : "icon-36@2x.png",
+      "filename" : "icon-72.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "36x36",
       "subtype" : "49mm"
     },
     {
-      "filename" : "icon-40@2x.png",
+      "filename" : "icon-80.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "40x40"
     },
     {
-      "filename" : "icon-44@2x.png",
+      "filename" : "icon-88.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "44x44"
     },
     {
-      "filename" : "icon-46@2x.png",
+      "filename" : "icon-92.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "46x46"
     },
     {
-      "filename" : "icon-50@2x.png",
+      "filename" : "icon-100.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "50x50",
       "subtype" : "44mm"
     },
     {
-      "filename" : "icon-51@2x.png",
+      "filename" : "icon-102.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "51x51",
       "subtype" : "45mm"
     },
     {
-      "filename" : "icon-54@2x.png",
+      "filename" : "icon-108.png",
       "idiom" : "watch",
       "scale" : "2x",
       "size" : "54x54",
