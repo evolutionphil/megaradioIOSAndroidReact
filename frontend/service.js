@@ -126,22 +126,26 @@ const addToPlaybackHistory = async (station) => {
   }
 };
 
-// Get next station from similar stations
+// Get next station from similar stations (sequential)
 const getNextStation = async () => {
   try {
-    // First try similar stations
+    // Get similar stations list
     const similarJson = await AsyncStorage.getItem(SIMILAR_STATIONS_KEY);
     const similarStations = similarJson ? JSON.parse(similarJson) : [];
     
     if (similarStations.length > 0) {
-      // Get current station
-      const currentJson = await AsyncStorage.getItem(CURRENT_STATION_KEY);
-      const currentStation = currentJson ? JSON.parse(currentJson) : null;
+      // Get current index
+      const indexJson = await AsyncStorage.getItem(SIMILAR_INDEX_KEY);
+      let currentIndex = indexJson ? parseInt(indexJson, 10) : -1;
       
-      // Find a different station
-      const nextStation = similarStations.find(s => 
-        s._id !== currentStation?._id
-      ) || similarStations[0];
+      // Move to next index
+      currentIndex = (currentIndex + 1) % similarStations.length;
+      
+      // Save new index
+      await AsyncStorage.setItem(SIMILAR_INDEX_KEY, String(currentIndex));
+      
+      const nextStation = similarStations[currentIndex];
+      console.log('[Service] Next station:', nextStation?.name, '(index:', currentIndex, 'of', similarStations.length, ')');
       
       return nextStation;
     }
@@ -162,23 +166,41 @@ const getNextStation = async () => {
   }
 };
 
-// Get previous station from playback history
+// Get previous station from playback history (sequential)
 const getPreviousStation = async () => {
   try {
+    // Get playback history
     const historyJson = await AsyncStorage.getItem(PLAYBACK_HISTORY_KEY);
     const history = historyJson ? JSON.parse(historyJson) : [];
     
-    // Get current station
-    const currentJson = await AsyncStorage.getItem(CURRENT_STATION_KEY);
-    const currentStation = currentJson ? JSON.parse(currentJson) : null;
+    if (history.length < 2) {
+      console.log('[Service] Not enough history for previous');
+      return null;
+    }
     
-    // Find previous station (not current)
-    const previousStation = history.find(s => 
-      s._id !== currentStation?._id
-    );
+    // History[0] is current station, History[1] is previous
+    // Remove current from history and return previous
+    const previousStation = history[1];
     
     if (previousStation) {
+      // Move previous to front (it will become current after playing)
+      const newHistory = [previousStation, ...history.filter(s => s._id !== previousStation._id)];
+      await AsyncStorage.setItem(PLAYBACK_HISTORY_KEY, JSON.stringify(newHistory.slice(0, 50)));
+      
+      // Reset similar index when going back
+      await AsyncStorage.setItem(SIMILAR_INDEX_KEY, '-1');
+      
+      console.log('[Service] Previous station:', previousStation?.name);
       return previousStation;
+    }
+    
+    console.log('[Service] No previous station available');
+    return null;
+  } catch (error) {
+    console.error('[Service] Error getting previous station:', error);
+    return null;
+  }
+};
     }
     
     // Fallback to recently played
