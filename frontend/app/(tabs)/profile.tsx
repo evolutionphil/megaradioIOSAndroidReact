@@ -490,6 +490,12 @@ export default function ProfileScreen() {
             </View>
           </View>
 
+          {/* Ad-Free Section */}
+          <View style={s.section}>
+            <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
+            <RewardedAdButton />
+          </View>
+
           {/* Settings Section */}
           <View style={s.section}>
             <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
