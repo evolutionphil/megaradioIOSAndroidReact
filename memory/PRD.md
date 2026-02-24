@@ -498,6 +498,37 @@ Test sonuçları:
 
 ---
 
+## December 2025 - AdMob Integration (Session 6)
+
+### Eklenen Özellikler:
+
+1. **Google AdMob Entegrasyonu**
+   - `react-native-google-mobile-ads` paketi eklendi
+   - iOS ve Android App ID'leri konfigüre edildi
+   - Interstitial ve Rewarded ad unit'leri tanımlandı
+
+2. **Interstitial Reklamlar**
+   - Her 4 radyo değişiminde tam ekran reklam gösterilir
+   - Reklamsız kullanıcılar için atlanır
+
+3. **Rewarded Reklamlar (30 Dakika Reklamsız)**
+   - Video izleyerek reklamsız süre kazanılır
+   - Profile sayfasında "Premium" bölümünde
+
+### Ad Unit ID'leri:
+- iOS App: ca-app-pub-8771434485570434~4044224468
+- Android App: ca-app-pub-8771434485570434~7427742767
+- iOS Interstitial: ca-app-pub-8771434485570434/6008042825
+- iOS Rewarded: ca-app-pub-8771434485570434/3488497756
+- Android Interstitial: ca-app-pub-8771434485570434/7220363780
+- Android Rewarded: ca-app-pub-8771434485570434/8745886806
+
+### Eklenen Dosyalar:
+- `src/services/adMobService.ts`
+- `src/components/RewardedAdButton.tsx`
+
+---
+
 ## December 2025 - Settings Persistence & Favorites Cache Fix (Session 5)
 
 ### Düzeltilen Sorunlar:
