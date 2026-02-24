@@ -82,10 +82,13 @@
         "expo-build-properties",
         {
           "android": {
-            "usesCleartextTraffic": true
+            "usesCleartextTraffic": true,
+            "newArchEnabled": false,
+            "extraProguardRules": "-keep class io.invertase.** { *; }\n-keep class com.google.android.gms.ads.** { *; }"
           },
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "newArchEnabled": false
           }
         }
       ],
