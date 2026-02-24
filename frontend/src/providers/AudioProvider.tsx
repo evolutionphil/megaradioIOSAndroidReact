@@ -892,6 +892,32 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     watchService.updateFavorites(favorites);
   }, [favorites]);
   
+  // Fetch and send genres to Watch on mount
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    
+    const fetchAndSendGenres = async () => {
+      try {
+        const { genreService } = await import('../services/genreService');
+        const genres = await genreService.getDiscoverableGenres();
+        
+        if (genres && genres.length > 0) {
+          const watchGenres = genres.map((g: any) => ({
+            name: g.name || g.title || '',
+            icon: g.icon || 'radio',
+            stationCount: g.stationCount || g.count || 0,
+          }));
+          watchService.updateGenres(watchGenres);
+          console.log('[AudioProvider] Sent', watchGenres.length, 'genres to Watch');
+        }
+      } catch (error) {
+        console.log('[AudioProvider] Error fetching genres for Watch:', error);
+      }
+    };
+    
+    fetchAndSendGenres();
+  }, []);
+  
   // Send now playing info to Watch
   useEffect(() => {
     if (Platform.OS !== 'ios') return;
