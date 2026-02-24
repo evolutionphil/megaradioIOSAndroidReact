@@ -547,6 +547,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
 
+    // Track station change for ads (only for different stations)
+    // This will show interstitial ad every 4 station changes
+    adMobService.onStationChange().then((adShown) => {
+      if (adShown) {
+        console.log('[AudioProvider] Interstitial ad shown on station change');
+      }
+    }).catch((error) => {
+      console.log('[AudioProvider] Ad error (non-blocking):', error);
+    });
+
     // NEW STATION - increment play ID for race condition prevention
     const myPlayId = ++globalPlayId;
     console.log('[AudioProvider] New PlayID:', myPlayId);
