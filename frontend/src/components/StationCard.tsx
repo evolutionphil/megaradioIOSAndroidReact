@@ -25,44 +25,10 @@ export const StationCard: React.FC<StationCardProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   
-  // Helper function to build reliable logo URL with fallback
+  // Use centralized logo helper
   const getLogoUrl = (): string => {
-    // If image failed to load, use default
     if (imageError) return DEFAULT_STATION_LOGO;
-    
-    try {
-      // Priority 1: logoAssets (best quality, our own CDN)
-      if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-        const folder = encodeURIComponent(station.logoAssets.folder);
-        const file = encodeURIComponent(station.logoAssets.webp96);
-        return `https://themegaradio.com/station-logos/${folder}/${file}`;
-      }
-      
-      // Priority 2: favicon field
-      if (station.favicon && station.favicon.trim()) {
-        const favicon = station.favicon.trim();
-        if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-          return favicon;
-        } else if (favicon.startsWith('/')) {
-          return `https://themegaradio.com${favicon}`;
-        }
-      }
-      
-      // Priority 3: logo field
-      if (station.logo && station.logo.trim()) {
-        const logo = station.logo.trim();
-        if (logo.startsWith('http://') || logo.startsWith('https://')) {
-          return logo;
-        } else if (logo.startsWith('/')) {
-          return `https://themegaradio.com${logo}`;
-        }
-      }
-    } catch (e) {
-      console.log('[StationCard] Logo URL error:', e);
-    }
-    
-    // Fallback: Default station logo
-    return DEFAULT_STATION_LOGO;
+    return getStationLogoUrl(station);
   };
 
   const logoUrl = getLogoUrl();
