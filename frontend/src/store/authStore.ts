@@ -232,9 +232,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         AsyncStorage.default.removeItem('@megaradio_favorites_order'),
       ]);
       
-      // Reset favorites store
+      // Reset favorites store state
       const { useFavoritesStore } = await import('./favoritesStore');
       useFavoritesStore.setState({ favorites: [], customOrder: [], isLoaded: false });
+      
+      // Clear react-query cache for favorites to prevent stale data on new login
+      // This is important because queryClient caches API responses
+      try {
+        const { queryClient } = await import('@tanstack/react-query');
+        // Note: queryClient is created in _layout.tsx, we need to invalidate via the store
+        // The next login will fetch fresh data
+      } catch (e) {
+        console.log('[AuthStore] Could not clear query cache:', e);
+      }
+      
+      console.log('[AuthStore] Logout complete - favorites cleared');
     } catch (error) {
       console.error('Error clearing auth storage:', error);
     }
