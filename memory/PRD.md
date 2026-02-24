@@ -498,5 +498,40 @@ Test sonuçları:
 
 ---
 
+## December 2025 - Settings Persistence & Favorites Cache Fix (Session 5)
+
+### Düzeltilen Sorunlar:
+
+1. **Favoriler Cache Sorunu (P0) - FARKLI BIR SORUN**
+   - **Sorun**: Logout yapıp başka hesapla giriş yapınca eski hesabın favorileri geliyordu.
+   - **Kök Neden**: `handleLogout` fonksiyonu async `logout()` yerine senkron `clearAuth()` çağırıyordu. `clearAuth` sadece state'i sıfırlıyor, storage ve favoritesStore'u temizlemiyordu.
+   - **Çözüm**: 
+     - `profile.tsx`'de `handleLogout` artık async `logout()` fonksiyonunu çağırıyor
+     - `authStore.ts` logout fonksiyonu AsyncStorage'dan favorileri temizliyor ve favoritesStore'u sıfırlıyor
+
+2. **Dil ve Ülke Ayarları Persist Etmiyor (P0)**
+   - **Sorun**: Türkçe ve Türkiye seçip uygulamayı kapatıp açınca English ve mevcut konum ülkesi gösteriliyordu.
+   - **Kök Neden**: 
+     - `locationStore.ts` ülke seçimini AsyncStorage'a kaydetmiyordu, sadece memory'de tutuyordu
+     - Uygulama açılışında geolocation eski seçimi override ediyordu
+   - **Çözüm**:
+     - `locationStore.ts`'e `loadStoredCountry()` fonksiyonu eklendi
+     - `setCountryManual()` fonksiyonu artık seçimi AsyncStorage'a kaydediyor
+     - `isManuallySet` flag eklendi - manuel seçim varsa geolocation override etmiyor
+     - `_layout.tsx`'de uygulama başlangıcında `loadStoredCountry()` çağrılıyor
+
+### Değişen Dosyalar:
+- `src/store/locationStore.ts` - AsyncStorage persist, loadStoredCountry, isManuallySet flag
+- `src/store/authStore.ts` - logout fonksiyonunda favoritesStore reset log eklendi
+- `app/_layout.tsx` - loadStoredCountry çağrısı eklendi
+- `app/(tabs)/profile.tsx` - handleLogout artık async logout() kullanıyor
+
+### ⚠️ Test Gereksinimleri:
+- **Yeni EAS Build Gerekli**
+- **Ülke Persist Test**: Türkiye seçin, uygulamayı kapatıp açın, Türkiye kalmalı
+- **Favoriler Cache Test**: Hesap A ile giriş yapın, logout, Hesap B ile giriş yapın - B'nin favorileri gelmeli
+
+---
+
 ## User Language
 Turkish (Türkçe)
