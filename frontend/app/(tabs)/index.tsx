@@ -185,12 +185,12 @@ export default function HomeScreen() {
     });
   };
 
-  // Sort genres by station count (most popular first) then take first 8
+  // Sort genres by station count (most popular first) then take first 16
   const genres = useMemo(() => {
     const allGenres = genresData?.data || [];
     return [...allGenres]
       .sort((a, b) => (b.stationCount || b.total_stations || 0) - (a.stationCount || a.total_stations || 0))
-      .slice(0, 8);
+      .slice(0, 16);
   }, [genresData]);
   const popularStations = popularData?.stations || [];
   const recentStations = localRecentStations;
