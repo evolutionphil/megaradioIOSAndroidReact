@@ -219,7 +219,10 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     setShowLogoutModal(false);
-    clearAuth();
+    
+    // Call async logout which clears storage and resets favorites
+    await logout();
+    
     router.replace('/(tabs)');
   };
 
