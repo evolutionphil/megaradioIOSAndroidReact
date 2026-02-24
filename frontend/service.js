@@ -11,6 +11,7 @@ const CURRENT_STATION_KEY = '@megaradio_current_station';
 const RECENTLY_PLAYED_KEY = '@megaradio_recently_played';
 const SIMILAR_STATIONS_KEY = '@megaradio_similar_stations';
 const PLAYBACK_HISTORY_KEY = '@megaradio_playback_history'; // For previous button
+const SIMILAR_INDEX_KEY = '@megaradio_similar_index'; // Track position in similar stations
 
 // Helper to get station logo URL
 const getStationLogoUrl = (station) => {
