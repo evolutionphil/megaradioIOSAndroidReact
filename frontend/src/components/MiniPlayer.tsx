@@ -19,42 +19,6 @@ import { ChevronUpIcon, HeartOutlineIcon, HeartFilledIcon, PauseIcon, PlayIcon }
 import { getStationLogoUrl, DEFAULT_STATION_LOGO } from '../utils/stationLogoHelper';
 import type { Station } from '../types';
 
-// Default station logo URL - fallback when no logo available
-const DEFAULT_STATION_LOGO = 'https://themegaradio.com/images/default-station.png';
-
-// Logo URL helper - always returns a valid URL
-const getStationLogoUrl = (station: Station | null | undefined): string => {
-  if (!station) return DEFAULT_STATION_LOGO;
-  
-  try {
-    if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-      const folder = encodeURIComponent(station.logoAssets.folder);
-      const file = encodeURIComponent(station.logoAssets.webp96);
-      return `https://themegaradio.com/station-logos/${folder}/${file}`;
-    }
-    
-    if (station.favicon && station.favicon.trim()) {
-      const favicon = station.favicon.trim();
-      if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-        return favicon;
-      } else if (favicon.startsWith('/')) {
-        return `https://themegaradio.com${favicon}`;
-      }
-    }
-    
-    if (station.logo && station.logo.trim()) {
-      const logo = station.logo.trim();
-      if (logo.startsWith('http://') || logo.startsWith('https://')) {
-        return logo;
-      } else if (logo.startsWith('/')) {
-        return `https://themegaradio.com${logo}`;
-      }
-    }
-  } catch (e) {}
-  
-  return DEFAULT_STATION_LOGO;
-};
-
 // Check if we're on web
 const isWeb = Platform.OS === 'web';
 
