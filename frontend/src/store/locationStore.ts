@@ -1,5 +1,9 @@
 import { create } from 'zustand';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Storage key for persisted country selection
+const COUNTRY_KEY = '@megaradio_selected_country';
 
 // Country name to ISO code mapping
 const COUNTRY_CODE_MAP: Record<string, string> = {
