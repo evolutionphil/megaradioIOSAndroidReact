@@ -879,6 +879,95 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Determine if playing from playback state
   const isPlaying = playbackState.state === State.Playing;
 
+  // ============================================
+  // APPLE WATCH INTEGRATION
+  // ============================================
+  
+  // Get favorites for Watch
+  const { favorites } = useFavoritesStore();
+  
+  // Send favorites to Watch when they change
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    watchService.updateFavorites(favorites);
+  }, [favorites]);
+  
+  // Send now playing info to Watch
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    
+    const nowPlayingData = usePlayerStore.getState().nowPlaying;
+    watchService.updateNowPlaying({
+      stationId: currentStation?._id || currentStation?.id,
+      stationName: currentStation?.name,
+      stationLogo: currentStation?.logo || currentStation?.favicon,
+      songTitle: nowPlayingData?.title,
+      artistName: nowPlayingData?.artist,
+      isPlaying: isPlaying,
+    });
+  }, [currentStation, isPlaying]);
+  
+  // Update Watch playback state
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    watchService.updatePlaybackState(isPlaying);
+  }, [isPlaying]);
+  
+  // Listen to Watch commands
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    
+    const unsubscribe = watchService.addCommandListener(async (command) => {
+      console.log('[AudioProvider] Watch command received:', command);
+      
+      switch (command.command) {
+        case 'play':
+          resume();
+          break;
+        case 'pause':
+          pause();
+          break;
+        case 'togglePlayPause':
+          togglePlayPause();
+          break;
+        case 'nextStation':
+          // Play next favorite
+          const currentIndex = favorites.findIndex(
+            (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
+          );
+          if (currentIndex >= 0 && currentIndex < favorites.length - 1) {
+            await playStation(favorites[currentIndex + 1]);
+          } else if (favorites.length > 0) {
+            await playStation(favorites[0]); // Loop to first
+          }
+          break;
+        case 'previousStation':
+          // Play previous favorite
+          const prevIndex = favorites.findIndex(
+            (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
+          );
+          if (prevIndex > 0) {
+            await playStation(favorites[prevIndex - 1]);
+          } else if (favorites.length > 0) {
+            await playStation(favorites[favorites.length - 1]); // Loop to last
+          }
+          break;
+        case 'playStation':
+          if (command.stationId) {
+            const station = favorites.find(
+              (s: any) => (s._id || s.id) === command.stationId
+            );
+            if (station) {
+              await playStation(station);
+            }
+          }
+          break;
+      }
+    });
+    
+    return () => unsubscribe();
+  }, [favorites, currentStation, playStation, pause, resume, togglePlayPause]);
+
   const value: AudioContextType = {
     playStation,
     stopPlayback,
