@@ -230,7 +230,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     }
   },
 
-  setCountryManual: (countryName: string) => {
+  setCountryManual: async (countryName: string) => {
     // Check if the input is native or English and determine both
     const englishName = COUNTRY_ENGLISH_MAP[countryName] || countryName;
     const nativeName = COUNTRY_NATIVE_MAP[countryName] || COUNTRY_NATIVE_MAP[englishName] || countryName;
@@ -240,13 +240,27 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     
     console.log('[LocationStore] setCountryManual:', { countryName, englishName, nativeName, countryCode });
     
+    // Update state
     set({ 
       country: nativeName, 
       countryEnglish: englishName,
       countryCode: countryCode, 
       loading: false, 
-      error: null 
+      error: null,
+      isManuallySet: true,
     });
+    
+    // Persist to AsyncStorage
+    try {
+      await AsyncStorage.setItem(COUNTRY_KEY, JSON.stringify({
+        country: nativeName,
+        countryCode: countryCode,
+        countryEnglish: englishName,
+      }));
+      console.log('[LocationStore] Country saved to storage');
+    } catch (error) {
+      console.error('[LocationStore] Failed to save country:', error);
+    }
   },
   
   // Helper to get correct country name for different API endpoints
