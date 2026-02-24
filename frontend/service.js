@@ -201,23 +201,6 @@ const getPreviousStation = async () => {
     return null;
   }
 };
-    }
-    
-    // Fallback to recently played
-    const recentJson = await AsyncStorage.getItem(RECENTLY_PLAYED_KEY);
-    const recentStations = recentJson ? JSON.parse(recentJson) : [];
-    
-    if (recentStations.length > 1) {
-      return recentStations[1];
-    }
-    
-    console.log('[Service] No previous station available');
-    return null;
-  } catch (error) {
-    console.error('[Service] Error getting previous station:', error);
-    return null;
-  }
-};
 
 // This service needs to be registered for Track Player to work
 module.exports = async function() {
