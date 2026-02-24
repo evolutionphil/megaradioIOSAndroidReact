@@ -1,4 +1,3 @@
-Removed @g4rb4g3/react-native-carplay from dependencies
 {
   "name": "frontend",
   "main": "./index.js",
