@@ -10,7 +10,8 @@
       "ios": {
         "resourceClass": "m-medium",
         "simulator": false,
-        "autoIncrement": "buildNumber"
+        "autoIncrement": "buildNumber",
+        "image": "macos-sonoma-14.5-xcode-15.4"
       },
       "android": {
         "buildType": "apk",
@@ -21,14 +22,16 @@
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium",
-        "simulator": true
+        "simulator": true,
+        "image": "macos-sonoma-14.5-xcode-15.4"
       }
     },
     "preview": {
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium",
-        "autoIncrement": "buildNumber"
+        "autoIncrement": "buildNumber",
+        "image": "macos-sonoma-14.5-xcode-15.4"
       },
       "android": {
         "buildType": "apk",
