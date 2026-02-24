@@ -132,6 +132,13 @@
         }
       ],
       "./plugins/withGoogleCast.js",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8771434485570434~7427742767",
+          "iosAppId": "ca-app-pub-8771434485570434~4044224468"
+        }
+      ],
       "./plugins/withAirPlay.js",
       "./plugins/withAndroidAutoFull.js",
       "./plugins/withCleartextTraffic.js"
