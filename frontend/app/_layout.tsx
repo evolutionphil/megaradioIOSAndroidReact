@@ -171,6 +171,19 @@ export default function RootLayout() {
     init();
   }, []);
 
+  // Initialize AdMob
+  useEffect(() => {
+    const initAds = async () => {
+      try {
+        await adMobService.initialize();
+        console.log('[Layout] AdMob initialized');
+      } catch (error) {
+        console.error('[Layout] AdMob initialization error:', error);
+      }
+    };
+    initAds();
+  }, []);
+
   // Setup Track Player once (only on native platforms, not web, and don't block UI)
   // NOTE: Full Track Player setup with capabilities is done in AudioProvider.tsx
   // This is just a fallback check - AudioProvider handles the real setup
