@@ -30,6 +30,7 @@ const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
 const CURRENT_STATION_KEY = '@megaradio_current_station';
 const SIMILAR_STATIONS_KEY = '@megaradio_similar_stations';
 const PLAYBACK_HISTORY_KEY = '@megaradio_playback_history';
+const SIMILAR_INDEX_KEY = '@megaradio_similar_index';
 
 // ============================================
 // TYPES
