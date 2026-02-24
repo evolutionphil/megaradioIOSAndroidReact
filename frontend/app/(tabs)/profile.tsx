@@ -63,7 +63,7 @@ interface CountryData {
 export default function ProfileScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { user, logout: clearAuth } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { country, setCountryManual } = useLocationStore();
   const { currentLanguage, languageVersion } = useLanguageStore();
   const { isMiniPlayerVisible } = usePlayerStore();
