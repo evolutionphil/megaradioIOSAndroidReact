@@ -531,6 +531,12 @@ Test sonuçları:
 - **Ülke Persist Test**: Türkiye seçin, uygulamayı kapatıp açın, Türkiye kalmalı
 - **Favoriler Cache Test**: Hesap A ile giriş yapın, logout, Hesap B ile giriş yapın - B'nin favorileri gelmeli
 
+### watchOS Kurulum Rehberi Güncellendi
+- `Info.plist`'e `WKCompanionAppBundleIdentifier` ve `WKRunsIndependentlyOfCompanionApp` eklendi
+- iOS Bundle ID: `com.visiongo.megaradio`
+- watchOS Bundle ID: `com.visiongo.megaradio.watchkitapp`
+- Detaylı rehber: `/app/frontend/WATCHOS_SETUP_GUIDE.md`
+
 ---
 
 ## User Language
