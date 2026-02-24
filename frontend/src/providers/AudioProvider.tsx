@@ -713,6 +713,9 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         await AsyncStorage.setItem(PLAYBACK_HISTORY_KEY, JSON.stringify(history));
         
         // Fetch and save similar stations for Next button (non-blocking)
+        // Reset similar index when playing new station
+        await AsyncStorage.setItem(SIMILAR_INDEX_KEY, '-1');
+        
         stationService.getSimilarStations(station._id, 10).then(async (similarStations) => {
           if (similarStations && similarStations.length > 0) {
             await AsyncStorage.setItem(SIMILAR_STATIONS_KEY, JSON.stringify(similarStations));
