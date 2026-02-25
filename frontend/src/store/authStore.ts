@@ -219,6 +219,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Logout - clear everything
   logout: async () => {
     try {
+      // Delete push token from backend FIRST (while we still have auth token)
+      if (Platform.OS !== 'web') {
+        try {
+          const pushNotificationService = (await import('../services/pushNotificationService')).default;
+          const pushToken = await pushNotificationService.getStoredPushToken();
+          if (pushToken) {
+            console.log('[AuthStore] Deleting push token from backend...');
+            await pushNotificationService.deletePushTokenFromBackend(pushToken);
+          }
+        } catch (e) {
+          console.log('[AuthStore] Failed to delete push token:', e);
+        }
+      }
+      
       await Promise.all([
         secureStorage.removeItem(TOKEN_KEY),
         secureStorage.removeItem(USER_KEY),
@@ -230,6 +244,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await Promise.all([
         AsyncStorage.default.removeItem('@megaradio_favorites'),
         AsyncStorage.default.removeItem('@megaradio_favorites_order'),
+        AsyncStorage.default.removeItem('@megaradio_push_token'),
       ]);
       
       // Reset favorites store state
@@ -246,7 +261,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         console.log('[AuthStore] Could not clear query cache:', e);
       }
       
-      console.log('[AuthStore] Logout complete - favorites cleared');
+      console.log('[AuthStore] Logout complete - favorites and push token cleared');
     } catch (error) {
       console.error('Error clearing auth storage:', error);
     }
