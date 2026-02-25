@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import api from './api';
+import { API_ENDPOINTS } from '../constants/api';
 
 const PUSH_TOKEN_KEY = '@megaradio_push_token';
 const NOTIFICATIONS_ENABLED_KEY = '@megaradio_notifications_enabled';
@@ -22,7 +23,8 @@ if (Platform.OS !== 'web') {
 
 export interface PushNotificationService {
   registerForPushNotifications: () => Promise<string | null>;
-  sendPushTokenToBackend: (token: string, userId?: string) => Promise<void>;
+  sendPushTokenToBackend: (token: string) => Promise<void>;
+  deletePushTokenFromBackend: (token: string) => Promise<void>;
   getStoredPushToken: () => Promise<string | null>;
   addNotificationListener: (callback: (notification: Notifications.Notification) => void) => () => void;
   addNotificationResponseListener: (callback: (response: Notifications.NotificationResponse) => void) => () => void;
@@ -34,6 +36,7 @@ export interface PushNotificationService {
 const pushNotificationService: PushNotificationService = {
   /**
    * Register for push notifications and get the Expo Push Token
+   * Call this AFTER user logs in
    */
   async registerForPushNotifications(): Promise<string | null> {
     let token: string | null = null;
@@ -60,7 +63,7 @@ const pushNotificationService: PushNotificationService = {
     }
 
     try {
-      // Get project ID from Expo constants (automatically set by EAS Build)
+      // Get project ID from Expo constants
       const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
       
       console.log('[PushNotification] Project ID:', projectId);
@@ -85,6 +88,14 @@ const pushNotificationService: PushNotificationService = {
           lightColor: '#FF4199',
         });
 
+        // Create channel for followers
+        await Notifications.setNotificationChannelAsync('followers', {
+          name: 'New Followers',
+          description: 'Notifications when someone follows you',
+          importance: Notifications.AndroidImportance.HIGH,
+          sound: 'default',
+        });
+
         // Create channel for radio updates
         await Notifications.setNotificationChannelAsync('radio', {
           name: 'Radio Updates',
@@ -99,13 +110,6 @@ const pushNotificationService: PushNotificationService = {
           description: 'Notifications about new radio stations',
           importance: Notifications.AndroidImportance.DEFAULT,
         });
-
-        // Create channel for favorites
-        await Notifications.setNotificationChannelAsync('favorites', {
-          name: 'Favorites',
-          description: 'Updates about your favorite stations',
-          importance: Notifications.AndroidImportance.HIGH,
-        });
       }
 
       return token;
@@ -117,18 +121,35 @@ const pushNotificationService: PushNotificationService = {
 
   /**
    * Send push token to backend for storage
+   * Token is sent with Authorization header (via api interceptor)
    */
-  async sendPushTokenToBackend(token: string, userId?: string): Promise<void> {
+  async sendPushTokenToBackend(token: string): Promise<void> {
     try {
-      await api.post('/api/user/push-token', {
-        token,
-        userId,
-        platform: Platform.OS,
-        deviceName: Device.deviceName || Device.modelName || 'Unknown',
+      await api.post(API_ENDPOINTS.user.pushToken, {
+        token,                                        // "ExponentPushToken[xxxxxxx]"
+        platform: Platform.OS,                        // 'ios' or 'android'
+        deviceName: Device.deviceName ?? 'Unknown',   // Device name
       });
-      console.log('[PushNotification] Token sent to backend');
+      console.log('[PushNotification] Token sent to backend successfully');
     } catch (error) {
       console.error('[PushNotification] Failed to send token to backend:', error);
+    }
+  },
+
+  /**
+   * Delete push token from backend (call on logout)
+   */
+  async deletePushTokenFromBackend(token: string): Promise<void> {
+    try {
+      await api.delete(API_ENDPOINTS.user.deletePushToken, {
+        data: { token }
+      });
+      console.log('[PushNotification] Token deleted from backend');
+      
+      // Clear local storage
+      await AsyncStorage.removeItem(PUSH_TOKEN_KEY);
+    } catch (error) {
+      console.error('[PushNotification] Failed to delete token from backend:', error);
     }
   },
 
@@ -167,30 +188,37 @@ const pushNotificationService: PushNotificationService = {
     
     if (!data) return;
 
-    // Navigate based on notification type
+    // Handle follow notification
+    if (data.type === 'follow' && data.followerSlug) {
+      router.push({
+        pathname: '/user-profile',
+        params: { 
+          userId: data.followerSlug,
+          userName: data.followerName || 'User',
+        }
+      });
+      return;
+    }
+
+    // Navigate based on screen field
     if (data.screen === 'player' && data.stationId) {
-      // Navigate to player with station ID
       router.push({
         pathname: '/player',
         params: { stationId: data.stationId }
       });
     } else if (data.screen === 'genre' && data.genreSlug) {
-      // Navigate to genre detail
       router.push({
         pathname: '/genre-detail',
         params: { slug: data.genreSlug }
       });
-    } else if (data.screen === 'user-profile' && data.userId) {
-      // Navigate to user profile
+    } else if (data.screen === 'user-profile' && (data.userId || data.userSlug)) {
       router.push({
         pathname: '/user-profile',
-        params: { userId: data.userId }
+        params: { userId: data.userId || data.userSlug }
       });
     } else if (data.screen === 'notifications') {
-      // Navigate to notifications
       router.push('/notifications');
     } else if (data.url) {
-      // Handle deep link URL
       router.push(data.url);
     }
   },
@@ -220,53 +248,3 @@ const pushNotificationService: PushNotificationService = {
 };
 
 export default pushNotificationService;
-
-/**
- * =====================================================
- * BACKEND API ENDPOINT GEREKSİNİMİ
- * =====================================================
- * 
- * POST /api/user/push-token
- * 
- * Request Body:
- * {
- *   "token": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
- *   "userId": "user_id_here",  // optional, null for guests
- *   "platform": "ios" | "android",
- *   "deviceName": "iPhone 15 Pro"
- * }
- * 
- * Response:
- * { "success": true }
- * 
- * =====================================================
- * NOTIFICATION GÖNDERME (Backend'den)
- * =====================================================
- * 
- * POST https://exp.host/--/api/v2/push/send
- * 
- * Headers:
- * {
- *   "Accept": "application/json",
- *   "Content-Type": "application/json"
- * }
- * 
- * Body:
- * {
- *   "to": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
- *   "sound": "default",
- *   "title": "MegaRadio",
- *   "body": "Power FM şu an canlı yayında!",
- *   "data": { 
- *     "stationId": "123",
- *     "screen": "player" 
- *   },
- *   "channelId": "radio"  // Android only
- * }
- * 
- * Birden fazla cihaza göndermek için:
- * {
- *   "to": ["token1", "token2", "token3"],
- *   ...
- * }
- */
