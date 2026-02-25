@@ -11,9 +11,9 @@ const isNative = Platform.OS === 'ios' || Platform.OS === 'android';
 
 export const NotificationHandler: React.FC = () => {
   const hasRegistered = useRef(false);
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, token: authToken } = useAuthStore();
   
-  // Register for push notifications (native only)
+  // Register for push notifications when user logs in
   useEffect(() => {
     // Skip entirely on web
     if (!isNative) {
@@ -21,8 +21,14 @@ export const NotificationHandler: React.FC = () => {
       return;
     }
     
+    // Only register when user is authenticated
+    if (!isAuthenticated || !authToken) {
+      console.log('[NotificationHandler] User not authenticated, skipping registration');
+      return;
+    }
+    
     const registerForNotifications = async () => {
-      // Only register once per app session
+      // Only register once per login session
       if (hasRegistered.current) return;
       
       try {
@@ -32,20 +38,17 @@ export const NotificationHandler: React.FC = () => {
         console.log('[NotificationHandler] Registering for push notifications...');
         
         // Wait for app to fully initialize
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
         // Register and get token
-        const token = await pushNotificationService.registerForPushNotifications();
+        const pushToken = await pushNotificationService.registerForPushNotifications();
         
-        if (token) {
-          console.log('[NotificationHandler] Got push token:', token.substring(0, 30) + '...');
+        if (pushToken) {
+          console.log('[NotificationHandler] Got push token:', pushToken.substring(0, 30) + '...');
           hasRegistered.current = true;
           
-          // Send token to backend (with user ID if authenticated)
-          await pushNotificationService.sendPushTokenToBackend(
-            token,
-            isAuthenticated && user?._id ? user._id : undefined
-          );
+          // Send token to backend (Authorization header is automatically added by api interceptor)
+          await pushNotificationService.sendPushTokenToBackend(pushToken);
         }
       } catch (error) {
         console.error('[NotificationHandler] Failed to register:', error);
@@ -53,30 +56,14 @@ export const NotificationHandler: React.FC = () => {
     };
     
     registerForNotifications();
-  }, [isAuthenticated, user?._id]);
+  }, [isAuthenticated, authToken]);
   
-  // Re-send token when user logs in (native only)
+  // Reset registration flag when user logs out
   useEffect(() => {
-    if (!isNative) return;
-    
-    const updateTokenWithUser = async () => {
-      if (!isAuthenticated || !user?._id) return;
-      
-      try {
-        const pushNotificationService = (await import('../services/pushNotificationService')).default;
-        const storedToken = await pushNotificationService.getStoredPushToken();
-        
-        if (storedToken) {
-          console.log('[NotificationHandler] User logged in, updating token with user ID');
-          await pushNotificationService.sendPushTokenToBackend(storedToken, user._id);
-        }
-      } catch (error) {
-        console.error('[NotificationHandler] Failed to update token:', error);
-      }
-    };
-    
-    updateTokenWithUser();
-  }, [isAuthenticated, user?._id]);
+    if (!isAuthenticated) {
+      hasRegistered.current = false;
+    }
+  }, [isAuthenticated]);
   
   // Set up notification listeners (native only)
   useEffect(() => {
@@ -100,7 +87,8 @@ export const NotificationHandler: React.FC = () => {
             console.log('[NotificationHandler] Received notification in foreground');
             const title = notification.request.content.title;
             const body = notification.request.content.body;
-            console.log('[NotificationHandler] Notification content:', { title, body });
+            const data = notification.request.content.data;
+            console.log('[NotificationHandler] Notification:', { title, body, data });
           }
         );
         
