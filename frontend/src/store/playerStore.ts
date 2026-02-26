@@ -95,8 +95,14 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       nowPlaying: null,
     }),
 
-  setError: (message) =>
-    set({ errorMessage: message, playbackState: message ? 'error' : 'idle' }),
+  setError: (message) => {
+    const station = get().currentStation;
+    set({ errorMessage: message, playbackState: message ? 'error' : 'idle' });
+    // Track playback error in analytics
+    if (message && station) {
+      flowaliveService.trackPlaybackError(station.id, message);
+    }
+  },
 
   startSleepTimer: (minutes, onExpire) => {
     // Clear existing timer
