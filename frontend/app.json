@@ -142,7 +142,8 @@
       ],
       "./plugins/withAirPlay.js",
       "./plugins/withAndroidAutoFull.js",
-      "./plugins/withCleartextTraffic.js"
+      "./plugins/withCleartextTraffic.js",
+      "./plugins/withSwift5Mode.js"
     ],
     "experiments": {
       "typedRoutes": true
