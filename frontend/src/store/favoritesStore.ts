@@ -187,6 +187,9 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     const updatedOrder = [station._id, ...customOrder];
     set({ favorites: updatedFavorites, customOrder: updatedOrder });
 
+    // Track favorite event in analytics
+    flowaliveService.trackStationFavorited(station._id, station.name);
+
     try {
       // First save to local storage
       console.log('[FavoritesStore] Saving to AsyncStorage:', FAVORITES_KEY, 'favorites count:', updatedFavorites.length);
