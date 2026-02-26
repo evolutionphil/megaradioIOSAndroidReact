@@ -1,17 +1,22 @@
 // CarPlaySceneDelegate.swift
-// CarPlay scene delegate for MegaRadio
+// Full-featured CarPlay scene delegate for MegaRadio
 
 import UIKit
 import CarPlay
+import Intents
 
 @available(iOS 14.0, *)
-class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, CPSearchTemplateDelegate {
     
     var interfaceController: CPInterfaceController?
     var carWindow: CPWindow?
     
     // MARK: - Template Storage
     private var tabBarTemplate: CPTabBarTemplate?
+    private var searchTemplate: CPSearchTemplate?
+    
+    // MARK: - Image Cache (Memory Efficient)
+    private static let imageCache = NSCache<NSString, UIImage>()
     
     // MARK: - CPTemplateApplicationSceneDelegate
     
@@ -24,8 +29,15 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         self.interfaceController = interfaceController
         self.carWindow = window
         
+        // Configure image cache limits
+        CarPlaySceneDelegate.imageCache.countLimit = 50
+        CarPlaySceneDelegate.imageCache.totalCostLimit = 50 * 1024 * 1024 // 50MB
+        
         // Create Tab Bar with multiple sections
         setupTabBarTemplate()
+        
+        // Setup notification observers for React Native communication
+        setupNotificationObservers()
         
         // Post notification for React Native to handle
         NotificationCenter.default.post(name: NSNotification.Name("CarPlayDidConnect"), object: nil)
@@ -37,33 +49,93 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         from window: CPWindow
     ) {
         print("[CarPlay] Disconnected from CarPlay")
+        
+        // Cleanup
+        removeNotificationObservers()
+        CarPlaySceneDelegate.imageCache.removeAllObjects()
+        
         self.interfaceController = nil
         self.carWindow = nil
         self.tabBarTemplate = nil
+        self.searchTemplate = nil
         
         NotificationCenter.default.post(name: NSNotification.Name("CarPlayDidDisconnect"), object: nil)
+    }
+    
+    // MARK: - Notification Observers
+    
+    private func setupNotificationObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFavoritesUpdate),
+            name: NSNotification.Name("CarPlayFavoritesUpdated"),
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRecentUpdate),
+            name: NSNotification.Name("CarPlayRecentUpdated"),
+            object: nil
+        )
+    }
+    
+    private func removeNotificationObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func handleFavoritesUpdate() {
+        // Refresh favorites tab when data changes
+        DispatchQueue.main.async { [weak self] in
+            self?.refreshFavoritesTab()
+        }
+    }
+    
+    @objc private func handleRecentUpdate() {
+        // Refresh recent tab when data changes
+        DispatchQueue.main.async { [weak self] in
+            self?.refreshRecentTab()
+        }
     }
     
     // MARK: - Setup Tab Bar
     
     private func setupTabBarTemplate() {
-        // 1. Now Playing Tab
+        // 1. Now Playing Tab (with custom buttons)
         let nowPlayingTemplate = CPNowPlayingTemplate.shared
         nowPlayingTemplate.tabTitle = "Şu An"
         nowPlayingTemplate.tabImage = UIImage(systemName: "play.circle.fill")
         
-        // 2. Favorites Tab
+        // Add favorite button to Now Playing
+        if #available(iOS 15.0, *) {
+            let favoriteButton = CPNowPlayingImageButton(image: UIImage(systemName: "heart")!) { [weak self] _ in
+                self?.toggleCurrentStationFavorite()
+            }
+            nowPlayingTemplate.updateNowPlayingButtons([favoriteButton])
+        }
+        
+        // 2. Search Tab
+        searchTemplate = CPSearchTemplate()
+        searchTemplate?.delegate = self
+        searchTemplate?.tabTitle = "Ara"
+        searchTemplate?.tabImage = UIImage(systemName: "magnifyingglass")
+        
+        // 3. Favorites Tab
         let favoritesTemplate = createFavoritesTemplate()
         
-        // 3. Genres Tab
+        // 4. Genres Tab
         let genresTemplate = createGenresTemplate()
         
-        // 4. Recent Tab
+        // 5. Recent Tab
         let recentTemplate = createRecentTemplate()
         
-        // Create Tab Bar
+        // 6. Popular/Recommended Tab
+        let popularTemplate = createPopularTemplate()
+        
+        // Create Tab Bar (max 5 tabs for CarPlay)
         let tabBar = CPTabBarTemplate(templates: [
             nowPlayingTemplate,
+            searchTemplate!,
             favoritesTemplate,
             genresTemplate,
             recentTemplate
@@ -71,7 +143,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         self.tabBarTemplate = tabBar
         
-        interfaceController?.setRootTemplate(tabBar, animated: true) { success, error in
+        interfaceController?.setRootTemplate(tabBar, animated: true) { [weak self] success, error in
             if let error = error {
                 print("[CarPlay] Error setting root template: \(error)")
             } else {
@@ -80,12 +152,47 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         }
     }
     
+    // MARK: - CPSearchTemplateDelegate
+    
+    func searchTemplate(_ searchTemplate: CPSearchTemplate, updatedSearchText searchText: String, completionHandler: @escaping ([CPListItem]) -> Void) {
+        // Search stations based on text
+        searchStations(query: searchText) { [weak self] stations in
+            var items: [CPListItem] = []
+            
+            for station in stations.prefix(12) { // Limit results for performance
+                let item = CPListItem(
+                    text: station.name,
+                    detailText: station.genre ?? "Radio"
+                )
+                
+                // Load cached image or fetch
+                self?.loadCachedImage(from: station.logoURL) { image in
+                    DispatchQueue.main.async {
+                        item.setImage(image ?? UIImage(systemName: "radio"))
+                    }
+                }
+                
+                item.handler = { [weak self] _, completion in
+                    self?.playStation(station)
+                    completion()
+                }
+                
+                items.append(item)
+            }
+            
+            completionHandler(items)
+        }
+    }
+    
+    func searchTemplateSearchButtonPressed(_ searchTemplate: CPSearchTemplate) {
+        // Handle search button press
+        print("[CarPlay] Search button pressed")
+    }
+    
     // MARK: - Favorites Template
     
     private func createFavoritesTemplate() -> CPListTemplate {
-        // Load favorites from UserDefaults/AsyncStorage
         let favorites = loadFavorites()
-        
         var items: [CPListItem] = []
         
         for station in favorites {
@@ -94,16 +201,12 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 detailText: station.genre ?? "Radio"
             )
             
-            // Set station artwork if available
-            if let logoURL = station.logoURL, let url = URL(string: logoURL) {
-                loadImage(from: url) { image in
-                    item.setImage(image)
+            loadCachedImage(from: station.logoURL) { [weak item] image in
+                DispatchQueue.main.async {
+                    item?.setImage(image ?? UIImage(systemName: "heart.fill"))
                 }
-            } else {
-                item.setImage(UIImage(systemName: "radio"))
             }
             
-            // Handle station selection
             item.handler = { [weak self] _, completion in
                 self?.playStation(station)
                 completion()
@@ -112,7 +215,6 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             items.append(item)
         }
         
-        // If no favorites, show placeholder
         if items.isEmpty {
             let placeholder = CPListItem(
                 text: "Favori istasyon yok",
@@ -130,15 +232,25 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         return template
     }
     
+    private func refreshFavoritesTab() {
+        guard let tabBar = tabBarTemplate else { return }
+        
+        let newFavoritesTemplate = createFavoritesTemplate()
+        
+        // Find and replace favorites tab
+        var templates = tabBar.templates
+        if let index = templates.firstIndex(where: { ($0 as? CPListTemplate)?.tabTitle == "Favoriler" }) {
+            templates[index] = newFavoritesTemplate
+            tabBar.updateTemplates(templates)
+        }
+    }
+    
     // MARK: - Genres Template
     
     private func createGenresTemplate() -> CPListTemplate {
-        // Load all genres from UserDefaults (synced from API)
         let genres = loadGenres()
-        
         var items: [CPListItem] = []
         
-        // Genre icon mapping
         let iconMap: [String: String] = [
             "pop": "music.note",
             "rock": "guitars",
@@ -175,8 +287,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             items.append(item)
         }
         
-        // If no genres loaded, show defaults
         if items.isEmpty {
+            // Default genres if none loaded from API
             let defaultGenres = [
                 ("Pop", "music.note", "pop"),
                 ("Rock", "guitars", "rock"),
@@ -223,7 +335,6 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     
     private func createRecentTemplate() -> CPListTemplate {
         let recentStations = loadRecentStations()
-        
         var items: [CPListItem] = []
         
         for station in recentStations {
@@ -232,12 +343,10 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 detailText: station.genre ?? "Radio"
             )
             
-            if let logoURL = station.logoURL, let url = URL(string: logoURL) {
-                loadImage(from: url) { image in
-                    item.setImage(image)
+            loadCachedImage(from: station.logoURL) { [weak item] image in
+                DispatchQueue.main.async {
+                    item?.setImage(image ?? UIImage(systemName: "clock"))
                 }
-            } else {
-                item.setImage(UIImage(systemName: "clock"))
             }
             
             item.handler = { [weak self] _, completion in
@@ -265,31 +374,95 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         return template
     }
     
+    private func refreshRecentTab() {
+        guard let tabBar = tabBarTemplate else { return }
+        
+        let newRecentTemplate = createRecentTemplate()
+        
+        var templates = tabBar.templates
+        if let index = templates.firstIndex(where: { ($0 as? CPListTemplate)?.tabTitle == "Son" }) {
+            templates[index] = newRecentTemplate
+            tabBar.updateTemplates(templates)
+        }
+    }
+    
+    // MARK: - Popular Template
+    
+    private func createPopularTemplate() -> CPListTemplate {
+        let popularStations = loadPopularStations()
+        var items: [CPListItem] = []
+        
+        for station in popularStations {
+            let item = CPListItem(
+                text: station.name,
+                detailText: station.genre ?? "Popüler"
+            )
+            
+            loadCachedImage(from: station.logoURL) { [weak item] image in
+                DispatchQueue.main.async {
+                    item?.setImage(image ?? UIImage(systemName: "star"))
+                }
+            }
+            
+            item.handler = { [weak self] _, completion in
+                self?.playStation(station)
+                completion()
+            }
+            
+            items.append(item)
+        }
+        
+        if items.isEmpty {
+            let placeholder = CPListItem(
+                text: "Popüler istasyonlar yükleniyor...",
+                detailText: nil
+            )
+            placeholder.setImage(UIImage(systemName: "star"))
+            items.append(placeholder)
+        }
+        
+        let section = CPListSection(items: items)
+        let template = CPListTemplate(title: "Popüler", sections: [section])
+        template.tabTitle = "Popüler"
+        template.tabImage = UIImage(systemName: "star.fill")
+        
+        return template
+    }
+    
     // MARK: - Genre Stations
     
     private func showGenreStations(genreId: String, name: String) {
-        // This would load stations for the genre from API
-        // For now, show a loading template
         let loadingItem = CPListItem(text: "Yükleniyor...", detailText: nil)
         loadingItem.setImage(UIImage(systemName: "arrow.clockwise"))
         
         let section = CPListSection(items: [loadingItem])
         let template = CPListTemplate(title: name, sections: [section])
         
-        interfaceController?.pushTemplate(template, animated: true) { _, _ in
-            // Load actual stations from API
-            self.loadGenreStations(genreId: genreId) { stations in
+        interfaceController?.pushTemplate(template, animated: true) { [weak self] _, _ in
+            self?.loadGenreStationsFromAPI(genreId: genreId) { stations in
                 DispatchQueue.main.async {
-                    self.updateGenreTemplate(template, with: stations)
+                    self?.updateGenreTemplate(template, with: stations)
                 }
             }
         }
     }
     
-    private func loadGenreStations(genreId: String, completion: @escaping ([Station]) -> Void) {
-        // TODO: Load from API via NotificationCenter or shared data
-        // For now return empty - React Native will handle this
-        completion([])
+    private func loadGenreStationsFromAPI(genreId: String, completion: @escaping ([Station]) -> Void) {
+        // Load from UserDefaults cache or request via NotificationCenter
+        let key = "carplay_genre_\(genreId)"
+        if let data = UserDefaults.standard.data(forKey: key),
+           let stations = try? JSONDecoder().decode([Station].self, from: data) {
+            completion(stations)
+        } else {
+            // Request data from React Native
+            NotificationCenter.default.post(
+                name: NSNotification.Name("CarPlayRequestGenreStations"),
+                object: nil,
+                userInfo: ["genreId": genreId]
+            )
+            // Return empty for now, will be updated when data arrives
+            completion([])
+        }
     }
     
     private func updateGenreTemplate(_ template: CPListTemplate, with stations: [Station]) {
@@ -297,7 +470,12 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         for station in stations {
             let item = CPListItem(text: station.name, detailText: station.genre)
-            item.setImage(UIImage(systemName: "radio"))
+            
+            loadCachedImage(from: station.logoURL) { [weak item] image in
+                DispatchQueue.main.async {
+                    item?.setImage(image ?? UIImage(systemName: "radio"))
+                }
+            }
             
             item.handler = { [weak self] _, completion in
                 self?.playStation(station)
@@ -309,10 +487,54 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         if items.isEmpty {
             let placeholder = CPListItem(text: "İstasyon bulunamadı", detailText: nil)
+            placeholder.setImage(UIImage(systemName: "exclamationmark.circle"))
             items.append(placeholder)
         }
         
         template.updateSections([CPListSection(items: items)])
+    }
+    
+    // MARK: - Search
+    
+    private func searchStations(query: String, completion: @escaping ([Station]) -> Void) {
+        guard !query.isEmpty else {
+            completion([])
+            return
+        }
+        
+        // Search in cached stations first
+        let allStations = loadAllCachedStations()
+        let filtered = allStations.filter { station in
+            station.name.localizedCaseInsensitiveContains(query) ||
+            (station.genre?.localizedCaseInsensitiveContains(query) ?? false)
+        }
+        
+        completion(Array(filtered.prefix(12)))
+        
+        // Also request from React Native for server search
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CarPlaySearchStations"),
+            object: nil,
+            userInfo: ["query": query]
+        )
+    }
+    
+    private func loadAllCachedStations() -> [Station] {
+        var allStations: [Station] = []
+        
+        allStations.append(contentsOf: loadFavorites())
+        allStations.append(contentsOf: loadRecentStations())
+        allStations.append(contentsOf: loadPopularStations())
+        
+        // Remove duplicates
+        var seen = Set<String>()
+        return allStations.filter { station in
+            if seen.contains(station.id) {
+                return false
+            }
+            seen.insert(station.id)
+            return true
+        }
     }
     
     // MARK: - Station Playback
@@ -327,7 +549,9 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             userInfo: [
                 "stationId": station.id,
                 "stationName": station.name,
-                "streamURL": station.streamURL ?? ""
+                "streamURL": station.streamURL ?? "",
+                "logoURL": station.logoURL ?? "",
+                "genre": station.genre ?? ""
             ]
         )
         
@@ -337,55 +561,83 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         }
     }
     
+    private func toggleCurrentStationFavorite() {
+        // Tell React Native to toggle favorite for current station
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CarPlayToggleFavorite"),
+            object: nil
+        )
+    }
+    
     // MARK: - Data Loading
     
     private func loadFavorites() -> [Station] {
-        // Load from UserDefaults (synced from AsyncStorage)
         // Works for both logged-in users AND guest users
-        // Guest users have local-only favorites stored in AsyncStorage
-        guard let data = UserDefaults.standard.data(forKey: "carplay_favorites"),
-              let stations = try? JSONDecoder().decode([Station].self, from: data) else {
-            // Try alternative key for guest users
-            if let guestData = UserDefaults.standard.data(forKey: "guest_favorites"),
-               let guestStations = try? JSONDecoder().decode([Station].self, from: guestData) {
-                return guestStations
-            }
-            return []
+        if let data = UserDefaults.standard.data(forKey: "carplay_favorites"),
+           let stations = try? JSONDecoder().decode([Station].self, from: data) {
+            return stations
         }
-        return stations
+        
+        // Try alternative key for guest users
+        if let guestData = UserDefaults.standard.data(forKey: "guest_favorites"),
+           let guestStations = try? JSONDecoder().decode([Station].self, from: guestData) {
+            return guestStations
+        }
+        
+        return []
     }
     
     private func loadRecentStations() -> [Station] {
-        // Recent stations work for all users (guest & logged-in)
-        guard let data = UserDefaults.standard.data(forKey: "carplay_recent"),
-              let stations = try? JSONDecoder().decode([Station].self, from: data) else {
-            return []
+        if let data = UserDefaults.standard.data(forKey: "carplay_recent"),
+           let stations = try? JSONDecoder().decode([Station].self, from: data) {
+            return stations
         }
-        return stations
+        return []
     }
     
     private func loadGenres() -> [Genre] {
-        // Load genres from UserDefaults (cached from API)
-        guard let data = UserDefaults.standard.data(forKey: "carplay_genres"),
-              let genres = try? JSONDecoder().decode([Genre].self, from: data) else {
-            return []
+        if let data = UserDefaults.standard.data(forKey: "carplay_genres"),
+           let genres = try? JSONDecoder().decode([Genre].self, from: data) {
+            return genres
         }
-        return genres
+        return []
     }
     
-    // MARK: - Image Loading
+    private func loadPopularStations() -> [Station] {
+        if let data = UserDefaults.standard.data(forKey: "carplay_popular"),
+           let stations = try? JSONDecoder().decode([Station].self, from: data) {
+            return stations
+        }
+        return []
+    }
     
-    private func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    completion(image)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    completion(UIImage(systemName: "radio"))
-                }
+    // MARK: - Image Loading with Cache
+    
+    private func loadCachedImage(from urlString: String?, completion: @escaping (UIImage?) -> Void) {
+        guard let urlString = urlString, let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        let cacheKey = urlString as NSString
+        
+        // Check cache first
+        if let cachedImage = CarPlaySceneDelegate.imageCache.object(forKey: cacheKey) {
+            completion(cachedImage)
+            return
+        }
+        
+        // Fetch from network
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, let image = UIImage(data: data) else {
+                completion(nil)
+                return
             }
+            
+            // Cache the image
+            CarPlaySceneDelegate.imageCache.setObject(image, forKey: cacheKey)
+            
+            completion(image)
         }.resume()
     }
 }
@@ -419,5 +671,48 @@ struct Genre: Codable {
         case id
         case name
         case stationCount = "station_count"
+    }
+}
+
+// MARK: - Dashboard Support (iOS 15+)
+
+@available(iOS 15.0, *)
+extension CarPlaySceneDelegate: CPTemplateApplicationDashboardSceneDelegate {
+    
+    func templateApplicationDashboardScene(
+        _ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene,
+        didConnect dashboardController: CPDashboardController,
+        to window: UIWindow
+    ) {
+        print("[CarPlay] Dashboard connected")
+        
+        // Create dashboard buttons for quick access
+        let playButton = CPDashboardButton(
+            titleVariants: ["Çal", "▶️"],
+            subtitleVariants: ["MegaRadio"],
+            image: UIImage(systemName: "play.fill")!
+        ) { [weak self] _ in
+            // Resume playback
+            NotificationCenter.default.post(name: NSNotification.Name("CarPlayResumePlayback"), object: nil)
+        }
+        
+        let favoritesButton = CPDashboardButton(
+            titleVariants: ["Favoriler", "❤️"],
+            subtitleVariants: [""],
+            image: UIImage(systemName: "heart.fill")!
+        ) { [weak self] _ in
+            // Open favorites
+            NotificationCenter.default.post(name: NSNotification.Name("CarPlayOpenFavorites"), object: nil)
+        }
+        
+        dashboardController.shortcutButtons = [playButton, favoritesButton]
+    }
+    
+    func templateApplicationDashboardScene(
+        _ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene,
+        didDisconnect dashboardController: CPDashboardController,
+        from window: UIWindow
+    ) {
+        print("[CarPlay] Dashboard disconnected")
     }
 }
