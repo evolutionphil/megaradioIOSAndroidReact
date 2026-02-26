@@ -4,6 +4,7 @@ buildscript {
 // @generated begin react-native-google-cast-version-import - expo prebuild (DO NOT MODIFY) sync-cec52f8ab6cf49e6b59a1290ff6f3f56f68ca30d
   ext {
         castFrameworkVersion = "21.4.0"
+        kotlinVersion = "2.0.0"
   }
 // @generated end react-native-google-cast-version-import
   repositories {
@@ -14,7 +15,7 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.1'
     classpath('com.android.tools.build:gradle')
     classpath('com.facebook.react:react-native-gradle-plugin')
-    classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0")
   }
 }
 
