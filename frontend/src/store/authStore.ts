@@ -239,6 +239,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       }
       
+      // Clear FlowAlive user identity
+      try {
+        const { flowaliveService } = await import('../services/flowaliveService');
+        await flowaliveService.clearUser();
+        flowaliveService.trackUserLogout();
+      } catch (e) {
+        console.log('[AuthStore] FlowAlive clearUser error:', e);
+      }
+      
       await Promise.all([
         secureStorage.removeItem(TOKEN_KEY),
         secureStorage.removeItem(USER_KEY),
