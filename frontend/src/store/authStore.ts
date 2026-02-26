@@ -187,6 +187,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         error: null,
       });
       
+      // Set FlowAlive user identity
+      try {
+        const { flowaliveService } = await import('../services/flowaliveService');
+        await flowaliveService.setUser(user);
+      } catch (e) {
+        console.log('[AuthStore] FlowAlive setUser error:', e);
+      }
+      
       // Load favorites from server after login - NO DELAY to avoid "no favorites" flash
       // Import dynamically to avoid circular dependency
       const { useFavoritesStore } = await import('./favoritesStore');
