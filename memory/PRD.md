@@ -708,3 +708,60 @@ Turkish (Türkçe)
 - Login/logout olaylarında user identity güncellenmeli
 - Radyo oynatıldığında `station_played` eventi track edilmeli
 
+---
+
+## February 26, 2025 - CarPlay Crash Düzeltmesi (KRİTİK)
+
+### Sorun Analizi
+**Crash Sebebi:** CarPlay'de station favicon veya logo'ya tıklandığında uygulama crash oluyordu.
+**Crash Noktası:** `[CPTemplateApplicationScene _deliverInterfaceControllerToDelegate]`
+**Kök Neden:** 
+1. `Info.plist`'te `UIApplicationSceneManifest` tanımlanmamıştı
+2. CarPlay için `CPTemplateApplicationSceneDelegate` sınıfı yoktu
+3. Ana uygulama için `UIWindowSceneDelegate` yoktu
+4. `withCarPlay.js` plugin'i CarPlay scene konfigürasyonunu SİLİYORDU
+
+### Uygulanan Düzeltmeler
+
+**1. PhoneSceneDelegate.swift oluşturuldu:**
+- Ana uygulama için window scene delegate
+- `nonisolated` keyword ile Swift 6 actor isolation uyumlu
+
+**2. CarPlaySceneDelegate.swift oluşturuldu:**
+- CarPlay için template application scene delegate
+- `RNCarPlay.connect()` ve `disconnect()` çağrıları
+- `nonisolated` keyword ile thread-safe
+
+**3. AppDelegate.swift güncellendi:**
+- `application(_:configurationForConnecting:options:)` metodu eklendi
+- CarPlay ve Phone scene'leri için routing
+- Scene-based lifecycle desteği
+
+**4. Info.plist güncellendi:**
+- `UIApplicationSceneManifest` eklendi
+- `UIWindowSceneSessionRoleApplication` (Phone)
+- `CPTemplateApplicationSceneSessionRoleApplication` (CarPlay)
+
+**5. withCarPlay.js düzeltildi:**
+- Scene konfigürasyonunu silme kodu kaldırıldı
+- Artık CarPlay scene'i koruyor
+
+**6. MegaRadio-Bridging-Header.h güncellendi:**
+- `RNCarPlay.h` import eklendi
+
+**7. project.pbxproj güncellendi:**
+- Yeni Swift dosyaları Xcode projesine eklendi
+
+### Dosyalar
+- `ios/MegaRadio/PhoneSceneDelegate.swift` - Ana uygulama scene delegate
+- `ios/MegaRadio/CarPlaySceneDelegate.swift` - CarPlay scene delegate
+- `ios/MegaRadio/AppDelegate.swift` - Scene configuration
+- `ios/MegaRadio/Info.plist` - Scene manifest
+- `plugins/withCarPlay.js` - Düzeltilmiş config plugin
+
+### Test İçin
+1. Yeni iOS build oluşturun: `eas build --platform ios`
+2. TestFlight'a yükleyin
+3. CarPlay'e bağlanın ve station/logo'ya tıklayın
+4. Uygulama crash OLMAMALI
+
