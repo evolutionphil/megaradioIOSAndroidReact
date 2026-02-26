@@ -238,6 +238,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				CARPLAY001D0307B40044C1D9 /* CarPlaySceneDelegate.swift in Sources */,
+				PHONE001D0307B40044C1D9 /* PhoneSceneDelegate.swift in Sources */,
 		CARPLAY001D0307B40044C1D9 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CARPLAY002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */; };
 		PHONE001D0307B40044C1D9 /* PhoneSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHONE002D0307B40044C1D9 /* PhoneSceneDelegate.swift */; };
 			);
