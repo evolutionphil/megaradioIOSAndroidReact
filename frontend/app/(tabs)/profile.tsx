@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import {
   View,
   Text,
@@ -27,7 +27,10 @@ import { useLocationStore } from '../../src/store/locationStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { AvatarWithFallback } from '../../src/components/AvatarWithFallback';
-import { RewardedAdButton } from '../../src/components/RewardedAdButton';
+// RewardedAdButton - platform-specific import (only on native)
+const RewardedAdButton = Platform.OS !== 'web' 
+  ? require('../../src/components/RewardedAdButton.native').RewardedAdButton
+  : () => null;
 import api from '../../src/services/api';
 import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
