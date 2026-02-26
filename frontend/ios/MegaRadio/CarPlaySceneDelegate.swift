@@ -189,6 +189,14 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, CPS
         print("[CarPlay] Search button pressed")
     }
     
+    func searchTemplate(_ searchTemplate: CPSearchTemplate, selectedResult item: CPListItem, completionHandler: @escaping () -> Void) {
+        // Handle when user selects a search result
+        print("[CarPlay] Search result selected: \(item.text ?? "unknown")")
+        
+        // The item.handler should already handle playback, but we call completion
+        completionHandler()
+    }
+    
     // MARK: - Favorites Template
     
     private func createFavoritesTemplate() -> CPListTemplate {
