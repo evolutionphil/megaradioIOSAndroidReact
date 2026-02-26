@@ -1,31 +1,87 @@
+# ===========================================
+# EAS BUILD IGNORE FILE - Optimized for size
+# ===========================================
+
 # Dependencies (EAS yeniden yükler)
 node_modules/
 
 # Git
 .git/
+.gitignore
 
-# Documentation
+# Metro cache (EAS'ta yeniden oluşturulur)
+.metro-cache/
+.expo/
+
+# Build artifacts
+dist/
+build/
+*.log
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Documentation (build'de gerekli değil)
 *.md
-!README.md
+README.md
+CHANGELOG.md
+LICENSE
+
+# Design files (kullanılmıyor)
+assets/figma/
 
 # Test files
 __tests__/
 *.test.js
 *.test.ts
+*.test.tsx
 *.spec.js
 *.spec.ts
+*.spec.tsx
+coverage/
+jest.config.js
 
-# Development
-.expo/
-.vscode/
-*.log
+# Development only
+.env.local
+.env.development
+.env.example
 
-# Large assets not needed for build
+# Cast receiver (web için)
 cast-receiver/
 
-# Watch app files (only needed for iOS)
+# Watch files (EAS iOS build için gerekli değil - Xcode'da eklenir)
 watch/
 
-# Native folders - EAS will run prebuild
+# Native folders (EAS prebuild kullanacak)
 ios/
 android/
+
+# Memory/docs (development only)
+memory/
+
+# Unused assets
+assets/images/react-logo*.png
+assets/images/partial-react-logo.png
+
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Yarn
+.yarn/
+.yarnrc
+.yarnrc.yml
+yarn-error.log
+
+# NPM
+npm-debug.log*
+.npm
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
