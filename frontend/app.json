@@ -16,7 +16,8 @@
         "UIBackgroundModes": [
           "audio",
           "fetch",
-          "remote-notification"
+          "remote-notification",
+          "external-accessory"
         ],
         "UIRequiredDeviceCapabilities": [
           "armv7"
@@ -39,7 +40,24 @@
         "NSPhotoLibraryUsageDescription": "Photo library access is required to upload a profile picture.",
         "NSCameraUsageDescription": "Camera access is required to take a profile picture.",
         "NSMicrophoneUsageDescription": "Microphone access is required for audio recording.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIApplicationSceneManifest": {
+          "UIApplicationSupportsMultipleScenes": true,
+          "UISceneConfigurations": {
+            "UIWindowSceneSessionRoleApplication": [
+              {
+                "UISceneConfigurationName": "Default Configuration",
+                "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).PhoneSceneDelegate"
+              }
+            ],
+            "CPTemplateApplicationSceneSessionRoleApplication": [
+              {
+                "UISceneConfigurationName": "CarPlay",
+                "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate"
+              }
+            ]
+          }
+        }
       },
       "entitlements": {
         "com.apple.developer.carplay-audio": true
