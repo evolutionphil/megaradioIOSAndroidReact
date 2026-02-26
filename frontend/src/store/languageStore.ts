@@ -36,6 +36,13 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
       const storedLang = await getStoredLanguage();
       const languages = await getAvailableLanguages();
       
+      // Ensure i18n is using the correct language
+      const currentI18nLang = getCurrentLanguage();
+      if (currentI18nLang !== storedLang) {
+        console.log('[LanguageStore] Syncing i18n language from', currentI18nLang, 'to', storedLang);
+        await changeLanguage(storedLang);
+      }
+      
       // Add listener for language changes from i18n service
       addLanguageChangeListener((lang) => {
         console.log('[LanguageStore] Language change detected:', lang);
@@ -51,6 +58,8 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
         isInitialized: true,
         isLoading: false,
       });
+      
+      console.log('[LanguageStore] Initialized with language:', storedLang);
     } catch (error) {
       console.error('[LanguageStore] Initialization error:', error);
       set({ isLoading: false, isInitialized: true });
