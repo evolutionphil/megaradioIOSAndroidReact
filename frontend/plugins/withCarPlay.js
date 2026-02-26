@@ -1,6 +1,5 @@
 // Custom Config Plugin for CarPlay
-// Only adds entitlement and background modes - NO scene configuration
-// Scene configuration causes crash in Expo managed workflow
+// Ensures CarPlay scene configuration is properly set
 
 const { withEntitlementsPlist, withInfoPlist } = require('@expo/config-plugins');
 
@@ -12,41 +11,46 @@ const withCarPlayEntitlement = (config) => {
     return config;
   });
   
-  // Step 2: Add background modes for audio
+  // Step 2: Configure background modes and scene manifest
   config = withInfoPlist(config, (config) => {
     const backgroundModes = config.modResults.UIBackgroundModes || [];
     
-    // Ensure audio background mode is present
-    if (!backgroundModes.includes('audio')) {
-      backgroundModes.push('audio');
+    // Ensure all required background modes are present
+    const requiredModes = ['audio', 'fetch', 'remote-notification', 'external-accessory'];
+    for (const mode of requiredModes) {
+      if (!backgroundModes.includes(mode)) {
+        backgroundModes.push(mode);
+      }
     }
-    if (!backgroundModes.includes('fetch')) {
-      backgroundModes.push('fetch');
-    }
-    
     config.modResults.UIBackgroundModes = backgroundModes;
     
-    // IMPORTANT: Do NOT add UIApplicationSceneManifest
-    // Expo manages scene configuration automatically
-    // Adding custom scene delegates causes crash
+    // Ensure UIApplicationSceneManifest is properly configured for CarPlay
+    // This is REQUIRED for CarPlay to work without crashing
+    const manifest = config.modResults.UIApplicationSceneManifest || {};
+    manifest.UIApplicationSupportsMultipleScenes = true;
     
-    // Remove any existing CarPlay scene configuration that might cause issues
-    if (config.modResults.UIApplicationSceneManifest) {
-      const manifest = config.modResults.UIApplicationSceneManifest;
-      
-      // Remove CarPlay scene configuration if present
-      if (manifest.CPTemplateApplicationSceneSessionRoleApplication) {
-        delete manifest.CPTemplateApplicationSceneSessionRoleApplication;
-        console.log('[withCarPlay] Removed CPTemplateApplicationSceneSessionRoleApplication');
-      }
-      
-      // Also check for any custom CarPlay configurations
-      if (manifest['Application Scene Manifest Version']) {
-        // Keep the default Expo scene configuration
-        // Don't add anything CarPlay-specific
-      }
+    const sceneConfigs = manifest.UISceneConfigurations || {};
+    
+    // Ensure Phone scene configuration exists
+    if (!sceneConfigs.UIWindowSceneSessionRoleApplication) {
+      sceneConfigs.UIWindowSceneSessionRoleApplication = [{
+        UISceneConfigurationName: 'Default Configuration',
+        UISceneDelegateClassName: '$(PRODUCT_MODULE_NAME).PhoneSceneDelegate'
+      }];
     }
     
+    // Ensure CarPlay scene configuration exists
+    if (!sceneConfigs.CPTemplateApplicationSceneSessionRoleApplication) {
+      sceneConfigs.CPTemplateApplicationSceneSessionRoleApplication = [{
+        UISceneConfigurationName: 'CarPlay',
+        UISceneDelegateClassName: '$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate'
+      }];
+    }
+    
+    manifest.UISceneConfigurations = sceneConfigs;
+    config.modResults.UIApplicationSceneManifest = manifest;
+    
+    console.log('[withCarPlay] Configured CarPlay scene manifest');
     console.log('[withCarPlay] Configured background modes:', backgroundModes);
     return config;
   });
