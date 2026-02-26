@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Station, NowPlayingMetadata } from '../types';
 import { useRecentlyPlayedStore } from './recentlyPlayedStore';
+import { flowaliveService } from '../services/flowaliveService';
 
 export type PlaybackState = 'idle' | 'loading' | 'playing' | 'paused' | 'buffering' | 'error';
 
