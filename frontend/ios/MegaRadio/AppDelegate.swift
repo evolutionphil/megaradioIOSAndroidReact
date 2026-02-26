@@ -6,6 +6,7 @@ import GoogleCast
 // @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
+import CarPlay
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -47,6 +48,24 @@ public class AppDelegate: ExpoAppDelegate {
 #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+  
+  // MARK: - CarPlay Scene Configuration (Programmatic)
+  @available(iOS 13.0, *)
+  public func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    // Handle CarPlay scenes programmatically
+    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      let config = UISceneConfiguration(name: "CarPlay", sessionRole: connectingSceneSession.role)
+      config.delegateClass = CarPlaySceneDelegate.self
+      print("[AppDelegate] CarPlay scene configuration returned")
+      return config
+    }
+    // Default configuration for other scenes
+    return UISceneConfiguration(name: "Default", sessionRole: connectingSceneSession.role)
   }
 
   // Linking API
