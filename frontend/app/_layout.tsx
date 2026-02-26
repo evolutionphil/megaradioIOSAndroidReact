@@ -344,56 +344,63 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
-      <I18nextProvider i18n={i18n}>
-        <QueryClientProvider client={queryClient}>
-          <AudioProvider>
-            <PlayAtLoginHandler />
-            <NotificationHandler />
-            {/* CarPlay DISABLED - causes crash when CarPlay connects (CPTemplateApplicationScene issue) */}
-            {/* <CarPlayHandler /> */}
-            <View style={styles.container}>
-              <StatusBar style="light" />
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: colors.background },
-                  animation: 'slide_from_right',
-                }}
-              >
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
-                <Stack.Screen
-                  name="player"
-                  options={{
-                    presentation: 'fullScreenModal',
-                    animation: 'slide_from_bottom',
+      <FlowaliveProvider 
+        apiKey={FLOWALIVE_API_KEY} 
+        trackNavigation={true}
+        deviceInfo={true}
+        userLocale={true}
+      >
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <AudioProvider>
+              <PlayAtLoginHandler />
+              <NotificationHandler />
+              {/* CarPlay DISABLED - causes crash when CarPlay connects (CPTemplateApplicationScene issue) */}
+              {/* <CarPlayHandler /> */}
+              <View style={styles.container}>
+                <StatusBar style="light" />
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: colors.background },
+                    animation: 'slide_from_right',
                   }}
-                />
-                <Stack.Screen name="search" options={{ headerShown: false }} />
-                <Stack.Screen name="login" options={{ headerShown: false }} />
-                <Stack.Screen name="signup" options={{ headerShown: false }} />
-                <Stack.Screen name="statistics" options={{ headerShown: false }} />
-                <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
-                <Stack.Screen name="followers" options={{ headerShown: false }} />
-                <Stack.Screen name="follows" options={{ headerShown: false }} />
-                <Stack.Screen name="user-profile" options={{ headerShown: false }} />
-                <Stack.Screen name="languages" options={{ headerShown: false }} />
-                <Stack.Screen name="auth-options" options={{ headerShown: false }} />
-                <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
-                <Stack.Screen name="genres" options={{ headerShown: false }} />
-                <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
-                <Stack.Screen name="all-stations" options={{ headerShown: false }} />
-                <Stack.Screen name="notifications" options={{ headerShown: false }} />
-                <Stack.Screen name="users" options={{ headerShown: false }} />
-                <Stack.Screen name="public-profiles" options={{ headerShown: false }} />
-              </Stack>
-              {/* Global MiniPlayer - shown on all screens except player */}
-              <GlobalMiniPlayer />
-              <RadioErrorModal />
-            </View>
-          </AudioProvider>
-        </QueryClientProvider>
-      </I18nextProvider>
+                >
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
+                  <Stack.Screen
+                    name="player"
+                    options={{
+                      presentation: 'fullScreenModal',
+                      animation: 'slide_from_bottom',
+                    }}
+                  />
+                  <Stack.Screen name="search" options={{ headerShown: false }} />
+                  <Stack.Screen name="login" options={{ headerShown: false }} />
+                  <Stack.Screen name="signup" options={{ headerShown: false }} />
+                  <Stack.Screen name="statistics" options={{ headerShown: false }} />
+                  <Stack.Screen name="play-at-login" options={{ headerShown: false }} />
+                  <Stack.Screen name="followers" options={{ headerShown: false }} />
+                  <Stack.Screen name="follows" options={{ headerShown: false }} />
+                  <Stack.Screen name="user-profile" options={{ headerShown: false }} />
+                  <Stack.Screen name="languages" options={{ headerShown: false }} />
+                  <Stack.Screen name="auth-options" options={{ headerShown: false }} />
+                  <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+                  <Stack.Screen name="genres" options={{ headerShown: false }} />
+                  <Stack.Screen name="genre-detail" options={{ headerShown: false }} />
+                  <Stack.Screen name="all-stations" options={{ headerShown: false }} />
+                  <Stack.Screen name="notifications" options={{ headerShown: false }} />
+                  <Stack.Screen name="users" options={{ headerShown: false }} />
+                  <Stack.Screen name="public-profiles" options={{ headerShown: false }} />
+                </Stack>
+                {/* Global MiniPlayer - shown on all screens except player */}
+                <GlobalMiniPlayer />
+                <RadioErrorModal />
+              </View>
+            </AudioProvider>
+          </QueryClientProvider>
+        </I18nextProvider>
+      </FlowaliveProvider>
     </GestureHandlerRootView>
   );
 }
