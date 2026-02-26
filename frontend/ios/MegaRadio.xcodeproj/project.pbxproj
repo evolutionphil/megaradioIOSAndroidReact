@@ -12,6 +12,7 @@
 		3B644D51BB1419DEE9857C3E /* WatchConnectivityBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 058644E3B3F2ECA4416DA867 /* WatchConnectivityBridge.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		CD724E26901C3FA80706148D /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3D43E298245FA92904DAB8 /* CarPlaySceneDelegate.swift */; };
 		E5AD4C0D9F0080EF997DAA9B /* WatchConnectivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A0433B9F26B52A6C460508 /* WatchConnectivityHandler.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,7 @@
 		47A0433B9F26B52A6C460508 /* WatchConnectivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchConnectivityHandler.swift; path = MegaRadio/WatchConnectivityHandler.swift; sourceTree = SOURCE_ROOT; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = MegaRadio/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		DD3D43E298245FA92904DAB8 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CarPlaySceneDelegate.swift; path = MegaRadio/CarPlaySceneDelegate.swift; sourceTree = SOURCE_ROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MegaRadio/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* MegaRadio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MegaRadio-Bridging-Header.h"; path = "MegaRadio/MegaRadio-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 				063A4E2BAEBB804B7BD174B3 /* WatchConnectivityBridge.swift */,
 				47A0433B9F26B52A6C460508 /* WatchConnectivityHandler.swift */,
 				058644E3B3F2ECA4416DA867 /* WatchConnectivityBridge.m */,
+				DD3D43E298245FA92904DAB8 /* CarPlaySceneDelegate.swift */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				04DB45BD96C12130E5F79A66 /* WatchConnectivityBridge.swift in Sources */,
 				E5AD4C0D9F0080EF997DAA9B /* WatchConnectivityHandler.swift in Sources */,
 				3B644D51BB1419DEE9857C3E /* WatchConnectivityBridge.m in Sources */,
+				CD724E26901C3FA80706148D /* CarPlaySceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
