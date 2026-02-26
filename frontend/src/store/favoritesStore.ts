@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, NativeModules } from 'react-native';
 import { userService } from '../services/userService';
 import { useAuthStore } from './authStore';
+import { flowaliveService } from '../services/flowaliveService';
 import type { Station } from '../types';
 
 const FAVORITES_KEY = '@megaradio_favorites';
