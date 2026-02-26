@@ -13,8 +13,8 @@ const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
 
 export const PlayAtLoginHandler: React.FC = () => {
   const hasExecuted = useRef(false);
-  const { isAuthenticated } = useAuthStore();
-  const { favorites } = useFavoritesStore();
+  const { isAuthenticated, isAuthLoaded } = useAuthStore();
+  const { favorites, isLoaded: favoritesLoaded } = useFavoritesStore();
   const { playStation } = useAudio();
 
   useEffect(() => {
@@ -24,14 +24,21 @@ export const PlayAtLoginHandler: React.FC = () => {
         return;
       }
 
-      // Wait a bit for app to fully initialize
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Wait for auth to be loaded from storage first
+      if (!isAuthLoaded) {
+        console.log('[PlayAtLogin] Auth not loaded yet, waiting...');
+        return;
+      }
 
       // Check if user is authenticated
       if (!isAuthenticated) {
         console.log('[PlayAtLogin] User not authenticated, skipping');
+        hasExecuted.current = true; // Mark as executed to prevent re-running
         return;
       }
+
+      // Wait a bit for app to fully initialize after auth confirmed
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       try {
         const setting = await AsyncStorage.getItem(PLAY_AT_LOGIN_KEY);
@@ -89,7 +96,7 @@ export const PlayAtLoginHandler: React.FC = () => {
     };
 
     executePlayAtLogin();
-  }, [isAuthenticated, favorites, playStation]);
+  }, [isAuthenticated, isAuthLoaded, favorites, favoritesLoaded, playStation]);
 
   // This component doesn't render anything
   return null;
