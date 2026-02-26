@@ -481,12 +481,36 @@ export const fetchTranslations = async (lang: string): Promise<Record<string, st
   }
 };
 
-// Get stored language preference
+// Get stored language preference or detect device language
 export const getStoredLanguage = async (): Promise<string> => {
   try {
-    const lang = await AsyncStorage.getItem(LANGUAGE_KEY);
-    return lang || 'en';
-  } catch {
+    const storedLang = await AsyncStorage.getItem(LANGUAGE_KEY);
+    
+    // If user has explicitly set a language, use it
+    if (storedLang) {
+      console.log('[i18n] Using stored language preference:', storedLang);
+      return storedLang;
+    }
+    
+    // No stored preference - detect device language
+    const deviceLocale = Localization.getLocales()[0];
+    const deviceLangCode = deviceLocale?.languageCode || 'en';
+    
+    console.log('[i18n] No stored language, device language:', deviceLangCode);
+    
+    // Check if device language is supported
+    if (SUPPORTED_LANGUAGES.includes(deviceLangCode)) {
+      console.log('[i18n] Device language is supported, using:', deviceLangCode);
+      // Store this as initial preference
+      await AsyncStorage.setItem(LANGUAGE_KEY, deviceLangCode);
+      return deviceLangCode;
+    }
+    
+    // Device language not supported, fall back to English
+    console.log('[i18n] Device language not supported, falling back to English');
+    return 'en';
+  } catch (error) {
+    console.error('[i18n] Error getting language:', error);
     return 'en';
   }
 };
