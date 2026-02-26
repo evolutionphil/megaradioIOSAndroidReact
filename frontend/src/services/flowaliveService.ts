@@ -77,16 +77,15 @@ class FlowaliveService {
   async setUser(user: User): Promise<void> {
     try {
       await FlowAlive.setDevice({
-        appUserId: user.id,
+        appUserId: user.id || user._id,
         appUserName: user.name || user.username,
         appUserEmail: user.email,
         metadata: {
-          isPremium: user.isPremium || false,
           hasAvatar: !!user.avatar,
           registrationDate: user.createdAt || null,
         },
       });
-      console.log('[FlowaliveService] User identity set:', user.id);
+      console.log('[FlowaliveService] User identity set:', user.id || user._id);
     } catch (error) {
       console.error('[FlowaliveService] Failed to set user:', error);
     }
