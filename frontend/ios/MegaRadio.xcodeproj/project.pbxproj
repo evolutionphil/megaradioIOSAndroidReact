@@ -241,7 +241,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = MegaRadio/MegaRadio.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -260,14 +259,15 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.visiongo.megaradio;
-				PRODUCT_NAME = MegaRadio;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.visiongo.megaradio";
+				PRODUCT_NAME = "MegaRadio";
 				SWIFT_OBJC_BRIDGING_HEADER = "MegaRadio/MegaRadio-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				CODE_SIGN_ENTITLEMENTS = MegaRadio/MegaRadio.entitlements;
 			};
 			name = Debug;
 		};
@@ -276,7 +276,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = MegaRadio/MegaRadio.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = MegaRadio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -290,13 +289,14 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.visiongo.megaradio;
-				PRODUCT_NAME = MegaRadio;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.visiongo.megaradio";
+				PRODUCT_NAME = "MegaRadio";
 				SWIFT_OBJC_BRIDGING_HEADER = "MegaRadio/MegaRadio-Bridging-Header.h";
-				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				CODE_SIGN_ENTITLEMENTS = MegaRadio/MegaRadio.entitlements;
 			};
 			name = Release;
 		};
@@ -356,8 +356,8 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 			};
 			name = Debug;
 		};
@@ -409,9 +409,9 @@
 				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
+				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 			};
 			name = Release;
 		};

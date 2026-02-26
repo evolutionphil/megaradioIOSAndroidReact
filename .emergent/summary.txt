@@ -3,107 +3,89 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 
 **PRODUCT REQUIREMENTS:**
 -   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
--   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, Push Notifications for social interactions (e.g., new followers).
+-   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, Push Notifications.
 -   **Monetization:** The app will be free and will show ads (Interstitial and Rewarded). A premium (ad-free) version via subscription is also planned.
--   **Authentication:** All API requests must include . The app uses a session cookie-based auth system. Google and Apple social logins were also requested.
--   **Build & Deployment:** The user wants to build the application for iOS and Android and submit it to the respective app stores.
+-   **Authentication:** All API requests must include . The app uses a session cookie-based auth system. Google and Apple social logins are also requested.
 -   **Platform Expansion:** The user has requested support for CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
+-   **New Integration:** The user has requested to integrate a service called FlowAlive for which they provided documentation and an API key.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The project is an Expo (React Native) app. This session was a whirlwind of debugging and feature implementation.
-1.  **Build System Hell:** The agent went through multiple iterations trying to fix failing EAS builds for both iOS and Android. This involved:
-    *   Pinning Xcode and Node.js versions in .
-    *   Debugging CocoaPods version incompatibilities ().
-    *   Resolving Android Gradle build failures caused by  by downgrading/upgrading the package and disabling the New Architecture.
-    *   Fixing  schema errors.
-    *   Adding the  polyfill to fix a Metro bundler error with .
-    *   Creating a  file and deleting unused assets to drastically reduce the build upload size from ~289MB to ~25MB.
-2.  **Feature Implementation & Bug Fixes:**
-    *   **Cast Feature:** Fixed the Cast button on Android, which previously just showed an alert. It now correctly opens the .
-    *   **Logo Consistency:** Created a centralized  to ensure station logos appear consistently across different components (MiniPlayer, StationCard).
-    - **Android UI Fix:** Corrected an issue where the mini player would hide behind the Android system navigation bar on certain screens.
-    - **Genre Display:** Increased the number of genres shown on the discovery page from 8 to 16.
-3.  **Push Notifications:** Fully implemented the frontend logic for push notifications based on a detailed guide from the user. This includes registering/deleting tokens on login/logout and handling navigation when a notification is tapped. The agent also successfully tested all required backend endpoints.
+The project is an Expo app that has been migrated from Managed to **Bare Workflow** to support advanced native features. The session focused heavily on debugging complex iOS and Android build issues.
+
+-   **Workflow Migration:** The project is now in Bare Workflow, with  and  directories present.
+-   **CarPlay/iOS Issues:** The agent went through multiple cycles of attempting to implement a full-featured CarPlay experience. This led to critical app lifecycle issues on iOS, causing either immediate crashes on startup or a persistent black screen. The core of the problem is the conflict between Expo's default AppDelegate lifecycle and the Scene-based lifecycle required for advanced CarPlay. Several strategies were attempted (dual delegates, programmatic configuration, etc.), but all failed.
+-   **Android Build Fix:** An Android build failure related to a Kotlin version conflict in the  package was addressed by forcing Kotlin version  in . This fix is pending verification.
+-   **Web Build Fix:** A crash on the web platform caused by  was resolved by creating platform-specific files ( and ) to conditionally import the ad components.
+-   **Build Size Optimization:** Large image assets were compressed, and the  file was configured, significantly reducing the project's upload size.
 
 **Last working item**:
--   **Last item agent was working**: The agent was analyzing a new batch of user-reported bugs:
-    1.  The selected language does not persist after closing and reopening the app.
-    2.  The Play at Login feature (last played station) is not auto-playing.
-    3.  Favorites are not loaded synchronously after login, showing No favorites initially.
-    4.  The app seems to reload completely every time it's opened.
--   **Status**: NOT STARTED (Agent was in the analysis phase, reviewing , , and ).
+-   **Last item agent was working**: The user requested the integration of a new service, FlowAlive. The agent was analyzing the provided documentation to understand the implementation steps.
+-   **Status**: NOT STARTED
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. The agent should first try to reproduce each of the four issues in a test build, then implement the fixes. A new Android build will be required for verification.
+-   **Which testing method agent to use?**: The agent will need to install the SDK via yarn install v1.22.22
+[1/4] Resolving packages...
+success Already up-to-date.
+$ patch-package
+patch-package 8.0.1
+Applying patches...
+react-native-track-player@4.1.2 ✔
+Done in 0.55s. and follow the integration documentation. Testing will involve verifying that the FlowAlive features work as expected in a new development build.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Language, auto-play, favorites, and app-reload bugs (P0)
--   Issue 2: Android build has multiple dependency conflicts (P1)
--   Issue 3: iOS build is still likely broken (P1)
--   Issue 4: watchOS app communication is broken (P2)
--   Issue 5: Android build is fragile due to CarPlay package (P2)
--   Issue 6: Google OAuth still fails on Android (P2)
+-   Issue 1: App crashes or shows a black screen on iOS startup (P0)
+-   Issue 2: Android build fails due to  dependency conflict (P1)
+-   Issue 3: Incomplete watchOS Integration (P2)
 
 **Issues Detail:**
--   **Issue 1: Language, auto-play, favorites, and app-reload bugs (P0)**
-    -   **Description**: The user reported four distinct bugs related to app state persistence and initial loading behavior.
-    -   **Attempted fixes**: The agent started analyzing the relevant files ( for language,  for auto-play,  for favorites, and  for the app loading sequence) but has not implemented any fixes yet.
-    -   **Next debug checklist**:
-        1.  **Language**: Check . Ensure  is correctly used to load the saved language on app start. The agent was on the right track here.
-        2.  **Auto-Play**: Examine  and its interaction in . Verify the logic that checks the  setting and triggers playback.
-        3.  **Favorites**: The handoff mentioned a race condition fix, but the user says it's still happening. Investigate the  hook and where it's called. It might need to be triggered earlier in the auth flow or use a more robust loading state.
-        4.  **App Reload**: This is likely due to how resources (fonts, assets, auth state) are loaded in the root . The splash screen might be hiding a slow or re-triggering loading sequence.
-    -   **Why fix this issue and what will be achieved with the fix?**: These are critical user experience issues that make the app feel broken and unprofessional.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: Y (Favorites issue)
-    -   **Should Test frontend/backend/both after fix?**: Frontend (Android build)
-    -   **Blocked on other issue**: None
-
--   **Issue 2: Android build has multiple dependency conflicts (P1)**
-    -   **Description**:  reports numerous duplicate dependencies and version mismatches. While the agent suppressed these warnings using  and  in  to get a build, this is a temporary fix. The root cause is a messy dependency tree.
-    -   **Attempted fixes**: Added  for key packages and an  list to .
-    -   **Next debug checklist**:
-        1.  Run env: load .env
-env: export EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_TUNNEL_SUBDOMAIN EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
-Skipped checking dependencies: react-native-reanimated, @expo/metro-runtime, expo-apple-authentication, expo-asset, expo-audio, expo-auth-session, expo-blur, expo-build-properties, expo-clipboard, expo-constants, and 28 others. These dependencies are listed in expo.install.exclude in package.json. Learn more: https://docs.expo.dev/more/expo-cli/#configuring-dependency-validation
-Dependencies are up to date.
-        2.  Systematically upgrade packages to the versions recommended by Expo SDK 55. This might require careful, incremental changes.
-        3.  Alternatively, run env: load .env
-env: export EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_TUNNEL_SUBDOMAIN EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
-[withAndroidAuto] Applying full Android Auto configuration...
-Running 17 checks on your project...
-17/17 checks passed. No issues detected! and let it attempt to fix the dependencies automatically.
-    -   **Why fix this issue and what will be achieved with the fix?**: Creates a stable and maintainable project, preventing future build failures.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (Android & iOS builds)
-    -   **Blocked on other issue**: Blocked by Issue 1. Fix user-facing bugs first.
-
--   **Issue 3: iOS build is still likely broken (P1)**
-    -   **Description**: The last iOS build failed due to a Metro bundler error (). While the agent added the  package and updated  and , these changes have not been tested in an actual iOS build. The underlying Xcode compatibility and dependency issues might still exist.
-    -   **Attempted fixes**: Many changes to , , and .
-    -   **Next debug checklist**:
-        1.  After fixing user-facing bugs (Issue 1), trigger a new iOS build with .
-        2.  Carefully analyze the logs for any new errors. The  error about Xcode version incompatibility is a major red flag.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a blocker for releasing the app on the Apple App Store.
+-   **Issue 1: App crashes or shows a black screen on iOS startup (P0)**
+    -   **Attempted fixes**:
+        1.  **Dual SceneDelegates:** Created  for the main app and . This resulted in a crash/black screen.
+        2.  **CarPlay-Only Scene:** Removed  and only defined the CarPlay scene in . This also resulted in a black screen.
+        3.  **Programmatic Scenes:** Removed scene configuration from  and tried to configure CarPlay programmatically in . This also failed.
+        4.  **Complete Removal:** Removed all custom Swift delegates and scene configurations. The app worked, but advanced CarPlay features (browsing lists) were lost.
+    -   **Next debug checklist**: The core issue is the conflict between the window-based lifecycle Expo expects and the scene-based lifecycle required for full CarPlay functionality. The next attempt should be to correctly implement a dual-scene manifest ( for the app,  for CarPlay) and ensure both  and  are correctly written and included in the Xcode project. This issue is currently blocked by the user's request to integrate FlowAlive first.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical, app-breaking bug on iOS that prevents the app from even starting.
     -   **Status**: BLOCKED
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS build)
-    -   **Blocked on other issue**: Issue 1.
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+    -   **Blocked on other issue**: Blocked by Integrate FlowAlive task, as per user's priority.
+
+-   **Issue 2: Android build fails due to  dependency conflict (P1)**
+    -   **Attempted fixes**: The agent identified a Kotlin version mismatch. The fix was to add a  plugin to  to force the use of .
+    -   **Next debug checklist**:
+        1.  Trigger a new Android build (An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username).
+        2.  Analyze the build logs to confirm the Kotlin compilation error is resolved.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a blocker for releasing the app on Android.
+    -   **Status**: TESTING PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (Android build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 3: Incomplete watchOS Integration (P2)**
+    -   **Attempted fixes**: The agent moved the watchOS source files into the  directory.
+    -   **Next debug checklist**: The watch app and extension targets need to be manually added to the main  file, and the source files need to be linked to those targets. This can only be done now that the project is in Bare Workflow.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a user requirement for platform expansion.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS build).
+    -   **Blocked on other issue**: Blocked by Issue 1 (iOS crash).
 
 **In progress Task List**:
--   **Task 1: Complete Push Notification Feature**
-    -   **Where to resume**: The frontend and backend are coded and tested individually. The final step is user verification in a production build.
-    -   **What will be achieved with this?**: A core social feature of the app will be live.
-    -   **Status**: USER VERIFICATION PENDING
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a successful build)
-    -   **Blocked on something**: Issue 1 & 3.
+-   **Task 1: Integrate FlowAlive (P0)**
+    -   **Where to resume**: The agent has reviewed the documentation. The next steps are to install the SDK () and integrate it into the application according to the docs, using the provided API key.
+    -   **What will be achieved with this?**: Fulfill the user's latest and highest-priority request.
+    -   **Status**: NOT STARTED
+    -   **Should Test frontend/backend/both after fix?**: Frontend (new development build).
+    -   **Blocked on something**: None.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P0**: Migrate to Expo Bare Workflow to properly enable CarPlay.
 -   **P1**: Implement a premium (ad-free) subscription model using RevenueCat or similar.
 -   **P1**: Re-implement Splash Screen (Awaiting new design from user).
 -   **P1**: Resolve App Store Rejection reason regarding content rights.
@@ -113,126 +95,161 @@ Running 17 checks on your project...
 -   **P2**: Add support for tvOS & Android TV.
 
 **Completed work in this session**
--   **Fixed Build System Issues (Android)**:
-    -   Resolved  compilation errors by downgrading, then re-upgrading, and correctly configuring build properties in .
-    -   Fixed  schema validation errors by removing unsupported keys (, ).
-    -   Resolved Metro bundler crash by installing the  package.
-    -   Suppressed dependency conflict warnings using  in .
--   **Optimized Build Size**:
-    -   Created a comprehensive  file.
-    -   Deleted ~5MB of unused assets and Figma files.
-    -   Reduced estimated EAS upload size from ~289MB to ~23MB.
--   **Implemented Push Notifications**:
-    -   Created and updated  to handle token registration/deletion.
-    -   Updated  to manage token on login/logout.
-    -   Verified all backend endpoints (, , etc.) with .
--   **Fixed Core App Features**:
-    -   **Cast**: Implemented the Android cast functionality by making  open the .
-    -   **Logo Display**: Created a central helper  and updated  and  to use it, ensuring consistent logo display.
-    -   **UI Fix**: Corrected Android Mini Player padding to prevent it from being obscured by the system navigation bar.
-    -   **Content**: Increased the number of genres on the Discovery page to 16.
-
-**Earlier issues found/mentioned but not fixed**
--   **Google OAuth on Android**: A known issue from a previous handoff that was not addressed in this session.
-
-**Known issue recurrence from previous fork**
--   **iOS/Android Build Failures**: The entire session was dominated by recurring build failures stemming from dependency conflicts, incompatible tooling versions (Xcode/CocoaPods), and incorrect project configuration.
--   **Favorites loading**: The user reported this again, even though it was marked as fixed in the previous handoff.
+-   **Migrated to Bare Workflow**: Converted the project from Expo Managed to Bare Workflow using env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories | reusing /android, /ios
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+✔ Finished prebuild, enabling native code modifications.
+-   **Fixed Multiple UX Bugs**:
+    -   Fixed delayed loading of favorites by removing a  in .
+    -   Fixed the Play at Login feature by waiting for authentication to complete in .
+-   **Fixed Web Build Crash**: Resolved a native-only module import error on the web by creating platform-specific files ( and ).
+-   **Attempted to Fix Android Build Failure**: Addressed a Kotlin compilation error from  by forcing  in .
+-   **Attempted to Fix iOS Build/Runtime Failures**:
+    -   Resolved Swift 6 concurrency errors by creating an Expo plugin () to set .
+    -   Identified that scene management conflicts were the root cause of crashes and black screens.
+    -   Programmatically added/removed Swift files and configurations to/from the  file to debug the lifecycle issues.
+-   **Optimized Build Assets**: Compressed large icon files, reducing the overall asset size from ~21MB to ~6MB.
+-   **Configured Android Auto**: Verified and corrected the Android Auto service files and added necessary drawable icons.
+-   **Added Build Numbers**: Updated  to include  for Android and  for iOS.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **EAS Build Environment**: Deep debugging of the Expo Application Services build environment, including the use of  to specify ,  (for Xcode version), and yarn install v1.22.22
+-   **Expo Bare Workflow**: The project now has native  and  directories, allowing for direct modification of native code (Swift, Kotlin, Objective-C). This is a fundamental shift from the Managed Workflow.
+-   **iOS App Lifecycle**: Deep and painful debugging of the conflict between the traditional  (window-based) lifecycle and the modern  (scene-based) lifecycle. The latter is required for multi-window features like full CarPlay support.
+-   **EAS Build Process (Bare)**: Understanding that EAS now bundles and builds the existing  and  directories instead of generating them.
+-   **Expo Config Plugins**: Created a custom plugin () to inject build settings () into the Xcode project during the prebuild phase.
+-   **Platform-Specific Files**: Using  and  extensions to let Metro bundler automatically select the correct component for each platform, resolving a web build crash.
+
+**All files of reference**
+-   : Contains critical build properties for Kotlin version, plugins for Swift mode, and build numbers.
+-   : Defines the build environment for EAS (e.g., Xcode version).
+-   : The Xcode project file, which was programmatically modified to add/remove Swift files. Its state is critical for the iOS build.
+-   : The entry point for the iOS app. Its configuration determines the app lifecycle.
+-   : The (currently problematic) delegate for handling the CarPlay user interface.
+-   : Custom plugin to manage Swift versioning.
+-   : Native version of the ad button.
+-   : Mock version of the ad button for the web.
+
+**Areas that need refactoring**:
+-   The entire iOS native configuration for CarPlay needs a stable, definitive implementation. The constant back-and-forth has left the  directory in a fragile state. A clean, dual-scene setup should be implemented from scratch and tested.
+-   The dependency tree still relies on  in  to function, which is a form of technical debt.
+
+**key api endpoints**
+-   No new backend endpoints were added. The focus was on client-side build and runtime issues.
+
+**Critical Info for New Agent**
+-   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
+-   **NEW TOP PRIORITY**: The user's latest request is to integrate **FlowAlive**. This task must be started first. The API key is .
+-   **The app is now in BARE WORKFLOW.** You are responsible for the  and  native directories. Do not run env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+› It's recommended to commit all changes before proceeding in case you want to revert generated changes.
+- Clearing android, ios
+✔ Cleared android, ios code
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+[withAndroidAuto] Added Android Auto meta-data
+- Running prebuild
+[withAndroidAuto] Added MegaRadioAutoService
+- Running prebuild
+✔ Finished prebuild
+- Installing CocoaPods...
+✔ Skipped installing CocoaPods because operating system is not on macOS. unless you intend to wipe out all native changes (like the CarPlay setup).
+-   **iOS is CRITICALLY BROKEN**: The app either crashes or shows a black screen on startup. This is due to an incorrect app lifecycle configuration related to CarPlay scenes. Do not attempt to build for a user without addressing this first (after the FlowAlive task). The simplest way to get the app running is to remove all scene-related configurations from  and delete any custom  files, but this will disable advanced CarPlay features.
+-   **Android Build is UNVERIFIED**: A fix for a Kotlin build error was implemented but not tested. The next Android build will confirm if it worked.
+
+**documents and test reports created in this job**
+-   None.
+
+**Last 10 User Messages and any pending HUMAN messages**
+-   **User:** Please integrate FlowAlive using these docs and API key. (PENDING - New P0 task)
+-   **User:** The app is still on a black screen when I run it from Xcode! The log says Info.plist contained no UIScene configuration dictionary. (IN PROGRESS - Agent was debugging this)
+-   **User:** The app crashes on startup. (IN PROGRESS - Agent identified an  config issue)
+-   **User:** The build failed with  being iOS 17+. (COMPLETED - Agent simplified the Swift code, but the changes were not pushed by the user)
+-   **User:** The build failed with a Swift protocol conformity error. (COMPLETED - Agent implemented a fix)
+-   **User:** I'm getting a  warning from yarn install v1.22.22
 [1/4] Resolving packages...
 success Already up-to-date.
 $ patch-package
 patch-package 8.0.1
 Applying patches...
 react-native-track-player@4.1.2 ✔
-Done in 0.57s. versions.
--   **Dependency Resolution**: Use of  in  to force a single version of a dependency and resolve conflicts (e.g., ).
--   **Expo Prebuild & Managed Workflow**: Understanding the difference between a project with native folders (, ) and one where they are generated on the fly by EAS, and configuring  accordingly.
--   **Polyfills**: The need to add the  package because a dependency () required it but didn't list it as a peer dependency, causing Metro to fail.
--   **React Native State Persistence**: The user's latest bug reports all revolve around the app's failure to correctly save and restore state (language, auth, player) between sessions, pointing to issues with  and  persistence middleware.
-
-**key DB schema**
-- No database changes. The agent interacted with the backend API related to user profiles, notifications, and push tokens.
-
-**All files of reference**
--   : Contains critical  and version changes.
--   : Defines the build environment for EAS.
--   : Defines build properties and plugins.
--   : Critical for fast, small builds.
--   : New centralized logo logic.
--   : Fixed cast functionality.
--   : Updated push notification logic.
--   : Updated logout logic.
--   **Files to investigate for next session**: , , , .
-
-**Areas that need refactoring**:
--   The dependency tree is very fragile. A full dependency audit and upgrade using env: load .env
-env: export EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_TUNNEL_SUBDOMAIN EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
-Skipped checking dependencies: react-native-reanimated, @expo/metro-runtime, expo-apple-authentication, expo-asset, expo-audio, expo-auth-session, expo-blur, expo-build-properties, expo-clipboard, expo-constants, and 28 others. These dependencies are listed in expo.install.exclude in package.json. Learn more: https://docs.expo.dev/more/expo-cli/#configuring-dependency-validation
-Dependencies are up to date is highly recommended after the current user-facing bugs are fixed.
--   The root  likely has complex, tangled logic for loading various resources (auth, fonts, language, player state) that leads to the app reloads every time issue. It should be simplified.
-
-**key api endpoints**
--   : Register push token.
--   : Delete push token.
--   : Get user notifications.
--   : Mark one notification as read.
--   : Mark all as read.
--   : Follow a user.
--   : Unfollow a user.
--   : Update user profile (used for private profile toggle).
-
-**Critical Info for New Agent**
--   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **TOP PRIORITY**: The user has reported a list of critical UX bugs (language not saving, auto-play not working, favorites loading delay, app reloading on open). You must address these first. The previous agent has already identified the likely files to investigate.
--   **BUILD ARE FRAGILE**: Do not assume builds will pass. The agent spent most of the session fixing Android builds. iOS builds are untested since the last set of fixes. After fixing the UX bugs, attempt a new Android build first.
--   **DEPENDENCY HELL**: The project has many dependency mismatches. The previous agent added  and  to  to force builds to pass. This is a temporary solution. Do not remove these unless you plan to do a full dependency upgrade.
--   **BACKEND IS READY**: The backend developer has deployed all necessary endpoints for push notifications. The previous agent tested them all with  and they work. The problem is now purely on the client-side implementation.
-
-**documents and test reports created in this job**
--   None.
-
-**Last 10 User Messages and any pending HUMAN messages**
--   **User:** The app has a notification page; will new follower notifications appear there too? (COMPLETED - Agent confirmed and explained the flow).
--   **User:** The EAS upload is 289MB, can we delete unused files to optimize and reduce the size? (COMPLETED - Agent analyzed the project, created a  file, deleted unused assets, and reduced the estimated size to ~23MB).
--   **User:** The selected language doesn't persist on app restart. (PENDING - New bug report).
--   **User:** The Play at Login feature isn't working; the last played station doesn't auto-play. (PENDING - New bug report).
--   **User:** Favorites load asynchronously, showing no favorites initially after login. (PENDING - New bug report).
--   **User:** The app reloads from scratch every time it's opened. (PENDING - New bug report).
+Done in 0.37s.. (COMPLETED - Agent explained it's a harmless warning from a dependency)
+-   **User:** Explain the CarPlay crash and how to fix it. (COMPLETED - Agent analyzed the scene lifecycle and implemented several fixes)
+-   **User:** Tell me the steps to set up Bare Workflow from a fresh clone. (COMPLETED - Agent provided the command sequence)
+-   **User:** Now that we are in Bare Workflow, can we manage watchOS files directly in the  folder? (COMPLETED - Agent confirmed and explained the steps)
+-   **User:** Is the project in Bare Workflow now? (COMPLETED - Agent confirmed by showing the presence of  and  folders)
 
 **Project Health Check:**
 -   **Broken**:
-    -   App state persistence (language, player state).
-    -   Favorites loading experience.
-    -   iOS build process is unverified and likely still broken.
+    -   iOS app startup (crashes or black screen).
+    -   Advanced CarPlay features (list browsing, search).
 -   **Mocked**:
-    -   CarPlay functionality is disabled as the package was removed in a previous session to fix Android builds.
+    -   Web version of  is a placeholder.
+-   **Unverified**:
+    -   Android build after applying the Kotlin version fix.
 
 **3rd Party Integrations**
--   : Core audio streaming.
--   : (Currently removed from ).
--   : For Chromecast functionality.
--   : For Google Sign-In.
--   : For AdMob monetization. Version was changed multiple times to fix builds. Currently .
--   : For push notifications.
--   EAS (Expo Application Services): For building the application.
+-   : Core audio streaming and basic CarPlay Now Playing support.
+-   : **(Installed)** Required for advanced CarPlay features but is the source of major lifecycle issues.
+-   : For Chromecast.
+-   : For AdMob. Known to cause build issues.
+-   : Push notifications. Its configuration caused a runtime crash.
+-   : **(To be installed)** New user request for integration.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, a  was used to diagnose the  module resolution error.
+-   **Testing agent used after significant changes**: YES, expert and troubleshoot agents were used extensively to analyze native iOS issues.
 -   **Troubleshoot agent used after agent stuck in loop**: YES
 -   **Test files created**: []
--   **Known regressions**: The favorites loading issue, which was thought to be fixed, has been reported again by the user.
+-   **Known regressions**: The entire iOS application is non-functional at runtime due to the black screen/crash issue, which is a major regression from a working state.
 
 **Credentials to test flow:**
 -   **API Key**: 
 -   **Test Account**:  / 
--   **AdMob iOS App ID**: 
--   **AdMob Android App ID**: 
+-   **FlowAlive API Key**: 
 
 **What agent forgot to execute**
-- The agent was in the process of analyzing the user's latest batch of bug reports but had not yet implemented any fixes. The next immediate action is to start fixing those four issues.</analysis>
+-   The agent did not verify the Android build fix after implementing it.
+-   The agent got stuck in a loop of breaking and fixing the iOS app's lifecycle without arriving at a stable, working configuration for CarPlay before being interrupted by the new FlowAlive task.</analysis>
