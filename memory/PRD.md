@@ -614,5 +614,34 @@ Test sonuçları:
 
 ---
 
+## February 2025 - Pre-Bare Workflow Checkpoint
+
+### Mevcut Durum (Bare Workflow Öncesi)
+Bu checkpoint, Bare Workflow'a geçmeden önceki son çalışan durumu temsil eder.
+
+**Çalışan Özellikler:**
+- Audio streaming (react-native-track-player)
+- Favoriler, Recently Played, Profile
+- Push Notifications (backend hazır)
+- Google Cast / Chromecast
+- AirPlay
+- Android Auto (plugin ile)
+- AdMob entegrasyonu
+- Dil ve ülke kalıcılığı
+
+**Düzeltilen Son Hatalar:**
+1. Favoriler geç yükleniyor → setTimeout kaldırıldı
+2. Play at Login çalışmıyor → isAuthLoaded kontrolü eklendi
+3. Web AdMob hatası → Platform-specific dosyalar (.native.tsx, .web.tsx)
+
+**Build Konfigürasyonu:**
+- Xcode: macos-sequoia-15.3-xcode-16.2
+- Swift 5 Mode plugin aktif
+- Assets optimize edildi (21MB → 6MB)
+
+**Rollback için:** Bu noktaya dönmek isterseniz, `/ios` ve `/android` klasörlerini silip managed workflow'a geri dönebilirsiniz.
+
+---
+
 ## User Language
 Turkish (Türkçe)
