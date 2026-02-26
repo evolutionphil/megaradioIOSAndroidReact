@@ -341,19 +341,36 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     
     private func loadFavorites() -> [Station] {
         // Load from UserDefaults (synced from AsyncStorage)
+        // Works for both logged-in users AND guest users
+        // Guest users have local-only favorites stored in AsyncStorage
         guard let data = UserDefaults.standard.data(forKey: "carplay_favorites"),
               let stations = try? JSONDecoder().decode([Station].self, from: data) else {
+            // Try alternative key for guest users
+            if let guestData = UserDefaults.standard.data(forKey: "guest_favorites"),
+               let guestStations = try? JSONDecoder().decode([Station].self, from: guestData) {
+                return guestStations
+            }
             return []
         }
         return stations
     }
     
     private func loadRecentStations() -> [Station] {
+        // Recent stations work for all users (guest & logged-in)
         guard let data = UserDefaults.standard.data(forKey: "carplay_recent"),
               let stations = try? JSONDecoder().decode([Station].self, from: data) else {
             return []
         }
         return stations
+    }
+    
+    private func loadGenres() -> [Genre] {
+        // Load genres from UserDefaults (cached from API)
+        guard let data = UserDefaults.standard.data(forKey: "carplay_genres"),
+              let genres = try? JSONDecoder().decode([Genre].self, from: data) else {
+            return []
+        }
+        return genres
     }
     
     // MARK: - Image Loading
