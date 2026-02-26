@@ -503,6 +503,7 @@ export const setStoredLanguage = async (lang: string): Promise<void> => {
 // Initialize i18next - Optimized for fast startup
 export const initI18n = async (): Promise<void> => {
   const storedLang = await getStoredLanguage();
+  console.log('[i18n] Initializing with stored language:', storedLang);
   
   // Use cached translations for fast startup (tr and en are pre-cached)
   const initialTranslations = translationsCache[storedLang] || defaultTranslations;
@@ -530,6 +531,8 @@ export const initI18n = async (): Promise<void> => {
         useSuspense: false,
       },
     });
+  
+  console.log('[i18n] Initialized, current language:', i18n.language);
   
   // Fetch latest translations from API in background (non-blocking)
   // This will update with any new keys from backend
