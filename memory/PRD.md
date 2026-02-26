@@ -643,5 +643,28 @@ Bu checkpoint, Bare Workflow'a geçmeden önceki son çalışan durumu temsil ed
 
 ---
 
+## February 2025 - Bare Workflow Migration & CarPlay
+
+### Bare Workflow Geçişi Tamamlandı
+
+**Yapılan İşlemler:**
+1. `npx expo prebuild --clean` ile native klasörler oluşturuldu
+2. CarPlay Scene Delegate oluşturuldu (`ios/MegaRadio/CarPlaySceneDelegate.swift`)
+3. Info.plist'e UIApplicationSceneManifest eklendi
+4. Podfile'a Swift 5 mode fix eklendi
+5. .easignore güncellendi (ios/android artık dahil)
+
+**Oluşturulan CarPlay Dosyaları:**
+- `ios/MegaRadio/CarPlaySceneDelegate.swift` - CarPlay scene delegate
+- Info.plist scene manifest yapılandırması
+
+**Rollback için:**
+```bash
+rm -rf ios android
+# Managed workflow'a geri döner
+```
+
+---
+
 ## User Language
 Turkish (Türkçe)
