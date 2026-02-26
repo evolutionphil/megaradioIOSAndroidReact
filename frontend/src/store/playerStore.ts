@@ -57,11 +57,22 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     // Add to recently played when station is set
     if (station) {
       useRecentlyPlayedStore.getState().addStation(station);
+      // Track station play in analytics
+      flowaliveService.trackStationPlayed(station.id, station.name, station.tags?.[0]);
     }
   },
 
-  setPlaybackState: (state) =>
-    set({ playbackState: state }),
+  setPlaybackState: (state) => {
+    const prevState = get().playbackState;
+    const station = get().currentStation;
+    
+    set({ playbackState: state });
+    
+    // Track pause event
+    if (state === 'paused' && prevState === 'playing' && station) {
+      flowaliveService.trackStationPaused(station.id, station.name);
+    }
+  },
 
   setStreamUrl: (url) =>
     set({ streamUrl: url }),
