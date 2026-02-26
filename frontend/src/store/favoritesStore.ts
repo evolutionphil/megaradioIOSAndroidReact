@@ -228,10 +228,18 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   removeFavorite: async (stationId: string) => {
     const { favorites, customOrder } = get();
     
+    // Find station name for analytics
+    const removedStation = favorites.find(f => f._id === stationId);
+    
     // Optimistic update
     const updatedFavorites = favorites.filter(f => f._id !== stationId);
     const updatedOrder = customOrder.filter(id => id !== stationId);
     set({ favorites: updatedFavorites, customOrder: updatedOrder });
+
+    // Track unfavorite event in analytics
+    if (removedStation) {
+      flowaliveService.trackStationUnfavorited(stationId, removedStation.name);
+    }
 
     try {
       // First save to local storage
