@@ -317,11 +317,8 @@ export default function RootLayout() {
           router.replace('/onboarding');
         }
         
-        // Initialize language from store
-        const { currentLanguage } = useLanguageStore.getState();
-        if (currentLanguage) {
-          i18n.changeLanguage(currentLanguage);
-        }
+        // Initialize language store (this will load stored/device language)
+        await useLanguageStore.getState().initialize();
       } catch (error) {
         console.error('Error during routing:', error);
         setHasCheckedOnboarding(true);
