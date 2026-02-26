@@ -120,6 +120,19 @@ export default function RootLayout() {
     sendLog('ROOT_LAYOUT_MOUNTED');
   }, []);
 
+  // Initialize FlowAlive Analytics
+  useEffect(() => {
+    const initFlowalive = async () => {
+      try {
+        await flowaliveService.initDevice();
+        console.log('[Layout] FlowAlive Analytics initialized');
+      } catch (error) {
+        console.error('[Layout] FlowAlive initialization error:', error);
+      }
+    };
+    initFlowalive();
+  }, []);
+
   // Load stored authentication on app startup
   useEffect(() => {
     const loadAuth = async () => {
