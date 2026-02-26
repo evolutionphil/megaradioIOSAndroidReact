@@ -5,6 +5,9 @@ const { FileStore } = require('metro-cache');
 
 const config = getDefaultConfig(__dirname);
 
+// Enable package.json exports field resolution (for flowalive-analytics/expo etc.)
+config.resolver.unstable_enablePackageExports = true;
+
 // Use a stable on-disk store (shared across web/android)
 const root = process.env.METRO_CACHE_ROOT || path.join(__dirname, '.metro-cache');
 config.cacheStores = [
