@@ -65,6 +65,7 @@ try {
 }
 
 const ONBOARDING_COMPLETE_KEY = '@megaradio_onboarding_complete';
+const FLOWALIVE_API_KEY = 'flowalive_b42f8188aad215f2250e5f0889adcbf4';
 
 sendLog('BEFORE_HELPER_FUNCTIONS');
 
