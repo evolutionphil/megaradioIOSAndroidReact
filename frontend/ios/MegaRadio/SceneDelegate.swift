@@ -1,9 +1,7 @@
 // SceneDelegate.swift
-// Main app scene delegate for MegaRadio
+// Main app scene delegate for MegaRadio - Expo SDK 55 compatible
 
 import UIKit
-import Expo
-import React
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -16,23 +14,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = scene as? UIWindowScene else { return }
         
-        // Get the app delegate to access React Native factory
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-              let factory = appDelegate.reactNativeFactory else {
-            print("[SceneDelegate] Error: Could not get React Native factory")
+        // Get the app delegate
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("[SceneDelegate] Error: Could not get AppDelegate")
             return
         }
         
         // Create window for this scene
         let window = UIWindow(windowScene: windowScene)
         self.window = window
+        appDelegate.window = window
         
-        // Start React Native in this window
-        factory.startReactNative(
-            withModuleName: "main",
-            in: window,
-            launchOptions: nil
-        )
+        // Let AppDelegate handle React Native initialization
+        if let factory = appDelegate.reactNativeFactory {
+            factory.startReactNative(
+                withModuleName: "main",
+                in: window,
+                launchOptions: nil
+            )
+        }
         
         window.makeKeyAndVisible()
         
@@ -61,21 +61,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // Handle URL opening
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         for context in URLContexts {
-            RCTLinkingManager.application(
-                UIApplication.shared,
-                open: context.url,
-                options: [:]
-            )
+            appDelegate.application(UIApplication.shared, open: context.url, options: [:])
         }
     }
     
     // Handle Universal Links
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        RCTLinkingManager.application(
-            UIApplication.shared,
-            continue: userActivity,
-            restorationHandler: { _ in }
-        )
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        appDelegate.application(UIApplication.shared, continue: userActivity, restorationHandler: { _ in })
     }
 }
