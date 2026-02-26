@@ -5,7 +5,7 @@
  * Tracks user sessions, events, and screen navigation.
  */
 
-import { Flowalive } from 'flowalive-analytics/expo';
+import { FlowAlive } from 'flowalive-analytics/expo';
 import type { User } from '../types';
 
 // Event names for consistent tracking
@@ -63,7 +63,7 @@ class FlowaliveService {
     if (this.isInitialized) return;
     
     try {
-      await Flowalive.setDevice();
+      await FlowAlive.setDevice();
       this.isInitialized = true;
       console.log('[FlowaliveService] Device initialized');
     } catch (error) {
@@ -76,7 +76,7 @@ class FlowaliveService {
    */
   async setUser(user: User): Promise<void> {
     try {
-      await Flowalive.setDevice({
+      await FlowAlive.setDevice({
         appUserId: user.id,
         appUserName: user.name || user.username,
         appUserEmail: user.email,
@@ -97,7 +97,7 @@ class FlowaliveService {
    */
   async clearUser(): Promise<void> {
     try {
-      await Flowalive.setDevice();
+      await FlowAlive.setDevice();
       console.log('[FlowaliveService] User identity cleared');
     } catch (error) {
       console.error('[FlowaliveService] Failed to clear user:', error);
@@ -109,7 +109,7 @@ class FlowaliveService {
    */
   track(event: AnalyticsEvent | string, params?: Record<string, string | number | boolean | null>): void {
     try {
-      Flowalive.track(event, params);
+      FlowAlive.event(event, '', params);
       console.log('[FlowaliveService] Event tracked:', event, params);
     } catch (error) {
       console.error('[FlowaliveService] Failed to track event:', error);
