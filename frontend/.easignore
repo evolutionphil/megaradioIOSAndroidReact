@@ -1,12 +1,11 @@
-# EAS Build Ignore - Optimized
+# EAS Build Ignore - Bare Workflow
+# Note: ios and android folders are NOW INCLUDED since we're in bare workflow
 node_modules
 .git
 .expo
 .metro-cache
 dist
 build
-ios
-android
 watch
 cast-receiver
 memory
