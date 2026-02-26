@@ -123,7 +123,19 @@ export default function RootLayout() {
       console.log('[Layout] Loading stored authentication...');
       try {
         await useAuthStore.getState().loadStoredAuth();
-        console.log('[Layout] Auth loaded, isAuthenticated:', useAuthStore.getState().isAuthenticated);
+        const { isAuthenticated } = useAuthStore.getState();
+        console.log('[Layout] Auth loaded, isAuthenticated:', isAuthenticated);
+        
+        // If authenticated, immediately load favorites from server to avoid "no favorites" flash
+        if (isAuthenticated) {
+          console.log('[Layout] User authenticated, loading favorites immediately...');
+          try {
+            await useFavoritesStore.getState().loadFavorites();
+            console.log('[Layout] Favorites loaded:', useFavoritesStore.getState().favorites.length);
+          } catch (favError) {
+            console.error('[Layout] Failed to load favorites:', favError);
+          }
+        }
       } catch (error) {
         console.error('[Layout] Failed to load stored auth:', error);
       }
