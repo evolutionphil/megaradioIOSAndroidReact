@@ -6,9 +6,11 @@ import GoogleCast
 // @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
+import UIKit
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
+  // Window is now managed by SceneDelegate for scene-based lifecycle
   var window: UIWindow?
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
@@ -38,15 +40,35 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-#if os(iOS) || os(tvOS)
-    window = UIWindow(frame: UIScreen.main.bounds)
-    factory.startReactNative(
-      withModuleName: "main",
-      in: window,
-      launchOptions: launchOptions)
-#endif
+    // NOTE: Window creation moved to SceneDelegate for scene-based lifecycle
+    // This prevents conflicts with CarPlay scene management
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+  
+  // MARK: - Scene Configuration (Required for CarPlay + Main App)
+  public func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    // Return different configurations for CarPlay vs Main App
+    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      let config = UISceneConfiguration(name: "CarPlay", sessionRole: connectingSceneSession.role)
+      config.delegateClass = CarPlaySceneDelegate.self
+      return config
+    } else {
+      let config = UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+      config.delegateClass = SceneDelegate.self
+      return config
+    }
+  }
+  
+  public func application(
+    _ application: UIApplication,
+    didDiscardSceneSessions sceneSessions: Set<UISceneSession>
+  ) {
+    // Called when user discards a scene session
   }
 
   // Linking API
