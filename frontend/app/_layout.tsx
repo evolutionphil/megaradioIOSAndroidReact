@@ -31,7 +31,7 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
-import { FlowaliveProvider } from 'flowalive-analytics/expo';
+import { FlowAliveProvider } from 'flowalive-analytics/expo';
 import { flowaliveService } from '../src/services/flowaliveService';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
