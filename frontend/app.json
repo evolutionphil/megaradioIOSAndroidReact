@@ -2,7 +2,7 @@
   "expo": {
     "name": "MegaRadio",
     "slug": "megaradio",
-    "version": "1.0.16",
+    "version": "1.0.25",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": ["megaradio", "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"],
@@ -10,6 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
+      "buildNumber": "25",
       "usesAppleSignIn": true,
       "infoPlist": {
         "UIBackgroundModes": [
