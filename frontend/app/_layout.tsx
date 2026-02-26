@@ -344,7 +344,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
-      <FlowaliveProvider 
+      <FlowAliveProvider 
         apiKey={FLOWALIVE_API_KEY} 
         trackNavigation={true}
         deviceInfo={true}
