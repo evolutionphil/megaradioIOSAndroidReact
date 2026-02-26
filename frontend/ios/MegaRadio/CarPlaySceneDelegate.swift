@@ -390,3 +390,17 @@ struct Station: Codable {
         case streamURL = "stream_url"
     }
 }
+
+// MARK: - Genre Model
+
+struct Genre: Codable {
+    let id: String
+    let name: String
+    let stationCount: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case stationCount = "station_count"
+    }
+}
