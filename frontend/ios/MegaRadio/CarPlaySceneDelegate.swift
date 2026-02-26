@@ -133,29 +133,82 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     // MARK: - Genres Template
     
     private func createGenresTemplate() -> CPListTemplate {
-        let genres = [
-            ("Pop", "music.note", "pop"),
-            ("Rock", "guitars", "rock"),
-            ("Jazz", "music.quarternote.3", "jazz"),
-            ("Klasik", "music.note.list", "classical"),
-            ("Elektronik", "waveform", "electronic"),
-            ("Hip Hop", "music.mic", "hiphop"),
-            ("Türkçe", "star.fill", "turkish"),
-            ("Haberler", "newspaper", "news")
-        ]
+        // Load all genres from UserDefaults (synced from API)
+        let genres = loadGenres()
         
         var items: [CPListItem] = []
         
-        for (name, icon, genreId) in genres {
-            let item = CPListItem(text: name, detailText: nil)
+        // Genre icon mapping
+        let iconMap: [String: String] = [
+            "pop": "music.note",
+            "rock": "guitars",
+            "jazz": "music.quarternote.3",
+            "classical": "music.note.list",
+            "electronic": "waveform",
+            "hiphop": "music.mic",
+            "turkish": "star.fill",
+            "news": "newspaper",
+            "talk": "person.wave.2",
+            "sports": "sportscourt",
+            "country": "leaf",
+            "rnb": "heart.circle",
+            "dance": "figure.dance",
+            "ambient": "cloud",
+            "metal": "flame",
+            "reggae": "sun.max",
+            "latin": "guitars.fill",
+            "world": "globe",
+            "religious": "book.closed",
+            "kids": "face.smiling"
+        ]
+        
+        for genre in genres {
+            let item = CPListItem(text: genre.name, detailText: "\(genre.stationCount ?? 0) istasyon")
+            let icon = iconMap[genre.id.lowercased()] ?? "radio"
             item.setImage(UIImage(systemName: icon))
             
             item.handler = { [weak self] _, completion in
-                self?.showGenreStations(genreId: genreId, name: name)
+                self?.showGenreStations(genreId: genre.id, name: genre.name)
                 completion()
             }
             
             items.append(item)
+        }
+        
+        // If no genres loaded, show defaults
+        if items.isEmpty {
+            let defaultGenres = [
+                ("Pop", "music.note", "pop"),
+                ("Rock", "guitars", "rock"),
+                ("Jazz", "music.quarternote.3", "jazz"),
+                ("Klasik", "music.note.list", "classical"),
+                ("Elektronik", "waveform", "electronic"),
+                ("Hip Hop", "music.mic", "hiphop"),
+                ("Türkçe", "star.fill", "turkish"),
+                ("Haberler", "newspaper", "news"),
+                ("Spor", "sportscourt", "sports"),
+                ("Talk", "person.wave.2", "talk"),
+                ("Country", "leaf", "country"),
+                ("R&B", "heart.circle", "rnb"),
+                ("Dance", "figure.dance", "dance"),
+                ("Ambient", "cloud", "ambient"),
+                ("Metal", "flame", "metal"),
+                ("Reggae", "sun.max", "reggae"),
+                ("Latin", "guitars.fill", "latin"),
+                ("World", "globe", "world")
+            ]
+            
+            for (name, icon, genreId) in defaultGenres {
+                let item = CPListItem(text: name, detailText: nil)
+                item.setImage(UIImage(systemName: icon))
+                
+                item.handler = { [weak self] _, completion in
+                    self?.showGenreStations(genreId: genreId, name: name)
+                    completion()
+                }
+                
+                items.append(item)
+            }
         }
         
         let section = CPListSection(items: items)
