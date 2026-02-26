@@ -1,11 +1,11 @@
 import Expo
-// @generated begin react-native-google-cast-import - expo prebuild (DO NOT MODIFY) sync-4cd300bca26a1d1fcc83f4baf37b0e62afcc1867
 #if canImport(GoogleCast) && os(iOS)
 import GoogleCast
 #endif
-// @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
+import UIKit
+import CarPlay
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -18,7 +18,6 @@ public class AppDelegate: ExpoAppDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-// @generated begin react-native-google-cast-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-878430aae4b1b32ad54e4b64ed01ca473a2a80a6
 #if canImport(GoogleCast) && os(iOS)
     let receiverAppID = "94952E1F"
     let criteria = GCKDiscoveryCriteria(applicationID: receiverAppID)
@@ -29,7 +28,7 @@ public class AppDelegate: ExpoAppDelegate {
     GCKCastContext.setSharedInstanceWith(options)
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
 #endif
-// @generated end react-native-google-cast-didFinishLaunchingWithOptions
+
     let delegate = ReactNativeDelegate()
     let factory = ExpoReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
@@ -38,15 +37,40 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-#if os(iOS) || os(tvOS)
-    window = UIWindow(frame: UIScreen.main.bounds)
-    factory.startReactNative(
-      withModuleName: "main",
-      in: window,
-      launchOptions: launchOptions)
-#endif
+    // NOTE: Window creation is handled by SceneDelegate when scene lifecycle is enabled
+    // Do NOT create window here when using scenes
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+  
+  // MARK: - Scene Configuration
+  @available(iOS 13.0, *)
+  public func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    // CarPlay scene
+    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      let config = UISceneConfiguration(name: "CarPlay", sessionRole: connectingSceneSession.role)
+      config.delegateClass = CarPlaySceneDelegate.self
+      print("[AppDelegate] Returning CarPlay scene configuration")
+      return config
+    }
+    
+    // Main app scene
+    let config = UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    config.delegateClass = SceneDelegate.self
+    print("[AppDelegate] Returning main app scene configuration")
+    return config
+  }
+  
+  @available(iOS 13.0, *)
+  public func application(
+    _ application: UIApplication,
+    didDiscardSceneSessions sceneSessions: Set<UISceneSession>
+  ) {
+    // Handle discarded scenes
   }
 
   // Linking API
@@ -70,10 +94,7 @@ public class AppDelegate: ExpoAppDelegate {
 }
 
 class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
-  // Extension point for config-plugins
-
   override func sourceURL(for bridge: RCTBridge) -> URL? {
-    // needed to return the correct URL for expo-dev-client.
     bridge.bundleURL ?? bundleURL()
   }
 
