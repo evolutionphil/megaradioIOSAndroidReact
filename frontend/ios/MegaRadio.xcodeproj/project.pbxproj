@@ -7,19 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04DB45BD96C12130E5F79A66 /* WatchConnectivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063A4E2BAEBB804B7BD174B3 /* WatchConnectivityBridge.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		39CD47B4BB9BE51B08F0E516 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CA499394B6CAE1368ACE56 /* CarPlaySceneDelegate.swift */; };
+		3B644D51BB1419DEE9857C3E /* WatchConnectivityBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 058644E3B3F2ECA4416DA867 /* WatchConnectivityBridge.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		C18042D6A7BDFB8AD551D395 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006047D28F4589BBAE02F7CB /* SceneDelegate.swift */; };
+		E5AD4C0D9F0080EF997DAA9B /* WatchConnectivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47A0433B9F26B52A6C460508 /* WatchConnectivityHandler.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		006047D28F4589BBAE02F7CB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = MegaRadio/SceneDelegate.swift; sourceTree = SOURCE_ROOT; };
+		058644E3B3F2ECA4416DA867 /* WatchConnectivityBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = WatchConnectivityBridge.m; path = MegaRadio/WatchConnectivityBridge.m; sourceTree = SOURCE_ROOT; };
+		063A4E2BAEBB804B7BD174B3 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchConnectivityBridge.swift; path = MegaRadio/WatchConnectivityBridge.swift; sourceTree = SOURCE_ROOT; };
 		13B07F961A680F5B00A75B9A /* MegaRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MegaRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MegaRadio/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MegaRadio/Info.plist; sourceTree = "<group>"; };
+		47A0433B9F26B52A6C460508 /* WatchConnectivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchConnectivityHandler.swift; path = MegaRadio/WatchConnectivityHandler.swift; sourceTree = SOURCE_ROOT; };
 		92CA499394B6CAE1368ACE56 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CarPlaySceneDelegate.swift; path = MegaRadio/CarPlaySceneDelegate.swift; sourceTree = SOURCE_ROOT; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = MegaRadio/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
@@ -76,6 +82,9 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				92CA499394B6CAE1368ACE56 /* CarPlaySceneDelegate.swift */,
 				006047D28F4589BBAE02F7CB /* SceneDelegate.swift */,
+				063A4E2BAEBB804B7BD174B3 /* WatchConnectivityBridge.swift */,
+				47A0433B9F26B52A6C460508 /* WatchConnectivityHandler.swift */,
+				058644E3B3F2ECA4416DA867 /* WatchConnectivityBridge.m */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -238,6 +247,9 @@
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
 				39CD47B4BB9BE51B08F0E516 /* CarPlaySceneDelegate.swift in Sources */,
 				C18042D6A7BDFB8AD551D395 /* SceneDelegate.swift in Sources */,
+				04DB45BD96C12130E5F79A66 /* WatchConnectivityBridge.swift in Sources */,
+				E5AD4C0D9F0080EF997DAA9B /* WatchConnectivityHandler.swift in Sources */,
+				3B644D51BB1419DEE9857C3E /* WatchConnectivityBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
