@@ -43,6 +43,8 @@
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
+				CARPLAY002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */,
+				PHONE002D0307B40044C1D9 /* PhoneSceneDelegate.swift */,
 				F11748442D0722820044C1D9 /* MegaRadio-Bridging-Header.h */,
 		CARPLAY002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CarPlaySceneDelegate.swift; path = MegaRadio/CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		PHONE002D0307B40044C1D9 /* PhoneSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhoneSceneDelegate.swift; path = MegaRadio/PhoneSceneDelegate.swift; sourceTree = "<group>"; };
