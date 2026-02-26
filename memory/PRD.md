@@ -668,3 +668,43 @@ rm -rf ios android
 
 ## User Language
 Turkish (Türkçe)
+
+---
+
+## February 26, 2025 - FlowAlive Analytics Entegrasyonu
+
+### FlowAlive SDK Kurulumu Tamamlandı
+
+**Yapılan İşlemler:**
+1. `flowalive-analytics@0.0.32` paketi kuruldu
+2. `@react-native-community/netinfo@12.0.1` peer dependency kuruldu
+3. `FlowAliveProvider` `_layout.tsx`'de uygulamanın root'una eklendi
+4. `flowaliveService.ts` helper sınıfı oluşturuldu
+
+**Entegre Edilen Analytics Events:**
+- **Uygulama:** `app_opened`, `app_backgrounded`
+- **Authentication:** `user_logged_in`, `user_logged_out`, `user_signed_up`
+- **Playback:** `station_played`, `station_paused`, `station_stopped`, `playback_error`
+- **Favorites:** `station_favorited`, `station_unfavorited`
+- **Navigation:** `screen_viewed` (auto-tracking), `search_performed`, `genre_selected`
+- **Ads:** `ad_viewed`, `ad_clicked`, `ad_rewarded`
+- **CarPlay/Android Auto:** `carplay_connected`, `android_auto_connected`
+
+**Tracking Entegrasyonları:**
+- `authStore.ts`: Login/logout olaylarında kullanıcı identity ayarlanır
+- `playerStore.ts`: Radyo oynatma/durdurma/hata olayları track edilir
+- `favoritesStore.ts`: Favorilere ekleme/çıkarma olayları track edilir
+- Auto screen tracking: FlowAliveProvider ile Expo Router ekran değişiklikleri otomatik track edilir
+
+**Kullanılan API Anahtarı:**
+- `flowalive_b42f8188aad215f2250e5f0889adcbf4`
+
+**Dosyalar:**
+- `src/services/flowaliveService.ts` - Analytics helper sınıfı
+- `app/_layout.tsx` - FlowAliveProvider eklendi
+
+**Test için:**
+- Uygulama açıldığında `[FlowaliveService] Device initialized` log'u görülmeli
+- Login/logout olaylarında user identity güncellenmeli
+- Radyo oynatıldığında `station_played` eventi track edilmeli
+
