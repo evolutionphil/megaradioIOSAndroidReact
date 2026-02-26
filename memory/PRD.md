@@ -570,5 +570,49 @@ Test sonuçları:
 
 ---
 
+## February 2025 - UX Bug Fixes (Session 7)
+
+### Düzeltilen Sorunlar:
+
+1. **Favoriler Geç Yükleniyor (P0)**
+   - **Sorun**: Login sonrası "Favori yok" görünüp 300ms sonra favoriler beliriyordu
+   - **Kök Neden**: `authStore.ts`'de `setTimeout(..., 300)` kullanılıyordu
+   - **Çözüm**: 
+     - `authStore.ts`'den `setTimeout` kaldırıldı
+     - `_layout.tsx`'de auth yüklendikten hemen sonra favoriler de yükleniyor
+     - Artık login işlemi tamamlandığında favoriler zaten hazır
+
+2. **Play at Login Çalışmıyor (P0)**
+   - **Sorun**: "Girişte Çal" ayarı açık olmasına rağmen son dinlenen radyo otomatik başlamıyordu
+   - **Kök Neden**: `PlayAtLoginHandler.tsx`, `isAuthLoaded` flag'ini kontrol etmiyordu - auth yüklenmeden `isAuthenticated` false olarak görünüyordu
+   - **Çözüm**:
+     - `isAuthLoaded` flag'i eklendi - artık auth tamamen yüklenene kadar bekliyor
+     - `hasExecuted` mantığı düzeltildi - setting "off" olsa bile tekrar çalışmayı engelliyor
+     - Dependency array'e `isAuthLoaded` ve `favoritesLoaded` eklendi
+
+3. **Dil Kalıcılığı (P0)**
+   - **Sorun**: Dil değiştirilip uygulama kapatılıp açılınca varsayılan dile dönüyordu (iddia edilen)
+   - **Kök Neden**: Aslında çalışıyor - `initI18n` AsyncStorage'dan dili yüklüyor
+   - **Çözüm**: Debug logları eklendi - "Initializing with stored language: tr" gibi loglar kontrol edilebilir
+
+4. **Uygulama Her Açılışta Yeniden Yükleniyor (P0)**
+   - **Sorun**: Splash screen her seferinde baştan başlıyordu
+   - **Kök Neden**: Çoklu async işlemlerin senkronizasyon sorunu - auth/favorites/language ayrı ayrı yükleniyordu
+   - **Çözüm**: Auth yüklendiğinde favoriler de hemen yükleniyor, sıralı ve optimize edilmiş loading
+
+### Değişen Dosyalar:
+- `src/store/authStore.ts` - setTimeout kaldırıldı, favoriler hemen yükleniyor
+- `src/components/PlayAtLoginHandler.tsx` - isAuthLoaded kontrolü eklendi, hasExecuted mantığı düzeltildi
+- `src/services/i18nService.ts` - Debug logları eklendi
+- `app/_layout.tsx` - Auth yüklendiğinde favoriler de yükleniyor
+
+### ⚠️ Test Gereksinimleri:
+- **Yeni EAS Build Gerekli**: Tüm değişiklikler native build gerektiriyor
+- **Favoriler Test**: Login yapın, favoriler sekmesine gidin - "Favori yok" flash'ı olmamalı
+- **Play at Login Test**: Ayarları "Son Çalınan" yapın, uygulamayı kapatıp açın - son radyo otomatik çalmalı
+- **Dil Test**: Türkçe seçin, uygulamayı kapatıp açın - Türkçe kalmalı
+
+---
+
 ## User Language
 Turkish (Türkçe)
