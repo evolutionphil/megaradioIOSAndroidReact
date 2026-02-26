@@ -25,3 +25,7 @@ cast-receiver/
 
 # Watch app files (only needed for iOS)
 watch/
+
+# Native folders - EAS will run prebuild
+ios/
+android/
