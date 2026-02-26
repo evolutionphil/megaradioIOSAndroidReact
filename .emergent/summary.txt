@@ -3,112 +3,103 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 
 **PRODUCT REQUIREMENTS:**
 -   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
--   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile.
+-   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, Push Notifications for social interactions (e.g., new followers).
 -   **Monetization:** The app will be free and will show ads (Interstitial and Rewarded). A premium (ad-free) version via subscription is also planned.
--   **Authentication:** All API requests must include . Google and Apple social logins were also requested.
+-   **Authentication:** All API requests must include . The app uses a session cookie-based auth system. Google and Apple social logins were also requested.
 -   **Build & Deployment:** The user wants to build the application for iOS and Android and submit it to the respective app stores.
 -   **Platform Expansion:** The user has requested support for CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The project is a complex Expo (React Native) application for iOS and Android. This session accomplished several major tasks:
-1.  **Critical Bug Fixes**: Resolved long-standing issues with favorites not loading correctly (race condition), avatar images not having a fallback, iOS lock screen controls being unresponsive, and user settings not being saved. Also fixed a cache issue where favorites from a previous user would appear after logging into a new account.
-2.  **watchOS Integration**: Implemented a full Apple Watch companion app from scratch. This involved creating native Swift views, setting up  for real-time data synchronization with the iOS app (for Now Playing, Favorites, and Genres), and creating a React Native bridge to communicate between the JS and native layers. The agent also guided the user through the complex Xcode process of adding the watch target, resolving icon issues, and fixing signing/embedding problems for App Store submission.
-3.  **Lock Screen Logic Overhaul**: Refactored the lock screen's next/previous button logic. Next now cycles through similar stations, while Previous goes back through the user's listening history.
-4.  **AdMob Integration**: Added the  package to implement monetization. The app is configured to show Interstitial ads when changing stations and provides a button for a Rewarded ad to get ad-free time.
-5.  **Build System Troubleshooting**: Diagnosed and temporarily fixed a critical Android build failure caused by the  package. The session ended while diagnosing an iOS build failure on EAS related to a CocoaPods/Xcode version mismatch.
+The project is an Expo (React Native) app. This session was a whirlwind of debugging and feature implementation.
+1.  **Build System Hell:** The agent went through multiple iterations trying to fix failing EAS builds for both iOS and Android. This involved:
+    *   Pinning Xcode and Node.js versions in .
+    *   Debugging CocoaPods version incompatibilities ().
+    *   Resolving Android Gradle build failures caused by  by downgrading/upgrading the package and disabling the New Architecture.
+    *   Fixing  schema errors.
+    *   Adding the  polyfill to fix a Metro bundler error with .
+    *   Creating a  file and deleting unused assets to drastically reduce the build upload size from ~289MB to ~25MB.
+2.  **Feature Implementation & Bug Fixes:**
+    *   **Cast Feature:** Fixed the Cast button on Android, which previously just showed an alert. It now correctly opens the .
+    *   **Logo Consistency:** Created a centralized  to ensure station logos appear consistently across different components (MiniPlayer, StationCard).
+    - **Android UI Fix:** Corrected an issue where the mini player would hide behind the Android system navigation bar on certain screens.
+    - **Genre Display:** Increased the number of genres shown on the discovery page from 8 to 16.
+3.  **Push Notifications:** Fully implemented the frontend logic for push notifications based on a detailed guide from the user. This includes registering/deleting tokens on login/logout and handling navigation when a notification is tapped. The agent also successfully tested all required backend endpoints.
 
 **Last working item**:
--   **Last item agent was working**: The agent was trying to resolve an iOS build failure on the EAS (Expo Application Services) platform. The build log showed the error , which is a known incompatibility between the version of CocoaPods used on the build server and the very new Xcode 26.
--   **Status**: BLOCKED
+-   **Last item agent was working**: The agent was analyzing a new batch of user-reported bugs:
+    1.  The selected language does not persist after closing and reopening the app.
+    2.  The Play at Login feature (last played station) is not auto-playing.
+    3.  Favorites are not loaded synchronously after login, showing No favorites initially.
+    4.  The app seems to reload completely every time it's opened.
+-   **Status**: NOT STARTED (Agent was in the analysis phase, reviewing , , and ).
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: N/A (The build process itself is broken and needs to be fixed first).
--   **User Testing Done**: N (Cannot test until a build is successful).
+-   **Which testing method agent to use?**: Frontend testing agent. The agent should first try to reproduce each of the four issues in a test build, then implement the fixes. A new Android build will be required for verification.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: iOS EAS build fails due to Xcode/CocoaPods incompatibility (P0 - BLOCKER)
--   Issue 2: watchOS app is not communicating with the iOS app (P0)
--   Issue 3: AdMob integration is unverified (P1)
--   Issue 4: Lock screen next/previous logic needs user verification (P1)
--   Issue 5: Android build process is fragile due to CarPlay package (P2)
+-   Issue 1: Language, auto-play, favorites, and app-reload bugs (P0)
+-   Issue 2: Android build has multiple dependency conflicts (P1)
+-   Issue 3: iOS build is still likely broken (P1)
+-   Issue 4: watchOS app communication is broken (P2)
+-   Issue 5: Android build is fragile due to CarPlay package (P2)
 -   Issue 6: Google OAuth still fails on Android (P2)
 
 **Issues Detail:**
--   **Issue 1: iOS EAS build fails due to Xcode/CocoaPods incompatibility (P0)**
-    -   **Description**: The  command fails on EAS servers with an error about object version , which points to the build environment using Xcode 16.4/26, a version too new for the installed CocoaPods.
-    -   **Attempted fixes**: The agent correctly identified the cause from the logs.
+-   **Issue 1: Language, auto-play, favorites, and app-reload bugs (P0)**
+    -   **Description**: The user reported four distinct bugs related to app state persistence and initial loading behavior.
+    -   **Attempted fixes**: The agent started analyzing the relevant files ( for language,  for auto-play,  for favorites, and  for the app loading sequence) but has not implemented any fixes yet.
     -   **Next debug checklist**:
-        1.  Edit .
-        2.  In the  profile, add the  property to specify an older, more stable Xcode version. Example: .
-        3.  Instruct the user to try the build again.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a hard blocker preventing any new iOS builds from being created or submitted to TestFlight/App Store.
+        1.  **Language**: Check . Ensure  is correctly used to load the saved language on app start. The agent was on the right track here.
+        2.  **Auto-Play**: Examine  and its interaction in . Verify the logic that checks the  setting and triggers playback.
+        3.  **Favorites**: The handoff mentioned a race condition fix, but the user says it's still happening. Investigate the  hook and where it's called. It might need to be triggered earlier in the auth flow or use a more robust loading state.
+        4.  **App Reload**: This is likely due to how resources (fonts, assets, auth state) are loaded in the root . The splash screen might be hiding a slow or re-triggering loading sequence.
+    -   **Why fix this issue and what will be achieved with the fix?**: These are critical user experience issues that make the app feel broken and unprofessional.
     -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS build)
-    -   **Blocked on other issue**: None.
-
--   **Issue 2: watchOS app is not communicating with the iOS app (P0)**
-    -   **Description**: After installing the app from TestFlight, the user reports the watchOS app shows Radyo seçin (Select a Radio) and Türler yükleniyor (Loading genres), indicating that the  data transfer is not working.
-    -   **Attempted fixes**: The agent diagnosed that the native bridge files (, , ) were likely not added to the main iOS app target in the user's local Xcode project, even though they were copied to the filesystem.
-    -   **Next debug checklist**:
-        1.  Clearly re-instruct the user on how to add existing files to the **MegaRadio (iOS) target** in Xcode, not just the watch target.
-        2.  The user needs to confirm the files are visible under the MegaRadio folder in the Xcode Project Navigator and are included in the Compile Sources and Frameworks, Libraries, and Embedded Content sections of the Build Phases.
-        3.  After confirmation, a new archive must be built from Xcode and uploaded.
-    -   **Why fix this issue and what will be achieved with the fix?**: The entire watchOS app functionality depends on this connection. Fixing it will enable live data sync.
-    -   **Status**: BLOCKED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS + watchOS)
-    -   **Blocked on other issue**: A new Xcode build is required, which depends on local user action.
-
--   **Issue 3: AdMob integration is unverified (P1)**
-    -   **Description**: The code for AdMob (Interstitial and Rewarded ads) has been added, but due to the build failures, it has not been tested in a real environment.
-    -   **Next debug checklist**:
-        1.  Once Issue #1 is resolved and a successful build is created, instruct the user to test the ad flows.
-        2.  Remind the user that real ads may take 24-48 hours to start appearing in a new app and they might see No ad to show errors initially.
-    -   **Why fix this issue and what will be achieved with the fix?**: Verifies the core monetization feature of the application.
-    -   **Status**: TESTING PENDING
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS & Android)
-    -   **Blocked on other issue**: Issue 1: iOS EAS build fails
-
--   **Issue 4: Lock screen next/previous logic needs user verification (P1)**
-    -   **Description**: The agent implemented new logic for the lock screen controls (next cycles similar stations, previous goes through history). This has not been tested by the user.
-    -   **Next debug checklist**: Test this functionality in the next successful build.
-    -   **Why fix this issue and what will be achieved with the fix?**: Improves a core user experience feature for a radio app.
-    -   **Status**: USER VERIFICATION PENDING
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS)
-    -   **Blocked on other issue**: Issue 1: iOS EAS build fails
-
--   **Issue 5: Android build process is fragile due to CarPlay package (P2)**
-    -   **Description**: The Android build was failing because the  package is not compatible with Android. The agent fixed this by removing the package from . This is not a sustainable solution, as the package is needed for iOS CarPlay functionality.
-    -   **Next debug checklist**:
-        1.  Re-add the  package to .
-        2.  Investigate methods to conditionally exclude a native module from the Android build, possibly by modifying  or using a  file to nullify the Android project for that package.
-    -   **Why fix this issue and what will be achieved with the fix?**: Creates a stable build process for both platforms without manual intervention.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
+    -   **Is recurring issue?**: Y (Favorites issue)
     -   **Should Test frontend/backend/both after fix?**: Frontend (Android build)
-    -   **Blocked on other issue**: None.
+    -   **Blocked on other issue**: None
 
--   **Issue 6: Google OAuth still fails on Android (P2)**
-    -   **Description**: A known issue from the previous session where Google Sign-In does not work correctly on Android.
-    -   **Attempted fixes**: None in this session.
-    -   **Next debug checklist**: Investigate the native configuration for Google Sign-In on Android, checking , SHA-1 keys in the Firebase/Google Cloud console, and the  file.
-    -   **Why fix this issue and what will be achieved with the fix?**: Fixes a primary login method for Android users.
+-   **Issue 2: Android build has multiple dependency conflicts (P1)**
+    -   **Description**:  reports numerous duplicate dependencies and version mismatches. While the agent suppressed these warnings using  and  in  to get a build, this is a temporary fix. The root cause is a messy dependency tree.
+    -   **Attempted fixes**: Added  for key packages and an  list to .
+    -   **Next debug checklist**:
+        1.  Run env: load .env
+env: export EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_TUNNEL_SUBDOMAIN EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+Skipped checking dependencies: react-native-reanimated, @expo/metro-runtime, expo-apple-authentication, expo-asset, expo-audio, expo-auth-session, expo-blur, expo-build-properties, expo-clipboard, expo-constants, and 28 others. These dependencies are listed in expo.install.exclude in package.json. Learn more: https://docs.expo.dev/more/expo-cli/#configuring-dependency-validation
+Dependencies are up to date.
+        2.  Systematically upgrade packages to the versions recommended by Expo SDK 55. This might require careful, incremental changes.
+        3.  Alternatively, run env: load .env
+env: export EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_TUNNEL_SUBDOMAIN EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+Running 17 checks on your project...
+17/17 checks passed. No issues detected! and let it attempt to fix the dependencies automatically.
+    -   **Why fix this issue and what will be achieved with the fix?**: Creates a stable and maintainable project, preventing future build failures.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (Android)
-    -   **Blocked on other issue**: None.
+    -   **Should Test frontend/backend/both after fix?**: Frontend (Android & iOS builds)
+    -   **Blocked on other issue**: Blocked by Issue 1. Fix user-facing bugs first.
+
+-   **Issue 3: iOS build is still likely broken (P1)**
+    -   **Description**: The last iOS build failed due to a Metro bundler error (). While the agent added the  package and updated  and , these changes have not been tested in an actual iOS build. The underlying Xcode compatibility and dependency issues might still exist.
+    -   **Attempted fixes**: Many changes to , , and .
+    -   **Next debug checklist**:
+        1.  After fixing user-facing bugs (Issue 1), trigger a new iOS build with .
+        2.  Carefully analyze the logs for any new errors. The  error about Xcode version incompatibility is a major red flag.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a blocker for releasing the app on the Apple App Store.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS build)
+    -   **Blocked on other issue**: Issue 1.
 
 **In progress Task List**:
--   **Task 1: Complete AdMob Monetization**
-    -   **Where to resume**: The code is implemented. The next step is to get a successful build and guide the user through testing the Interstitial and Rewarded ad flows.
-    -   **What will be achieved with this?**: Enables the app to generate revenue.
-    -   **Status**: BLOCKED
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on something**: Issue 1: iOS EAS build fails.
+-   **Task 1: Complete Push Notification Feature**
+    -   **Where to resume**: The frontend and backend are coded and tested individually. The final step is user verification in a production build.
+    -   **What will be achieved with this?**: A core social feature of the app will be live.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a successful build)
+    -   **Blocked on something**: Issue 1 & 3.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
@@ -122,107 +113,126 @@ The project is a complex Expo (React Native) application for iOS and Android. Th
 -   **P2**: Add support for tvOS & Android TV.
 
 **Completed work in this session**
--   **Fixed Critical Bugs**:
-    -   Resolved favorites loading race condition by using an  flag ().
-    -   Fixed avatar fallback by creating and properly implementing .
-    -   Corrected iOS lock screen capabilities in .
-    -   Ensured  cache is cleared on logout to prevent stale data ().
-    -   Fixed persistence for language/country settings ().
--   **Implemented watchOS App**:
-    -   Created a full companion app with  for real-time data sync.
-    -   Built the native bridge between Swift and React Native.
-    -   Guided user through complex Xcode build and App Store submission errors.
--   **Improved Lock Screen Logic**: Reworked next/previous buttons to use similar stations and playback history ().
--   **Implemented AdMob**:
-    -   Added .
-    -   Configured Ad Units for Interstitial and Rewarded ads (, ).
-    -   Integrated ad triggers into the app flow (, ).
--   **Fixed Android Build**: Temporarily resolved a build failure by removing the conflicting  package.
+-   **Fixed Build System Issues (Android)**:
+    -   Resolved  compilation errors by downgrading, then re-upgrading, and correctly configuring build properties in .
+    -   Fixed  schema validation errors by removing unsupported keys (, ).
+    -   Resolved Metro bundler crash by installing the  package.
+    -   Suppressed dependency conflict warnings using  in .
+-   **Optimized Build Size**:
+    -   Created a comprehensive  file.
+    -   Deleted ~5MB of unused assets and Figma files.
+    -   Reduced estimated EAS upload size from ~289MB to ~23MB.
+-   **Implemented Push Notifications**:
+    -   Created and updated  to handle token registration/deletion.
+    -   Updated  to manage token on login/logout.
+    -   Verified all backend endpoints (, , etc.) with .
+-   **Fixed Core App Features**:
+    -   **Cast**: Implemented the Android cast functionality by making  open the .
+    -   **Logo Display**: Created a central helper  and updated  and  to use it, ensuring consistent logo display.
+    -   **UI Fix**: Corrected Android Mini Player padding to prevent it from being obscured by the system navigation bar.
+    -   **Content**: Increased the number of genres on the Discovery page to 16.
 
 **Earlier issues found/mentioned but not fixed**
--   **Google OAuth on Android**: This was a known issue from the previous handoff that was not addressed in this session.
+-   **Google OAuth on Android**: A known issue from a previous handoff that was not addressed in this session.
 
 **Known issue recurrence from previous fork**
--   **watchOS build failures**: Recurred multiple times but were debugged through various stages (icons, signing, embedding). The final integration is pending user-side Xcode configuration.
--   **Lock screen controls**: A recurring issue that was addressed with a complete logic overhaul.
--   **Favorites loading**: A recurring issue that was finally fixed by addressing the auth race condition.
+-   **iOS/Android Build Failures**: The entire session was dominated by recurring build failures stemming from dependency conflicts, incompatible tooling versions (Xcode/CocoaPods), and incorrect project configuration.
+-   **Favorites loading**: The user reported this again, even though it was marked as fixed in the previous handoff.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **WatchConnectivity**: The core Apple framework used for asynchronous two-way communication between the iOS and watchOS apps.
--   **React Native Bridge**: A custom native module () was created to expose Swift/Objective-C methods to the JavaScript thread, allowing the RN app to send data to the watch.
--   **Xcode Project Configuration**: Extensive troubleshooting of Xcode project settings for a companion app, including targets, bundle identifiers,  vs. , , and  properties like .
--   **EAS Build Customization**: The current blocker requires customizing the build environment by specifying a specific Xcode image in  to resolve version incompatibilities.
--   ****: Implementation of a modern advertising SDK in Expo, including configuration in  and handling different ad formats (Interstitial, Rewarded).
+-   **EAS Build Environment**: Deep debugging of the Expo Application Services build environment, including the use of  to specify ,  (for Xcode version), and yarn install v1.22.22
+[1/4] Resolving packages...
+success Already up-to-date.
+$ patch-package
+patch-package 8.0.1
+Applying patches...
+react-native-track-player@4.1.2 ✔
+Done in 0.57s. versions.
+-   **Dependency Resolution**: Use of  in  to force a single version of a dependency and resolve conflicts (e.g., ).
+-   **Expo Prebuild & Managed Workflow**: Understanding the difference between a project with native folders (, ) and one where they are generated on the fly by EAS, and configuring  accordingly.
+-   **Polyfills**: The need to add the  package because a dependency () required it but didn't list it as a peer dependency, causing Metro to fail.
+-   **React Native State Persistence**: The user's latest bug reports all revolve around the app's failure to correctly save and restore state (language, auth, player) between sessions, pointing to issues with  and  persistence middleware.
 
 **key DB schema**
--   No database changes were made in this session.
+- No database changes. The agent interacted with the backend API related to user profiles, notifications, and push tokens.
 
 **All files of reference**
--   : Needs to be edited to fix the iOS build.
--   : Contains the AdMob configuration.
--   : Central hub for playback logic, lock screen controls, AdMob triggers, and WatchConnectivity.
--   : Contains all native code for the watchOS integration. The user must correctly add these to their local Xcode project.
--   : Core logic for serving test vs. production ads.
--   : Manages the data sync between the app and the watch.
--   : Shows  is added and  is currently removed.
+-   : Contains critical  and version changes.
+-   : Defines the build environment for EAS.
+-   : Defines build properties and plugins.
+-   : Critical for fast, small builds.
+-   : New centralized logo logic.
+-   : Fixed cast functionality.
+-   : Updated push notification logic.
+-   : Updated logout logic.
+-   **Files to investigate for next session**: , , , .
+
+**Areas that need refactoring**:
+-   The dependency tree is very fragile. A full dependency audit and upgrade using env: load .env
+env: export EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_TUNNEL_SUBDOMAIN EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+Skipped checking dependencies: react-native-reanimated, @expo/metro-runtime, expo-apple-authentication, expo-asset, expo-audio, expo-auth-session, expo-blur, expo-build-properties, expo-clipboard, expo-constants, and 28 others. These dependencies are listed in expo.install.exclude in package.json. Learn more: https://docs.expo.dev/more/expo-cli/#configuring-dependency-validation
+Dependencies are up to date is highly recommended after the current user-facing bugs are fixed.
+-   The root  likely has complex, tangled logic for loading various resources (auth, fonts, language, player state) that leads to the app reloads every time issue. It should be simplified.
 
 **key api endpoints**
--   No new API endpoints were created.
+-   : Register push token.
+-   : Delete push token.
+-   : Get user notifications.
+-   : Mark one notification as read.
+-   : Mark all as read.
+-   : Follow a user.
+-   : Unfollow a user.
+-   : Update user profile (used for private profile toggle).
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **IMMEDIATE BLOCKER**: The iOS build is failing on EAS. The top priority is to edit  and specify an older Xcode image for the iOS production profile (e.g., ).
--   **WATCHOS IS NOT WORKING**: The user confirmed the watch app doesn't receive data from the phone. This is almost certainly because the native bridge files (, , ) have not been added to the **main iOS app target** in the user's local Xcode project. You must guide the user through this specific step again. A new build must be created from Xcode (not EAS) to deploy this native change.
--   **ANDROID BUILD DEPENDENCY ISSUE**: The  package was removed from  to get the Android build to pass. This is a temporary fix. Before working on iOS CarPlay, this package must be re-added. A proper fix involves conditionally excluding the package from the Android build process.
--   **ADMOB IS UNTESTED**: The AdMob integration code is complete, but it needs to be verified in a real build. Remind the user that real ads can take 24-48 hours to appear for the first time.
--   **NATIVE VS. JS CHANGES**: Clearly explain to the user that changes to native code (like the watchOS app or the lock screen service) require a new build from their local Xcode. Changes to only JavaScript/TypeScript code can be updated via EAS builds.
+-   **TOP PRIORITY**: The user has reported a list of critical UX bugs (language not saving, auto-play not working, favorites loading delay, app reloading on open). You must address these first. The previous agent has already identified the likely files to investigate.
+-   **BUILD ARE FRAGILE**: Do not assume builds will pass. The agent spent most of the session fixing Android builds. iOS builds are untested since the last set of fixes. After fixing the UX bugs, attempt a new Android build first.
+-   **DEPENDENCY HELL**: The project has many dependency mismatches. The previous agent added  and  to  to force builds to pass. This is a temporary solution. Do not remove these unless you plan to do a full dependency upgrade.
+-   **BACKEND IS READY**: The backend developer has deployed all necessary endpoints for push notifications. The previous agent tested them all with  and they work. The problem is now purely on the client-side implementation.
 
 **documents and test reports created in this job**
--   : A detailed guide for the user on how to set up the watchOS target in Xcode.
+-   None.
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **User:** Asked for the correct command to start an Android build using . (Status: COMPLETED, command provided).
--   **User:** Reported the Android build failed with errors related to . (Status: ADDRESSED, package was removed as a temp fix).
--   **User:**  was corrupted after removing the package, causing local commands to fail. (Status: COMPLETED, agent fixed the JSON).
--   **User:** Asked about adding advertisements to the app and for a professional flow. (Status: COMPLETED, agent provided options and a recommended strategy).
--   **User:** Provided all necessary AdMob App IDs and Ad Unit IDs for the integration. (Status: COMPLETED, agent implemented AdMob).
--   **User:** Asked if the build would show test ads or real ads. (Status: COMPLETED, agent explained the  flag logic).
--   **User:** Reported an iOS build failure on EAS related to a plugin resolution error. (Status: ADDRESSED, agent fixed  config).
--   **User:** Reported a new iOS build failure:  fails due to . (Status: IN PROGRESS, this is the current main blocker).
--   **User:** Asked for clarification on the SDK version warning from TestFlight. (Status: COMPLETED, agent explained it's a future-dated warning).
--   **User:** Reported a new issue with lock screen controls: it only cycles between two stations. Requested a more advanced logic. (Status: COMPLETED, agent implemented new logic for similar stations and history).
+-   **User:** The app has a notification page; will new follower notifications appear there too? (COMPLETED - Agent confirmed and explained the flow).
+-   **User:** The EAS upload is 289MB, can we delete unused files to optimize and reduce the size? (COMPLETED - Agent analyzed the project, created a  file, deleted unused assets, and reduced the estimated size to ~23MB).
+-   **User:** The selected language doesn't persist on app restart. (PENDING - New bug report).
+-   **User:** The Play at Login feature isn't working; the last played station doesn't auto-play. (PENDING - New bug report).
+-   **User:** Favorites load asynchronously, showing no favorites initially after login. (PENDING - New bug report).
+-   **User:** The app reloads from scratch every time it's opened. (PENDING - New bug report).
 
 **Project Health Check:**
 -   **Broken**:
-    -   iOS EAS build process (due to Xcode/CocoaPods version mismatch).
-    -    link between iOS and watchOS (due to missing native files in user's Xcode project).
+    -   App state persistence (language, player state).
+    -   Favorites loading experience.
+    -   iOS build process is unverified and likely still broken.
 -   **Mocked**:
-    -   CarPlay functionality is disabled on iOS and the package is removed from the project to allow Android builds to pass.
+    -   CarPlay functionality is disabled as the package was removed in a previous session to fix Android builds.
 
 **3rd Party Integrations**
 -   : Core audio streaming.
--   : Installed for iOS but currently removed from  to fix Android builds.
--   : For casting functionality.
+-   : (Currently removed from ).
+-   : For Chromecast functionality.
 -   : For Google Sign-In.
--   : For AdMob monetization (Interstitial, Rewarded).
--   EAS (Expo Application Services): For building and submitting the application.
+-   : For AdMob monetization. Version was changed multiple times to fix builds. Currently .
+-   : For push notifications.
+-   EAS (Expo Application Services): For building the application.
 
 **Testing status**
--   **Testing agent used after significant changes**: NO
--   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Testing agent used after significant changes**: YES, a  was used to diagnose the  module resolution error.
+-   **Troubleshoot agent used after agent stuck in loop**: YES
 -   **Test files created**: []
--   **Known regressions**: None in this session; several long-standing regressions were fixed.
+-   **Known regressions**: The favorites loading issue, which was thought to be fixed, has been reported again by the user.
 
 **Credentials to test flow:**
 -   **API Key**: 
 -   **Test Account**:  / 
 -   **AdMob iOS App ID**: 
 -   **AdMob Android App ID**: 
--   **(Ad Unit IDs are hardcoded in )**
 
 **What agent forgot to execute**
--   The agent correctly diagnosed the iOS build failure on EAS but did not proceed to implement the fix (editing  to specify an older Xcode version).
--   The agent did not propose a long-term, sustainable solution for the conflicting  package that would allow both iOS and Android to build without manual  edits.</analysis>
+- The agent was in the process of analyzing the user's latest batch of bug reports but had not yet implemented any fixes. The next immediate action is to start fixing those four issues.</analysis>
