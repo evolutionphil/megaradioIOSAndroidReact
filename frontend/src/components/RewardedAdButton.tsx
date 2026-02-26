@@ -4,8 +4,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { adMobService } from '../services/adMobService';
 import { colors } from '../constants/theme';
+
+// Conditionally import adMobService only on native platforms
+const adMobService = Platform.OS !== 'web' 
+  ? require('../services/adMobService').adMobService 
+  : null;
 
 interface RewardedAdButtonProps {
   onRewardEarned?: () => void;
