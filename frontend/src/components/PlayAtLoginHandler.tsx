@@ -44,12 +44,13 @@ export const PlayAtLoginHandler: React.FC = () => {
         const setting = await AsyncStorage.getItem(PLAY_AT_LOGIN_KEY);
         console.log('[PlayAtLogin] Setting:', setting);
 
+        // Mark as executed regardless of setting to prevent re-runs
+        hasExecuted.current = true;
+
         if (!setting || setting === 'off') {
           console.log('[PlayAtLogin] Disabled or not set');
           return;
         }
-
-        hasExecuted.current = true;
 
         let stationToPlay = null;
 
