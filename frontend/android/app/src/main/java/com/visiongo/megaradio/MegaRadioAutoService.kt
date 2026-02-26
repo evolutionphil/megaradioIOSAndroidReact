@@ -1,8 +1,6 @@
 package com.visiongo.megaradio
 
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -10,10 +8,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
-import com.doublesymmetry.trackplayer.service.MusicService
 import android.net.Uri
 import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * MegaRadio Android Auto MediaBrowserService
