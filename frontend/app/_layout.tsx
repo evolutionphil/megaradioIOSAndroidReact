@@ -347,8 +347,6 @@ export default function RootLayout() {
       <FlowAliveProvider 
         apiKey={FLOWALIVE_API_KEY} 
         trackNavigation={true}
-        deviceInfo={true}
-        userLocale={true}
       >
         <I18nextProvider i18n={i18n}>
           <QueryClientProvider client={queryClient}>
