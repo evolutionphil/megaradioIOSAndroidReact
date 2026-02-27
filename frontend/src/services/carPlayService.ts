@@ -434,12 +434,16 @@ const CarPlayService: CarPlayServiceType = {
     if (!isCarPlayConnected) return;
     
     console.log('[CarPlay] Updating now playing:', station.name, songTitle, artistName);
+    CarPlayLogger.info('Updating now playing', { station: station.name, songTitle, artistName });
     // The Now Playing template automatically uses the MPNowPlayingInfoCenter
     // which is updated by react-native-track-player
   },
   
   disconnect: () => {
     console.log('[CarPlayService] Disconnecting...');
+    CarPlayLogger.info('CarPlay service disconnecting...');
+    CarPlayLogger.flush(); // Send any remaining logs
+    CarPlayLogger.stop();
     playStationCallback = null;
     getStationsCallback = null;
     getFavoritesCallback = null;
