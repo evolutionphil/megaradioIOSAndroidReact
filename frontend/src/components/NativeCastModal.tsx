@@ -1,6 +1,5 @@
 // NativeCastModal - Google Cast / Chromecast integration for direct streaming
 // This is SEPARATE from the existing CastModal (API-based casting to MegaRadio TV app)
-// DISABLED: react-native-google-cast causes crash with RN 0.81+ / Fabric
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
@@ -23,20 +22,27 @@ import type { Station } from '../types';
 // Custom message namespace for MegaRadio
 const MEGARADIO_NAMESPACE = 'urn:x-cast:com.visiongo.megaradio';
 
-// DISABLED: react-native-google-cast causes crash with RN 0.81+ / Fabric
-// All Google Cast imports removed to prevent Metro bundler from resolving them
+// Google Cast imports - dynamically loaded to prevent crashes if not available
+let GoogleCast: any = null;
+let CastButton: any = null;
+let useCastState: any = null;
+let useDevices: any = null;
+let useRemoteMediaClient: any = null;
+let useCastSession: any = null;
 
-// Set all to null - Google Cast disabled
-const GoogleCast: any = null;
-const CastButton: any = null;
-const useCastState: any = null;
-const useDevices: any = null;
-const useRemoteMediaClient: any = null;
-const useCastSession: any = null;
-const CastContext: any = null;
-const useCastChannel: any = null;
-
-console.log('[NativeCast] Google Cast DISABLED (Fabric compatibility issue)');
+// Try to load Google Cast module
+try {
+  const googleCastModule = require('react-native-google-cast');
+  GoogleCast = googleCastModule.default;
+  CastButton = googleCastModule.CastButton;
+  useCastState = googleCastModule.useCastState;
+  useDevices = googleCastModule.useDevices;
+  useRemoteMediaClient = googleCastModule.useRemoteMediaClient;
+  useCastSession = googleCastModule.useCastSession;
+  console.log('[NativeCast] Google Cast module loaded successfully');
+} catch (error) {
+  console.log('[NativeCast] Google Cast not available:', error);
+}
 
 const { width } = Dimensions.get('window');
 
