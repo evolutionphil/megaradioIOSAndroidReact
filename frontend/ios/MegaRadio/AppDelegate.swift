@@ -1,9 +1,9 @@
 import Expo
-// Google Cast import for Chromecast support
+// Google Cast DISABLED - causes Fabric crash on RN 0.81.5
 // @generated begin react-native-google-cast-import - expo prebuild (DO NOT MODIFY) sync-4cd300bca26a1d1fcc83f4baf37b0e62afcc1867
-#if canImport(GoogleCast) && os(iOS)
-import GoogleCast
-#endif
+// #if canImport(GoogleCast) && os(iOS)
+// import GoogleCast
+// #endif
 // @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
