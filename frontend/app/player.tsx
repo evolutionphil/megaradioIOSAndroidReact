@@ -33,6 +33,7 @@ import { GlowEffect } from '../src/components/GlowEffect';
 import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
 import CastModal from '../src/components/CastModal';
 import { UniversalCastButton } from '../src/components/UniversalCastButton';
+import { sendLog } from '../src/services/remoteLog';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
