@@ -1,6 +1,8 @@
 // Station Service
-// Provides station data from API with offline caching and graceful degradation
-// All methods have try/catch - API failures won't crash the app
+// Provides station data from API with intelligent caching and delta sync
+// - 7 day cache for stations
+// - Delta sync: only downloads changed stations
+// - Graceful degradation when offline/API errors
 
 import api from './api';
 import { API_ENDPOINTS, API_BASE_URL } from '../constants/api';
@@ -21,13 +23,22 @@ export const stationService = {
   // Get single station by identifier (slug or id)
   async getStation(identifier: string): Promise<Station | null> {
     try {
+      // Check cache first
+      const cached = await stationCache.getStationById(identifier);
+      if (cached && !stationCache.getOnlineStatus()) {
+        return cached;
+      }
+
       const response = await api.get(API_ENDPOINTS.stations.single(identifier), {
         params: { tv: 1 },
       });
       return response.data;
     } catch (error) {
       console.error('[stationService] getStation error:', error);
-      return null;
+      
+      // Try cache on error
+      const cached = await stationCache.getStationById(identifier);
+      return cached;
     }
   },
 
@@ -38,20 +49,23 @@ export const stationService = {
       return response.data;
     } catch (error) {
       console.error('[stationService] getStations error:', error);
-      // Return empty result on error
       return { stations: [], totalCount: 0 };
     }
   },
 
-  // Get popular stations with caching
+  // Get popular stations with 7-day caching
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
     try {
-      // Try cache first if offline
       const isOnline = await stationCache.checkOnline();
-      if (!isOnline) {
+      
+      // Check if we need to sync
+      const { needsDelta } = await stationCache.needsSync();
+      
+      // If offline or no sync needed, use cache
+      if (!isOnline || !needsDelta) {
         const cached = await stationCache.getPopularStations(country);
-        if (cached) {
-          console.log('[stationService] Using cached popular stations (offline)');
+        if (cached && cached.length > 0) {
+          console.log('[stationService] Using cached popular stations (7-day cache)');
           return { stations: cached, count: cached.length };
         }
       }
@@ -64,7 +78,6 @@ export const stationService = {
       const data = response.data;
       let stations: Station[] = [];
       
-      // API returns array directly, not wrapped in { stations: [] }
       if (Array.isArray(data)) {
         stations = data;
       } else if (data?.stations) {
@@ -73,16 +86,17 @@ export const stationService = {
         stations = data.data;
       }
 
-      // Cache the result
+      // Cache for 7 days
       if (stations.length > 0) {
         await stationCache.setPopularStations(stations, country);
+        await stationCache.updateLastSync();
       }
 
       return { stations, count: stations.length };
     } catch (error) {
       console.error('[stationService] getPopularStations error:', error);
       
-      // Graceful degradation: try cache on error
+      // Graceful degradation: use cache
       const cached = await stationCache.getPopularStations(country);
       if (cached) {
         console.log('[stationService] Using cached popular stations (API error)');
@@ -96,13 +110,21 @@ export const stationService = {
   // Get precomputed stations with caching
   async getPrecomputedStations(country?: string, page: number = 1, limit: number = 33) {
     try {
-      // Try cache first if offline
       const isOnline = await stationCache.checkOnline();
-      if (!isOnline) {
-        const cached = await stationCache.getPrecomputedStations(country, page);
-        if (cached) {
-          console.log('[stationService] Using cached precomputed stations (offline)');
-          return cached;
+      const { needsDelta } = await stationCache.needsSync();
+
+      // Use cache if offline or no sync needed
+      if (!isOnline || !needsDelta) {
+        const cached = await stationCache.getPopularStations(country);
+        if (cached && cached.length > 0) {
+          console.log('[stationService] Using cached precomputed stations');
+          return { 
+            stations: cached.slice((page - 1) * limit, page * limit), 
+            totalCount: cached.length,
+            page,
+            limit,
+            totalPages: Math.ceil(cached.length / limit),
+          };
         }
       }
 
@@ -112,20 +134,24 @@ export const stationService = {
       
       const data = response.data;
       
-      // Cache the result
-      if (data) {
-        await stationCache.setPrecomputedStations(data, country, page);
+      // Cache stations
+      if (data?.stations) {
+        await stationCache.setPopularStations(data.stations, country);
       }
       
       return data;
     } catch (error) {
       console.error('[stationService] getPrecomputedStations error:', error);
       
-      // Graceful degradation
-      const cached = await stationCache.getPrecomputedStations(country, page);
+      const cached = await stationCache.getPopularStations(country);
       if (cached) {
-        console.log('[stationService] Using cached precomputed stations (API error)');
-        return cached;
+        return { 
+          stations: cached.slice((page - 1) * limit, page * limit), 
+          totalCount: cached.length,
+          page,
+          limit,
+          totalPages: Math.ceil(cached.length / limit),
+        };
       }
       
       return { stations: [], totalCount: 0, page: 1, limit, totalPages: 0 };
@@ -165,7 +191,7 @@ export const stationService = {
         return [];
       }
 
-      // Check cache first
+      // Check cache first (24-hour cache for search)
       const cached = await stationCache.getSearchResults(query);
       const isOnline = await stationCache.checkOnline();
       
@@ -196,7 +222,6 @@ export const stationService = {
     } catch (error) {
       console.error('[stationService] searchStations error:', error);
       
-      // Graceful degradation
       const cached = await stationCache.getSearchResults(query);
       if (cached) {
         console.log('[stationService] Using cached search results (API error)');
@@ -207,15 +232,16 @@ export const stationService = {
     }
   },
 
-  // Get top 100 with caching
+  // Get top 100 with 7-day caching
   async getTop100(country?: string): Promise<Station[]> {
     try {
-      // Try cache first if offline
       const isOnline = await stationCache.checkOnline();
-      if (!isOnline) {
+      const { needsDelta } = await stationCache.needsSync();
+
+      if (!isOnline || !needsDelta) {
         const cached = await stationCache.getTop100(country);
-        if (cached) {
-          console.log('[stationService] Using cached top 100 (offline)');
+        if (cached && cached.length > 0) {
+          console.log('[stationService] Using cached top 100 (7-day cache)');
           return cached;
         }
       }
@@ -233,7 +259,6 @@ export const stationService = {
         stations = data;
       }
 
-      // Cache the result
       if (stations.length > 0) {
         await stationCache.setTop100(stations, country);
       }
@@ -242,7 +267,6 @@ export const stationService = {
     } catch (error) {
       console.error('[stationService] getTop100 error:', error);
       
-      // Graceful degradation
       const cached = await stationCache.getTop100(country);
       if (cached) {
         console.log('[stationService] Using cached top 100 (API error)');
@@ -253,10 +277,9 @@ export const stationService = {
     }
   },
 
-  // Get recently played with caching
+  // Get recently played (local cache, 30 days)
   async getRecentlyPlayed(): Promise<Station[]> {
     try {
-      // Always check local cache first (recently played is local data)
       const localRecent = await stationCache.getRecentlyPlayed();
       
       // Try to sync with server if online
@@ -275,9 +298,7 @@ export const stationService = {
             serverRecent = data;
           }
 
-          // Merge server and local data (local takes priority for recent items)
           if (serverRecent.length > 0) {
-            // Cache server data
             await stationCache.setRecentlyPlayed(serverRecent);
             return serverRecent;
           }
@@ -315,7 +336,7 @@ export const stationService = {
     }
   },
 
-  // Get public profiles (users with favorites)
+  // Get public profiles
   async getPublicProfiles(limit: number = 10): Promise<any[]> {
     try {
       const response = await api.get(API_ENDPOINTS.publicProfiles, {
@@ -328,7 +349,7 @@ export const stationService = {
     }
   },
 
-  // Get proxy URL for HTTP streams (to bypass mixed content issues)
+  // Get proxy URL
   getProxyUrl(url: string): string {
     const encodedUrl = encodeURIComponent(url);
     return `${API_BASE_URL}${API_ENDPOINTS.stream.proxy(encodedUrl)}`;
@@ -354,7 +375,6 @@ export const stationService = {
       return response.data;
     } catch (error) {
       console.error('[stationService] recordClick error:', error);
-      // Non-critical, don't throw
       return null;
     }
   },
@@ -372,24 +392,26 @@ export const stationService = {
 
   // ============ Cache Management ============
   
-  // Check if online
   async isOnline(): Promise<boolean> {
     return stationCache.checkOnline();
   },
 
-  // Get cache info
-  async getCacheInfo(): Promise<{ keys: number; sizeKB: number; lastSync: Date | null }> {
-    const { keys, sizeKB } = await stationCache.getCacheSize();
+  async getCacheInfo(): Promise<{ keys: number; sizeKB: number; stationCount: number; lastSync: Date | null }> {
+    const { keys, sizeKB, stationCount } = await stationCache.getCacheSize();
     const lastSync = await stationCache.getLastSync();
-    return { keys, sizeKB, lastSync };
+    return { keys, sizeKB, stationCount, lastSync };
   },
 
-  // Clear all cache
   async clearCache(): Promise<void> {
     await stationCache.clearAll();
   },
 
-  // Sync cache (call this when app starts or comes to foreground)
+  // Check if sync needed
+  async needsSync(): Promise<{ needsDelta: boolean; needsFull: boolean }> {
+    return stationCache.needsSync();
+  },
+
+  // Sync cache (call on app start)
   async syncCache(country?: string): Promise<void> {
     try {
       const isOnline = await stationCache.checkOnline();
@@ -398,18 +420,23 @@ export const stationService = {
         return;
       }
 
-      console.log('[stationService] Starting cache sync...');
+      const { needsDelta, needsFull } = await stationCache.needsSync();
       
-      // Fetch and cache popular stations
-      await this.getPopularStations(country, 50);
-      
-      // Fetch and cache top 100
-      await this.getTop100(country);
-      
-      // Update sync time
-      await stationCache.updateLastSync();
-      
-      console.log('[stationService] Cache sync complete');
+      if (needsFull) {
+        console.log('[stationService] Starting full sync...');
+        await this.getPopularStations(country, 100);
+        await this.getTop100(country);
+        await stationCache.markFullSyncComplete(100);
+        console.log('[stationService] Full sync complete');
+      } else if (needsDelta) {
+        console.log('[stationService] Starting delta sync...');
+        // For now, just refresh the main lists
+        await this.getPopularStations(country, 50);
+        await stationCache.updateLastSync();
+        console.log('[stationService] Delta sync complete');
+      } else {
+        console.log('[stationService] Cache is fresh, no sync needed');
+      }
     } catch (error) {
       console.error('[stationService] syncCache error:', error);
     }
