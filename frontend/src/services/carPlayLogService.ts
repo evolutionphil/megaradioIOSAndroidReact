@@ -9,49 +9,51 @@ const LOG_ENDPOINT = 'https://themegaradio.com/api/logs/remote';
 const API_KEY = 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw';
 
 interface LogEntry {
-  level: 'info' | 'warn' | 'error' | 'debug';
+  level: 'info' | 'warn' | 'error' | 'debug' | 'fatal';
   message: string;
   timestamp: string;
-  data?: Record<string, any>;
-  category?: string;  // 'carplay', 'audio', 'template', 'connection'
+  data: Record<string, any>;
 }
 
 interface LogBuffer {
   logs: LogEntry[];
   deviceId: string;
-  deviceModel: string;
-  osVersion: string;
+  platform: string;
   appVersion: string;
   buildNumber: string;
-  platform: string;
 }
 
 // Buffer to collect logs before sending
 const logBuffer: LogBuffer = {
   logs: [],
   deviceId: '',
-  deviceModel: '',
-  osVersion: '',
+  platform: Platform.OS,
   appVersion: '',
   buildNumber: '',
-  platform: Platform.OS,
 };
 
 // Initialize device info
 const initDeviceInfo = async () => {
   try {
-    logBuffer.deviceId = `${Platform.OS}_${Device.osBuildId || Device.modelId || Date.now()}`;
-    logBuffer.deviceModel = Device.modelName || Device.deviceName || 'unknown';
-    logBuffer.osVersion = `${Platform.OS} ${Device.osVersion || 'unknown'}`;
+    // Get unique device identifier
+    const deviceUUID = Device.osBuildId || Device.modelId || `${Date.now()}`;
+    logBuffer.deviceId = `${Platform.OS}_${deviceUUID}`;
+    logBuffer.platform = Platform.OS;
     logBuffer.appVersion = Application.nativeApplicationVersion || '1.0.0';
     logBuffer.buildNumber = Application.nativeBuildVersion || '1';
-    logBuffer.platform = Platform.OS;
+    
+    console.log('[CarPlayLogger] Device info initialized:', {
+      deviceId: logBuffer.deviceId,
+      platform: logBuffer.platform,
+      appVersion: logBuffer.appVersion,
+      buildNumber: logBuffer.buildNumber,
+    });
   } catch (e) {
     logBuffer.deviceId = `${Platform.OS}_${Date.now()}`;
-    logBuffer.deviceModel = 'unknown';
-    logBuffer.osVersion = Platform.OS;
+    logBuffer.platform = Platform.OS;
     logBuffer.appVersion = '1.0.26';
     logBuffer.buildNumber = '9';
+    console.warn('[CarPlayLogger] Error initializing device info:', e);
   }
 };
 
@@ -79,12 +81,28 @@ const stopFlushInterval = () => {
   }
 };
 
-// Send logs to backend
+// Send logs to backend - EXACT FORMAT per API docs
 const flushLogs = async () => {
   if (logBuffer.logs.length === 0) return;
   
-  const logsToSend = [...logBuffer.logs];
-  logBuffer.logs = [];
+  const logsToSend = [...logBuffer.logs].slice(0, 100); // Max 100 logs per request
+  logBuffer.logs = logBuffer.logs.slice(100); // Keep remaining
+  
+  // Build request body per API documentation
+  const requestBody = {
+    deviceId: logBuffer.deviceId,
+    platform: logBuffer.platform,
+    appVersion: logBuffer.appVersion,
+    buildNumber: logBuffer.buildNumber,
+    logs: logsToSend.map(log => ({
+      level: log.level,
+      message: log.message.substring(0, 500), // Max 500 chars
+      timestamp: log.timestamp,
+      data: log.data || {},
+    })),
+  };
+  
+  console.log('[CarPlayLogger] Sending', logsToSend.length, 'logs to server...');
   
   try {
     const response = await fetch(LOG_ENDPOINT, {
@@ -93,11 +111,23 @@ const flushLogs = async () => {
         'Content-Type': 'application/json',
         'X-API-Key': API_KEY,
       },
-      body: JSON.stringify({
-        logs: logsToSend,
-        deviceId: logBuffer.deviceId,
-        deviceModel: logBuffer.deviceModel,
-        osVersion: logBuffer.osVersion,
+      body: JSON.stringify(requestBody),
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log('[CarPlayLogger] Logs sent successfully:', result);
+    } else {
+      // Put logs back if send failed
+      console.warn('[CarPlayLogger] Failed to send logs:', response.status);
+      logBuffer.logs = [...logsToSend, ...logBuffer.logs].slice(-100);
+    }
+  } catch (error) {
+    // Put logs back if send failed
+    console.warn('[CarPlayLogger] Error sending logs:', error);
+    logBuffer.logs = [...logsToSend, ...logBuffer.logs].slice(-100);
+  }
+};
         appVersion: logBuffer.appVersion,
         buildNumber: logBuffer.buildNumber,
         platform: logBuffer.platform,
