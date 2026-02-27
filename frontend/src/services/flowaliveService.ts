@@ -5,7 +5,7 @@
  * Tracks user sessions, events, and screen navigation.
  */
 
-import { Flowalive } from 'flowalive-analytics/expo';
+import { FlowAlive } from 'flowalive-analytics/expo';
 import type { User } from '../types';
 
 // Event names for consistent tracking
