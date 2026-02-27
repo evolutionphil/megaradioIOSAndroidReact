@@ -1,6 +1,6 @@
 // NativeCastButton - Universal Cast button for Chromecast + AirPlay
 // Shows native device picker when tapped
-// Chromecast: react-native-google-cast
+// Chromecast: react-native-google-cast (DISABLED - causes crash on RN 0.81+)
 // AirPlay: iOS native AVRoutePickerView (when no Chromecast available)
 
 import React, { useEffect, useCallback, useState } from 'react';
@@ -16,7 +16,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// Conditionally import Google Cast
+// DISABLED: react-native-google-cast causes crash with RN 0.81+ / Fabric
+// Error: RCTThirdPartyComponentsProvider - attempt to insert nil object
+// TODO: Re-enable when library is updated for Fabric compatibility
+/*
 let GoogleCast: any = null;
 let CastButton: any = null;
 let useCastState: any = null;
@@ -38,6 +41,18 @@ try {
 } catch (e) {
   console.log('[NativeCastButton] Google Cast not available:', e);
 }
+*/
+
+// Set all to null - Google Cast disabled
+const GoogleCast: any = null;
+const CastButton: any = null;
+const useCastState: any = null;
+const useRemoteMediaClient: any = null;
+const useCastSession: any = null;
+const useDevices: any = null;
+const CastState: any = null;
+
+console.log('[NativeCastButton] Google Cast DISABLED (Fabric compatibility issue)');
 
 interface NativeCastButtonProps {
   size?: number;
