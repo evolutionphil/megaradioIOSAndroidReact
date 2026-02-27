@@ -24,43 +24,7 @@ import type { Station } from '../types';
 const MEGARADIO_NAMESPACE = 'urn:x-cast:com.visiongo.megaradio';
 
 // DISABLED: react-native-google-cast causes crash with RN 0.81+ / Fabric
-// Error: RCTThirdPartyComponentsProvider - attempt to insert nil object
-// TODO: Re-enable when library is updated for Fabric compatibility
-/*
-let GoogleCast: any = null;
-let CastButton: any = null;
-let useCastState: any = null;
-let useDevices: any = null;
-let useRemoteMediaClient: any = null;
-let useCastSession: any = null;
-let CastContext: any = null;
-let useCastChannel: any = null;
-
-try {
-  const googleCast = require('react-native-google-cast');
-  GoogleCast = googleCast.default || googleCast;
-  CastButton = googleCast.CastButton;
-  useCastState = googleCast.useCastState;
-  useDevices = googleCast.useDevices;
-  useRemoteMediaClient = googleCast.useRemoteMediaClient;
-  useCastSession = googleCast.useCastSession;
-  CastContext = googleCast.CastContext;
-  useCastChannel = googleCast.useCastChannel;
-  
-  // Start discovery immediately on import (not waiting for button tap)
-  if (CastContext) {
-    try {
-      const ctx = CastContext.getSessionManager?.();
-      console.log('[NativeCast] CastContext available, discovery should start automatically');
-    } catch (e) {
-      console.log('[NativeCast] CastContext init warning:', e);
-    }
-  }
-  console.log('[NativeCast] Google Cast module loaded successfully');
-} catch (e) {
-  console.log('[NativeCast] Google Cast not available (expected in dev/web):', e);
-}
-*/
+// All Google Cast imports removed to prevent Metro bundler from resolving them
 
 // Set all to null - Google Cast disabled
 const GoogleCast: any = null;
