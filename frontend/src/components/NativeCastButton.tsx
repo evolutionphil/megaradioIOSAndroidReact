@@ -1,6 +1,6 @@
 // NativeCastButton - Universal Cast button for Chromecast + AirPlay
 // Shows native device picker when tapped
-// Chromecast: react-native-google-cast (DISABLED - causes crash on RN 0.81+)
+// Chromecast: react-native-google-cast
 // AirPlay: iOS native AVRoutePickerView (when no Chromecast available)
 
 import React, { useEffect, useCallback, useState } from 'react';
@@ -11,24 +11,30 @@ import {
   Platform, 
   Alert,
   ActionSheetIOS,
-  findNodeHandle,
-  requireNativeComponent,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// DISABLED: react-native-google-cast causes crash with RN 0.81+ / Fabric
-// All Google Cast imports removed to prevent Metro bundler from resolving them
+// Google Cast imports - dynamically loaded to prevent crashes if not available
+let GoogleCast: any = null;
+let CastButton: any = null;
+let useCastState: any = null;
+let useRemoteMediaClient: any = null;
+let useCastSession: any = null;
+let useDevices: any = null;
 
-// Set all to null - Google Cast disabled
-const GoogleCast: any = null;
-const CastButton: any = null;
-const useCastState: any = null;
-const useRemoteMediaClient: any = null;
-const useCastSession: any = null;
-const useDevices: any = null;
-const CastState: any = null;
-
-console.log('[NativeCastButton] Google Cast DISABLED (Fabric compatibility issue)');
+// Try to load Google Cast module
+try {
+  const googleCastModule = require('react-native-google-cast');
+  GoogleCast = googleCastModule.default;
+  CastButton = googleCastModule.CastButton;
+  useCastState = googleCastModule.useCastState;
+  useRemoteMediaClient = googleCastModule.useRemoteMediaClient;
+  useCastSession = googleCastModule.useCastSession;
+  useDevices = googleCastModule.useDevices;
+  console.log('[NativeCastButton] Google Cast module loaded successfully');
+} catch (error) {
+  console.log('[NativeCastButton] Google Cast not available:', error);
+}
 
 interface NativeCastButtonProps {
   size?: number;
