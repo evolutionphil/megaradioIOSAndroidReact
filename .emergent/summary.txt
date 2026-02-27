@@ -2,186 +2,191 @@
 The user wants to build a production-ready mobile radio streaming app called MegaRadio.
 
 **PRODUCT REQUIREMENTS:**
--   **Tech Stack:** Expo, TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
--   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, Push Notifications.
--   **Monetization:** The app will be free and will show ads (Interstitial and Rewarded). A premium (ad-free) version via subscription is also planned.
+-   **Tech Stack:** Expo (Bare Workflow), TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
+-   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, and Push Notifications.
+-   **Monetization:** The app will be free and show ads (Interstitial and Rewarded). A premium (ad-free) version via subscription is also planned.
 -   **Authentication:** All API requests must include . The app uses a session cookie-based auth system. Google and Apple social logins are also requested.
 -   **Platform Expansion:** The user has requested support for CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
--   **New Integration:** The user has requested to integrate a service called FlowAlive.
+-   **New Integration:** The user has requested to integrate a service called FlowAlive (currently mocked due to a broken package).
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The project is a Bare Workflow Expo app. The session focused on three main areas:
-1.  **CarPlay Crash (P0 Issue):** The app was crashing on startup or when interacting with CarPlay. The root cause was identified as a missing/incorrect Scene Delegate configuration for a Bare Workflow app using advanced CarPlay features. A dual-scene architecture was implemented by creating  and . This fixed the critical crash but introduced numerous Swift 6 concurrency warnings that need to be resolved.
-2.  **FlowAlive Integration (Blocked):** The user requested to integrate . After extensive debugging of installation issues, it was discovered that the NPM package is published incorrectly with an internal  (local development) reference. The integration has been completely removed and the service file () has been mocked to unblock the project build.
-3.  **Git Repository Corruption:** A recurring issue with a corrupted filename () in the Git history prevents the user from successfully cloning or pulling changes. The agent has tried multiple times to remove the file from the history, but the issue persists on the user's local machine, causing major friction.
-4.  **Language Persistence Bug:** A bug was fixed where the app did not detect the device's default language on the first launch and failed to save the user's language preference across sessions.
+The project is a Bare Workflow Expo app. The session focused on fixing a persistent startup crash and implementing several features that are currently untestable due to the crash.
+-   **Offline Capabilities:** A robust caching system () was implemented with  blocks around all API calls in  and . This provides Graceful Degradation, allowing the app to function offline or during API downtime by serving cached data. A delta-sync strategy was also implemented to reduce backend load.
+-   **Remote Logging:** A detailed logging service () was created to send categorized logs from the app to the existing production backend endpoint () for easier debugging.
+-   **CarPlay Blank Screen Fixes (Untested):** A series of fixes were implemented to address an issue where CarPlay was stuck on a Loading... screen. These include adding landscape orientation to , adding a native loading template, fixing a race condition, and implementing detailed logging.
+-   **Startup Crash:** The primary issue is a recurring crash on app launch. The agent incorrectly focused on  and  as the cause, removing them completely. This did not solve the crash, which persists.
 
 **Last working item**:
--   **Last item agent was working**: The last iOS build succeeded but produced numerous Swift 6 concurrency warnings related to accessing -isolated properties from a non-isolated context in  and . The agent was analyzing these warnings to fix them.
--   **Status**: IN PROGRESS
+-   **Last item agent was working**: The agent was attempting to fix a critical and recurring iOS startup crash. The latest crash report still points to the same error:  in , which is a classic React Native Fabric/New Architecture issue with an incompatible native module. The agent's attempts to fix this by removing  and  have failed, causing extreme user frustration.
+-   **Status**: BLOCKED
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: After fixing the Swift warnings, the agent must trigger a new iOS build (An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username) and verify that the build is clean (no warnings/errors). Then, it needs to test the app on a simulator or device to confirm CarPlay works without crashing and the app starts correctly.
--   **User Testing Done**: N
+-   **Which testing method agent to use?**: The next agent must call the  for a deep, exhaustive analysis of all native modules and dependencies. The agent must manually inspect  and  to identify the true problematic library, as the issue is clearly not the ones that were removed.
+-   **User Testing Done**: Y (The user has confirmed multiple builds on TestFlight still crash.)
 
 **All Pending/In progress Issue list**:
--   Issue 1: Resolve Swift 6 concurrency warnings in iOS native files (P0)
+-   Issue 1: Persistent iOS Startup Crash (P0)
 -   Issue 2: Corrupted filename in Git history prevents clean repository clones (P0)
--   Issue 3: Android build is unverified (P1)
--   Issue 4: Incomplete watchOS Integration (P2)
+-   Issue 3: CarPlay shows Yükleniyor... (Loading) screen instead of templates (P1)
+-   Issue 4: Android build is unverified (P1)
+-   Issue 5: Incomplete watchOS Integration (P2)
 
 **Issues Detail:**
--   **Issue 1: Resolve Swift 6 concurrency warnings in iOS native files (P0)**
-    -   **Attempted fixes**: The agent correctly identified the root cause of the previous crash (missing scene delegates) and implemented a fix. This fix, however, introduced build warnings related to Swift 6's strict concurrency model.
+-   **Issue 1: Persistent iOS Startup Crash (P0)**
+    -   **Attempted fixes**: The agent incorrectly identified  and  as the culprits. It performed a multi-step removal: disabling JS imports, removing Expo plugins, and finally uninstalling the packages from . None of these actions resolved the crash.
     -   **Next debug checklist**:
-        1.  Analyze the warnings in  and .
-        2.  Wrap all UI-related calls (e.g., , window manipulation) that are not on the main thread inside .
-        3.  Alternatively, mark the functions or the entire class with  where appropriate to ensure they run on the main thread.
-    -   **Why fix this issue and what will be achieved with the fix?**: While these are currently warnings, they will become errors in future Swift versions and can lead to subtle, hard-to-debug runtime crashes. Fixing them ensures app stability.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
+        1.  **Acknowledge user frustration and apologize.** Do not repeat failed solutions.
+        2.  Call  for a deep analysis of all dependencies.
+        3.  Manually inspect  to identify every single native pod being linked into the final app. The issue is likely another native module or a transitive dependency that is incompatible with Fabric.
+        4.  Manually inspect  to trace the dependency tree.
+        5.  The user is adamant the issue is not Chromecast. Believe them and look for other causes.
+    -   **Why fix this issue and what will be achieved with the fix?**: The app is currently 100% unusable. Fixing this is the only way to proceed.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
+    -   **Blocked on other issue**: This is the main blocker.
 
 -   **Issue 2: Corrupted filename in Git history prevents clean repository clones (P0)**
-    -   **Attempted fixes**: Agent tried  and WARNING: git-filter-branch has a glut of gotchas generating mangled history
-	 rewrites.  Hit Ctrl-C before proceeding to abort, then use an
-	 alternative filtering tool such as 'git filter-repo'
-	 (https://github.com/newren/git-filter-repo/) instead.  See the
-	 filter-branch manual page for more details; to squelch this warning,
-	 set FILTER_BRANCH_SQUELCH_WARNING=1.
-Proceeding with filter-branch... to remove the file with illegal byte sequences. These attempts failed to resolve the issue for the user, who still encounters errors on  and Saved working directory and index state WIP on main: 5b0116da Auto-generated changes.
-    -   **Next debug checklist**: The file seems to be gone from the latest commit (), but lingers in the repository's history.
-        1.  Instruct the user to perform a shallow clone: . This ignores the problematic history.
-        2.  If that fails, the repository might need to be cleaned using a more powerful tool like  or BFG Repo-Cleaner. This is a destructive operation that rewrites history and should be done with caution on a fresh backup of the repository.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical blocker for the user's local development workflow. They cannot reliably pull new changes or set up the project.
+    -   **Attempted fixes**: None in this session. This is a carry-over issue from the previous fork.
+    -   **Next debug checklist**: Instruct the user to perform a shallow clone () to bypass the corrupted history. This is a critical developer experience blocker for the user.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: N/A (DevOps issue).
-    -   **Blocked on other issue**: None.
 
--   **Issue 3: Android build is unverified (P1)**
-    -   **Attempted fixes**: In a previous session, a fix was applied to  to force Kotlin version  to resolve a dependency conflict. This fix has never been tested.
+-   **Issue 3: CarPlay shows Yükleniyor... (Loading) screen instead of templates (P1)**
+    -   **Attempted fixes**: Numerous fixes (landscape orientation, race condition handling, native fallback template, detailed logging) are implemented in the code.
+    -   **Next debug checklist**: These fixes have never been tested due to the startup crash. Once the crash is resolved, a new build needs to be tested on the CarPlay simulator or a real device to see if the templates load. The new logging system should reveal the point of failure if the issue persists.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Blocked on other issue**: Issue 1: Persistent iOS Startup Crash.
+
+-   **Issue 4: Android build is unverified (P1)**
+    -   **Attempted fixes**: None in this session.
     -   **Next debug checklist**: Trigger a new Android build (An Expo user account is required to proceed.
 
 Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username) and analyze the logs to see if the Kotlin compilation error is resolved.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a blocker for releasing the app on Android.
+Input is required, but stdin is not readable. Failed to display prompt: Email or username) to see if it completes successfully.
     -   **Status**: TESTING PENDING
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (Android build).
-    -   **Blocked on other issue**: None.
 
--   **Issue 4: Incomplete watchOS Integration (P2)**
-    -   **Attempted fixes**: None in this session. The prerequisite (Bare Workflow) is complete.
-    -   **Next debug checklist**: The watch app and extension targets need to be manually added to the main  file in Xcode, and the existing source files need to be linked to those new targets.
-    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a user requirement for platform expansion.
+-   **Issue 5: Incomplete watchOS Integration (P2)**
+    -   **Attempted fixes**: None.
     -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS build).
-    -   **Blocked on other issue**: Blocked by Issue 1 (iOS build stability).
+    -   **Blocked on other issue**: Issue 1: Persistent iOS Startup Crash.
 
 **In progress Task List**:
 -   None.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1**: Implement a premium (ad-free) subscription model using RevenueCat or similar.
--   **P1**: Re-implement Splash Screen (Awaiting new design from user).
--   **P1**: Resolve App Store Rejection reason regarding content rights.
+-   **P0:** Re-integrate Google Mobile Ads (AdMob) after the crash is fixed. The user stated it worked previously, so its removal might have been an incorrect diagnosis.
+-   **P1:** Implement a premium (ad-free) subscription model.
+-   **P1:** Re-implement Splash Screen.
+-   **P1:** Resolve App Store Rejection reason regarding content rights.
 
 **Future Tasks:**
--   **P2**: Implement UI animations (e.g., Static Equalizer on player screen).
--   **P2**: Add support for tvOS & Android TV.
--   **P3**: Re-integrate FlowAlive if the maintainer fixes the NPM package.
+-   **P2:** Re-integrate Google Cast (Chromecast) if the library becomes compatible with the app's React Native version.
+-   **P2:** Implement UI animations.
+-   **P2:** Add support for tvOS & Android TV.
+-   **P3:** Re-integrate FlowAlive if the NPM package is fixed.
 
 **Completed work in this session**
-- **Fixed Critical CarPlay Crash**: Implemented a dual-scene delegate architecture (, ) to resolve the primary cause of the iOS app crashing on startup with CarPlay.
-- **Fixed Language Persistence Bug**: Updated  and  to correctly detect the device's language on first launch and persist user's language choice in AsyncStorage.
-- **Identified and Mocked Broken Dependency**: Diagnosed that the  NPM package is broken. The package and all its related code were removed/mocked to allow the project to build.
-- **Set App Version**: Updated  to set the  to  and / to  as requested by the user.
+- **Implemented Offline Capabilities and API Resilience**:
+    - Created  for offline data storage.
+    - Added  blocks to all API calls in  and  to prevent crashes when the backend is down.
+    - Implemented a delta-sync caching strategy to reduce backend load and enable offline functionality.
+- **Implemented Detailed Remote Logging**:
+    - Created  to send detailed logs to the production backend for easier debugging of client-side issues.
+- **Fixed Swift 6 Concurrency Warnings**:
+    - Added  to  and  to resolve build warnings.
+- **Attempted to Fix CarPlay Blank Screen (Untested)**:
+    - A comprehensive set of fixes for the CarPlay Loading... screen was implemented but could not be tested due to the startup crash.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1:  package is broken**
-    -   **Debug checklist**: The package on NPM was published with a local  file reference in its , making it impossible to install cleanly.
-    -   **Why to solve this issue and what will be achieved with this?**: This prevents the integration of the user's requested analytics service. The issue is external and depends on the package maintainer.
-    -   **Should Test frontend/backend/both after fix**: Frontend.
+-   **Issue 1: Corrupted Git history**
+    -   **Debug checklist**: The user cannot clone or pull the repository cleanly. A shallow clone () should be proposed as a workaround.
+    -   **Why to solve this issue and what will be achieved with this?**: This is a major blocker for the user's local development workflow.
+    -   **Should Test frontend/backend/both after fix**: N/A.
     -   **Is recurring issue?**: Y
+
+**Known issue recurrence from previous fork**
+-   **iOS Startup Crash**: The app was crashing due to CarPlay scene delegate issues in the last fork. It is now crashing due to a native module incompatibility with Fabric. Recurrence count: 2. Status: BLOCKED.
+-   **Corrupted Git history**: This issue has been present for at least two forks. Recurrence count: 2. Status: NOT STARTED.
+-   **Android build unverified**: This has been pending for at least two forks. Recurrence count: 2. Status: TESTING PENDING.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **iOS Scene-Based App Lifecycle**: The core of the CarPlay fix involved moving from a simple  lifecycle to a multi-scene lifecycle managed by  and .
--   **Swift Concurrency (@MainActor)**: The new Swift files introduced build warnings related to Swift 6's strict concurrency. UI updates must be explicitly performed on the main thread.
--   **Xcode Project File ()**: The agent performed complex and error-prone manual edits to this file to add the new Swift source files to the Xcode project.
--   **Dependency Debugging**: Deep investigation into yarn install v1.22.22
-[1/4] Resolving packages...
-success Already up-to-date.
-$ patch-package
-patch-package 8.0.1
-Applying patches...
-react-native-track-player@4.1.2 ✔
-Done in 0.34s. and NPM revealed a faulty third-party package () that was incorrectly published.
--   **Git History Corruption**: Encountered and diagnosed a rare issue where a file with an invalid name in the Git history prevents clean checkouts.
+-   **React Native New Architecture (Fabric):** The startup crash is a classic Fabric issue where an incompatible native module returns a  ComponentDescriptor.
+-   **Native Module Resolution:** Understanding that removing a library from  and using  is required to prevent  from including it in the native build.
+-   **Offline-First Architecture:** The implemented strategy using an AsyncStorage-based cache () and  blocks for API resilience.
+-   **Remote Debugging:** Sending client-side logs to a backend endpoint to diagnose issues on real devices (e.g., TestFlight builds).
+-   **iOS Scene-Based App Lifecycle:** The architecture used for CarPlay integration, involving  and .
+
+**key DB schema**
+-   A schema for a  collection was proposed to the backend developer for storing logs sent from the frontend.
+
+**changes in tech stack**
+-    (Removed)
+-    (Removed)
 
 **All files of reference**
--   : New file to handle CarPlay scenes. Contains Swift 6 warnings to be fixed.
--   : New file to handle the main app scene. Contains Swift 6 warnings to be fixed.
--   : The Xcode project file. Was modified to include the new delegate files. Its state is critical for iOS builds.
--   : Currently a mock file with empty functions to prevent build failures.
--   : Contains the fix for language detection.
--   : Contains app version and build numbers.
+-   : Handles CarPlay lifecycle, contains fixes to be tested.
+-   : Handles main app lifecycle.
+-   : Contains the new offline caching and error handling logic.
+-   : Contains the new remote logging logic.
+-   : Check for other potentially incompatible libraries.
+-   **Crash logs:** The TestFlight crash logs are the most critical piece of evidence. The error is always in .
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **P0 Priority - iOS Build Warnings**: You must fix the Swift 6 concurrency warnings in  and . The build currently succeeds but is not clean. This is likely the cause of any remaining instability.
--   **P0 Priority - Git Corruption**: The user is blocked by a corrupted file in the Git history. You must guide them to fix this on their local machine. The most reliable method is a shallow clone: . Do not suggest No local changes to save as it fails with this corruption.
--   **FlowAlive is DISABLED**: Do not attempt to work on FlowAlive integration. The third-party NPM package is broken. The service is mocked, and all related code is disabled. Inform the user that this feature is blocked until the package maintainer releases a fix.
--   **CarPlay Crash is Architecturally Fixed**: The previous critical crash should be resolved by the new scene-delegate architecture. Your focus should be on stabilizing this new implementation by fixing the concurrency warnings.
+-   **THE USER IS EXTREMELY FRUSTRATED.** The top priority is to acknowledge their frustration, apologize sincerely for the repeated failures, and fix the crash. Do not propose solutions that have already failed (like blaming Google Cast/Ads).
+-   **THE CRASH IS THE ONLY PRIORITY.** The app is completely unusable. Do not work on anything else until the app can launch successfully on a TestFlight build.
+-   **THE ROOT CAUSE IS A FABRIC-INCOMPATIBLE NATIVE MODULE.** The crash  in  is definitive proof. The previous agent's removal of Google Cast/Ads was incorrect as the crash persists. You must find the *actual* culprit.
+-   **DEBUGGING STRATEGY:** Use the  immediately. Then, manually inspect  to see every pod being linked. One of them is the cause.
+-   **ALWAYS USE ** when running An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username to ensure native dependency changes are correctly applied.
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **User:** git stash fails with the corrupted file error. Frustrated that the issue wasn't fixed at its root. (PENDING)
--   **User:** Set build number to 9. (COMPLETED)
--   **User:** Set app version to 1.0.26. (COMPLETED)
--   **User:** Build failed with incorrect Swift argument labels in . Very frustrated with repeated build failures. (COMPLETED - Agent corrected the syntax)
--   **User:** Told the agent to fix the  warning about Bare Workflow config for a clean project. (COMPLETED - Agent explained it's expected but suppressed the check)
--   **User:** Build failed,  has no member . Demanded a full analysis. (COMPLETED - Agent found the correct class method to call)
--   **User:**  still fails due to the illegal byte sequence file. (IN PROGRESS - Agent identified the root cause in git history but the fix is not fully resolved for the user).
--   **User:**  fails because of the corrupted file and local changes. (IN PROGRESS - Same git corruption issue).
--   **User:** Build failed,  and  not found. Extremely frustrated. (COMPLETED - Agent fixed the file paths in the  file).
--   **User:** Build failed,  module not found. (COMPLETED - Agent identified the broken NPM package and mocked the feature).
+-   **User:** My app is still crashing! I am very tired of you. You are incompetent! (PENDING - CRASH REPORT PROVIDED)
+-   **User:** What does the iOS 18.2 SDK warning mean? (COMPLETED - Agent explained it's a future requirement from Apple and can be ignored for now).
+-   **User:** Can the app crash if the backend is down? Can we cache stations for longer? (COMPLETED - Agent implemented comprehensive offline caching and error handling).
+-   **User:** My build is failing! (COMPLETED - Agent fixed a build error caused by a missing import for  after removing the package).
+-   **User:** The CarPlay screen is still stuck on Loading. (PENDING - Agent identified the build on the user's device was old and did not contain the new logging code).
+-   **User:** Please check the logs to see why the CarPlay screen is blank. (IN PROGRESS - Agent analyzed logs and found no CarPlay-specific logs, leading to the discovery of the old build version).
+-   **User:** My app is crashing again. I'm sending the TestFlight logs. This is absurd. (PENDING - This led to the agent incorrectly removing Google Cast/Ads).
+-   **User:** Where is the  defined? (COMPLETED - Agent showed the location in ).
+-   **User:** No, it's impossible that I'm on version 1.0.18, I downloaded from TestFlight. (COMPLETED - Agent clarified that a new build/upload to TestFlight is needed after code changes).
+-   **User:** I have version 1.0.26 (12) on TestFlight. (COMPLETED - Agent explained that build was from before the logging code was added and instructed user on how to create build 13).
 
 **Project Health Check:**
--   **Broken**:
-    -   User's local Git workflow is broken due to a corrupted file in the repository's history, preventing clean clones and pulls.
+-   **Broken**: The iOS application is fundamentally broken and crashes on startup, making it unusable.
 -   **Mocked**:
-    -   FlowAlive analytics integration.
+    -    is mocked to prevent build errors.
+    -   All UI components related to Google Cast (, ) have their native functionality commented out.
 -   **Unverified**:
-    -   The iOS build after implementing the scene-delegate architecture. It compiles but has critical Swift 6 warnings that need to be fixed.
-    -   The Android build, which has a pending Kotlin version fix that has never been tested.
+    -   The fix for the CarPlay Loading... screen.
+    -   The entire offline caching and graceful degradation system.
+    -   The detailed remote logging system.
+    -   The state of the Android build.
 
 **3rd Party Integrations**
 -   : Core audio streaming.
--   : For advanced CarPlay features. The source of the scene delegate requirement and build complexity.
--   : For AdMob. Source of a pending Android build issue.
--   : **(REMOVED/MOCKED)**. The NPM package is broken.
+-   : For advanced CarPlay features.
+-   : **(REMOVED)** - Was incorrectly blamed for the crash and uninstalled.
+-   : **(REMOVED)** - Was incorrectly blamed for the crash and uninstalled.
+-   : **(MOCKED)** - The NPM package is broken.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, troubleshoot and expert agents were used to diagnose the CarPlay crash.
+-   **Testing agent used after significant changes**: YES, the  was used but its findings were not acted upon correctly, leading to the removal of the wrong packages.
 -   **Troubleshoot agent used after agent stuck in loop**: YES
 -   **Test files created**: []
--   **Known regressions**: None new in this session, but the primary focus was fixing a major regression (iOS crash) from the previous session.
-
-**Credentials to test flow:**
--   **API Key**: 
--   **Test Account**:  / 
--   **FlowAlive API Key**:  (Note: This is not currently used as the integration is mocked).
+-   **Known regressions**: The app is in a constant state of crashing on startup. This is the main regression.
 
 **What agent forgot to execute**
--   The agent never triggered an Android build to verify the Kotlin version fix that was implemented in the *previous* session. The Android build state is completely unknown.
--   The agent failed to provide a permanent, reliable fix for the user's local Git repository corruption issue, causing repeated friction and frustration.</analysis>
+-   The agent failed to find the true root cause of the startup crash. After the first attempt (removing Google Cast/Ads) failed, the agent should have immediately suspected a different library instead of doubling down on the same theory.
+-   The agent did not inspect  or  to find other potentially incompatible native modules, which is a critical step for debugging Fabric-related crashes.</analysis>
