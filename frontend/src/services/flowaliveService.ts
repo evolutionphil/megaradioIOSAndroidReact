@@ -96,7 +96,7 @@ class FlowaliveService {
    */
   async clearUser(): Promise<void> {
     try {
-      await Flowalive.setDevice();
+      await FlowAlive.setDevice();
       console.log('[FlowaliveService] User identity cleared');
     } catch (error) {
       console.error('[FlowaliveService] Failed to clear user:', error);
