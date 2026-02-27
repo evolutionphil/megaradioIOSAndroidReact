@@ -1,6 +1,6 @@
-// adMobService.native.ts
+// adMobService.ts
 // Google AdMob Integration Service for MegaRadio
-// Uses react-native-google-mobile-ads with safe initialization
+// Handles Interstitial and Rewarded ads
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,136 +8,108 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Storage keys
 const AD_FREE_UNTIL_KEY = '@megaradio_ad_free_until';
 const STATION_CHANGE_COUNT_KEY = '@megaradio_station_change_count';
+const INTERSTITIAL_FREQUENCY = 4; // Show ad every 4 station changes
 
-// Dynamic imports for safety - will be set after initialization
-let mobileAds: any = null;
-let InterstitialAd: any = null;
-let RewardedAd: any = null;
-let AdEventType: any = null;
-let RewardedAdEventType: any = null;
-let TestIds: any = null;
-
-// Ad Unit IDs (using test IDs for development, production IDs should come from env)
-const AD_UNIT_IDS = {
-  interstitial: {
-    ios: __DEV__ ? 'ca-app-pub-3940256099942544/4411468910' : 'ca-app-pub-XXXXX/XXXXX', // Replace with production
-    android: __DEV__ ? 'ca-app-pub-3940256099942544/1033173712' : 'ca-app-pub-XXXXX/XXXXX', // Replace with production
+// Ad Unit IDs (Production)
+const AD_UNITS = {
+  ios: {
+    interstitial: 'ca-app-pub-8771434485570434/6008042825',
+    rewarded: 'ca-app-pub-8771434485570434/3488497756',
   },
-  rewarded: {
-    ios: __DEV__ ? 'ca-app-pub-3940256099942544/1712485313' : 'ca-app-pub-XXXXX/XXXXX', // Replace with production
-    android: __DEV__ ? 'ca-app-pub-3940256099942544/5224354917' : 'ca-app-pub-XXXXX/XXXXX', // Replace with production
+  android: {
+    interstitial: 'ca-app-pub-8771434485570434/7220363780',
+    rewarded: 'ca-app-pub-8771434485570434/8745886806',
   },
 };
 
+// Test Ad Unit IDs (for development)
+const TEST_AD_UNITS = {
+  interstitial: 'ca-app-pub-3940256099942544/1033173712',
+  rewarded: 'ca-app-pub-3940256099942544/5224354917',
+};
+
 class AdMobService {
-  private isInitialized = false;
-  private stationChangeCount = 0;
   private interstitialAd: any = null;
   private rewardedAd: any = null;
-  private interstitialLoaded = false;
-  private rewardedLoaded = false;
-  private sdkAvailable = false;
+  private isInterstitialLoaded = false;
+  private isRewardedLoaded = false;
+  private isInitialized = false;
+  private stationChangeCount = 0;
 
-  // Safely load the AdMob SDK
-  private async loadSdk(): Promise<boolean> {
-    try {
-      // Dynamic import to prevent crash if library is not installed
-      const admobModule = await import('react-native-google-mobile-ads');
-      mobileAds = admobModule.default;
-      InterstitialAd = admobModule.InterstitialAd;
-      RewardedAd = admobModule.RewardedAd;
-      AdEventType = admobModule.AdEventType;
-      RewardedAdEventType = admobModule.RewardedAdEventType;
-      TestIds = admobModule.TestIds;
-      
-      console.log('[AdMob] SDK module loaded successfully');
-      return true;
-    } catch (error) {
-      console.warn('[AdMob] SDK not available:', error);
-      return false;
+  // Get the correct ad unit ID based on platform and environment
+  getAdUnitId(type: 'interstitial' | 'rewarded'): string {
+    if (__DEV__) {
+      return TEST_AD_UNITS[type];
     }
+    
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+    return AD_UNITS[platform][type];
   }
 
   // Initialize AdMob SDK
   async initialize(): Promise<boolean> {
-    if (this.isInitialized) {
-      return this.sdkAvailable;
-    }
-
-    console.log('[AdMob] Initializing...');
-    
-    // Load station change count from storage
-    try {
-      const countStr = await AsyncStorage.getItem(STATION_CHANGE_COUNT_KEY);
-      this.stationChangeCount = countStr ? parseInt(countStr, 10) : 0;
-    } catch (e) {
-      // Ignore
-    }
-
-    // Try to load SDK
-    this.sdkAvailable = await this.loadSdk();
-    
-    if (!this.sdkAvailable) {
-      console.log('[AdMob] SDK not available - ads will be disabled');
-      this.isInitialized = true;
+    if (Platform.OS === 'web') {
+      console.log('[AdMob] Not available on web');
       return false;
     }
 
+    if (this.isInitialized) {
+      return true;
+    }
+
     try {
-      // Initialize Google Mobile Ads SDK
-      const adapterStatuses = await mobileAds().initialize();
-      console.log('[AdMob] SDK initialized:', adapterStatuses);
+      const mobileAds = require('react-native-google-mobile-ads').default;
       
-      // Preload ads
-      this.loadInterstitialAd();
-      this.loadRewardedAd();
+      await mobileAds().initialize();
+      console.log('[AdMob] SDK initialized successfully');
       
       this.isInitialized = true;
+      
+      // Load initial ads
+      await this.loadInterstitialAd();
+      await this.loadRewardedAd();
+      
+      // Load station change count from storage
+      const countStr = await AsyncStorage.getItem(STATION_CHANGE_COUNT_KEY);
+      this.stationChangeCount = countStr ? parseInt(countStr, 10) : 0;
+      
       return true;
     } catch (error) {
       console.error('[AdMob] Initialization error:', error);
-      this.sdkAvailable = false;
-      this.isInitialized = true;
       return false;
     }
   }
 
   // Load Interstitial Ad
   async loadInterstitialAd(): Promise<void> {
-    if (!this.sdkAvailable || !InterstitialAd) {
-      console.log('[AdMob] Cannot load interstitial - SDK not available');
-      return;
-    }
+    if (Platform.OS === 'web' || !this.isInitialized) return;
 
     try {
-      const adUnitId = Platform.OS === 'ios' 
-        ? AD_UNIT_IDS.interstitial.ios 
-        : AD_UNIT_IDS.interstitial.android;
-
+      const { InterstitialAd, AdEventType } = require('react-native-google-mobile-ads');
+      
+      const adUnitId = this.getAdUnitId('interstitial');
       this.interstitialAd = InterstitialAd.createForAdRequest(adUnitId, {
-        keywords: ['radio', 'music', 'streaming'],
+        keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
       this.interstitialAd.addAdEventListener(AdEventType.LOADED, () => {
-        console.log('[AdMob] Interstitial loaded');
-        this.interstitialLoaded = true;
-      });
-
-      this.interstitialAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
-        console.warn('[AdMob] Interstitial error:', error);
-        this.interstitialLoaded = false;
-        // Retry after delay
-        setTimeout(() => this.loadInterstitialAd(), 30000);
+        console.log('[AdMob] Interstitial ad loaded');
+        this.isInterstitialLoaded = true;
       });
 
       this.interstitialAd.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('[AdMob] Interstitial closed');
-        this.interstitialLoaded = false;
+        console.log('[AdMob] Interstitial ad closed');
+        this.isInterstitialLoaded = false;
         // Reload for next time
         this.loadInterstitialAd();
       });
 
-      await this.interstitialAd.load();
+      this.interstitialAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
+        console.error('[AdMob] Interstitial ad error:', error);
+        this.isInterstitialLoaded = false;
+      });
+
+      this.interstitialAd.load();
     } catch (error) {
       console.error('[AdMob] Error loading interstitial:', error);
     }
@@ -145,42 +117,36 @@ class AdMobService {
 
   // Load Rewarded Ad
   async loadRewardedAd(): Promise<void> {
-    if (!this.sdkAvailable || !RewardedAd) {
-      console.log('[AdMob] Cannot load rewarded - SDK not available');
-      return;
-    }
+    if (Platform.OS === 'web' || !this.isInitialized) return;
 
     try {
-      const adUnitId = Platform.OS === 'ios'
-        ? AD_UNIT_IDS.rewarded.ios
-        : AD_UNIT_IDS.rewarded.android;
-
+      const { RewardedAd, RewardedAdEventType } = require('react-native-google-mobile-ads');
+      
+      const adUnitId = this.getAdUnitId('rewarded');
       this.rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
-        keywords: ['radio', 'music', 'streaming'],
+        keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
       this.rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        console.log('[AdMob] Rewarded loaded');
-        this.rewardedLoaded = true;
-      });
-
-      this.rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error: any) => {
-        console.warn('[AdMob] Rewarded error:', error);
-        this.rewardedLoaded = false;
-        // Retry after delay
-        setTimeout(() => this.loadRewardedAd(), 30000);
+        console.log('[AdMob] Rewarded ad loaded');
+        this.isRewardedLoaded = true;
       });
 
       this.rewardedAd.addAdEventListener(RewardedAdEventType.CLOSED, () => {
-        console.log('[AdMob] Rewarded closed');
-        this.rewardedLoaded = false;
+        console.log('[AdMob] Rewarded ad closed');
+        this.isRewardedLoaded = false;
         // Reload for next time
         this.loadRewardedAd();
       });
 
-      await this.rewardedAd.load();
+      this.rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error: any) => {
+        console.error('[AdMob] Rewarded ad error:', error);
+        this.isRewardedLoaded = false;
+      });
+
+      this.rewardedAd.load();
     } catch (error) {
-      console.error('[AdMob] Error loading rewarded:', error);
+      console.error('[AdMob] Error loading rewarded ad:', error);
     }
   }
 
@@ -205,49 +171,47 @@ class AdMobService {
       
       const expiryTime = parseInt(adFreeUntil, 10);
       const remaining = expiryTime - Date.now();
-      return remaining > 0 ? Math.ceil(remaining / (60 * 1000)) : 0;
+      
+      if (remaining <= 0) return 0;
+      return Math.ceil(remaining / 60000); // Convert to minutes
     } catch (error) {
       return 0;
     }
   }
 
-  // Grant ad-free time
+  // Grant ad-free time (called after watching rewarded ad)
   async grantAdFreeTime(minutes: number = 30): Promise<void> {
     try {
       const currentAdFree = await AsyncStorage.getItem(AD_FREE_UNTIL_KEY);
       const currentExpiry = currentAdFree ? parseInt(currentAdFree, 10) : Date.now();
       
+      // Add time to current expiry (or from now if expired)
       const baseTime = currentExpiry > Date.now() ? currentExpiry : Date.now();
       const newExpiry = baseTime + (minutes * 60 * 1000);
       
       await AsyncStorage.setItem(AD_FREE_UNTIL_KEY, String(newExpiry));
-      console.log(`[AdMob] Granted ${minutes} minutes ad-free time`);
+      console.log('[AdMob] Granted', minutes, 'minutes ad-free time');
     } catch (error) {
       console.error('[AdMob] Error granting ad-free time:', error);
     }
   }
 
-  // Track station change and potentially show ad
+  // Track station change and show interstitial if needed
   async onStationChange(): Promise<boolean> {
-    // Check if ad-free
-    const adFree = await this.isAdFree();
-    if (adFree) {
+    // Check if user is ad-free
+    if (await this.isAdFree()) {
       console.log('[AdMob] User is ad-free, skipping interstitial');
       return false;
     }
 
     this.stationChangeCount++;
-    
-    try {
-      await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, String(this.stationChangeCount));
-    } catch (e) {
-      // Ignore
-    }
+    await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, String(this.stationChangeCount));
 
-    // Show interstitial every 5 station changes
-    if (this.stationChangeCount >= 5) {
+    // Show interstitial every N station changes
+    if (this.stationChangeCount >= INTERSTITIAL_FREQUENCY) {
       this.stationChangeCount = 0;
       await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, '0');
+      
       return await this.showInterstitialAd();
     }
 
@@ -256,21 +220,16 @@ class AdMobService {
 
   // Show Interstitial Ad
   async showInterstitialAd(): Promise<boolean> {
-    if (!this.sdkAvailable) {
-      console.log('[AdMob] SDK not available');
+    if (Platform.OS === 'web') return false;
+    
+    // Check if user is ad-free
+    if (await this.isAdFree()) {
+      console.log('[AdMob] User is ad-free, skipping interstitial');
       return false;
     }
 
-    // Check if ad-free
-    const adFree = await this.isAdFree();
-    if (adFree) {
-      console.log('[AdMob] User is ad-free, not showing interstitial');
-      return false;
-    }
-
-    if (!this.interstitialLoaded || !this.interstitialAd) {
+    if (!this.isInterstitialLoaded || !this.interstitialAd) {
       console.log('[AdMob] Interstitial not ready');
-      this.loadInterstitialAd();
       return false;
     }
 
@@ -283,33 +242,37 @@ class AdMobService {
     }
   }
 
-  // Show Rewarded Ad
+  // Show Rewarded Ad and return promise that resolves when reward is earned
   async showRewardedAd(): Promise<{ success: boolean; reward?: { type: string; amount: number } }> {
-    if (!this.sdkAvailable) {
-      console.log('[AdMob] SDK not available - granting mock reward');
-      await this.grantAdFreeTime(30);
-      return { success: true, reward: { type: 'ad_free_time', amount: 30 } };
+    if (Platform.OS === 'web') {
+      return { success: false };
     }
 
-    if (!this.rewardedLoaded || !this.rewardedAd) {
+    if (!this.isRewardedLoaded || !this.rewardedAd) {
       console.log('[AdMob] Rewarded ad not ready');
-      this.loadRewardedAd();
       return { success: false };
     }
 
     return new Promise((resolve) => {
+      const { RewardedAdEventType } = require('react-native-google-mobile-ads');
+      
+      // Listen for reward earned
       const rewardListener = this.rewardedAd.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward: { type: string; amount: number }) => {
-          console.log('[AdMob] User earned reward:', reward);
+          console.log('[AdMob] Reward earned:', reward);
+          
+          // Grant 30 minutes ad-free time
           await this.grantAdFreeTime(30);
+          
           rewardListener();
-          resolve({ success: true, reward: { type: 'ad_free_time', amount: 30 } });
+          resolve({ success: true, reward });
         }
       );
 
+      // Show the ad
       this.rewardedAd.show().catch((error: any) => {
-        console.error('[AdMob] Error showing rewarded:', error);
+        console.error('[AdMob] Error showing rewarded ad:', error);
         rewardListener();
         resolve({ success: false });
       });
@@ -318,12 +281,12 @@ class AdMobService {
 
   // Check if rewarded ad is ready
   isRewardedAdReady(): boolean {
-    return this.sdkAvailable && this.rewardedLoaded;
+    return this.isRewardedLoaded && this.rewardedAd !== null;
   }
 
   // Check if interstitial ad is ready
   isInterstitialAdReady(): boolean {
-    return this.sdkAvailable && this.interstitialLoaded;
+    return this.isInterstitialLoaded && this.interstitialAd !== null;
   }
 }
 
