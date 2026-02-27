@@ -51,7 +51,26 @@ class NowPlayingResponse(BaseModel):
     song: Optional[str] = None
     album: Optional[str] = None
     artwork: Optional[str] = None
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# CarPlay Log Models
+class CarPlayLogEntry(BaseModel):
+    level: str = "info"  # info, warn, error, debug
+    message: str
+    context: Optional[Dict[str, Any]] = None
+    timestamp: Optional[str] = None
+
+class CarPlayLogRequest(BaseModel):
+    device_id: Optional[str] = None
+    device_model: Optional[str] = None
+    os_version: Optional[str] = None
+    app_version: Optional[str] = None
+    logs: List[CarPlayLogEntry]
+
+class CarPlayLogResponse(BaseModel):
+    success: bool
+    received_count: int
+    message: str
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
