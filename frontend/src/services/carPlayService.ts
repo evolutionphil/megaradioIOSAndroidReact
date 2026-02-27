@@ -86,12 +86,19 @@ const getArtworkUrl = (station: Station): string => {
 
 // Create Favorites List Template
 const createFavoritesTemplate = async (): Promise<any> => {
-  if (!ListTemplate || !getFavoritesCallback) return null;
+  CarPlayLogger.templateCreating('Favorites');
+  
+  if (!ListTemplate || !getFavoritesCallback) {
+    CarPlayLogger.templateFailed('Favorites', 'ListTemplate or callback not available');
+    return null;
+  }
   
   try {
+    CarPlayLogger.dataLoading('favorites');
     const favorites = await getFavoritesCallback();
+    CarPlayLogger.dataLoaded('favorites', favorites.length);
     
-    return new ListTemplate({
+    const template = new ListTemplate({
       title: 'Favoriler',
       sections: [{
         header: 'Favori İstasyonlar',
@@ -99,20 +106,29 @@ const createFavoritesTemplate = async (): Promise<any> => {
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
           image: getArtworkUrl(station),
-          // Store station data for selection
           station: station,
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
         const station = favorites[index];
         if (station && playStationCallback) {
+          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing favorite:', station.name);
-          await playStationCallback(station);
-          showNowPlayingTemplate(station);
+          try {
+            await playStationCallback(station);
+            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
+            showNowPlayingTemplate(station);
+          } catch (e: any) {
+            CarPlayLogger.playbackError(e, station.name);
+          }
         }
       },
     });
-  } catch (error) {
+    
+    CarPlayLogger.templateCreated('Favorites', { itemCount: favorites.length });
+    return template;
+  } catch (error: any) {
+    CarPlayLogger.templateError('Favorites', error);
     console.error('[CarPlay] Error creating favorites template:', error);
     return null;
   }
@@ -120,12 +136,19 @@ const createFavoritesTemplate = async (): Promise<any> => {
 
 // Create Recently Played List Template
 const createRecentlyPlayedTemplate = async (): Promise<any> => {
-  if (!ListTemplate || !getRecentlyPlayedCallback) return null;
+  CarPlayLogger.templateCreating('RecentlyPlayed');
+  
+  if (!ListTemplate || !getRecentlyPlayedCallback) {
+    CarPlayLogger.templateFailed('RecentlyPlayed', 'ListTemplate or callback not available');
+    return null;
+  }
   
   try {
+    CarPlayLogger.dataLoading('recentlyPlayed');
     const recentStations = await getRecentlyPlayedCallback();
+    CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
-    return new ListTemplate({
+    const template = new ListTemplate({
       title: 'Son Çalınanlar',
       sections: [{
         header: 'Son Dinlenen İstasyonlar',
@@ -138,13 +161,23 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = recentStations[index];
         if (station && playStationCallback) {
+          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing recent:', station.name);
-          await playStationCallback(station);
-          showNowPlayingTemplate(station);
+          try {
+            await playStationCallback(station);
+            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
+            showNowPlayingTemplate(station);
+          } catch (e: any) {
+            CarPlayLogger.playbackError(e, station.name);
+          }
         }
       },
     });
-  } catch (error) {
+    
+    CarPlayLogger.templateCreated('RecentlyPlayed', { itemCount: recentStations.length });
+    return template;
+  } catch (error: any) {
+    CarPlayLogger.templateError('RecentlyPlayed', error);
     console.error('[CarPlay] Error creating recently played template:', error);
     return null;
   }
