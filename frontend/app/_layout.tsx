@@ -31,8 +31,7 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
-// NOTE: FlowAlive disabled - NPM package has broken yalc reference (v0.0.32)
-// import { FlowAliveProvider } from 'flowalive-analytics/expo';
+import { FlowaliveProvider } from 'flowalive-analytics/expo';
 import { flowaliveService } from '../src/services/flowaliveService';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
