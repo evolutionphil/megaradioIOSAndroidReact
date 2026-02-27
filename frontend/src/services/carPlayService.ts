@@ -20,8 +20,18 @@ if (Platform.OS !== 'web') {
     TabBarTemplate = carplayModule.TabBarTemplate;
     NowPlayingTemplate = carplayModule.NowPlayingTemplate;
     GridTemplate = carplayModule.GridTemplate;
-  } catch (e) {
+    
+    CarPlayLogger.moduleLoaded('react-native-carplay', true);
+    CarPlayLogger.info('CarPlay modules loaded', {
+      CarPlay: !!CarPlay,
+      ListTemplate: !!ListTemplate,
+      TabBarTemplate: !!TabBarTemplate,
+      NowPlayingTemplate: !!NowPlayingTemplate,
+      GridTemplate: !!GridTemplate,
+    });
+  } catch (e: any) {
     console.log('[CarPlayService] CarPlay module not available:', e);
+    CarPlayLogger.moduleError('react-native-carplay', e);
   }
 }
 
