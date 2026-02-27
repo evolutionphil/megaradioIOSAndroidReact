@@ -14,8 +14,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         // Dispatch to main thread for React Native bridge calls
         DispatchQueue.main.async {
-            // Call RNCarPlay class method directly
-            RNCarPlay.connect(with: interfaceController, window: templateApplicationScene.carWindow)
+            // Call RNCarPlay class method - correct Objective-C to Swift translation
+            RNCarPlay.connectWithInterfaceController(interfaceController, window: templateApplicationScene.carWindow)
         }
     }
     
@@ -40,7 +40,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         print("[CarPlaySceneDelegate] CarPlay connected with window")
         
         DispatchQueue.main.async {
-            RNCarPlay.connect(with: interfaceController, window: window)
+            RNCarPlay.connectWithInterfaceController(interfaceController, window: window)
         }
     }
 }
