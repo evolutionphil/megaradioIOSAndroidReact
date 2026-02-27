@@ -464,16 +464,31 @@ const CarPlayService: CarPlayServiceType = {
     getGenres,
     getStationsByGenre
   ) => {
-    if (Platform.OS === 'web' || !CarPlay) {
-      console.log('[CarPlayService] Not available on this platform');
+    if (Platform.OS === 'web') {
+      console.log('[CarPlayService] Not available on web platform');
+      return;
+    }
+    
+    if (!CarPlay) {
+      console.log('[CarPlayService] CarPlay module not loaded');
+      CarPlayLogger.start();
+      CarPlayLogger.error('CarPlay module NOT LOADED', {
+        platform: Platform.OS,
+        carPlayModule: null,
+      });
       return;
     }
     
     console.log('[CarPlayService] Initializing...');
     CarPlayLogger.start();
-    CarPlayLogger.info('CarPlay service initializing...', {
+    CarPlayLogger.serviceInitializing();
+    CarPlayLogger.info('CarPlay service initializing', {
       platform: Platform.OS,
       carPlayAvailable: !!CarPlay,
+      listTemplateAvailable: !!ListTemplate,
+      tabBarTemplateAvailable: !!TabBarTemplate,
+      gridTemplateAvailable: !!GridTemplate,
+      nowPlayingTemplateAvailable: !!NowPlayingTemplate,
     });
     
     // Store callbacks
@@ -484,10 +499,22 @@ const CarPlayService: CarPlayServiceType = {
     getGenresCallback = getGenres;
     getStationsByGenreCallback = getStationsByGenre;
     
+    CarPlayLogger.info('Callbacks registered', {
+      playStation: !!playStation,
+      getStations: !!getStations,
+      getFavorites: !!getFavorites,
+      getRecentlyPlayed: !!getRecentlyPlayed,
+      getGenres: !!getGenres,
+      getStationsByGenre: !!getStationsByGenre,
+    });
+    
     // Register CarPlay connection handler
     CarPlay.registerOnConnect(() => {
       console.log('[CarPlay] ========== CONNECTED ==========');
-      CarPlayLogger.connected({ timestamp: new Date().toISOString() });
+      CarPlayLogger.connected({ 
+        timestamp: new Date().toISOString(),
+        event: 'registerOnConnect callback fired',
+      });
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       
@@ -498,22 +525,33 @@ const CarPlayService: CarPlayServiceType = {
     // Register CarPlay disconnection handler
     CarPlay.registerOnDisconnect(() => {
       console.log('[CarPlay] ========== DISCONNECTED ==========');
-      CarPlayLogger.disconnected({ timestamp: new Date().toISOString() });
+      CarPlayLogger.disconnected({ 
+        timestamp: new Date().toISOString(),
+        event: 'registerOnDisconnect callback fired',
+      });
       isCarPlayConnected = false;
       CarPlayService.isConnected = false;
     });
     
+    CarPlayLogger.info('Connection handlers registered');
+    
     // CRITICAL: Check if CarPlay was already connected before we registered
     // This handles the race condition where CarPlay connects before JS initializes
-    if (CarPlay.connected) {
+    const alreadyConnected = CarPlay.connected;
+    CarPlayLogger.info('Checking existing connection', { 
+      alreadyConnected,
+      carPlayConnectedProperty: CarPlay.connected,
+    });
+    
+    if (alreadyConnected) {
       console.log('[CarPlay] Already connected - creating root template immediately');
-      CarPlayLogger.info('CarPlay already connected - creating root template immediately');
+      CarPlayLogger.alreadyConnected();
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       createRootTemplate();
     }
     
-    CarPlayLogger.info('CarPlay service initialized, waiting for connection');
+    CarPlayLogger.serviceInitialized();
     console.log('[CarPlayService] Initialized and waiting for connection');
   },
   
@@ -521,15 +559,13 @@ const CarPlayService: CarPlayServiceType = {
     if (!isCarPlayConnected) return;
     
     console.log('[CarPlay] Updating now playing:', station.name, songTitle, artistName);
-    CarPlayLogger.info('Updating now playing', { station: station.name, songTitle, artistName });
-    // The Now Playing template automatically uses the MPNowPlayingInfoCenter
-    // which is updated by react-native-track-player
+    CarPlayLogger.nowPlayingUpdated(station.name, songTitle, artistName);
   },
   
   disconnect: () => {
     console.log('[CarPlayService] Disconnecting...');
-    CarPlayLogger.info('CarPlay service disconnecting...');
-    CarPlayLogger.flush(); // Send any remaining logs
+    CarPlayLogger.serviceDisconnecting();
+    CarPlayLogger.flush();
     CarPlayLogger.stop();
     playStationCallback = null;
     getStationsCallback = null;
