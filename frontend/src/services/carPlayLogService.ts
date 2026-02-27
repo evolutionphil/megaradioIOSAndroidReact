@@ -5,6 +5,7 @@
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
+import Constants from 'expo-constants';
 
 const LOG_ENDPOINT = 'https://themegaradio.com/api/logs/remote';
 const API_KEY = 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw';
@@ -35,24 +36,46 @@ const logBuffer: LogBuffer = {
   buildNumber: '',
 };
 
-// Initialize device info
+// Initialize device info - called when logger starts, not at module load
 const initDeviceInfo = () => {
   try {
     const deviceUUID = Device.osBuildId || Device.modelId || `${Date.now()}`;
     logBuffer.deviceId = `${Platform.OS}_${deviceUUID}`;
     logBuffer.platform = Platform.OS;
-    logBuffer.appVersion = Application.nativeApplicationVersion || '1.0.0';
-    logBuffer.buildNumber = Application.nativeBuildVersion || '1';
+    
+    // Try multiple sources for version info
+    // Priority: Application native > Constants expoConfig > fallback
+    logBuffer.appVersion = 
+      Application.nativeApplicationVersion || 
+      Constants.expoConfig?.version ||
+      '1.0.0';
+    
+    logBuffer.buildNumber = 
+      Application.nativeBuildVersion || 
+      Constants.expoConfig?.ios?.buildNumber ||
+      Constants.expoConfig?.android?.versionCode?.toString() ||
+      '1';
+    
+    console.log('[CarPlayLogger] Device info initialized:', {
+      appVersion: logBuffer.appVersion,
+      buildNumber: logBuffer.buildNumber,
+      deviceId: logBuffer.deviceId,
+      nativeApplicationVersion: Application.nativeApplicationVersion,
+      nativeBuildVersion: Application.nativeBuildVersion,
+      expoConfigVersion: Constants.expoConfig?.version,
+    });
   } catch (e) {
+    console.error('[CarPlayLogger] Error initializing device info:', e);
     logBuffer.deviceId = `${Platform.OS}_${Date.now()}`;
     logBuffer.platform = Platform.OS;
-    logBuffer.appVersion = '1.0.26';
-    logBuffer.buildNumber = '9';
+    // Use expo config as fallback
+    logBuffer.appVersion = Constants.expoConfig?.version || '1.0.26';
+    logBuffer.buildNumber = Constants.expoConfig?.ios?.buildNumber || '1';
   }
 };
 
-// Initialize on import
-initDeviceInfo();
+// NOTE: Do NOT call initDeviceInfo() at module load time!
+// It should be called in CarPlayLogger.start() when native modules are ready
 
 // Flush interval
 let flushInterval: ReturnType<typeof setInterval> | null = null;
