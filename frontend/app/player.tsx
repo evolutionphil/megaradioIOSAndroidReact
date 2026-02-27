@@ -442,14 +442,23 @@ export default function PlayerScreen() {
 
   const handleStationPress = useCallback(async (station: Station) => {
     console.log('[Player] Station pressed:', station.name, 'ID:', station._id);
+    // Send to remote log for debugging
+    sendLog('[Player] Station pressed from grid', { 
+      stationName: station.name, 
+      stationId: station._id,
+      currentStationId: currentStation?._id,
+      currentStationName: currentStation?.name
+    });
     try {
       // Always call playStation - it handles stopping internally
       await playStation(station);
       console.log('[Player] playStation completed for:', station.name);
+      sendLog('[Player] playStation completed', { stationName: station.name });
     } catch (error) {
       console.error('[Player] Failed to play station:', error);
+      sendLog('[Player] Failed to play station', { error: String(error) });
     }
-  }, [playStation]);
+  }, [playStation, currentStation]);
 
   // Sleep timer handler using global store
   const handleSleepTimerStart = useCallback((totalMinutes: number) => {
