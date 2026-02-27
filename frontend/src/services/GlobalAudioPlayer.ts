@@ -267,22 +267,32 @@ class GlobalAudioPlayer {
     const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
     
     try {
+      // Use the correct endpoint: /api/now-playing/{id}
       const response = await fetch(`${backendUrl}/api/now-playing/${stationId}`);
       if (response.ok) {
         const metadata = await response.json();
+        console.log('[GlobalAudioPlayer] Now playing metadata:', metadata);
         if (metadata && (metadata.title || metadata.artist)) {
           usePlayerStore.getState().setNowPlaying(metadata);
           return;
         }
+      } else {
+        console.log('[GlobalAudioPlayer] Now playing response not ok:', response.status);
       }
-    } catch {}
+    } catch (error) {
+      console.error('[GlobalAudioPlayer] fetchNowPlaying error:', error);
+    }
     
+    // Fallback to stationService
     try {
       const metadata = await stationService.getNowPlaying(stationId);
-      if (metadata) {
+      if (metadata && (metadata.title || metadata.artist)) {
+        console.log('[GlobalAudioPlayer] Now playing from stationService:', metadata);
         usePlayerStore.getState().setNowPlaying(metadata);
       }
-    } catch {}
+    } catch (fallbackError) {
+      console.error('[GlobalAudioPlayer] fallback getNowPlaying error:', fallbackError);
+    }
   }
 }
 
