@@ -3,6 +3,7 @@
 
 import { Platform } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
+import CarPlayLogger from './carPlayLogService';
 
 // Only import CarPlay on native platforms
 let CarPlay: any = null;
