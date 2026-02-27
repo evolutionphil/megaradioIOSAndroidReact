@@ -257,13 +257,26 @@ const createRootTemplate = async (): Promise<void> => {
   try {
     console.log('[CarPlay] Creating root template...');
     
-    // Create all tab templates
-    const [favoritesTemplate, recentTemplate, browseTemplate, genresTemplate] = await Promise.all([
+    // Create all tab templates with individual error handling
+    const results = await Promise.allSettled([
       createFavoritesTemplate(),
       createRecentlyPlayedTemplate(),
       createBrowseTemplate(),
       createGenresTemplate(),
     ]);
+    
+    const [favoritesResult, recentResult, browseResult, genresResult] = results;
+    
+    const favoritesTemplate = favoritesResult.status === 'fulfilled' ? favoritesResult.value : null;
+    const recentTemplate = recentResult.status === 'fulfilled' ? recentResult.value : null;
+    const browseTemplate = browseResult.status === 'fulfilled' ? browseResult.value : null;
+    const genresTemplate = genresResult.status === 'fulfilled' ? genresResult.value : null;
+    
+    // Log any failures
+    if (favoritesResult.status === 'rejected') console.error('[CarPlay] Favorites template failed:', favoritesResult.reason);
+    if (recentResult.status === 'rejected') console.error('[CarPlay] Recent template failed:', recentResult.reason);
+    if (browseResult.status === 'rejected') console.error('[CarPlay] Browse template failed:', browseResult.reason);
+    if (genresResult.status === 'rejected') console.error('[CarPlay] Genres template failed:', genresResult.reason);
     
     // Build tabs array with available templates
     const templates: any[] = [];
@@ -293,7 +306,21 @@ const createRootTemplate = async (): Promise<void> => {
     }
     
     if (templates.length === 0) {
-      console.log('[CarPlay] No templates available');
+      console.log('[CarPlay] No templates available - showing fallback');
+      // Create a simple fallback list template
+      if (ListTemplate) {
+        const fallbackTemplate = new ListTemplate({
+          title: 'MegaRadio',
+          sections: [{
+            header: 'Yükleniyor...',
+            items: [{
+              text: 'İstasyonlar yükleniyor',
+              detailText: 'Lütfen bekleyin',
+            }],
+          }],
+        });
+        CarPlay.setRootTemplate(fallbackTemplate, true);
+      }
       return;
     }
     
@@ -307,7 +334,7 @@ const createRootTemplate = async (): Promise<void> => {
     
     // Set as root template
     CarPlay.setRootTemplate(tabBarTemplate, true);
-    console.log('[CarPlay] Root template set successfully');
+    console.log('[CarPlay] Root template set successfully with', templates.length, 'tabs');
     
   } catch (error) {
     console.error('[CarPlay] Error creating root template:', error);
