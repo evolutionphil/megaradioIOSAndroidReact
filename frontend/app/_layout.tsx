@@ -341,8 +341,11 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
-      {/* FlowAliveProvider disabled - NPM package has broken yalc reference */}
-      <I18nextProvider i18n={i18n}>
+      <FlowaliveProvider 
+        apiKey={FLOWALIVE_API_KEY} 
+        trackNavigation={true}
+      >
+        <I18nextProvider i18n={i18n}>
           <QueryClientProvider client={queryClient}>
             <AudioProvider>
               <PlayAtLoginHandler />
