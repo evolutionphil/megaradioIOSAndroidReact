@@ -89,6 +89,108 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# ============== CarPlay Logging Endpoints ==============
+
+@api_router.post("/carplay/logs", response_model=CarPlayLogResponse)
+async def submit_carplay_logs(request: CarPlayLogRequest):
+    """
+    Receive CarPlay debug logs from the mobile app.
+    Stores logs in MongoDB and prints to server console for real-time debugging.
+    """
+    try:
+        # Log to console for real-time debugging
+        logger.info("=" * 60)
+        logger.info(f"📱 CARPLAY LOGS RECEIVED")
+        logger.info(f"Device: {request.device_model or 'Unknown'} | OS: {request.os_version or 'Unknown'}")
+        logger.info(f"App Version: {request.app_version or 'Unknown'} | Device ID: {request.device_id or 'Unknown'}")
+        logger.info("-" * 60)
+        
+        for log_entry in request.logs:
+            level_emoji = {
+                "error": "❌",
+                "warn": "⚠️",
+                "info": "ℹ️",
+                "debug": "🔍"
+            }.get(log_entry.level, "📝")
+            
+            logger.info(f"{level_emoji} [{log_entry.level.upper()}] {log_entry.message}")
+            if log_entry.context:
+                logger.info(f"   Context: {log_entry.context}")
+        
+        logger.info("=" * 60)
+        
+        # Store in MongoDB for historical analysis
+        log_document = {
+            "device_id": request.device_id,
+            "device_model": request.device_model,
+            "os_version": request.os_version,
+            "app_version": request.app_version,
+            "logs": [log.dict() for log in request.logs],
+            "received_at": datetime.now(timezone.utc),
+        }
+        
+        await db.carplay_logs.insert_one(log_document)
+        
+        return CarPlayLogResponse(
+            success=True,
+            received_count=len(request.logs),
+            message="Logs received successfully"
+        )
+        
+    except Exception as e:
+        logger.error(f"Error storing CarPlay logs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/carplay/logs")
+async def get_carplay_logs(
+    limit: int = 50,
+    device_id: Optional[str] = None,
+    level: Optional[str] = None
+):
+    """
+    Retrieve stored CarPlay logs for debugging.
+    """
+    try:
+        query = {}
+        if device_id:
+            query["device_id"] = device_id
+        
+        logs = await db.carplay_logs.find(
+            query,
+            {"_id": 0}
+        ).sort("received_at", -1).limit(limit).to_list(limit)
+        
+        # Filter by level if specified
+        if level:
+            for log_doc in logs:
+                log_doc["logs"] = [l for l in log_doc["logs"] if l.get("level") == level]
+        
+        return {
+            "success": True,
+            "count": len(logs),
+            "logs": logs
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching CarPlay logs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/carplay/logs")
+async def clear_carplay_logs():
+    """
+    Clear all stored CarPlay logs.
+    """
+    try:
+        result = await db.carplay_logs.delete_many({})
+        return {
+            "success": True,
+            "deleted_count": result.deleted_count,
+            "message": "All CarPlay logs cleared"
+        }
+    except Exception as e:
+        logger.error(f"Error clearing CarPlay logs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Now Playing API - Fetches ICY metadata from radio stream
 @api_router.get("/now-playing/{station_id}", response_model=NowPlayingResponse)
 async def get_now_playing(station_id: str):
