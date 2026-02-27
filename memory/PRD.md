@@ -889,3 +889,35 @@ cd ios && rm -rf Podfile.lock Pods && pod install --repo-update && cd ..
 ```bash
 eas build --platform ios --profile production --auto-submit --clear-cache
 ```
+
+
+---
+
+## February 27, 2025 - CarPlay "Yükleniyor" Sorunu KÖK NEDENİ BULUNDU
+
+### Kök Neden Analizi:
+**Problem:** CarPlay her zaman "Yükleniyor..." ekranında kalıyor, istasyonlar görünmüyor.
+
+**Kök Neden:** `MegaRadio-Bridging-Header.h` dosyasında **RNCarPlay import'u EKSİKTİ!**
+
+iOS'ta Swift kodu Objective-C class'larına erişmek için bridging header'da import yapılması **ZORUNLU**. Import olmadan:
+1. `NSClassFromString("RNCarPlay")` → **nil** döner
+2. Native Swift → React Native bağlantısı kurulamaz
+3. React Native `registerOnConnect` callback'i **ASLA** tetiklenmez
+4. Template oluşturulmaz → Loading ekranı sonsuza kadar kalır
+
+### Düzeltme:
+**Dosya:** `ios/MegaRadio/MegaRadio-Bridging-Header.h`
+
+RNCarPlay import'u eklendi:
+```objc
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
+#import <react-native-carplay/RNCarPlay.h>
+```
+
+### Build Komutu:
+```bash
+cd ios && rm -rf Podfile.lock Pods && pod install --repo-update && cd ..
+eas build --platform ios --profile production --auto-submit --clear-cache
+```
