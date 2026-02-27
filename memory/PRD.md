@@ -765,3 +765,60 @@ Turkish (Türkçe)
 3. CarPlay'e bağlanın ve station/logo'ya tıklayın
 4. Uygulama crash OLMAMALI
 
+---
+
+## February 27, 2025 - iOS Crash Düzeltmesi (KRİTİK)
+
+### Sorun Analizi
+**Crash Sebebi:** Uygulama başlangıçta crash oluyordu
+**Crash Mesajı:** `*** -[__NSPlaceholderDictionary initWithObjects:forKeys:count:]: attempt to insert nil object from objects[0]`
+**Thread:** Thread 10 - dispatch_once_callout
+
+**Kök Neden:**
+1. `CarPlaySceneDelegate.swift` dosyasında `RNCarPlay.connect()` doğrudan çağrılıyordu
+2. `RNCarPlay` native pod'u düzgün kurulu/linkli değildi
+3. iOS scene delegate başlatılırken `RNCarPlay` sınıfı nil olarak çözümleniyordu
+4. `MegaRadio-Bridging-Header.h` dosyasında hardcoded import vardı
+
+### Uygulanan Düzeltmeler
+
+**1. CarPlaySceneDelegate.swift güvenli hale getirildi:**
+- `RNCarPlay` çağrıları runtime class lookup ile değiştirildi
+- `NSClassFromString("RNCarPlay")` kullanılıyor
+- Modül yoksa graceful degradation (crash yerine log)
+- `performSelector` ile güvenli method çağrısı
+
+**2. MegaRadio-Bridging-Header.h temizlendi:**
+- Hardcoded RNCarPlay import kaldırıldı
+- Runtime class lookup kullanılacak şekilde güncellendi
+
+**3. Google Mobile Ads yeniden eklendi:**
+- `react-native-google-mobile-ads@14.6.0` paketi eklendi
+- `adMobService.native.ts` tamamen yeniden yazıldı
+- Güvenli dynamic import ile SDK yüklemesi
+- SDK yoksa graceful degradation
+
+**4. app.json güncellendi:**
+- `react-native-google-mobile-ads` plugin eklendi
+- Build numarası 21'e artırıldı
+- Test App ID'leri konfigüre edildi
+
+### Değişen Dosyalar:
+- `ios/MegaRadio/CarPlaySceneDelegate.swift` - Güvenli RNCarPlay erişimi
+- `ios/MegaRadio/MegaRadio-Bridging-Header.h` - Hardcoded import kaldırıldı
+- `src/services/adMobService.native.ts` - Tamamen yeniden yazıldı
+- `app.json` - Google Mobile Ads plugin, build number 21
+- `package.json` - react-native-google-mobile-ads eklendi
+
+### Test İçin:
+1. Yeni iOS build oluşturun: `eas build --platform ios --clear-cache`
+2. Build tamamlandığında TestFlight'a yükleyin
+3. Uygulama artık crash OLMAMALI
+4. CarPlay bağlantısı test edilmeli (RNCarPlay yoksa native-only mod çalışır)
+
+### Build Komutu:
+```bash
+cd frontend
+eas build --platform ios --clear-cache
+```
+
