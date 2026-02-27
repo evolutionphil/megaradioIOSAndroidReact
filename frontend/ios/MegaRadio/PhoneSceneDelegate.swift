@@ -5,10 +5,11 @@ import React
 /// PhoneSceneDelegate handles the main app window lifecycle.
 /// Required when UIApplicationSceneManifest is present in Info.plist.
 @objc(PhoneSceneDelegate)
+@MainActor
 class PhoneSceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    nonisolated func scene(
+    func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
@@ -35,23 +36,23 @@ class PhoneSceneDelegate: UIResponder, UIWindowSceneDelegate {
         appDelegate?.window = window
     }
 
-    nonisolated func sceneDidDisconnect(_ scene: UIScene) {
+    func sceneDidDisconnect(_ scene: UIScene) {
         // Called when the scene is being released by the system.
     }
 
-    nonisolated func sceneDidBecomeActive(_ scene: UIScene) {
+    func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
     }
 
-    nonisolated func sceneWillResignActive(_ scene: UIScene) {
+    func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
     }
 
-    nonisolated func sceneWillEnterForeground(_ scene: UIScene) {
+    func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
     }
 
-    nonisolated func sceneDidEnterBackground(_ scene: UIScene) {
+    func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
     }
 }
