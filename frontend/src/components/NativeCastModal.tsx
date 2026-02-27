@@ -73,13 +73,6 @@ const CastContext: any = null;
 const useCastChannel: any = null;
 
 console.log('[NativeCast] Google Cast DISABLED (Fabric compatibility issue)');
-    } catch (e) {
-      console.log('[NativeCast] CastContext init:', e);
-    }
-  }
-} catch (e) {
-  console.log('[NativeCast] Google Cast not available (web or Expo Go)');
-}
 
 const { width } = Dimensions.get('window');
 
