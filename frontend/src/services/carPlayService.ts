@@ -358,6 +358,15 @@ const CarPlayService: CarPlayServiceType = {
       CarPlayService.isConnected = false;
     });
     
+    // CRITICAL: Check if CarPlay was already connected before we registered
+    // This handles the race condition where CarPlay connects before JS initializes
+    if (CarPlay.connected) {
+      console.log('[CarPlay] Already connected - creating root template immediately');
+      isCarPlayConnected = true;
+      CarPlayService.isConnected = true;
+      createRootTemplate();
+    }
+    
     console.log('[CarPlayService] Initialized and waiting for connection');
   },
   
