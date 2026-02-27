@@ -383,9 +383,10 @@ export const stationService = {
   async getNowPlaying(stationId: string) {
     try {
       const response = await api.get(API_ENDPOINTS.stations.nowPlaying(stationId));
+      console.log('[stationService] getNowPlaying response:', response.data);
       return response.data;
     } catch (error) {
-      console.log('[stationService] getNowPlaying error:', error);
+      console.error('[stationService] getNowPlaying error:', error);
       return null;
     }
   },
