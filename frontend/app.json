@@ -153,15 +153,7 @@
           "androidAppId": "ca-app-pub-3940256099942544~3347511713",
           "iosAppId": "ca-app-pub-3940256099942544~1458002511"
         }
-      ],
-      [
-        "react-native-google-cast",
-        {
-          "iosReceiverAppId": "CC1AD845",
-          "androidReceiverAppId": "CC1AD845"
-        }
-      ],
-      "./plugins/withGoogleCast.js"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
