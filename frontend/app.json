@@ -144,16 +144,6 @@
         }
       ],
       [
-        "react-native-google-cast",
-        {
-          "receiverAppId": "94952E1F",
-          "androidPlayServicesCastFrameworkVersion": "21.4.0",
-          "startDiscoveryAfterFirstTapOnCastButton": false,
-          "disableDiscoveryAutostart": false
-        }
-      ],
-      "./plugins/withGoogleCast.js",
-      [
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-8771434485570434~7427742767",
