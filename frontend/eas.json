@@ -5,7 +5,10 @@
   },
   "build": {
     "base": {
-      "config": "bare"
+      "config": "bare",
+      "env": {
+        "SKIP_BARE_WORKFLOW_CHECK": "1"
+      }
     },
     "development": {
       "extends": "base",
