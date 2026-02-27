@@ -822,3 +822,27 @@ cd frontend
 eas build --platform ios --clear-cache
 ```
 
+---
+
+## February 27, 2025 - Google Cast Re-integration
+
+### Yapılan İşlemler:
+1. **react-native-google-cast@4.8.4** paketi yeniden eklendi
+2. **app.json** - Google Cast plugin konfigürasyonu eklendi
+3. **NativeCastButton.tsx** - Dynamic import ile güvenli modül yüklemesi
+4. **NativeCastModal.tsx** - Dynamic import ile güvenli modül yüklemesi
+5. **AppDelegate.swift** - Google Cast initialization aktif edildi
+6. **withGoogleCast.js** - Bonjour services konfigürasyonu
+
+### Konfigürasyon:
+- iOS: `kGCKDefaultMediaReceiverApplicationID` (default receiver)
+- Bonjour: `_googlecast._tcp`, `_94952E1F._googlecast._tcp`
+- Auto discovery: enabled
+- Expanded media controls: enabled
+
+### Build Komutu:
+```bash
+cd frontend
+eas build --platform ios --clear-cache
+```
+
