@@ -63,7 +63,7 @@ class FlowaliveService {
     if (this.isInitialized) return;
     
     try {
-      await Flowalive.setDevice();
+      await FlowAlive.setDevice();
       this.isInitialized = true;
       console.log('[FlowaliveService] Device initialized');
     } catch (error) {
