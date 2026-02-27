@@ -85,34 +85,18 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             }
         }
         
-        // List all loaded classes to help debug
-        var classCount: UInt32 = 0
-        if let classList = objc_copyClassList(&classCount) {
-            var carplayRelatedClasses: [String] = []
-            for i in 0..<Int(classCount) {
-                let className = String(cString: class_getName(classList[i]))
-                if className.lowercased().contains("carplay") || 
-                   className.lowercased().contains("rncar") ||
-                   className.contains("RNCar") {
-                    carplayRelatedClasses.append(className)
-                }
-            }
-            free(classList)
-            
-            sendRemoteLog(level: "warn", message: "RNCarPlay class NOT FOUND - listing related classes", data: [
-                "searchedClassNames": classNames,
-                "foundRelatedClasses": carplayRelatedClasses,
-                "totalClassesSearched": classCount
-            ])
-        }
+        // Log that class was not found
+        sendRemoteLog(level: "warn", message: "RNCarPlay class NOT FOUND", data: [
+            "searchedClassNames": classNames,
+            "hint": "Check if react-native-carplay pod is installed and linked"
+        ])
         
         return nil
     }
     
     /// Safely get RNCarPlay class - returns nil if not linked
     private func getRNCarPlayClass() -> AnyClass? {
-        let rnClass = findRNCarPlayClass()
-        return rnClass
+        return findRNCarPlayClass()
     }
     
     /// List all available selectors on RNCarPlay
