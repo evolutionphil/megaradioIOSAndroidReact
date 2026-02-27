@@ -3,6 +3,11 @@
   "main": "./index.js",
   "version": "1.0.0",
   "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "enabled": false
+      }
+    },
     "install": {
       "exclude": [
         "react-native-reanimated",
