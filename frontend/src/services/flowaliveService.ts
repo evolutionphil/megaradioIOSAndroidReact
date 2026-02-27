@@ -108,7 +108,7 @@ class FlowaliveService {
    */
   track(event: AnalyticsEvent | string, params?: Record<string, string | number | boolean | null>): void {
     try {
-      FlowAlive.track(event, params);
+      FlowAlive.event(event, '', params);
       console.log('[FlowaliveService] Event tracked:', event, params);
     } catch (error) {
       console.error('[FlowaliveService] Failed to track event:', error);
