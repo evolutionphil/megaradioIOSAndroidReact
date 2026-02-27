@@ -846,3 +846,46 @@ cd frontend
 eas build --platform ios --clear-cache
 ```
 
+
+
+---
+
+## February 27, 2025 - Google Ads & Next Station Düzeltmeleri
+
+### 1. Google AdMob Orijinal Haliyle Geri Yüklendi
+- **Dosya:** `src/services/adMobService.native.ts`
+- **Özellik:** Her 4 istasyon değişikliğinde interstitial reklam gösterilir (`INTERSTITIAL_FREQUENCY = 4`)
+- **Production Ad Unit IDs:**
+  - iOS Interstitial: `ca-app-pub-8771434485570434/6008042825`
+  - iOS Rewarded: `ca-app-pub-8771434485570434/3488497756`
+  - Android Interstitial: `ca-app-pub-8771434485570434/7220363780`
+  - Android Rewarded: `ca-app-pub-8771434485570434/8745886806`
+- Rewarded ad izlenince 30 dakika reklamsız süre verilir
+
+### 2. Next Station Butonu Düzeltildi
+- **Sorun:** Next butonuna basınca bazen aynı istasyon seçiliyordu (değişken gölgeleme hatası)
+- **Kök Neden:** `handleNextStation` içinde yerel `similarStations` değişkeni raw (filtrelenmemiş) data kullanıyordu
+- **Çözüm:** 
+  - `handleNextStation` artık `displaySimilarStations` kullanıyor (mevcut istasyon zaten filtrelenmiş)
+  - `handlePreviousStation` da aynı şekilde düzeltildi
+- **Dosya:** `app/player.tsx` - lines 376-412
+
+### 3. Metadata API Endpoint Düzeltildi
+- **Sorun:** Now playing metadata API yanlış endpoint kullanıyordu (`/api/stations/{id}/metadata` → 404)
+- **Çözüm:** Doğru endpoint kullanılıyor (`/api/now-playing/{id}` → 200)
+- **Dosya:** `src/constants/api.ts`
+
+### Değişen Dosyalar:
+- `src/services/adMobService.native.ts` - Orijinal implementasyon geri yüklendi
+- `app/player.tsx` - Next/Previous station bug fix
+- `src/constants/api.ts` - Metadata endpoint düzeltildi
+
+### Pod Sorunu Çözümü (Lokal Build):
+```bash
+cd ios && rm -rf Podfile.lock Pods && pod install --repo-update && cd ..
+```
+
+### EAS Build Komutu:
+```bash
+eas build --platform ios --profile production --auto-submit --clear-cache
+```
