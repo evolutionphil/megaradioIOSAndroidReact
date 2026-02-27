@@ -348,8 +348,8 @@ export default function RootLayout() {
             <AudioProvider>
               <PlayAtLoginHandler />
               <NotificationHandler />
-              {/* CarPlay DISABLED - causes crash when CarPlay connects (CPTemplateApplicationScene issue) */}
-              {/* <CarPlayHandler /> */}
+              {/* CarPlay - Re-enabled after native delegate fixes */}
+              <CarPlayHandler />
               <View style={styles.container}>
                 <StatusBar style="light" />
                 <Stack
