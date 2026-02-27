@@ -36,9 +36,8 @@ import TrackPlayer from 'react-native-track-player';
 import { flowaliveService } from '../src/services/flowaliveService';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
-// CarPlay - DISABLED due to crash on CarPlay connect (CPTemplateApplicationScene delegate issue)
-// This is a native iOS limitation with Expo managed workflow
-// import { CarPlayHandler } from '../src/components/CarPlayHandler';
+// CarPlay - Re-enabled after fixing native delegate issues
+import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
 sendLog('BEFORE_QUERY_CLIENT');
 
