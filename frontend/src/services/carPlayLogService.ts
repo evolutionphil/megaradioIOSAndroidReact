@@ -1,53 +1,66 @@
 // CarPlay Remote Logging Service
-// Sends CarPlay debug logs to backend for remote debugging
+// Sends detailed CarPlay debug logs to backend for remote debugging
 
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import * as Application from 'expo-application';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://themegaradio.com';
+const LOG_ENDPOINT = 'https://themegaradio.com/api/logs/remote';
+const API_KEY = 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw';
 
 interface LogEntry {
   level: 'info' | 'warn' | 'error' | 'debug';
   message: string;
-  context?: Record<string, any>;
-  timestamp?: string;
+  timestamp: string;
+  data?: Record<string, any>;
+  category?: string;  // 'carplay', 'audio', 'template', 'connection'
 }
 
 interface LogBuffer {
   logs: LogEntry[];
-  deviceId: string | null;
-  deviceModel: string | null;
-  osVersion: string | null;
-  appVersion: string | null;
+  deviceId: string;
+  deviceModel: string;
+  osVersion: string;
+  appVersion: string;
+  buildNumber: string;
+  platform: string;
 }
 
 // Buffer to collect logs before sending
 const logBuffer: LogBuffer = {
   logs: [],
-  deviceId: null,
-  deviceModel: null,
-  osVersion: null,
-  appVersion: null,
+  deviceId: '',
+  deviceModel: '',
+  osVersion: '',
+  appVersion: '',
+  buildNumber: '',
+  platform: Platform.OS,
 };
 
 // Initialize device info
 const initDeviceInfo = async () => {
   try {
-    logBuffer.deviceId = Device.osBuildId || Device.modelId || 'unknown';
-    logBuffer.deviceModel = Device.modelName || 'unknown';
+    logBuffer.deviceId = `${Platform.OS}_${Device.osBuildId || Device.modelId || Date.now()}`;
+    logBuffer.deviceModel = Device.modelName || Device.deviceName || 'unknown';
     logBuffer.osVersion = `${Platform.OS} ${Device.osVersion || 'unknown'}`;
-    logBuffer.appVersion = Constants.expoConfig?.version || '1.0.0';
+    logBuffer.appVersion = Application.nativeApplicationVersion || '1.0.0';
+    logBuffer.buildNumber = Application.nativeBuildVersion || '1';
+    logBuffer.platform = Platform.OS;
   } catch (e) {
-    console.warn('[CarPlayLog] Failed to get device info:', e);
+    logBuffer.deviceId = `${Platform.OS}_${Date.now()}`;
+    logBuffer.deviceModel = 'unknown';
+    logBuffer.osVersion = Platform.OS;
+    logBuffer.appVersion = '1.0.26';
+    logBuffer.buildNumber = '9';
   }
 };
 
 // Initialize on import
 initDeviceInfo();
 
-// Flush interval (send logs every 5 seconds if there are any)
-let flushInterval: NodeJS.Timeout | null = null;
+// Flush interval
+let flushInterval: ReturnType<typeof setInterval> | null = null;
+let isStarted = false;
 
 const startFlushInterval = () => {
   if (flushInterval) return;
@@ -56,7 +69,7 @@ const startFlushInterval = () => {
     if (logBuffer.logs.length > 0) {
       flushLogs();
     }
-  }, 5000);
+  }, 3000); // Her 3 saniyede bir gönder
 };
 
 const stopFlushInterval = () => {
@@ -71,59 +84,66 @@ const flushLogs = async () => {
   if (logBuffer.logs.length === 0) return;
   
   const logsToSend = [...logBuffer.logs];
-  logBuffer.logs = []; // Clear buffer immediately
+  logBuffer.logs = [];
   
   try {
-    const response = await fetch(`${API_BASE_URL}/api/carplay/logs`, {
+    const response = await fetch(LOG_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+        'X-API-Key': API_KEY,
       },
       body: JSON.stringify({
-        device_id: logBuffer.deviceId,
-        device_model: logBuffer.deviceModel,
-        os_version: logBuffer.osVersion,
-        app_version: logBuffer.appVersion,
         logs: logsToSend,
+        deviceId: logBuffer.deviceId,
+        deviceModel: logBuffer.deviceModel,
+        osVersion: logBuffer.osVersion,
+        appVersion: logBuffer.appVersion,
+        buildNumber: logBuffer.buildNumber,
+        platform: logBuffer.platform,
+        source: 'carplay',
       }),
     });
     
     if (!response.ok) {
       // Put logs back if send failed
-      logBuffer.logs = [...logsToSend, ...logBuffer.logs];
-      console.warn('[CarPlayLog] Failed to send logs:', response.status);
+      logBuffer.logs = [...logsToSend, ...logBuffer.logs].slice(-100); // Max 100 log tut
     }
   } catch (error) {
     // Put logs back if send failed
-    logBuffer.logs = [...logsToSend, ...logBuffer.logs];
-    console.warn('[CarPlayLog] Error sending logs:', error);
+    logBuffer.logs = [...logsToSend, ...logBuffer.logs].slice(-100);
   }
 };
 
 // Add log to buffer
-const addLog = (level: LogEntry['level'], message: string, context?: Record<string, any>) => {
+const addLog = (
+  level: LogEntry['level'], 
+  message: string, 
+  data?: Record<string, any>,
+  category?: string
+) => {
   const entry: LogEntry = {
     level,
     message,
-    context,
     timestamp: new Date().toISOString(),
+    data,
+    category: category || 'carplay',
   };
   
   logBuffer.logs.push(entry);
   
-  // Also log locally
+  // Also log locally for Xcode console
   const prefix = `[CarPlay][${level.toUpperCase()}]`;
   if (level === 'error') {
-    console.error(prefix, message, context || '');
+    console.error(prefix, message, data || '');
   } else if (level === 'warn') {
-    console.warn(prefix, message, context || '');
+    console.warn(prefix, message, data || '');
   } else {
-    console.log(prefix, message, context || '');
+    console.log(prefix, message, data || '');
   }
   
   // Immediately flush if error or buffer is large
-  if (level === 'error' || logBuffer.logs.length >= 10) {
+  if (level === 'error' || logBuffer.logs.length >= 5) {
     flushLogs();
   }
 };
@@ -132,59 +152,182 @@ const addLog = (level: LogEntry['level'], message: string, context?: Record<stri
 export const CarPlayLogger = {
   // Start collecting and sending logs
   start: () => {
-    addLog('info', 'CarPlay logging started');
+    if (isStarted) return;
+    isStarted = true;
+    initDeviceInfo();
+    addLog('info', '🚀 CarPlay Logger STARTED', {
+      deviceId: logBuffer.deviceId,
+      deviceModel: logBuffer.deviceModel,
+      osVersion: logBuffer.osVersion,
+      appVersion: logBuffer.appVersion,
+    }, 'system');
     startFlushInterval();
   },
   
   // Stop collecting logs
   stop: () => {
-    addLog('info', 'CarPlay logging stopped');
-    flushLogs(); // Send any remaining logs
+    if (!isStarted) return;
+    addLog('info', '🛑 CarPlay Logger STOPPED', undefined, 'system');
+    flushLogs();
     stopFlushInterval();
+    isStarted = false;
   },
   
   // Log methods
-  info: (message: string, context?: Record<string, any>) => addLog('info', message, context),
-  warn: (message: string, context?: Record<string, any>) => addLog('warn', message, context),
-  error: (message: string, context?: Record<string, any>) => addLog('error', message, context),
-  debug: (message: string, context?: Record<string, any>) => addLog('debug', message, context),
+  info: (message: string, data?: Record<string, any>) => addLog('info', message, data),
+  warn: (message: string, data?: Record<string, any>) => addLog('warn', message, data),
+  error: (message: string, data?: Record<string, any>) => addLog('error', message, data),
+  debug: (message: string, data?: Record<string, any>) => addLog('debug', message, data),
   
-  // CarPlay specific events
+  // ============ CarPlay Connection Events ============
+  
   connected: (details?: Record<string, any>) => {
-    addLog('info', '🚗 CarPlay CONNECTED', details);
+    addLog('info', '🚗 CarPlay CONNECTED', {
+      ...details,
+      connectionTime: new Date().toISOString(),
+    }, 'connection');
   },
   
   disconnected: (details?: Record<string, any>) => {
-    addLog('info', '🚗 CarPlay DISCONNECTED', details);
+    addLog('info', '🚗 CarPlay DISCONNECTED', {
+      ...details,
+      disconnectionTime: new Date().toISOString(),
+    }, 'connection');
+  },
+  
+  alreadyConnected: () => {
+    addLog('info', '🚗 CarPlay ALREADY CONNECTED (race condition handled)', undefined, 'connection');
+  },
+  
+  // ============ Template Events ============
+  
+  templateCreating: (templateType: string) => {
+    addLog('debug', `📋 Creating template: ${templateType}`, { templateType }, 'template');
   },
   
   templateCreated: (templateType: string, details?: Record<string, any>) => {
-    addLog('info', `📋 Template created: ${templateType}`, details);
+    addLog('info', `✅ Template created: ${templateType}`, { templateType, ...details }, 'template');
   },
   
   templateError: (templateType: string, error: any) => {
-    addLog('error', `❌ Template error: ${templateType}`, { 
+    addLog('error', `❌ Template ERROR: ${templateType}`, { 
+      templateType,
       error: error?.message || String(error),
-      stack: error?.stack,
-    });
+      stack: error?.stack?.substring(0, 500),
+    }, 'template');
   },
+  
+  templateFailed: (templateType: string, reason: string) => {
+    addLog('warn', `⚠️ Template failed: ${templateType}`, { templateType, reason }, 'template');
+  },
+  
+  rootTemplateSet: (tabCount: number) => {
+    addLog('info', `🎯 Root template SET`, { tabCount, tabs: tabCount }, 'template');
+  },
+  
+  fallbackTemplateShown: (reason: string) => {
+    addLog('warn', `⚠️ Fallback template shown`, { reason }, 'template');
+  },
+  
+  tabSelected: (index: number, tabName?: string) => {
+    addLog('info', `👆 Tab selected: ${tabName || index}`, { index, tabName }, 'template');
+  },
+  
+  // ============ Data Loading Events ============
+  
+  dataLoading: (dataType: string) => {
+    addLog('debug', `📥 Loading data: ${dataType}`, { dataType }, 'data');
+  },
+  
+  dataLoaded: (dataType: string, count: number) => {
+    addLog('info', `📦 Data loaded: ${dataType}`, { dataType, itemCount: count }, 'data');
+  },
+  
+  dataError: (dataType: string, error: any) => {
+    addLog('error', `❌ Data load ERROR: ${dataType}`, {
+      dataType,
+      error: error?.message || String(error),
+    }, 'data');
+  },
+  
+  // ============ Station Events ============
   
   stationSelected: (stationName: string, stationId: string) => {
-    addLog('info', `🎵 Station selected: ${stationName}`, { stationId });
+    addLog('info', `🎵 Station SELECTED: ${stationName}`, { 
+      stationName, 
+      stationId,
+      selectTime: new Date().toISOString(),
+    }, 'playback');
   },
   
-  playbackStarted: (stationName: string) => {
-    addLog('info', `▶️ Playback started: ${stationName}`);
+  stationLoading: (stationName: string) => {
+    addLog('debug', `⏳ Station loading: ${stationName}`, { stationName }, 'playback');
   },
   
-  playbackError: (error: any) => {
-    addLog('error', '⏹️ Playback error', {
+  // ============ Playback Events ============
+  
+  playbackStarted: (stationName: string, streamUrl?: string) => {
+    addLog('info', `▶️ Playback STARTED: ${stationName}`, { 
+      stationName,
+      streamUrl: streamUrl?.substring(0, 100),
+    }, 'playback');
+  },
+  
+  playbackStopped: (stationName?: string) => {
+    addLog('info', `⏹️ Playback STOPPED`, { stationName }, 'playback');
+  },
+  
+  playbackError: (error: any, stationName?: string) => {
+    addLog('error', `❌ Playback ERROR`, {
+      stationName,
       error: error?.message || String(error),
-    });
+      code: error?.code,
+    }, 'playback');
+  },
+  
+  nowPlayingUpdated: (stationName: string, songTitle?: string, artistName?: string) => {
+    addLog('debug', `🎶 Now playing updated`, { stationName, songTitle, artistName }, 'playback');
+  },
+  
+  // ============ Module Events ============
+  
+  moduleLoaded: (moduleName: string, available: boolean) => {
+    addLog('info', `📦 Module: ${moduleName}`, { moduleName, available }, 'system');
+  },
+  
+  moduleError: (moduleName: string, error: any) => {
+    addLog('error', `❌ Module ERROR: ${moduleName}`, {
+      moduleName,
+      error: error?.message || String(error),
+    }, 'system');
+  },
+  
+  // ============ Service Events ============
+  
+  serviceInitializing: () => {
+    addLog('info', `🔧 CarPlay service INITIALIZING`, {
+      platform: Platform.OS,
+      timestamp: new Date().toISOString(),
+    }, 'system');
+  },
+  
+  serviceInitialized: () => {
+    addLog('info', `✅ CarPlay service INITIALIZED`, undefined, 'system');
+  },
+  
+  serviceDisconnecting: () => {
+    addLog('info', `🔌 CarPlay service DISCONNECTING`, undefined, 'system');
   },
   
   // Force send all buffered logs
   flush: flushLogs,
+  
+  // Get current buffer status (for debugging)
+  getStatus: () => ({
+    isStarted,
+    bufferedLogs: logBuffer.logs.length,
+    deviceId: logBuffer.deviceId,
+  }),
 };
 
 export default CarPlayLogger;
