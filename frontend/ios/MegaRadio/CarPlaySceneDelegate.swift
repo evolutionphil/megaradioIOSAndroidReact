@@ -2,11 +2,49 @@
 
 /// CarPlaySceneDelegate handles the CarPlay interface lifecycle.
 /// This delegate is called when the app connects/disconnects from CarPlay.
+/// NOTE: RNCarPlay module calls are wrapped in safety checks to prevent crashes
+/// when the native module is not properly linked.
 @objc(CarPlaySceneDelegate)
 @MainActor
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     
     var interfaceController: CPInterfaceController?
+    
+    /// Safely get RNCarPlay class - returns nil if not linked
+    private func getRNCarPlayClass() -> AnyClass? {
+        return NSClassFromString("RNCarPlay")
+    }
+    
+    /// Safely connect to RNCarPlay module
+    private func safeConnectToRNCarPlay(interfaceController: CPInterfaceController, window: CPWindow?) {
+        guard let rnCarPlayClass = getRNCarPlayClass() else {
+            print("[CarPlaySceneDelegate] RNCarPlay module not available - using native-only mode")
+            return
+        }
+        
+        // Use performSelector to safely call the method
+        let selector = NSSelectorFromString("connectWithInterfaceController:window:")
+        if rnCarPlayClass.responds(to: selector) {
+            _ = (rnCarPlayClass as AnyObject).perform(selector, with: interfaceController, with: window)
+            print("[CarPlaySceneDelegate] Successfully connected to RNCarPlay")
+        } else {
+            print("[CarPlaySceneDelegate] RNCarPlay.connect method not found")
+        }
+    }
+    
+    /// Safely disconnect from RNCarPlay module
+    private func safeDisconnectFromRNCarPlay() {
+        guard let rnCarPlayClass = getRNCarPlayClass() else {
+            print("[CarPlaySceneDelegate] RNCarPlay module not available - skipping disconnect")
+            return
+        }
+        
+        let selector = NSSelectorFromString("disconnect")
+        if rnCarPlayClass.responds(to: selector) {
+            _ = (rnCarPlayClass as AnyObject).perform(selector)
+            print("[CarPlaySceneDelegate] Successfully disconnected from RNCarPlay")
+        }
+    }
     
     /// Called when CarPlay connects to the app
     func templateApplicationScene(
@@ -23,8 +61,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         let loadingTemplate = CPListTemplate(title: "MegaRadio", sections: [loadingSection])
         interfaceController.setRootTemplate(loadingTemplate, animated: false, completion: nil)
         
-        // Connect to React Native CarPlay module
-        RNCarPlay.connect(with: interfaceController, window: templateApplicationScene.carWindow)
+        // Safely connect to React Native CarPlay module
+        safeConnectToRNCarPlay(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
     }
     
     /// Called when CarPlay disconnects from the app
@@ -34,7 +72,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     ) {
         print("[CarPlaySceneDelegate] CarPlay disconnected")
         self.interfaceController = nil
-        RNCarPlay.disconnect()
+        safeDisconnectFromRNCarPlay()
     }
     
     /// Called when CarPlay scene is about to connect (iOS 14+)
@@ -52,7 +90,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         let loadingTemplate = CPListTemplate(title: "MegaRadio", sections: [loadingSection])
         interfaceController.setRootTemplate(loadingTemplate, animated: false, completion: nil)
         
-        // Connect to React Native CarPlay module
-        RNCarPlay.connect(with: interfaceController, window: window)
+        // Safely connect to React Native CarPlay module
+        safeConnectToRNCarPlay(interfaceController: interfaceController, window: window)
     }
 }
