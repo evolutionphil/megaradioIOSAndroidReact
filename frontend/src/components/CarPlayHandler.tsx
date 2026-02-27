@@ -75,28 +75,38 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
 
 export const CarPlayHandler: React.FC = () => {
   const { playStation } = useAudioPlayer();
+  
+  // Send log immediately when component mounts (before useEffect)
+  const { sendLog } = require('../services/remoteLog');
+  
+  // Log on every render to debug
+  console.log('[CarPlayHandler] Component rendering, playStation:', !!playStation);
+  sendLog('[CarPlayHandler] Component RENDER', { 
+    hasPlayStation: !!playStation,
+    platform: Platform.OS 
+  });
 
   useEffect(() => {
+    console.log('[CarPlayHandler] useEffect RUNNING');
+    sendLog('[CarPlayHandler] useEffect RUNNING', { platform: Platform.OS });
+    
     // Only initialize on native platforms
     if (Platform.OS === 'web') {
       console.log('[CarPlayHandler] Skipping on web platform');
+      sendLog('[CarPlayHandler] Skipping - web platform');
+      return;
+    }
+
+    if (!playStation) {
+      console.log('[CarPlayHandler] playStation not ready yet');
+      sendLog('[CarPlayHandler] playStation NOT READY - waiting');
       return;
     }
 
     console.log('[CarPlayHandler] ========== INITIALIZING ==========');
-    
-    // Send remote log immediately
-    const { sendLog } = require('../services/remoteLog');
-    sendLog('[CarPlayHandler] useEffect triggered - about to initialize CarPlayService', {
-      platform: Platform.OS,
-      timestamp: new Date().toISOString()
-    });
+    sendLog('[CarPlayHandler] INITIALIZING CarPlayService');
 
     try {
-      // Initialize CarPlay with callbacks
-      console.log('[CarPlayHandler] Calling CarPlayService.initialize...');
-      sendLog('[CarPlayHandler] Calling CarPlayService.initialize');
-      
       CarPlayService.initialize(
         playStation,
         getPopularStations,
@@ -107,7 +117,7 @@ export const CarPlayHandler: React.FC = () => {
       );
       
       console.log('[CarPlayHandler] CarPlayService.initialize completed');
-      sendLog('[CarPlayHandler] CarPlayService.initialize completed');
+      sendLog('[CarPlayHandler] CarPlayService.initialize COMPLETED');
     } catch (error: any) {
       console.error('[CarPlayHandler] Error initializing:', error);
       sendLog('[CarPlayHandler] ERROR initializing', { error: String(error) });
