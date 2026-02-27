@@ -360,6 +360,11 @@ const CarPlayService: CarPlayServiceType = {
     }
     
     console.log('[CarPlayService] Initializing...');
+    CarPlayLogger.start();
+    CarPlayLogger.info('CarPlay service initializing...', {
+      platform: Platform.OS,
+      carPlayAvailable: !!CarPlay,
+    });
     
     // Store callbacks
     playStationCallback = playStation;
@@ -372,6 +377,7 @@ const CarPlayService: CarPlayServiceType = {
     // Register CarPlay connection handler
     CarPlay.registerOnConnect(() => {
       console.log('[CarPlay] ========== CONNECTED ==========');
+      CarPlayLogger.connected({ timestamp: new Date().toISOString() });
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       
@@ -382,6 +388,7 @@ const CarPlayService: CarPlayServiceType = {
     // Register CarPlay disconnection handler
     CarPlay.registerOnDisconnect(() => {
       console.log('[CarPlay] ========== DISCONNECTED ==========');
+      CarPlayLogger.disconnected({ timestamp: new Date().toISOString() });
       isCarPlayConnected = false;
       CarPlayService.isConnected = false;
     });
@@ -390,11 +397,13 @@ const CarPlayService: CarPlayServiceType = {
     // This handles the race condition where CarPlay connects before JS initializes
     if (CarPlay.connected) {
       console.log('[CarPlay] Already connected - creating root template immediately');
+      CarPlayLogger.info('CarPlay already connected - creating root template immediately');
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       createRootTemplate();
     }
     
+    CarPlayLogger.info('CarPlay service initialized, waiting for connection');
     console.log('[CarPlayService] Initialized and waiting for connection');
   },
   
