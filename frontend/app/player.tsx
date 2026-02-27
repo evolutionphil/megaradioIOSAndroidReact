@@ -372,20 +372,20 @@ export default function PlayerScreen() {
   // Check if current station is favorited
   const isFavorite = currentStation ? checkIsFavorite(currentStation._id) : false;
 
-  // Play next station from similar stations
+  // Play next station from similar stations (uses filtered list that excludes current station)
   const handleNextStation = useCallback(() => {
-    const similarStations = similarData?.data || similarData || [];
-    if (similarStations.length > 0) {
-      // Pick a random station from similar stations
-      const randomIndex = Math.floor(Math.random() * similarStations.length);
-      const nextStation = similarStations[randomIndex];
+    // Use displaySimilarStations which already excludes current station
+    if (displaySimilarStations.length > 0) {
+      // Pick a random station from the filtered list
+      const randomIndex = Math.floor(Math.random() * displaySimilarStations.length);
+      const nextStation = displaySimilarStations[randomIndex];
       console.log('[Player] Playing next station:', nextStation?.name);
       if (nextStation) {
         playStation(nextStation);
         addRecentStation(nextStation);
       }
     }
-  }, [similarData, playStation, addRecentStation]);
+  }, [displaySimilarStations, playStation, addRecentStation]);
 
   // Play previous station from recently played
   const handlePreviousStation = useCallback(() => {
