@@ -99,35 +99,11 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         return findRNCarPlayClass()
     }
     
-    /// List all available selectors on RNCarPlay
+    /// List all available selectors on RNCarPlay (simplified)
     private func listRNCarPlayMethods(_ cls: AnyClass) {
-        var methodCount: UInt32 = 0
-        var methodNames: [String] = []
-        
-        // Get instance methods
-        if let methods = class_copyMethodList(cls, &methodCount) {
-            for i in 0..<Int(methodCount) {
-                let selector = method_getName(methods[i])
-                methodNames.append(NSStringFromSelector(selector))
-            }
-            free(methods)
-        }
-        
-        // Get class methods
-        if let metaClass = object_getClass(cls) {
-            var classMethodCount: UInt32 = 0
-            if let classMethods = class_copyMethodList(metaClass, &classMethodCount) {
-                for i in 0..<Int(classMethodCount) {
-                    let selector = method_getName(classMethods[i])
-                    methodNames.append("[class] " + NSStringFromSelector(selector))
-                }
-                free(classMethods)
-            }
-        }
-        
-        sendRemoteLog(level: "debug", message: "RNCarPlay available methods", data: [
-            "instanceMethodCount": methodCount,
-            "methods": methodNames
+        // Just log that we found the class - detailed method listing removed for build compatibility
+        sendRemoteLog(level: "debug", message: "RNCarPlay class found - checking methods", data: [
+            "className": String(describing: cls)
         ])
     }
     
