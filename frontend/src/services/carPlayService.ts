@@ -252,11 +252,13 @@ const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName
 const createRootTemplate = async (): Promise<void> => {
   if (!TabBarTemplate || !CarPlay) {
     console.log('[CarPlay] Templates not available');
+    CarPlayLogger.error('Templates not available', { TabBarTemplate: !!TabBarTemplate, CarPlay: !!CarPlay });
     return;
   }
   
   try {
     console.log('[CarPlay] Creating root template...');
+    CarPlayLogger.info('Creating root template...');
     
     // Create all tab templates with individual error handling
     const results = await Promise.allSettled([
@@ -274,10 +276,22 @@ const createRootTemplate = async (): Promise<void> => {
     const genresTemplate = genresResult.status === 'fulfilled' ? genresResult.value : null;
     
     // Log any failures
-    if (favoritesResult.status === 'rejected') console.error('[CarPlay] Favorites template failed:', favoritesResult.reason);
-    if (recentResult.status === 'rejected') console.error('[CarPlay] Recent template failed:', recentResult.reason);
-    if (browseResult.status === 'rejected') console.error('[CarPlay] Browse template failed:', browseResult.reason);
-    if (genresResult.status === 'rejected') console.error('[CarPlay] Genres template failed:', genresResult.reason);
+    if (favoritesResult.status === 'rejected') {
+      console.error('[CarPlay] Favorites template failed:', favoritesResult.reason);
+      CarPlayLogger.templateError('Favorites', favoritesResult.reason);
+    }
+    if (recentResult.status === 'rejected') {
+      console.error('[CarPlay] Recent template failed:', recentResult.reason);
+      CarPlayLogger.templateError('RecentlyPlayed', recentResult.reason);
+    }
+    if (browseResult.status === 'rejected') {
+      console.error('[CarPlay] Browse template failed:', browseResult.reason);
+      CarPlayLogger.templateError('Browse', browseResult.reason);
+    }
+    if (genresResult.status === 'rejected') {
+      console.error('[CarPlay] Genres template failed:', genresResult.reason);
+      CarPlayLogger.templateError('Genres', genresResult.reason);
+    }
     
     // Build tabs array with available templates
     const templates: any[] = [];
@@ -286,28 +300,33 @@ const createRootTemplate = async (): Promise<void> => {
       browseTemplate.tabTitle = 'Keşfet';
       browseTemplate.tabSystemImageName = 'music.note.list';
       templates.push(browseTemplate);
+      CarPlayLogger.templateCreated('Browse/Keşfet');
     }
     
     if (favoritesTemplate) {
       favoritesTemplate.tabTitle = 'Favoriler';
       favoritesTemplate.tabSystemImageName = 'heart.fill';
       templates.push(favoritesTemplate);
+      CarPlayLogger.templateCreated('Favorites/Favoriler');
     }
     
     if (recentTemplate) {
       recentTemplate.tabTitle = 'Son Çalınanlar';
       recentTemplate.tabSystemImageName = 'clock.fill';
       templates.push(recentTemplate);
+      CarPlayLogger.templateCreated('RecentlyPlayed/Son Çalınanlar');
     }
     
     if (genresTemplate) {
       genresTemplate.tabTitle = 'Türler';
       genresTemplate.tabSystemImageName = 'square.grid.2x2.fill';
       templates.push(genresTemplate);
+      CarPlayLogger.templateCreated('Genres/Türler');
     }
     
     if (templates.length === 0) {
       console.log('[CarPlay] No templates available - showing fallback');
+      CarPlayLogger.warn('No templates available - showing fallback');
       // Create a simple fallback list template
       if (ListTemplate) {
         const fallbackTemplate = new ListTemplate({
@@ -321,6 +340,7 @@ const createRootTemplate = async (): Promise<void> => {
           }],
         });
         CarPlay.setRootTemplate(fallbackTemplate, true);
+        CarPlayLogger.templateCreated('Fallback', { reason: 'No tabs available' });
       }
       return;
     }
@@ -330,15 +350,18 @@ const createRootTemplate = async (): Promise<void> => {
       templates: templates,
       onTemplateSelect: (selectedTemplate: any, selectedIndex: number) => {
         console.log('[CarPlay] Tab selected:', selectedIndex);
+        CarPlayLogger.info('Tab selected', { index: selectedIndex });
       },
     });
     
     // Set as root template
     CarPlay.setRootTemplate(tabBarTemplate, true);
     console.log('[CarPlay] Root template set successfully with', templates.length, 'tabs');
+    CarPlayLogger.info('Root template set successfully', { tabCount: templates.length });
     
   } catch (error) {
     console.error('[CarPlay] Error creating root template:', error);
+    CarPlayLogger.error('Error creating root template', { error: String(error) });
   }
 };
 
