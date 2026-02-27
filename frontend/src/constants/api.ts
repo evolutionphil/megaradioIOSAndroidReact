@@ -32,7 +32,7 @@ export const API_ENDPOINTS = {
     ratings: (id: string) => `/api/stations/${id}/ratings`,
     userRating: (id: string) => `/api/stations/${id}/user-rating`,
     reportError: '/api/stations/report-error',
-    nowPlaying: (id: string) => `/api/stations/${id}/metadata`,
+    nowPlaying: (id: string) => `/api/now-playing/${id}`,
   },
   
   // Streaming endpoints
@@ -44,7 +44,7 @@ export const API_ENDPOINTS = {
   
   // Metadata endpoints
   metadata: {
-    nowPlaying: (stationId: string) => `/api/stations/${stationId}/metadata`,
+    nowPlaying: (stationId: string) => `/api/now-playing/${stationId}`,
   },
   
   // Genre endpoints
