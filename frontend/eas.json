@@ -4,7 +4,11 @@
     "appVersionSource": "local"
   },
   "build": {
+    "base": {
+      "config": "bare"
+    },
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
@@ -19,6 +23,7 @@
       }
     },
     "simulator": {
+      "extends": "base",
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium",
@@ -27,6 +32,7 @@
       }
     },
     "preview": {
+      "extends": "base",
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium",
@@ -39,6 +45,7 @@
       }
     },
     "production": {
+      "extends": "base",
       "node": "20.19.4",
       "ios": {
         "resourceClass": "m-medium",
