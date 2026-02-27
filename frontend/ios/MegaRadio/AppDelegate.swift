@@ -6,7 +6,6 @@ import GoogleCast
 // @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
-import CarPlay
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -39,61 +38,15 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-    // Note: Window creation is now handled by PhoneSceneDelegate for scene-based lifecycle
-    // Only create window here if scene manifest is not configured (fallback for older iOS)
-    #if os(iOS) || os(tvOS)
-    if #available(iOS 13.0, *) {
-      // Scene-based lifecycle - window will be created by PhoneSceneDelegate
-    } else {
-      // Legacy window-based lifecycle (iOS 12 and earlier)
-      window = UIWindow(frame: UIScreen.main.bounds)
-      factory.startReactNative(
-        withModuleName: "main",
-        in: window,
-        launchOptions: launchOptions)
-    }
-    #endif
+#if os(iOS) || os(tvOS)
+    window = UIWindow(frame: UIScreen.main.bounds)
+    factory.startReactNative(
+      withModuleName: "main",
+      in: window,
+      launchOptions: launchOptions)
+#endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-  
-  // MARK: - Scene Configuration (iOS 13+)
-  
-  /// Returns the scene configuration for connecting scene sessions
-  /// This is called when a new scene session is created (phone or CarPlay)
-  public func application(
-    _ application: UIApplication,
-    configurationForConnecting connectingSceneSession: UISceneSession,
-    options: UIScene.ConnectionOptions
-  ) -> UISceneConfiguration {
-    
-    // Check if this is a CarPlay session
-    if connectingSceneSession.role == .carTemplateApplication {
-      print("[AppDelegate] Configuring CarPlay scene")
-      let config = UISceneConfiguration(
-        name: "CarPlay",
-        sessionRole: connectingSceneSession.role
-      )
-      config.delegateClass = CarPlaySceneDelegate.self
-      return config
-    }
-    
-    // Default: Phone/iPad scene
-    print("[AppDelegate] Configuring Phone scene")
-    let config = UISceneConfiguration(
-      name: "Default Configuration",
-      sessionRole: connectingSceneSession.role
-    )
-    config.delegateClass = PhoneSceneDelegate.self
-    return config
-  }
-  
-  /// Called when a scene session is being discarded
-  public func application(
-    _ application: UIApplication,
-    didDiscardSceneSessions sceneSessions: Set<UISceneSession>
-  ) {
-    // Called when the user discards a scene session.
   }
 
   // Linking API
