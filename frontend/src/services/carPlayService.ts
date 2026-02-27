@@ -185,24 +185,36 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
 
 // Create Genres Grid Template
 const createGenresTemplate = async (): Promise<any> => {
-  if (!GridTemplate || !getGenresCallback) return null;
+  CarPlayLogger.templateCreating('Genres');
+  
+  if (!GridTemplate || !getGenresCallback) {
+    CarPlayLogger.templateFailed('Genres', 'GridTemplate or callback not available');
+    return null;
+  }
   
   try {
+    CarPlayLogger.dataLoading('genres');
     const genres = await getGenresCallback();
+    CarPlayLogger.dataLoaded('genres', genres.length);
     
-    return new GridTemplate({
+    const template = new GridTemplate({
       title: 'Türler',
       buttons: genres.slice(0, 8).map(genre => ({
         id: genre.name,
         titleVariants: [genre.name],
-        image: 'https://themegaradio.com/logo.png', // Default genre icon
+        image: 'https://themegaradio.com/logo.png',
       })),
       onButtonPressed: async ({ id }: { id: string }) => {
+        CarPlayLogger.info('Genre button pressed', { genre: id });
         console.log('[CarPlay] Genre selected:', id);
         await showGenreStationsTemplate(id);
       },
     });
-  } catch (error) {
+    
+    CarPlayLogger.templateCreated('Genres', { genreCount: genres.length });
+    return template;
+  } catch (error: any) {
+    CarPlayLogger.templateError('Genres', error);
     console.error('[CarPlay] Error creating genres template:', error);
     return null;
   }
@@ -210,10 +222,17 @@ const createGenresTemplate = async (): Promise<any> => {
 
 // Create Genre Stations List Template
 const showGenreStationsTemplate = async (genre: string): Promise<void> => {
-  if (!ListTemplate || !CarPlay || !getStationsByGenreCallback) return;
+  CarPlayLogger.templateCreating(`GenreStations-${genre}`);
+  
+  if (!ListTemplate || !CarPlay || !getStationsByGenreCallback) {
+    CarPlayLogger.templateFailed(`GenreStations-${genre}`, 'Dependencies not available');
+    return;
+  }
   
   try {
+    CarPlayLogger.dataLoading(`genreStations-${genre}`);
     const stations = await getStationsByGenreCallback(genre);
+    CarPlayLogger.dataLoaded(`genreStations-${genre}`, stations.length);
     
     const template = new ListTemplate({
       title: genre,
@@ -228,27 +247,42 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stations[index];
         if (station && playStationCallback) {
+          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing from genre:', station.name);
-          await playStationCallback(station);
-          showNowPlayingTemplate(station);
+          try {
+            await playStationCallback(station);
+            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
+            showNowPlayingTemplate(station);
+          } catch (e: any) {
+            CarPlayLogger.playbackError(e, station.name);
+          }
         }
       },
     });
     
     CarPlay.pushTemplate(template, true);
-  } catch (error) {
+    CarPlayLogger.templateCreated(`GenreStations-${genre}`, { stationCount: stations.length });
+  } catch (error: any) {
+    CarPlayLogger.templateError(`GenreStations-${genre}`, error);
     console.error('[CarPlay] Error showing genre stations:', error);
   }
 };
 
 // Create Browse/Popular Stations List Template
 const createBrowseTemplate = async (): Promise<any> => {
-  if (!ListTemplate || !getStationsCallback) return null;
+  CarPlayLogger.templateCreating('Browse');
+  
+  if (!ListTemplate || !getStationsCallback) {
+    CarPlayLogger.templateFailed('Browse', 'ListTemplate or callback not available');
+    return null;
+  }
   
   try {
+    CarPlayLogger.dataLoading('popularStations');
     const stations = await getStationsCallback();
+    CarPlayLogger.dataLoaded('popularStations', stations.length);
     
-    return new ListTemplate({
+    const template = new ListTemplate({
       title: 'Keşfet',
       sections: [{
         header: 'Popüler İstasyonlar',
@@ -261,13 +295,23 @@ const createBrowseTemplate = async (): Promise<any> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stations[index];
         if (station && playStationCallback) {
+          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing from browse:', station.name);
-          await playStationCallback(station);
-          showNowPlayingTemplate(station);
+          try {
+            await playStationCallback(station);
+            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
+            showNowPlayingTemplate(station);
+          } catch (e: any) {
+            CarPlayLogger.playbackError(e, station.name);
+          }
         }
       },
     });
-  } catch (error) {
+    
+    CarPlayLogger.templateCreated('Browse', { stationCount: stations.length });
+    return template;
+  } catch (error: any) {
+    CarPlayLogger.templateError('Browse', error);
     console.error('[CarPlay] Error creating browse template:', error);
     return null;
   }
