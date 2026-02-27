@@ -83,17 +83,35 @@ export const CarPlayHandler: React.FC = () => {
       return;
     }
 
-    console.log('[CarPlayHandler] Initializing CarPlay service...');
+    console.log('[CarPlayHandler] ========== INITIALIZING ==========');
+    
+    // Send remote log immediately
+    const { sendLog } = require('../services/remoteLog');
+    sendLog('[CarPlayHandler] useEffect triggered - about to initialize CarPlayService', {
+      platform: Platform.OS,
+      timestamp: new Date().toISOString()
+    });
 
-    // Initialize CarPlay with callbacks
-    CarPlayService.initialize(
-      playStation,
-      getPopularStations,
-      getFavoriteStations,
-      getRecentStations,
-      getGenresList,
-      getStationsByGenre
-    );
+    try {
+      // Initialize CarPlay with callbacks
+      console.log('[CarPlayHandler] Calling CarPlayService.initialize...');
+      sendLog('[CarPlayHandler] Calling CarPlayService.initialize');
+      
+      CarPlayService.initialize(
+        playStation,
+        getPopularStations,
+        getFavoriteStations,
+        getRecentStations,
+        getGenresList,
+        getStationsByGenre
+      );
+      
+      console.log('[CarPlayHandler] CarPlayService.initialize completed');
+      sendLog('[CarPlayHandler] CarPlayService.initialize completed');
+    } catch (error: any) {
+      console.error('[CarPlayHandler] Error initializing:', error);
+      sendLog('[CarPlayHandler] ERROR initializing', { error: String(error) });
+    }
 
     // Cleanup on unmount
     return () => {
