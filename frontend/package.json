@@ -5,7 +5,9 @@
   "expo": {
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "enabled": false
+        "exclude": [
+          "react-native-track-player"
+        ]
       }
     },
     "install": {
@@ -49,13 +51,6 @@
         "react-native-webview",
         "@types/react"
       ]
-    },
-    "doctor": {
-      "reactNativeDirectoryCheck": {
-        "exclude": [
-          "react-native-track-player"
-        ]
-      }
     }
   },
   "resolutions": {
