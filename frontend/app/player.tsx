@@ -397,11 +397,10 @@ export default function PlayerScreen() {
       console.log('[Player] Playing previous station:', prevStation?.name);
       playStation(prevStation);
     } else {
-      // No previous station, play random from similar
-      const similarStations = similarData?.data || similarData || [];
-      if (similarStations.length > 0) {
-        const randomIndex = Math.floor(Math.random() * similarStations.length);
-        const randomStation = similarStations[randomIndex];
+      // No previous station, play random from filtered similar stations
+      if (displaySimilarStations.length > 0) {
+        const randomIndex = Math.floor(Math.random() * displaySimilarStations.length);
+        const randomStation = displaySimilarStations[randomIndex];
         console.log('[Player] No previous, playing random similar:', randomStation?.name);
         if (randomStation) {
           playStation(randomStation);
@@ -409,7 +408,7 @@ export default function PlayerScreen() {
         }
       }
     }
-  }, [recentStations, currentStation, similarData, playStation, addRecentStation]);
+  }, [recentStations, currentStation, displaySimilarStations, playStation, addRecentStation]);
 
   const handleClose = () => {
     // Check if we can go back, otherwise navigate to tabs
