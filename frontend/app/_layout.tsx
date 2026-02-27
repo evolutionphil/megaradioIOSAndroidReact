@@ -393,7 +393,7 @@ export default function RootLayout() {
             </AudioProvider>
           </QueryClientProvider>
         </I18nextProvider>
-      </FlowAliveProvider>
+      {/* End FlowAlive wrapper (disabled) */}
     </GestureHandlerRootView>
   );
 }
