@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
+import genreService from '../services/genreService';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
@@ -46,11 +47,11 @@ const getRecentStations = async (): Promise<Station[]> => {
 
 const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
   try {
-    const response = await stationService.getGenres();
+    const response = await genreService.getDiscoverableGenres();
     // Return top 8 genres for CarPlay grid
     return (response || []).slice(0, 8).map((g: any) => ({
-      name: g.name || g,
-      count: g.count || 0,
+      name: g.name || g.slug || g,
+      count: g.stationCount || g.count || 0,
     }));
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genres:', error);
