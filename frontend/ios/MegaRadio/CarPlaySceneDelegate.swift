@@ -10,8 +10,11 @@ import UIKit
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     
     var interfaceController: CPInterfaceController?
+    private var connectionAttempts = 0
+    private var templateSetAttempts = 0
     
-    // Remote logging helper
+    // MARK: - Remote Logging
+    
     private func sendRemoteLog(level: String, message: String, data: [String: Any]? = nil) {
         let apiUrl = "https://themegaradio.com/api/logs/remote"
         let apiKey = "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw"
@@ -23,7 +26,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         var logEntry: [String: Any] = [
             "level": level,
-            "message": message,
+            "message": "[SWIFT] \(message)",
             "timestamp": ISO8601DateFormatter().string(from: Date())
         ]
         if let data = data {
@@ -60,37 +63,159 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         }.resume()
     }
     
+    // MARK: - RNCarPlay Module Detection
+    
+    /// Check all possible RNCarPlay class names
+    private func findRNCarPlayClass() -> AnyClass? {
+        // Try different class name patterns
+        let classNames = [
+            "RNCarPlay",
+            "react_native_carplay.RNCarPlay",
+            "MegaRadio.RNCarPlay",
+            "CarPlay.RNCarPlay",
+        ]
+        
+        for className in classNames {
+            if let cls = NSClassFromString(className) {
+                sendRemoteLog(level: "info", message: "RNCarPlay class FOUND", data: [
+                    "className": className,
+                    "classDescription": String(describing: cls)
+                ])
+                return cls
+            }
+        }
+        
+        // List all loaded classes to help debug
+        var classCount: UInt32 = 0
+        if let classList = objc_copyClassList(&classCount) {
+            var carplayRelatedClasses: [String] = []
+            for i in 0..<Int(classCount) {
+                let className = String(cString: class_getName(classList[i]))
+                if className.lowercased().contains("carplay") || 
+                   className.lowercased().contains("rncar") ||
+                   className.contains("RNCar") {
+                    carplayRelatedClasses.append(className)
+                }
+            }
+            free(classList)
+            
+            sendRemoteLog(level: "warn", message: "RNCarPlay class NOT FOUND - listing related classes", data: [
+                "searchedClassNames": classNames,
+                "foundRelatedClasses": carplayRelatedClasses,
+                "totalClassesSearched": classCount
+            ])
+        }
+        
+        return nil
+    }
+    
     /// Safely get RNCarPlay class - returns nil if not linked
     private func getRNCarPlayClass() -> AnyClass? {
-        let rnClass = NSClassFromString("RNCarPlay")
-        sendRemoteLog(level: "debug", message: "RNCarPlay class lookup", data: [
-            "found": rnClass != nil
-        ])
+        let rnClass = findRNCarPlayClass()
         return rnClass
     }
     
-    /// Safely connect to RNCarPlay module
+    /// List all available selectors on RNCarPlay
+    private func listRNCarPlayMethods(_ cls: AnyClass) {
+        var methodCount: UInt32 = 0
+        var methodNames: [String] = []
+        
+        // Get instance methods
+        if let methods = class_copyMethodList(cls, &methodCount) {
+            for i in 0..<Int(methodCount) {
+                let selector = method_getName(methods[i])
+                methodNames.append(NSStringFromSelector(selector))
+            }
+            free(methods)
+        }
+        
+        // Get class methods
+        if let metaClass = object_getClass(cls) {
+            var classMethodCount: UInt32 = 0
+            if let classMethods = class_copyMethodList(metaClass, &classMethodCount) {
+                for i in 0..<Int(classMethodCount) {
+                    let selector = method_getName(classMethods[i])
+                    methodNames.append("[class] " + NSStringFromSelector(selector))
+                }
+                free(classMethods)
+            }
+        }
+        
+        sendRemoteLog(level: "debug", message: "RNCarPlay available methods", data: [
+            "instanceMethodCount": methodCount,
+            "methods": methodNames
+        ])
+    }
+    
+    /// Safely connect to RNCarPlay module with detailed logging
     private func safeConnectToRNCarPlay(interfaceController: CPInterfaceController, window: CPWindow?) {
-        sendRemoteLog(level: "info", message: "Attempting RNCarPlay connection")
+        connectionAttempts += 1
+        sendRemoteLog(level: "info", message: "Attempting RNCarPlay connection", data: [
+            "attempt": connectionAttempts,
+            "hasWindow": window != nil,
+            "windowDescription": window != nil ? "\(window!.bounds)" : "nil"
+        ])
         
         guard let rnCarPlayClass = getRNCarPlayClass() else {
-            sendRemoteLog(level: "warn", message: "RNCarPlay module not available - using native-only mode")
+            sendRemoteLog(level: "error", message: "RNCarPlay module NOT AVAILABLE", data: [
+                "consequence": "CarPlay will show loading screen only",
+                "solution": "Check if react-native-carplay pod is installed correctly"
+            ])
             print("[CarPlaySceneDelegate] RNCarPlay module not available - using native-only mode")
             return
         }
         
-        // Use performSelector to safely call the method
-        let selector = NSSelectorFromString("connectWithInterfaceController:window:")
-        if rnCarPlayClass.responds(to: selector) {
-            _ = (rnCarPlayClass as AnyObject).perform(selector, with: interfaceController, with: window)
-            sendRemoteLog(level: "info", message: "RNCarPlay.connect called successfully")
-            print("[CarPlaySceneDelegate] Successfully connected to RNCarPlay")
-        } else {
-            sendRemoteLog(level: "error", message: "RNCarPlay.connect method not found", data: [
-                "selector": "connectWithInterfaceController:window:"
+        // List available methods for debugging
+        listRNCarPlayMethods(rnCarPlayClass)
+        
+        // Try different method signatures
+        let methodSignatures = [
+            "connectWithInterfaceController:window:",
+            "connect:window:",
+            "connectWithInterfaceController:",
+            "connect:",
+        ]
+        
+        for signature in methodSignatures {
+            let selector = NSSelectorFromString(signature)
+            
+            sendRemoteLog(level: "debug", message: "Checking method signature", data: [
+                "signature": signature,
+                "selectorExists": rnCarPlayClass.responds(to: selector)
             ])
-            print("[CarPlaySceneDelegate] RNCarPlay.connect method not found")
+            
+            if rnCarPlayClass.responds(to: selector) {
+                sendRemoteLog(level: "info", message: "Calling RNCarPlay method", data: [
+                    "method": signature
+                ])
+                
+                do {
+                    if signature.contains("window:") {
+                        _ = (rnCarPlayClass as AnyObject).perform(selector, with: interfaceController, with: window)
+                    } else {
+                        _ = (rnCarPlayClass as AnyObject).perform(selector, with: interfaceController)
+                    }
+                    
+                    sendRemoteLog(level: "info", message: "RNCarPlay.connect CALLED SUCCESSFULLY", data: [
+                        "method": signature,
+                        "nextStep": "React Native should now receive connection event and create templates"
+                    ])
+                    print("[CarPlaySceneDelegate] Successfully connected to RNCarPlay via \(signature)")
+                    return
+                } catch {
+                    sendRemoteLog(level: "error", message: "RNCarPlay method call FAILED", data: [
+                        "method": signature,
+                        "error": "\(error)"
+                    ])
+                }
+            }
         }
+        
+        sendRemoteLog(level: "error", message: "NO VALID RNCarPlay connect method found", data: [
+            "triedSignatures": methodSignatures,
+            "consequence": "React Native will NOT receive CarPlay connection event"
+        ])
+        print("[CarPlaySceneDelegate] RNCarPlay.connect method not found")
     }
     
     /// Safely disconnect from RNCarPlay module
@@ -104,45 +229,40 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         let selector = NSSelectorFromString("disconnect")
         if rnCarPlayClass.responds(to: selector) {
             _ = (rnCarPlayClass as AnyObject).perform(selector)
-            sendRemoteLog(level: "info", message: "RNCarPlay disconnected")
+            sendRemoteLog(level: "info", message: "RNCarPlay.disconnect called")
             print("[CarPlaySceneDelegate] Successfully disconnected from RNCarPlay")
+        } else {
+            sendRemoteLog(level: "warn", message: "RNCarPlay.disconnect method not found")
         }
     }
+    
+    // MARK: - CPTemplateApplicationSceneDelegate
     
     /// Called when CarPlay connects to the app
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController
     ) {
-        print("[CarPlaySceneDelegate] CarPlay connected")
-        sendRemoteLog(level: "info", message: "CarPlay CONNECTED (didConnect)", data: [
+        print("[CarPlaySceneDelegate] ===== CarPlay CONNECTED (didConnect) =====")
+        sendRemoteLog(level: "info", message: "===== CarPlay CONNECTED =====", data: [
+            "delegateMethod": "templateApplicationScene:didConnect:",
             "hasWindow": false,
-            "method": "templateApplicationScene:didConnect:"
+            "sceneState": "\(templateApplicationScene.activationState.rawValue)",
+            "timestamp": ISO8601DateFormatter().string(from: Date())
         ])
         
         self.interfaceController = interfaceController
         
-        // Set a loading template immediately to avoid blank screen
-        // React Native will replace this with the actual content
-        let loadingItem = CPListItem(text: "MegaRadio", detailText: "Yükleniyor...")
-        let loadingSection = CPListSection(items: [loadingItem])
-        let loadingTemplate = CPListTemplate(title: "MegaRadio", sections: [loadingSection])
+        // Set loading template FIRST
+        setLoadingTemplate(interfaceController: interfaceController)
         
-        interfaceController.setRootTemplate(loadingTemplate, animated: false) { success, error in
-            if success {
-                self.sendRemoteLog(level: "info", message: "Loading template SET", data: [
-                    "title": "MegaRadio",
-                    "detailText": "Yükleniyor..."
-                ])
-            } else {
-                self.sendRemoteLog(level: "error", message: "Failed to set loading template", data: [
-                    "error": error?.localizedDescription ?? "unknown"
-                ])
-            }
-        }
-        
-        // Safely connect to React Native CarPlay module
+        // Then connect to React Native
         safeConnectToRNCarPlay(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
+        
+        // Schedule a check to see if template was replaced
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            self?.checkIfStillShowingLoading()
+        }
     }
     
     /// Called when CarPlay disconnects from the app
@@ -150,8 +270,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnect interfaceController: CPInterfaceController
     ) {
-        print("[CarPlaySceneDelegate] CarPlay disconnected")
-        sendRemoteLog(level: "info", message: "CarPlay DISCONNECTED")
+        print("[CarPlaySceneDelegate] ===== CarPlay DISCONNECTED =====")
+        sendRemoteLog(level: "info", message: "===== CarPlay DISCONNECTED =====")
         
         self.interfaceController = nil
         safeDisconnectFromRNCarPlay()
@@ -163,34 +283,92 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
-        print("[CarPlaySceneDelegate] CarPlay connected with window")
-        sendRemoteLog(level: "info", message: "CarPlay CONNECTED with window (iOS 14+)", data: [
-            "hasWindow": true,
+        print("[CarPlaySceneDelegate] ===== CarPlay CONNECTED WITH WINDOW (iOS 14+) =====")
+        sendRemoteLog(level: "info", message: "===== CarPlay CONNECTED WITH WINDOW =====", data: [
+            "delegateMethod": "templateApplicationScene:didConnect:to:",
             "windowBounds": "\(window.bounds)",
-            "method": "templateApplicationScene:didConnect:to:"
+            "windowScreen": "\(window.screen)",
+            "sceneState": "\(templateApplicationScene.activationState.rawValue)",
+            "timestamp": ISO8601DateFormatter().string(from: Date())
         ])
         
         self.interfaceController = interfaceController
         
-        // Set a loading template immediately to avoid blank screen
+        // Set loading template FIRST
+        setLoadingTemplate(interfaceController: interfaceController)
+        
+        // Then connect to React Native
+        safeConnectToRNCarPlay(interfaceController: interfaceController, window: window)
+        
+        // Schedule a check to see if template was replaced
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            self?.checkIfStillShowingLoading()
+        }
+    }
+    
+    // MARK: - Template Management
+    
+    private func setLoadingTemplate(interfaceController: CPInterfaceController) {
+        templateSetAttempts += 1
+        
+        sendRemoteLog(level: "info", message: "Setting LOADING template", data: [
+            "attempt": templateSetAttempts
+        ])
+        
         let loadingItem = CPListItem(text: "MegaRadio", detailText: "Yükleniyor...")
+        loadingItem.accessoryType = .disclosureIndicator
+        
         let loadingSection = CPListSection(items: [loadingItem])
         let loadingTemplate = CPListTemplate(title: "MegaRadio", sections: [loadingSection])
         
-        interfaceController.setRootTemplate(loadingTemplate, animated: false) { success, error in
+        interfaceController.setRootTemplate(loadingTemplate, animated: false) { [weak self] success, error in
             if success {
-                self.sendRemoteLog(level: "info", message: "Loading template SET (with window)", data: [
+                self?.sendRemoteLog(level: "info", message: "Loading template SET successfully", data: [
                     "title": "MegaRadio",
-                    "detailText": "Yükleniyor..."
+                    "detailText": "Yükleniyor...",
+                    "waitingFor": "React Native to replace with tab bar template"
                 ])
             } else {
-                self.sendRemoteLog(level: "error", message: "Failed to set loading template (with window)", data: [
-                    "error": error?.localizedDescription ?? "unknown"
+                self?.sendRemoteLog(level: "error", message: "FAILED to set loading template", data: [
+                    "error": error?.localizedDescription ?? "unknown",
+                    "errorCode": (error as NSError?)?.code ?? -1
                 ])
             }
         }
+    }
+    
+    private func checkIfStillShowingLoading() {
+        guard let controller = interfaceController else {
+            sendRemoteLog(level: "warn", message: "InterfaceController is nil during check")
+            return
+        }
         
-        // Safely connect to React Native CarPlay module
-        safeConnectToRNCarPlay(interfaceController: interfaceController, window: window)
+        let rootTemplate = controller.rootTemplate
+        let templateDescription = String(describing: type(of: rootTemplate))
+        
+        // Check if it's still a list template (loading screen)
+        let isStillLoading = rootTemplate is CPListTemplate
+        
+        sendRemoteLog(level: isStillLoading ? "warn" : "info", 
+                      message: isStillLoading ? "STILL showing loading template after 5s!" : "Template was replaced", 
+                      data: [
+            "currentTemplateType": templateDescription,
+            "isStillLoading": isStillLoading,
+            "possibleCauses": isStillLoading ? [
+                "1. RNCarPlay module not properly linked",
+                "2. React Native CarPlay service not initialized",
+                "3. Connection event not received by React Native",
+                "4. Template creation failed in React Native",
+                "5. API calls failing when fetching stations"
+            ] : [],
+            "templateStack": controller.templates.map { String(describing: type(of: $0)) }
+        ])
+        
+        if isStillLoading {
+            // Schedule another check
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { [weak self] in
+                self?.checkIfStillShowingLoading()
+            }
+        }
     }
 }
