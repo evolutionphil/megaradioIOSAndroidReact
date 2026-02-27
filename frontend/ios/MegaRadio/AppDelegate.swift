@@ -21,12 +21,9 @@ public class AppDelegate: ExpoAppDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
 // @generated begin react-native-google-cast-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-878430aae4b1b32ad54e4b64ed01ca473a2a80a6
-// DISABLED: Google Cast causes crash with React Native 0.81+ Fabric architecture
-// Error: RCTThirdPartyComponentsProvider - attempt to insert nil object
-// TODO: Re-enable when react-native-google-cast is updated for Fabric compatibility
-/*
+// Google Cast initialization for Chromecast support
 #if canImport(GoogleCast) && os(iOS)
-    let receiverAppID = "94952E1F"
+    let receiverAppID = kGCKDefaultMediaReceiverApplicationID // Use default receiver
     let criteria = GCKDiscoveryCriteria(applicationID: receiverAppID)
     let options = GCKCastOptions(discoveryCriteria: criteria)
     options.disableDiscoveryAutostart = false
@@ -34,8 +31,8 @@ public class AppDelegate: ExpoAppDelegate {
     options.suspendSessionsWhenBackgrounded = true
     GCKCastContext.setSharedInstanceWith(options)
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
+    print("[AppDelegate] Google Cast initialized with default receiver")
 #endif
-*/
 // @generated end react-native-google-cast-didFinishLaunchingWithOptions
     let delegate = ReactNativeDelegate()
     let factory = ExpoReactNativeFactory(delegate: delegate)
