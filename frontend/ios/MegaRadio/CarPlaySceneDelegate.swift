@@ -14,15 +14,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         // Dispatch to main thread for React Native bridge calls
         DispatchQueue.main.async {
-            // Call RNCarPlay connect method
-            if let carPlayModule = RNCarPlay.sharedInstance() {
-                carPlayModule.connect(
-                    withInterfaceController: interfaceController,
-                    window: templateApplicationScene.carWindow
-                )
-            } else {
-                print("[CarPlaySceneDelegate] RNCarPlay module not found")
-            }
+            // Call RNCarPlay class method directly
+            RNCarPlay.connect(with: interfaceController, window: templateApplicationScene.carWindow)
         }
     }
     
@@ -34,9 +27,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         print("[CarPlaySceneDelegate] CarPlay disconnected")
         
         DispatchQueue.main.async {
-            if let carPlayModule = RNCarPlay.sharedInstance() {
-                carPlayModule.disconnect()
-            }
+            RNCarPlay.disconnect()
         }
     }
     
@@ -49,12 +40,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         print("[CarPlaySceneDelegate] CarPlay connected with window")
         
         DispatchQueue.main.async {
-            if let carPlayModule = RNCarPlay.sharedInstance() {
-                carPlayModule.connect(
-                    withInterfaceController: interfaceController,
-                    window: window
-                )
-            }
+            RNCarPlay.connect(with: interfaceController, window: window)
         }
     }
 }
