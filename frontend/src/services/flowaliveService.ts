@@ -76,7 +76,7 @@ class FlowaliveService {
    */
   async setUser(user: User): Promise<void> {
     try {
-      await Flowalive.setDevice({
+      await FlowAlive.setDevice({
         appUserId: user.id || user._id,
         appUserName: user.name || user.username,
         appUserEmail: user.email,
