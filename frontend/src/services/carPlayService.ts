@@ -472,19 +472,25 @@ const CarPlayService: CarPlayServiceType = {
     if (!CarPlay) {
       console.log('[CarPlayService] CarPlay module not loaded');
       CarPlayLogger.start();
-      CarPlayLogger.error('CarPlay module NOT LOADED', {
+      CarPlayLogger.error('CarPlay module NOT LOADED in React Native', {
         platform: Platform.OS,
         carPlayModule: null,
+        possibleCauses: [
+          '1. react-native-carplay not installed',
+          '2. Pod not linked correctly', 
+          '3. Native module not compiled'
+        ]
       });
       return;
     }
     
-    console.log('[CarPlayService] Initializing...');
+    console.log('[CarPlayService] ===== INITIALIZING =====');
     CarPlayLogger.start();
     CarPlayLogger.serviceInitializing();
-    CarPlayLogger.info('CarPlay service initializing', {
+    CarPlayLogger.info('[RN] CarPlay service INITIALIZING', {
       platform: Platform.OS,
       carPlayAvailable: !!CarPlay,
+      carPlayMethods: CarPlay ? Object.keys(CarPlay) : [],
       listTemplateAvailable: !!ListTemplate,
       tabBarTemplateAvailable: !!TabBarTemplate,
       gridTemplateAvailable: !!GridTemplate,
@@ -499,7 +505,7 @@ const CarPlayService: CarPlayServiceType = {
     getGenresCallback = getGenres;
     getStationsByGenreCallback = getStationsByGenre;
     
-    CarPlayLogger.info('Callbacks registered', {
+    CarPlayLogger.info('[RN] Callbacks registered', {
       playStation: !!playStation,
       getStations: !!getStations,
       getFavorites: !!getFavorites,
@@ -509,49 +515,75 @@ const CarPlayService: CarPlayServiceType = {
     });
     
     // Register CarPlay connection handler
+    console.log('[CarPlayService] Registering onConnect handler...');
+    CarPlayLogger.info('[RN] Registering onConnect handler');
+    
     CarPlay.registerOnConnect(() => {
-      console.log('[CarPlay] ========== CONNECTED ==========');
+      console.log('[CarPlay] ========== CONNECTED (React Native callback) ==========');
       CarPlayLogger.connected({ 
         timestamp: new Date().toISOString(),
-        event: 'registerOnConnect callback fired',
+        event: '[RN] registerOnConnect callback FIRED',
+        nextStep: 'Creating root template...'
       });
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       
       // Create and show root template
-      createRootTemplate();
+      CarPlayLogger.info('[RN] About to call createRootTemplate()');
+      createRootTemplate().then(() => {
+        CarPlayLogger.info('[RN] createRootTemplate() completed');
+      }).catch((err) => {
+        CarPlayLogger.error('[RN] createRootTemplate() FAILED', {
+          error: String(err),
+          stack: err?.stack?.substring(0, 500)
+        });
+      });
     });
     
     // Register CarPlay disconnection handler
+    console.log('[CarPlayService] Registering onDisconnect handler...');
+    CarPlayLogger.info('[RN] Registering onDisconnect handler');
+    
     CarPlay.registerOnDisconnect(() => {
-      console.log('[CarPlay] ========== DISCONNECTED ==========');
+      console.log('[CarPlay] ========== DISCONNECTED (React Native callback) ==========');
       CarPlayLogger.disconnected({ 
         timestamp: new Date().toISOString(),
-        event: 'registerOnDisconnect callback fired',
+        event: '[RN] registerOnDisconnect callback FIRED',
       });
       isCarPlayConnected = false;
       CarPlayService.isConnected = false;
     });
     
-    CarPlayLogger.info('Connection handlers registered');
+    CarPlayLogger.info('[RN] Connection handlers registered successfully');
     
     // CRITICAL: Check if CarPlay was already connected before we registered
     // This handles the race condition where CarPlay connects before JS initializes
     const alreadyConnected = CarPlay.connected;
-    CarPlayLogger.info('Checking existing connection', { 
+    CarPlayLogger.info('[RN] Checking if already connected', { 
       alreadyConnected,
       carPlayConnectedProperty: CarPlay.connected,
+      carPlayType: typeof CarPlay.connected,
     });
     
     if (alreadyConnected) {
       console.log('[CarPlay] Already connected - creating root template immediately');
       CarPlayLogger.alreadyConnected();
+      CarPlayLogger.info('[RN] CarPlay was ALREADY CONNECTED - creating template now');
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
-      createRootTemplate();
+      
+      createRootTemplate().then(() => {
+        CarPlayLogger.info('[RN] createRootTemplate() completed (already connected case)');
+      }).catch((err) => {
+        CarPlayLogger.error('[RN] createRootTemplate() FAILED (already connected case)', {
+          error: String(err),
+          stack: err?.stack?.substring(0, 500)
+        });
+      });
     }
     
     CarPlayLogger.serviceInitialized();
+    CarPlayLogger.info('[RN] CarPlay service INITIALIZED - waiting for connection');
     console.log('[CarPlayService] Initialized and waiting for connection');
   },
   
