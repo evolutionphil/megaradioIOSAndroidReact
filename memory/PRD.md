@@ -1024,3 +1024,45 @@ if (CarPlay && !handlersRegistered) {
 ```bash
 eas build --platform ios --profile production --auto-submit --clear-cache
 ```
+
+---
+
+## February 28, 2025 - GitHub Issue #236 Çözümü (Objective-C Delegate)
+
+### GitHub Issue Analizi:
+**Issue:** https://github.com/birkir/react-native-carplay/issues/236
+**Kullanıcı:** @chaimPaneth
+**Sorun:** `expo-router`'ın `SafeAreaProvider`'ı CarPlay'de window dimensions olmadığı için JS tarafını bloke ediyor.
+
+### Uygulanan Çözüm - Objective-C CarPlay Delegate:
+
+GitHub issue'daki kullanıcı Objective-C kullanmış ve başarılı olmuş. Swift'ten Objective-C'ye geçiş:
+
+**Yeni dosyalar:**
+- `ios/MegaRadio/CarSceneDelegate.h` - Header dosyası
+- `ios/MegaRadio/CarSceneDelegate.m` - Implementation (doğrudan `[RNCarPlay connect...]` çağrısı)
+
+**Avantajları:**
+1. `[RNCarPlay connectWithInterfaceController:window:]` **doğrudan** çağrılıyor
+2. Dinamik `NSClassFromString` yerine statik import
+3. GitHub issue'daki çözümle tam uyumlu
+
+**Info.plist Değişikliği:**
+```xml
+<!-- Eski (Swift) -->
+<string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
+
+<!-- Yeni (Objective-C) -->  
+<string>CarSceneDelegate</string>
+```
+
+### Tüm Düzeltmelerin Özeti (Build 32):
+1. ✅ `react-native-google-mobile-ads` 14.6.0 → 14.2.0 (Crash fix)
+2. ✅ Objective-C CarPlay delegate (GitHub #236 çözümü)
+3. ✅ JS tarafında erken handler kaydı
+4. ✅ Swift bridge retry mekanizması (yedek olarak kaldı)
+
+### Build Komutu:
+```bash
+eas build --platform ios --profile production --auto-submit --clear-cache
+```
