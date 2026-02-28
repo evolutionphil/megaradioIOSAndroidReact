@@ -103,13 +103,33 @@ let getRecentlyPlayedCallback: (() => Promise<Station[]>) | null = null;
 let getGenresCallback: (() => Promise<{ name: string; count: number }[]>) | null = null;
 let getStationsByGenreCallback: ((genre: string) => Promise<Station[]>) | null = null;
 
-// Helper to get station artwork
+// Helper to get station artwork as ImageSourcePropType
+const getStationImage = (station: Station): { uri: string } => {
+  let url = 'https://themegaradio.com/logo.png';
+  
+  if (station.favicon && station.favicon.startsWith('http')) {
+    url = station.favicon.replace('http://', 'https://');
+  } else if (station.logo && station.logo.startsWith('http')) {
+    url = station.logo.replace('http://', 'https://');
+  } else if (station.favicon && station.favicon.startsWith('/')) {
+    url = `https://themegaradio.com${station.favicon}`;
+  } else if (station.logo && station.logo.startsWith('/')) {
+    url = `https://themegaradio.com${station.logo}`;
+  }
+  
+  return { uri: url };
+};
+
+// Legacy helper (string version) for backward compatibility
 const getArtworkUrl = (station: Station): string => {
+  if (station.favicon && station.favicon.startsWith('http')) {
+    return station.favicon.replace('http://', 'https://');
+  }
   if (station.logo && station.logo.startsWith('http')) {
     return station.logo.replace('http://', 'https://');
   }
-  if (station.favicon && station.favicon.startsWith('http')) {
-    return station.favicon.replace('http://', 'https://');
+  if (station.favicon && station.favicon.startsWith('/')) {
+    return `https://themegaradio.com${station.favicon}`;
   }
   if (station.logo && station.logo.startsWith('/')) {
     return `https://themegaradio.com${station.logo}`;
