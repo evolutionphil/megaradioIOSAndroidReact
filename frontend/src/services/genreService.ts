@@ -9,10 +9,10 @@ import type { Genre, GenreResponse, Station } from '../types';
 
 export const genreService = {
   // Get all genres with error handling
-  async getGenres(page: number = 1, limit: number = 50): Promise<GenreResponse> {
+  async getGenres(page: number = 1, limit: number = 50, country?: string, lang?: string): Promise<GenreResponse> {
     try {
       const response = await api.get(API_ENDPOINTS.genres.list, {
-        params: { page, limit },
+        params: { page, limit, country, lang },
       });
       return response.data;
     } catch (error) {
