@@ -307,7 +307,8 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
         items: stations.slice(0, 50).map(station => ({
           text: station.name,
           detailText: station.country || 'Radio',
-          image: getStationImage(station),
+          // Note: CarPlay doesn't support remote URLs for images
+          // image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
