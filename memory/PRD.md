@@ -10,46 +10,47 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 41) - December 2025
+## Latest Update (Build 42) - December 2025
 
-### ✅ Backend Developer Rehberine Göre Kritik Düzeltmeler
+### ✅ Kritik Keşif: `imgUrl` Kullanımı
 
-**1. CarPlay Cold-Start Düzeltmesi (P0)**
-- **Kök Neden**: React Native bridge sadece telefon uygulaması açıldığında başlatılıyordu
-- **Düzeltme**: 
-  - `AppDelegate.swift`'e `initAppFromScene()` metodu eklendi
-  - `CarSceneDelegate.m`'de CarPlay bağlanınca bu metod çağrılıyor
-  - React Native bridge CarPlay'den önce başlatılıyor
+Native iOS kodunu (`RNCarPlay.m`) analiz ettim ve kritik bir şey keşfettim:
 
-**2. CarPlay Logoları - Local Image Caching (P0)**
-- **Kök Neden**: CarPlay remote URL desteklemiyor, local file path gerekli
-- **Düzeltme**:
-  - `carPlayImageCache.ts` servisi oluşturuldu
-  - `expo-file-system` ile logolar cache'e indiriliyor
-  - Tüm template'ler local path kullanıyor: `file:///var/.../image.png`
+**`image` yerine `imgUrl` kullanılmalı!**
 
-**3. Lock Screen 15s/30s İkonları → ⏮️/⏭️ (P0)**
-- **Düzeltme**: `JumpForward`/`JumpBackward` capability'leri kaldırıldı
-- Artık sadece `SkipToNext`/`SkipToPrevious` aktif
+Native taraf `imgUrl` property'sini alıp asenkron olarak indiriyor:
+```objc
+if (item[@"imgUrl"]) {
+    [self updateItemImageWithURL:_item imgUrl:imgUrlString];
+}
+```
 
-**4. CarPlay Favoriler Boş (P0)**
-- **Düzeltme**: `syncWithServer()` + `loadLocalFavorites()` çağrısı eklendi
+Bu native tarafta `NSURLSession` ile asenkron olarak çalışıyor - local cache'e gerek yok!
 
-**5. Artwork Fallback (P1)**
-- **Düzeltme**: `isValidUrl()` helper ile MegaRadio logosu fallback
+### 🔧 Yapılan Değişiklikler
+
+1. **CarPlay Template'leri Güncellendi**
+   - `image: { uri: '...' }` → `imgUrl: '...'` olarak değiştirildi
+   - Favorites, Recently Played, Discover, Genre Stations tüm template'ler güncellendi
+   - Native taraf URL'den asenkron olarak indirecek
+
+2. **Cold-Start için AppDelegate Güncellendi**
+   - `initAppFromScene()` metodu eklendi
+   - CarPlay bağlandığında React Native bridge başlatılıyor
 
 ### 📦 Build Bilgileri
-- iOS Build: 41
-- Android versionCode: 41
+- iOS Build: 42
+- Android versionCode: 42
 - Version: 1.0.27
 
-### 📁 Yeni/Değiştirilen Dosyalar
-- `AppDelegate.swift`: `initAppFromScene()` metodu eklendi
-- `CarSceneDelegate.m`: Bridge başlatma çağrısı eklendi
-- `carPlayImageCache.ts`: **YENİ** - Local image caching servisi
-- `carPlayService.ts`: Local image path kullanımı
-- `AudioProvider.tsx`: JumpForward/Backward kaldırıldı
-- `CarPlayHandler.tsx`: Favorites sync mekanizması
+### 📋 MyTuner Gibi Görünüm İçin
+Native kod `imgUrl`'i destekliyor ve asenkron olarak logoları indirecek. Bu build ile:
+- Station listelerinde logolar görünmeli
+- Native taraf URL'den otomatik indirecek
+
+### ⚠️ Bekleyen Sorunlar
+- Next/Previous mantığı (similar stations) henüz implemente edilmedi
+- Cold-start hala test edilmeli
 
 ## Watch Apps - February 19, 2025
 
