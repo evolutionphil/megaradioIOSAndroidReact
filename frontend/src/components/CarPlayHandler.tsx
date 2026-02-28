@@ -14,8 +14,7 @@ import type { Station } from '../types';
 const getPopularStations = async (): Promise<Station[]> => {
   try {
     const response = await stationService.getStations({ 
-      country: 'Turkey', 
-      limit: 20,
+      limit: 50,  // CarPlay: 50 stations for browse
       order: 'votes' 
     });
     return response.stations || [];
