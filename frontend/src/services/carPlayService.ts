@@ -484,28 +484,28 @@ const createRootTemplate = async (): Promise<void> => {
     const templates: any[] = [];
     
     if (browseTemplate) {
-      browseTemplate.tabTitle = 'Keşfet';
+      browseTemplate.tabTitle = t('carplay_discover', 'Discover');
       browseTemplate.tabSystemImageName = 'music.note.list';
       templates.push(browseTemplate);
       CarPlayLogger.info('[RN] Browse tab added');
     }
     
     if (favoritesTemplate) {
-      favoritesTemplate.tabTitle = 'Favoriler';
+      favoritesTemplate.tabTitle = t('carplay_favorites', 'Favorites');
       favoritesTemplate.tabSystemImageName = 'heart.fill';
       templates.push(favoritesTemplate);
       CarPlayLogger.info('[RN] Favorites tab added');
     }
     
     if (recentTemplate) {
-      recentTemplate.tabTitle = 'Son Çalınanlar';
+      recentTemplate.tabTitle = t('carplay_recently_played', 'Recently Played');
       recentTemplate.tabSystemImageName = 'clock.fill';
       templates.push(recentTemplate);
       CarPlayLogger.info('[RN] Recent tab added');
     }
     
     if (genresTemplate) {
-      genresTemplate.tabTitle = 'Türler';
+      genresTemplate.tabTitle = t('carplay_genres', 'Genres');
       genresTemplate.tabSystemImageName = 'square.grid.2x2.fill';
       templates.push(genresTemplate);
       CarPlayLogger.info('[RN] Genres tab added');
