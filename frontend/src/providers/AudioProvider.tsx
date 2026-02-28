@@ -233,11 +233,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           // Update lock screen
           if (Platform.OS !== 'web') {
             const artworkUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
+            // Get genre for album field
+            let albumName = 'MegaRadio';
+            if (station.tags) {
+              const firstTag = station.tags.split(',')[0].trim();
+              if (firstTag) albumName = firstTag.charAt(0).toUpperCase() + firstTag.slice(1);
+            } else if (station.genres && station.genres.length > 0) {
+              albumName = station.genres[0];
+            } else if (station.country) {
+              albumName = station.country;
+            }
+            
             try {
               await TrackPlayer.updateNowPlayingMetadata({
                 title: songTitle || station.name,
                 artist: artistName || 'MegaRadio',
-                album: station.name || 'MegaRadio',
+                album: albumName,
                 artwork: artworkUrl.startsWith('http://') ? artworkUrl.replace('http://', 'https://') : artworkUrl,
               });
               console.log('[AudioProvider] 🎵 Lock screen updated from ICY metadata');
