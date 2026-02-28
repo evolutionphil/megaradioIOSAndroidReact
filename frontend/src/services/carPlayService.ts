@@ -407,15 +407,27 @@ const createBrowseTemplate = async (): Promise<any> => {
     const stations = await getStationsCallback();
     CarPlayLogger.dataLoaded('popularStations', stations.length);
     
+    // Pre-cache images for all stations (max 50)
+    const stationsToCache = stations.slice(0, 50);
+    const imageCache = await cacheStationImages(stationsToCache as any);
+    
+    // Build items with cached local images
+    const items = stationsToCache.map(station => {
+      const stationId = (station as any)._id || (station as any).id || '';
+      const localImagePath = imageCache.get(stationId) || '';
+      
+      return {
+        text: station.name,
+        detailText: station.country || station.tags?.split(',')[0] || 'Radio',
+        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+      };
+    });
+    
     const template = new ListTemplate({
       title: t('carplay_discover', 'Discover'),
       sections: [{
         header: `${t('carplay_popular_stations', 'Popular Stations')} (${Math.min(stations.length, 50)})`,
-        items: stations.slice(0, 50).map(station => ({
-          text: station.name,
-          detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getStationImage(station),
-        })),
+        items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stations[index];
