@@ -332,7 +332,7 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
   }
 };
 
-// Create Browse/Popular Stations List Template
+// Create Browse/Popular Stations List Template (50 stations with logos)
 const createBrowseTemplate = async (): Promise<any> => {
   CarPlayLogger.templateCreating('Browse');
   
@@ -349,11 +349,11 @@ const createBrowseTemplate = async (): Promise<any> => {
     const template = new ListTemplate({
       title: 'Keşfet',
       sections: [{
-        header: 'Popüler İstasyonlar',
-        items: stations.slice(0, 20).map(station => ({
+        header: `Popüler İstasyonlar (${Math.min(stations.length, 50)})`,
+        items: stations.slice(0, 50).map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getArtworkUrl(station),
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
@@ -372,7 +372,7 @@ const createBrowseTemplate = async (): Promise<any> => {
       },
     });
     
-    CarPlayLogger.templateCreated('Browse', { stationCount: stations.length });
+    CarPlayLogger.templateCreated('Browse', { stationCount: Math.min(stations.length, 50) });
     return template;
   } catch (error: any) {
     CarPlayLogger.templateError('Browse', error);
