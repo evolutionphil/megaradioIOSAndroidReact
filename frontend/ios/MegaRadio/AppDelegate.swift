@@ -15,6 +15,9 @@ public class AppDelegate: ExpoAppDelegate {
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
+  
+  // Flag to track if React Native has been initialized
+  private var isReactNativeInitialized = false
 
   public override func application(
     _ application: UIApplication,
@@ -52,10 +55,50 @@ public class AppDelegate: ExpoAppDelegate {
         withModuleName: "main",
         in: window,
         launchOptions: launchOptions)
+      isReactNativeInitialized = true
     }
     #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+  
+  // MARK: - React Native Bridge Initialization for Scene Lifecycle
+  
+  /// Initialize React Native bridge from any scene (Phone or CarPlay)
+  /// This ensures the JS runtime is available even when CarPlay connects first
+  @objc public func initAppFromScene(connectionOptions: UIScene.ConnectionOptions?) {
+    guard !isReactNativeInitialized else {
+      print("[AppDelegate] React Native already initialized, skipping")
+      return
+    }
+    
+    print("[AppDelegate] Initializing React Native from scene...")
+    
+    guard let factory = reactNativeFactory else {
+      print("[AppDelegate] ERROR: reactNativeFactory is nil")
+      return
+    }
+    
+    // Create a temporary window for React Native initialization
+    // This is needed because React Native needs a window to start
+    if window == nil {
+      window = UIWindow(frame: UIScreen.main.bounds)
+    }
+    
+    // Start React Native with the module name
+    factory.startReactNative(
+      withModuleName: "main",
+      in: window,
+      launchOptions: nil
+    )
+    
+    isReactNativeInitialized = true
+    print("[AppDelegate] React Native initialized successfully from scene")
+  }
+  
+  /// Check if React Native is initialized
+  @objc public func isReactNativeReady() -> Bool {
+    return isReactNativeInitialized
   }
   
   // MARK: - Scene Configuration (iOS 13+)
