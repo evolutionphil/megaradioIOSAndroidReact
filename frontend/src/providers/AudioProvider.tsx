@@ -452,6 +452,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return artworkUrl;
   }, []);
 
+  // Helper to get genre/album from station (for metadata display)
+  const getStationGenre = useCallback((station: Station): string => {
+    // Priority: tags (first tag) > genres (first genre) > country > 'MegaRadio'
+    if (station.tags) {
+      const firstTag = station.tags.split(',')[0].trim();
+      if (firstTag) return firstTag.charAt(0).toUpperCase() + firstTag.slice(1); // Capitalize
+    }
+    if (station.genres && station.genres.length > 0) {
+      return station.genres[0];
+    }
+    if (station.country) {
+      return station.country;
+    }
+    return 'MegaRadio';
+  }, []);
+
   // Update lock screen metadata helper
   const updateLockScreenMetadata = useCallback(async (
     station: Station,
@@ -462,11 +478,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     
     try {
       const artworkUrl = getArtworkUrl(station);
+      const albumName = getStationGenre(station);
       
       const newMetadata = {
         title: songTitle,
         artist: artistName,
-        album: station.name || 'MegaRadio', // Fallback to MegaRadio if empty
+        album: albumName,
         artwork: artworkUrl,
       };
       
