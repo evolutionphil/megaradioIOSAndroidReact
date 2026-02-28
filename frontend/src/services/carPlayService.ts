@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
 import i18n from './i18nService';
+import { getCarPlayImagePath, cacheStationImages } from './carPlayImageCache';
 
 // Helper function to get translated CarPlay strings
 const t = (key: string, fallback: string): string => {
