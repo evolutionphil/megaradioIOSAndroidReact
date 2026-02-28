@@ -184,14 +184,8 @@ static void sendCarPlayLog(NSString *level, NSString *message, NSDictionary *dat
     [RNCarPlay connectWithInterfaceController:interfaceController window:templateApplicationScene.carWindow];
     sendCarPlayLog(@"info", @"RNCarPlay.connect CALLED", @{@"nextStep": @"React Native should receive event"});
     
-    // Schedule check
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        CPTemplate *currentTemplate = interfaceController.rootTemplate;
-        BOOL isStillLoading = [currentTemplate isKindOfClass:[CPListTemplate class]];
-        sendCarPlayLog(isStillLoading ? @"warn" : @"info", 
-                       isStillLoading ? @"STILL showing loading after 5s" : @"Template was replaced", 
-                       @{@"isStillLoading": @(isStillLoading)});
-    });
+    // Start cold-start retry timer - handles case where React Native bridge isn't ready yet
+    [self startRetryTimerWithInterfaceController:interfaceController window:templateApplicationScene.carWindow];
 }
 
 - (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene
