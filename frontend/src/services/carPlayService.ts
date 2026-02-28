@@ -208,7 +208,8 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
         items: recentStations.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getStationImage(station),
+          // Note: CarPlay doesn't support remote URLs for images
+          // image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
