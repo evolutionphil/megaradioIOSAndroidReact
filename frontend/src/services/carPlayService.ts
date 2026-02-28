@@ -169,9 +169,9 @@ const createFavoritesTemplate = async (): Promise<any> => {
     CarPlayLogger.dataLoaded('favorites', favorites.length);
     
     const template = new ListTemplate({
-      title: 'Favoriler',
+      title: t('carplay_favorites', 'Favorites'),
       sections: [{
-        header: `Favori İstasyonlar (${favorites.length})`,
+        header: `${t('carplay_favorite_stations', 'Favorite Stations')} (${favorites.length})`,
         items: favorites.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
@@ -218,9 +218,9 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
     const template = new ListTemplate({
-      title: 'Son Çalınanlar',
+      title: t('carplay_recently_played', 'Recently Played'),
       sections: [{
-        header: `Son Dinlenen İstasyonlar (${recentStations.length})`,
+        header: `${t('carplay_recent_stations', 'Recent Stations')} (${recentStations.length})`,
         items: recentStations.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
@@ -273,12 +273,12 @@ const createGenresTemplate = async (): Promise<any> => {
     };
     
     const template = new ListTemplate({
-      title: 'Türler',
+      title: t('carplay_genres', 'Genres'),
       sections: [{
-        header: `Müzik Türleri (${Math.min(genres.length, 40)})`,
+        header: `${t('carplay_music_genres', 'Music Genres')} (${Math.min(genres.length, 40)})`,
         items: genres.slice(0, 40).map(genre => ({
           text: genre.name,
-          detailText: `${genre.count} istasyon`,
+          detailText: `${genre.count} ${t('carplay_stations', 'stations')}`,
           image: getGenreIcon(genre.name),
         })),
       }],
@@ -364,9 +364,9 @@ const createBrowseTemplate = async (): Promise<any> => {
     CarPlayLogger.dataLoaded('popularStations', stations.length);
     
     const template = new ListTemplate({
-      title: 'Keşfet',
+      title: t('carplay_discover', 'Discover'),
       sections: [{
-        header: `Popüler İstasyonlar (${Math.min(stations.length, 50)})`,
+        header: `${t('carplay_popular_stations', 'Popular Stations')} (${Math.min(stations.length, 50)})`,
         items: stations.slice(0, 50).map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
