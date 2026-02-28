@@ -46,6 +46,20 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - Android versionCode: 40
 - Version: 1.0.27
 
+### ✅ Ek İyileştirmeler (Bu Session)
+
+5. **Genre Sayısı Düzeltildi**
+   - `CarPlayHandler.tsx`: `getDiscoverableGenres()` → `getGenres(1, 40)` olarak değiştirildi
+   - Artık **40 genre** gösterilecek (API'den doğru şekilde çekiliyor)
+   - `genreService.ts`'e `country` ve `lang` parametreleri eklendi
+
+6. **CarPlay Çoklu Dil Desteği (i18n)**
+   - `carPlayService.ts`'e i18n entegrasyonu eklendi
+   - Tüm CarPlay metinleri artık cihaz diline göre değişecek:
+     - Türkçe: Favoriler, Son Çalınanlar, Keşfet, Türler
+     - İngilizce: Favorites, Recently Played, Discover, Genres
+   - `i18nService.ts`'e `carplay_*` çeviri anahtarları eklendi
+
 ### ⚠️ Bekleyen Sorunlar
 
 1. **CarPlay Türler Listesi (3 item)**
