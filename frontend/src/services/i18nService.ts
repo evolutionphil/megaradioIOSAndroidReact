@@ -293,6 +293,18 @@ const turkishTranslations: Record<string, string> = {
   ok: 'Tamam',
   back: 'Geri',
   
+  // CarPlay
+  carplay_favorites: 'Favoriler',
+  carplay_recently_played: 'Son Çalınanlar',
+  carplay_discover: 'Keşfet',
+  carplay_genres: 'Türler',
+  carplay_loading: 'Yükleniyor...',
+  carplay_music_genres: 'Müzik Türleri',
+  carplay_popular_stations: 'Popüler İstasyonlar',
+  carplay_favorite_stations: 'Favori İstasyonlar',
+  carplay_recent_stations: 'Son Dinlenen İstasyonlar',
+  carplay_stations: 'istasyon',
+  
   // Auth
   login: 'Giriş Yap',
   log_in: 'Giriş Yap',
