@@ -28,6 +28,14 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
    - `app.json`'a `processing` background mode eklendi
    - CarPlay cold-start performansı iyileştirildi
 
+4. **CarPlay Cold-Start Düzeltmesi (P0)**
+   - `CarSceneDelegate.m`'e `sceneDidEnterBackground` ve `sceneWillEnterForeground` metodları eklendi
+   - `[RNCarPlay stateChanged:]` çağrıları eklendi (dokümantasyona göre zorunlu)
+   - `carPlayService.ts`'e cold-start retry mekanizması eklendi:
+     - 15 deneme, 2 saniye aralıklarla
+     - CarPlay bağlı ama template oluşturulmamışsa otomatik retry
+     - Detaylı remote logging ile debug kolaylığı
+
 ### 📦 Build Bilgileri
 - iOS Build: 40
 - Android versionCode: 40
@@ -35,19 +43,13 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 
 ### ⚠️ Bekleyen Sorunlar
 
-1. **CarPlay "Yükleniyor" Sorunu (Cold Start)**
-   - Swift tarafında retry mekanizması mevcut (max 10 deneme)
-   - React Native bridge hazır olmadan önce bağlanma sorunu
-   - **ÖNERİ**: Yeni build ile test edilmeli
+1. **CarPlay Türler Listesi (3 item)**
+   - Backend API sadece 3 tür döndürüyor
+   - **BACKEND DÜZELTMESİ GEREKLİ**
 
 2. **ICY Metadata Kaybolması**
    - Event listener'lar mevcut ve çalışıyor
    - Stream bazlı metadata değişkenliği olabilir
-   - Daha fazla logging için remote log aktif
-
-3. **CarPlay Türler Listesi (3 item)**
-   - Backend API sadece 3 tür döndürüyor
-   - **BACKEND DÜZELTMESİ GEREKLİ**
 
 ## Watch Apps - February 19, 2025
 
