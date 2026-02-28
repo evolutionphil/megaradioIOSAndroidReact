@@ -4,7 +4,34 @@
 
 **Tarih:** 28 Şubat 2025  
 **Son Çalışan Build:** 32  
-**Durum:** ✅ Stabil
+**Durum:** ✅ Stabil (iOS derleme başarılı)
+
+---
+
+## 📊 MEVCUT DURUM ANALİZİ
+
+### ✅ Çalışan Özellikler (Build 32)
+| Özellik | Durum | Notlar |
+|---------|-------|--------|
+| iOS Build | ✅ Başarılı | Build 32 derlendi |
+| Uygulama Açılışı | ✅ Çalışıyor | Crash yok |
+| Radyo Akışı | ✅ Çalışıyor | TrackPlayer aktif |
+| Favoriler | ✅ Çalışıyor | AsyncStorage |
+| Reklamlar (AdMob) | ✅ Çalışıyor | 14.2.0 versiyonu |
+
+### 🔄 Test Bekleyen Özellikler
+| Özellik | Durum | Test Gerekli |
+|---------|-------|--------------|
+| CarPlay Template | 🔄 Test Bekliyor | Radyo listesi görünüyor mu? |
+| CarPlay Çalma | 🔄 Test Bekliyor | İstasyon seçince çalıyor mu? |
+| Next/Previous Station | 🔄 Test Bekliyor | Butonlar çalışıyor mu? |
+| Android Build | 🔄 Yapılmadı | Henüz test edilmedi |
+
+### ❌ Devre Dışı Özellikler
+| Özellik | Neden | Alternatif |
+|---------|-------|------------|
+| Google Cast | Crash yapıyor | AirPlay aktif |
+| FlowAlive | NPM paketi bozuk | - |
 
 ---
 
