@@ -859,12 +859,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         try {
           await TrackPlayer.reset();
           await TrackPlayer.add({
-            id: station._id,
+            id: station._id || `station_${Date.now()}`,
             url: nextUrl,
-            title: station.name,
+            title: station.name || 'MegaRadio',
             artist: 'MegaRadio',
-            album: getStationGenre(station),
-            artwork: getArtworkUrl(station),
+            album: getStationGenre(station) || 'MegaRadio',
+            artwork: getArtworkUrl(station) || 'https://themegaradio.com/logo.png',
             isLiveStream: true,
           });
           await TrackPlayer.play();
