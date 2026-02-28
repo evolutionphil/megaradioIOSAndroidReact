@@ -301,11 +301,11 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     const template = new ListTemplate({
       title: genre,
       sections: [{
-        header: `${genre} İstasyonları`,
-        items: stations.slice(0, 20).map(station => ({
+        header: `${genre} İstasyonları (${Math.min(stations.length, 50)})`,
+        items: stations.slice(0, 50).map(station => ({
           text: station.name,
           detailText: station.country || 'Radio',
-          image: getArtworkUrl(station),
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
@@ -325,7 +325,7 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     });
     
     CarPlay.pushTemplate(template, true);
-    CarPlayLogger.templateCreated(`GenreStations-${genre}`, { stationCount: stations.length });
+    CarPlayLogger.templateCreated(`GenreStations-${genre}`, { stationCount: Math.min(stations.length, 50) });
   } catch (error: any) {
     CarPlayLogger.templateError(`GenreStations-${genre}`, error);
     console.error('[CarPlay] Error showing genre stations:', error);
