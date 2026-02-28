@@ -12,36 +12,44 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 
 ## Latest Update (Build 41) - December 2025
 
-### ✅ Kritik Düzeltmeler (Troubleshoot Agent Analizi Sonrası)
+### ✅ Backend Developer Rehberine Göre Kritik Düzeltmeler
 
-1. **Lock Screen 15s/30s İkonları → ⏮️/⏭️ (P0)**
-   - **Kök Neden**: `JumpForward`/`JumpBackward` capability'leri iOS'ta öncelikli gösteriliyordu
-   - **Düzeltme**: `AudioProvider.tsx`'den `JumpForward`, `JumpBackward` capability'leri kaldırıldı
-   - Artık sadece `SkipToNext`/`SkipToPrevious` aktif - doğru ikonlar görünecek
+**1. CarPlay Cold-Start Düzeltmesi (P0)**
+- **Kök Neden**: React Native bridge sadece telefon uygulaması açıldığında başlatılıyordu
+- **Düzeltme**: 
+  - `AppDelegate.swift`'e `initAppFromScene()` metodu eklendi
+  - `CarSceneDelegate.m`'de CarPlay bağlanınca bu metod çağrılıyor
+  - React Native bridge CarPlay'den önce başlatılıyor
 
-2. **CarPlay Favoriler Boş (P0)**
-   - **Kök Neden**: `getFavoriteStations()` fonksiyonu favoriler yüklenmeden çağrılıyordu
-   - **Düzeltme**: `CarPlayHandler.tsx`'de `syncWithServer()` ve `loadLocalFavorites()` çağrısı eklendi
-   - Store yüklü değilse önce sync yapılıyor, sonra favoriler döndürülüyor
+**2. CarPlay Logoları - Local Image Caching (P0)**
+- **Kök Neden**: CarPlay remote URL desteklemiyor, local file path gerekli
+- **Düzeltme**:
+  - `carPlayImageCache.ts` servisi oluşturuldu
+  - `expo-file-system` ile logolar cache'e indiriliyor
+  - Tüm template'ler local path kullanıyor: `file:///var/.../image.png`
 
-3. **Lock Screen Artwork Fallback (P1)**
-   - **Kök Neden**: Empty string veya null favicon kontrolü yetersizdi
-   - **Düzeltme**: `getArtworkUrl()` helper'ına `isValidUrl()` fonksiyonu eklendi
-   - Geçersiz URL'lerde MegaRadio logosu fallback olarak kullanılıyor
+**3. Lock Screen 15s/30s İkonları → ⏮️/⏭️ (P0)**
+- **Düzeltme**: `JumpForward`/`JumpBackward` capability'leri kaldırıldı
+- Artık sadece `SkipToNext`/`SkipToPrevious` aktif
 
-4. **CarPlay 40 Genre (P1)**
-   - `/api/genres/precomputed?limit=40` endpoint'i kullanılıyor
-   - Build 40'ta henüz aktif değildi, Build 41'de çalışacak
+**4. CarPlay Favoriler Boş (P0)**
+- **Düzeltme**: `syncWithServer()` + `loadLocalFavorites()` çağrısı eklendi
+
+**5. Artwork Fallback (P1)**
+- **Düzeltme**: `isValidUrl()` helper ile MegaRadio logosu fallback
 
 ### 📦 Build Bilgileri
 - iOS Build: 41
 - Android versionCode: 41
 - Version: 1.0.27
 
-### ⚠️ Cold-Start Sorunu
-- Native (Obj-C) ve React Native tarafında retry mekanizmaları eklendi
-- Ancak hala tam çözülmedi - React Native bridge hazır olmadan CarPlay bağlanıyor
-- Daha fazla araştırma gerekebilir
+### 📁 Yeni/Değiştirilen Dosyalar
+- `AppDelegate.swift`: `initAppFromScene()` metodu eklendi
+- `CarSceneDelegate.m`: Bridge başlatma çağrısı eklendi
+- `carPlayImageCache.ts`: **YENİ** - Local image caching servisi
+- `carPlayService.ts`: Local image path kullanımı
+- `AudioProvider.tsx`: JumpForward/Backward kaldırıldı
+- `CarPlayHandler.tsx`: Favorites sync mekanizması
 
 ## Watch Apps - February 19, 2025
 
