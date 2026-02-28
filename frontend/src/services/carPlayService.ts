@@ -359,15 +359,27 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     const stations = await getStationsByGenreCallback(genre);
     CarPlayLogger.dataLoaded(`genreStations-${genre}`, stations.length);
     
+    // Pre-cache images for genre stations (max 50)
+    const stationsToCache = stations.slice(0, 50);
+    const imageCache = await cacheStationImages(stationsToCache as any);
+    
+    // Build items with cached local images
+    const items = stationsToCache.map(station => {
+      const stationId = (station as any)._id || (station as any).id || '';
+      const localImagePath = imageCache.get(stationId) || '';
+      
+      return {
+        text: station.name,
+        detailText: station.country || 'Radio',
+        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+      };
+    });
+    
     const template = new ListTemplate({
       title: genre,
       sections: [{
         header: `${genre} İstasyonları (${Math.min(stations.length, 50)})`,
-        items: stations.slice(0, 50).map(station => ({
-          text: station.name,
-          detailText: station.country || 'Radio',
-          image: getStationImage(station),
-        })),
+        items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stations[index];
