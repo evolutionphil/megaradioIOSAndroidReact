@@ -836,7 +836,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             url: nextUrl,
             title: station.name,
             artist: 'MegaRadio',
-            album: station.name || 'MegaRadio',
+            album: getStationGenre(station),
             artwork: getArtworkUrl(station),
             isLiveStream: true,
           });
