@@ -47,8 +47,8 @@ const getRecentStations = async (): Promise<Station[]> => {
 const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
   try {
     const response = await genreService.getDiscoverableGenres();
-    // Return top 8 genres for CarPlay grid
-    return (response || []).slice(0, 8).map((g: any) => ({
+    // Return top 40 genres for CarPlay list
+    return (response || []).slice(0, 40).map((g: any) => ({
       name: g.name || g.slug || g,
       count: g.stationCount || g.count || 0,
     }));
