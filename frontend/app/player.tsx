@@ -712,7 +712,7 @@ export default function PlayerScreen() {
               style={styles.skipButton}
               onPress={handlePreviousStation}
             >
-              <Ionicons name="play-skip-back" size={28} color="#FFFFFF" />
+              <Ionicons name="play-back" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
             {/* Play/Pause */}
@@ -738,7 +738,7 @@ export default function PlayerScreen() {
               style={styles.skipButton}
               onPress={handleNextStation}
             >
-              <Ionicons name="play-skip-forward" size={28} color="#FFFFFF" />
+              <Ionicons name="play-forward" size={28} color="#FFFFFF" />
             </TouchableOpacity>
             
             {/* Heart */}
