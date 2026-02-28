@@ -12,6 +12,12 @@ let TabBarTemplate: any = null;
 let NowPlayingTemplate: any = null;
 let GridTemplate: any = null;
 
+// Track if we've already registered handlers (prevent duplicates)
+let handlersRegistered = false;
+
+// Queue for pending operations when CarPlay connects before service is initialized
+let pendingConnection = false;
+
 if (Platform.OS !== 'web') {
   try {
     const carplayModule = require('@g4rb4g3/react-native-carplay');
@@ -29,6 +35,33 @@ if (Platform.OS !== 'web') {
       NowPlayingTemplate: !!NowPlayingTemplate,
       GridTemplate: !!GridTemplate,
     });
+    
+    // CRITICAL: Register handlers IMMEDIATELY when module loads
+    // This ensures we catch connection events even if they fire before initialize()
+    if (CarPlay && !handlersRegistered) {
+      CarPlayLogger.info('[RN] EARLY REGISTRATION - Registering connection handlers at module load');
+      
+      CarPlay.registerOnConnect(() => {
+        CarPlayLogger.info('[RN] EARLY onConnect callback FIRED (before initialize)', {
+          timestamp: new Date().toISOString(),
+          hasCallbacks: !!playStationCallback,
+        });
+        pendingConnection = true;
+      });
+      
+      CarPlay.registerOnDisconnect(() => {
+        CarPlayLogger.info('[RN] EARLY onDisconnect callback FIRED');
+        pendingConnection = false;
+      });
+      
+      // Check if already connected at module load time
+      if (CarPlay.connected) {
+        CarPlayLogger.info('[RN] CarPlay ALREADY CONNECTED at module load time!');
+        pendingConnection = true;
+      }
+      
+      handlersRegistered = true;
+    }
   } catch (e: any) {
     console.log('[CarPlayService] CarPlay module not available:', e);
     CarPlayLogger.moduleError('react-native-carplay', e);
