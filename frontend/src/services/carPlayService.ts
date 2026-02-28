@@ -203,11 +203,11 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const template = new ListTemplate({
       title: 'Son Çalınanlar',
       sections: [{
-        header: 'Son Dinlenen İstasyonlar',
+        header: `Son Dinlenen İstasyonlar (${recentStations.length})`,
         items: recentStations.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getArtworkUrl(station),
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
