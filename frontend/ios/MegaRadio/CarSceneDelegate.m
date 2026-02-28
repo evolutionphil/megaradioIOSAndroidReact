@@ -62,7 +62,100 @@ static void sendCarPlayLog(NSString *level, NSString *message, NSDictionary *dat
     }] resume];
 }
 
-@implementation CarSceneDelegate
+@implementation CarSceneDelegate {
+    CPInterfaceController *_interfaceController;
+    CPWindow *_carWindow;
+    int _retryCount;
+    NSTimer *_retryTimer;
+}
+
+// Check if React Native bridge is ready
+- (BOOL)isReactNativeBridgeReady {
+    // Try to check if RNCarPlay is responding
+    Class rnCarPlayClass = NSClassFromString(@"RNCarPlay");
+    if (!rnCarPlayClass) {
+        return NO;
+    }
+    
+    // Check if the module has registered handlers (connected property)
+    // This is a heuristic - we check if the class responds to expected methods
+    SEL connectedSel = NSSelectorFromString(@"connected");
+    if ([rnCarPlayClass respondsToSelector:connectedSel]) {
+        return YES;
+    }
+    
+    return YES; // Assume ready if class exists
+}
+
+// Start retry timer for cold-start scenario
+- (void)startRetryTimerWithInterfaceController:(CPInterfaceController *)interfaceController window:(CPWindow *)window {
+    _interfaceController = interfaceController;
+    _carWindow = window;
+    _retryCount = 0;
+    
+    // Stop any existing timer
+    [self stopRetryTimer];
+    
+    // Start retry timer - check every 1 second for 30 seconds
+    sendCarPlayLog(@"info", @"Starting cold-start retry timer", @{@"maxRetries": @30, @"intervalSec": @1});
+    
+    _retryTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                   target:self
+                                                 selector:@selector(retryCarPlayConnection)
+                                                 userInfo:nil
+                                                  repeats:YES];
+}
+
+- (void)stopRetryTimer {
+    if (_retryTimer) {
+        [_retryTimer invalidate];
+        _retryTimer = nil;
+    }
+}
+
+- (void)retryCarPlayConnection {
+    _retryCount++;
+    
+    sendCarPlayLog(@"info", @"Retry attempt", @{
+        @"attempt": @(_retryCount),
+        @"bridgeReady": @([self isReactNativeBridgeReady])
+    });
+    
+    // Check if template has been replaced (success case)
+    if (_interfaceController) {
+        CPTemplate *currentTemplate = _interfaceController.rootTemplate;
+        
+        // If it's no longer a simple list template with "Yükleniyor", we're done
+        if ([currentTemplate isKindOfClass:[CPTabBarTemplate class]]) {
+            sendCarPlayLog(@"info", @"SUCCESS! TabBar template detected - stopping retry", @{});
+            [self stopRetryTimer];
+            return;
+        }
+        
+        // Check if it's a list template but NOT our loading template
+        if ([currentTemplate isKindOfClass:[CPListTemplate class]]) {
+            CPListTemplate *listTemplate = (CPListTemplate *)currentTemplate;
+            NSString *title = listTemplate.title;
+            if (title && ![title isEqualToString:@"MegaRadio"]) {
+                sendCarPlayLog(@"info", @"SUCCESS! Different template detected - stopping retry", @{@"title": title});
+                [self stopRetryTimer];
+                return;
+            }
+        }
+    }
+    
+    // Retry connecting to RNCarPlay
+    if (_retryCount <= 30 && _interfaceController) {
+        sendCarPlayLog(@"info", @"Re-calling RNCarPlay.connect", @{@"attempt": @(_retryCount)});
+        [RNCarPlay connectWithInterfaceController:_interfaceController window:_carWindow];
+    }
+    
+    // Stop after max retries
+    if (_retryCount >= 30) {
+        sendCarPlayLog(@"warn", @"Max retries reached - stopping cold-start retry", @{});
+        [self stopRetryTimer];
+    }
+}
 
 - (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene
    didConnectInterfaceController:(CPInterfaceController *)interfaceController
