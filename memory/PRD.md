@@ -921,3 +921,54 @@ RNCarPlay import'u eklendi:
 cd ios && rm -rf Podfile.lock Pods && pod install --repo-update && cd ..
 eas build --platform ios --profile production --auto-submit --clear-cache
 ```
+
+---
+
+## February 28, 2025 - iOS Startup Crash Düzeltmesi (Build 32)
+
+### Sorun Analizi:
+**Crash Type:** `EXC_CRASH (SIGABRT)`
+**Crash Message:** `*** -[__NSPlaceholderDictionary initWithObjects:forKeys:count:]: attempt to insert nil object from objects[0]`
+**Crashing Thread:** Thread 11
+
+**Stack Trace:**
+```
+- __61+[RCTThirdPartyComponentsProvider thirdPartyFabricComponents]_block_invoke
+- +[RCTThirdPartyComponentsProvider thirdPartyFabricComponents]
+- -[RCTDefaultReactNativeFactoryDelegate thirdPartyFabricComponents]
+- -[RCTComponentViewFactory _registerComponentIfPossible:]
+```
+
+### Kök Neden:
+**react-native-google-mobile-ads v14.6.0** zorla Fabric bağımlılıkları yüklüyor - `newArchEnabled=false` olsa bile!
+
+Detaylı analiz:
+1. React Native 0.81.5 `setup_fabric!` fonksiyonunu koşulsuz çağırıyor
+2. react-native-google-mobile-ads podspec `install_modules_dependencies(s)` helper'ını kullanıyor
+3. Bu helper **HER ZAMAN** `spec.dependency "React-RCTFabric"` ekliyor (RCT_NEW_ARCH_ENABLED değerinden bağımsız)
+4. AdMob Fabric component'leri derleniyor ama runtime'da initialize edilemiyor
+5. `RCTThirdPartyFabricComponentsProvider.thirdPartyFabricComponents` nil döndürüyor → CRASH
+
+### Çözüm:
+**react-native-google-mobile-ads** versiyonu **14.2.0**'a düşürüldü (son stabil versiyon - Fabric bug'ı yok)
+
+```bash
+yarn add react-native-google-mobile-ads@14.2.0
+```
+
+### Değişen Dosyalar:
+- `package.json` - react-native-google-mobile-ads: 14.6.0 → 14.2.0
+- `app.json` - buildNumber: 30 → 32, versionCode: 30 → 32
+
+### Build Komutu:
+```bash
+eas build --platform ios --profile production --auto-submit --clear-cache
+```
+
+### CarPlay "Yükleniyor" Durumu:
+Bu düzeltme ile birlikte:
+1. Uygulama artık açılışta CRASH olmayacak
+2. CarPlay bağlandığında React Native tarafı çalışabilecek
+3. `CarPlayHandler` component'i düzgün initialize olacak
+4. `registerOnConnect` callback tetiklenecek
+5. Template'ler oluşturulacak ve "Yükleniyor" ekranı gidecek
