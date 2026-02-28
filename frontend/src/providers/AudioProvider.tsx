@@ -232,25 +232,43 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           
           // Update lock screen
           if (Platform.OS !== 'web') {
-            const artworkUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
-            // Get genre for album field
+            // Safely get artwork URL - ensure it's never null/undefined
+            let artworkUrl = 'https://themegaradio.com/logo.png';
+            if (station.favicon && station.favicon.length > 0) {
+              artworkUrl = station.favicon;
+            } else if (station.logo && station.logo.length > 0) {
+              artworkUrl = station.logo;
+            }
+            // Ensure HTTPS
+            if (artworkUrl.startsWith('http://')) {
+              artworkUrl = artworkUrl.replace('http://', 'https://');
+            }
+            
+            // Get genre for album field - ensure it's never null/undefined
             let albumName = 'MegaRadio';
-            if (station.tags) {
+            if (station.tags && station.tags.length > 0) {
               const firstTag = station.tags.split(',')[0].trim();
-              if (firstTag) albumName = firstTag.charAt(0).toUpperCase() + firstTag.slice(1);
-            } else if (station.genres && station.genres.length > 0) {
+              if (firstTag && firstTag.length > 0) {
+                albumName = firstTag.charAt(0).toUpperCase() + firstTag.slice(1);
+              }
+            } else if (station.genres && station.genres.length > 0 && station.genres[0]) {
               albumName = station.genres[0];
-            } else if (station.country) {
+            } else if (station.country && station.country.length > 0) {
               albumName = station.country;
             }
             
+            // Build metadata object with guaranteed non-null values
+            const metadataUpdate = {
+              title: (songTitle && songTitle.length > 0) ? songTitle : (station.name || 'MegaRadio'),
+              artist: (artistName && artistName.length > 0) ? artistName : 'MegaRadio',
+              album: albumName,
+              artwork: artworkUrl,
+            };
+            
+            console.log('[AudioProvider] 🎵 Updating lock screen with:', metadataUpdate);
+            
             try {
-              await TrackPlayer.updateNowPlayingMetadata({
-                title: songTitle || station.name,
-                artist: artistName || 'MegaRadio',
-                album: albumName,
-                artwork: artworkUrl.startsWith('http://') ? artworkUrl.replace('http://', 'https://') : artworkUrl,
-              });
+              await TrackPlayer.updateNowPlayingMetadata(metadataUpdate);
               console.log('[AudioProvider] 🎵 Lock screen updated from ICY metadata');
             } catch (e) {
               console.log('[AudioProvider] Could not update lock screen:', e);
