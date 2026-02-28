@@ -7,6 +7,7 @@
 
 #import "CarSceneDelegate.h"
 #import "RNCarPlay.h"
+#import "MegaRadio-Swift.h"  // For AppDelegate access
 
 // Remote logging helper
 static void sendCarPlayLog(NSString *level, NSString *message, NSDictionary *data) {
