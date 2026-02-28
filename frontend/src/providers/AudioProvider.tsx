@@ -711,6 +711,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         url: url,
         title: 'Previous Station',
         artist: 'MegaRadio',
+        album: getStationGenre(station),
         artwork: artworkUrl,
         duration: fakeDuration,
       });
@@ -721,7 +722,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         url: url,
         title: station.name,
         artist: 'MegaRadio',
-        album: station.name || 'MegaRadio',
+        album: getStationGenre(station),
         artwork: artworkUrl,
         duration: fakeDuration,
       });
@@ -732,7 +733,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         url: url,
         title: 'Next Station',
         artist: 'MegaRadio',
-        album: 'MegaRadio',
+        album: getStationGenre(station),
         artwork: artworkUrl,
         duration: fakeDuration,
       });
