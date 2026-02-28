@@ -122,7 +122,28 @@ let getGenresCallback: (() => Promise<{ name: string; count: number }[]>) | null
 let getStationsByGenreCallback: ((genre: string) => Promise<Station[]>) | null = null;
 
 // Helper to get station artwork as ImageSourcePropType
-const getStationImage = (station: Station): { uri: string } => {
+// For CarPlay: Downloads and caches image locally, returns local file path
+// CarPlay does NOT support remote URLs!
+const getStationImage = async (station: Station): Promise<{ uri: string } | null> => {
+  try {
+    // Try to get cached local path first
+    const localPath = await getCarPlayImagePath(station as any);
+    
+    if (localPath && localPath.length > 0) {
+      return { uri: localPath };
+    }
+    
+    // Fallback: return null (template will show without image)
+    // This is better than crashing CarPlay with remote URL
+    return null;
+  } catch (error) {
+    console.error('[CarPlayService] getStationImage error:', error);
+    return null;
+  }
+};
+
+// Synchronous helper for immediate use (no caching, just returns URL for non-CarPlay use)
+const getStationImageSync = (station: Station): { uri: string } => {
   let url = 'https://themegaradio.com/logo.png';
   
   if (station.favicon && station.favicon.startsWith('http')) {
