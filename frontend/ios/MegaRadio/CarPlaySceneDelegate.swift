@@ -114,22 +114,18 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     private let maxRetryAttempts = 10
     private let retryInterval: TimeInterval = 1.0
     
-    /// Check if React Native bridge is ready
+    /// Check if React Native bridge is ready using RNCarPlay class availability
     private func isBridgeReady() -> Bool {
-        // Check if RCTBridge exists and is valid
-        guard let appDelegate = UIApplication.shared.delegate,
-              let factoryProperty = appDelegate.value(forKey: "reactNativeFactory") as? AnyObject else {
+        // Simple check: if RNCarPlay class exists and responds to connect, bridge should be ready
+        guard let rnCarPlayClass = NSClassFromString("RNCarPlay") else {
             return false
         }
         
-        // Check if bridge has loaded
-        if let bridge = factoryProperty.value(forKey: "bridge") as? AnyObject {
-            let isValid = bridge.responds(to: NSSelectorFromString("isValid")) ? 
-                          (bridge.perform(NSSelectorFromString("isValid"))?.takeUnretainedValue() as? Bool ?? false) : true
-            return isValid
-        }
+        // Check if the connect method exists - this indicates the module is properly initialized
+        let selector = NSSelectorFromString("connectWithInterfaceController:window:")
+        let responds = (rnCarPlayClass as AnyObject).responds(to: selector)
         
-        return false
+        return responds
     }
     
     /// Safely connect to RNCarPlay module with detailed logging and retry logic
