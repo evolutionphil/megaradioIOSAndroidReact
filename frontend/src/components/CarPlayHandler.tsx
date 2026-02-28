@@ -46,11 +46,12 @@ const getRecentStations = async (): Promise<Station[]> => {
 
 const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
   try {
-    const response = await genreService.getDiscoverableGenres();
-    // Return top 40 genres for CarPlay list
-    return (response || []).slice(0, 40).map((g: any) => ({
+    // Use getGenres with limit=40 for CarPlay
+    const response = await genreService.getGenres(1, 40);
+    // Return genres for CarPlay list
+    return (response.genres || []).map((g: any) => ({
       name: g.name || g.slug || g,
-      count: g.stationCount || g.count || 0,
+      count: g.stationCount || g.total_stations || g.count || 0,
     }));
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genres:', error);
