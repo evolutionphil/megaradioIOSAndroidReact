@@ -158,7 +158,8 @@ const createFavoritesTemplate = async (): Promise<any> => {
         items: favorites.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getStationImage(station),
+          // Note: CarPlay doesn't support remote URLs for images, only local assets
+          // image: getStationImage(station), // Disabled - remote URLs not supported
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
