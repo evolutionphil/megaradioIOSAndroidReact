@@ -107,14 +107,65 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         ])
     }
     
-    /// Safely connect to RNCarPlay module with detailed logging
+    // Pending connection info - for retry when bridge is ready
+    private var pendingInterfaceController: CPInterfaceController?
+    private var pendingWindow: CPWindow?
+    private var retryTimer: Timer?
+    private let maxRetryAttempts = 10
+    private let retryInterval: TimeInterval = 1.0
+    
+    /// Check if React Native bridge is ready
+    private func isBridgeReady() -> Bool {
+        // Check if RCTBridge exists and is valid
+        guard let appDelegate = UIApplication.shared.delegate,
+              let factoryProperty = appDelegate.value(forKey: "reactNativeFactory") as? AnyObject else {
+            return false
+        }
+        
+        // Check if bridge has loaded
+        if let bridge = factoryProperty.value(forKey: "bridge") as? AnyObject {
+            let isValid = bridge.responds(to: NSSelectorFromString("isValid")) ? 
+                          (bridge.perform(NSSelectorFromString("isValid"))?.takeUnretainedValue() as? Bool ?? false) : true
+            return isValid
+        }
+        
+        return false
+    }
+    
+    /// Safely connect to RNCarPlay module with detailed logging and retry logic
     private func safeConnectToRNCarPlay(interfaceController: CPInterfaceController, window: CPWindow?) {
         connectionAttempts += 1
+        
+        let bridgeReady = isBridgeReady()
         sendRemoteLog(level: "info", message: "Attempting RNCarPlay connection", data: [
             "attempt": connectionAttempts,
             "hasWindow": window != nil,
-            "windowDescription": window != nil ? "\(window!.bounds)" : "nil"
+            "windowDescription": window != nil ? "\(window!.bounds)" : "nil",
+            "bridgeReady": bridgeReady
         ])
+        
+        // If bridge is not ready, queue the connection for retry
+        if !bridgeReady && connectionAttempts < maxRetryAttempts {
+            sendRemoteLog(level: "warn", message: "Bridge NOT READY - queuing connection for retry", data: [
+                "attempt": connectionAttempts,
+                "maxRetries": maxRetryAttempts,
+                "retryInterval": retryInterval
+            ])
+            
+            pendingInterfaceController = interfaceController
+            pendingWindow = window
+            
+            // Schedule retry
+            DispatchQueue.main.async { [weak self] in
+                self?.retryTimer?.invalidate()
+                self?.retryTimer = Timer.scheduledTimer(withTimeInterval: self?.retryInterval ?? 1.0, repeats: false) { [weak self] _ in
+                    guard let self = self,
+                          let controller = self.pendingInterfaceController else { return }
+                    self.safeConnectToRNCarPlay(interfaceController: controller, window: self.pendingWindow)
+                }
+            }
+            return
+        }
         
         guard let rnCarPlayClass = getRNCarPlayClass() else {
             sendRemoteLog(level: "error", message: "RNCarPlay module NOT AVAILABLE", data: [
@@ -146,7 +197,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             
             if rnCarPlayClass.responds(to: selector) {
                 sendRemoteLog(level: "info", message: "Calling RNCarPlay method", data: [
-                    "method": signature
+                    "method": signature,
+                    "bridgeReady": bridgeReady
                 ])
                 
                 do {
@@ -158,9 +210,17 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                     
                     sendRemoteLog(level: "info", message: "RNCarPlay.connect CALLED SUCCESSFULLY", data: [
                         "method": signature,
+                        "bridgeReady": bridgeReady,
                         "nextStep": "React Native should now receive connection event and create templates"
                     ])
                     print("[CarPlaySceneDelegate] Successfully connected to RNCarPlay via \(signature)")
+                    
+                    // Clear pending connection
+                    pendingInterfaceController = nil
+                    pendingWindow = nil
+                    retryTimer?.invalidate()
+                    retryTimer = nil
+                    
                     return
                 } catch {
                     sendRemoteLog(level: "error", message: "RNCarPlay method call FAILED", data: [
