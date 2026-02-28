@@ -166,7 +166,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   } = usePlayerStore();
 
   // Listen to Track Player events
-  useTrackPlayerEvents([Event.PlaybackState, Event.PlaybackError], async (event) => {
+  useTrackPlayerEvents([Event.PlaybackState, Event.PlaybackError, Event.PlaybackMetadataReceived, Event.MetadataCommonReceived], async (event) => {
     if (event.type === Event.PlaybackState) {
       console.log('[AudioProvider] Playback state changed:', event.state);
       
@@ -196,6 +196,57 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.error('[AudioProvider] Playback error:', event);
       setError('Stream playback error');
       setPlaybackState('error');
+    }
+    
+    // Handle ICY metadata from stream (live song info)
+    if (event.type === Event.PlaybackMetadataReceived || event.type === Event.MetadataCommonReceived) {
+      console.log('[AudioProvider] 🎵 Stream metadata received:', event);
+      const station = usePlayerStore.getState().currentStation;
+      if (station) {
+        // Extract metadata from event
+        const metadata = (event as any).metadata || event;
+        const title = metadata.title || metadata.commonMetadata?.title;
+        const artist = metadata.artist || metadata.commonMetadata?.artist;
+        
+        if (title || artist) {
+          console.log('[AudioProvider] 🎵 ICY Metadata:', { title, artist });
+          
+          // Parse "Artist - Title" format if title contains both
+          let songTitle = title || '';
+          let artistName = artist || '';
+          
+          if (songTitle && songTitle.includes(' - ') && !artistName) {
+            const parts = songTitle.split(' - ');
+            artistName = parts[0].trim();
+            songTitle = parts.slice(1).join(' - ').trim();
+          }
+          
+          // Update UI state
+          setNowPlaying({
+            title: songTitle || station.name,
+            artist: artistName,
+            song: songTitle,
+            station: station.name,
+            timestamp: Date.now(),
+          });
+          
+          // Update lock screen
+          if (Platform.OS !== 'web') {
+            const artworkUrl = station.favicon || station.logo || 'https://themegaradio.com/logo.png';
+            try {
+              await TrackPlayer.updateNowPlayingMetadata({
+                title: songTitle || station.name,
+                artist: artistName || 'MegaRadio',
+                album: station.name || 'MegaRadio',
+                artwork: artworkUrl.startsWith('http://') ? artworkUrl.replace('http://', 'https://') : artworkUrl,
+              });
+              console.log('[AudioProvider] 🎵 Lock screen updated from ICY metadata');
+            } catch (e) {
+              console.log('[AudioProvider] Could not update lock screen:', e);
+            }
+          }
+        }
+      }
     }
   });
 
