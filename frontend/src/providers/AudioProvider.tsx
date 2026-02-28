@@ -642,7 +642,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         url: url,
         title: station.name,
         artist: 'MegaRadio',
-        album: station.country || 'Live Radio',
+        album: station.name || 'MegaRadio',
         artwork: artworkUrl,
         duration: fakeDuration,
       });
@@ -653,6 +653,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         url: url,
         title: 'Next Station',
         artist: 'MegaRadio',
+        album: 'MegaRadio',
         artwork: artworkUrl,
         duration: fakeDuration,
       });
