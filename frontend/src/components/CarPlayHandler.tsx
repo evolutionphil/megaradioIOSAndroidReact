@@ -62,7 +62,7 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
   try {
     const response = await stationService.getStations({
       tag: genre,
-      limit: 20,
+      limit: 50,  // CarPlay: 50 stations per genre
       order: 'votes',
     });
     return response.stations || [];
