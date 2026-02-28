@@ -726,25 +726,31 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       // Long duration (24 hours in seconds) - tricks iOS into showing skip buttons
       const fakeDuration = 86400;
       
+      // Ensure all metadata values are non-null
+      const safeAlbum = getStationGenre(station) || 'MegaRadio';
+      const safeArtwork = artworkUrl || 'https://themegaradio.com/logo.png';
+      const safeTitle = station.name || 'MegaRadio';
+      const safeId = station._id || `station_${Date.now()}`;
+      
       // Add a "previous" placeholder (will be replaced when user presses Previous)
       await TrackPlayer.add({
         id: 'placeholder_previous',
         url: url,
         title: 'Previous Station',
         artist: 'MegaRadio',
-        album: getStationGenre(station),
-        artwork: artworkUrl,
+        album: safeAlbum,
+        artwork: safeArtwork,
         duration: fakeDuration,
       });
       
       // Add the actual current station
       await TrackPlayer.add({
-        id: station._id,
+        id: safeId,
         url: url,
-        title: station.name,
+        title: safeTitle,
         artist: 'MegaRadio',
-        album: getStationGenre(station),
-        artwork: artworkUrl,
+        album: safeAlbum,
+        artwork: safeArtwork,
         duration: fakeDuration,
       });
       
@@ -754,8 +760,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         url: url,
         title: 'Next Station',
         artist: 'MegaRadio',
-        album: getStationGenre(station),
-        artwork: artworkUrl,
+        album: safeAlbum,
+        artwork: safeArtwork,
         duration: fakeDuration,
       });
       
