@@ -10,65 +10,38 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 40) - December 2025
+## Latest Update (Build 41) - December 2025
 
-### ✅ Yapılan Düzeltmeler
+### ✅ Kritik Düzeltmeler (Troubleshoot Agent Analizi Sonrası)
 
-1. **CarPlay Logo Düzeltmesi (P0)**
-   - `carPlayService.ts`'de tüm ListTemplate'lere `image` property'si geri eklendi
-   - Favoriler, Son Çalınanlar, Keşfet ve Tür istasyonları artık logo gösterecek
-   - Format: `image: { uri: 'https://...' }` (HTTPS zorunlu)
+1. **Lock Screen 15s/30s İkonları → ⏮️/⏭️ (P0)**
+   - **Kök Neden**: `JumpForward`/`JumpBackward` capability'leri iOS'ta öncelikli gösteriliyordu
+   - **Düzeltme**: `AudioProvider.tsx`'den `JumpForward`, `JumpBackward` capability'leri kaldırıldı
+   - Artık sadece `SkipToNext`/`SkipToPrevious` aktif - doğru ikonlar görünecek
 
-2. **Previous/Next Buton İkonları (P1)**
-   - `player.tsx`'deki ikonlar `chevron-back` ve `chevron-forward` olarak değiştirildi
-   - Size: 32px (önceki 28px'den büyütüldü)
-   - Artık `<` ve `>` şeklinde görünecek
+2. **CarPlay Favoriler Boş (P0)**
+   - **Kök Neden**: `getFavoriteStations()` fonksiyonu favoriler yüklenmeden çağrılıyordu
+   - **Düzeltme**: `CarPlayHandler.tsx`'de `syncWithServer()` ve `loadLocalFavorites()` çağrısı eklendi
+   - Store yüklü değilse önce sync yapılıyor, sonra favoriler döndürülüyor
 
-3. **Background Mode Güncellemesi**
-   - `app.json`'a `processing` background mode eklendi
-   - CarPlay cold-start performansı iyileştirildi
+3. **Lock Screen Artwork Fallback (P1)**
+   - **Kök Neden**: Empty string veya null favicon kontrolü yetersizdi
+   - **Düzeltme**: `getArtworkUrl()` helper'ına `isValidUrl()` fonksiyonu eklendi
+   - Geçersiz URL'lerde MegaRadio logosu fallback olarak kullanılıyor
 
-4. **CarPlay Cold-Start Düzeltmesi (P0) - GELİŞTİRİLDİ**
-   - **GitHub Issue Analizi (#41777)**: React Native bridge cold-start'ta hazır olmayabilir
-   - **Native Retry Timer (Objective-C)**:
-     - `CarSceneDelegate.m`'e 30 deneme x 1 saniye retry mekanizması eklendi
-     - Her saniye `[RNCarPlay connectWithInterfaceController:window:]` tekrar çağrılıyor
-     - TabBar template algılandığında otomatik durma
-   - **React Native Retry Timer (TypeScript)**:
-     - `carPlayService.ts`'e 15 deneme x 2 saniye retry mekanizması eklendi
-     - CarPlay bağlı ama template oluşturulmamışsa otomatik retry
-   - **State Change Callbacks**:
-     - `sceneDidEnterBackground` ve `sceneWillEnterForeground` metodları eklendi
-     - `[RNCarPlay stateChanged:]` çağrıları ile React Native'e state bildirimi
+4. **CarPlay 40 Genre (P1)**
+   - `/api/genres/precomputed?limit=40` endpoint'i kullanılıyor
+   - Build 40'ta henüz aktif değildi, Build 41'de çalışacak
 
 ### 📦 Build Bilgileri
-- iOS Build: 40
-- Android versionCode: 40
+- iOS Build: 41
+- Android versionCode: 41
 - Version: 1.0.27
 
-### ✅ Ek İyileştirmeler (Bu Session)
-
-5. **Genre Sayısı Düzeltildi**
-   - `CarPlayHandler.tsx`: `getDiscoverableGenres()` → `getGenres(1, 40)` olarak değiştirildi
-   - Artık **40 genre** gösterilecek (API'den doğru şekilde çekiliyor)
-   - `genreService.ts`'e `country` ve `lang` parametreleri eklendi
-
-6. **CarPlay Çoklu Dil Desteği (i18n)**
-   - `carPlayService.ts`'e i18n entegrasyonu eklendi
-   - Tüm CarPlay metinleri artık cihaz diline göre değişecek:
-     - Türkçe: Favoriler, Son Çalınanlar, Keşfet, Türler
-     - İngilizce: Favorites, Recently Played, Discover, Genres
-   - `i18nService.ts`'e `carplay_*` çeviri anahtarları eklendi
-
-### ⚠️ Bekleyen Sorunlar
-
-1. **CarPlay Türler Listesi (3 item)**
-   - Backend API sadece 3 tür döndürüyor
-   - **BACKEND DÜZELTMESİ GEREKLİ**
-
-2. **ICY Metadata Kaybolması**
-   - Event listener'lar mevcut ve çalışıyor
-   - Stream bazlı metadata değişkenliği olabilir
+### ⚠️ Cold-Start Sorunu
+- Native (Obj-C) ve React Native tarafında retry mekanizmaları eklendi
+- Ancak hala tam çözülmedi - React Native bridge hazır olmadan CarPlay bağlanıyor
+- Daha fazla araştırma gerekebilir
 
 ## Watch Apps - February 19, 2025
 
