@@ -404,19 +404,13 @@ const createBrowseTemplate = async (): Promise<any> => {
     const stations = await getStationsCallback();
     CarPlayLogger.dataLoaded('popularStations', stations.length);
     
-    // Pre-cache images for all stations (max 50)
-    const stationsToCache = stations.slice(0, 50);
-    const imageCache = await cacheStationImages(stationsToCache as any);
-    
-    // Build items with cached local images
-    const items = stationsToCache.map(station => {
-      const stationId = (station as any)._id || (station as any).id || '';
-      const localImagePath = imageCache.get(stationId) || '';
-      
+    // Build items with imgUrl for async native image loading (max 50)
+    const items = stations.slice(0, 50).map(station => {
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+        imgUrl: imgUrl, // Native will download this asynchronously
       };
     });
     
