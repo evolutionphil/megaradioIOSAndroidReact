@@ -22,7 +22,7 @@ export const genreService = {
   },
 
   // Get precomputed genres (faster, cached) with error handling
-  async getPrecomputedGenres(country?: string): Promise<{ success: boolean; data: Genre[] }> {
+  async getPrecomputedGenres(country?: string, limit: number = 40): Promise<{ success: boolean; data: Genre[] }> {
     try {
       // Check cache first
       const cached = await stationCache.getGenres();
@@ -30,11 +30,11 @@ export const genreService = {
       
       if (!isOnline && cached) {
         console.log('[genreService] Using cached genres (offline)');
-        return { success: true, data: cached };
+        return { success: true, data: cached.slice(0, limit) };
       }
 
       const response = await api.get(API_ENDPOINTS.genres.precomputed, {
-        params: { countrycode: country, tv: 1 },
+        params: { countrycode: country, tv: 1, limit },
       });
       
       const data = response.data;
@@ -52,7 +52,7 @@ export const genreService = {
       const cached = await stationCache.getGenres();
       if (cached) {
         console.log('[genreService] Using cached genres (API error)');
-        return { success: true, data: cached };
+        return { success: true, data: cached.slice(0, limit) };
       }
       
       return { success: false, data: [] };
