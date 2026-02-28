@@ -194,6 +194,11 @@ didDisconnectInterfaceController:(CPInterfaceController *)interfaceController
     NSLog(@"[CarSceneDelegate] ===== CarPlay DISCONNECTED (ObjC) =====");
     sendCarPlayLog(@"info", @"===== CarPlay DISCONNECTED =====", @{});
     
+    // Stop retry timer
+    [self stopRetryTimer];
+    _interfaceController = nil;
+    _carWindow = nil;
+    
     [RNCarPlay disconnect];
 }
 
