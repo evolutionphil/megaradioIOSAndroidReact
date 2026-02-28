@@ -4,6 +4,17 @@
 import { Platform } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
+import i18n from './i18nService';
+
+// Helper function to get translated CarPlay strings
+const t = (key: string, fallback: string): string => {
+  try {
+    const translation = i18n.t(key);
+    return translation !== key ? translation : fallback;
+  } catch {
+    return fallback;
+  }
+};
 
 // Only import CarPlay on native platforms
 let CarPlay: any = null;
