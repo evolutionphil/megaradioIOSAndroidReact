@@ -10,7 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
-      "buildNumber": "30",
+      "buildNumber": "32",
       "usesAppleSignIn": true,
       "infoPlist": {
         "UIBackgroundModes": [
