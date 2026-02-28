@@ -10,6 +10,45 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
+## Latest Update (Build 40) - December 2025
+
+### ✅ Yapılan Düzeltmeler
+
+1. **CarPlay Logo Düzeltmesi (P0)**
+   - `carPlayService.ts`'de tüm ListTemplate'lere `image` property'si geri eklendi
+   - Favoriler, Son Çalınanlar, Keşfet ve Tür istasyonları artık logo gösterecek
+   - Format: `image: { uri: 'https://...' }` (HTTPS zorunlu)
+
+2. **Previous/Next Buton İkonları (P1)**
+   - `player.tsx`'deki ikonlar `chevron-back` ve `chevron-forward` olarak değiştirildi
+   - Size: 32px (önceki 28px'den büyütüldü)
+   - Artık `<` ve `>` şeklinde görünecek
+
+3. **Background Mode Güncellemesi**
+   - `app.json`'a `processing` background mode eklendi
+   - CarPlay cold-start performansı iyileştirildi
+
+### 📦 Build Bilgileri
+- iOS Build: 40
+- Android versionCode: 40
+- Version: 1.0.27
+
+### ⚠️ Bekleyen Sorunlar
+
+1. **CarPlay "Yükleniyor" Sorunu (Cold Start)**
+   - Swift tarafında retry mekanizması mevcut (max 10 deneme)
+   - React Native bridge hazır olmadan önce bağlanma sorunu
+   - **ÖNERİ**: Yeni build ile test edilmeli
+
+2. **ICY Metadata Kaybolması**
+   - Event listener'lar mevcut ve çalışıyor
+   - Stream bazlı metadata değişkenliği olabilir
+   - Daha fazla logging için remote log aktif
+
+3. **CarPlay Türler Listesi (3 item)**
+   - Backend API sadece 3 tür döndürüyor
+   - **BACKEND DÜZELTMESİ GEREKLİ**
+
 ## Watch Apps - February 19, 2025
 
 ### ✅ Apple Watch (SwiftUI)
