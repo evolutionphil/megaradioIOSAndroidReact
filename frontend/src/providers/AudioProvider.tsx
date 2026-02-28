@@ -415,7 +415,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const newMetadata = {
         title: songTitle,
         artist: artistName,
-        album: station.name,
+        album: station.name || 'MegaRadio', // Fallback to MegaRadio if empty
         artwork: artworkUrl,
       };
       
