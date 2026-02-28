@@ -154,12 +154,11 @@ const createFavoritesTemplate = async (): Promise<any> => {
     const template = new ListTemplate({
       title: 'Favoriler',
       sections: [{
-        header: 'Favori İstasyonlar',
+        header: `Favori İstasyonlar (${favorites.length})`,
         items: favorites.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getArtworkUrl(station),
-          station: station,
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
