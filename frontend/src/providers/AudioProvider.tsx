@@ -509,11 +509,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const artworkUrl = getArtworkUrl(station);
       const albumName = getStationGenre(station);
       
+      // Ensure all values are non-null strings
       const newMetadata = {
-        title: songTitle,
-        artist: artistName,
-        album: albumName,
-        artwork: artworkUrl,
+        title: (songTitle && songTitle.length > 0) ? songTitle : (station.name || 'MegaRadio'),
+        artist: (artistName && artistName.length > 0) ? artistName : 'MegaRadio',
+        album: (albumName && albumName.length > 0) ? albumName : 'MegaRadio',
+        artwork: (artworkUrl && artworkUrl.length > 0) ? artworkUrl : 'https://themegaradio.com/logo.png',
       };
       
       console.log('[AudioProvider] Updating lock screen metadata:', newMetadata);
