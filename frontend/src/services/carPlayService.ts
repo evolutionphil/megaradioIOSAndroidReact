@@ -158,8 +158,7 @@ const createFavoritesTemplate = async (): Promise<any> => {
         items: favorites.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          // Note: CarPlay doesn't support remote URLs for images, only local assets
-          // image: getStationImage(station), // Disabled - remote URLs not supported
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
@@ -208,8 +207,7 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
         items: recentStations.map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          // Note: CarPlay doesn't support remote URLs for images
-          // image: getStationImage(station),
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
@@ -307,8 +305,7 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
         items: stations.slice(0, 50).map(station => ({
           text: station.name,
           detailText: station.country || 'Radio',
-          // Note: CarPlay doesn't support remote URLs for images
-          // image: getStationImage(station),
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
@@ -356,8 +353,7 @@ const createBrowseTemplate = async (): Promise<any> => {
         items: stations.slice(0, 50).map(station => ({
           text: station.name,
           detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          // Note: CarPlay doesn't support remote URLs for images
-          // image: getStationImage(station),
+          image: getStationImage(station),
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
