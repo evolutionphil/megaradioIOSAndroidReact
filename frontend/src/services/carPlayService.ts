@@ -250,15 +250,26 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const recentStations = await getRecentlyPlayedCallback();
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
+    // Pre-cache images for all stations
+    const imageCache = await cacheStationImages(recentStations as any);
+    
+    // Build items with cached local images
+    const items = recentStations.map(station => {
+      const stationId = (station as any)._id || (station as any).id || '';
+      const localImagePath = imageCache.get(stationId) || '';
+      
+      return {
+        text: station.name,
+        detailText: station.country || station.tags?.split(',')[0] || 'Radio',
+        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+      };
+    });
+    
     const template = new ListTemplate({
       title: t('carplay_recently_played', 'Recently Played'),
       sections: [{
         header: `${t('carplay_recent_stations', 'Recent Stations')} (${recentStations.length})`,
-        items: recentStations.map(station => ({
-          text: station.name,
-          detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getStationImage(station),
-        })),
+        items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
         const station = recentStations[index];
