@@ -246,18 +246,13 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const recentStations = await getRecentlyPlayedCallback();
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
-    // Pre-cache images for all stations
-    const imageCache = await cacheStationImages(recentStations as any);
-    
-    // Build items with cached local images
+    // Build items with imgUrl for async native image loading
     const items = recentStations.map(station => {
-      const stationId = (station as any)._id || (station as any).id || '';
-      const localImagePath = imageCache.get(stationId) || '';
-      
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+        imgUrl: imgUrl, // Native will download this asynchronously
       };
     });
     
