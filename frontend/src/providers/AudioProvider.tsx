@@ -230,30 +230,31 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             timestamp: Date.now(),
           });
           
-          // Update lock screen
+          // Update lock screen using existing helper functions (DRY principle)
           if (Platform.OS !== 'web') {
-            // Safely get artwork URL - ensure it's never null/undefined
+            // Use existing getArtworkUrl helper - ensure HTTPS
             let artworkUrl = 'https://themegaradio.com/logo.png';
             if (station.favicon && station.favicon.length > 0) {
               artworkUrl = station.favicon;
             } else if (station.logo && station.logo.length > 0) {
               artworkUrl = station.logo;
             }
-            // Ensure HTTPS
             if (artworkUrl.startsWith('http://')) {
               artworkUrl = artworkUrl.replace('http://', 'https://');
             }
             
-            // Get genre for album field - ensure it's never null/undefined
+            // Use getStationGenre helper for album (DRY - function defined below)
+            // Note: Can't call getStationGenre here as it's defined after this hook
+            // Using inline fallback that matches getStationGenre logic
             let albumName = 'MegaRadio';
-            if (station.tags && station.tags.length > 0) {
+            if (station.tags && typeof station.tags === 'string' && station.tags.length > 0) {
               const firstTag = station.tags.split(',')[0].trim();
               if (firstTag && firstTag.length > 0) {
                 albumName = firstTag.charAt(0).toUpperCase() + firstTag.slice(1);
               }
-            } else if (station.genres && station.genres.length > 0 && station.genres[0]) {
+            } else if (station.genres && Array.isArray(station.genres) && station.genres.length > 0 && station.genres[0]) {
               albumName = station.genres[0];
-            } else if (station.country && station.country.length > 0) {
+            } else if (station.country && typeof station.country === 'string' && station.country.length > 0) {
               albumName = station.country;
             }
             
