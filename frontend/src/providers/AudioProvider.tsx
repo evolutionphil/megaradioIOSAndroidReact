@@ -481,17 +481,19 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return artworkUrl;
   }, []);
 
-  // Helper to get genre/album from station (for metadata display)
+  // Helper to get genre/album from station (for metadata display) - null-safe
   const getStationGenre = useCallback((station: Station): string => {
     // Priority: tags (first tag) > genres (first genre) > country > 'MegaRadio'
-    if (station.tags) {
+    if (station.tags && typeof station.tags === 'string' && station.tags.length > 0) {
       const firstTag = station.tags.split(',')[0].trim();
-      if (firstTag) return firstTag.charAt(0).toUpperCase() + firstTag.slice(1); // Capitalize
+      if (firstTag && firstTag.length > 0) {
+        return firstTag.charAt(0).toUpperCase() + firstTag.slice(1); // Capitalize
+      }
     }
-    if (station.genres && station.genres.length > 0) {
+    if (station.genres && Array.isArray(station.genres) && station.genres.length > 0 && station.genres[0]) {
       return station.genres[0];
     }
-    if (station.country) {
+    if (station.country && typeof station.country === 'string' && station.country.length > 0) {
       return station.country;
     }
     return 'MegaRadio';
