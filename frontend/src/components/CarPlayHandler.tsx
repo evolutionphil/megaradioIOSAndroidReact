@@ -26,7 +26,22 @@ const getPopularStations = async (): Promise<Station[]> => {
 
 const getFavoriteStations = async (): Promise<Station[]> => {
   try {
+    const store = useFavoritesStore.getState();
+    
+    // If favorites not loaded yet, try to sync with server first
+    if (!store.isLoaded || store.favorites.length === 0) {
+      console.log('[CarPlayHandler] Favorites not loaded, attempting to sync...');
+      try {
+        await store.syncWithServer();
+      } catch (syncError) {
+        console.log('[CarPlayHandler] Server sync failed, trying local load...');
+        await store.loadLocalFavorites();
+      }
+    }
+    
+    // Get fresh state after loading
     const favorites = useFavoritesStore.getState().favorites;
+    console.log('[CarPlayHandler] Returning', favorites?.length || 0, 'favorites');
     return favorites || [];
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching favorites:', error);
