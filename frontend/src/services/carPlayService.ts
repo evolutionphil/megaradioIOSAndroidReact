@@ -350,19 +350,13 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     const stations = await getStationsByGenreCallback(genre);
     CarPlayLogger.dataLoaded(`genreStations-${genre}`, stations.length);
     
-    // Pre-cache images for genre stations (max 50)
-    const stationsToCache = stations.slice(0, 50);
-    const imageCache = await cacheStationImages(stationsToCache as any);
-    
-    // Build items with cached local images
-    const items = stationsToCache.map(station => {
-      const stationId = (station as any)._id || (station as any).id || '';
-      const localImagePath = imageCache.get(stationId) || '';
-      
+    // Build items with imgUrl for async native image loading (max 50)
+    const items = stations.slice(0, 50).map(station => {
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || 'Radio',
-        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+        imgUrl: imgUrl, // Native will download this asynchronously
       };
     });
     
