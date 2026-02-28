@@ -69,6 +69,18 @@ const defaultTranslations: Record<string, string> = {
   ok: 'OK',
   back: 'Back',
   
+  // CarPlay
+  carplay_favorites: 'Favorites',
+  carplay_recently_played: 'Recently Played',
+  carplay_discover: 'Discover',
+  carplay_genres: 'Genres',
+  carplay_loading: 'Loading...',
+  carplay_music_genres: 'Music Genres',
+  carplay_popular_stations: 'Popular Stations',
+  carplay_favorite_stations: 'Favorite Stations',
+  carplay_recent_stations: 'Recent Stations',
+  carplay_stations: 'stations',
+  
   // Auth
   login: 'Login',
   log_in: 'Log in',
