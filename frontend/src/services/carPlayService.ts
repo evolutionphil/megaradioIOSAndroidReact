@@ -563,6 +563,8 @@ const CarPlayService: CarPlayServiceType = {
       tabBarTemplateAvailable: !!TabBarTemplate,
       gridTemplateAvailable: !!GridTemplate,
       nowPlayingTemplateAvailable: !!NowPlayingTemplate,
+      pendingConnection: pendingConnection,
+      handlersAlreadyRegistered: handlersRegistered,
     });
     
     // Store callbacks
@@ -582,9 +584,9 @@ const CarPlayService: CarPlayServiceType = {
       getStationsByGenre: !!getStationsByGenre,
     });
     
-    // Register CarPlay connection handler
-    console.log('[CarPlayService] Registering onConnect handler...');
-    CarPlayLogger.info('[RN] Registering onConnect handler');
+    // Re-register handlers with full callbacks now that we have them
+    console.log('[CarPlayService] Re-registering onConnect handler with callbacks...');
+    CarPlayLogger.info('[RN] Re-registering onConnect handler (with callbacks)');
     
     CarPlay.registerOnConnect(() => {
       console.log('[CarPlay] ========== CONNECTED (React Native callback) ==========');
@@ -595,6 +597,7 @@ const CarPlayService: CarPlayServiceType = {
       });
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
+      pendingConnection = false;
       
       // Create and show root template
       CarPlayLogger.info('[RN] About to call createRootTemplate()');
@@ -620,16 +623,18 @@ const CarPlayService: CarPlayServiceType = {
       });
       isCarPlayConnected = false;
       CarPlayService.isConnected = false;
+      pendingConnection = false;
     });
     
     CarPlayLogger.info('[RN] Connection handlers registered successfully');
     
     // CRITICAL: Check if CarPlay was already connected before we registered
     // This handles the race condition where CarPlay connects before JS initializes
-    const alreadyConnected = CarPlay.connected;
+    const alreadyConnected = CarPlay.connected || pendingConnection;
     CarPlayLogger.info('[RN] Checking if already connected', { 
       alreadyConnected,
       carPlayConnectedProperty: CarPlay.connected,
+      pendingConnection: pendingConnection,
       carPlayType: typeof CarPlay.connected,
     });
     
@@ -639,6 +644,7 @@ const CarPlayService: CarPlayServiceType = {
       CarPlayLogger.info('[RN] CarPlay was ALREADY CONNECTED - creating template now');
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
+      pendingConnection = false;
       
       createRootTemplate().then(() => {
         CarPlayLogger.info('[RN] createRootTemplate() completed (already connected case)');
@@ -675,6 +681,7 @@ const CarPlayService: CarPlayServiceType = {
     getStationsByGenreCallback = null;
     isCarPlayConnected = false;
     CarPlayService.isConnected = false;
+    pendingConnection = false;
   },
 };
 
