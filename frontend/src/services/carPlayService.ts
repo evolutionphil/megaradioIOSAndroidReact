@@ -235,12 +235,12 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
   }
 };
 
-// Create Genres Grid Template
+// Create Genres List Template (40 genres with icons)
 const createGenresTemplate = async (): Promise<any> => {
   CarPlayLogger.templateCreating('Genres');
   
-  if (!GridTemplate || !getGenresCallback) {
-    CarPlayLogger.templateFailed('Genres', 'GridTemplate or callback not available');
+  if (!ListTemplate || !getGenresCallback) {
+    CarPlayLogger.templateFailed('Genres', 'ListTemplate or callback not available');
     return null;
   }
   
@@ -249,21 +249,33 @@ const createGenresTemplate = async (): Promise<any> => {
     const genres = await getGenresCallback();
     CarPlayLogger.dataLoaded('genres', genres.length);
     
-    const template = new GridTemplate({
+    // Genre icon mapping (using music-related system images or default)
+    const getGenreIcon = (genreName: string): { uri: string } => {
+      // Use a generic music icon for all genres
+      return { uri: 'https://themegaradio.com/logo.png' };
+    };
+    
+    const template = new ListTemplate({
       title: 'Türler',
-      buttons: genres.slice(0, 8).map(genre => ({
-        id: genre.name,
-        titleVariants: [genre.name],
-        image: 'https://themegaradio.com/logo.png',
-      })),
-      onButtonPressed: async ({ id }: { id: string }) => {
-        CarPlayLogger.info('Genre button pressed', { genre: id });
-        console.log('[CarPlay] Genre selected:', id);
-        await showGenreStationsTemplate(id);
+      sections: [{
+        header: `Müzik Türleri (${Math.min(genres.length, 40)})`,
+        items: genres.slice(0, 40).map(genre => ({
+          text: genre.name,
+          detailText: `${genre.count} istasyon`,
+          image: getGenreIcon(genre.name),
+        })),
+      }],
+      onItemSelect: async ({ index }: { index: number }) => {
+        const genre = genres[index];
+        if (genre) {
+          CarPlayLogger.info('Genre selected', { genre: genre.name });
+          console.log('[CarPlay] Genre selected:', genre.name);
+          await showGenreStationsTemplate(genre.name);
+        }
       },
     });
     
-    CarPlayLogger.templateCreated('Genres', { genreCount: genres.length });
+    CarPlayLogger.templateCreated('Genres', { genreCount: Math.min(genres.length, 40) });
     return template;
   } catch (error: any) {
     CarPlayLogger.templateError('Genres', error);
