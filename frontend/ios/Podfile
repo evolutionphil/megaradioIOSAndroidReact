@@ -18,10 +18,9 @@ ENV['RCT_NEW_ARCH_ENABLED'] ||= '0' if podfile_properties['newArchEnabled'] == '
 # FIX FOR REACT NATIVE 0.81.5 CODEGEN BUG
 # Bug: RCTThirdPartyFabricComponentsProvider is generated even when newArchEnabled=false
 # This causes crash: "attempt to insert nil object from objects[0]"
-# Fix: Explicitly force-disable Fabric codegen
+# Fix: Force disable via ENV variable (the $RCTFabricEnabled was INVALID)
 # ============================================================================
 ENV['RCT_NEW_ARCH_ENABLED'] = '0'  # Force disable (not ||=)
-$RCTFabricEnabled = false           # Explicitly disable Fabric codegen
 
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] ||= podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 ENV['RCT_USE_RN_DEP'] ||= '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
