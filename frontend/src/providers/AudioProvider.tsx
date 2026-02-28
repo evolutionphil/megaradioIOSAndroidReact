@@ -535,7 +535,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch (e) {
       console.log('[AudioProvider] Could not update lock screen:', e);
     }
-  }, [getArtworkUrl]);
+  }, [getArtworkUrl, getStationGenre]);
 
   // Fetch now playing helper - updates both UI state and lock screen
   // API returns: { station: { id, name, url }, metadata: { title?, artist?, station?, genre? } }
