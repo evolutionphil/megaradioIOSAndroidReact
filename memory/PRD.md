@@ -972,3 +972,55 @@ Bu düzeltme ile birlikte:
 3. `CarPlayHandler` component'i düzgün initialize olacak
 4. `registerOnConnect` callback tetiklenecek
 5. Template'ler oluşturulacak ve "Yükleniyor" ekranı gidecek
+
+---
+
+## February 28, 2025 - CarPlay Bridge Race Condition Düzeltmesi (Build 32)
+
+### Backend Developer Tavsiyeleri Uygulandı:
+
+**Sorun:** Native Swift tarafı `RNCarPlay.connect()` çağırıyor ama React Native bridge henüz hazır olmadığı için event JS tarafına ulaşmıyor.
+
+### 1. Swift Tarafında Bridge Hazır Kontrolü (CarPlaySceneDelegate.swift)
+
+Eklenen özellikler:
+- `isBridgeReady()` fonksiyonu - React Native bridge'in hazır olup olmadığını kontrol eder
+- Bridge hazır değilse **retry mekanizması** (1 saniye arayla, max 10 deneme)
+- `pendingInterfaceController` ve `pendingWindow` - bağlantı bilgisini kuyruğa alır
+- Detaylı log: `bridgeReady: true/false` bilgisi
+
+```swift
+if !bridgeReady && connectionAttempts < maxRetryAttempts {
+    // Queue connection for retry
+    pendingInterfaceController = interfaceController
+    pendingWindow = window
+    // Retry after 1 second
+    retryTimer = Timer.scheduledTimer(...)
+}
+```
+
+### 2. JS Tarafında Erken Handler Kaydı (carPlayService.ts)
+
+Eklenen özellikler:
+- **Modül yüklendiği anda** `registerOnConnect` kaydediliyor (initialize beklenmeden)
+- `pendingConnection` flag - erken gelen bağlantıları takip eder
+- `handlersRegistered` flag - duplicate kayıt önler
+- Initialize çağrıldığında `pendingConnection || CarPlay.connected` kontrol ediliyor
+
+```typescript
+// CRITICAL: Register handlers IMMEDIATELY when module loads
+if (CarPlay && !handlersRegistered) {
+  CarPlay.registerOnConnect(() => {
+    pendingConnection = true;
+  });
+}
+```
+
+### Değişen Dosyalar:
+- `ios/MegaRadio/CarPlaySceneDelegate.swift` - Bridge hazır kontrolü + retry mekanizması
+- `src/services/carPlayService.ts` - Erken handler kaydı + pending connection flag
+
+### Build Komutu:
+```bash
+eas build --platform ios --profile production --auto-submit --clear-cache
+```
