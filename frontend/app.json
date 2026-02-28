@@ -107,7 +107,8 @@
           },
           "ios": {
             "useFrameworks": "static",
-            "newArchEnabled": false
+            "newArchEnabled": false,
+            "fabricEnabled": false
           }
         }
       ],
