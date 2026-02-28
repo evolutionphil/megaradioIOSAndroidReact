@@ -59,6 +59,9 @@ target 'MegaRadio' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
+    # CRITICAL: Explicitly disable Fabric/New Architecture to prevent codegen crash
+    :fabric_enabled => false,
+    :new_arch_enabled => false,
   )
 
   post_install do |installer|
