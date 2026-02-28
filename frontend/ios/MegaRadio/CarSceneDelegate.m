@@ -110,6 +110,21 @@ didDisconnectInterfaceController:(CPInterfaceController *)interfaceController
     [RNCarPlay disconnect];
 }
 
+// CRITICAL: State change callbacks - tells React Native when CarPlay goes to background/foreground
+- (void)sceneDidEnterBackground:(UIScene *)scene
+{
+    NSLog(@"[CarSceneDelegate] CarPlay scene entered BACKGROUND");
+    sendCarPlayLog(@"info", @"CarPlay scene BACKGROUND", @{});
+    [RNCarPlay stateChanged:NO];
+}
+
+- (void)sceneWillEnterForeground:(UIScene *)scene
+{
+    NSLog(@"[CarSceneDelegate] CarPlay scene will enter FOREGROUND");
+    sendCarPlayLog(@"info", @"CarPlay scene FOREGROUND", @{});
+    [RNCarPlay stateChanged:YES];
+}
+
 // iOS 14+ method with window
 - (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene
    didConnectInterfaceController:(CPInterfaceController *)interfaceController
