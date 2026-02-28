@@ -526,9 +526,9 @@ const createRootTemplate = async (): Promise<void> => {
         const fallbackTemplate = new ListTemplate({
           title: 'MegaRadio',
           sections: [{
-            header: 'Yükleniyor...',
+            header: t('carplay_loading', 'Loading...'),
             items: [{
-              text: 'İstasyonlar yükleniyor',
+              text: t('carplay_loading', 'Loading...'),
               detailText: 'Lütfen bekleyin',
             }],
           }],
