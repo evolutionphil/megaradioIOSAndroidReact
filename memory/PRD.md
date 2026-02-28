@@ -28,13 +28,18 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
    - `app.json`'a `processing` background mode eklendi
    - CarPlay cold-start performansı iyileştirildi
 
-4. **CarPlay Cold-Start Düzeltmesi (P0)**
-   - `CarSceneDelegate.m`'e `sceneDidEnterBackground` ve `sceneWillEnterForeground` metodları eklendi
-   - `[RNCarPlay stateChanged:]` çağrıları eklendi (dokümantasyona göre zorunlu)
-   - `carPlayService.ts`'e cold-start retry mekanizması eklendi:
-     - 15 deneme, 2 saniye aralıklarla
+4. **CarPlay Cold-Start Düzeltmesi (P0) - GELİŞTİRİLDİ**
+   - **GitHub Issue Analizi (#41777)**: React Native bridge cold-start'ta hazır olmayabilir
+   - **Native Retry Timer (Objective-C)**:
+     - `CarSceneDelegate.m`'e 30 deneme x 1 saniye retry mekanizması eklendi
+     - Her saniye `[RNCarPlay connectWithInterfaceController:window:]` tekrar çağrılıyor
+     - TabBar template algılandığında otomatik durma
+   - **React Native Retry Timer (TypeScript)**:
+     - `carPlayService.ts`'e 15 deneme x 2 saniye retry mekanizması eklendi
      - CarPlay bağlı ama template oluşturulmamışsa otomatik retry
-     - Detaylı remote logging ile debug kolaylığı
+   - **State Change Callbacks**:
+     - `sceneDidEnterBackground` ve `sceneWillEnterForeground` metodları eklendi
+     - `[RNCarPlay stateChanged:]` çağrıları ile React Native'e state bildirimi
 
 ### 📦 Build Bilgileri
 - iOS Build: 40
