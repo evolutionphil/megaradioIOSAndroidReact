@@ -167,6 +167,17 @@ static void sendCarPlayLog(NSString *level, NSString *message, NSDictionary *dat
         @"hasWindow": @NO
     });
     
+    // CRITICAL: Initialize React Native bridge BEFORE connecting to RNCarPlay
+    // This ensures JS runtime exists when CarPlay connects first (cold-start scenario)
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate && ![appDelegate isReactNativeReady]) {
+        sendCarPlayLog(@"info", @"React Native NOT ready - initializing from CarPlay scene...", @{});
+        [appDelegate initAppFromSceneWithConnectionOptions:nil];
+        sendCarPlayLog(@"info", @"React Native initialization triggered", @{});
+    } else {
+        sendCarPlayLog(@"info", @"React Native already initialized", @{});
+    }
+    
     // Set loading template first
     CPListItem *loadingItem = [[CPListItem alloc] initWithText:@"MegaRadio" detailText:@"Yükleniyor..."];
     CPListSection *loadingSection = [[CPListSection alloc] initWithItems:@[loadingItem]];
