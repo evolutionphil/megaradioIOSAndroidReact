@@ -190,15 +190,26 @@ const createFavoritesTemplate = async (): Promise<any> => {
     const favorites = await getFavoritesCallback();
     CarPlayLogger.dataLoaded('favorites', favorites.length);
     
+    // Pre-cache images for all stations
+    const imageCache = await cacheStationImages(favorites as any);
+    
+    // Build items with cached local images
+    const items = await Promise.all(favorites.map(async (station) => {
+      const stationId = (station as any)._id || (station as any).id || '';
+      const localImagePath = imageCache.get(stationId) || '';
+      
+      return {
+        text: station.name,
+        detailText: station.country || station.tags?.split(',')[0] || 'Radio',
+        ...(localImagePath ? { image: { uri: localImagePath } } : {}),
+      };
+    }));
+    
     const template = new ListTemplate({
       title: t('carplay_favorites', 'Favorites'),
       sections: [{
         header: `${t('carplay_favorite_stations', 'Favorite Stations')} (${favorites.length})`,
-        items: favorites.map(station => ({
-          text: station.name,
-          detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-          image: getStationImage(station),
-        })),
+        items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
         const station = favorites[index];
