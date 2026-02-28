@@ -696,6 +696,56 @@ const CarPlayService: CarPlayServiceType = {
     CarPlayLogger.serviceInitialized();
     CarPlayLogger.info('[RN] CarPlay service INITIALIZED - waiting for connection');
     console.log('[CarPlayService] Initialized and waiting for connection');
+    
+    // COLD-START FIX: Start periodic check for CarPlay connection
+    // This handles the case where CarPlay connects before React Native is fully ready
+    if (!coldStartRetryTimer) {
+      CarPlayLogger.info('[RN] Starting cold-start retry timer');
+      coldStartRetryTimer = setInterval(() => {
+        coldStartRetryCount++;
+        
+        // Check if CarPlay is now connected
+        const nowConnected = CarPlay?.connected || pendingConnection;
+        
+        CarPlayLogger.info('[RN] Cold-start check', {
+          attempt: coldStartRetryCount,
+          maxAttempts: MAX_COLD_START_RETRIES,
+          isConnected: isCarPlayConnected,
+          carPlayConnected: nowConnected,
+          hasCallbacks: !!playStationCallback,
+        });
+        
+        // If connected but template not created, try again
+        if (nowConnected && !isCarPlayConnected && playStationCallback) {
+          CarPlayLogger.info('[RN] Cold-start: CarPlay connected but not initialized, creating template...');
+          isCarPlayConnected = true;
+          CarPlayService.isConnected = true;
+          pendingConnection = false;
+          
+          createRootTemplate().then(() => {
+            CarPlayLogger.info('[RN] Cold-start: createRootTemplate() completed');
+            // Stop retry timer on success
+            if (coldStartRetryTimer) {
+              clearInterval(coldStartRetryTimer);
+              coldStartRetryTimer = null;
+            }
+          }).catch((err) => {
+            CarPlayLogger.error('[RN] Cold-start: createRootTemplate() FAILED', {
+              error: String(err),
+            });
+          });
+        }
+        
+        // Stop after max retries
+        if (coldStartRetryCount >= MAX_COLD_START_RETRIES) {
+          CarPlayLogger.info('[RN] Cold-start: Max retries reached, stopping timer');
+          if (coldStartRetryTimer) {
+            clearInterval(coldStartRetryTimer);
+            coldStartRetryTimer = null;
+          }
+        }
+      }, COLD_START_RETRY_INTERVAL);
+    }
   },
   
   updateNowPlaying: (station, songTitle, artistName) => {
