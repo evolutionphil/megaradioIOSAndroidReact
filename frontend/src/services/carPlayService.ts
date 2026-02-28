@@ -760,6 +760,14 @@ const CarPlayService: CarPlayServiceType = {
     CarPlayLogger.serviceDisconnecting();
     CarPlayLogger.flush();
     CarPlayLogger.stop();
+    
+    // Stop cold-start retry timer
+    if (coldStartRetryTimer) {
+      clearInterval(coldStartRetryTimer);
+      coldStartRetryTimer = null;
+    }
+    coldStartRetryCount = 0;
+    
     playStationCallback = null;
     getStationsCallback = null;
     getFavoritesCallback = null;
