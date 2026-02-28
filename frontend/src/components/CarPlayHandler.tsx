@@ -46,8 +46,8 @@ const getRecentStations = async (): Promise<Station[]> => {
 
 const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
   try {
-    // Use precomputed genres endpoint - faster and cached
-    const response = await genreService.getPrecomputedGenres();
+    // Use precomputed genres endpoint - faster and cached, limit=40 for CarPlay
+    const response = await genreService.getPrecomputedGenres(undefined, 40);
     // Return top 40 genres for CarPlay list
     return (response.data || []).slice(0, 40).map((g: any) => ({
       name: g.name || g.slug || g,
