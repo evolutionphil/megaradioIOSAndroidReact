@@ -457,21 +457,34 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // Helper to get artwork URL from station
   const getArtworkUrl = useCallback((station: Station): string => {
-    let artworkUrl = 'https://themegaradio.com/logo.png';
+    const DEFAULT_LOGO = 'https://themegaradio.com/logo.png';
     
-    if (station.favicon && station.favicon.startsWith('http')) {
-      artworkUrl = station.favicon;
-    } else if (station.logo && station.logo.startsWith('http')) {
-      artworkUrl = station.logo;
-    } else if (station.favicon && station.favicon.startsWith('/')) {
+    // Helper to check if value is a valid non-empty string
+    const isValidUrl = (url: string | undefined | null): boolean => {
+      return typeof url === 'string' && url.trim().length > 0;
+    };
+    
+    let artworkUrl = DEFAULT_LOGO;
+    
+    // Check favicon first, then logo
+    if (isValidUrl(station.favicon) && station.favicon!.startsWith('http')) {
+      artworkUrl = station.favicon!;
+    } else if (isValidUrl(station.logo) && station.logo!.startsWith('http')) {
+      artworkUrl = station.logo!;
+    } else if (isValidUrl(station.favicon) && station.favicon!.startsWith('/')) {
       artworkUrl = `https://themegaradio.com${station.favicon}`;
-    } else if (station.logo && station.logo.startsWith('/')) {
+    } else if (isValidUrl(station.logo) && station.logo!.startsWith('/')) {
       artworkUrl = `https://themegaradio.com${station.logo}`;
     }
     
     // Ensure HTTPS for lock screen compatibility
     if (artworkUrl.startsWith('http://')) {
       artworkUrl = artworkUrl.replace('http://', 'https://');
+    }
+    
+    // Final fallback check
+    if (!isValidUrl(artworkUrl)) {
+      return DEFAULT_LOGO;
     }
     
     return artworkUrl;
