@@ -448,7 +448,7 @@ export default function HomeScreen() {
           {/* Radios Near You - Responsive Grid */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('stations_near_you')}{country ? ` - ${country}` : ''}</Text>
+              <Text style={[styles.sectionTitle, { fontSize: headingSize }]}>{t('stations_near_you')}</Text>
             </View>
             {nearbyStations.length > 0 ? (
               renderResponsiveGrid(nearbyStations, responsive.isTablet ? 16 : 12)
