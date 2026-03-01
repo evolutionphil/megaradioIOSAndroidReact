@@ -17,6 +17,7 @@ let lastCountry: string | null = null;
 let lastFavoritesCount: number = -1; // -1 to detect first load
 let lastRecentCount: number = -1; // -1 to detect first load
 let refreshDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let isRefreshing: boolean = false; // Prevent concurrent refreshes (crash fix)
 
 // API wrapper functions for CarPlay
 const getPopularStations = async (): Promise<Station[]> => {
