@@ -613,6 +613,108 @@ const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName
   }
 };
 
+// Create Search Template for CarPlay
+const createSearchTemplate = async (): Promise<any> => {
+  if (!SearchTemplate || !ListTemplate) {
+    CarPlayLogger.warn('[RN] SearchTemplate or ListTemplate not available');
+    return null;
+  }
+  
+  try {
+    CarPlayLogger.info('[RN] Creating Search Template');
+    
+    // Track search results for item selection
+    let searchResults: Station[] = [];
+    
+    const searchTemplate = new SearchTemplate({
+      // Called when user types in search field
+      onSearch: async (query: string) => {
+        CarPlayLogger.info('[RN] Search query received', { query });
+        console.log('[CarPlay Search] Query:', query);
+        
+        if (!query || query.length < 2) {
+          searchResults = [];
+          return [];
+        }
+        
+        try {
+          if (searchStationsCallback) {
+            searchResults = await searchStationsCallback(query);
+            CarPlayLogger.info('[RN] Search results', { count: searchResults.length, query });
+            console.log('[CarPlay Search] Found', searchResults.length, 'stations');
+            
+            // Return results for display - each item needs text and detailText
+            return searchResults.slice(0, 20).map((station: Station) => ({
+              text: station.name,
+              detailText: station.country || station.tags?.split(',')[0] || 'Radio',
+            }));
+          } else {
+            CarPlayLogger.warn('[RN] searchStationsCallback not available');
+            return [];
+          }
+        } catch (error: any) {
+          CarPlayLogger.error('[RN] Search error', { error: String(error), query });
+          console.error('[CarPlay Search] Error:', error);
+          return [];
+        }
+      },
+      
+      // Called when user selects a search result
+      onItemSelect: async ({ index }: { index: number }) => {
+        CarPlayLogger.info('[RN] Search item selected', { index });
+        console.log('[CarPlay Search] Selected index:', index);
+        
+        const station = searchResults[index];
+        if (station && playStationCallback) {
+          CarPlayLogger.stationSelected(station.name, station._id);
+          console.log('[CarPlay Search] Playing:', station.name);
+          try {
+            await playStationCallback(station);
+            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
+            showNowPlayingTemplate(station);
+          } catch (e: any) {
+            CarPlayLogger.playbackError(e, station.name);
+            console.error('[CarPlay Search] Playback error:', e);
+          }
+        }
+      },
+      
+      // Optional: Called when search button is pressed
+      onSearchButtonPressed: () => {
+        CarPlayLogger.info('[RN] Search button pressed');
+        console.log('[CarPlay Search] Search button pressed');
+      },
+    });
+    
+    CarPlayLogger.templateCreated('Search', {});
+    console.log('[CarPlay] Search template created successfully');
+    return searchTemplate;
+  } catch (error: any) {
+    CarPlayLogger.templateError('Search', error);
+    console.error('[CarPlay] Error creating search template:', error);
+    return null;
+  }
+};
+
+// Open Search Screen (can be called externally via Siri)
+const openSearchScreen = async (): Promise<void> => {
+  if (!CarPlay || !SearchTemplate || !isCarPlayConnected) {
+    console.log('[CarPlay] Cannot open search - not connected or template not available');
+    return;
+  }
+  
+  try {
+    const searchTemplate = await createSearchTemplate();
+    if (searchTemplate) {
+      CarPlay.pushTemplate(searchTemplate, true);
+      CarPlayLogger.info('[RN] Search screen pushed via voice command');
+      console.log('[CarPlay] Search screen opened');
+    }
+  } catch (error) {
+    console.error('[CarPlay] Error opening search:', error);
+  }
+};
+
 // Create Root Tab Bar Template
 const createRootTemplate = async (): Promise<void> => {
   // CRASH FIX: Prevent concurrent template creation which can cause
