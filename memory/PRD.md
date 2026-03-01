@@ -10,36 +10,34 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 43) - December 2025
+## Latest Update (Build 44) - December 2025
 
-### ✅ Build 42 Sonuçları
+### ✅ Build 42/43 Sonuçları
 - **Logolar çalışıyor!** ✅ `imgUrl` düzeltmesi başarılı
-- **Cold-start hala sorunlu** ❌ Daha detaylı fix gerekli
+- **Cold-start** - Bridge hemen başlatılıyor (test edilecek)
 
-### 🔧 Build 43 Düzeltmeleri
+### 🔧 Build 44 Düzeltmeleri
 
-**1. Cold-Start Kesin Çözümü (P0)**
-- **Araştırma**: Apple CarPlay docs, GitHub issues, ve topluluk çözümleri incelendi
-- **Kök Neden**: Bridge sadece scene'den çağrıldığında başlatılıyordu, CarPlay ilk bağlanınca bridge yoktu
-- **Düzeltme**: `AppDelegate.swift`'te bridge **didFinishLaunchingWithOptions** içinde HEMEN başlatılıyor
-- Artık iOS başlatıldığında bridge hazır, CarPlay bağlandığında JS runtime çalışıyor olacak
+**1. Popular Stations Cache Sorunu (P0)**
+- **Kök Neden**: Cache'te limit=12 ile kaydedilmiş veri vardı, CarPlay limit=50 istese bile cache döndürülüyordu
+- **Düzeltme**: `stationService.ts`'de `isLargeRequest` kontrolü eklendi
+  - `limit > 20` ise cache bypass edilip API'den çekiliyor
+  - Böylece CarPlay için 50 istasyon gelecek
 
-```swift
-// didFinishLaunchingWithOptions içinde:
-window = UIWindow(frame: UIScreen.main.bounds)
-factory.startReactNative(withModuleName: "main", in: window, launchOptions: launchOptions)
-isReactNativeInitialized = true
-```
-
-**2. Popular Stations Ülke Desteği (P1)**
-- `CarPlayHandler.tsx`: `locationStore`'dan seçili ülke alınıyor
-- `countryEnglish` parametresi API'ye gönderiliyor
-- Austria seçiliyse `/api/stations?country=Austria&limit=50` çağrılacak
+**2. CarPlayHandler Güncellendi**
+- `getStations` yerine `getPopularStations(country, 50)` kullanılıyor
+- `locationStore`'dan seçili ülke alınıyor
+- Detaylı logging eklendi
 
 ### 📦 Build Bilgileri
-- iOS Build: 43
-- Android versionCode: 43
+- iOS Build: 44
+- Android versionCode: 44
 - Version: 1.0.27
+
+### 🔍 Test Edilecek
+1. Cold-start (telefon kapalıyken CarPlay)
+2. Austria için 50 istasyon gelecek mi?
+3. Logolar görünüyor mu?
 
 ## Watch Apps - February 19, 2025
 
