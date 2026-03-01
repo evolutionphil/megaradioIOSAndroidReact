@@ -119,10 +119,12 @@ interface CarPlayServiceType {
     getFavorites: () => Promise<Station[]>,
     getRecentlyPlayed: () => Promise<Station[]>,
     getGenres: () => Promise<{ name: string; count: number }[]>,
-    getStationsByGenre: (genre: string) => Promise<Station[]>
+    getStationsByGenre: (genre: string) => Promise<Station[]>,
+    searchStations?: (query: string) => Promise<Station[]>
   ) => void;
   updateNowPlaying: (station: Station, songTitle?: string, artistName?: string) => void;
   disconnect: () => void;
+  openSearch?: () => void;
 }
 
 // Global state
