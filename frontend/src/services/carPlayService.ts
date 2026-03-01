@@ -834,7 +834,6 @@ const createRootTemplate = async (): Promise<void> => {
         recentTemplate: !!recentTemplate,
         browseTemplate: !!browseTemplate,
         genresTemplate: !!genresTemplate,
-        searchTemplate: !!searchTemplate,
       });
       // Create a simple fallback list template
       if (ListTemplate) {
