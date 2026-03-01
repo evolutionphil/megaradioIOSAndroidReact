@@ -61,7 +61,26 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 |----------|----------|------|
 | `GET /api/genres/:slug/stations` | Genre'ye göre istasyon listesi | ✅ Pop: 5162 istasyon |
 | `GET /api/now-playing/:id` | Şu an çalan şarkı bilgisi | ✅ ICY metadata çalışıyor |
-| `GET /api/recommendations/diverse` | Karışık tür önerileri | ✅ Multi-genre istasyonlar | 
+| `GET /api/recommendations/diverse` | Karışık tür önerileri | ✅ Multi-genre istasyonlar |
+
+### ✅ Android Auto API Entegrasyonu (YENİ!)
+| Dosya | Açıklama |
+|-------|----------|
+| `MegaRadioApiClient.kt` | OkHttp ile API çağrıları (popular, genres, search, recommendations) |
+| `MegaRadioAutoService.kt` | Gerçek API entegrasyonu, ülke filtreleme, cache sistemi |
+| `AndroidAutoModule.kt` | React Native native module - event bridge |
+| `AndroidAutoPackage.kt` | Native module package registration |
+| `androidAutoHandler.ts` | JS event listener for Android Auto broadcasts |
+
+**Android Auto Özellikleri:**
+- ✅ Popular Stations (API'den dinamik)
+- ✅ Genres listesi (40 tür)
+- ✅ Genre'ye göre istasyonlar
+- ✅ Discover/Recommendations
+- ✅ Search desteği
+- ✅ Ülke filtreleme
+- ✅ Cache sistemi (hızlı gezinme için)
+- ✅ React Native ile event bridge 
 
 ## Previous Update (Build 47) - December 2025
 
