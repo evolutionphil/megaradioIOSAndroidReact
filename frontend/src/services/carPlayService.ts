@@ -148,36 +148,86 @@ const getStationImage = async (station: Station): Promise<{ uri: string } | null
 
 // Synchronous helper for immediate use (no caching, just returns URL for non-CarPlay use)
 const getStationImageSync = (station: Station): { uri: string } => {
-  let url = 'https://themegaradio.com/logo.png';
+  // Default fallback - MegaRadio pink logo
+  const FALLBACK_LOGO = 'https://themegaradio.com/logo.png';
   
-  if (station.favicon && station.favicon.startsWith('http')) {
-    url = station.favicon.replace('http://', 'https://');
-  } else if (station.logo && station.logo.startsWith('http')) {
-    url = station.logo.replace('http://', 'https://');
-  } else if (station.favicon && station.favicon.startsWith('/')) {
-    url = `https://themegaradio.com${station.favicon}`;
-  } else if (station.logo && station.logo.startsWith('/')) {
-    url = `https://themegaradio.com${station.logo}`;
+  try {
+    // Priority 1: logoAssets (best quality, our CDN)
+    if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
+      return { uri: `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}` };
+    }
+    
+    // Priority 2: favicon (most common)
+    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
+      const favicon = station.favicon.trim();
+      if (favicon !== 'null' && favicon !== 'undefined') {
+        if (favicon.startsWith('http')) {
+          return { uri: favicon.replace('http://', 'https://') };
+        } else if (favicon.startsWith('/')) {
+          return { uri: `https://themegaradio.com${favicon}` };
+        }
+      }
+    }
+    
+    // Priority 3: logo
+    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
+      const logo = station.logo.trim();
+      if (logo !== 'null' && logo !== 'undefined') {
+        if (logo.startsWith('http')) {
+          return { uri: logo.replace('http://', 'https://') };
+        } else if (logo.startsWith('/')) {
+          return { uri: `https://themegaradio.com${logo}` };
+        }
+      }
+    }
+  } catch (e) {
+    console.log('[CarPlay] Error getting station image:', e);
   }
   
-  return { uri: url };
+  // Fallback: MegaRadio pink logo
+  return { uri: FALLBACK_LOGO };
 };
 
-// Legacy helper (string version) for backward compatibility
+// Legacy helper (string version) for backward compatibility and CarPlay imgUrl
 const getArtworkUrl = (station: Station): string => {
-  if (station.favicon && station.favicon.startsWith('http')) {
-    return station.favicon.replace('http://', 'https://');
+  // Default fallback - MegaRadio pink logo
+  const FALLBACK_LOGO = 'https://themegaradio.com/logo.png';
+  
+  try {
+    // Priority 1: logoAssets (best quality, our CDN)
+    if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
+      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
+    }
+    
+    // Priority 2: favicon
+    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
+      const favicon = station.favicon.trim();
+      if (favicon !== 'null' && favicon !== 'undefined') {
+        if (favicon.startsWith('http')) {
+          return favicon.replace('http://', 'https://');
+        } else if (favicon.startsWith('/')) {
+          return `https://themegaradio.com${favicon}`;
+        }
+      }
+    }
+    
+    // Priority 3: logo
+    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
+      const logo = station.logo.trim();
+      if (logo !== 'null' && logo !== 'undefined') {
+        if (logo.startsWith('http')) {
+          return logo.replace('http://', 'https://');
+        } else if (logo.startsWith('/')) {
+          return `https://themegaradio.com${logo}`;
+        }
+      }
+    }
+  } catch (e) {
+    console.log('[CarPlay] Error getting artwork URL:', e);
   }
-  if (station.logo && station.logo.startsWith('http')) {
-    return station.logo.replace('http://', 'https://');
-  }
-  if (station.favicon && station.favicon.startsWith('/')) {
-    return `https://themegaradio.com${station.favicon}`;
-  }
-  if (station.logo && station.logo.startsWith('/')) {
-    return `https://themegaradio.com${station.logo}`;
-  }
-  return 'https://themegaradio.com/logo.png';
+  
+  // Fallback: MegaRadio pink logo
+  return FALLBACK_LOGO;
 };
 
 // Create Favorites List Template
