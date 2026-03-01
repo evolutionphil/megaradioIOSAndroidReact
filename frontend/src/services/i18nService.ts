@@ -299,6 +299,7 @@ const turkishTranslations: Record<string, string> = {
   carplay_recently_played: 'Son Çalınanlar',
   carplay_discover: 'Keşfet',
   carplay_genres: 'Türler',
+  carplay_search: 'Ara',
   carplay_loading: 'Yükleniyor...',
   carplay_music_genres: 'Müzik Türleri',
   carplay_popular_stations: 'Popüler İstasyonlar',
