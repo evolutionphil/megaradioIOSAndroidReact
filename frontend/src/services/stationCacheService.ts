@@ -85,13 +85,20 @@ class StationCacheService {
       }
     });
     
-    // Load sync metadata on init
-    this.loadSyncMetadata();
+    // Load sync metadata on init (only on native platforms)
+    if (Platform.OS !== 'web') {
+      this.loadSyncMetadata();
+    }
   }
 
   // ============ Sync Metadata Management ============
   
   private async loadSyncMetadata(): Promise<void> {
+    // Skip on web platform
+    if (Platform.OS === 'web') {
+      return;
+    }
+    
     try {
       const data = await AsyncStorage.getItem(CACHE_KEYS.SYNC_VERSION);
       if (data) {
@@ -103,6 +110,11 @@ class StationCacheService {
   }
 
   private async saveSyncMetadata(metadata: SyncMetadata): Promise<void> {
+    // Skip on web platform
+    if (Platform.OS === 'web') {
+      return;
+    }
+    
     try {
       this.syncMetadata = metadata;
       await AsyncStorage.setItem(CACHE_KEYS.SYNC_VERSION, JSON.stringify(metadata));
