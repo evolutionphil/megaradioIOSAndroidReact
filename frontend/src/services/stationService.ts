@@ -94,7 +94,7 @@ export const stationService = {
 
       // Cache for offline use (only cache small requests for app home page)
       if (stations.length > 0 && !isLargeRequest) {
-        await stationCache.setPopularStations(stations, country);
+        await stationCache.setPopularStations(stations, country, limit);
       }
 
       return { stations, count: stations.length };
@@ -102,7 +102,7 @@ export const stationService = {
       console.error('[stationService] getPopularStations error:', error);
       
       // Graceful degradation: use cache
-      const cached = await stationCache.getPopularStations(country);
+      const cached = await stationCache.getPopularStations(country, limit);
       if (cached) {
         console.log('[stationService] Using cached popular stations (API error)');
         return { stations: cached, count: cached.length };
