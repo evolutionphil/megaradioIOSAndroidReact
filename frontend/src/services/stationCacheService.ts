@@ -342,13 +342,20 @@ class StationCacheService {
 
   // ============ Popular Stations ============
   
-  async getPopularStations(country?: string): Promise<Station[] | null> {
-    const key = country ? `${CACHE_KEYS.POPULAR_STATIONS}_${country}` : CACHE_KEYS.POPULAR_STATIONS;
+  async getPopularStations(country?: string, limit?: number): Promise<Station[] | null> {
+    // Include limit in cache key to avoid mixing different request sizes
+    const limitKey = limit ? `_${limit}` : '';
+    const key = country 
+      ? `${CACHE_KEYS.POPULAR_STATIONS}_${country}${limitKey}` 
+      : `${CACHE_KEYS.POPULAR_STATIONS}${limitKey}`;
     return this.getCache<Station[]>(key, CACHE_EXPIRY.POPULAR);
   }
 
-  async setPopularStations(stations: Station[], country?: string): Promise<void> {
-    const key = country ? `${CACHE_KEYS.POPULAR_STATIONS}_${country}` : CACHE_KEYS.POPULAR_STATIONS;
+  async setPopularStations(stations: Station[], country?: string, limit?: number): Promise<void> {
+    const limitKey = limit ? `_${limit}` : '';
+    const key = country 
+      ? `${CACHE_KEYS.POPULAR_STATIONS}_${country}${limitKey}` 
+      : `${CACHE_KEYS.POPULAR_STATIONS}${limitKey}`;
     await this.setCache(key, stations);
     
     // Update index
