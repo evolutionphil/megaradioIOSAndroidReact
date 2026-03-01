@@ -158,7 +158,7 @@ export default function NotificationsScreen() {
       if (logo) {
         return logo.startsWith('http') ? logo : `https://themegaradio.com${logo}`;
       }
-      return 'https://themegaradio.com/images/default-station.png';
+      return 'https://themegaradio.com/logo.png';
     }
 
     return 'https://themegaradio.com/images/default-avatar.png';

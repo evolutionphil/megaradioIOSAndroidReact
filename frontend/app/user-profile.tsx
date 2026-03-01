@@ -68,7 +68,7 @@ export default function UserProfileScreen() {
           id: s._id || s.id,
           name: s.name,
           genre: s.genre || 'Radio',
-          logo: s.logo || s.favicon || 'https://themegaradio.com/images/default-station.png',
+          logo: s.logo || s.favicon || 'https://themegaradio.com/logo.png',
         })));
       }
     }
