@@ -53,6 +53,8 @@ if (Platform.OS !== 'web') {
     TabBarTemplate = carplayModule.TabBarTemplate;
     NowPlayingTemplate = carplayModule.NowPlayingTemplate;
     GridTemplate = carplayModule.GridTemplate;
+    SearchTemplate = carplayModule.SearchTemplate;
+    VoiceControlTemplate = carplayModule.VoiceControlTemplate;
     
     CarPlayLogger.moduleLoaded('react-native-carplay', true);
     CarPlayLogger.info('CarPlay modules loaded', {
@@ -61,6 +63,8 @@ if (Platform.OS !== 'web') {
       TabBarTemplate: !!TabBarTemplate,
       NowPlayingTemplate: !!NowPlayingTemplate,
       GridTemplate: !!GridTemplate,
+      SearchTemplate: !!SearchTemplate,
+      VoiceControlTemplate: !!VoiceControlTemplate,
     });
     
     // CRITICAL: Register handlers IMMEDIATELY when module loads
