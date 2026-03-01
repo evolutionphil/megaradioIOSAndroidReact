@@ -808,6 +808,22 @@ const CarPlayService: CarPlayServiceType = {
         }
       }, COLD_START_RETRY_INTERVAL);
     }
+    
+    // Subscribe to language changes - refresh templates when language changes
+    if (!languageListenerUnsubscribe) {
+      languageListenerUnsubscribe = addLanguageChangeListener((newLang) => {
+        CarPlayLogger.info('[RN] Language changed to', { lang: newLang });
+        needsTemplateRefresh = true;
+        
+        // If currently connected, refresh templates
+        if (isCarPlayConnected && CarPlay) {
+          CarPlayLogger.info('[RN] Refreshing CarPlay templates for new language');
+          createRootTemplate().catch((err) => {
+            CarPlayLogger.error('[RN] Failed to refresh templates', { error: String(err) });
+          });
+        }
+      });
+    }
   },
   
   updateNowPlaying: (station, songTitle, artistName) => {
