@@ -218,7 +218,8 @@ export const CarPlayHandler: React.FC = () => {
         getFavoriteStations,
         getRecentStations,
         getGenresList,
-        getStationsByGenre
+        getStationsByGenre,
+        searchStations  // Add search callback
       );
       
       console.log('[CarPlayHandler] CarPlayService.initialize completed');
