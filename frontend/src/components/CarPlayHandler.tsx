@@ -126,6 +126,21 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
   }
 };
 
+// Search stations API wrapper for CarPlay
+const searchStations = async (query: string): Promise<Station[]> => {
+  try {
+    console.log('[CarPlayHandler] Searching stations for query:', query);
+    
+    const stations = await stationService.searchStations(query, 20);
+    
+    console.log('[CarPlayHandler] Search returned', stations?.length || 0, 'stations');
+    return stations || [];
+  } catch (error) {
+    console.error('[CarPlayHandler] Error searching stations:', error);
+    return [];
+  }
+};
+
 export const CarPlayHandler: React.FC = () => {
   const { playStation } = useAudioPlayer();
   
