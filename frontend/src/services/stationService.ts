@@ -54,6 +54,7 @@ export const stationService = {
   },
 
   // Get popular stations with 7-day caching
+  // NOTE: limit parameter affects cache key to avoid mixing different limits
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
     try {
       const isOnline = await stationCache.checkOnline();
@@ -61,8 +62,11 @@ export const stationService = {
       // Check if we need to sync
       const { needsDelta } = await stationCache.needsSync();
       
-      // If offline or no sync needed, use cache
-      if (!isOnline || !needsDelta) {
+      // For large limits (CarPlay), always fetch fresh to avoid cached small lists
+      const isLargeRequest = limit > 20;
+      
+      // If offline or no sync needed, use cache (but not for large requests)
+      if ((!isOnline || !needsDelta) && !isLargeRequest) {
         const cached = await stationCache.getPopularStations(country);
         if (cached && cached.length > 0) {
           console.log('[stationService] Using cached popular stations (7-day cache)');
@@ -71,6 +75,7 @@ export const stationService = {
       }
 
       // Fetch from API
+      console.log('[stationService] Fetching popular stations from API, country:', country, 'limit:', limit);
       const response = await api.get(API_ENDPOINTS.stations.popular, {
         params: { country, limit, excludeBroken: true, tv: 1 },
       });
@@ -85,9 +90,11 @@ export const stationService = {
       } else if (data?.data) {
         stations = data.data;
       }
+      
+      console.log('[stationService] Got', stations.length, 'popular stations from API');
 
-      // Cache for 7 days
-      if (stations.length > 0) {
+      // Cache for 7 days (only cache small requests for app home page)
+      if (stations.length > 0 && !isLargeRequest) {
         await stationCache.setPopularStations(stations, country);
         await stationCache.updateLastSync();
       }
