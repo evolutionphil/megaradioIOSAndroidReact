@@ -10,47 +10,36 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 42) - December 2025
+## Latest Update (Build 43) - December 2025
 
-### ✅ Kritik Keşif: `imgUrl` Kullanımı
+### ✅ Build 42 Sonuçları
+- **Logolar çalışıyor!** ✅ `imgUrl` düzeltmesi başarılı
+- **Cold-start hala sorunlu** ❌ Daha detaylı fix gerekli
 
-Native iOS kodunu (`RNCarPlay.m`) analiz ettim ve kritik bir şey keşfettim:
+### 🔧 Build 43 Düzeltmeleri
 
-**`image` yerine `imgUrl` kullanılmalı!**
+**1. Cold-Start Kesin Çözümü (P0)**
+- **Araştırma**: Apple CarPlay docs, GitHub issues, ve topluluk çözümleri incelendi
+- **Kök Neden**: Bridge sadece scene'den çağrıldığında başlatılıyordu, CarPlay ilk bağlanınca bridge yoktu
+- **Düzeltme**: `AppDelegate.swift`'te bridge **didFinishLaunchingWithOptions** içinde HEMEN başlatılıyor
+- Artık iOS başlatıldığında bridge hazır, CarPlay bağlandığında JS runtime çalışıyor olacak
 
-Native taraf `imgUrl` property'sini alıp asenkron olarak indiriyor:
-```objc
-if (item[@"imgUrl"]) {
-    [self updateItemImageWithURL:_item imgUrl:imgUrlString];
-}
+```swift
+// didFinishLaunchingWithOptions içinde:
+window = UIWindow(frame: UIScreen.main.bounds)
+factory.startReactNative(withModuleName: "main", in: window, launchOptions: launchOptions)
+isReactNativeInitialized = true
 ```
 
-Bu native tarafta `NSURLSession` ile asenkron olarak çalışıyor - local cache'e gerek yok!
-
-### 🔧 Yapılan Değişiklikler
-
-1. **CarPlay Template'leri Güncellendi**
-   - `image: { uri: '...' }` → `imgUrl: '...'` olarak değiştirildi
-   - Favorites, Recently Played, Discover, Genre Stations tüm template'ler güncellendi
-   - Native taraf URL'den asenkron olarak indirecek
-
-2. **Cold-Start için AppDelegate Güncellendi**
-   - `initAppFromScene()` metodu eklendi
-   - CarPlay bağlandığında React Native bridge başlatılıyor
+**2. Popular Stations Ülke Desteği (P1)**
+- `CarPlayHandler.tsx`: `locationStore`'dan seçili ülke alınıyor
+- `countryEnglish` parametresi API'ye gönderiliyor
+- Austria seçiliyse `/api/stations?country=Austria&limit=50` çağrılacak
 
 ### 📦 Build Bilgileri
-- iOS Build: 42
-- Android versionCode: 42
+- iOS Build: 43
+- Android versionCode: 43
 - Version: 1.0.27
-
-### 📋 MyTuner Gibi Görünüm İçin
-Native kod `imgUrl`'i destekliyor ve asenkron olarak logoları indirecek. Bu build ile:
-- Station listelerinde logolar görünmeli
-- Native taraf URL'den otomatik indirecek
-
-### ⚠️ Bekleyen Sorunlar
-- Next/Previous mantığı (similar stations) henüz implemente edilmedi
-- Cold-start hala test edilmeli
 
 ## Watch Apps - February 19, 2025
 
