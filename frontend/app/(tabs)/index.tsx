@@ -133,8 +133,12 @@ export default function HomeScreen() {
   // Calculate grid item width dynamically using responsive hook
   const { columns: gridColumns, gap: gridGap, itemWidth: gridItemWidth } = gridMetrics;
 
-  // Use native country name (e.g., "Türkiye") for all API calls - backend requires native names
-  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(country || undefined, 8);
+  // API calls use different country formats:
+  // - /api/stations/popular: accepts both English and native names
+  // - /api/genres/:slug/stations: requires English name only
+  // - /api/genres/precomputed: accepts native names
+  // Using countryEnglish for popular stations for consistency
+  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 8);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(country || undefined);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
