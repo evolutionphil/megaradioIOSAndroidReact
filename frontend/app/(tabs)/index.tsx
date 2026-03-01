@@ -138,7 +138,8 @@ export default function HomeScreen() {
   // - /api/genres/:slug/stations: requires English name only
   // - /api/genres/precomputed: accepts native names
   // Using countryEnglish for popular stations for consistency
-  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 8);
+  // Fetch 12 stations, display 8 on homepage
+  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 12);
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(country || undefined);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
