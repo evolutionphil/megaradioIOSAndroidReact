@@ -1,7 +1,7 @@
 // CarPlayHandler - Initializes CarPlay & Android Auto integration
 // Must be rendered inside AudioProvider
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
@@ -10,6 +10,10 @@ import { useFavoritesStore } from '../store/favoritesStore';
 import { useLocationStore } from '../store/locationStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
+
+// Track last values to detect changes
+let lastCountry: string | null = null;
+let lastFavoritesCount: number = 0;
 
 // API wrapper functions for CarPlay
 const getPopularStations = async (): Promise<Station[]> => {
