@@ -254,12 +254,18 @@ export const CarPlayHandler: React.FC = () => {
       console.log('[CarPlayHandler] Country changed from', lastCountry, 'to', currentCountry);
       sendLog('[CarPlayHandler] Country changed', { from: lastCountry, to: currentCountry });
       
+      // IMPORTANT: Invalidate React Query cache to prevent showing old country data
+      // This fixes the "double loading" issue where global stations appear first
+      queryClient.invalidateQueries({ queryKey: ['popularStations'] });
+      queryClient.invalidateQueries({ queryKey: ['genres'] });
+      console.log('[CarPlayHandler] Invalidated React Query cache for new country');
+      
       // Trigger CarPlay template refresh
       debouncedRefresh(`Country changed: ${lastCountry} → ${currentCountry}`);
     }
     
     lastCountry = currentCountry;
-  }, [country, countryEnglish]);
+  }, [country, countryEnglish, queryClient]);
   
   // Watch for favorites changes - when user adds/removes favorites, update CarPlay
   useEffect(() => {
