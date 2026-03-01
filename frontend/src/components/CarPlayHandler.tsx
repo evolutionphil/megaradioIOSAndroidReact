@@ -80,13 +80,23 @@ const getRecentStations = async (): Promise<Station[]> => {
 
 const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
   try {
+    // Get selected country for filtering genres
+    const { country } = useLocationStore.getState();
+    
+    console.log('[CarPlayHandler] Fetching genres for country:', country);
+    
     // Use precomputed genres endpoint - faster and cached, limit=40 for CarPlay
-    const response = await genreService.getPrecomputedGenres(undefined, 40);
+    // Pass country for filtered results
+    const response = await genreService.getPrecomputedGenres(country || undefined, 40);
+    
     // Return top 40 genres for CarPlay list
-    return (response.data || []).slice(0, 40).map((g: any) => ({
+    const genres = (response.data || []).slice(0, 40).map((g: any) => ({
       name: g.name || g.slug || g,
       count: g.stationCount || g.total_stations || g.count || 0,
     }));
+    
+    console.log('[CarPlayHandler] Got', genres.length, 'genres for CarPlay');
+    return genres;
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genres:', error);
     return [];
@@ -95,11 +105,16 @@ const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
 
 const getStationsByGenre = async (genre: string): Promise<Station[]> => {
   try {
-    const response = await stationService.getStations({
-      tag: genre,
-      limit: 50,  // CarPlay: 50 stations per genre
-      order: 'votes',
-    });
+    // Get selected country for filtering
+    const { countryEnglish, country } = useLocationStore.getState();
+    const selectedCountry = countryEnglish || country || undefined;
+    
+    console.log('[CarPlayHandler] Fetching stations for genre:', genre, 'country:', selectedCountry);
+    
+    // Use genreService for better country filtering
+    const response = await genreService.getGenreStations(genre.toLowerCase(), 1, 50, selectedCountry);
+    
+    console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'stations for genre', genre);
     return response.stations || [];
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genre stations:', error);
