@@ -137,11 +137,17 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
                 MEDIA_POPULAR_ID -> loadPopularStations()
                 MEDIA_GENRES_ID -> loadGenres()
                 MEDIA_DISCOVER_ID -> loadDiscoverStations()
+                MEDIA_SEARCH_ID -> loadSearchHints()
+                MEDIA_SEARCH_RESULTS_ID -> loadSearchResults()
                 else -> {
                     when {
                         parentId.startsWith(GENRE_PREFIX) -> {
                             val genreSlug = parentId.removePrefix(GENRE_PREFIX)
                             loadGenreStations(genreSlug)
+                        }
+                        parentId.startsWith(SEARCH_PREFIX) -> {
+                            val query = parentId.removePrefix(SEARCH_PREFIX)
+                            loadSearchResultsForQuery(query)
                         }
                         else -> mutableListOf()
                     }
