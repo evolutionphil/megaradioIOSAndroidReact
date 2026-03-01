@@ -10,7 +10,52 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 47) - December 2025
+## Latest Update (December 2025) - Fork Session
+
+### 🔧 Yapılan Düzeltmeler
+
+1. **Logo Fallback Sorunu (Pink Logo)**
+   - `stationLogoHelper.ts`: DEFAULT_STATION_LOGO artık `https://themegaradio.com/logo.png` (pink logo)
+   - `player.tsx`: `getLogoUrl` fonksiyonu her zaman valid URL döndürüyor (fallback dahil)
+   - `MiniPlayer.tsx`: `logoError` state'i station değiştiğinde reset ediliyor
+   - `GridItem`: Image onError ile fallback logo kullanımı
+
+2. **CarPlay Dil Desteği**
+   - `carPlayService.ts`: Language change listener eklendi (`addLanguageChangeListener`)
+   - Template'ler dil değiştiğinde otomatik yenileniyor
+   - Hardcoded Türkçe string'ler kaldırıldı (örn: "İstasyonları")
+
+3. **CarPlay Cold-Start İyileştirmeleri**
+   - `CarPlaySceneDelegate.swift`: Retry attempts 10'dan 30'a çıkarıldı
+   - Retry interval 1.0s'den 0.5s'ye indirildi (daha agresif retry)
+   - `AppDelegate.swift`: Bridge erken initialization korunuyor
+
+4. **CarPlay/Favorites Store Bağlantısı**
+   - `favoritesStore.ts`: `loadLocalFavorites` fonksiyonu eklendi
+   - `CarPlayHandler.tsx`: Country ve favorites değişikliklerini izliyor
+   - Favorites değiştiğinde log'lar eklendi
+
+5. **Next/Previous Buton Mantığı (TypeScript Fix)**
+   - `handleNextStation`: Benzer istasyonlardan rastgele birini çalar
+   - `handlePreviousStation`: Son dinlenenlerden önceki istasyonu çalar
+   - `displaySimilarStations` tanımı, fonksiyonlardan ÖNCE yapılıyor (TS hatası düzeltildi)
+
+### ⚠️ Bekleyen Sorunlar (User Verification Gerekli)
+
+| Sorun | Durum | Not |
+|-------|-------|-----|
+| CarPlay Cold-Start | ❓ | Yeni build ile test edilmeli |
+| CarPlay "Mehr" tab | ❓ | i18n düzeltmesi sonrası kontrol |
+| Dil Değiştirme (DE vb.) | ❓ | API çalışıyor, UI refresh sorunu olabilir |
+| Popular Stations (Fresh Install) | ❓ | Cache fix'i önceki session'da yapıldı |
+| CarPlay Favoriler | ❓ | Store subscription eklendi |
+
+### 🔴 Backend Sorunları (Düzeltilemez)
+- `/api/genres/{slug}/stations` ❌ HTML döndürüyor
+- `/api/now-playing/{id}` ❌ Bazı ID'ler için çalışmıyor
+- `/api/recommendations/diverse` ❌ 
+
+## Previous Update (Build 47) - December 2025
 
 ### 🔍 API Endpoint Durumu
 
