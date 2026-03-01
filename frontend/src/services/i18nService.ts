@@ -591,18 +591,41 @@ export const fetchTranslations = async (lang: string): Promise<Record<string, st
 
   try {
     const response = await api.get(API_ENDPOINTS.translations(lang));
-    const translations = response.data || {};
+    const apiTranslations = response.data || {};
     
-    // Merge with defaults to ensure all keys exist
-    const mergedTranslations = { ...defaultTranslations, ...translations };
+    // Get local fallback translations for this language
+    let localFallback: Record<string, string> = {};
+    if (lang === 'tr') {
+      localFallback = turkishTranslations;
+    } else if (lang === 'de') {
+      localFallback = germanTranslations;
+    }
+    
+    // Merge: defaults -> local fallback -> API translations
+    // This ensures all keys exist even if API doesn't have them
+    const mergedTranslations = { 
+      ...defaultTranslations,  // English as base
+      ...localFallback,        // Local translations for known languages
+      ...apiTranslations       // API translations override
+    };
     
     // Cache the translations
     translationsCache[lang] = mergedTranslations;
     
+    console.log(`[i18n] Loaded ${Object.keys(apiTranslations).length} translations from API for ${lang}`);
+    
     return mergedTranslations;
   } catch (error) {
     console.error(`[i18n] Failed to fetch translations for ${lang}:`, error);
-    // Return defaults on error
+    
+    // Return local fallback if available, otherwise defaults
+    if (lang === 'tr' && turkishTranslations) {
+      return { ...defaultTranslations, ...turkishTranslations };
+    }
+    if (lang === 'de' && germanTranslations) {
+      return { ...defaultTranslations, ...germanTranslations };
+    }
+    
     return defaultTranslations;
   }
 };
