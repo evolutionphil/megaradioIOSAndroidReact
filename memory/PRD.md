@@ -14,31 +14,32 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 
 ### 🔧 Yapılan Düzeltmeler
 
-1. **Logo Fallback Sorunu (Pink Logo)**
-   - `stationLogoHelper.ts`: DEFAULT_STATION_LOGO artık `https://themegaradio.com/logo.png` (pink logo)
-   - `player.tsx`: `getLogoUrl` fonksiyonu her zaman valid URL döndürüyor (fallback dahil)
-   - `MiniPlayer.tsx`: `logoError` state'i station değiştiğinde reset ediliyor
-   - `GridItem`: Image onError ile fallback logo kullanımı
+1. **Logo Fallback - LOCAL Asset Kullanımı**
+   - `assets/images/default-station-logo.png` eklendi (optimize: 256x256, 74KB)
+   - `stationLogoHelper.ts`: `DEFAULT_STATION_LOGO_SOURCE` = require() ile local asset
+   - `MiniPlayer.tsx`: Local fallback kullanıyor
+   - `ImageWithFallback.tsx`: Local fallback default olarak kullanıyor
+   - `all-stations.tsx`: onError ile local fallback
+   - Network bağımlılığı olmadan çalışıyor
 
-2. **CarPlay Dil Desteği**
-   - `carPlayService.ts`: Language change listener eklendi (`addLanguageChangeListener`)
-   - Template'ler dil değiştiğinde otomatik yenileniyor
-   - Hardcoded Türkçe string'ler kaldırıldı (örn: "İstasyonları")
+2. **CarPlay Düzeltmeleri**
+   - Cold-start için React Native auto-initialization eklendi
+   - Genres ülke filtreleme eklendi
+   - Genre stations ülke filtreleme eklendi
+   - GridTemplate desteği (genres için)
+   - Language change listener (dil değiştiğinde template yenileme)
 
-3. **CarPlay Cold-Start İyileştirmeleri**
-   - `CarPlaySceneDelegate.swift`: Retry attempts 10'dan 30'a çıkarıldı
-   - Retry interval 1.0s'den 0.5s'ye indirildi (daha agresif retry)
-   - `AppDelegate.swift`: Bridge erken initialization korunuyor
+3. **Country Parameter Tutarlılığı**
+   - Backend API native name bekliyor (Türkiye, Österreich)
+   - `/api/genres/:slug/stations` English name bekliyor (Turkey, Austria)
+   - Frontend artık doğru formatları kullanıyor
 
-4. **CarPlay/Favorites Store Bağlantısı**
-   - `favoritesStore.ts`: `loadLocalFavorites` fonksiyonu eklendi
-   - `CarPlayHandler.tsx`: Country ve favorites değişikliklerini izliyor
-   - Favorites değiştiğinde log'lar eklendi
+4. **i18n Cache Fix**
+   - `changeLanguage()` fonksiyonunda cache temizleme eklendi
 
-5. **Next/Previous Buton Mantığı (TypeScript Fix)**
-   - `handleNextStation`: Benzer istasyonlardan rastgele birini çalar
-   - `handlePreviousStation`: Son dinlenenlerden önceki istasyonu çalar
-   - `displaySimilarStations` tanımı, fonksiyonlardan ÖNCE yapılıyor (TS hatası düzeltildi)
+5. **Cache Sistemi**
+   - `stationService.getPopularStations()` online'da her zaman API'den çekiyor
+   - Cache sadece offline fallback için
 
 ### ⚠️ Bekleyen Sorunlar (User Verification Gerekli)
 
