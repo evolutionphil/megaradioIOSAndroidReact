@@ -27,10 +27,12 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         private const val MEDIA_GENRES_ID = "genres"
         private const val MEDIA_DISCOVER_ID = "discover"
         private const val MEDIA_SEARCH_ID = "search"
+        private const val MEDIA_SEARCH_RESULTS_ID = "search_results"
         
         // Prefixes for media items
         private const val STATION_PREFIX = "station:"
         private const val GENRE_PREFIX = "genre:"
+        private const val SEARCH_PREFIX = "search_query:"
     }
 
     private lateinit var mediaSession: MediaSessionCompat
