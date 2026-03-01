@@ -25,7 +25,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useResponsive } from '../../src/hooks/useResponsive';
 import type { Station } from '../../src/types';
 
-const FALLBACK_LOGO = 'https://themegaradio.com/static/default-station.png';
+const FALLBACK_LOGO = 'https://themegaradio.com/logo.png';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const getLogoUrl = (station: Station): string => {

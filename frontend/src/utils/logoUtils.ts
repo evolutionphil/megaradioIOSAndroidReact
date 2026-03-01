@@ -2,7 +2,7 @@
 import type { Station } from '../types';
 
 // Default station logo URL - fallback when no logo available
-export const DEFAULT_STATION_LOGO = 'https://themegaradio.com/images/default-station.png';
+export const DEFAULT_STATION_LOGO = 'https://themegaradio.com/logo.png';
 
 /**
  * Get the best available logo URL for a station

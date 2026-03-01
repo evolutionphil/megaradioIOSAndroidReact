@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Image, ImageProps, ImageSourcePropType, StyleSheet, View } from 'react-native';
 
-// Default station logo - our MegaRadio icon
-const DEFAULT_STATION_LOGO = 'https://themegaradio.com/images/default-station.png';
+// Default station logo - our MegaRadio pink icon
+const DEFAULT_STATION_LOGO = 'https://themegaradio.com/logo.png';
 
 interface ImageWithFallbackProps extends Omit<ImageProps, 'source'> {
   uri?: string | null;
