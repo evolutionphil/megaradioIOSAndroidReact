@@ -1139,11 +1139,15 @@ const CarPlayService: CarPlayServiceType = {
     getRecentlyPlayedCallback = null;
     getGenresCallback = null;
     getStationsByGenreCallback = null;
+    searchStationsCallback = null;
     isCarPlayConnected = false;
     CarPlayService.isConnected = false;
     pendingConnection = false;
     needsTemplateRefresh = false;
   },
+  
+  // Open Search Screen - can be triggered by Siri voice command
+  openSearch: openSearchScreen,
   
   /**
    * Refresh all CarPlay templates
