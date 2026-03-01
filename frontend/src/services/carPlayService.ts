@@ -906,7 +906,8 @@ const CarPlayService: CarPlayServiceType = {
     getFavorites,
     getRecentlyPlayed,
     getGenres,
-    getStationsByGenre
+    getStationsByGenre,
+    searchStations
   ) => {
     if (Platform.OS === 'web') {
       console.log('[CarPlayService] Not available on web platform');
@@ -938,6 +939,7 @@ const CarPlayService: CarPlayServiceType = {
       listTemplateAvailable: !!ListTemplate,
       tabBarTemplateAvailable: !!TabBarTemplate,
       gridTemplateAvailable: !!GridTemplate,
+      searchTemplateAvailable: !!SearchTemplate,
       nowPlayingTemplateAvailable: !!NowPlayingTemplate,
       pendingConnection: pendingConnection,
       handlersAlreadyRegistered: handlersRegistered,
@@ -950,6 +952,7 @@ const CarPlayService: CarPlayServiceType = {
     getRecentlyPlayedCallback = getRecentlyPlayed;
     getGenresCallback = getGenres;
     getStationsByGenreCallback = getStationsByGenre;
+    searchStationsCallback = searchStations || null;
     
     CarPlayLogger.info('[RN] Callbacks registered', {
       playStation: !!playStation,
@@ -958,6 +961,7 @@ const CarPlayService: CarPlayServiceType = {
       getRecentlyPlayed: !!getRecentlyPlayed,
       getGenres: !!getGenres,
       getStationsByGenre: !!getStationsByGenre,
+      searchStations: !!searchStations,
     });
     
     // Re-register handlers with full callbacks now that we have them
