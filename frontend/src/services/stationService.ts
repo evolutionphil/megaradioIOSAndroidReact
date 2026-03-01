@@ -59,27 +59,21 @@ export const stationService = {
     try {
       const isOnline = await stationCache.checkOnline();
       
-      // Check if we need to sync
-      const { needsDelta } = await stationCache.needsSync();
-      
       // For large limits (CarPlay), always fetch fresh to avoid cached small lists
       const isLargeRequest = limit > 20;
       
-      console.log('[stationService] getPopularStations - isOnline:', isOnline, 'needsDelta:', needsDelta, 'isLargeRequest:', isLargeRequest);
+      console.log('[stationService] getPopularStations - country:', country, 'limit:', limit, 'isOnline:', isOnline, 'isLargeRequest:', isLargeRequest);
       
-      // If offline or no sync needed, use cache (but not for large requests)
-      // IMPORTANT: Always try API first if no cache exists
-      if ((!isOnline || !needsDelta) && !isLargeRequest) {
+      // If offline, use cache
+      if (!isOnline && !isLargeRequest) {
         const cached = await stationCache.getPopularStations(country);
         if (cached && cached.length > 0) {
-          console.log('[stationService] Using cached popular stations (7-day cache), count:', cached.length);
+          console.log('[stationService] OFFLINE - Using cached popular stations, count:', cached.length);
           return { stations: cached, count: cached.length };
         }
-        // If no cache, fall through to API call
-        console.log('[stationService] No cache found, will fetch from API');
       }
 
-      // Fetch from API
+      // ALWAYS fetch from API when online - cache is only for offline fallback
       console.log('[stationService] Fetching popular stations from API, country:', country, 'limit:', limit);
       const response = await api.get(API_ENDPOINTS.stations.popular, {
         params: { country, limit, excludeBroken: true, tv: 1 },
@@ -96,12 +90,11 @@ export const stationService = {
         stations = data.data;
       }
       
-      console.log('[stationService] Got', stations.length, 'popular stations from API');
+      console.log('[stationService] Got', stations.length, 'popular stations from API for', country || 'global');
 
-      // Cache for 7 days (only cache small requests for app home page)
+      // Cache for offline use (only cache small requests for app home page)
       if (stations.length > 0 && !isLargeRequest) {
         await stationCache.setPopularStations(stations, country);
-        await stationCache.updateLastSync();
       }
 
       return { stations, count: stations.length };
