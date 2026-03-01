@@ -10,34 +10,34 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 44) - December 2025
+## Latest Update (Build 45) - December 2025
 
-### ✅ Build 42/43 Sonuçları
-- **Logolar çalışıyor!** ✅ `imgUrl` düzeltmesi başarılı
-- **Cold-start** - Bridge hemen başlatılıyor (test edilecek)
+### ✅ Düzeltmeler
 
-### 🔧 Build 44 Düzeltmeleri
+**1. CarPlay Popular Stations - Ülke Filtresi (P0)**
+- `CarPlayHandler.tsx`: `locationStore`'dan seçili ülke alınıyor
+- `getPopularStations(country, 50)` ile API çağrısı yapılıyor
+- Austria seçiliyse Austria radyoları gelecek
 
-**1. Popular Stations Cache Sorunu (P0)**
-- **Kök Neden**: Cache'te limit=12 ile kaydedilmiş veri vardı, CarPlay limit=50 istese bile cache döndürülüyordu
-- **Düzeltme**: `stationService.ts`'de `isLargeRequest` kontrolü eklendi
-  - `limit > 20` ise cache bypass edilip API'den çekiliyor
-  - Böylece CarPlay için 50 istasyon gelecek
+**2. Cache Bypass - Büyük İstekler (P1)**
+- `stationService.ts`: `limit > 20` ise cache bypass ediliyor
+- CarPlay için 50 istasyon her zaman API'den çekiliyor
 
-**2. CarPlayHandler Güncellendi**
-- `getStations` yerine `getPopularStations(country, 50)` kullanılıyor
-- `locationStore`'dan seçili ülke alınıyor
-- Detaylı logging eklendi
+**3. Almanca Dil Desteği (P1)**
+- `i18nService.ts`'e `germanTranslations` eklendi
+- `/api/translations/de` endpoint'i çalışmıyor (HTML döndürüyor) - backend sorunu
+- Local çevirilerle Almanca destekleniyor
+- Tab navigation, player, settings, CarPlay tüm metinler Almanca'ya çevrildi
 
 ### 📦 Build Bilgileri
-- iOS Build: 44
-- Android versionCode: 44
+- iOS Build: 45
+- Android versionCode: 45
 - Version: 1.0.27
 
-### 🔍 Test Edilecek
-1. Cold-start (telefon kapalıyken CarPlay)
-2. Austria için 50 istasyon gelecek mi?
-3. Logolar görünüyor mu?
+### ⚠️ Backend Sorunu
+- `/api/translations/:lang` endpoint'i HTML döndürüyor, JSON değil
+- Bu yüzden sadece local çeviriler çalışıyor (en, tr, de)
+- Backend düzeltmesi gerekiyor
 
 ## Watch Apps - February 19, 2025
 
