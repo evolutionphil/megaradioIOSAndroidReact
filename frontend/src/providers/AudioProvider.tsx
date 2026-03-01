@@ -18,6 +18,7 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePlayerStore } from '../store/playerStore';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { useRecentlyPlayedStore } from '../store/recentlyPlayedStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import statsService from '../services/statsService';
