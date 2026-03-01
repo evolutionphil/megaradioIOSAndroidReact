@@ -158,44 +158,40 @@ export default function AllStationsScreen() {
       ? `${t('all_stations', 'All Stations')} - ${country}` 
       : t('all_stations', 'All Stations');
 
-  // Helper function to build reliable logo URL
-  const getLogoUrl = useCallback((station: Station): string | null => {
+  // Helper function to build reliable logo URL with fallback
+  const getLogoUrl = useCallback((station: Station): string => {
+    const DEFAULT_LOGO = 'https://themegaradio.com/logo.png';
+    
     try {
       if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
         const folder = encodeURIComponent(station.logoAssets.folder);
         const file = encodeURIComponent(station.logoAssets.webp96);
         return `https://themegaradio.com/station-logos/${folder}/${file}`;
       }
-      if (station.favicon) {
+      if (station.favicon && typeof station.favicon === 'string') {
         const favicon = station.favicon.trim();
-        if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-          try {
-            new URL(favicon);
+        if (favicon && favicon !== 'null' && favicon !== 'undefined') {
+          if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
             return favicon;
-          } catch {
-            return null;
+          } else if (favicon.startsWith('/')) {
+            return `https://themegaradio.com${favicon}`;
           }
-        } else if (favicon.startsWith('/')) {
-          return `https://themegaradio.com${favicon}`;
         }
       }
-      if (station.logo) {
+      if (station.logo && typeof station.logo === 'string') {
         const logo = station.logo.trim();
-        if (logo.startsWith('http://') || logo.startsWith('https://')) {
-          try {
-            new URL(logo);
+        if (logo && logo !== 'null' && logo !== 'undefined') {
+          if (logo.startsWith('http://') || logo.startsWith('https://')) {
             return logo;
-          } catch {
-            return null;
+          } else if (logo.startsWith('/')) {
+            return `https://themegaradio.com${logo}`;
           }
-        } else if (logo.startsWith('/')) {
-          return `https://themegaradio.com${logo}`;
         }
       }
     } catch (e) {
       console.log('[AllStations] Error building logo URL:', e);
     }
-    return null;
+    return DEFAULT_LOGO;
   }, []);
 
   // Grid Item Component
