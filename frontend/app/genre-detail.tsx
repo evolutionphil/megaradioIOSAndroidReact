@@ -54,7 +54,7 @@ export default function GenreDetailScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   
-  const { countryCode, country } = useLocationStore();
+  const { countryCode, country, countryEnglish } = useLocationStore();
 
   // Load saved view mode preference on mount
   useEffect(() => {
