@@ -750,23 +750,26 @@ const createRootTemplate = async (): Promise<void> => {
       createRecentlyPlayedTemplate(),
       createBrowseTemplate(),
       createGenresTemplate(),
+      createSearchTemplate(),
     ]);
     
     const duration = Date.now() - startTime;
     CarPlayLogger.info('[RN] Promise.allSettled completed', { durationMs: duration });
     
-    const [favoritesResult, recentResult, browseResult, genresResult] = results;
+    const [favoritesResult, recentResult, browseResult, genresResult, searchResult] = results;
     
     const favoritesTemplate = favoritesResult.status === 'fulfilled' ? favoritesResult.value : null;
     const recentTemplate = recentResult.status === 'fulfilled' ? recentResult.value : null;
     const browseTemplate = browseResult.status === 'fulfilled' ? browseResult.value : null;
     const genresTemplate = genresResult.status === 'fulfilled' ? genresResult.value : null;
+    const searchTemplate = searchResult.status === 'fulfilled' ? searchResult.value : null;
     
     CarPlayLogger.info('[RN] Template creation results', {
       favorites: favoritesResult.status,
       recent: recentResult.status,
       browse: browseResult.status,
       genres: genresResult.status,
+      search: searchResult.status,
     });
     
     // Log any failures
@@ -786,6 +789,10 @@ const createRootTemplate = async (): Promise<void> => {
       console.error('[CarPlay] Genres template failed:', genresResult.reason);
       CarPlayLogger.error('[RN] Genres template FAILED', { error: String(genresResult.reason) });
     }
+    if (searchResult.status === 'rejected') {
+      console.error('[CarPlay] Search template failed:', searchResult.reason);
+      CarPlayLogger.error('[RN] Search template FAILED', { error: String(searchResult.reason) });
+    }
     
     // Build tabs array with available templates
     const templates: any[] = [];
@@ -795,6 +802,14 @@ const createRootTemplate = async (): Promise<void> => {
       browseTemplate.tabSystemImageName = 'music.note.list';
       templates.push(browseTemplate);
       CarPlayLogger.info('[RN] Browse tab added');
+    }
+    
+    // Add Search tab (magnifying glass icon)
+    if (searchTemplate) {
+      searchTemplate.tabTitle = t('carplay_search', 'Search');
+      searchTemplate.tabSystemImageName = 'magnifyingglass';
+      templates.push(searchTemplate);
+      CarPlayLogger.info('[RN] Search tab added');
     }
     
     if (favoritesTemplate) {
@@ -827,6 +842,7 @@ const createRootTemplate = async (): Promise<void> => {
         recentTemplate: !!recentTemplate,
         browseTemplate: !!browseTemplate,
         genresTemplate: !!genresTemplate,
+        searchTemplate: !!searchTemplate,
       });
       // Create a simple fallback list template
       if (ListTemplate) {
