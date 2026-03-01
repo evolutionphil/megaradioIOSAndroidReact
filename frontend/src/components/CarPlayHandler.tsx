@@ -20,13 +20,17 @@ const getPopularStations = async (): Promise<Station[]> => {
     
     console.log('[CarPlayHandler] Fetching popular stations for country:', selectedCountry);
     
-    const response = await stationService.getStations({ 
-      limit: 50,  // CarPlay: 50 stations for browse
-      order: 'votes',
-      country: selectedCountry, // Use selected country
-    });
+    // Use getPopularStations with explicit limit=50 for CarPlay
+    const response = await stationService.getPopularStations(selectedCountry, 50);
     
-    console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'popular stations');
+    console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'popular stations for CarPlay');
+    
+    // Log first few stations for debugging
+    if (response.stations && response.stations.length > 0) {
+      console.log('[CarPlayHandler] First 3 stations:', 
+        response.stations.slice(0, 3).map(s => s.name).join(', '));
+    }
+    
     return response.stations || [];
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching stations:', error);
