@@ -29,6 +29,9 @@ import type { Station } from '../src/types';
 
 const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
 
+// Local fallback logo asset (no network required)
+const DEFAULT_STATION_LOGO_SOURCE = require('../assets/images/default-station-logo.png');
+
 export default function AllStationsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
