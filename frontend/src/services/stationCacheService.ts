@@ -510,6 +510,26 @@ class StationCacheService {
   }
 }
 
-// Export singleton
-export const stationCache = new StationCacheService();
+// Lazy singleton - only create instance when needed and on client-side
+let _instance: StationCacheService | null = null;
+
+const getStationCache = (): StationCacheService => {
+  if (!_instance) {
+    _instance = new StationCacheService();
+  }
+  return _instance;
+};
+
+// Export proxy that lazily initializes
+export const stationCache = new Proxy({} as StationCacheService, {
+  get: (target, prop) => {
+    const instance = getStationCache();
+    const value = (instance as any)[prop];
+    if (typeof value === 'function') {
+      return value.bind(instance);
+    }
+    return value;
+  }
+});
+
 export default stationCache;
