@@ -208,17 +208,11 @@ export default function AllStationsScreen() {
         data-testid={`grid-station-${station._id}`}
       >
         <View style={[styles.gridLogoContainer, { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}>
-          {logoUrl ? (
-            <Image
-              source={{ uri: logoUrl }}
-              style={styles.gridLogo}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.gridPlaceholder}>
-              <Ionicons name="radio" size={32} color={colors.textMuted} />
-            </View>
-          )}
+          <Image
+            source={{ uri: logoUrl }}
+            style={styles.gridLogo}
+            resizeMode="cover"
+          />
         </View>
         <Text style={[styles.gridName, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>{station.name}</Text>
         <Text style={[styles.gridLocation, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>
