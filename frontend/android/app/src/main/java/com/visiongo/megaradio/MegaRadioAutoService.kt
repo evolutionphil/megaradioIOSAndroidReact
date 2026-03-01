@@ -291,6 +291,97 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
     }
 
     /**
+     * Load search hints/tips for users
+     * Shows voice command examples
+     */
+    private fun loadSearchHints(): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading search hints")
+        
+        val items = mutableListOf<MediaBrowserCompat.MediaItem>()
+        
+        // Add hint items - these are informational
+        items.add(createBrowsableItem(
+            "${SEARCH_PREFIX}pop",
+            "\"Pop müzik çal\"",
+            "Örnek sesli komut",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        items.add(createBrowsableItem(
+            "${SEARCH_PREFIX}jazz",
+            "\"Jazz radyo ara\"",
+            "Örnek sesli komut",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        items.add(createBrowsableItem(
+            "${SEARCH_PREFIX}rock",
+            "\"Rock müzik\"",
+            "Örnek sesli komut",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        items.add(createBrowsableItem(
+            "${SEARCH_PREFIX}türkçe",
+            "\"Türkçe pop çal\"",
+            "Örnek sesli komut",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        // If we have cached search results, show them
+        if (cachedSearchResults.isNotEmpty()) {
+            items.add(createBrowsableItem(
+                MEDIA_SEARCH_RESULTS_ID,
+                "Son Arama: \"$lastSearchQuery\"",
+                "${cachedSearchResults.size} sonuç",
+                "https://themegaradio.com/logo.png"
+            ))
+        }
+        
+        return items
+    }
+
+    /**
+     * Load cached search results
+     */
+    private fun loadSearchResults(): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading cached search results: ${cachedSearchResults.size}")
+        
+        return cachedSearchResults.map { station ->
+            createPlayableItem(
+                "${STATION_PREFIX}${station.id}",
+                station.name,
+                station.country,
+                station.logoUrl,
+                station.streamUrl
+            )
+        }.toMutableList()
+    }
+
+    /**
+     * Load search results for a specific query
+     */
+    private suspend fun loadSearchResultsForQuery(query: String): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Searching for: $query")
+        
+        val results = apiClient.searchStations(query, 20)
+        
+        // Cache the results
+        cachedSearchResults = results
+        lastSearchQuery = query
+        
+        return results.map { station ->
+            createPlayableItem(
+                "${STATION_PREFIX}${station.id}",
+                station.name,
+                station.country,
+                station.logoUrl,
+                station.streamUrl
+            )
+        }.toMutableList()
+    }
+
+    /**
      * Create a browsable media item (folder)
      */
     private fun createBrowsableItem(
