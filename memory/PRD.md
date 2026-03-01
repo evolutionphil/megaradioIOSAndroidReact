@@ -40,6 +40,13 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 5. **Cache Sistemi**
    - `stationService.getPopularStations()` online'da her zaman API'den çekiyor
    - Cache sadece offline fallback için
+   - Cache key artık limit parametresi içeriyor (farklı boyutlar karışmıyor)
+
+6. **CarPlay Real-time Senkronizasyon (YENİ!)**
+   - `carPlayService.ts`: `refreshTemplates()`, `refreshFavorites()`, `refreshRecentlyPlayed()` fonksiyonları eklendi
+   - `CarPlayHandler.tsx`: Store değişikliklerini dinliyor (country, favorites, recentlyPlayed)
+   - Debounced refresh (500ms) - çok sık güncelleme yapılmıyor
+   - `AudioProvider.tsx`: Station çalındığında `recentlyPlayedStore.addStation()` çağrılıyor
 
 ### ⚠️ Bekleyen Sorunlar (User Verification Gerekli)
 
