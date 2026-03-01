@@ -484,6 +484,44 @@ export default function PlayerScreen() {
     return popularStations.filter((s: Station) => s._id !== currentStation?._id);
   }, [similarStations, popularStations, currentStation?._id]);
 
+  // Play next station from similar stations (uses filtered list that excludes current station)
+  const handleNextStation = useCallback(() => {
+    // Use displaySimilarStations which already excludes current station
+    if (displaySimilarStations.length > 0) {
+      // Pick a random station from the filtered list
+      const randomIndex = Math.floor(Math.random() * displaySimilarStations.length);
+      const nextStation = displaySimilarStations[randomIndex];
+      console.log('[Player] Playing next station:', nextStation?.name);
+      if (nextStation) {
+        playStation(nextStation);
+        addRecentStation(nextStation);
+      }
+    }
+  }, [displaySimilarStations, playStation, addRecentStation]);
+
+  // Play previous station from recently played
+  const handlePreviousStation = useCallback(() => {
+    // Find the station before the current one in recent history
+    const currentIndex = recentStations.findIndex(s => s._id === currentStation?._id);
+    if (currentIndex > 0) {
+      // Play the previous station in history
+      const prevStation = recentStations[currentIndex - 1];
+      console.log('[Player] Playing previous station:', prevStation?.name);
+      playStation(prevStation);
+    } else {
+      // No previous station, play random from filtered similar stations
+      if (displaySimilarStations.length > 0) {
+        const randomIndex = Math.floor(Math.random() * displaySimilarStations.length);
+        const randomStation = displaySimilarStations[randomIndex];
+        console.log('[Player] No previous, playing random similar:', randomStation?.name);
+        if (randomStation) {
+          playStation(randomStation);
+          addRecentStation(randomStation);
+        }
+      }
+    }
+  }, [recentStations, currentStation, displaySimilarStations, playStation, addRecentStation]);
+
   // Get current song name - from nowPlaying metadata
   // API returns: { title, artist, station, genre }
   const getCurrentSongInfo = () => {
