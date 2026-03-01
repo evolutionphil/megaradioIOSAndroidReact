@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Image, ImageProps, ImageSourcePropType, StyleSheet, View } from 'react-native';
 
-// Default station logo - our MegaRadio pink icon
-const DEFAULT_STATION_LOGO = 'https://themegaradio.com/logo.png';
+// Default station logo - LOCAL asset for fallback (no network required)
+const DEFAULT_STATION_LOGO_SOURCE = require('../../assets/images/default-station-logo.png');
 
 interface ImageWithFallbackProps extends Omit<ImageProps, 'source'> {
   uri?: string | null;
@@ -16,8 +16,8 @@ interface ImageWithFallbackProps extends Omit<ImageProps, 'source'> {
  */
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   uri,
-  fallbackUri = DEFAULT_STATION_LOGO,
-  fallbackSource,
+  fallbackUri,
+  fallbackSource = DEFAULT_STATION_LOGO_SOURCE,
   style,
   ...props
 }) => {
@@ -25,18 +25,12 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
   // If no URI provided, use fallback immediately
   if (!uri || uri.trim() === '') {
-    if (fallbackSource) {
-      return <Image source={fallbackSource} style={style} {...props} />;
-    }
-    return <Image source={{ uri: fallbackUri }} style={style} {...props} />;
+    return <Image source={fallbackSource} style={style} {...props} />;
   }
 
   // If error occurred, show fallback
   if (hasError) {
-    if (fallbackSource) {
-      return <Image source={fallbackSource} style={style} {...props} />;
-    }
-    return <Image source={{ uri: fallbackUri }} style={style} {...props} />;
+    return <Image source={fallbackSource} style={style} {...props} />;
   }
 
   // Try to load the original image
