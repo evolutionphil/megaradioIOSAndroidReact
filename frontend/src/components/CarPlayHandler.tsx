@@ -109,6 +109,10 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
 export const CarPlayHandler: React.FC = () => {
   const { playStation } = useAudioPlayer();
   
+  // Watch favorites and location changes
+  const favorites = useFavoritesStore(state => state.favorites);
+  const { country, countryEnglish } = useLocationStore();
+  
   // Send log immediately when component mounts (before useEffect)
   const { sendLog } = require('../services/remoteLog');
   
@@ -162,6 +166,45 @@ export const CarPlayHandler: React.FC = () => {
       CarPlayService.disconnect();
     };
   }, [playStation]);
+  
+  // Watch for country changes - when user changes country, refresh CarPlay stations
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    
+    const currentCountry = countryEnglish || country;
+    
+    // Skip first run and only trigger on actual changes
+    if (lastCountry !== null && currentCountry !== lastCountry) {
+      console.log('[CarPlayHandler] Country changed from', lastCountry, 'to', currentCountry);
+      sendLog('[CarPlayHandler] Country changed', { from: lastCountry, to: currentCountry });
+      
+      // CarPlay templates will be refreshed via the language change listener
+      // or we can manually trigger a refresh here if CarPlay is connected
+      if (CarPlayService.isConnected) {
+        console.log('[CarPlayHandler] CarPlay connected - templates will use new country on next refresh');
+      }
+    }
+    
+    lastCountry = currentCountry;
+  }, [country, countryEnglish]);
+  
+  // Watch for favorites changes - when user adds/removes favorites, update CarPlay
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    
+    const currentCount = favorites?.length || 0;
+    
+    // Skip first run and only trigger on actual changes
+    if (lastFavoritesCount > 0 && currentCount !== lastFavoritesCount) {
+      console.log('[CarPlayHandler] Favorites changed from', lastFavoritesCount, 'to', currentCount);
+      sendLog('[CarPlayHandler] Favorites changed', { from: lastFavoritesCount, to: currentCount });
+      
+      // CarPlay templates will pick up new favorites on next render
+      // The favorites tab always calls getFavoriteStations() fresh
+    }
+    
+    lastFavoritesCount = currentCount;
+  }, [favorites]);
 
   // This component doesn't render anything
   return null;
