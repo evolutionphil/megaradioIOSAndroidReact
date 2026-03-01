@@ -220,6 +220,7 @@ export const CarPlayHandler: React.FC = () => {
         clearTimeout(refreshDebounceTimer);
         refreshDebounceTimer = null;
       }
+      isRefreshing = false; // Reset refresh flag
       CarPlayService.disconnect();
     };
   }, [playStation]);
