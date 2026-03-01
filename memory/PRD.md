@@ -1180,3 +1180,62 @@ GitHub issue'daki kullanıcı Objective-C kullanmış ve başarılı olmuş. Swi
 ```bash
 eas build --platform ios --profile production --auto-submit --clear-cache
 ```
+
+
+
+---
+
+## March 2025 - iOS Crash Fix & Logo Update
+
+### Crash Analizi (Crash Log: iev95b03_crashlog.crash)
+
+**Crash Tipi:** `EXC_CRASH (SIGABRT)` - React Native assertion hatası
+**Thread 10 (Crashed):** `facebook::react::RCTNativeModule::invoke` - Native module çağrısında crash
+**Thread 0 (Main):** `REASwizzledUIManager reanimated_manageChildren` - Reanimated UI yönetimi
+
+**Kök Neden:**
+`react-native-reanimated` kütüphanesinin `RCTUIManager`'ı "swizzle" etmesi (değiştirmesi) ve CarPlay template refresh işlemlerinin çok hızlı tetiklenmesi arasındaki yarış durumu (race condition).
+
+### Uygulanan Düzeltmeler:
+
+**1. CarPlayHandler.tsx - Mutex ve Debounce Artırımı:**
+- `isRefreshing` flag eklendi - eşzamanlı refresh'leri engelliyor
+- Debounce süresi 500ms → 1000ms olarak artırıldı
+- Cleanup fonksiyonunda `isRefreshing` sıfırlanıyor
+
+**2. carPlayService.ts - Template Mutex:**
+- `isCreatingTemplate` mutex eklendi
+- `createRootTemplate()` artık eşzamanlı çağrılarda skip ediliyor
+- Hem success hem error durumunda mutex serbest bırakılıyor
+
+### Logo Güncellemesi (Pembe M Logosu):
+
+**Eklenen/Güncellenen Dosyalar:**
+- `/app/frontend/src/assets/images/app-icon.png` - Yeni pembe logo (source)
+- `/app/frontend/src/assets/images/logo.png` - React Native fallback
+- `/app/frontend/assets/images/default-station-logo.png` - Genel fallback
+- `/app/frontend/assets/images/default-station-logo-128.png`
+- `/app/frontend/assets/images/default-station-logo-64.png`
+- `/app/frontend/ios/MegaRadio/Images.xcassets/DefaultStationLogo.imageset/` - iOS native fallback (tüm boyutlar)
+
+### Bekleyen Sorunlar (User Verification Gerekli):
+
+| Sorun | Durum | Build Gerekli |
+|-------|-------|--------------|
+| iOS Crash - REASwizzledUIManager | ❓ Düzeltme yapıldı | ✅ Yeni build |
+| CarPlay Cold-Start | ❓ Önceki düzeltmeler test edilmedi | ✅ Yeni build |
+| CarPlay Real-time Sync | ❓ Önceki düzeltmeler test edilmedi | ✅ Yeni build |
+| Logo Fallback | ✅ Güncellendi | ✅ Yeni build |
+
+### Değişen Dosyalar:
+- `src/components/CarPlayHandler.tsx` - Race condition fix
+- `src/services/carPlayService.ts` - Template mutex
+- `src/assets/images/app-icon.png` - Yeni pembe logo
+- `src/assets/images/logo.png` - Yeni fallback
+- `assets/images/default-station-logo*.png` - Güncellenmiş fallback'ler
+- `ios/MegaRadio/Images.xcassets/DefaultStationLogo.imageset/` - iOS native güncellemesi
+
+### Build Komutu:
+```bash
+eas build --platform ios --clear-cache
+```
