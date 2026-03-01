@@ -43,20 +43,18 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-    // Note: Window creation is now handled by PhoneSceneDelegate for scene-based lifecycle
-    // Only create window here if scene manifest is not configured (fallback for older iOS)
+    // CRITICAL FOR COLD-START: Initialize React Native bridge IMMEDIATELY
+    // This ensures JS runtime is available when CarPlay connects first (app was killed)
+    // Without this, CarPlay shows "Loading" indefinitely
     #if os(iOS) || os(tvOS)
-    if #available(iOS 13.0, *) {
-      // Scene-based lifecycle - window will be created by PhoneSceneDelegate
-    } else {
-      // Legacy window-based lifecycle (iOS 12 and earlier)
-      window = UIWindow(frame: UIScreen.main.bounds)
-      factory.startReactNative(
-        withModuleName: "main",
-        in: window,
-        launchOptions: launchOptions)
-      isReactNativeInitialized = true
-    }
+    print("[AppDelegate] Initializing React Native bridge for cold-start support...")
+    window = UIWindow(frame: UIScreen.main.bounds)
+    factory.startReactNative(
+      withModuleName: "main",
+      in: window,
+      launchOptions: launchOptions)
+    isReactNativeInitialized = true
+    print("[AppDelegate] React Native bridge initialized successfully")
     #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
