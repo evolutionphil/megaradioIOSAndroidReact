@@ -1,137 +1,120 @@
 package com.visiongo.megaradio
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
-import com.doublesymmetry.trackplayer.service.MusicService
-import android.net.Uri
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.coroutines.*
 
 /**
- * MegaRadio Android Auto MediaBrowserService
- * Provides browsable content for Android Auto's media interface
+ * MegaRadio Android Auto Service
+ * Provides media browsing and playback for Android Auto
+ * Now with real API integration!
  */
 class MegaRadioAutoService : MediaBrowserServiceCompat() {
 
     companion object {
-        private const val TAG = "MegaRadioAuto"
+        private const val TAG = "MegaRadioAutoService"
         
-        // Root and category IDs
-        const val MEDIA_ROOT_ID = "megaradio_root"
-        const val MEDIA_FAVORITES = "megaradio_favorites"
-        const val MEDIA_RECENT = "megaradio_recent"
-        const val MEDIA_POPULAR = "megaradio_popular"
-        const val MEDIA_GENRES = "megaradio_genres"
+        // Media IDs for browsing hierarchy
+        private const val MEDIA_ROOT_ID = "root"
+        private const val MEDIA_POPULAR_ID = "popular"
+        private const val MEDIA_GENRES_ID = "genres"
+        private const val MEDIA_DISCOVER_ID = "discover"
+        private const val MEDIA_SEARCH_ID = "search"
         
-        // Genre IDs
-        const val GENRE_POP = "genre_pop"
-        const val GENRE_ROCK = "genre_rock"
-        const val GENRE_JAZZ = "genre_jazz"
-        const val GENRE_CLASSICAL = "genre_classical"
-        const val GENRE_ELECTRONIC = "genre_electronic"
-        const val GENRE_HIPHOP = "genre_hiphop"
-        const val GENRE_TURKISH = "genre_turkish"
-        const val GENRE_NEWS = "genre_news"
-        
-        // AsyncStorage key for favorites
-        const val ASYNC_STORAGE_FAVORITES_KEY = "megaradio_android_auto_favorites"
+        // Prefixes for media items
+        private const val STATION_PREFIX = "station:"
+        private const val GENRE_PREFIX = "genre:"
     }
 
-    private var mediaSession: MediaSessionCompat? = null
+    private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var stateBuilder: PlaybackStateCompat.Builder
+    private val apiClient = MegaRadioApiClient.getInstance()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    
+    // Cache for stations and genres
+    private var cachedPopularStations: List<MegaRadioApiClient.Station> = emptyList()
+    private var cachedGenres: List<MegaRadioApiClient.Genre> = emptyList()
+    private var cachedGenreStations: MutableMap<String, List<MegaRadioApiClient.Station>> = mutableMapOf()
+    
+    // Current playback state
+    private var currentStation: MegaRadioApiClient.Station? = null
+    private var selectedCountry: String? = null // User's selected country
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "MegaRadioAutoService created")
-        
-        // Try to get existing MediaSession from TrackPlayer
-        // This ensures Android Auto controls work with the existing player
-        initMediaSession()
-    }
+        Log.d(TAG, "Android Auto Service created")
 
-    private fun initMediaSession() {
-        try {
-            mediaSession = MediaSessionCompat(this, "MegaRadioAutoSession").apply {
-                setFlags(
-                    MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
-                    MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-                )
-                
-                setPlaybackState(
-                    PlaybackStateCompat.Builder()
-                        .setActions(
-                            PlaybackStateCompat.ACTION_PLAY or
-                            PlaybackStateCompat.ACTION_PAUSE or
-                            PlaybackStateCompat.ACTION_STOP or
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                        )
-                        .setState(PlaybackStateCompat.STATE_NONE, 0, 1.0f)
-                        .build()
-                )
-                
-                isActive = true
-            }
-            
-            sessionToken = mediaSession?.sessionToken
-            Log.d(TAG, "MediaSession initialized")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error initializing MediaSession", e)
-        }
-    }
-
-    // Read favorites from React Native AsyncStorage
-    private fun loadFavoritesFromStorage(): List<FavoriteStation> {
-        val favorites = mutableListOf<FavoriteStation>()
-        try {
-            // AsyncStorage on Android uses SharedPreferences under the hood
-            // The data is stored in a specific format
-            val prefs = applicationContext.getSharedPreferences(
-                "RN_AsyncLocalStorage",
-                Context.MODE_PRIVATE
+        // Initialize media session
+        mediaSession = MediaSessionCompat(this, TAG).apply {
+            setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
             )
             
-            val favoritesJson = prefs.getString(ASYNC_STORAGE_FAVORITES_KEY, null)
+            stateBuilder = PlaybackStateCompat.Builder()
+                .setActions(
+                    PlaybackStateCompat.ACTION_PLAY or
+                    PlaybackStateCompat.ACTION_PAUSE or
+                    PlaybackStateCompat.ACTION_STOP or
+                    PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+                )
+            setPlaybackState(stateBuilder.build())
             
-            if (favoritesJson != null) {
-                Log.d(TAG, "Found favorites in storage: ${favoritesJson.take(100)}...")
-                val jsonArray = JSONArray(favoritesJson)
-                
-                for (i in 0 until jsonArray.length()) {
-                    val station = jsonArray.getJSONObject(i)
-                    favorites.add(FavoriteStation(
-                        id = station.optString("id", ""),
-                        name = station.optString("name", "Unknown"),
-                        country = station.optString("country", ""),
-                        streamUrl = station.optString("streamUrl", ""),
-                        favicon = station.optString("favicon", "")
-                    ))
-                }
-                Log.d(TAG, "Loaded ${favorites.size} favorites from storage")
-            } else {
-                Log.d(TAG, "No favorites found in storage")
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error loading favorites from storage", e)
+            setCallback(MediaSessionCallback())
+            isActive = true
         }
-        return favorites
+
+        sessionToken = mediaSession.sessionToken
+        
+        // Pre-fetch data
+        preloadData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "Android Auto Service destroyed")
+        serviceScope.cancel()
+        mediaSession.release()
+    }
+
+    /**
+     * Pre-load popular stations and genres for faster browsing
+     */
+    private fun preloadData() {
+        serviceScope.launch {
+            try {
+                Log.d(TAG, "Preloading data...")
+                
+                // Fetch popular stations
+                cachedPopularStations = apiClient.getPopularStations(selectedCountry, 50)
+                Log.d(TAG, "Preloaded ${cachedPopularStations.size} popular stations")
+                
+                // Fetch genres
+                cachedGenres = apiClient.getGenres(selectedCountry, 40)
+                Log.d(TAG, "Preloaded ${cachedGenres.size} genres")
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "Error preloading data: ${e.message}", e)
+            }
+        }
     }
 
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ): BrowserRoot? {
+    ): BrowserRoot {
         Log.d(TAG, "onGetRoot called from: $clientPackageName")
-        
-        // Allow Android Auto and other trusted clients
         return BrowserRoot(MEDIA_ROOT_ID, null)
     }
 
@@ -140,154 +123,393 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         Log.d(TAG, "onLoadChildren: $parentId")
+        
+        // Detach result so we can load async
         result.detach()
-
-        val items = mutableListOf<MediaBrowserCompat.MediaItem>()
-
-        when (parentId) {
-            MEDIA_ROOT_ID -> {
-                // Root menu - show main categories
-                items.add(createBrowsableItem(MEDIA_FAVORITES, "Favoriler", "Favori radyolarınız", "heart"))
-                items.add(createBrowsableItem(MEDIA_RECENT, "Son Çalınanlar", "Son dinlediğiniz radyolar", "clock"))
-                items.add(createBrowsableItem(MEDIA_POPULAR, "Popüler", "En popüler radyolar", "trending"))
-                items.add(createBrowsableItem(MEDIA_GENRES, "Türler", "Türe göre radyolar", "music"))
-            }
-            
-            MEDIA_GENRES -> {
-                // Genre list
-                items.add(createBrowsableItem(GENRE_POP, "Pop", "Pop müzik radyoları", "pop"))
-                items.add(createBrowsableItem(GENRE_ROCK, "Rock", "Rock müzik radyoları", "rock"))
-                items.add(createBrowsableItem(GENRE_JAZZ, "Jazz", "Jazz müzik radyoları", "jazz"))
-                items.add(createBrowsableItem(GENRE_CLASSICAL, "Klasik", "Klasik müzik radyoları", "classical"))
-                items.add(createBrowsableItem(GENRE_ELECTRONIC, "Elektronik", "Elektronik müzik radyoları", "electronic"))
-                items.add(createBrowsableItem(GENRE_HIPHOP, "Hip-Hop", "Hip-Hop radyoları", "hiphop"))
-                items.add(createBrowsableItem(GENRE_TURKISH, "Türkçe", "Türkçe müzik radyoları", "turkish"))
-                items.add(createBrowsableItem(GENRE_NEWS, "Haber", "Haber radyoları", "news"))
-            }
-            
-            MEDIA_FAVORITES -> {
-                // Load real favorites from SharedPreferences (synced from React Native)
-                val favorites = loadFavoritesFromStorage()
-                if (favorites.isEmpty()) {
-                    // Show placeholder if no favorites
-                    items.add(createPlayableItem("no_fav", "Henüz favori yok", "Uygulamadan ekleyin", ""))
-                } else {
-                    favorites.forEach { station ->
-                        items.add(createPlayableItem(
-                            station.id,
-                            station.name,
-                            station.country,
-                            station.streamUrl
-                        ))
+        
+        serviceScope.launch {
+            val items = when (parentId) {
+                MEDIA_ROOT_ID -> loadRootItems()
+                MEDIA_POPULAR_ID -> loadPopularStations()
+                MEDIA_GENRES_ID -> loadGenres()
+                MEDIA_DISCOVER_ID -> loadDiscoverStations()
+                else -> {
+                    when {
+                        parentId.startsWith(GENRE_PREFIX) -> {
+                            val genreSlug = parentId.removePrefix(GENRE_PREFIX)
+                            loadGenreStations(genreSlug)
+                        }
+                        else -> mutableListOf()
                     }
                 }
             }
             
-            MEDIA_RECENT -> {
-                // TODO: Load recent from SharedPreferences
-                items.add(createPlayableItem("recent_1", "NRJ Turkey", "Son dinlenen", "https://nrj.com/stream"))
-            }
-            
-            MEDIA_POPULAR -> {
-                // Popular Turkish stations
-                items.add(createPlayableItem("pop_1", "Power FM", "Türkiye'nin #1 Hit Radyosu", "https://listen.powerapp.com.tr/powerfm/abr/playlist.m3u8"))
-                items.add(createPlayableItem("pop_2", "Virgin Radio Turkey", "Today's Best Music", "https://live.virginradio.com.tr/vrt"))
-                items.add(createPlayableItem("pop_3", "Kral FM", "Türk Müziğinin Kalbi", "https://stream.kralfm.com.tr/kralfm"))
-                items.add(createPlayableItem("pop_4", "Joy FM", "Joy Türk", "https://stream.joyfm.com.tr/joyfm"))
-                items.add(createPlayableItem("pop_5", "Metro FM", "Metro FM", "https://listen.powerapp.com.tr/metrofm/abr/playlist.m3u8"))
-                items.add(createPlayableItem("pop_6", "Slow Türk", "Slow Türk", "https://stream.slowturk.com.tr/slowturk"))
-                items.add(createPlayableItem("pop_7", "TRT FM", "TRT FM", "https://trtfm.radyotvonline.com/"))
-                items.add(createPlayableItem("pop_8", "Number One FM", "Number One", "https://stream.numberone.com.tr/"))
-            }
-            
-            GENRE_POP, GENRE_ROCK, GENRE_JAZZ, GENRE_CLASSICAL, 
-            GENRE_ELECTRONIC, GENRE_HIPHOP, GENRE_TURKISH, GENRE_NEWS -> {
-                // Load stations for genre
-                loadGenreStations(parentId, items)
-            }
-            
-            else -> {
-                Log.w(TAG, "Unknown parentId: $parentId")
-            }
-        }
-
-        result.sendResult(items)
-    }
-
-    private fun loadGenreStations(genreId: String, items: MutableList<MediaBrowserCompat.MediaItem>) {
-        // Map genre IDs to station lists
-        when (genreId) {
-            GENRE_POP -> {
-                items.add(createPlayableItem("pop_power", "Power FM", "Pop Hits", "https://listen.powerapp.com.tr/powerfm/abr/playlist.m3u8"))
-                items.add(createPlayableItem("pop_virgin", "Virgin Radio", "Pop Music", "https://live.virginradio.com.tr/vrt"))
-                items.add(createPlayableItem("pop_joy", "Joy FM", "Pop Türk", "https://stream.joyfm.com.tr/joyfm"))
-            }
-            GENRE_ROCK -> {
-                items.add(createPlayableItem("rock_1", "Rock FM", "Rock Music", "https://rockfm.stream"))
-            }
-            GENRE_TURKISH -> {
-                items.add(createPlayableItem("turk_kral", "Kral FM", "Türk Müziği", "https://stream.kralfm.com.tr/kralfm"))
-                items.add(createPlayableItem("turk_slow", "Slow Türk", "Slow Türkçe", "https://stream.slowturk.com.tr/slowturk"))
-            }
-            // Add more genres as needed
+            result.sendResult(items)
         }
     }
 
+    /**
+     * Load root menu items
+     */
+    private fun loadRootItems(): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading root items")
+        
+        val items = mutableListOf<MediaBrowserCompat.MediaItem>()
+        
+        // Popular Stations
+        items.add(createBrowsableItem(
+            MEDIA_POPULAR_ID,
+            "Popüler İstasyonlar",
+            "En çok dinlenen radyolar",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        // Genres
+        items.add(createBrowsableItem(
+            MEDIA_GENRES_ID,
+            "Türler",
+            "Müzik türlerine göre radyolar",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        // Discover
+        items.add(createBrowsableItem(
+            MEDIA_DISCOVER_ID,
+            "Keşfet",
+            "Farklı türlerden öneriler",
+            "https://themegaradio.com/logo.png"
+        ))
+        
+        return items
+    }
+
+    /**
+     * Load popular stations from API
+     */
+    private suspend fun loadPopularStations(): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading popular stations")
+        
+        // Refresh cache if empty
+        if (cachedPopularStations.isEmpty()) {
+            cachedPopularStations = apiClient.getPopularStations(selectedCountry, 50)
+        }
+        
+        return cachedPopularStations.map { station ->
+            createPlayableItem(
+                "${STATION_PREFIX}${station.id}",
+                station.name,
+                station.country,
+                station.logoUrl,
+                station.streamUrl
+            )
+        }.toMutableList()
+    }
+
+    /**
+     * Load genres from API
+     */
+    private suspend fun loadGenres(): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading genres")
+        
+        // Refresh cache if empty
+        if (cachedGenres.isEmpty()) {
+            cachedGenres = apiClient.getGenres(selectedCountry, 40)
+        }
+        
+        return cachedGenres.map { genre ->
+            createBrowsableItem(
+                "${GENRE_PREFIX}${genre.slug}",
+                genre.name,
+                "${genre.stationCount} istasyon",
+                "https://themegaradio.com/logo.png"
+            )
+        }.toMutableList()
+    }
+
+    /**
+     * Load stations for a specific genre
+     */
+    private suspend fun loadGenreStations(genreSlug: String): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading stations for genre: $genreSlug")
+        
+        // Check cache first
+        val cached = cachedGenreStations[genreSlug]
+        val stations = if (cached != null && cached.isNotEmpty()) {
+            cached
+        } else {
+            val fetched = apiClient.getStationsByGenre(genreSlug, selectedCountry, 50)
+            cachedGenreStations[genreSlug] = fetched
+            fetched
+        }
+        
+        return stations.map { station ->
+            createPlayableItem(
+                "${STATION_PREFIX}${station.id}",
+                station.name,
+                station.country,
+                station.logoUrl,
+                station.streamUrl
+            )
+        }.toMutableList()
+    }
+
+    /**
+     * Load diverse/discover stations
+     */
+    private suspend fun loadDiscoverStations(): MutableList<MediaBrowserCompat.MediaItem> {
+        Log.d(TAG, "Loading discover stations")
+        
+        val stations = apiClient.getDiverseRecommendations(selectedCountry, 30)
+        
+        return stations.map { station ->
+            createPlayableItem(
+                "${STATION_PREFIX}${station.id}",
+                station.name,
+                "${station.genre} • ${station.country}",
+                station.logoUrl,
+                station.streamUrl
+            )
+        }.toMutableList()
+    }
+
+    /**
+     * Create a browsable media item (folder)
+     */
     private fun createBrowsableItem(
         mediaId: String,
         title: String,
         subtitle: String,
-        iconName: String
+        iconUri: String
     ): MediaBrowserCompat.MediaItem {
         val description = MediaDescriptionCompat.Builder()
             .setMediaId(mediaId)
             .setTitle(title)
             .setSubtitle(subtitle)
-            .setIconUri(Uri.parse("android.resource://com.visiongo.megaradio/drawable/ic_$iconName"))
+            .setIconUri(android.net.Uri.parse(iconUri))
             .build()
-
+        
         return MediaBrowserCompat.MediaItem(
             description,
             MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
         )
     }
 
+    /**
+     * Create a playable media item (station)
+     */
     private fun createPlayableItem(
         mediaId: String,
         title: String,
         subtitle: String,
-        streamUrl: String
+        iconUri: String,
+        mediaUri: String
     ): MediaBrowserCompat.MediaItem {
         val extras = Bundle().apply {
-            putString("stream_url", streamUrl)
+            putString("streamUrl", mediaUri)
         }
         
         val description = MediaDescriptionCompat.Builder()
             .setMediaId(mediaId)
             .setTitle(title)
             .setSubtitle(subtitle)
-            .setMediaUri(Uri.parse(streamUrl))
+            .setIconUri(android.net.Uri.parse(iconUri))
+            .setMediaUri(android.net.Uri.parse(mediaUri))
             .setExtras(extras)
             .build()
-
+        
         return MediaBrowserCompat.MediaItem(
             description,
             MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
         )
     }
 
-    override fun onDestroy() {
-        Log.d(TAG, "MegaRadioAutoService destroyed")
-        mediaSession?.release()
-        super.onDestroy()
+    /**
+     * Find station by ID from all caches
+     */
+    private fun findStationById(stationId: String): MegaRadioApiClient.Station? {
+        // Check popular stations
+        cachedPopularStations.find { it.id == stationId }?.let { return it }
+        
+        // Check genre stations
+        cachedGenreStations.values.forEach { stations ->
+            stations.find { it.id == stationId }?.let { return it }
+        }
+        
+        return null
     }
-    
-    // Data class for favorite stations
-    data class FavoriteStation(
-        val id: String,
-        val name: String,
-        val country: String,
-        val streamUrl: String,
-        val favicon: String
-    )
+
+    /**
+     * Media session callbacks for playback control
+     */
+    inner class MediaSessionCallback : MediaSessionCompat.Callback() {
+        
+        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+            Log.d(TAG, "onPlayFromMediaId: $mediaId")
+            
+            mediaId ?: return
+            
+            if (mediaId.startsWith(STATION_PREFIX)) {
+                val stationId = mediaId.removePrefix(STATION_PREFIX)
+                val station = findStationById(stationId)
+                
+                if (station != null) {
+                    playStation(station)
+                } else {
+                    // Station not in cache, try to get stream URL from extras
+                    val streamUrl = extras?.getString("streamUrl")
+                    if (!streamUrl.isNullOrEmpty()) {
+                        // Create a minimal station object
+                        val minimalStation = MegaRadioApiClient.Station(
+                            id = stationId,
+                            name = "Radio Station",
+                            streamUrl = streamUrl,
+                            logoUrl = "https://themegaradio.com/logo.png",
+                            country = "",
+                            genre = "",
+                            tags = ""
+                        )
+                        playStation(minimalStation)
+                    }
+                }
+            }
+        }
+        
+        override fun onPlay() {
+            Log.d(TAG, "onPlay")
+            currentStation?.let { playStation(it) }
+        }
+        
+        override fun onPause() {
+            Log.d(TAG, "onPause")
+            updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
+            // Send pause intent to React Native
+            sendPlaybackCommand("pause")
+        }
+        
+        override fun onStop() {
+            Log.d(TAG, "onStop")
+            updatePlaybackState(PlaybackStateCompat.STATE_STOPPED)
+            // Send stop intent to React Native
+            sendPlaybackCommand("stop")
+        }
+        
+        override fun onSkipToNext() {
+            Log.d(TAG, "onSkipToNext")
+            // Get next station from current list
+            currentStation?.let { current ->
+                val currentIndex = cachedPopularStations.indexOfFirst { it.id == current.id }
+                if (currentIndex >= 0 && currentIndex < cachedPopularStations.size - 1) {
+                    playStation(cachedPopularStations[currentIndex + 1])
+                } else if (cachedPopularStations.isNotEmpty()) {
+                    playStation(cachedPopularStations[0])
+                }
+            }
+        }
+        
+        override fun onSkipToPrevious() {
+            Log.d(TAG, "onSkipToPrevious")
+            // Get previous station from current list
+            currentStation?.let { current ->
+                val currentIndex = cachedPopularStations.indexOfFirst { it.id == current.id }
+                if (currentIndex > 0) {
+                    playStation(cachedPopularStations[currentIndex - 1])
+                } else if (cachedPopularStations.isNotEmpty()) {
+                    playStation(cachedPopularStations.last())
+                }
+            }
+        }
+        
+        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+            Log.d(TAG, "onPlayFromSearch: $query")
+            
+            if (query.isNullOrEmpty()) return
+            
+            serviceScope.launch {
+                val results = apiClient.searchStations(query, 10)
+                if (results.isNotEmpty()) {
+                    playStation(results.first())
+                }
+            }
+        }
+    }
+
+    /**
+     * Play a station
+     */
+    private fun playStation(station: MegaRadioApiClient.Station) {
+        Log.d(TAG, "Playing station: ${station.name} - ${station.streamUrl}")
+        
+        currentStation = station
+        
+        // Update metadata
+        val metadata = MediaMetadataCompat.Builder()
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, "${STATION_PREFIX}${station.id}")
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, station.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, station.country)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, station.genre)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, station.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, station.country)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, station.logoUrl)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, station.logoUrl)
+            .build()
+        
+        mediaSession.setMetadata(metadata)
+        
+        // Update playback state
+        updatePlaybackState(PlaybackStateCompat.STATE_PLAYING)
+        
+        // Send play command to React Native with station info
+        sendPlayStationCommand(station)
+    }
+
+    /**
+     * Update playback state
+     */
+    private fun updatePlaybackState(state: Int) {
+        val playbackState = stateBuilder
+            .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1.0f)
+            .build()
+        mediaSession.setPlaybackState(playbackState)
+    }
+
+    /**
+     * Send playback command to React Native
+     */
+    private fun sendPlaybackCommand(command: String) {
+        val intent = Intent("com.visiongo.megaradio.PLAYBACK_COMMAND").apply {
+            putExtra("command", command)
+        }
+        sendBroadcast(intent)
+    }
+
+    /**
+     * Send play station command to React Native
+     */
+    private fun sendPlayStationCommand(station: MegaRadioApiClient.Station) {
+        val intent = Intent("com.visiongo.megaradio.PLAY_STATION").apply {
+            putExtra("stationId", station.id)
+            putExtra("stationName", station.name)
+            putExtra("streamUrl", station.streamUrl)
+            putExtra("logoUrl", station.logoUrl)
+            putExtra("country", station.country)
+            putExtra("genre", station.genre)
+        }
+        sendBroadcast(intent)
+        Log.d(TAG, "Sent PLAY_STATION broadcast for: ${station.name}")
+    }
+
+    /**
+     * Set selected country for filtering
+     */
+    fun setSelectedCountry(country: String?) {
+        if (selectedCountry != country) {
+            selectedCountry = country
+            // Clear caches when country changes
+            cachedPopularStations = emptyList()
+            cachedGenres = emptyList()
+            cachedGenreStations.clear()
+            // Preload new data
+            preloadData()
+        }
+    }
 }
