@@ -10,7 +10,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
-      "buildNumber": "46",
+      "buildNumber": "47",
       "usesAppleSignIn": true,
       "infoPlist": {
         "UIBackgroundModes": [
@@ -70,7 +70,7 @@
         "backgroundColor": "#FF4199"
       },
       "package": "com.visiongo.megaradio",
-      "versionCode": 46,
+      "versionCode": 47,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
