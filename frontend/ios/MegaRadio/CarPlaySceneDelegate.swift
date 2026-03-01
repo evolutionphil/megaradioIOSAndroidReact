@@ -377,7 +377,14 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
             "attempt": templateSetAttempts
         ])
         
+        // Use our default station logo from iOS assets
         let loadingItem = CPListItem(text: "MegaRadio", detailText: "Yükleniyor...")
+        
+        // Set the image from our iOS assets (DefaultStationLogo imageset)
+        if let logoImage = UIImage(named: "DefaultStationLogo") {
+            loadingItem.setImage(logoImage)
+        }
+        
         loadingItem.accessoryType = .disclosureIndicator
         
         let loadingSection = CPListSection(items: [loadingItem])
@@ -388,6 +395,7 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 self?.sendRemoteLog(level: "info", message: "Loading template SET successfully", data: [
                     "title": "MegaRadio",
                     "detailText": "Yükleniyor...",
+                    "hasLogo": UIImage(named: "DefaultStationLogo") != nil,
                     "waitingFor": "React Native to replace with tab bar template"
                 ])
             } else {
