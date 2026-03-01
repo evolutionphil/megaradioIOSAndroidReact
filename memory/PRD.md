@@ -1239,3 +1239,69 @@ eas build --platform ios --profile production --auto-submit --clear-cache
 ```bash
 eas build --platform ios --clear-cache
 ```
+
+
+---
+
+## March 2025 - CarPlay Search & Voice Commands
+
+### CarPlay Yeni Özellikler
+
+**1. Search Tab Eklendi (🔍)**
+- Tab bar'a yeni "Ara" (Search) tab'ı eklendi
+- SearchTemplate ile gerçek zamanlı arama
+- Arama sonuçları listede gösterilir
+- Sonuç seçildiğinde otomatik çalma başlar
+- `magnifyingglass` SF Symbol ile ikon
+
+**2. Voice Commands (Siri) Desteği**
+- CarPlay'de Siri ile radyo arama
+- "Hey Siri, MegaRadio'da jazz ara"
+- "Hey Siri, pop müzik çal"
+- `openSearch()` metodu Siri intent'leri için hazır
+
+### Android Auto Yeni Özellikler
+
+**1. Search Menüsü**
+- Ana menüye "Ara" seçeneği eklendi
+- Örnek sesli komutlar gösteriliyor
+- Son arama sonuçları cache'leniyor
+
+**2. Voice Commands (Google Assistant) Desteği**
+- `onPlayFromSearch` callback geliştirildi
+- Türkçe ve İngilizce voice input parsing
+- "Hey Google, MegaRadio'da rock çal"
+- "Hey Google, jazz radyo ara"
+- Arama sonuçları otomatik cache'leniyor
+
+**3. Keyword Extraction**
+- Voice input'tan gereksiz kelimeler temizleniyor
+- "çal", "ara", "radyo", "müzik" gibi kelimeler filtreleniyor
+- Daha doğru arama sonuçları
+
+### Değişen Dosyalar:
+- `src/services/carPlayService.ts` - SearchTemplate, openSearch eklendi
+- `src/components/CarPlayHandler.tsx` - searchStations callback eklendi
+- `src/services/i18nService.ts` - carplay_search çeviri eklendi
+- `android/.../MegaRadioAutoService.kt` - Search menu, voice commands, keyword extraction
+
+### Voice Command Örnekleri:
+
+**CarPlay (Siri):**
+- "Hey Siri, MegaRadio'da jazz ara"
+- "Hey Siri, rock radyo çal"
+- "Hey Siri, Power FM aç"
+
+**Android Auto (Google Assistant):**
+- "Hey Google, MegaRadio'da pop müzik çal"
+- "Hey Google, klasik müzik radyosu ara"
+- "Hey Google, Virgin Radio çal"
+
+### Build Komutu:
+```bash
+# iOS
+eas build --platform ios --clear-cache
+
+# Android
+eas build --platform android --clear-cache
+```
