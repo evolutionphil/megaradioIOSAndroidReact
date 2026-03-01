@@ -1,117 +1,120 @@
 <analysis>**original_problem_statement:**
-The user wants to build a production-ready mobile radio streaming app called MegaRadio using Expo (Bare Workflow).
+The user wants to build a production-ready mobile radio streaming app called MegaRadio using Expo (Bare Workflow). The app must have a fully functional CarPlay and Android Auto integration.
 
 **PRODUCT REQUIREMENTS:**
 -   **Tech Stack:** Expo (Bare Workflow), TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
--   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, and Push Notifications. The app must have a fully functional CarPlay integration.
--   **Monetization:** The app will be free and show ads (Interstitial and Rewarded). A premium (ad-free) version via subscription is also planned.
+-   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, and Push Notifications.
+-   **Monetization:** The app will be free and show ads. A premium (ad-free) version via subscription is also planned.
 -   **Authentication:** All API requests must include .
--   **Platform Expansion:** The user has requested support for CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
+-   **Platform Expansion:** CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is an Expo-based mobile radio app with a heavy focus on CarPlay integration. The previous sessions involved extensive debugging of numerous critical issues reported by the user.
+The application is an Expo-based mobile radio app with a strong focus on native integrations like CarPlay and Android Auto. A significant number of fixes have been implemented in this session to address critical user-reported bugs.
 
-The agent has made significant progress in identifying the root causes of several persistent problems:
-1.  **CarPlay Logos:** The agent discovered that the  library requires the  property (not ) for remote images, which the native side then downloads asynchronously. This fix has been implemented.
-2.  **Data Loading on Fresh Install:** The agent identified and fixed a critical bug in  where the logic would fail to fetch data from the API on a fresh install due to an incorrect check.
-3.  **Language/i18n:** The agent diagnosed that language switching fails because the translation keys returned by the backend API do not match the keys used in the frontend code.
-4.  **CarPlay Cold-Start:** Multiple attempts were made to fix the Loading... screen issue, including implementing a Scene-based architecture and adjusting the React Native bridge initialization in .
-
-The app is in a state where several major fixes have been implemented, but they require user verification via a new TestFlight build. Several key features are still reported as broken by the user.
+Key fixes include:
+-   **API Endpoint Consistency:** Addressed a major issue where different API endpoints expected different country name formats (e.g., Turkey vs. Türkiye). The frontend has been updated to send the correct format to each endpoint.
+-   **Caching Logic:** Overhauled the caching mechanism for popular stations and translations. The cache is now properly invalidated when the country or language changes, and online users will fetch fresh data more reliably.
+-   **Logo Fallback:** Standardized the fallback logo across the entire application, including , , and various profile/notification components. The logo is now a local asset to prevent network failures.
+-   **CarPlay Enhancements:**
+    -   Genres are now displayed in a  with SF Symbols for icons.
+    -   Genre lists are now correctly filtered by the user's selected country.
+    -   A potential fix for the critical cold-start loading issue was implemented by forcing the React Native bridge to initialize from the native CarPlay scene delegate.
+    -   **Real-time sync logic** was added to update CarPlay instantly when the user changes country, updates favorites, or plays a new station.
+-   **Android Auto:** Began the migration from hardcoded data to real API data by adding an OkHttp client and creating the necessary native modules and package files in Kotlin.
 
 **Last working item**:
--   **Last item agent was working**: The agent was performing a deep analysis of a critical caching issue that prevented Popular Stations from loading on a fresh install.
+-   **Last item agent was working**: Implementing real-time synchronization between the mobile app's state (selected country, favorites, recently played) and the CarPlay interface. The goal was to make CarPlay update instantly without requiring an app restart.
 -   **Status**: IN PROGRESS
--   **Agent Testing Done**: N (Fix was implemented, but not tested via a new build)
--   **Which testing method agent to use?**: manual testing by user on TestFlight. The next agent must produce a new iOS build for the user to verify any fixes.
--   **User Testing Done**: N (User has not tested the latest caching fix).
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: Manual testing by the user on TestFlight. The changes require a new native build (iOS) to be tested on a real device with CarPlay.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: CarPlay shows Yükleniyor... (Loading) when app is cold-started (P0)
--   Issue 2: Next/Previous button *logic* is incorrect (P0)
--   Issue 3: Popular stations list is short or incorrect on mobile (P1)
--   Issue 4: Language switching does not work for German and other languages (P1)
--   Issue 5: CarPlay Favorites tab is empty or shows Mehr (P1)
--   Issue 6: Lock screen artwork fallback is not working consistently (P2)
--   Issue 7: Several backend API endpoints are broken (returning HTML) (P2)
+-   Issue 1: CarPlay does not update in real-time when country, favorites, or recently played stations change (P0)
+-   Issue 2: CarPlay shows Yükleniyor... (Loading) when app is cold-started (P0)
+-   Issue 3: Android Auto uses hardcoded data and is not fully integrated with the backend API (P1)
+-   Issue 4: Language switching does not work for all languages (e.g., German) (P1)
+-   Issue 5: Popular stations list is short or incorrect on mobile (P1)
+-   Issue 6: Next/Previous button logic might be incorrect or not meeting user expectations (P2)
+-   Issue 7: Several translation keys are missing from the backend API response (P2)
 
 **Issues Detail:**
--   **Issue 1: CarPlay shows Yükleniyor... (Loading) when app is cold-started (P0)**
-    -   **Attempted fixes**: The agent implemented a full Scene-based architecture (, ), modified , and adjusted  to initialize the React Native bridge in .
-    -   **Next debug checklist**:
-        1.  Verify the latest  changes are correct. The last change was to initialize the bridge early and have scenes re-use it.
-        2.  Build and deploy to TestFlight for the user to test this specific scenario.
-        3.  If it still fails, add remote logging inside  and the JS  to see which part is not firing.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical usability flaw for CarPlay, making the app unusable if not already open on the phone.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 2: Next/Previous button *logic* is incorrect (P0)**
-    -   **Attempted fixes**: The agent only changed the button *icons* in . The user's request to change the *functionality* was missed.
-    -   **Next debug checklist**:
-        1.  Locate the  and  functions, likely in .
-        2.  Implement the user's desired logic:
-            -   : Should get the current station's similar stations from the API and play the first one.
-            -   : Should get the user's recently played list and play the most recent entry.
-        3.  The UI should not show skip/rewind icons, but station change icons (,  are appropriate).
-    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a core user experience requirement for navigating between stations.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 3: Popular stations list is short or incorrect on mobile (P1)**
-    -   **Attempted fixes**: The agent found and fixed a critical bug in  where a fresh install would incorrectly return , preventing the API call. The fix was to ensure  is returned if no cache metadata exists.
-    -   **Next debug checklist**: This fix needs to be verified by the user with a new build after a fresh install.
-    -   **Why fix this issue and what will be achieved with the fix?**: Ensures new users see content immediately.
+-   **Issue 1: CarPlay does not update in real-time (P0)**
+    -   **Attempted fixes**: The agent created a new  function in  and used Zustand store listeners in  to call this function whenever , , or  change. The  was also updated to add stations to the  on play.
+    -   **Next debug checklist**: A new iOS build must be created and tested on a real device. The user needs to verify if changing the country, adding a favorite, or playing a new station on the phone immediately reflects on the CarPlay screen.
+    -   **Why fix this issue and what will be achieved with the fix?**: Provides a seamless and intuitive user experience, ensuring data consistency between the phone and CarPlay.
     -   **Status**: USER VERIFICATION PENDING
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
     -   **Blocked on other issue**: None.
 
--   **Issue 4: Language switching does not work for German and other languages (P1)**
-    -   **Attempted fixes**: The agent identified the root cause: the translation keys from the  endpoint do not match the keys used in the frontend i18n files (e.g., API sends , frontend expects ).
-    -   **Next debug checklist**:
-        1.  Implement the proposed solution: In , modify  to merge the API response with the local fallback translations (e.g., ). This will fill in the missing keys.
-        2.  Alternatively, communicate the key mismatch to the backend developer and ask for the API to be updated.
-    -   **Why fix this issue and what will be achieved with the fix?**: Allows the app to be used in multiple languages as intended.
+-   **Issue 2: CarPlay cold-start Yükleniyor... (Loading) issue (P0)**
+    -   **Attempted fixes**: The agent modified  and . The new logic attempts to initialize the React Native bridge directly from the CarPlay scene delegate if it's not already running, with a 2-second delay to allow the JS bundle to load. This is a more aggressive approach to fix the race condition.
+    -   **Next debug checklist**: A new iOS build must be created and tested. The user needs to force-quit the app on their phone, connect to CarPlay, and see if the app loads past the Yükleniyor... screen.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical usability flaw that makes the app unusable on CarPlay if it's not already running on the phone.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 3: Android Auto uses hardcoded data (P1)**
+    -   **Attempted fixes**: The agent started the integration. Added  to . Created  to handle network requests. Created  and  to bridge native events to React Native.
+    -   **Next debug checklist**: Resume work in . Replace the hardcoded  calls with actual API calls using the new . Parse the API response and build the media items dynamically. Implement  to send events back to React Native to start playback.
+    -   **Why fix this issue and what will be achieved with the fix?**: Makes Android Auto a functional part of the app, showing real and relevant content to the user.
     -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Both (requires new Android build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 4: Language switching not working for all languages (P1)**
+    -   **Attempted fixes**: The agent discovered that translations were being cached incorrectly. A fix was implemented in  to clear the translation cache whenever  is called.
+    -   **Next debug checklist**: User needs to test language switching (e.g., to German) on a new build and verify if UI elements are translated correctly.
+    -   **Why fix this issue and what will be achieved with the fix?**: Allows the app to be used in multiple languages as intended.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend.
+    -   **Blocked on other issue**: Issue 7 (Backend missing keys).
+
+-   **Issue 5: Popular stations list is short or incorrect (P1)**
+    -   **Attempted fixes**: Discovered a  in  limiting the view. This was increased to  and the API call limit was increased to 12. Also fixed a caching issue where the  parameter was not part of the cache key, and fixed inconsistent country parameter usage.
+    -   **Next debug checklist**: User needs to test on a new build, change countries, and verify that the Popular Stations list is longer and updates correctly.
+    -   **Why fix this issue and what will be achieved with the fix?**: Ensures new and existing users see a sufficient amount of content on the homepage.
+    -   **Status**: USER VERIFICATION PENDING
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend.
     -   **Blocked on other issue**: None.
 
--   **Issue 5: CarPlay Favorites tab is empty or shows Mehr (P1)**
-    -   **Attempted fixes**: The agent identified a race condition where the CarPlay template was being built before favorites were loaded from the store. A fix was implemented in  to subscribe to the  and update the template when the store changes.
-    -   **Next debug checklist**: This needs user verification on a new build.
-    -   **Why fix this issue and what will be achieved with the fix?**: Restores a core feature for logged-in users on CarPlay.
-    -   **Status**: USER VERIFICATION PENDING
+-   **Issue 6: Next/Previous button logic (P2)**
+    -   **Attempted fixes**: Previous agent missed the logic fix. Current agent analyzed  and confirmed the logic exists:  plays a similar station, and  plays from recently played. The issue might be that the APIs don't return data, or the user's expectation is different.
+    -   **Next debug checklist**: Verify with the user on a new build. If it still fails, add logging to  and  to see if  and  are populated.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a core UX requirement for station navigation.
+    -   **Status**: NOT STARTED (Analysis done, no code change needed yet).
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+    -   **Should Test frontend/backend/both after fix?**: Frontend.
     -   **Blocked on other issue**: None.
 
--   **Issue 6: Lock screen artwork fallback is not working consistently (P2)**
-    -   **Attempted fixes**: Added a more robust check for empty or invalid artwork URLs in  to fall back to the MegaRadio logo.
-    -   **Next debug checklist**: Needs user verification on a new build.
-    -   **Status**: USER VERIFICATION PENDING
+-   **Issue 7: Missing backend translation keys (P2)**
+    -   **Attempted fixes**: Agent identified that keys like , , and  are missing from the  response. The app currently uses local fallbacks.
+    -   **Next debug checklist**: This is a backend task. The agent has already informed the user about the missing keys. The next step is for the backend developer to add them.
+    -   **Why fix this issue and what will be achieved with the fix?**: Centralizes all translations on the backend for easier management.
+    -   **Status**: BLOCKED (on backend).
     -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-
--   **Issue 7: Several backend API endpoints are broken (returning HTML) (P2)**
-    -   **Attempted fixes**: The agent performed a full audit of all API endpoints used in the app and confirmed that , , and  are not working correctly.
-    -   **Next debug checklist**: This is a backend issue. The agent needs to clearly inform the user that these endpoints are broken and must be fixed by the backend developer.
-    -   **Status**: BLOCKED (on backend)
-    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend.
+    -   **Blocked on other issue**: None.
 
 **In progress Task List**:
--   None. The current focus is entirely on fixing the backlog of critical bugs.
+-   **Task 1: Android Auto API Integration**
+    -   **Where to resume**: . The API client is ready. The service needs to be updated to fetch genres, popular stations, and recent stations from the API instead of using hardcoded data. The  callback needs to be implemented to trigger playback in the React Native layer.
+    -   **What will be achieved with this?**: A fully functional Android Auto experience with real-time data from the backend.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: Both (requires new Android build).
+    -   **Blocked on something**: None.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1:** Re-evaluate Google Cast integration (removed due to crashes).
+-   **P1:** Re-evaluate Google Cast integration (was previously removed due to crashes).
 -   **P1:** Implement a premium (ad-free) subscription model.
 -   **P1:** Resolve App Store Rejection reason regarding content rights.
 
@@ -121,84 +124,96 @@ The app is in a state where several major fixes have been implemented, but they 
 -   **P3:** Re-integrate FlowAlive if the NPM package is fixed.
 
 **Completed work in this session**
--   **FIXED CarPlay Logos:** Correctly identified that the CarPlay library requires the  property for remote images and updated all templates, removing a complex and incorrect local caching implementation.
--   **IDENTIFIED Caching Root Cause:** Diagnosed and fixed a critical logic bug in  that prevented API data from being fetched on a fresh app install.
--   **IDENTIFIED i18n Root Cause:** Discovered that language switching fails because of a mismatch between frontend and backend translation keys.
--   **Improved API Usage:** Switched to using the  endpoint for better performance and updated popular stations calls to correctly include the  parameter.
--   **Fixed UI Issues:** Corrected the Previous/Next button *icons* and removed the hardcoded country name from the Nearby Stations title.
+-   **Fixed API Endpoint Issues:** Diagnosed and provided a fix report for broken backend endpoints (, ), which are now working.
+-   **Fixed Inconsistent Country Parameters:** Corrected all API calls to use the right country format ( vs. ) required by each specific endpoint, resolving empty lists for genres and popular stations.
+-   **Overhauled Caching:** Fixed caching logic in  and  to prevent stale data when country or language changes.
+-   **Standardized Logo Fallback:** Replaced all hardcoded and inconsistent fallback logo URLs with a single local asset () across more than 5 files.
+-   **Enhanced CarPlay UI:** Implemented a Grid View for genres with native SF Symbols and ensured genre lists are filtered by country.
+-   **Implemented CarPlay Real-Time Sync:** Added Zustand store listeners to immediately refresh CarPlay templates when favorites, recently played, or country selection changes in the app.
+-   **Attempted CarPlay Cold-Start Fix:** Implemented a new strategy in  to initialize the RN bridge from the CarPlay scene, aiming to resolve the Loading... screen issue.
+-   **Initiated Android Auto API Integration:** Created a native API client (), native module (), and package to bridge communication for future work.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: Next/Previous button *logic* is wrong.** The user explicitly stated the desired functionality (next -> similar station, previous -> recently played), but the agent only fixed the icons and never addressed the underlying logic.
+-   The core logic for the Next/Previous buttons in  appears to be implemented correctly, but the user has repeatedly reported it as an issue. This requires careful re-verification with the user to understand the exact failure point.
 
 **Code Architecture**
-imgUrlneedsSync
+
 
 **Key Technical Concepts**
--   **CarPlay Native Integration:** The project now uses a Scene-based architecture (, ) to attempt to solve the cold-start issue. The RN bridge initialization lifecycle is critical.
--   **CarPlay Remote Images ():** The key discovery that the  library handles remote images via the  property, which triggers an async download on the native side.
--   **State Management & Race Conditions:** A race condition in loading favorites was identified and fixed by subscribing to the Zustand store.
--   **Caching Logic:** A subtle but critical bug in the caching logic of  was found to be the cause of empty lists on fresh installs.
--   **i18n Key Mismatch:** The root cause of translation failures is a discrepancy between frontend keys and API-provided keys.
--   **Server-Side Rendering (SSR) Issues:** The web preview experiences  errors, indicating components are not fully SSR-safe.
+-   **Zustand for Real-Time Sync:** Using Zustand store subscribers (, ) to trigger updates in the native CarPlay interface.
+-   **API Endpoint Inconsistency:** The backend has different requirements for the  parameter on different endpoints ( accepts native names,  requires English names). The frontend now handles this.
+-   **CarPlay Cold-Start (Scene-based init):** Attempting to fix the cold-start race condition by having the native  initialize the React Native bridge if it's not already running.
+-   **Android Auto Native Integration:** Building out a native service in Kotlin () and bridging it to React Native for media playback control. Using  for native API calls.
+-   **Local Asset Fallbacks:** Using a local image asset () as a reliable fallback for station logos to avoid network dependency and broken image links.
+
+**key DB schema**
+-   No changes made to the database schema.
 
 **All files of reference**
--   : **(CRITICAL)** Handles all CarPlay template logic.
--   : **(CRITICAL)** Contains the caching logic that was recently fixed.
--   : **(CRITICAL)** Contains the latest attempt at fixing the CarPlay cold-start issue.
--   : Works with  for CarPlay lifecycle.
--   : The likely location to implement the correct Next/Previous button logic.
--   : The file where the i18n fix (merging local and remote translations) needs to be implemented.
+-   : **(CRITICAL)** Contains the new real-time sync logic.
+-   : **(CRITICAL)** Updated for grid view and country filtering.
+-    & : **(CRITICAL)** Contain the latest attempt at fixing the CarPlay cold-start issue.
+-   : **(CRITICAL)** Entry point for the Android Auto work.
+-   : Contains the fixed caching logic.
+-   , : Contain the fixes for inconsistent country parameter usage.
+-   : The new standardized local fallback logo.
+
+**Areas that need refactoring**:
+-   The backend API's inconsistent requirement for country name formats ( vs ) is a source of bugs. It should be standardized to accept ISO codes (e.g., ) across all endpoints.
+
+**key api endpoints**
+-   
+-   
+-    (Requires English name)
+-   
+-   
+-   
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **VERIFICATION IS KEY:** Many fixes have been implemented but not tested by the user. The next step for most issues is to create a new build and get user feedback.
--   **FOCUS ON PENDING ISSUES:** The highest priority is to get a stable, working CarPlay experience. Address the pending issue list, starting with P0.
--   **DON'T MISS USER REQUIREMENTS:** The previous agent missed the request to fix the Next/Previous button *logic*. Read user requests carefully.
--   **BACKEND ISSUES:** Be aware that several API endpoints are broken. You cannot fix them. Clearly communicate this to the user as a backend problem.
+-   **A NEW BUILD IS REQUIRED FOR VERIFICATION.** Most of the critical fixes (CarPlay cold-start, real-time sync, caching, i18n) cannot be verified without a new build being deployed to TestFlight for the user. This should be the immediate next step.
+-   **API COUNTRY PARAMETER IS INCONSISTENT.** Be very careful when calling endpoints that take a country parameter. Some need the native name (Türkiye), others need the English name (Turkey). The agent has fixed the current implementations, but any new API call must be checked.
+-   **ANDROID AUTO IS A WORK IN PROGRESS.** The foundation for API integration has been laid, but the main service logic in  still needs to be written to replace the hardcoded data.
 
 **documents and test reports created in this job**
--   
+-    (updated with completed tasks).
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User (LATEST):** The app preview on web is broken/overflowing.
-2.  **User:** Why aren't country filters working for CarPlay? Also, language switching is broken, only English and Turkish work.
-3.  **User:** Please list and test all API endpoints you are using, I think you broke some.
-4.  **User:** What was used for language switching a week ago? I think you broke it.
-5.  **User:** The Popular Stations list for Austria is only showing 3 items. Also, why do images not appear on CarPlay, and why does it get stuck on cold start? What if we made CarPlay fully native?
-6.  **User:** The icons are still not showing up in CarPlay, and the Next/Previous logic is wrong. The favorites tab is empty or shows Mehr. The station logo doesn't change when using next/previous. Analyze all documentation again.
-7.  **User:** The app is still stuck on the loading screen when closed! The Next/Previous icons are still wrong (skip/rewind icons). Favorites aren't loading at all. Popular stations are wrong. Lock screen fallback isn't working. Check the logs!
-8.  **User:** The precomputed genres endpoint is better, use that.
-9.  **User:** Does CarPlay fetch the user's actual favorites?
-10. **User:** How many genres will be shown on CarPlay and why is it only in Turkish?
+1.  **User (LATEST):** Use the provided image as a fallback in CarPlay.
+2.  **User:** CarPlay genres look good in a grid, but can we add standard icons for them?
+3.  **User:** CarPlay doesn't update when I change the country or play a station in the app. There's a sync issue. It should refresh automatically.
+4.  **User:** In Austria, I only see 3 popular stations after the new build. The cache logic seems completely broken. Also, genres are empty for Turkey.
+5.  **User:** There was a country mapping for Turkey etc. a week ago. Please investigate what happened.
+6.  **User:** Confirmed the new backend endpoints are working.
+7.  **User:** Please check again. (Regarding backend endpoints not working).
+8.  **User:** I've added the 3 new API endpoints to the backend.
+9.  **User:** Can you explain in detail what the backend developer needs to do for the broken APIs? Are these new endpoints?
+10. **User:** I'm seeing a CarPlay cold start issue in the logs with the old build. Can you check?
 
 **Project Health Check:**
 -   **Broken**:
-    -   CarPlay cold-start functionality.
-    -   Next/Previous station navigation logic.
-    -   Multi-language support (i18n).
-    -   Several backend endpoints (, ).
+    -   Android Auto functionality is incomplete (uses hardcoded data).
 -   **Mocked**: None.
--   **Unverified**:
-    -   The fix for data not loading on a fresh install ().
-    -   The fix for CarPlay favorites not appearing (Zustand store subscription).
-    -   The fix for CarPlay logos ().
-    -   The fix for lock screen artwork fallback.
+-   **Unverified (Fixed, pending user testing)**:
+    -   CarPlay cold-start functionality.
+    -   CarPlay real-time synchronization.
+    -   Multi-language support (i18n).
+    -   Popular stations data loading and caching.
+    -   Genre stations data loading.
+    -   Logo fallbacks across the app.
 
 **3rd Party Integrations**
 -   : Core audio streaming.
 -   : For CarPlay features.
--   : Active and stabilized with the Podfile fix.
--   : Used for file system access.
+-   : For ads.
 -   : For internationalization.
+-    (Android Native): For native API calls in Android Auto.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES,  was used multiple times to find root causes for i18n and data loading issues.
+-   **Testing agent used after significant changes**: YES,  was used to diagnose the caching and popular stations issues.
 -   **Troubleshoot agent used after agent stuck in loop**: YES
 -   **Test files created**: []
--   **Known regressions**: Language support was working previously but broke.
-
-**Credentials to test flow:**
-N/A
+-   **Known regressions**: The user frequently reports that features related to data loading (popular stations, genres) and i18n break after changes. These areas are fragile.
 
 **What agent forgot to execute**
-- The agent completely overlooked the user's request to fix the **logic** of the Next and Previous buttons. The user wanted them to navigate to similar or recently played stations, but the agent only changed the button icons and marked the task as done. This is a high-priority, unaddressed feature request.</analysis>
+-   While the foundational work for Android Auto API integration was started (creating modules, API client), the core task of replacing the hardcoded data in  with live API calls is still pending and needs to be completed.</analysis>
