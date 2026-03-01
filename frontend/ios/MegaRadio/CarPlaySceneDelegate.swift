@@ -341,6 +341,21 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         self.interfaceController = interfaceController
         
+        // CRITICAL: Initialize React Native from AppDelegate if not already running
+        // This is needed for cold-start when CarPlay connects first
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if !appDelegate.isReactNativeReady() {
+                sendRemoteLog(level: "info", message: "Cold-start detected (iOS 14+) - initializing React Native from CarPlay scene")
+                appDelegate.initAppFromScene(connectionOptions: nil)
+                
+                // Wait a bit longer for JS bundle to load on cold-start
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: window)
+                }
+                return
+            }
+        }
+        
         // Set loading template FIRST
         setLoadingTemplate(interfaceController: interfaceController)
         
