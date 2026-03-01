@@ -168,7 +168,17 @@ export default function HomeScreen() {
 
   // Refetch genres and popular stations when country changes
   useEffect(() => {
-    console.log('[HomeScreen] Country changed, refetching data...', country, countryEnglish);
+    console.log('[HomeScreen] Country changed, invalidating and refetching data...', country, countryEnglish);
+    
+    // Invalidate ALL country-dependent queries to ensure fresh data
+    // This fixes the "double loading" issue where old country data appears first
+    queryClient.invalidateQueries({ queryKey: ['popularStations'] });
+    queryClient.invalidateQueries({ queryKey: ['genres'] });
+    queryClient.invalidateQueries({ queryKey: ['precomputedGenres'] });
+    queryClient.invalidateQueries({ queryKey: ['stations'] });
+    queryClient.invalidateQueries({ queryKey: ['nearby'] });
+    
+    // Then trigger refetch
     refetchGenres();
     refetchPopular();
     refetchAll();
