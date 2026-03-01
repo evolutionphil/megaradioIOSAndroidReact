@@ -10,35 +10,40 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 46) - December 2025
+## Latest Update (Build 47) - December 2025
 
-### 🔍 API Endpoint Analizi Tamamlandı
+### 🔍 API Endpoint Durumu
 
-**Çalışan Endpoint'ler (14 adet):**
-- `/api/stations`, `/api/stations/popular`, `/api/genres`, `/api/translations/{lang}` vb.
+**Çalışan (14+):**
+- `/api/stations/popular?country=Austria&limit=50` ✅ 50 istasyon
+- `/api/stations/nearby?lat=48.2&lng=16.3&radius=100` ✅ 10 istasyon
+- `/api/stations?country=Austria` ✅ 10 istasyon
+- `/api/genres`, `/api/translations/{lang}` vb.
 
-**Çalışmayan Endpoint'ler (HTML döndürüyor):**
-- `/api/genres/{slug}/stations`
-- `/api/now-playing/{id}`
-- `/api/recommendations/diverse`
+**Çalışmayan:**
+- `/api/genres/{slug}/stations` ❌
+- `/api/now-playing/{id}` ❌
+- `/api/recommendations/diverse` ❌
 
-### ✅ Dil Seçimi Sorunu Düzeltildi
+### 🔧 Build 47 Düzeltmeleri
 
-**Kök Neden:**
-- API'deki çeviri anahtarları frontend'dekilerle uyuşmuyor
-- Örn: Frontend `tab_discover` kullanıyor, API'de bu anahtar yok
-- API `nav_home`, `homepage_see_all` gibi farklı anahtarlar kullanıyor
+1. **StationCacheService Web/SSR Uyumluluğu**
+   - `checkOnline()`: Web'de `true` döndürüyor (NetInfo skip)
+   - Constructor: SSR'de initialization skip ediliyor
+   - Lazy singleton pattern eklendi
 
-**Düzeltme:**
-- `fetchTranslations` fonksiyonu güncellendi
-- Çeviriler şu sırayla birleştiriliyor: `defaultTranslations` → `localFallback` → `apiTranslations`
-- Local Almanca çeviriler eklendi (90+ anahtar)
-- API'den gelen eksik anahtarlar local fallback ile tamamlanıyor
+2. **Popular Stations Debug Logging**
+   - `getPopularStations()` fonksiyonuna detaylı logging eklendi
+   - Cache yoksa API'ye fallthrough yapılıyor
+
+3. **Nearby Stations**
+   - API çalışıyor (koordinat ile test edildi)
+   - Sorun: Kullanıcı konum izni vermemiş olabilir
+   - `latitude`/`longitude` null ise query disabled
 
 ### 📦 Build Bilgileri
-- iOS Build: 46
-- Android versionCode: 46
-- Version: 1.0.27
+- iOS Build: 47
+- Android versionCode: 47
 
 ## Watch Apps - February 19, 2025
 
