@@ -3,6 +3,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
 import genreService from '../services/genreService';
