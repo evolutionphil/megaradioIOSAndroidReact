@@ -237,17 +237,11 @@ export default function AllStationsScreen() {
         data-testid={`list-station-${station._id}`}
       >
         <View style={styles.listLogoContainer}>
-          {logoUrl ? (
-            <Image
-              source={{ uri: logoUrl }}
-              style={styles.listLogo}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.listPlaceholder}>
-              <Ionicons name="radio" size={24} color={colors.textMuted} />
-            </View>
-          )}
+          <Image
+            source={{ uri: logoUrl }}
+            style={styles.listLogo}
+            resizeMode="cover"
+          />
         </View>
         <View style={styles.listInfo}>
           <Text style={styles.listName} numberOfLines={1}>{station.name}</Text>
