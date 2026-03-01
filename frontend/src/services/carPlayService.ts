@@ -40,6 +40,9 @@ const MAX_COLD_START_RETRIES = 15;
 const COLD_START_RETRY_INTERVAL = 2000; // 2 seconds
 let coldStartRetryTimer: ReturnType<typeof setInterval> | null = null;
 
+// Mutex to prevent concurrent template creation (crash fix)
+let isCreatingTemplate = false;
+
 if (Platform.OS !== 'web') {
   try {
     const carplayModule = require('@g4rb4g3/react-native-carplay');
