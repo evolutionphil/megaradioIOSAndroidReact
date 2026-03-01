@@ -1,119 +1,118 @@
 <analysis>**original_problem_statement:**
-The user wants to build a production-ready mobile radio streaming app called MegaRadio.
+The user wants to build a production-ready mobile radio streaming app called MegaRadio using Expo (Bare Workflow).
 
 **PRODUCT REQUIREMENTS:**
 -   **Tech Stack:** Expo (Bare Workflow), TypeScript, EAS Build, Expo Router, Zustand, React Query, Axios, .
--   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, and Push Notifications.
+-   **Core Features:** Robust audio streaming with proper background/lock screen controls, Favorites, Recently Played, Profile, and Push Notifications. The app must have a fully functional CarPlay integration.
 -   **Monetization:** The app will be free and show ads (Interstitial and Rewarded). A premium (ad-free) version via subscription is also planned.
--   **Authentication:** All API requests must include . The app uses a session cookie-based auth system. Google and Apple social logins are also requested.
+-   **Authentication:** All API requests must include .
 -   **Platform Expansion:** The user has requested support for CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
--   **New Integration:** The user has requested to integrate a service called FlowAlive (currently mocked due to a broken package).
 
 **User's preferred language**: Turkish
 
 **what currently exists?**
-The application is a mobile radio streaming app built with Expo (Bare Workflow). The previous session was focused on resolving a series of critical, recurring startup crashes.
+The application is an Expo-based mobile radio app with a heavy focus on CarPlay integration. The previous sessions involved extensive debugging of numerous critical issues reported by the user.
 
-The agent successfully identified and implemented a definitive fix for a persistent startup crash caused by  conflicting with React Native's architecture. The fix involved modifying the  to explicitly disable Fabric and the New Architecture.
+The agent has made significant progress in identifying the root causes of several persistent problems:
+1.  **CarPlay Logos:** The agent discovered that the  library requires the  property (not ) for remote images, which the native side then downloads asynchronously. This fix has been implemented.
+2.  **Data Loading on Fresh Install:** The agent identified and fixed a critical bug in  where the logic would fail to fetch data from the API on a fresh install due to an incorrect check.
+3.  **Language/i18n:** The agent diagnosed that language switching fails because the translation keys returned by the backend API do not match the keys used in the frontend code.
+4.  **CarPlay Cold-Start:** Multiple attempts were made to fix the Loading... screen issue, including implementing a Scene-based architecture and adjusting the React Native bridge initialization in .
 
-Additionally, the agent implemented several features and bug fixes:
--   Implemented ICY metadata fetching directly from the audio stream to display song titles.
--   Added fallback logic for track metadata (using genre for album art).
--   Attempted to fix CarPlay logos and UI issues, but this introduced new problems.
-
-The application is currently in a state where it builds and runs, but has several significant UI and functionality bugs on CarPlay and the main player screen, as reported by the user after testing the latest build.
+The app is in a state where several major fixes have been implemented, but they require user verification via a new TestFlight build. Several key features are still reported as broken by the user.
 
 **Last working item**:
--   **Last item agent was working**: The user reported a list of critical bugs after testing the latest build (Build 39+):
-    1.  CarPlay station logos are not displaying at all.
-    2.  When the app is launched from a closed state via CarPlay, it gets stuck on a Loading... screen.
-    3.  Song metadata (ICY) disappears intermittently.
-    4.  The Previous/Next button icons are still incorrect.
-    The agent was investigating the CarPlay logo issue, concluded that remote URLs were not supported, and removed the  property from all CarPlay templates as a temporary (and likely incorrect) measure.
+-   **Last item agent was working**: The agent was performing a deep analysis of a critical caching issue that prevented Popular Stations from loading on a fresh install.
 -   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
+-   **Agent Testing Done**: N (Fix was implemented, but not tested via a new build)
 -   **Which testing method agent to use?**: manual testing by user on TestFlight. The next agent must produce a new iOS build for the user to verify any fixes.
--   **User Testing Done**: Y (User confirmed the bugs in the latest build).
+-   **User Testing Done**: N (User has not tested the latest caching fix).
 
 **All Pending/In progress Issue list**:
 -   Issue 1: CarPlay shows Yükleniyor... (Loading) when app is cold-started (P0)
--   Issue 2: CarPlay station logos are not displaying (P0)
--   Issue 3: ICY song metadata disappears intermittently (P1)
--   Issue 4: Previous/Next button icons are incorrect (P1)
--   Issue 5: CarPlay Türler (Genres) list shows only 3 items (P2)
--   Issue 6: Corrupted filename in Git history (P2)
+-   Issue 2: Next/Previous button *logic* is incorrect (P0)
+-   Issue 3: Popular stations list is short or incorrect on mobile (P1)
+-   Issue 4: Language switching does not work for German and other languages (P1)
+-   Issue 5: CarPlay Favorites tab is empty or shows Mehr (P1)
+-   Issue 6: Lock screen artwork fallback is not working consistently (P2)
+-   Issue 7: Several backend API endpoints are broken (returning HTML) (P2)
 
 **Issues Detail:**
 -   **Issue 1: CarPlay shows Yükleniyor... (Loading) when app is cold-started (P0)**
-    -   **Attempted fixes**: The agent added retry logic in Swift, but this didn't solve the core problem. The issue is that the app isn't being launched into the background properly to handle the CarPlay connection event.
+    -   **Attempted fixes**: The agent implemented a full Scene-based architecture (, ), modified , and adjusted  to initialize the React Native bridge in .
     -   **Next debug checklist**:
-        1.  Investigate  and the project's capabilities.
-        2.  Ensure Background Modes for audio and background processing are enabled in Xcode.
-        3.  Review the CarPlay connection lifecycle to ensure the app can be woken up by CarPlay.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical usability issue for CarPlay users.
+        1.  Verify the latest  changes are correct. The last change was to initialize the bridge early and have scenes re-use it.
+        2.  Build and deploy to TestFlight for the user to test this specific scenario.
+        3.  If it still fails, add remote logging inside  and the JS  to see which part is not firing.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical usability flaw for CarPlay, making the app unusable if not already open on the phone.
     -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
     -   **Blocked on other issue**: None.
 
--   **Issue 2: CarPlay station logos are not displaying (P0)**
-    -   **Attempted fixes**: The previous agent incorrectly concluded that remote image URLs are not supported by the CarPlay library and **removed the  property entirely** from . This is the reason logos are not showing.
+-   **Issue 2: Next/Previous button *logic* is incorrect (P0)**
+    -   **Attempted fixes**: The agent only changed the button *icons* in . The user's request to change the *functionality* was missed.
     -   **Next debug checklist**:
-        1.  Re-add the  property to the CarPlay templates in . The format should be .
-        2.  Verify that  returns a valid, HTTPS URL.
-        3.  Check the remote logs for any errors related to image loading on CarPlay.
-        4.  If it still fails, investigate potential caching issues or library-specific quirks. The user insists other apps can do this, so it is possible.
-    -   **Why fix this issue and what will be achieved with the fix?**: Improves the visual appeal and usability of the CarPlay interface.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 3: ICY song metadata disappears intermittently (P1)**
-    -   **Attempted fixes**: The agent added null-safety checks to prevent crashes when ICY metadata is incomplete.
-    -   **Next debug checklist**:
-        1.  Add extensive remote logging inside the  handler in .
-        2.  Log the raw metadata received, what is parsed, and when  is called.
-        3.  Determine if the stream is sending empty metadata packets that are clearing the current song title.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a core feature of a radio app.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 4: Previous/Next button icons are incorrect (P1)**
-    -   **Attempted fixes**: Agent changed icons in  but user reports they are still wrong.
-    -   **Next debug checklist**:
-        1.  Review .
-        2.  The current icons are  and . Find alternative icons from  or  that match the user's expectation of  and  (e.g., , ).
-    -   **Why fix this issue and what will be achieved with the fix?**: Simple UI fix to match user's request.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 5: CarPlay Türler (Genres) list shows only 3 items (P2)**
-    -   **Attempted fixes**: The code in  was updated to fetch more genres, but the logs confirm the API endpoint () is only returning 3 results.
-    -   **Next debug checklist**: This is a backend data issue. Inform the user that the backend API needs to be updated to return more genres. No frontend fix is possible.
-    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills user requirement for more genre options on CarPlay.
-    -   **Status**: BLOCKED (on backend)
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: None.
-
--   **Issue 6: Corrupted filename in Git history (P2)**
-    -   **Attempted fixes**: None.
-    -   **Next debug checklist**: Instruct the user to perform a shallow clone () as a workaround.
+        1.  Locate the  and  functions, likely in .
+        2.  Implement the user's desired logic:
+            -   : Should get the current station's similar stations from the API and play the first one.
+            -   : Should get the user's recently played list and play the most recent entry.
+        3.  The UI should not show skip/rewind icons, but station change icons (,  are appropriate).
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a core user experience requirement for navigating between stations.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 3: Popular stations list is short or incorrect on mobile (P1)**
+    -   **Attempted fixes**: The agent found and fixed a critical bug in  where a fresh install would incorrectly return , preventing the API call. The fix was to ensure  is returned if no cache metadata exists.
+    -   **Next debug checklist**: This fix needs to be verified by the user with a new build after a fresh install.
+    -   **Why fix this issue and what will be achieved with the fix?**: Ensures new users see content immediately.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 4: Language switching does not work for German and other languages (P1)**
+    -   **Attempted fixes**: The agent identified the root cause: the translation keys from the  endpoint do not match the keys used in the frontend i18n files (e.g., API sends , frontend expects ).
+    -   **Next debug checklist**:
+        1.  Implement the proposed solution: In , modify  to merge the API response with the local fallback translations (e.g., ). This will fill in the missing keys.
+        2.  Alternatively, communicate the key mismatch to the backend developer and ask for the API to be updated.
+    -   **Why fix this issue and what will be achieved with the fix?**: Allows the app to be used in multiple languages as intended.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend.
+    -   **Blocked on other issue**: None.
+
+-   **Issue 5: CarPlay Favorites tab is empty or shows Mehr (P1)**
+    -   **Attempted fixes**: The agent identified a race condition where the CarPlay template was being built before favorites were loaded from the store. A fix was implemented in  to subscribe to the  and update the template when the store changes.
+    -   **Next debug checklist**: This needs user verification on a new build.
+    -   **Why fix this issue and what will be achieved with the fix?**: Restores a core feature for logged-in users on CarPlay.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 6: Lock screen artwork fallback is not working consistently (P2)**
+    -   **Attempted fixes**: Added a more robust check for empty or invalid artwork URLs in  to fall back to the MegaRadio logo.
+    -   **Next debug checklist**: Needs user verification on a new build.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
+
+-   **Issue 7: Several backend API endpoints are broken (returning HTML) (P2)**
+    -   **Attempted fixes**: The agent performed a full audit of all API endpoints used in the app and confirmed that , , and  are not working correctly.
+    -   **Next debug checklist**: This is a backend issue. The agent needs to clearly inform the user that these endpoints are broken and must be fixed by the backend developer.
+    -   **Status**: BLOCKED (on backend)
+    -   **Is recurring issue?**: N
 
 **In progress Task List**:
--   None. The focus is on fixing the P0/P1 bugs.
+-   None. The current focus is entirely on fixing the backlog of critical bugs.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
 -   **P1:** Re-evaluate Google Cast integration (removed due to crashes).
 -   **P1:** Implement a premium (ad-free) subscription model.
--   **P1:** Re-implement Splash Screen.
 -   **P1:** Resolve App Store Rejection reason regarding content rights.
 
 **Future Tasks:**
@@ -122,77 +121,84 @@ The application is currently in a state where it builds and runs, but has severa
 -   **P3:** Re-integrate FlowAlive if the NPM package is fixed.
 
 **Completed work in this session**
-- **FIXED RECURRING STARTUP CRASH**: Diagnosed and implemented a permanent fix for the  crash by modifying the  to explicitly disable Fabric and the New Architecture, resolving a conflict with .
-- **Implemented ICY Metadata**: Added an event listener for  to fetch and display real-time song information directly from the audio stream.
-- **Improved Metadata Fallbacks**: Updated metadata logic to use the station's genre as a fallback for the album name on the lock screen.
-- **Fixed Previous Build Failures**: Resolved multiple Xcode build errors.
+-   **FIXED CarPlay Logos:** Correctly identified that the CarPlay library requires the  property for remote images and updated all templates, removing a complex and incorrect local caching implementation.
+-   **IDENTIFIED Caching Root Cause:** Diagnosed and fixed a critical logic bug in  that prevented API data from being fetched on a fresh app install.
+-   **IDENTIFIED i18n Root Cause:** Discovered that language switching fails because of a mismatch between frontend and backend translation keys.
+-   **Improved API Usage:** Switched to using the  endpoint for better performance and updated popular stations calls to correctly include the  parameter.
+-   **Fixed UI Issues:** Corrected the Previous/Next button *icons* and removed the hardcoded country name from the Nearby Stations title.
+
+**Earlier issues found/mentioned but not fixed**
+-   **Issue 1: Next/Previous button *logic* is wrong.** The user explicitly stated the desired functionality (next -> similar station, previous -> recently played), but the agent only fixed the icons and never addressed the underlying logic.
 
 **Code Architecture**
-
+imgUrlneedsSync
 
 **Key Technical Concepts**
--   **React Native Old Architecture**: The project is highly sensitive to native module incompatibilities. The definitive fix for crashes was to force the Old Architecture via the .
--   **ICY Metadata**: Real-time song information is fetched from the stream using 's  event, bypassing the broken  endpoint.
--   **EAS Build & TestFlight**: The development cycle relies entirely on creating new iOS builds with An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username and testing via TestFlight.
--   **CarPlay Integration ()**: Involves creating native templates (, ) from the React Native side. Currently facing issues with displaying remote images and cold-start loading.
+-   **CarPlay Native Integration:** The project now uses a Scene-based architecture (, ) to attempt to solve the cold-start issue. The RN bridge initialization lifecycle is critical.
+-   **CarPlay Remote Images ():** The key discovery that the  library handles remote images via the  property, which triggers an async download on the native side.
+-   **State Management & Race Conditions:** A race condition in loading favorites was identified and fixed by subscribing to the Zustand store.
+-   **Caching Logic:** A subtle but critical bug in the caching logic of  was found to be the cause of empty lists on fresh installs.
+-   **i18n Key Mismatch:** The root cause of translation failures is a discrepancy between frontend keys and API-provided keys.
+-   **Server-Side Rendering (SSR) Issues:** The web preview experiences  errors, indicating components are not fully SSR-safe.
 
 **All files of reference**
--   : **(CRITICAL)** Where CarPlay templates are built. The  prop was incorrectly removed from here and needs to be re-added and debugged.
--   : **(CRITICAL)** Handles ICY metadata events. Needs more logging to debug disappearing metadata.
--   : Contains the player UI, including the next/previous buttons that need icon changes.
--   : Contains the critical fix that stabilized the application by disabling Fabric. **DO NOT REMOVE THIS FIX**.
--   : Contains build numbers and project configuration.
+-   : **(CRITICAL)** Handles all CarPlay template logic.
+-   : **(CRITICAL)** Contains the caching logic that was recently fixed.
+-   : **(CRITICAL)** Contains the latest attempt at fixing the CarPlay cold-start issue.
+-   : Works with  for CarPlay lifecycle.
+-   : The likely location to implement the correct Next/Previous button logic.
+-   : The file where the i18n fix (merging local and remote translations) needs to be implemented.
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **USER IS EXTREMELY FRUSTRATED**: The user has experienced multiple recurring crashes and is tired of regressions. Prioritize stability and accuracy. Do not make breaking changes.
--   **THE STARTUP CRASH IS FIXED**: The core instability related to  was resolved by modifying the  to disable the new architecture. Do not revert this change.
--   **CARPLAY LOGOS ARE THE TOP PRIORITY**: The previous agent's conclusion that remote images are unsupported is likely wrong. Your first task is to re-implement  in  and debug why it's not working. The user is correct that other apps achieve this.
--   **BACKEND LIMITATIONS**: The API currently only returns 3 genres. This is a known backend issue that you cannot fix. Inform the user of this limitation.
+-   **VERIFICATION IS KEY:** Many fixes have been implemented but not tested by the user. The next step for most issues is to create a new build and get user feedback.
+-   **FOCUS ON PENDING ISSUES:** The highest priority is to get a stable, working CarPlay experience. Address the pending issue list, starting with P0.
+-   **DON'T MISS USER REQUIREMENTS:** The previous agent missed the request to fix the Next/Previous button *logic*. Read user requests carefully.
+-   **BACKEND ISSUES:** Be aware that several API endpoints are broken. You cannot fix them. Clearly communicate this to the user as a backend problem.
 
 **documents and test reports created in this job**
--    (multiple versions provided by user)
 -   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** I'm getting a build but it's crashing on startup! I'm giving you the logs, fix this! You've done this so many times! (PENDING)
-2.  **User:** Fix the Previous/Next buttons, metadata, and CarPlay logos. And fix the crash! (PENDING)
-3.  **User:** My latest build (39+) has issues: Previous/Next icons are wrong, ICY metadata disappears, CarPlay logos are gone, and CarPlay gets stuck on Loading if the app is closed. Check the logs from today! (PENDING - This is the current set of active bugs).
-4.  **User:** Why aren't the CarPlay logos showing? Other apps can do it. Analyze this documentation. (PENDING)
-5.  **User:** Which CarPlay library and repo are we using? (COMPLETED)
-6.  **User:** For my radio app, is ListView or GridView better? (COMPLETED)
-7.  **User:** OK, let's do ListView for stations with logos, 50 for discover, and 40 for genres. (COMPLETED - Agent implemented this, but GridView is limited to 8, so ListView was used for genres).
-8.  **User:** Build 37 is the next one, make it auto-increment! (COMPLETED)
-9.  **User:** If there's no metadata, the lock screen album should be the Genre. (COMPLETED)
-10. **User:** Give me an example of what it will look like with and without ICY metadata. (COMPLETED)
+1.  **User (LATEST):** The app preview on web is broken/overflowing.
+2.  **User:** Why aren't country filters working for CarPlay? Also, language switching is broken, only English and Turkish work.
+3.  **User:** Please list and test all API endpoints you are using, I think you broke some.
+4.  **User:** What was used for language switching a week ago? I think you broke it.
+5.  **User:** The Popular Stations list for Austria is only showing 3 items. Also, why do images not appear on CarPlay, and why does it get stuck on cold start? What if we made CarPlay fully native?
+6.  **User:** The icons are still not showing up in CarPlay, and the Next/Previous logic is wrong. The favorites tab is empty or shows Mehr. The station logo doesn't change when using next/previous. Analyze all documentation again.
+7.  **User:** The app is still stuck on the loading screen when closed! The Next/Previous icons are still wrong (skip/rewind icons). Favorites aren't loading at all. Popular stations are wrong. Lock screen fallback isn't working. Check the logs!
+8.  **User:** The precomputed genres endpoint is better, use that.
+9.  **User:** Does CarPlay fetch the user's actual favorites?
+10. **User:** How many genres will be shown on CarPlay and why is it only in Turkish?
 
 **Project Health Check:**
 -   **Broken**:
-    -   CarPlay logo display is broken because the  prop was removed.
-    -   CarPlay cold-start is broken (stuck on Loading).
--   **Mocked**:  is not present.
+    -   CarPlay cold-start functionality.
+    -   Next/Previous station navigation logic.
+    -   Multi-language support (i18n).
+    -   Several backend endpoints (, ).
+-   **Mocked**: None.
 -   **Unverified**:
-    -   The stability of the ICY metadata feature (user reports it disappears).
-    -   The state of the Android build remains unverified.
+    -   The fix for data not loading on a fresh install ().
+    -   The fix for CarPlay favorites not appearing (Zustand store subscription).
+    -   The fix for CarPlay logos ().
+    -   The fix for lock screen artwork fallback.
 
 **3rd Party Integrations**
 -   : Core audio streaming.
 -   : For CarPlay features.
 -   : Active and stabilized with the Podfile fix.
--   : **(MOCKED)** - The NPM package is broken.
+-   : Used for file system access.
+-   : For internationalization.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES,  was used to find the root cause of the final crash.
+-   **Testing agent used after significant changes**: YES,  was used multiple times to find root causes for i18n and data loading issues.
 -   **Troubleshoot agent used after agent stuck in loop**: YES
 -   **Test files created**: []
--   **Known regressions**: CarPlay logos were working at some point but are now gone. The app regressed into a crashing state multiple times before the final  fix was applied.
+-   **Known regressions**: Language support was working previously but broke.
 
 **Credentials to test flow:**
 N/A
 
 **What agent forgot to execute**
-- The agent incorrectly diagnosed the CarPlay logo issue and removed the feature ( prop) instead of debugging it properly. This is a direct regression and the top priority to fix.
-- The agent did not fully address the user's request for the correct Previous/Next button icons.</analysis>
+- The agent completely overlooked the user's request to fix the **logic** of the Next and Previous buttons. The user wanted them to navigate to similar or recently played stations, but the agent only changed the button icons and marked the task as done. This is a high-priority, unaddressed feature request.</analysis>
