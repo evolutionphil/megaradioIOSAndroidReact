@@ -42,6 +42,11 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
     hideMiniPlayer,
   } = usePlayerStore();
   
+  // Reset logo error when station changes
+  React.useEffect(() => {
+    setLogoError(false);
+  }, [currentStation?._id]);
+  
   // Calculate tab bar height including system navigation bar for Android
   // Tab bar height: iOS=85, Android=65 + system nav bar inset
   const systemNavBarHeight = Platform.OS === 'android' ? insets.bottom : 0;
