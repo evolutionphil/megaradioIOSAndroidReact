@@ -1,20 +1,24 @@
 // Station Logo Helper - Centralized logo URL resolution
 // Use this helper in ALL components that display station logos
 
-// MegaRadio pink logo - used as fallback for all stations without valid logo
-const DEFAULT_STATION_LOGO = 'https://themegaradio.com/logo.png';
-
 import type { Station } from '../types';
+
+// MegaRadio pink logo - LOCAL asset for fallback (no network required)
+// Use require() for React Native to bundle the asset
+export const DEFAULT_STATION_LOGO_SOURCE = require('../../assets/images/default-station-logo.png');
+
+// For components that need a URL string (like CarPlay), use this
+export const DEFAULT_STATION_LOGO_URL = 'https://themegaradio.com/logo.png';
 
 /**
  * Get a reliable logo URL for a station
- * Priority: logoAssets.webp96 > favicon > logo > DEFAULT
+ * Priority: logoAssets.webp96 > favicon > logo > null (use local fallback)
  * 
  * @param station - Station object (can be partial)
- * @returns Valid URL string for the logo
+ * @returns Valid URL string for the logo, or null if should use local fallback
  */
-export const getStationLogoUrl = (station: Station | null | undefined): string => {
-  if (!station) return DEFAULT_STATION_LOGO;
+export const getStationLogoUrl = (station: Station | null | undefined): string | null => {
+  if (!station) return null;
 
   try {
     // Priority 1: logoAssets (best quality, our CDN)
@@ -64,16 +68,16 @@ export const getStationLogoUrl = (station: Station | null | undefined): string =
     console.log('[StationLogoHelper] Error:', e);
   }
 
-  // Fallback: Default station logo
-  return DEFAULT_STATION_LOGO;
+  // Return null - caller should use DEFAULT_STATION_LOGO_SOURCE
+  return null;
 };
 
 /**
  * Check if a station has a valid custom logo (not default)
  */
 export const hasCustomLogo = (station: Station | null | undefined): boolean => {
-  const logoUrl = getStationLogoUrl(station);
-  return logoUrl !== DEFAULT_STATION_LOGO;
+  return getStationLogoUrl(station) !== null;
 };
 
-export { DEFAULT_STATION_LOGO };
+// Legacy export for backward compatibility
+export const DEFAULT_STATION_LOGO = DEFAULT_STATION_LOGO_URL;
