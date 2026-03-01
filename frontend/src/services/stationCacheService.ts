@@ -146,6 +146,11 @@ class StationCacheService {
   // ============ Network Status ============
   
   async checkOnline(): Promise<boolean> {
+    // Skip on web/SSR - assume online
+    if (Platform.OS === 'web' || typeof window === 'undefined') {
+      return true;
+    }
+    
     try {
       const state = await NetInfo.fetch();
       this.isOnline = state.isConnected ?? true;
