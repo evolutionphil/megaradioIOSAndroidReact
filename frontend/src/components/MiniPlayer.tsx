@@ -16,7 +16,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { ChevronUpIcon, HeartOutlineIcon, HeartFilledIcon, PauseIcon, PlayIcon } from './TabBarIcons';
-import { getStationLogoUrl, DEFAULT_STATION_LOGO } from '../utils/stationLogoHelper';
+import { getStationLogoUrl, DEFAULT_STATION_LOGO_SOURCE } from '../utils/stationLogoHelper';
 import type { Station } from '../types';
 
 // Check if we're on web
