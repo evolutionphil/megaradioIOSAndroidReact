@@ -139,23 +139,34 @@ export const CarPlayHandler: React.FC = () => {
   
   // Debounced refresh function to avoid too many refreshes
   const debouncedRefresh = (reason: string) => {
+    // CRASH FIX: Prevent concurrent refreshes which can cause 
+    // REASwizzledUIManager race condition with RCTUIManager
+    if (isRefreshing) {
+      console.log(`[CarPlayHandler] Skipping refresh (already refreshing): ${reason}`);
+      return;
+    }
+    
     if (refreshDebounceTimer) {
       clearTimeout(refreshDebounceTimer);
     }
     
+    // Increased debounce to 1000ms to prevent rapid updates causing crash
     refreshDebounceTimer = setTimeout(async () => {
-      if (CarPlayService.isConnected) {
+      if (CarPlayService.isConnected && !isRefreshing) {
         console.log(`[CarPlayHandler] Triggering CarPlay refresh: ${reason}`);
         sendLog('[CarPlayHandler] Refreshing CarPlay', { reason });
         
+        isRefreshing = true;
         try {
           await CarPlayService.refreshTemplates();
           console.log('[CarPlayHandler] CarPlay refresh completed');
         } catch (err) {
           console.error('[CarPlayHandler] CarPlay refresh failed:', err);
+        } finally {
+          isRefreshing = false;
         }
       }
-    }, 500); // 500ms debounce
+    }, 1000); // Increased from 500ms to 1000ms for stability
   };
   
   // Log on every render to debug
