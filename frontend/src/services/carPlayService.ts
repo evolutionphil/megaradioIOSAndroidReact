@@ -291,12 +291,15 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
   }
 };
 
-// Create Genres List Template (40 genres with icons)
+// Create Genres Grid Template (40 genres in grid layout)
 const createGenresTemplate = async (): Promise<any> => {
   CarPlayLogger.templateCreating('Genres');
   
-  if (!ListTemplate || !getGenresCallback) {
-    CarPlayLogger.templateFailed('Genres', 'ListTemplate or callback not available');
+  // Try GridTemplate first, fallback to ListTemplate
+  const TemplateClass = GridTemplate || ListTemplate;
+  
+  if (!TemplateClass || !getGenresCallback) {
+    CarPlayLogger.templateFailed('Genres', 'Template or callback not available');
     return null;
   }
   
@@ -305,11 +308,37 @@ const createGenresTemplate = async (): Promise<any> => {
     const genres = await getGenresCallback();
     CarPlayLogger.dataLoaded('genres', genres.length);
     
-    // Genre icon mapping (using music-related system images or default)
-    const getGenreIcon = (genreName: string): { uri: string } => {
-      // Use a generic music icon for all genres
-      return { uri: 'https://themegaradio.com/logo.png' };
-    };
+    // If GridTemplate is available, use grid layout
+    if (GridTemplate) {
+      console.log('[CarPlay] Using GridTemplate for genres');
+      
+      // Grid items with images
+      const gridButtons = genres.slice(0, 40).map((genre, index) => ({
+        id: `genre_${index}`,
+        titleVariants: [genre.name],
+        image: { uri: 'https://themegaradio.com/logo.png' },
+      }));
+      
+      const template = new GridTemplate({
+        title: t('carplay_genres', 'Genres'),
+        buttons: gridButtons,
+        onButtonPressed: async (button: { id: string }) => {
+          const index = parseInt(button.id.replace('genre_', ''), 10);
+          const genre = genres[index];
+          if (genre) {
+            CarPlayLogger.info('Genre selected (grid)', { genre: genre.name });
+            console.log('[CarPlay] Genre selected from grid:', genre.name);
+            await showGenreStationsTemplate(genre.name);
+          }
+        },
+      });
+      
+      CarPlayLogger.templateCreated('Genres (Grid)', { genreCount: Math.min(genres.length, 40) });
+      return template;
+    }
+    
+    // Fallback to ListTemplate
+    console.log('[CarPlay] Using ListTemplate for genres (GridTemplate not available)');
     
     const template = new ListTemplate({
       title: t('carplay_genres', 'Genres'),
@@ -318,7 +347,7 @@ const createGenresTemplate = async (): Promise<any> => {
         items: genres.slice(0, 40).map(genre => ({
           text: genre.name,
           detailText: `${genre.count} ${t('carplay_stations', 'stations')}`,
-          image: getGenreIcon(genre.name),
+          imgUrl: 'https://themegaradio.com/logo.png',
         })),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
@@ -331,7 +360,7 @@ const createGenresTemplate = async (): Promise<any> => {
       },
     });
     
-    CarPlayLogger.templateCreated('Genres', { genreCount: Math.min(genres.length, 40) });
+    CarPlayLogger.templateCreated('Genres (List)', { genreCount: Math.min(genres.length, 40) });
     return template;
   } catch (error: any) {
     CarPlayLogger.templateError('Genres', error);
