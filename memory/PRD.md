@@ -10,34 +10,35 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Latest Update (Build 45) - December 2025
+## Latest Update (Build 46) - December 2025
 
-### ✅ Düzeltmeler
+### 🔍 API Endpoint Analizi Tamamlandı
 
-**1. CarPlay Popular Stations - Ülke Filtresi (P0)**
-- `CarPlayHandler.tsx`: `locationStore`'dan seçili ülke alınıyor
-- `getPopularStations(country, 50)` ile API çağrısı yapılıyor
-- Austria seçiliyse Austria radyoları gelecek
+**Çalışan Endpoint'ler (14 adet):**
+- `/api/stations`, `/api/stations/popular`, `/api/genres`, `/api/translations/{lang}` vb.
 
-**2. Cache Bypass - Büyük İstekler (P1)**
-- `stationService.ts`: `limit > 20` ise cache bypass ediliyor
-- CarPlay için 50 istasyon her zaman API'den çekiliyor
+**Çalışmayan Endpoint'ler (HTML döndürüyor):**
+- `/api/genres/{slug}/stations`
+- `/api/now-playing/{id}`
+- `/api/recommendations/diverse`
 
-**3. Almanca Dil Desteği (P1)**
-- `i18nService.ts`'e `germanTranslations` eklendi
-- `/api/translations/de` endpoint'i çalışmıyor (HTML döndürüyor) - backend sorunu
-- Local çevirilerle Almanca destekleniyor
-- Tab navigation, player, settings, CarPlay tüm metinler Almanca'ya çevrildi
+### ✅ Dil Seçimi Sorunu Düzeltildi
+
+**Kök Neden:**
+- API'deki çeviri anahtarları frontend'dekilerle uyuşmuyor
+- Örn: Frontend `tab_discover` kullanıyor, API'de bu anahtar yok
+- API `nav_home`, `homepage_see_all` gibi farklı anahtarlar kullanıyor
+
+**Düzeltme:**
+- `fetchTranslations` fonksiyonu güncellendi
+- Çeviriler şu sırayla birleştiriliyor: `defaultTranslations` → `localFallback` → `apiTranslations`
+- Local Almanca çeviriler eklendi (90+ anahtar)
+- API'den gelen eksik anahtarlar local fallback ile tamamlanıyor
 
 ### 📦 Build Bilgileri
-- iOS Build: 45
-- Android versionCode: 45
+- iOS Build: 46
+- Android versionCode: 46
 - Version: 1.0.27
-
-### ⚠️ Backend Sorunu
-- `/api/translations/:lang` endpoint'i HTML döndürüyor, JSON değil
-- Bu yüzden sadece local çeviriler çalışıyor (en, tr, de)
-- Backend düzeltmesi gerekiyor
 
 ## Watch Apps - February 19, 2025
 
