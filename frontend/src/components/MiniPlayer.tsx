@@ -150,7 +150,7 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
         {/* Station Logo - Tappable to open player */}
         <TouchableOpacity style={styles.logoContainer} onPress={handlePress} activeOpacity={0.8}>
           <Image 
-            source={{ uri: logoUrl }} 
+            source={logoSource} 
             style={styles.logo} 
             resizeMode="cover"
             onError={() => setLogoError(true)}
