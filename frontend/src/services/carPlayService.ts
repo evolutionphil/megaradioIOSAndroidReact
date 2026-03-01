@@ -846,6 +846,12 @@ const CarPlayService: CarPlayServiceType = {
     }
     coldStartRetryCount = 0;
     
+    // Unsubscribe from language changes
+    if (languageListenerUnsubscribe) {
+      languageListenerUnsubscribe();
+      languageListenerUnsubscribe = null;
+    }
+    
     playStationCallback = null;
     getStationsCallback = null;
     getFavoritesCallback = null;
@@ -855,6 +861,7 @@ const CarPlayService: CarPlayServiceType = {
     isCarPlayConnected = false;
     CarPlayService.isConnected = false;
     pendingConnection = false;
+    needsTemplateRefresh = false;
   },
 };
 
