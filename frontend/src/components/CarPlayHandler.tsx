@@ -144,6 +144,7 @@ const searchStations = async (query: string): Promise<Station[]> => {
 
 export const CarPlayHandler: React.FC = () => {
   const { playStation } = useAudioPlayer();
+  const queryClient = useQueryClient();
   
   // Watch favorites, location, and recently played changes
   const favorites = useFavoritesStore(state => state.favorites);
