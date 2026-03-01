@@ -201,6 +201,7 @@ export default function AllStationsScreen() {
   const renderGridItem = (station: Station) => {
     const logoUrl = getLogoUrl(station);
     const playing = isStationPlaying(station);
+    const [imageError, setImageError] = useState(false);
 
     return (
       <TouchableOpacity
@@ -212,9 +213,10 @@ export default function AllStationsScreen() {
       >
         <View style={[styles.gridLogoContainer, { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}>
           <Image
-            source={{ uri: logoUrl }}
+            source={imageError ? DEFAULT_STATION_LOGO_SOURCE : { uri: logoUrl }}
             style={styles.gridLogo}
             resizeMode="cover"
+            onError={() => setImageError(true)}
           />
         </View>
         <Text style={[styles.gridName, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>{station.name}</Text>
