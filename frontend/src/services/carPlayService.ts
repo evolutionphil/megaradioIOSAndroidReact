@@ -4,17 +4,22 @@
 import { Platform } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
-import i18n from './i18nService';
+import i18n, { addLanguageChangeListener } from './i18nService';
 
-// Helper function to get translated CarPlay strings
+// Helper function to get translated CarPlay strings - always use current i18n state
 const t = (key: string, fallback: string): string => {
   try {
     const translation = i18n.t(key);
+    // If translation equals key, it means no translation found - use fallback
     return translation !== key ? translation : fallback;
   } catch {
     return fallback;
   }
 };
+
+// Track if we need to refresh templates when language/country changes
+let needsTemplateRefresh = false;
+let languageListenerUnsubscribe: (() => void) | null = null;
 
 // Only import CarPlay on native platforms
 let CarPlay: any = null;
