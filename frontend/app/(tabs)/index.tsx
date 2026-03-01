@@ -161,11 +161,13 @@ export default function HomeScreen() {
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
-  // Refetch genres when country changes
+  // Refetch genres and popular stations when country changes
   useEffect(() => {
-    console.log('[HomeScreen] Country changed, refetching genres...', countryCode);
+    console.log('[HomeScreen] Country changed, refetching data...', countryCode, countryEnglish);
     refetchGenres();
-  }, [countryCode]);
+    refetchPopular();
+    refetchAll();
+  }, [countryCode, countryEnglish]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
