@@ -754,6 +754,9 @@ const createRootTemplate = async (): Promise<void> => {
       tabs: templates.map((t, i) => t.tabTitle || `Tab ${i}`)
     });
     
+    // Release mutex after success
+    isCreatingTemplate = false;
+    
   } catch (error: any) {
     console.error('[CarPlay] Error creating root template:', error);
     CarPlayLogger.error('[RN] FATAL ERROR in createRootTemplate', { 
@@ -761,6 +764,8 @@ const createRootTemplate = async (): Promise<void> => {
       message: error?.message,
       stack: error?.stack?.substring(0, 500)
     });
+    // Release mutex on error as well
+    isCreatingTemplate = false;
   }
 };
 
