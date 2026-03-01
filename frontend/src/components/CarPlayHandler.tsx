@@ -19,13 +19,14 @@ let lastFavoritesCount: number = 0;
 const getPopularStations = async (): Promise<Station[]> => {
   try {
     // Get selected country from location store
-    // Use native country name (e.g., "Türkiye") as backend requires native names
-    const { country } = useLocationStore.getState();
+    // Use English country name (e.g., "Austria") for API compatibility
+    const { countryEnglish, country } = useLocationStore.getState();
+    const selectedCountry = countryEnglish || country || undefined;
     
-    console.log('[CarPlayHandler] Fetching popular stations for country:', country);
+    console.log('[CarPlayHandler] Fetching popular stations for country:', selectedCountry);
     
     // Use getPopularStations with explicit limit=50 for CarPlay
-    const response = await stationService.getPopularStations(country || undefined, 50);
+    const response = await stationService.getPopularStations(selectedCountry, 50);
     
     console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'popular stations for CarPlay');
     
