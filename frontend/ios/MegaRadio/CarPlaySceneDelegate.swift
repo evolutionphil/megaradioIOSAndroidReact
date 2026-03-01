@@ -269,6 +269,21 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         
         self.interfaceController = interfaceController
         
+        // CRITICAL: Initialize React Native from AppDelegate if not already running
+        // This is needed for cold-start when CarPlay connects first
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if !appDelegate.isReactNativeReady() {
+                sendRemoteLog(level: "info", message: "Cold-start detected - initializing React Native from CarPlay scene")
+                appDelegate.initAppFromScene(connectionOptions: nil)
+                
+                // Wait a bit longer for JS bundle to load on cold-start
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    self?.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
+                }
+                return
+            }
+        }
+        
         // Set loading template FIRST
         setLoadingTemplate(interfaceController: interfaceController)
         
@@ -276,6 +291,22 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         safeConnectToRNCarPlay(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
         
         // Schedule a check to see if template was replaced
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            self?.checkIfStillShowingLoading()
+        }
+    }
+    
+    /// Connect to RNCarPlay after React Native initialization (cold-start scenario)
+    private func connectToRNCarPlayAfterInit(interfaceController: CPInterfaceController, window: CPWindow?) {
+        sendRemoteLog(level: "info", message: "Cold-start: Attempting RNCarPlay connection after RN init")
+        
+        // Set loading template
+        setLoadingTemplate(interfaceController: interfaceController)
+        
+        // Connect to React Native with extended retry for cold-start
+        safeConnectToRNCarPlay(interfaceController: interfaceController, window: window)
+        
+        // Schedule a check
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
             self?.checkIfStillShowingLoading()
         }
