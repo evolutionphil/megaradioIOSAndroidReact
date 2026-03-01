@@ -76,7 +76,11 @@ class StationCacheService {
 
   constructor() {
     // Only initialize on native platforms (not during SSR/web)
-    if (typeof window !== 'undefined' && Platform.OS !== 'web') {
+    // Check window first (SSR check), then platform
+    const isSSR = typeof window === 'undefined';
+    const isWeb = Platform.OS === 'web';
+    
+    if (!isSSR && !isWeb) {
       this.initializeNative();
     }
   }
