@@ -27,6 +27,8 @@ let ListTemplate: any = null;
 let TabBarTemplate: any = null;
 let NowPlayingTemplate: any = null;
 let GridTemplate: any = null;
+let SearchTemplate: any = null;
+let VoiceControlTemplate: any = null;
 
 // Track if we've already registered handlers (prevent duplicates)
 let handlersRegistered = false;
