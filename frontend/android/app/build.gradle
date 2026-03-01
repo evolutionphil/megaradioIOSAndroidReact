@@ -163,6 +163,12 @@ dependencies {
 // @generated end react-native-google-cast-dependencies
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    
+    // OkHttp for Android Auto API calls
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    
+    // Coroutines for async operations
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
