@@ -727,6 +727,9 @@ export const changeLanguage = async (lang: string): Promise<void> => {
   try {
     console.log('[i18n] Changing language to:', lang);
     
+    // Clear cache for this language to get fresh translations
+    delete translationsCache[lang];
+    
     // Fetch translations for the new language
     const translations = await fetchTranslations(lang);
     
