@@ -671,6 +671,9 @@ export const initI18n = async (): Promise<void> => {
         tr: {
           translation: turkishTranslations,
         },
+        de: {
+          translation: germanTranslations,
+        },
       },
       lng: storedLang,
       fallbackLng: 'en',
