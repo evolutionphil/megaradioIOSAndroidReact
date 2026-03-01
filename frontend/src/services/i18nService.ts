@@ -74,6 +74,7 @@ const defaultTranslations: Record<string, string> = {
   carplay_recently_played: 'Recently Played',
   carplay_discover: 'Discover',
   carplay_genres: 'Genres',
+  carplay_search: 'Search',
   carplay_loading: 'Loading...',
   carplay_music_genres: 'Music Genres',
   carplay_popular_stations: 'Popular Stations',
