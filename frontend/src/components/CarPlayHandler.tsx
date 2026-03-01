@@ -8,12 +8,15 @@ import stationService from '../services/stationService';
 import genreService from '../services/genreService';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useLocationStore } from '../store/locationStore';
+import useRecentlyPlayedStore from '../store/recentlyPlayedStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
 
-// Track last values to detect changes
+// Track last values to detect changes (module-level for persistence)
 let lastCountry: string | null = null;
-let lastFavoritesCount: number = 0;
+let lastFavoritesCount: number = -1; // -1 to detect first load
+let lastRecentCount: number = -1; // -1 to detect first load
+let refreshDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 // API wrapper functions for CarPlay
 const getPopularStations = async (): Promise<Station[]> => {
