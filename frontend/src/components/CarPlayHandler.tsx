@@ -128,12 +128,34 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
 export const CarPlayHandler: React.FC = () => {
   const { playStation } = useAudioPlayer();
   
-  // Watch favorites and location changes
+  // Watch favorites, location, and recently played changes
   const favorites = useFavoritesStore(state => state.favorites);
   const { country, countryEnglish } = useLocationStore();
+  const recentStations = useRecentlyPlayedStore(state => state.stations);
   
   // Send log immediately when component mounts (before useEffect)
   const { sendLog } = require('../services/remoteLog');
+  
+  // Debounced refresh function to avoid too many refreshes
+  const debouncedRefresh = (reason: string) => {
+    if (refreshDebounceTimer) {
+      clearTimeout(refreshDebounceTimer);
+    }
+    
+    refreshDebounceTimer = setTimeout(async () => {
+      if (CarPlayService.isConnected) {
+        console.log(`[CarPlayHandler] Triggering CarPlay refresh: ${reason}`);
+        sendLog('[CarPlayHandler] Refreshing CarPlay', { reason });
+        
+        try {
+          await CarPlayService.refreshTemplates();
+          console.log('[CarPlayHandler] CarPlay refresh completed');
+        } catch (err) {
+          console.error('[CarPlayHandler] CarPlay refresh failed:', err);
+        }
+      }
+    }, 500); // 500ms debounce
+  };
   
   // Log on every render to debug
   console.log('[CarPlayHandler] Component rendering, playStation:', !!playStation);
@@ -182,6 +204,10 @@ export const CarPlayHandler: React.FC = () => {
     // Cleanup on unmount
     return () => {
       console.log('[CarPlayHandler] Cleaning up CarPlay service');
+      if (refreshDebounceTimer) {
+        clearTimeout(refreshDebounceTimer);
+        refreshDebounceTimer = null;
+      }
       CarPlayService.disconnect();
     };
   }, [playStation]);
@@ -197,11 +223,8 @@ export const CarPlayHandler: React.FC = () => {
       console.log('[CarPlayHandler] Country changed from', lastCountry, 'to', currentCountry);
       sendLog('[CarPlayHandler] Country changed', { from: lastCountry, to: currentCountry });
       
-      // CarPlay templates will be refreshed via the language change listener
-      // or we can manually trigger a refresh here if CarPlay is connected
-      if (CarPlayService.isConnected) {
-        console.log('[CarPlayHandler] CarPlay connected - templates will use new country on next refresh');
-      }
+      // Trigger CarPlay template refresh
+      debouncedRefresh(`Country changed: ${lastCountry} → ${currentCountry}`);
     }
     
     lastCountry = currentCountry;
@@ -213,17 +236,35 @@ export const CarPlayHandler: React.FC = () => {
     
     const currentCount = favorites?.length || 0;
     
-    // Skip first run and only trigger on actual changes
-    if (lastFavoritesCount > 0 && currentCount !== lastFavoritesCount) {
+    // Skip first load (-1), only trigger on actual changes after initial load
+    if (lastFavoritesCount >= 0 && currentCount !== lastFavoritesCount) {
       console.log('[CarPlayHandler] Favorites changed from', lastFavoritesCount, 'to', currentCount);
       sendLog('[CarPlayHandler] Favorites changed', { from: lastFavoritesCount, to: currentCount });
       
-      // CarPlay templates will pick up new favorites on next render
-      // The favorites tab always calls getFavoriteStations() fresh
+      // Trigger CarPlay template refresh
+      debouncedRefresh(`Favorites changed: ${lastFavoritesCount} → ${currentCount}`);
     }
     
     lastFavoritesCount = currentCount;
   }, [favorites]);
+  
+  // Watch for recently played changes - when user plays a station, update CarPlay
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    
+    const currentCount = recentStations?.length || 0;
+    
+    // Skip first load (-1), only trigger on actual changes after initial load
+    if (lastRecentCount >= 0 && currentCount !== lastRecentCount) {
+      console.log('[CarPlayHandler] Recently played changed from', lastRecentCount, 'to', currentCount);
+      sendLog('[CarPlayHandler] Recently played changed', { from: lastRecentCount, to: currentCount });
+      
+      // Trigger CarPlay template refresh
+      debouncedRefresh(`Recently played changed: ${lastRecentCount} → ${currentCount}`);
+    }
+    
+    lastRecentCount = currentCount;
+  }, [recentStations]);
 
   // This component doesn't render anything
   return null;
