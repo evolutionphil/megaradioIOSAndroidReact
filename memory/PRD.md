@@ -51,9 +51,16 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 | CarPlay Favoriler | ❓ | Store subscription eklendi |
 
 ### 🔴 Backend Sorunları (Düzeltilemez)
-- `/api/genres/{slug}/stations` ❌ HTML döndürüyor
-- `/api/now-playing/{id}` ❌ Bazı ID'ler için çalışmıyor
-- `/api/recommendations/diverse` ❌ 
+~~- `/api/genres/{slug}/stations` ❌ HTML döndürüyor~~ ✅ **DÜZELTILDI**
+~~- `/api/now-playing/{id}` ❌ Bazı ID'ler için çalışmıyor~~ ✅ **DÜZELTILDI**
+~~- `/api/recommendations/diverse` ❌~~ ✅ **DÜZELTILDI**
+
+### ✅ Yeni Çalışan Endpoint'ler (Backend Güncellendi)
+| Endpoint | Açıklama | Test |
+|----------|----------|------|
+| `GET /api/genres/:slug/stations` | Genre'ye göre istasyon listesi | ✅ Pop: 5162 istasyon |
+| `GET /api/now-playing/:id` | Şu an çalan şarkı bilgisi | ✅ ICY metadata çalışıyor |
+| `GET /api/recommendations/diverse` | Karışık tür önerileri | ✅ Multi-genre istasyonlar | 
 
 ## Previous Update (Build 47) - December 2025
 
