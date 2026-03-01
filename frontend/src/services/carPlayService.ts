@@ -367,7 +367,7 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     const template = new ListTemplate({
       title: genre,
       sections: [{
-        header: `${genre} İstasyonları (${Math.min(stations.length, 50)})`,
+        header: `${genre} (${Math.min(stations.length, 50)})`,
         items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
