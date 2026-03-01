@@ -606,6 +606,14 @@ const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName
 
 // Create Root Tab Bar Template
 const createRootTemplate = async (): Promise<void> => {
+  // CRASH FIX: Prevent concurrent template creation which can cause
+  // REASwizzledUIManager race condition with RCTUIManager
+  if (isCreatingTemplate) {
+    CarPlayLogger.info('[RN] createRootTemplate() SKIPPED - already creating template');
+    return;
+  }
+  
+  isCreatingTemplate = true;
   CarPlayLogger.info('[RN] createRootTemplate() STARTED');
   
   if (!TabBarTemplate || !CarPlay) {
