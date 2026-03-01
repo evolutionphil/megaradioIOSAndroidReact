@@ -470,12 +470,38 @@ export default function PlayerScreen() {
   const isPlaying = playbackState === 'playing';
 
   const getLogoUrl = useCallback((station: Station) => {
-    if (station.logoAssets?.webp192) {
+    // Default fallback logo (pink MegaRadio logo)
+    const DEFAULT_LOGO = 'https://themegaradio.com/logo.png';
+    
+    // Check logoAssets first (best quality)
+    if (station.logoAssets?.webp192 && station.logoAssets?.folder) {
       return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp192}`;
     }
-    const raw = station.favicon || station.logo || null;
-    if (raw && raw.startsWith('/')) return `https://themegaradio.com${raw}`;
-    return raw;
+    
+    // Check favicon
+    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
+      const favicon = station.favicon.trim();
+      if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
+        return favicon;
+      }
+      if (favicon.startsWith('/')) {
+        return `https://themegaradio.com${favicon}`;
+      }
+    }
+    
+    // Check logo
+    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
+      const logo = station.logo.trim();
+      if (logo.startsWith('http://') || logo.startsWith('https://')) {
+        return logo;
+      }
+      if (logo.startsWith('/')) {
+        return `https://themegaradio.com${logo}`;
+      }
+    }
+    
+    // Return default logo
+    return DEFAULT_LOGO;
   }, []);
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
