@@ -1305,3 +1305,42 @@ eas build --platform ios --clear-cache
 # Android
 eas build --platform android --clear-cache
 ```
+
+
+---
+
+## March 2025 - CarPlay Crash Fix & Popular Stations Fix
+
+### Problem 1: CarPlay Crash (CPTabBarTemplate validateTemplates)
+**Kök Neden:** `CPSearchTemplate` Audio kategori uygulamalarında Tab Bar'a eklenemez!
+- iOS CarPlay sadece şu template'lere izin verir: `ListTemplate`, `GridTemplate`, `InformationTemplate`, `NowPlayingTemplate`
+- `SearchTemplate` Navigation uygulamalarına özel
+
+**Çözüm:**
+- `SearchTemplate` tab bar'dan kaldırıldı
+- Search fonksiyonu Siri voice commands ile kullanılabilir durumda tutuldu
+- `createSearchTemplate()` ve `openSearchScreen()` fonksiyonları mevcut (voice command için)
+
+### Problem 2: Popular Stations Çift Yükleme
+**Kök Neden:** React Query cache ülke değişikliğinde invalidate edilmiyordu
+- Önce eski ülkenin cache'li verisi gösteriliyordu
+- Sonra yeni ülke verisi yükleniyordu
+
+**Çözüm:**
+- `CarPlayHandler.tsx`: Ülke değişikliğinde `queryClient.invalidateQueries()` eklendi
+- `index.tsx`: Tüm country-dependent query'ler invalidate ediliyor:
+  - `popularStations`
+  - `genres`
+  - `precomputedGenres`
+  - `stations`
+  - `nearby`
+
+### Değişen Dosyalar:
+- `src/services/carPlayService.ts` - SearchTemplate tab'dan kaldırıldı
+- `src/components/CarPlayHandler.tsx` - Cache invalidation eklendi
+- `app/(tabs)/index.tsx` - Cache invalidation eklendi
+
+### Troubleshoot Agent Kullanıldı:
+- Crash analizi yapıldı
+- React Query cache isolation sorunu tespit edildi
+- iOS CarPlay template kısıtlaması belirlendi
