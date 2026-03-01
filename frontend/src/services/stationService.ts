@@ -66,7 +66,7 @@ export const stationService = {
       
       // If offline, use cache
       if (!isOnline && !isLargeRequest) {
-        const cached = await stationCache.getPopularStations(country);
+        const cached = await stationCache.getPopularStations(country, limit);
         if (cached && cached.length > 0) {
           console.log('[stationService] OFFLINE - Using cached popular stations, count:', cached.length);
           return { stations: cached, count: cached.length };
