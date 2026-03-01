@@ -477,8 +477,110 @@ const turkishTranslations: Record<string, string> = {
   find_favorites: 'Favori radyo istasyonlarınızı, türleri ve kullanıcıları bulun',
 };
 
-// Pre-populate Turkish cache
+// German translations
+const germanTranslations: Record<string, string> = {
+  // Tab bar navigation
+  tab_discover: 'Entdecken',
+  tab_favorites: 'Favoriten',
+  tab_profile: 'Profil',
+  tab_records: 'Aufnahmen',
+  
+  // Navigation
+  nav_home: 'Startseite',
+  nav_for_you: 'Für Sie',
+  nav_genres: 'Genres',
+  nav_about: 'Über uns',
+  nav_contact: 'Kontakt',
+  nav_apps: 'Apps',
+  nav_feedback: 'Feedback',
+  nav_discover: 'Entdecken',
+  nav_favorites: 'Favoriten',
+  nav_settings: 'Einstellungen',
+  
+  // Homepage
+  homepage_see_all: 'Alle anzeigen',
+  homepage_community_favorites: 'Community-Favoriten',
+  homepage_genres: 'Genres',
+  homepage_popular_stations: 'Beliebte Sender',
+  homepage_stations_near_you: 'Sender in Ihrer Nähe',
+  homepage_favorites_from_users: 'Benutzer-Favoriten',
+  homepage_all_stations: 'Alle Sender',
+  homepage_recently_played: 'Zuletzt gespielt',
+  welcome_back: 'Willkommen zurück',
+  
+  // Common
+  loading: 'Wird geladen...',
+  search: 'Suche',
+  search_placeholder: 'Suchen...',
+  search_stations: 'Sender suchen...',
+  search_radio_user: 'Radio, Benutzer suchen',
+  all: 'Alle',
+  see_more: 'Mehr anzeigen',
+  cancel: 'Abbrechen',
+  save: 'Speichern',
+  delete: 'Löschen',
+  edit: 'Bearbeiten',
+  done: 'Fertig',
+  ok: 'OK',
+  back: 'Zurück',
+  
+  // CarPlay
+  carplay_favorites: 'Favoriten',
+  carplay_recently_played: 'Zuletzt gespielt',
+  carplay_discover: 'Entdecken',
+  carplay_genres: 'Genres',
+  carplay_loading: 'Wird geladen...',
+  carplay_music_genres: 'Musik-Genres',
+  carplay_popular_stations: 'Beliebte Sender',
+  carplay_favorite_stations: 'Favoriten-Sender',
+  carplay_recent_stations: 'Zuletzt gehörte Sender',
+  carplay_stations: 'Sender',
+  
+  // Auth
+  login: 'Anmelden',
+  logout: 'Abmelden',
+  register: 'Registrieren',
+  email: 'E-Mail',
+  password: 'Passwort',
+  forgot_password: 'Passwort vergessen?',
+  
+  // Player
+  now_playing: 'Wird gespielt',
+  previous_station: 'Vorheriger Sender',
+  next_station: 'Nächster Sender',
+  play: 'Abspielen',
+  pause: 'Pause',
+  stop: 'Stopp',
+  
+  // Settings
+  settings_title: 'Einstellungen',
+  settings_language: 'Sprache',
+  settings_country: 'Land',
+  settings_notifications: 'Benachrichtigungen',
+  settings_dark_mode: 'Dunkelmodus',
+  settings_about: 'Über die App',
+  settings_version: 'Version',
+  
+  // Profile
+  profile_title: 'Profil',
+  profile_edit: 'Profil bearbeiten',
+  profile_favorites_count: 'Favoriten',
+  profile_listening_time: 'Hörzeit',
+  
+  // Errors
+  error_generic: 'Ein Fehler ist aufgetreten',
+  error_network: 'Netzwerkfehler',
+  error_login: 'Anmeldung fehlgeschlagen',
+  no_stations: 'Keine Sender gefunden',
+  no_favorites: 'Noch keine Favoriten',
+  
+  // Language changed
+  language_changed: 'Sprache geändert',
+};
+
+// Pre-populate Turkish and German cache
 translationsCache['tr'] = turkishTranslations;
+translationsCache['de'] = germanTranslations;
 
 // Fetch translations from API
 export const fetchTranslations = async (lang: string): Promise<Record<string, string>> => {
