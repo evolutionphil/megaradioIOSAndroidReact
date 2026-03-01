@@ -7,16 +7,26 @@ import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
 import genreService from '../services/genreService';
 import { useFavoritesStore } from '../store/favoritesStore';
+import { useLocationStore } from '../store/locationStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
 
 // API wrapper functions for CarPlay
 const getPopularStations = async (): Promise<Station[]> => {
   try {
+    // Get selected country from location store
+    const { countryEnglish, country } = useLocationStore.getState();
+    const selectedCountry = countryEnglish || country || undefined;
+    
+    console.log('[CarPlayHandler] Fetching popular stations for country:', selectedCountry);
+    
     const response = await stationService.getStations({ 
       limit: 50,  // CarPlay: 50 stations for browse
-      order: 'votes' 
+      order: 'votes',
+      country: selectedCountry, // Use selected country
     });
+    
+    console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'popular stations');
     return response.stations || [];
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching stations:', error);
