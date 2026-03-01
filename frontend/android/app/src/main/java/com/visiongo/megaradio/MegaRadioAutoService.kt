@@ -160,6 +160,14 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         
         val items = mutableListOf<MediaBrowserCompat.MediaItem>()
         
+        // Search - Add search capability at top
+        items.add(createBrowsableItem(
+            MEDIA_SEARCH_ID,
+            "Ara",
+            "\"Hey Google, MegaRadio'da jazz ara\"",
+            "https://themegaradio.com/logo.png"
+        ))
+        
         // Popular Stations
         items.add(createBrowsableItem(
             MEDIA_POPULAR_ID,
