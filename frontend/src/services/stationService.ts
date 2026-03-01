@@ -65,13 +65,18 @@ export const stationService = {
       // For large limits (CarPlay), always fetch fresh to avoid cached small lists
       const isLargeRequest = limit > 20;
       
+      console.log('[stationService] getPopularStations - isOnline:', isOnline, 'needsDelta:', needsDelta, 'isLargeRequest:', isLargeRequest);
+      
       // If offline or no sync needed, use cache (but not for large requests)
+      // IMPORTANT: Always try API first if no cache exists
       if ((!isOnline || !needsDelta) && !isLargeRequest) {
         const cached = await stationCache.getPopularStations(country);
         if (cached && cached.length > 0) {
-          console.log('[stationService] Using cached popular stations (7-day cache)');
+          console.log('[stationService] Using cached popular stations (7-day cache), count:', cached.length);
           return { stations: cached, count: cached.length };
         }
+        // If no cache, fall through to API call
+        console.log('[stationService] No cache found, will fetch from API');
       }
 
       // Fetch from API
