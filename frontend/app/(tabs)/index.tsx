@@ -163,11 +163,11 @@ export default function HomeScreen() {
 
   // Refetch genres and popular stations when country changes
   useEffect(() => {
-    console.log('[HomeScreen] Country changed, refetching data...', countryCode, countryEnglish);
+    console.log('[HomeScreen] Country changed, refetching data...', country);
     refetchGenres();
     refetchPopular();
     refetchAll();
-  }, [countryCode, countryEnglish]);
+  }, [country]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
