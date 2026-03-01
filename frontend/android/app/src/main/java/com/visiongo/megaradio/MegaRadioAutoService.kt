@@ -529,17 +529,66 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         }
         
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-            Log.d(TAG, "onPlayFromSearch: $query")
+            Log.d(TAG, "onPlayFromSearch (Voice Command): $query")
             
             if (query.isNullOrEmpty()) return
             
+            // Extract keywords and search
+            val searchQuery = extractSearchKeywords(query)
+            Log.d(TAG, "Extracted search query: $searchQuery")
+            
             serviceScope.launch {
-                val results = apiClient.searchStations(query, 10)
+                val results = apiClient.searchStations(searchQuery, 20)
+                
+                // Cache results for later browsing
+                cachedSearchResults = results
+                lastSearchQuery = searchQuery
+                
                 if (results.isNotEmpty()) {
+                    Log.d(TAG, "Voice search found ${results.size} results, playing first: ${results.first().name}")
                     playStation(results.first())
+                } else {
+                    Log.d(TAG, "Voice search found no results for: $searchQuery")
                 }
             }
         }
+        
+        /**
+         * Handle custom voice commands
+         * "Hey Google, MegaRadio'da [genre] çal"
+         * "Hey Google, [station name] radyo aç"
+         */
+        override fun onCustomAction(action: String?, extras: Bundle?) {
+            Log.d(TAG, "onCustomAction: $action")
+            super.onCustomAction(action, extras)
+        }
+    }
+
+    /**
+     * Extract meaningful search keywords from voice command
+     * Handles Turkish and English phrases
+     */
+    private fun extractSearchKeywords(voiceInput: String): String {
+        // Remove common voice assistant prefixes
+        val cleaned = voiceInput
+            .replace("çal", "", ignoreCase = true)
+            .replace("play", "", ignoreCase = true)
+            .replace("ara", "", ignoreCase = true)
+            .replace("search", "", ignoreCase = true)
+            .replace("bul", "", ignoreCase = true)
+            .replace("find", "", ignoreCase = true)
+            .replace("radyo", "", ignoreCase = true)
+            .replace("radio", "", ignoreCase = true)
+            .replace("müzik", "", ignoreCase = true)
+            .replace("music", "", ignoreCase = true)
+            .replace("MegaRadio'da", "", ignoreCase = true)
+            .replace("MegaRadio", "", ignoreCase = true)
+            .replace("'da", "", ignoreCase = true)
+            .replace("'de", "", ignoreCase = true)
+            .trim()
+        
+        // Return the cleaned query or original if nothing remains
+        return if (cleaned.isNotEmpty()) cleaned else voiceInput
     }
 
     /**
