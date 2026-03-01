@@ -25,6 +25,7 @@ interface FavoritesState {
   // Actions
   loadFavorites: () => Promise<void>;
   loadFromLocal: () => Promise<void>;
+  loadLocalFavorites: () => Promise<void>;
   addFavorite: (station: Station) => Promise<void>;
   removeFavorite: (stationId: string) => Promise<void>;
   isFavorite: (stationId: string) => boolean;
@@ -360,6 +361,20 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       
       default:
         return favorites;
+    }
+  },
+
+  // Load favorites from local storage only (for CarPlay/Android Auto)
+  loadLocalFavorites: async () => {
+    try {
+      const favoritesJson = await AsyncStorage.getItem(FAVORITES_KEY);
+      const favorites = favoritesJson ? JSON.parse(favoritesJson) : [];
+      set({ favorites, isLoaded: true, isLoading: false });
+      console.log('[FavoritesStore] Loaded', favorites.length, 'favorites from local storage');
+      syncToAndroidAuto(favorites);
+    } catch (error) {
+      console.error('[FavoritesStore] Error loading from local:', error);
+      set({ isLoaded: true, isLoading: false });
     }
   },
 

@@ -1,7 +1,8 @@
 // Station Logo Helper - Centralized logo URL resolution
 // Use this helper in ALL components that display station logos
 
-const DEFAULT_STATION_LOGO = 'https://themegaradio.com/images/default-station.png';
+// MegaRadio pink logo - used as fallback for all stations without valid logo
+const DEFAULT_STATION_LOGO = 'https://themegaradio.com/logo.png';
 
 import type { Station } from '../types';
 
