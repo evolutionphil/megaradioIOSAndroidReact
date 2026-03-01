@@ -85,8 +85,8 @@ class StationCacheService {
       }
     });
     
-    // Load sync metadata on init (only on native platforms)
-    if (Platform.OS !== 'web') {
+    // Load sync metadata on init (only on native platforms, skip during SSR)
+    if (Platform.OS !== 'web' && typeof window !== 'undefined') {
       this.loadSyncMetadata();
     }
   }
@@ -94,8 +94,8 @@ class StationCacheService {
   // ============ Sync Metadata Management ============
   
   private async loadSyncMetadata(): Promise<void> {
-    // Skip on web platform
-    if (Platform.OS === 'web') {
+    // Skip on web platform or during SSR
+    if (Platform.OS === 'web' || typeof window === 'undefined') {
       return;
     }
     
@@ -110,8 +110,8 @@ class StationCacheService {
   }
 
   private async saveSyncMetadata(metadata: SyncMetadata): Promise<void> {
-    // Skip on web platform
-    if (Platform.OS === 'web') {
+    // Skip on web platform or during SSR
+    if (Platform.OS === 'web' || typeof window === 'undefined') {
       return;
     }
     
