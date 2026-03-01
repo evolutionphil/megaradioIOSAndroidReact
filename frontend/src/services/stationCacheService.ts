@@ -251,8 +251,10 @@ class StationCacheService {
     const metadata = await this.getSyncMetadata();
     const now = Date.now();
     
+    // If no metadata (fresh install), ALWAYS sync from API
     if (!metadata) {
-      return { needsDelta: false, needsFull: true };
+      console.log('[StationCache] No sync metadata - needs full sync');
+      return { needsDelta: true, needsFull: true };
     }
     
     const timeSinceLastSync = now - metadata.lastSyncTimestamp;
