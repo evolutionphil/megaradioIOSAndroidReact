@@ -72,8 +72,19 @@ class StationCacheService {
   private stationIndex: StationIndex = {};
   private isOnline: boolean = true;
   private syncMetadata: SyncMetadata | null = null;
+  private isInitialized: boolean = false;
 
   constructor() {
+    // Only initialize on native platforms (not during SSR/web)
+    if (typeof window !== 'undefined' && Platform.OS !== 'web') {
+      this.initializeNative();
+    }
+  }
+  
+  private initializeNative(): void {
+    if (this.isInitialized) return;
+    this.isInitialized = true;
+    
     // Monitor network status
     NetInfo.addEventListener(state => {
       const wasOffline = !this.isOnline;
@@ -85,10 +96,8 @@ class StationCacheService {
       }
     });
     
-    // Load sync metadata on init (only on native platforms, skip during SSR)
-    if (Platform.OS !== 'web' && typeof window !== 'undefined') {
-      this.loadSyncMetadata();
-    }
+    // Load sync metadata on init
+    this.loadSyncMetadata();
   }
 
   // ============ Sync Metadata Management ============
