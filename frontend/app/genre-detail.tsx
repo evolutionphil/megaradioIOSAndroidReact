@@ -82,12 +82,12 @@ export default function GenreDetailScreen() {
   }, []);
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
-  // Use countryCode (ISO code like "TR") for API filtering
+  // Use country (native name like "Türkiye") for API filtering - backend requires native names
   const { data, isLoading, refetch } = useGenreStations(
     slug, 
     page, 
     100, 
-    countryCode || undefined
+    country || undefined
   );
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
