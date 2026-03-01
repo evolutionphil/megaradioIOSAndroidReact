@@ -303,21 +303,73 @@ const createGenresTemplate = async (): Promise<any> => {
     return null;
   }
   
+  // SF Symbol mapping for CarPlay genre icons
+  // These are native iOS system symbols that display properly in CarPlay
+  const genreSFSymbols: Record<string, string> = {
+    pop: 'star.fill',
+    rock: 'bolt.fill',
+    jazz: 'music.note.list',
+    classical: 'leaf.fill',
+    electronic: 'waveform.path',
+    'hip-hop': 'mic.fill',
+    hiphop: 'mic.fill',
+    country: 'sun.max.fill',
+    world: 'globe',
+    news: 'newspaper.fill',
+    talk: 'bubble.left.and.bubble.right.fill',
+    sports: 'sportscourt.fill',
+    oldies: 'clock.fill',
+    alternative: 'flame.fill',
+    reggae: 'leaf.fill',
+    metal: 'guitars.fill',
+    folk: 'cup.and.saucer.fill',
+    dance: 'figure.dance',
+    rnb: 'heart.fill',
+    'r&b': 'heart.fill',
+    soul: 'heart.fill',
+    blues: 'music.quarternote.3',
+    christian: 'cross.fill',
+    religious: 'cross.fill',
+    latin: 'music.mic',
+    indie: 'guitars',
+    ambient: 'cloud.fill',
+    chillout: 'moon.fill',
+    lounge: 'sofa.fill',
+    '80s': 'sparkles',
+    '90s': 'sparkles',
+    '70s': 'sparkles',
+    '60s': 'sparkles',
+    hits: 'chart.line.uptrend.xyaxis',
+    top40: 'chart.bar.fill',
+    default: 'radio.fill',
+  };
+  
+  const getGenreSFSymbol = (genreName: string): string => {
+    const key = genreName.toLowerCase().replace(/[\s_]/g, '-');
+    return genreSFSymbols[key] || genreSFSymbols.default;
+  };
+  
   try {
     CarPlayLogger.dataLoading('genres');
     const genres = await getGenresCallback();
     CarPlayLogger.dataLoaded('genres', genres.length);
     
-    // If GridTemplate is available, use grid layout
+    // If GridTemplate is available, use grid layout with SF Symbols
     if (GridTemplate) {
-      console.log('[CarPlay] Using GridTemplate for genres');
+      console.log('[CarPlay] Using GridTemplate for genres with SF Symbols');
       
-      // Grid items with images
-      const gridButtons = genres.slice(0, 40).map((genre, index) => ({
-        id: `genre_${index}`,
-        titleVariants: [genre.name],
-        image: { uri: 'https://themegaradio.com/logo.png' },
-      }));
+      // Grid items with SF Symbol icons
+      const gridButtons = genres.slice(0, 40).map((genre, index) => {
+        const sfSymbol = getGenreSFSymbol(genre.name);
+        return {
+          id: `genre_${index}`,
+          titleVariants: [genre.name],
+          // Use systemImageName for SF Symbols (native iOS icons)
+          image: { 
+            systemImageName: sfSymbol,
+          },
+        };
+      });
       
       const template = new GridTemplate({
         title: t('carplay_genres', 'Genres'),
@@ -337,18 +389,21 @@ const createGenresTemplate = async (): Promise<any> => {
       return template;
     }
     
-    // Fallback to ListTemplate
+    // Fallback to ListTemplate with SF Symbols
     console.log('[CarPlay] Using ListTemplate for genres (GridTemplate not available)');
     
     const template = new ListTemplate({
       title: t('carplay_genres', 'Genres'),
       sections: [{
         header: `${t('carplay_music_genres', 'Music Genres')} (${Math.min(genres.length, 40)})`,
-        items: genres.slice(0, 40).map(genre => ({
-          text: genre.name,
-          detailText: `${genre.count} ${t('carplay_stations', 'stations')}`,
-          imgUrl: 'https://themegaradio.com/logo.png',
-        })),
+        items: genres.slice(0, 40).map(genre => {
+          const sfSymbol = getGenreSFSymbol(genre.name);
+          return {
+            text: genre.name,
+            detailText: `${genre.count} ${t('carplay_stations', 'stations')}`,
+            image: { systemImageName: sfSymbol },
+          };
+        }),
       }],
       onItemSelect: async ({ index }: { index: number }) => {
         const genre = genres[index];
