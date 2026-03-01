@@ -408,7 +408,7 @@ export default function HomeScreen() {
               <Text style={styles.emptyText}>{t('no_stations_found')}</Text>
             ) : (
               <View style={styles.popularList}>
-                {popularStations.slice(0, 4).map((station) => {
+                {popularStations.slice(0, 8).map((station) => {
                   const logoUrl = getLogoUrl(station);
                   return (
                     <TouchableOpacity
