@@ -111,8 +111,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     private var pendingInterfaceController: CPInterfaceController?
     private var pendingWindow: CPWindow?
     private var retryTimer: Timer?
-    private let maxRetryAttempts = 10
-    private let retryInterval: TimeInterval = 1.0
+    private let maxRetryAttempts = 30  // Increase to 30 attempts
+    private let retryInterval: TimeInterval = 0.5  // Faster retries (500ms)
     
     /// Check if React Native bridge is ready using RNCarPlay class availability
     private func isBridgeReady() -> Bool {
