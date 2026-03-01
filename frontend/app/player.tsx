@@ -216,10 +216,16 @@ const GridItem = React.memo(({
 }: {
   station: Station;
   onPress: (station: Station) => void;
-  getLogoUrl: (station: Station) => string | null;
+  getLogoUrl: (station: Station) => string;
   itemWidth: number;
 }) => {
   const stationLogo = getLogoUrl(station);
+  const [imageError, setImageError] = useState(false);
+
+  // Reset error when station changes
+  React.useEffect(() => {
+    setImageError(false);
+  }, [station._id]);
 
   return (
     <TouchableOpacity
@@ -230,17 +236,12 @@ const GridItem = React.memo(({
       data-testid={`grid-item-${station._id}`}
     >
       <View style={[styles.gridImageWrapper, { width: itemWidth, height: itemWidth }]}>
-        {stationLogo ? (
-          <Image
-            source={{ uri: stationLogo }}
-            style={styles.gridImage}
-            resizeMode="cover"
-          />
-        ) : (
-          <View style={[styles.gridImage, styles.gridPlaceholder]}>
-            <Ionicons name="radio" size={24} color="#666" />
-          </View>
-        )}
+        <Image
+          source={{ uri: imageError ? 'https://themegaradio.com/logo.png' : stationLogo }}
+          style={styles.gridImage}
+          resizeMode="cover"
+          onError={() => setImageError(true)}
+        />
       </View>
       <Text style={styles.gridStationName} numberOfLines={1}>
         {station.name}
