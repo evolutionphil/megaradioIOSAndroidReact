@@ -947,6 +947,73 @@ const CarPlayService: CarPlayServiceType = {
     pendingConnection = false;
     needsTemplateRefresh = false;
   },
+  
+  /**
+   * Refresh all CarPlay templates
+   * Call this when app state changes (country, favorites, recently played)
+   */
+  refreshTemplates: async (): Promise<void> => {
+    if (!isCarPlayConnected || !CarPlay) {
+      console.log('[CarPlayService] Cannot refresh - not connected');
+      return;
+    }
+    
+    console.log('[CarPlayService] Refreshing all templates...');
+    CarPlayLogger.info('[RN] Manual template refresh requested');
+    
+    try {
+      await createRootTemplate();
+      console.log('[CarPlayService] Templates refreshed successfully');
+      CarPlayLogger.info('[RN] Templates refreshed successfully');
+    } catch (err) {
+      console.error('[CarPlayService] Failed to refresh templates:', err);
+      CarPlayLogger.error('[RN] Failed to refresh templates', { error: String(err) });
+    }
+  },
+  
+  /**
+   * Refresh only the Favorites tab template
+   */
+  refreshFavorites: async (): Promise<void> => {
+    if (!isCarPlayConnected || !CarPlay || !TabBarTemplate) {
+      console.log('[CarPlayService] Cannot refresh favorites - not connected or no TabBarTemplate');
+      return;
+    }
+    
+    console.log('[CarPlayService] Refreshing favorites template...');
+    CarPlayLogger.info('[RN] Refreshing favorites template');
+    
+    try {
+      const favTemplate = await createFavoritesTemplate();
+      if (favTemplate && rootTabBarTemplate) {
+        // Update the favorites tab in the existing tab bar
+        // Note: Some versions of react-native-carplay may require full refresh
+        await createRootTemplate();
+      }
+    } catch (err) {
+      console.error('[CarPlayService] Failed to refresh favorites:', err);
+    }
+  },
+  
+  /**
+   * Refresh only the Recently Played tab template  
+   */
+  refreshRecentlyPlayed: async (): Promise<void> => {
+    if (!isCarPlayConnected || !CarPlay) {
+      console.log('[CarPlayService] Cannot refresh recently played - not connected');
+      return;
+    }
+    
+    console.log('[CarPlayService] Refreshing recently played template...');
+    CarPlayLogger.info('[RN] Refreshing recently played template');
+    
+    try {
+      // Full refresh since individual tab update may not be supported
+      await createRootTemplate();
+    } catch (err) {
+      console.error('[CarPlayService] Failed to refresh recently played:', err);
+    }
+  },
 };
 
 export default CarPlayService;
