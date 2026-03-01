@@ -786,7 +786,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       console.log('[AudioProvider] ========== NOW PLAYING ==========');
 
-      // Background tasks
+      // Add to recently played store (for CarPlay real-time sync)
+      useRecentlyPlayedStore.getState().addStation(station);
+
+      // Background tasks - also record to API
       userService.recordRecentlyPlayed(station._id).catch(() => {});
       fetchNowPlaying(station._id);
 
