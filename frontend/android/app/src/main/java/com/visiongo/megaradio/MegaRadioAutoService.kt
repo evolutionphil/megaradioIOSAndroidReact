@@ -44,6 +44,8 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
     private var cachedPopularStations: List<MegaRadioApiClient.Station> = emptyList()
     private var cachedGenres: List<MegaRadioApiClient.Genre> = emptyList()
     private var cachedGenreStations: MutableMap<String, List<MegaRadioApiClient.Station>> = mutableMapOf()
+    private var cachedSearchResults: List<MegaRadioApiClient.Station> = emptyList()
+    private var lastSearchQuery: String = ""
     
     // Current playback state
     private var currentStation: MegaRadioApiClient.Station? = null
