@@ -742,6 +742,9 @@ const createRootTemplate = async (): Promise<void> => {
     CarPlayLogger.info('[RN] Creating root template - fetching data...');
     
     // Create all tab templates with individual error handling
+    // NOTE: SearchTemplate CANNOT be added as a tab in Audio category apps
+    // iOS CarPlay only allows ListTemplate, GridTemplate, InformationTemplate, NowPlayingTemplate as tabs
+    // Search will be added as a list item in Browse tab instead
     CarPlayLogger.info('[RN] Starting Promise.allSettled for all templates');
     const startTime = Date.now();
     
@@ -750,26 +753,24 @@ const createRootTemplate = async (): Promise<void> => {
       createRecentlyPlayedTemplate(),
       createBrowseTemplate(),
       createGenresTemplate(),
-      createSearchTemplate(),
+      // SearchTemplate removed from tabs - not allowed in Audio apps
     ]);
     
     const duration = Date.now() - startTime;
     CarPlayLogger.info('[RN] Promise.allSettled completed', { durationMs: duration });
     
-    const [favoritesResult, recentResult, browseResult, genresResult, searchResult] = results;
+    const [favoritesResult, recentResult, browseResult, genresResult] = results;
     
     const favoritesTemplate = favoritesResult.status === 'fulfilled' ? favoritesResult.value : null;
     const recentTemplate = recentResult.status === 'fulfilled' ? recentResult.value : null;
     const browseTemplate = browseResult.status === 'fulfilled' ? browseResult.value : null;
     const genresTemplate = genresResult.status === 'fulfilled' ? genresResult.value : null;
-    const searchTemplate = searchResult.status === 'fulfilled' ? searchResult.value : null;
     
     CarPlayLogger.info('[RN] Template creation results', {
       favorites: favoritesResult.status,
       recent: recentResult.status,
       browse: browseResult.status,
       genres: genresResult.status,
-      search: searchResult.status,
     });
     
     // Log any failures
@@ -789,10 +790,6 @@ const createRootTemplate = async (): Promise<void> => {
       console.error('[CarPlay] Genres template failed:', genresResult.reason);
       CarPlayLogger.error('[RN] Genres template FAILED', { error: String(genresResult.reason) });
     }
-    if (searchResult.status === 'rejected') {
-      console.error('[CarPlay] Search template failed:', searchResult.reason);
-      CarPlayLogger.error('[RN] Search template FAILED', { error: String(searchResult.reason) });
-    }
     
     // Build tabs array with available templates
     const templates: any[] = [];
@@ -804,13 +801,8 @@ const createRootTemplate = async (): Promise<void> => {
       CarPlayLogger.info('[RN] Browse tab added');
     }
     
-    // Add Search tab (magnifying glass icon)
-    if (searchTemplate) {
-      searchTemplate.tabTitle = t('carplay_search', 'Search');
-      searchTemplate.tabSystemImageName = 'magnifyingglass';
-      templates.push(searchTemplate);
-      CarPlayLogger.info('[RN] Search tab added');
-    }
+    // NOTE: SearchTemplate removed - not allowed as tab in Audio apps
+    // Search is triggered via Siri voice commands or programmatically
     
     if (favoritesTemplate) {
       favoritesTemplate.tabTitle = t('carplay_favorites', 'Favorites');
