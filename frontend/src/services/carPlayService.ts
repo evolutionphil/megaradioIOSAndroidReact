@@ -135,6 +135,7 @@ let getFavoritesCallback: (() => Promise<Station[]>) | null = null;
 let getRecentlyPlayedCallback: (() => Promise<Station[]>) | null = null;
 let getGenresCallback: (() => Promise<{ name: string; count: number }[]>) | null = null;
 let getStationsByGenreCallback: ((genre: string) => Promise<Station[]>) | null = null;
+let searchStationsCallback: ((query: string) => Promise<Station[]>) | null = null;
 
 // Helper to get station artwork as ImageSourcePropType
 // For CarPlay: Downloads and caches image locally, returns local file path
