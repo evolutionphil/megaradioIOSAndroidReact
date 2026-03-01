@@ -232,6 +232,7 @@ export default function AllStationsScreen() {
     const logoUrl = getLogoUrl(station);
     const playing = isStationPlaying(station);
     const loading = isStationLoading(station);
+    const [imageError, setImageError] = useState(false);
 
     return (
       <TouchableOpacity
@@ -243,9 +244,10 @@ export default function AllStationsScreen() {
       >
         <View style={styles.listLogoContainer}>
           <Image
-            source={{ uri: logoUrl }}
+            source={imageError ? DEFAULT_STATION_LOGO_SOURCE : { uri: logoUrl }}
             style={styles.listLogo}
             resizeMode="cover"
+            onError={() => setImageError(true)}
           />
         </View>
         <View style={styles.listInfo}>
