@@ -403,6 +403,21 @@ export const stationService = {
     }
   },
 
+  // Get diverse recommendations (stations from different genres)
+  async getDiverseRecommendations(limit: number = 20, country?: string): Promise<{ stations: Station[] }> {
+    try {
+      const params: Record<string, any> = { limit };
+      if (country) params.country = country;
+      
+      const response = await api.get(API_ENDPOINTS.recommendations.diverse, { params });
+      console.log('[stationService] getDiverseRecommendations:', response.data?.stations?.length || 0, 'stations');
+      return response.data;
+    } catch (error) {
+      console.error('[stationService] getDiverseRecommendations error:', error);
+      return { stations: [] };
+    }
+  },
+
   // ============ Cache Management ============
   
   async isOnline(): Promise<boolean> {
