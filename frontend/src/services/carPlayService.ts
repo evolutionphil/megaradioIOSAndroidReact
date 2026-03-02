@@ -6,6 +6,14 @@ import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
 import i18n, { addLanguageChangeListener } from './i18nService';
 
+// LOCAL ASSETS for CarPlay - NO backend dependency
+// These ensure CarPlay works even when offline
+const LOCAL_FALLBACK_LOGO = require('../../../assets/images/default-station-logo.png');
+const LOCAL_GENRE_ICON = require('../../../assets/images/genre-icon.png');
+
+// URL fallback for when local asset can't be used (legacy compatibility)
+const FALLBACK_LOGO_URL = 'https://themegaradio.com/logo.png';
+
 // Helper function to get translated CarPlay strings - always use current i18n state
 const t = (key: string, fallback: string): string => {
   try {
@@ -160,9 +168,6 @@ const getStationImage = async (station: Station): Promise<{ uri: string } | null
 
 // Synchronous helper for immediate use (no caching, just returns URL for non-CarPlay use)
 const getStationImageSync = (station: Station): { uri: string } => {
-  // Default fallback - MegaRadio pink logo
-  const FALLBACK_LOGO = 'https://themegaradio.com/logo.png';
-  
   try {
     // Priority 1: logoAssets (best quality, our CDN)
     if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
@@ -196,15 +201,12 @@ const getStationImageSync = (station: Station): { uri: string } => {
     console.log('[CarPlay] Error getting station image:', e);
   }
   
-  // Fallback: MegaRadio pink logo
-  return { uri: FALLBACK_LOGO };
+  // Fallback: MegaRadio pink logo (URL for backward compat)
+  return { uri: FALLBACK_LOGO_URL };
 };
 
 // Legacy helper (string version) for backward compatibility and CarPlay imgUrl
 const getArtworkUrl = (station: Station): string => {
-  // Default fallback - MegaRadio pink logo
-  const FALLBACK_LOGO = 'https://themegaradio.com/logo.png';
-  
   try {
     // Priority 1: logoAssets (best quality, our CDN)
     if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
@@ -238,8 +240,8 @@ const getArtworkUrl = (station: Station): string => {
     console.log('[CarPlay] Error getting artwork URL:', e);
   }
   
-  // Fallback: MegaRadio pink logo
-  return FALLBACK_LOGO;
+  // Fallback: MegaRadio pink logo (URL)
+  return FALLBACK_LOGO_URL;
 };
 
 // Create Favorites List Template
@@ -416,26 +418,21 @@ const createGenresTemplate = async (): Promise<any> => {
     const genres = await getGenresCallback();
     CarPlayLogger.dataLoaded('genres', genres.length);
     
-    // NOTE: SF Symbols (systemImageName) DON'T work in react-native-carplay GridTemplate
-    // GridTemplate requires local image assets via require() or URL
-    // Using ListTemplate with genre poster images from API for reliable icon display
+    // Using ListTemplate with LOCAL genre icon - no backend dependency
+    // This ensures CarPlay genres work even when offline
     
-    console.log('[CarPlay] Using ListTemplate for genres (SF Symbols not supported in GridTemplate)');
+    console.log('[CarPlay] Using ListTemplate for genres with LOCAL icon (backend-independent)');
     
     const template = new ListTemplate({
       title: t('carplay_genres', 'Genres'),
       sections: [{
         header: `${t('carplay_music_genres', 'Music Genres')} (${Math.min(genres.length, 40)})`,
         items: genres.slice(0, 40).map(genre => {
-          // Use posterImage or discoverableImage from API if available
-          // Otherwise use a fallback logo URL
-          const imageUrl = genre.posterImage || genre.discoverableImage || FALLBACK_LOGO;
-          
           return {
             text: genre.name,
             detailText: `${genre.count || genre.stationCount || 0} ${t('carplay_stations', 'stations')}`,
-            // Use URL for images - this works in CarPlay ListTemplate
-            image: imageUrl,
+            // Use LOCAL image asset - works offline, no backend dependency
+            image: LOCAL_GENRE_ICON,
           };
         }),
       }],

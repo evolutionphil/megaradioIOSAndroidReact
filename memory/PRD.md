@@ -1399,4 +1399,32 @@ Eğer backend'de de cache implementasyonu gerekiyorsa:
 1. **Offline Test:** Airplane mode aç → App'i kapat → App'i aç → Cache'li veri görünmeli
 2. **API Hata:** API çalışmıyor → Loading yok, cache'li veri gösterilmeli
 3. **Fresh Install:** İlk kurulum + API hata → Boş yapı, crash yok
-4. **CarPlay Genre:** Genre listesinde resimler görünmeli (posterImage kullanılıyor)
+4. **CarPlay Genre:** Genre listesinde resimler görünmeli (LOCAL icon kullanılıyor - backend bağımsız)
+
+---
+
+## March 2025 - CarPlay Local Assets (Backend Bağımsızlık)
+
+### Değişiklik: CarPlay Genre İkonları için Local Asset
+**Önceki:** Backend'den posterImage/discoverableImage URL kullanılıyordu
+**Şimdi:** Local `genre-icon.png` asset kullanılıyor - backend bağımsız
+
+### Eklenen/Güncellenen Dosyalar:
+- `assets/images/genre-icon.png` - CarPlay genre ikonları için local asset
+- `src/services/carPlayService.ts`:
+  - `LOCAL_FALLBACK_LOGO` - Local fallback logo asset
+  - `LOCAL_GENRE_ICON` - Local genre icon asset
+  - `FALLBACK_LOGO_URL` - URL bazlı fallback (legacy)
+  - Genre template artık `LOCAL_GENRE_ICON` kullanıyor
+
+### Neden Local Asset?
+1. **Offline Çalışma:** Backend'e erişim olmadan CarPlay çalışır
+2. **Güvenilirlik:** Network hataları genre ikonlarını etkilemez
+3. **Performans:** Local asset anında yüklenir, network gecikmesi yok
+4. **Tutarlılık:** Tüm genre'lar aynı ikonu gösterir
+
+### CarPlay Template Yapısı:
+- **Genres:** ListTemplate + LOCAL_GENRE_ICON (her genre aynı ikon)
+- **Stations:** Station'ların kendi logoları URL olarak (getArtworkUrl)
+- **Fallback:** FALLBACK_LOGO_URL (station logosu yoksa)
+
