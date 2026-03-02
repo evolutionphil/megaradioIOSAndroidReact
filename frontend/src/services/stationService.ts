@@ -44,11 +44,23 @@ export const stationService = {
 
   // Get list of stations with CACHE-FIRST pattern
   async getStations(params: StationQueryParams = {}): Promise<{ stations: Station[]; totalCount: number }> {
-    // Try to get from precomputed cache if country is specified
+    // Try to get from popular stations cache first (more likely to have data)
     if (params.country) {
+      // First try popular stations cache for the country
+      const cachedPopular = await stationCache.getPopularStations(params.country);
+      if (cachedPopular && cachedPopular.length > 0) {
+        console.log('[stationService] CACHE-FIRST: Using cached popular stations for list, count:', cachedPopular.length);
+        
+        // Refresh in background
+        this.refreshStationsInBackground(params);
+        
+        return { stations: cachedPopular.slice(0, params.limit || 50), totalCount: cachedPopular.length };
+      }
+      
+      // Fallback to all stations cache
       const cached = await stationCache.getAllStations();
       if (cached && cached.length > 0) {
-        console.log('[stationService] CACHE-FIRST: Using cached stations for list, count:', cached.length);
+        console.log('[stationService] CACHE-FIRST: Using cached all stations for list, count:', cached.length);
         // Filter by country if needed
         const filtered = cached.filter((s: Station) => 
           s.country?.toLowerCase() === params.country?.toLowerCase() ||
@@ -107,6 +119,20 @@ export const stationService = {
       this.refreshPopularStationsInBackground(country, limit, isLargeRequest);
       
       return { stations: cached, count: cached.length };
+    }
+    
+    // FALLBACK: Check any country cache if specific country cache is empty
+    // This ensures we have SOME data even if country-specific cache is missing
+    if (country) {
+      const anyCached = await stationCache.getPopularStations(undefined, limit);
+      if (anyCached && anyCached.length > 0) {
+        console.log('[stationService] FALLBACK: Using global cache while fetching country-specific data, count:', anyCached.length);
+        
+        // Fetch country-specific data in background
+        this.fetchPopularStationsFromAPI(country, limit, isLargeRequest).catch(() => {});
+        
+        return { stations: anyCached, count: anyCached.length };
+      }
     }
     
     // No cache - must fetch from API

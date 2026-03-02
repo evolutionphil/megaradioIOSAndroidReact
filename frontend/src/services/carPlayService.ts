@@ -285,8 +285,9 @@ const createFavoritesTemplate = async (): Promise<any> => {
   try {
     CarPlayLogger.dataLoading('favorites');
     
-    // NON-BLOCKING: Race with timeout - return empty if data takes too long
-    const TIMEOUT_MS = 2000;
+    // COLD START FIX: Increased timeout to 10s for cold start scenarios
+    // JS bundle initialization and API calls can take longer on first launch
+    const TIMEOUT_MS = 10000;
     const timeoutPromise = new Promise<Station[]>((resolve) => 
       setTimeout(() => {
         console.log('[CarPlay] Favorites timeout - returning empty');
@@ -351,8 +352,8 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
   try {
     CarPlayLogger.dataLoading('recentlyPlayed');
     
-    // NON-BLOCKING: Race with timeout - return empty if data takes too long
-    const TIMEOUT_MS = 2000;
+    // COLD START FIX: Increased timeout to 10s for cold start scenarios
+    const TIMEOUT_MS = 10000;
     const timeoutPromise = new Promise<Station[]>((resolve) => 
       setTimeout(() => {
         console.log('[CarPlay] RecentlyPlayed timeout - returning empty');
@@ -363,18 +364,58 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const recentStations = await Promise.race([getRecentlyPlayedCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
+    // Use GridTemplate for Recently Played if available (better visual layout)
+    if (GridTemplate && recentStations.length > 0) {
+      console.log('[CarPlay] Using GridTemplate for Recently Played (Zuletzt gespielt)');
+      
+      const gridButtons = recentStations.slice(0, 24).map((station, index) => {
+        const imgUrl = getArtworkUrl(station);
+        return {
+          id: `recent_${index}`,
+          titleVariants: [station.name],
+          image: imgUrl,
+        };
+      });
+      
+      const template = new GridTemplate({
+        title: t('carplay_recently_played', 'Zuletzt gespielt'),
+        buttons: gridButtons,
+        onButtonPressed: async (button: { id: string }) => {
+          const index = parseInt(button.id.replace('recent_', ''), 10);
+          const station = recentStations[index];
+          if (station && playStationCallback) {
+            CarPlayLogger.stationSelected(station.name, station._id);
+            console.log('[CarPlay] Playing recent from grid:', station.name);
+            try {
+              await playStationCallback(station);
+              CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
+              showNowPlayingTemplate(station);
+            } catch (e: any) {
+              CarPlayLogger.playbackError(e, station.name);
+            }
+          }
+        },
+      });
+      
+      CarPlayLogger.templateCreated('RecentlyPlayed (Grid)', { itemCount: recentStations.length });
+      return template;
+    }
+    
+    // Fallback to ListTemplate if GridTemplate not available or no stations
+    console.log('[CarPlay] Using ListTemplate for Recently Played (fallback)');
+    
     // Build items with imgUrl for async native image loading
     const items = recentStations.map(station => {
       const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        imgUrl: imgUrl, // Native will download this asynchronously
+        imgUrl: imgUrl,
       };
     });
     
     const template = new ListTemplate({
-      title: t('carplay_recently_played', 'Recently Played'),
+      title: t('carplay_recently_played', 'Zuletzt gespielt'),
       sections: [{
         header: `${t('carplay_recent_stations', 'Recent Stations')} (${recentStations.length})`,
         items,
@@ -465,8 +506,8 @@ const createGenresTemplate = async (): Promise<any> => {
   try {
     CarPlayLogger.dataLoading('genres');
     
-    // NON-BLOCKING: Race with timeout - return empty if data takes too long
-    const TIMEOUT_MS = 2000;
+    // COLD START FIX: Increased timeout to 10s for cold start scenarios
+    const TIMEOUT_MS = 10000;
     const timeoutPromise = new Promise<{ name: string; count: number }[]>((resolve) => 
       setTimeout(() => {
         console.log('[CarPlay] Genres timeout - returning empty');
@@ -583,8 +624,8 @@ const createBrowseTemplate = async (): Promise<any> => {
   try {
     CarPlayLogger.dataLoading('popularStations');
     
-    // NON-BLOCKING: Race with timeout - return empty if data takes too long
-    const TIMEOUT_MS = 2000;
+    // COLD START FIX: Increased timeout to 10s for cold start scenarios
+    const TIMEOUT_MS = 10000;
     const timeoutPromise = new Promise<Station[]>((resolve) => 
       setTimeout(() => {
         console.log('[CarPlay] Browse/Popular timeout - returning empty');

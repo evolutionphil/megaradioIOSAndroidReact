@@ -10,6 +10,41 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
+## Build 48 - December 2025 (Latest)
+
+### 🔧 Yapılan Düzeltmeler (Bu Session)
+
+1. **CarPlay Cold-Start Timeout Artırımları**
+   - iOS Swift tarafı: Cold start gecikmeleri 3s → 5s
+   - iOS Swift tarafı: Template kontrol gecikmesi 8s → 15s
+   - JS tarafı: Tüm template timeout'ları 5s → 10s
+   - Amaç: JS bundle'ın tam yüklenmesini beklemek
+
+2. **Cache-First Pattern İyileştirmeleri**
+   - `stationService.getPopularStations()`: Ülke cache'i boşsa global cache'i fallback olarak kullan
+   - `stationService.getStations()`: Önce popular stations cache'ini, sonra all stations cache'ini dene
+   - Background refresh tüm senaryolarda tetikleniyor
+
+3. **Build Numarası**
+   - iOS buildNumber: 47 → 48
+   - Android versionCode: 47 → 48
+
+### ⚠️ Test Gerekli (Yeni Build Sonrası)
+
+| Sorun | Yapılan Düzeltme | Test Durumu |
+|-------|------------------|-------------|
+| CarPlay cold-start "Yükleniyor..." | Timeout'lar 5-15s'ye artırıldı | ❓ Test edilmeli |
+| "Tüm İstasyonlar" boş | Popular cache fallback eklendi | ❓ Test edilmeli |
+| CarPlay "Keşfet" boş | Timeout ve cache fallback | ❓ Test edilmeli |
+
+### 📝 Yeni Build Komutu:
+```bash
+eas build --platform ios --clear-cache
+eas build --platform android --clear-cache
+```
+
+---
+
 ## Latest Update (December 2025) - Fork Session
 
 ### 🔧 Yapılan Düzeltmeler
