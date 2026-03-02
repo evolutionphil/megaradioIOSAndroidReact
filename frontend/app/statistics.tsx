@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 import statsService, { ListeningStats } from '../src/services/statsService';
 
@@ -58,6 +59,7 @@ interface LocalStats extends ListeningStats {
 
 export default function StatisticsScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [stats, setStats] = useState<LocalStats>({
     totalMinutes: 0,
     totalStations: 136000,
@@ -116,7 +118,7 @@ export default function StatisticsScreen() {
         >
           <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Statistics</Text>
+        <Text style={styles.headerTitle}>{t('statistics', 'Statistics')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -129,7 +131,7 @@ export default function StatisticsScreen() {
           {/* Total Listening Card */}
           <View style={styles.totalListeningCard} data-testid="total-listening-card">
             <View style={styles.totalListeningContent}>
-              <Text style={styles.cardLabel}>Total Listening</Text>
+              <Text style={styles.cardLabel}>{t('total_listening', 'Total Listening')}</Text>
               <Text style={styles.totalListeningValue}>
                 {formatListeningTime(stats.totalMinutes)}
               </Text>
@@ -143,13 +145,13 @@ export default function StatisticsScreen() {
           <View style={styles.statsRow}>
             {/* Unique Stations Listened Card */}
             <View style={styles.statCard} data-testid="unique-stations-card">
-              <Text style={styles.cardLabel}>Unique Stations</Text>
+              <Text style={styles.cardLabel}>{t('unique_stations', 'Unique Stations')}</Text>
               <Text style={styles.statValue}>{stats.uniqueStations}</Text>
             </View>
 
             {/* Music Played Card */}
             <View style={styles.statCard} data-testid="music-played-card">
-              <Text style={styles.cardLabel}>Songs Played</Text>
+              <Text style={styles.cardLabel}>{t('songs_played', 'Songs Played')}</Text>
               <Text style={styles.statValue}>{formatNumber(stats.musicPlayed)}</Text>
             </View>
           </View>

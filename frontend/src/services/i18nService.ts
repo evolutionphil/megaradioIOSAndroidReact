@@ -242,6 +242,50 @@ const defaultTranslations: Record<string, string> = {
   try_different_search_term: 'Try searching for something else',
   search_stations_title: 'Search Stations',
   find_favorites: 'Find your favorite radio stations, genres, and users',
+  
+  // Statistics Page
+  total_listening: 'Total Listening',
+  unique_stations: 'Unique Stations',
+  songs_played: 'Songs Played',
+  
+  // Play at Login Page
+  last_played_option: 'Last Played',
+  random_option: 'Random',
+  favorite_option: 'Favorite',
+  off_option: 'Off',
+  
+  // Forgot Password Page
+  email_sent: 'Email Sent!',
+  check_email_reset: 'Check your email for the password reset link',
+  back_to_login: 'Back to Login',
+  forgot_password_title: 'Forgot your password?',
+  forgot_password_subtitle: 'Enter your email address and we will send you a link to reset your password',
+  send: 'Send',
+  
+  // Player Page
+  no_station_playing: 'No station playing',
+  select_station_to_listen: 'Select a station to start listening',
+  go_back: 'Go Back',
+  timer_on: 'ON',
+  hd_quality: 'HD',
+  
+  // Nearby Stations
+  enable_location_nearby: 'Enable location services to discover radio stations near you',
+  no_nearby_stations: 'No stations found nearby',
+  try_different_location: 'Try moving to a different location',
+  
+  // Followers/Following
+  remove: 'Remove',
+  no_followers: 'No followers yet',
+  no_following: 'Not following anyone yet',
+  
+  // Empty States
+  search_radio_stations: 'Search for radio stations, genres, and users',
+  
+  // Notifications
+  started_following_you: 'started following you',
+  new_station_added: 'New station added',
+  system_notification: 'System notification',
 };
 
 // Translation cache
@@ -477,6 +521,50 @@ const turkishTranslations: Record<string, string> = {
   try_different_search_term: 'Farklı bir şey aramayı deneyin',
   search_stations_title: 'İstasyonları Ara',
   find_favorites: 'Favori radyo istasyonlarınızı, türleri ve kullanıcıları bulun',
+  
+  // Statistics Page
+  total_listening: 'Toplam Dinleme',
+  unique_stations: 'Benzersiz İstasyonlar',
+  songs_played: 'Çalınan Şarkılar',
+  
+  // Play at Login Page
+  last_played_option: 'Son Çalınan',
+  random_option: 'Rastgele',
+  favorite_option: 'Favori',
+  off_option: 'Kapalı',
+  
+  // Forgot Password Page
+  email_sent: 'E-posta Gönderildi!',
+  check_email_reset: 'Şifre sıfırlama bağlantısı için e-postanızı kontrol edin',
+  back_to_login: 'Girişe Dön',
+  forgot_password_title: 'Şifrenizi mi unuttunuz?',
+  forgot_password_subtitle: 'E-posta adresinizi girin, size şifrenizi sıfırlamak için bir bağlantı gönderelim',
+  send: 'Gönder',
+  
+  // Player Page
+  no_station_playing: 'Çalan istasyon yok',
+  select_station_to_listen: 'Dinlemeye başlamak için bir istasyon seçin',
+  go_back: 'Geri Dön',
+  timer_on: 'AÇIK',
+  hd_quality: 'HD',
+  
+  // Nearby Stations
+  enable_location_nearby: 'Yakınınızdaki radyo istasyonlarını keşfetmek için konum hizmetlerini etkinleştirin',
+  no_nearby_stations: 'Yakında istasyon bulunamadı',
+  try_different_location: 'Farklı bir konuma taşınmayı deneyin',
+  
+  // Followers/Following
+  remove: 'Kaldır',
+  no_followers: 'Henüz takipçi yok',
+  no_following: 'Henüz kimseyi takip etmiyor',
+  
+  // Empty States
+  search_radio_stations: 'Radyo istasyonları, türler ve kullanıcıları arayın',
+  
+  // Notifications
+  started_following_you: 'sizi takip etmeye başladı',
+  new_station_added: 'Yeni istasyon eklendi',
+  system_notification: 'Sistem bildirimi',
 };
 
 // German translations
