@@ -1465,4 +1465,45 @@ Eğer backend'de de cache implementasyonu gerekiyorsa:
 3. ✅ **Backend Bağımsız** - API'ye gerek yok
 4. ✅ **CarPlay UX** - Kullanıcı genre'ı ikondan tanır
 
+---
+
+## March 2025 - CarPlay Performance Optimizations
+
+### Root Cause Analysis (Troubleshoot Agent):
+CarPlay'in bazen geç yüklenmesinin nedenleri tespit edildi:
+
+1. **Cold Cache** - Cache boşken 4 ayrı API çağrısı blocking olarak çalışıyordu
+2. **Favorites Sync** - `syncWithServer()` her seferinde blocking çağrı yapıyordu
+3. **iOS Cold-Start Delay** - 2 saniye bekleme süresi vardı
+4. **No Preloading** - Data CarPlay bağlanınca yükleniyordu, önceden değil
+
+### Uygulanan Optimizasyonlar:
+
+**1. Favorites Non-Blocking (CarPlayHandler.tsx)**
+- Local favorites anında döndürülüyor
+- Server sync arka planda yapılıyor
+- 2 saniye timeout ile graceful degradation
+
+**2. iOS Timing Optimizations (CarPlaySceneDelegate.swift)**
+- Cold-start delay: 2.0s → 1.0s
+- Loading check delay: 5.0s → 3.0s
+- Toplam kazanç: ~3 saniye
+
+**3. Cache Pre-Warming (CarPlayHandler.tsx)**
+- Component mount olduğunda cache ısıtılıyor
+- Popular stations, genres ve favorites paralel yükleniyor
+- CarPlay bağlanmadan önce data hazır
+
+### Beklenen İyileşme:
+| Senaryo | Önceki | Sonra |
+|---------|--------|-------|
+| Warm Cache | ~1s | ~1s |
+| Cold Cache | 3-5s | 1-2s |
+| Cold Start | 5-7s | 2-3s |
+
+### Değişen Dosyalar:
+- `src/components/CarPlayHandler.tsx` - Non-blocking favorites, cache pre-warm
+- `ios/MegaRadio/CarPlaySceneDelegate.swift` - Reduced delays
+
+
 

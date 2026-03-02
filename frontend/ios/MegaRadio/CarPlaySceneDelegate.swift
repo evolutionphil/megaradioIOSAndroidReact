@@ -276,8 +276,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 sendRemoteLog(level: "info", message: "Cold-start detected - initializing React Native from CarPlay scene")
                 appDelegate.initAppFromScene(connectionOptions: nil)
                 
-                // Wait a bit longer for JS bundle to load on cold-start
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                // PERFORMANCE: Reduced from 2.0s to 1.0s - RN bundle typically loads in <1s on modern devices
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                     self?.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
                 }
                 return
@@ -290,8 +290,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         // Then connect to React Native
         safeConnectToRNCarPlay(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
         
-        // Schedule a check to see if template was replaced
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+        // PERFORMANCE: Reduced from 5.0s to 3.0s - faster feedback if stuck
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
             self?.checkIfStillShowingLoading()
         }
     }
@@ -306,8 +306,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         // Connect to React Native with extended retry for cold-start
         safeConnectToRNCarPlay(interfaceController: interfaceController, window: window)
         
-        // Schedule a check
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+        // PERFORMANCE: Reduced from 5.0s to 3.0s - faster feedback if stuck
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
             self?.checkIfStillShowingLoading()
         }
     }
@@ -348,8 +348,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 sendRemoteLog(level: "info", message: "Cold-start detected (iOS 14+) - initializing React Native from CarPlay scene")
                 appDelegate.initAppFromScene(connectionOptions: nil)
                 
-                // Wait a bit longer for JS bundle to load on cold-start
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                // PERFORMANCE: Reduced from 2.0s to 1.0s - RN bundle typically loads in <1s
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                     self?.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: window)
                 }
                 return
@@ -362,8 +362,8 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         // Then connect to React Native
         safeConnectToRNCarPlay(interfaceController: interfaceController, window: window)
         
-        // Schedule a check to see if template was replaced
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+        // PERFORMANCE: Reduced from 5.0s to 3.0s - faster feedback if stuck
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
             self?.checkIfStillShowingLoading()
         }
     }

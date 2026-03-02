@@ -52,18 +52,48 @@ const getFavoriteStations = async (): Promise<Station[]> => {
   try {
     const store = useFavoritesStore.getState();
     
-    // If favorites not loaded yet, try to sync with server first
-    if (!store.isLoaded || store.favorites.length === 0) {
-      console.log('[CarPlayHandler] Favorites not loaded, attempting to sync...');
-      try {
-        await store.syncWithServer();
-      } catch (syncError) {
-        console.log('[CarPlayHandler] Server sync failed, trying local load...');
-        await store.loadLocalFavorites();
+    // PERFORMANCE FIX: Return local favorites immediately, don't block on server sync
+    // This prevents CarPlay from waiting for network requests
+    if (store.favorites.length > 0) {
+      console.log('[CarPlayHandler] Returning cached favorites immediately:', store.favorites.length);
+      
+      // Sync in background (non-blocking) for next time
+      if (!store.isLoaded) {
+        store.syncWithServer().catch(() => {
+          store.loadLocalFavorites().catch(() => {});
+        });
       }
+      
+      return store.favorites;
     }
     
-    // Get fresh state after loading
+    // No cached favorites - try local storage first (fast)
+    console.log('[CarPlayHandler] No cached favorites, trying local storage...');
+    try {
+      await store.loadLocalFavorites();
+      const localFavorites = useFavoritesStore.getState().favorites;
+      if (localFavorites.length > 0) {
+        console.log('[CarPlayHandler] Loaded', localFavorites.length, 'favorites from local storage');
+        // Background sync for freshness
+        store.syncWithServer().catch(() => {});
+        return localFavorites;
+      }
+    } catch (e) {
+      console.log('[CarPlayHandler] Local favorites load failed');
+    }
+    
+    // Last resort - quick server sync with timeout
+    console.log('[CarPlayHandler] Attempting quick server sync...');
+    try {
+      // Give server sync max 2 seconds, then return empty
+      const timeoutPromise = new Promise<void>((_, reject) => 
+        setTimeout(() => reject(new Error('timeout')), 2000)
+      );
+      await Promise.race([store.syncWithServer(), timeoutPromise]);
+    } catch (e) {
+      console.log('[CarPlayHandler] Server sync timed out or failed');
+    }
+    
     const favorites = useFavoritesStore.getState().favorites;
     console.log('[CarPlayHandler] Returning', favorites?.length || 0, 'favorites');
     return favorites || [];
@@ -203,6 +233,26 @@ export const CarPlayHandler: React.FC = () => {
       sendLog('[CarPlayHandler] Skipping - web platform');
       return;
     }
+
+    // PERFORMANCE: Pre-warm the cache in the background
+    // This ensures data is ready BEFORE CarPlay connects
+    const preWarmCache = async () => {
+      console.log('[CarPlayHandler] Pre-warming cache for faster CarPlay loading...');
+      const { country, countryEnglish } = useLocationStore.getState();
+      const selectedCountry = country || countryEnglish || undefined;
+      
+      // Fire all preload requests in parallel (non-blocking)
+      Promise.all([
+        stationService.getPopularStations(selectedCountry, 50).catch(() => {}),
+        genreService.getPrecomputedGenres(selectedCountry, 40).catch(() => {}),
+        useFavoritesStore.getState().loadLocalFavorites().catch(() => {}),
+      ]).then(() => {
+        console.log('[CarPlayHandler] Cache pre-warmed successfully');
+        sendLog('[CarPlayHandler] Cache pre-warmed');
+      }).catch(() => {});
+    };
+    
+    preWarmCache();
 
     if (!playStation) {
       console.log('[CarPlayHandler] playStation not ready yet');
