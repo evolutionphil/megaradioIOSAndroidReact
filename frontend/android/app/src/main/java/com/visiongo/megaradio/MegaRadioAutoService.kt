@@ -1,6 +1,9 @@
 package com.visiongo.megaradio
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -51,9 +54,27 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
     private var currentStation: MegaRadioApiClient.Station? = null
     private var selectedCountry: String? = null // User's selected country
 
+    // Broadcast receiver for country changes from React Native
+    private val countryReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                if (it.action == "com.visiongo.megaradio.SET_COUNTRY") {
+                    val country = it.getStringExtra("country")
+                    Log.d(TAG, "Received country change from React Native: $country")
+                    setSelectedCountry(country)
+                }
+            }
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Android Auto Service created")
+
+        // Register country change receiver
+        val filter = IntentFilter("com.visiongo.megaradio.SET_COUNTRY")
+        registerReceiver(countryReceiver, filter)
+        Log.d(TAG, "Registered country change receiver")
 
         // Initialize media session
         mediaSession = MediaSessionCompat(this, TAG).apply {
@@ -87,6 +108,14 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Android Auto Service destroyed")
+        
+        // Unregister receiver
+        try {
+            unregisterReceiver(countryReceiver)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error unregistering receiver: ${e.message}")
+        }
+        
         serviceScope.cancel()
         mediaSession.release()
     }

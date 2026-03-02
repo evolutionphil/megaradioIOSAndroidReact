@@ -2,7 +2,7 @@
 // Must be rendered inside AudioProvider
 
 import { useEffect, useRef } from 'react';
-import { Platform } from 'react-native';
+import { Platform, NativeModules, NativeEventEmitter } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
@@ -13,12 +13,16 @@ import useRecentlyPlayedStore from '../store/recentlyPlayedStore';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import type { Station } from '../types';
 
+// Android Auto Native Module
+const { AndroidAutoModule } = NativeModules;
+
 // Track last values to detect changes (module-level for persistence)
 let lastCountry: string | null = null;
 let lastFavoritesCount: number = -1; // -1 to detect first load
 let lastRecentCount: number = -1; // -1 to detect first load
 let refreshDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 let isRefreshing: boolean = false; // Prevent concurrent refreshes (crash fix)
+let androidAutoEventEmitter: NativeEventEmitter | null = null;
 
 // API wrapper functions for CarPlay
 const getPopularStations = async (): Promise<Station[]> => {
@@ -352,6 +356,102 @@ export const CarPlayHandler: React.FC = () => {
     
     lastRecentCount = currentCount;
   }, [recentStations]);
+
+  // ==================== ANDROID AUTO INTEGRATION ====================
+  
+  // Initialize Android Auto event listeners (Android only)
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !AndroidAutoModule) {
+      return;
+    }
+    
+    console.log('[CarPlayHandler] Initializing Android Auto event listeners');
+    
+    try {
+      // Create event emitter for Android Auto
+      androidAutoEventEmitter = new NativeEventEmitter(AndroidAutoModule);
+      
+      // Listen for play station events from Android Auto
+      const playStationSubscription = androidAutoEventEmitter.addListener(
+        'AndroidAutoPlayStation',
+        async (event: {
+          stationId: string;
+          stationName: string;
+          streamUrl: string;
+          logoUrl: string;
+          country: string;
+          genre: string;
+        }) => {
+          console.log('[CarPlayHandler] Android Auto play station:', event.stationName);
+          sendLog('[CarPlayHandler] Android Auto play station', { station: event.stationName });
+          
+          // Create station object and play
+          const station: Station = {
+            _id: event.stationId,
+            name: event.stationName,
+            url: event.streamUrl,
+            url_resolved: event.streamUrl,
+            favicon: event.logoUrl,
+            country: event.country,
+            tags: event.genre,
+          } as Station;
+          
+          if (playStation) {
+            try {
+              await playStation(station);
+              console.log('[CarPlayHandler] Android Auto station playing:', event.stationName);
+            } catch (error) {
+              console.error('[CarPlayHandler] Android Auto playback error:', error);
+            }
+          }
+        }
+      );
+      
+      // Listen for playback commands from Android Auto
+      const commandSubscription = androidAutoEventEmitter.addListener(
+        'AndroidAutoPlaybackCommand',
+        (event: { command: string }) => {
+          console.log('[CarPlayHandler] Android Auto command:', event.command);
+          sendLog('[CarPlayHandler] Android Auto command', { command: event.command });
+          
+          // Handle commands through TrackPlayer
+          // Note: These are typically handled by react-native-track-player automatically
+          // but we log them for debugging
+        }
+      );
+      
+      // Set initial country for Android Auto
+      const { countryEnglish, country: currentCountry } = useLocationStore.getState();
+      const selectedCountry = countryEnglish || currentCountry || null;
+      if (selectedCountry && AndroidAutoModule?.setSelectedCountry) {
+        AndroidAutoModule.setSelectedCountry(selectedCountry);
+        console.log('[CarPlayHandler] Set Android Auto country:', selectedCountry);
+      }
+      
+      return () => {
+        console.log('[CarPlayHandler] Cleaning up Android Auto listeners');
+        playStationSubscription.remove();
+        commandSubscription.remove();
+        androidAutoEventEmitter = null;
+      };
+    } catch (error) {
+      console.error('[CarPlayHandler] Error setting up Android Auto listeners:', error);
+    }
+  }, [playStation]);
+  
+  // Sync country changes to Android Auto
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !AndroidAutoModule?.setSelectedCountry) {
+      return;
+    }
+    
+    const selectedCountry = countryEnglish || country || null;
+    
+    if (selectedCountry) {
+      console.log('[CarPlayHandler] Syncing country to Android Auto:', selectedCountry);
+      AndroidAutoModule.setSelectedCountry(selectedCountry);
+    }
+  }, [country, countryEnglish]);
 
   // This component doesn't render anything
   return null;

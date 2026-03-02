@@ -1542,6 +1542,81 @@ const data = await Promise.race([callback(), timeoutPromise]);
 3. ✅ **UX iyileştirmesi** - Kullanıcı "Yükleniyor..." yerine hızlıca UI görür
 4. ✅ **tv=1 otomatik** - Tüm isteklere interceptor ile ekleniyor
 
+---
+
+## March 2025 - Android Auto Full API Integration
+
+### Entegrasyon Mimarisi:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        ANDROID AUTO                              │
+├─────────────────────────────────────────────────────────────────┤
+│  MegaRadioAutoService.kt                                        │
+│  ├── MediaBrowserServiceCompat (media browsing)                 │
+│  ├── MediaSessionCompat (playback controls)                     │
+│  ├── MegaRadioApiClient (API calls)                            │
+│  └── BroadcastReceiver (country sync from RN)                  │
+├─────────────────────────────────────────────────────────────────┤
+│  AndroidAutoModule.kt                                           │
+│  ├── NativeModule (RN bridge)                                  │
+│  ├── BroadcastReceiver (events from service)                   │
+│  └── setSelectedCountry() (sync country to service)            │
+├─────────────────────────────────────────────────────────────────┤
+│  CarPlayHandler.tsx                                             │
+│  ├── Android Auto event listeners                              │
+│  ├── Country sync to Android Auto                              │
+│  └── Play station from Android Auto events                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Dosya Yapısı:
+
+| Dosya | Rol |
+|-------|-----|
+| `MegaRadioAutoService.kt` | Android Auto media browser service |
+| `MegaRadioApiClient.kt` | API çağrıları (OkHttp) |
+| `AndroidAutoModule.kt` | React Native bridge (NativeModule) |
+| `AndroidAutoPackage.kt` | RN package registration |
+| `CarPlayHandler.tsx` | JS tarafı event handling |
+
+### Özellikler:
+
+**1. Media Browsing Hierarchy:**
+- 📁 Search (Voice commands + recent searches)
+- 📁 Popular Stations (country-filtered)
+- 📁 Genres → Genre Stations
+- 📁 Discover (diverse recommendations)
+
+**2. Voice Commands (Google Assistant):**
+```
+"Hey Google, MegaRadio'da jazz ara"
+"Hey Google, rock müzik çal"
+"Hey Google, Power FM aç"
+```
+
+**3. Country Sync:**
+- React Native → AndroidAutoModule.setSelectedCountry()
+- BroadcastReceiver → MegaRadioAutoService
+- API calls filtered by country
+
+**4. Playback Events:**
+- Android Auto → AndroidAutoModule (BroadcastReceiver)
+- AndroidAutoModule → CarPlayHandler (NativeEventEmitter)
+- CarPlayHandler → playStation()
+
+### Voice Command Keyword Extraction:
+Turkish and English keyword cleaning:
+- "çal", "play", "ara", "search" → removed
+- "radyo", "radio", "müzik", "music" → removed
+- "MegaRadio'da" → removed
+
+### Build Komutu:
+```bash
+eas build --platform android --clear-cache
+```
+
+
 
 
 
