@@ -9,7 +9,36 @@ import i18n, { addLanguageChangeListener } from './i18nService';
 // LOCAL ASSETS for CarPlay - NO backend dependency
 // These ensure CarPlay works even when offline
 const LOCAL_FALLBACK_LOGO = require('../../../assets/images/default-station-logo.png');
-const LOCAL_GENRE_ICON = require('../../../assets/images/genre-icon.png');
+
+// Genre-specific icons for CarPlay
+const GENRE_ICONS: { [key: string]: any } = {
+  pop: require('../../../assets/images/genres/genre-pop.png'),
+  rock: require('../../../assets/images/genres/genre-rock.png'),
+  jazz: require('../../../assets/images/genres/genre-jazz.png'),
+  classical: require('../../../assets/images/genres/genre-classical.png'),
+  dance: require('../../../assets/images/genres/genre-dance.png'),
+  electronic: require('../../../assets/images/genres/genre-dance.png'),
+  hiphop: require('../../../assets/images/genres/genre-hiphop.png'),
+  'hip-hop': require('../../../assets/images/genres/genre-hiphop.png'),
+  rap: require('../../../assets/images/genres/genre-hiphop.png'),
+  country: require('../../../assets/images/genres/genre-country.png'),
+  news: require('../../../assets/images/genres/genre-news.png'),
+  talk: require('../../../assets/images/genres/genre-news.png'),
+  sports: require('../../../assets/images/genres/genre-sports.png'),
+  world: require('../../../assets/images/genres/genre-world.png'),
+  rnb: require('../../../assets/images/genres/genre-rnb.png'),
+  'r&b': require('../../../assets/images/genres/genre-rnb.png'),
+  soul: require('../../../assets/images/genres/genre-rnb.png'),
+  metal: require('../../../assets/images/genres/genre-metal.png'),
+  blues: require('../../../assets/images/genres/genre-blues.png'),
+  default: require('../../../assets/images/genres/genre-default.png'),
+};
+
+// Get genre icon by name (case-insensitive, with fallback)
+const getGenreIcon = (genreName: string): any => {
+  const key = genreName.toLowerCase().replace(/[\s_]/g, '-').replace(/[^a-z-]/g, '');
+  return GENRE_ICONS[key] || GENRE_ICONS.default;
+};
 
 // URL fallback for when local asset can't be used (legacy compatibility)
 const FALLBACK_LOGO_URL = 'https://themegaradio.com/logo.png';
@@ -418,21 +447,24 @@ const createGenresTemplate = async (): Promise<any> => {
     const genres = await getGenresCallback();
     CarPlayLogger.dataLoaded('genres', genres.length);
     
-    // Using ListTemplate with LOCAL genre icon - no backend dependency
-    // This ensures CarPlay genres work even when offline
+    // Using ListTemplate with genre-specific LOCAL icons - no backend dependency
+    // Each genre gets its own icon (rock guitar, jazz sax, pop mic, etc.)
     
-    console.log('[CarPlay] Using ListTemplate for genres with LOCAL icon (backend-independent)');
+    console.log('[CarPlay] Using ListTemplate for genres with GENRE-SPECIFIC icons');
     
     const template = new ListTemplate({
       title: t('carplay_genres', 'Genres'),
       sections: [{
         header: `${t('carplay_music_genres', 'Music Genres')} (${Math.min(genres.length, 40)})`,
         items: genres.slice(0, 40).map(genre => {
+          // Get genre-specific icon (rock, pop, jazz, etc.) or default
+          const genreIcon = getGenreIcon(genre.name);
+          
           return {
             text: genre.name,
             detailText: `${genre.count || genre.stationCount || 0} ${t('carplay_stations', 'stations')}`,
-            // Use LOCAL image asset - works offline, no backend dependency
-            image: LOCAL_GENRE_ICON,
+            // Use genre-specific LOCAL icon - works offline, no backend dependency
+            image: genreIcon,
           };
         }),
       }],

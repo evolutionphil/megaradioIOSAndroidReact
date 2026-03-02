@@ -1424,7 +1424,45 @@ Eğer backend'de de cache implementasyonu gerekiyorsa:
 4. **Tutarlılık:** Tüm genre'lar aynı ikonu gösterir
 
 ### CarPlay Template Yapısı:
-- **Genres:** ListTemplate + LOCAL_GENRE_ICON (her genre aynı ikon)
+- **Genres:** ListTemplate + Genre-specific local icons (her genre kendi ikonu)
 - **Stations:** Station'ların kendi logoları URL olarak (getArtworkUrl)
 - **Fallback:** FALLBACK_LOGO_URL (station logosu yoksa)
+
+---
+
+## March 2025 - Genre-Specific Icons for CarPlay
+
+### Oluşturulan Genre İkonları:
+| Genre | Dosya | İkon |
+|-------|-------|------|
+| Pop | genre-pop.png | 🎤 Mikrofon |
+| Rock | genre-rock.png | 🎸 Elektro gitar |
+| Jazz | genre-jazz.png | 🎷 Saksafon |
+| Classical | genre-classical.png | 🎻 Keman & Piyano |
+| Dance/Electronic | genre-dance.png | 🎧 Kulaklık |
+| Hip-Hop/Rap | genre-hiphop.png | 🎤 Mikrofon & kulaklık |
+| Country | genre-country.png | 🎸 Akustik gitar & kovboy şapka |
+| News/Talk | genre-news.png | 💬 Konuşma balonu |
+| Sports | genre-sports.png | 🏟️ Stadyum |
+| World | genre-world.png | 🌍 Dünya & nota |
+| R&B/Soul | genre-rnb.png | ❤️ Kalp & nota |
+| Metal | genre-metal.png | 💀 Kuru kafa |
+| Blues | genre-blues.png | 🎸 Gitar & nota |
+| Default | genre-default.png | 🎤 Pop (varsayılan) |
+
+### Dosya Konumu:
+`/app/frontend/assets/images/genres/`
+
+### Kod Değişiklikleri:
+**carPlayService.ts:**
+- `GENRE_ICONS` mapping objesi eklendi
+- `getGenreIcon(genreName)` fonksiyonu eklendi
+- `createGenresTemplate()` artık genre-specific ikonları kullanıyor
+
+### Avantajlar:
+1. ✅ **Görsel Çeşitlilik** - Her genre kendi ikonu
+2. ✅ **Offline Çalışma** - Tüm ikonlar local
+3. ✅ **Backend Bağımsız** - API'ye gerek yok
+4. ✅ **CarPlay UX** - Kullanıcı genre'ı ikondan tanır
+
 
