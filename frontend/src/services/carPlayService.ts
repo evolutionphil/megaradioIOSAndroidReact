@@ -416,54 +416,26 @@ const createGenresTemplate = async (): Promise<any> => {
     const genres = await getGenresCallback();
     CarPlayLogger.dataLoaded('genres', genres.length);
     
-    // If GridTemplate is available, use grid layout with SF Symbols
-    if (GridTemplate) {
-      console.log('[CarPlay] Using GridTemplate for genres with SF Symbols');
-      
-      // Grid items with SF Symbol icons
-      const gridButtons = genres.slice(0, 40).map((genre, index) => {
-        const sfSymbol = getGenreSFSymbol(genre.name);
-        return {
-          id: `genre_${index}`,
-          titleVariants: [genre.name],
-          // Use systemImageName for SF Symbols (native iOS icons)
-          image: { 
-            systemImageName: sfSymbol,
-          },
-        };
-      });
-      
-      const template = new GridTemplate({
-        title: t('carplay_genres', 'Genres'),
-        buttons: gridButtons,
-        onButtonPressed: async (button: { id: string }) => {
-          const index = parseInt(button.id.replace('genre_', ''), 10);
-          const genre = genres[index];
-          if (genre) {
-            CarPlayLogger.info('Genre selected (grid)', { genre: genre.name });
-            console.log('[CarPlay] Genre selected from grid:', genre.name);
-            await showGenreStationsTemplate(genre.name);
-          }
-        },
-      });
-      
-      CarPlayLogger.templateCreated('Genres (Grid)', { genreCount: Math.min(genres.length, 40) });
-      return template;
-    }
+    // NOTE: SF Symbols (systemImageName) DON'T work in react-native-carplay GridTemplate
+    // GridTemplate requires local image assets via require() or URL
+    // Using ListTemplate with genre poster images from API for reliable icon display
     
-    // Fallback to ListTemplate with SF Symbols
-    console.log('[CarPlay] Using ListTemplate for genres (GridTemplate not available)');
+    console.log('[CarPlay] Using ListTemplate for genres (SF Symbols not supported in GridTemplate)');
     
     const template = new ListTemplate({
       title: t('carplay_genres', 'Genres'),
       sections: [{
         header: `${t('carplay_music_genres', 'Music Genres')} (${Math.min(genres.length, 40)})`,
         items: genres.slice(0, 40).map(genre => {
-          const sfSymbol = getGenreSFSymbol(genre.name);
+          // Use posterImage or discoverableImage from API if available
+          // Otherwise use a fallback logo URL
+          const imageUrl = genre.posterImage || genre.discoverableImage || FALLBACK_LOGO;
+          
           return {
             text: genre.name,
-            detailText: `${genre.count} ${t('carplay_stations', 'stations')}`,
-            image: { systemImageName: sfSymbol },
+            detailText: `${genre.count || genre.stationCount || 0} ${t('carplay_stations', 'stations')}`,
+            // Use URL for images - this works in CarPlay ListTemplate
+            image: imageUrl,
           };
         }),
       }],

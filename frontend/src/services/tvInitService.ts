@@ -200,9 +200,22 @@ export const fetchTvInit = async (
     console.log('[TvInit] Error checking persistent cache:', error);
   }
 
-  // 3. No cache available, fetch from API (blocking)
+  // 3. No cache available, fetch from API (blocking) - with graceful error handling
   console.log('[TvInit] No cache, fetching fresh data...');
-  return await fetchAndCache(country, lang);
+  try {
+    return await fetchAndCache(country, lang);
+  } catch (error) {
+    console.error('[TvInit] Failed to fetch from API and no cache available:', error);
+    // Return empty structure to prevent crashes - app will work with empty data
+    return {
+      countries: [],
+      genres: [],
+      translations: {},
+      popularStations: [],
+      responseTime: 0,
+      cacheAge: 0,
+    };
+  }
 };
 
 /**

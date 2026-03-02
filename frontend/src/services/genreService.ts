@@ -1,6 +1,7 @@
 // Genre Service
-// Provides genre data from API with caching and error handling
+// Provides genre data from API with CACHE-FIRST pattern
 // All methods have try/catch - API failures won't crash the app
+// Pattern: Return cache immediately → Refresh in background
 
 import api from './api';
 import { API_ENDPOINTS } from '../constants/api';
@@ -21,18 +22,43 @@ export const genreService = {
     }
   },
 
-  // Get precomputed genres (faster, cached) with error handling
+  // Get precomputed genres (faster, cached) with CACHE-FIRST pattern
   async getPrecomputedGenres(country?: string, limit: number = 40): Promise<{ success: boolean; data: Genre[] }> {
-    try {
-      // Check cache first
-      const cached = await stationCache.getGenres();
-      const isOnline = stationCache.getOnlineStatus();
+    // CACHE-FIRST: Check cache immediately for instant data
+    const cached = await stationCache.getGenres();
+    if (cached && cached.length > 0) {
+      console.log('[genreService] CACHE-FIRST: Returning cached genres, count:', cached.length);
       
-      if (!isOnline && cached) {
-        console.log('[genreService] Using cached genres (offline)');
-        return { success: true, data: cached.slice(0, limit) };
+      // Refresh in background (don't await)
+      this.refreshGenresInBackground(country, limit);
+      
+      return { success: true, data: cached.slice(0, limit) };
+    }
+    
+    // No cache - must fetch from API
+    console.log('[genreService] No cache - fetching genres from API');
+    return this.fetchPrecomputedGenresFromAPI(country, limit);
+  },
+  
+  // Background refresh for stale-while-revalidate pattern
+  async refreshGenresInBackground(country?: string, limit: number = 40): Promise<void> {
+    try {
+      const isOnline = stationCache.getOnlineStatus();
+      if (!isOnline) {
+        console.log('[genreService] OFFLINE - skipping background genre refresh');
+        return;
       }
-
+      
+      console.log('[genreService] Background refresh - fetching genres');
+      await this.fetchPrecomputedGenresFromAPI(country, limit);
+    } catch (error) {
+      console.log('[genreService] Background genre refresh failed (non-blocking):', error);
+    }
+  },
+  
+  // Actual API fetch for precomputed genres
+  async fetchPrecomputedGenresFromAPI(country?: string, limit: number = 40): Promise<{ success: boolean; data: Genre[] }> {
+    try {
       const response = await api.get(API_ENDPOINTS.genres.precomputed, {
         params: { countrycode: country, tv: 1, limit },
       });
@@ -42,15 +68,16 @@ export const genreService = {
       // Cache genres
       if (data?.data && data.data.length > 0) {
         await stationCache.setGenres(data.data);
+        console.log('[genreService] Cached', data.data.length, 'genres');
       }
       
       return data;
     } catch (error) {
-      console.error('[genreService] getPrecomputedGenres error:', error);
+      console.error('[genreService] fetchPrecomputedGenresFromAPI error:', error);
       
       // Graceful degradation
       const cached = await stationCache.getGenres();
-      if (cached) {
+      if (cached && cached.length > 0) {
         console.log('[genreService] Using cached genres (API error)');
         return { success: true, data: cached.slice(0, limit) };
       }
@@ -59,33 +86,59 @@ export const genreService = {
     }
   },
 
-  // Get discoverable/featured genres with error handling
+  // Get discoverable/featured genres with CACHE-FIRST pattern
   async getDiscoverableGenres(): Promise<Genre[]> {
-    try {
-      // Check cache first
-      const cached = await stationCache.getGenres();
-      const isOnline = stationCache.getOnlineStatus();
+    // CACHE-FIRST: Check cache immediately for instant data
+    const cached = await stationCache.getGenres();
+    if (cached && cached.length > 0) {
+      console.log('[genreService] CACHE-FIRST: Returning cached discoverable genres, count:', cached.length);
       
-      if (!isOnline && cached) {
-        console.log('[genreService] Using cached discoverable genres (offline)');
-        return cached;
+      // Refresh in background (don't await)
+      this.refreshDiscoverableGenresInBackground();
+      
+      return cached;
+    }
+    
+    // No cache - must fetch from API
+    console.log('[genreService] No cache - fetching discoverable genres from API');
+    return this.fetchDiscoverableGenresFromAPI();
+  },
+  
+  // Background refresh for discoverable genres
+  async refreshDiscoverableGenresInBackground(): Promise<void> {
+    try {
+      const isOnline = stationCache.getOnlineStatus();
+      if (!isOnline) {
+        console.log('[genreService] OFFLINE - skipping background discoverable refresh');
+        return;
       }
-
+      
+      console.log('[genreService] Background refresh - fetching discoverable genres');
+      await this.fetchDiscoverableGenresFromAPI();
+    } catch (error) {
+      console.log('[genreService] Background discoverable refresh failed (non-blocking):', error);
+    }
+  },
+  
+  // Actual API fetch for discoverable genres
+  async fetchDiscoverableGenresFromAPI(): Promise<Genre[]> {
+    try {
       const response = await api.get(API_ENDPOINTS.genres.discoverable);
       const data = response.data;
       
       // Cache genres
       if (Array.isArray(data) && data.length > 0) {
         await stationCache.setGenres(data);
+        console.log('[genreService] Cached', data.length, 'discoverable genres');
       }
       
       return data || [];
     } catch (error) {
-      console.error('[genreService] getDiscoverableGenres error:', error);
+      console.error('[genreService] fetchDiscoverableGenresFromAPI error:', error);
       
       // Graceful degradation
       const cached = await stationCache.getGenres();
-      if (cached) {
+      if (cached && cached.length > 0) {
         console.log('[genreService] Using cached discoverable genres (API error)');
         return cached;
       }

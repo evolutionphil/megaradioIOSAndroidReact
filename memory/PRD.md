@@ -1344,3 +1344,59 @@ eas build --platform android --clear-cache
 - Crash analizi yapıldı
 - React Query cache isolation sorunu tespit edildi
 - iOS CarPlay template kısıtlaması belirlendi
+
+
+---
+
+## March 2025 - Cache-First Pattern Implementation
+
+### Problem: API çalışmadığında loading state ve boş data
+**Kök Neden:** "Online-first" pattern - cache sadece offline durumda kullanılıyordu
+
+### Çözüm: Cache-First with Background Refresh Pattern
+Tüm service'ler şimdi bu pattern'ı kullanıyor:
+1. Cache'den anında veri dön
+2. Arka planda API'den güncelle
+3. Cache'i güncelle
+
+### Değiştirilen Dosyalar:
+
+**1. stationService.ts**
+- `getPopularStations()` → Cache-first pattern
+- `getStations()` → Cache-first pattern
+- Yeni: `refreshPopularStationsInBackground()`
+- Yeni: `fetchPopularStationsFromAPI()`
+- Yeni: `refreshStationsInBackground()`
+- Yeni: `fetchStationsFromAPI()`
+
+**2. genreService.ts**
+- `getPrecomputedGenres()` → Cache-first pattern
+- `getDiscoverableGenres()` → Cache-first pattern
+- Yeni: `refreshGenresInBackground()`
+- Yeni: `fetchPrecomputedGenresFromAPI()`
+- Yeni: `refreshDiscoverableGenresInBackground()`
+- Yeni: `fetchDiscoverableGenresFromAPI()`
+
+**3. tvInitService.ts**
+- `fetchTvInit()` → API hata durumunda boş yapı döndür (crash önleme)
+
+**4. carPlayService.ts**
+- GridTemplate yerine ListTemplate kullanılıyor (SF Symbols desteklenmiyor)
+- Genre ikonları için posterImage/discoverableImage URL kullanılıyor
+
+### CarPlay Genre İkonları Sorunu
+**Sorun:** SF Symbols (systemImageName) react-native-carplay'de çalışmıyor
+**Çözüm:** ListTemplate + URL bazlı resimler kullanılıyor
+
+### Backend Developer İçin Notlar:
+Eğer backend'de de cache implementasyonu gerekiyorsa:
+1. `/api/tv/init` endpoint'i zaten server-side cache yapıyor (responseTime, cacheAge)
+2. `/api/stations/popular` endpoint'i Redis/memory cache kullanmalı
+3. `/api/genres/precomputed` endpoint'i statik veri olduğu için uzun süreli cache olabilir
+4. Genre posterImage ve discoverableImage URL'leri CarPlay'de gösterilecek - bunların dolu olması önemli
+
+### Test Senaryoları:
+1. **Offline Test:** Airplane mode aç → App'i kapat → App'i aç → Cache'li veri görünmeli
+2. **API Hata:** API çalışmıyor → Loading yok, cache'li veri gösterilmeli
+3. **Fresh Install:** İlk kurulum + API hata → Boş yapı, crash yok
+4. **CarPlay Genre:** Genre listesinde resimler görünmeli (posterImage kullanılıyor)

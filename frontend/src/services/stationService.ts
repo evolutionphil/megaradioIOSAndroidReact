@@ -42,38 +42,97 @@ export const stationService = {
     }
   },
 
-  // Get list of stations with caching
+  // Get list of stations with CACHE-FIRST pattern
   async getStations(params: StationQueryParams = {}): Promise<{ stations: Station[]; totalCount: number }> {
+    // Try to get from precomputed cache if country is specified
+    if (params.country) {
+      const cached = await stationCache.getAllStations();
+      if (cached && cached.length > 0) {
+        console.log('[stationService] CACHE-FIRST: Using cached stations for list, count:', cached.length);
+        // Filter by country if needed
+        const filtered = cached.filter((s: Station) => 
+          s.country?.toLowerCase() === params.country?.toLowerCase() ||
+          s.countrycode?.toLowerCase() === params.country?.toLowerCase()
+        );
+        
+        // Refresh in background
+        this.refreshStationsInBackground(params);
+        
+        return { stations: filtered.slice(0, params.limit || 50), totalCount: filtered.length };
+      }
+    }
+    
+    // No cache or no country filter - fetch from API
+    return this.fetchStationsFromAPI(params);
+  },
+  
+  // Background refresh for stations
+  async refreshStationsInBackground(params: StationQueryParams): Promise<void> {
+    try {
+      const isOnline = await stationCache.checkOnline();
+      if (!isOnline) return;
+      
+      console.log('[stationService] Background refresh - fetching stations');
+      await this.fetchStationsFromAPI(params);
+    } catch (error) {
+      console.log('[stationService] Background stations refresh failed:', error);
+    }
+  },
+  
+  // Actual API fetch for stations list
+  async fetchStationsFromAPI(params: StationQueryParams): Promise<{ stations: Station[]; totalCount: number }> {
     try {
       const response = await api.get(API_ENDPOINTS.stations.list, { params: { ...params, tv: 1 } });
       return response.data;
     } catch (error) {
-      console.error('[stationService] getStations error:', error);
+      console.error('[stationService] fetchStationsFromAPI error:', error);
       return { stations: [], totalCount: 0 };
     }
   },
 
   // Get popular stations with 7-day caching
+  // CACHE-FIRST pattern: Return cached data immediately, refresh in background if needed
   // NOTE: limit parameter affects cache key to avoid mixing different limits
   async getPopularStations(country?: string, limit: number = 12): Promise<{ stations: Station[]; count: number }> {
+    const isLargeRequest = limit > 20;
+    
+    console.log('[stationService] getPopularStations - country:', country, 'limit:', limit, 'isLargeRequest:', isLargeRequest);
+    
+    // CACHE-FIRST: Check cache first for instant data
+    const cached = await stationCache.getPopularStations(country, limit);
+    if (cached && cached.length > 0) {
+      console.log('[stationService] CACHE-FIRST: Returning cached popular stations, count:', cached.length);
+      
+      // Refresh in background (don't await - fire and forget)
+      this.refreshPopularStationsInBackground(country, limit, isLargeRequest);
+      
+      return { stations: cached, count: cached.length };
+    }
+    
+    // No cache - must fetch from API
+    console.log('[stationService] No cache - fetching popular stations from API');
+    return this.fetchPopularStationsFromAPI(country, limit, isLargeRequest);
+  },
+  
+  // Background refresh for stale-while-revalidate pattern
+  async refreshPopularStationsInBackground(country?: string, limit: number = 12, isLargeRequest: boolean = false): Promise<void> {
     try {
       const isOnline = await stationCache.checkOnline();
-      
-      // For large limits (CarPlay), always fetch fresh to avoid cached small lists
-      const isLargeRequest = limit > 20;
-      
-      console.log('[stationService] getPopularStations - country:', country, 'limit:', limit, 'isOnline:', isOnline, 'isLargeRequest:', isLargeRequest);
-      
-      // If offline, use cache
-      if (!isOnline && !isLargeRequest) {
-        const cached = await stationCache.getPopularStations(country, limit);
-        if (cached && cached.length > 0) {
-          console.log('[stationService] OFFLINE - Using cached popular stations, count:', cached.length);
-          return { stations: cached, count: cached.length };
-        }
+      if (!isOnline) {
+        console.log('[stationService] OFFLINE - skipping background refresh');
+        return;
       }
-
-      // ALWAYS fetch from API when online - cache is only for offline fallback
+      
+      console.log('[stationService] Background refresh - fetching popular stations');
+      await this.fetchPopularStationsFromAPI(country, limit, isLargeRequest);
+    } catch (error) {
+      console.log('[stationService] Background refresh failed (non-blocking):', error);
+    }
+  },
+  
+  // Actual API fetch for popular stations
+  async fetchPopularStationsFromAPI(country?: string, limit: number = 12, isLargeRequest: boolean = false): Promise<{ stations: Station[]; count: number }> {
+    try {
       console.log('[stationService] Fetching popular stations from API, country:', country, 'limit:', limit);
       const response = await api.get(API_ENDPOINTS.stations.popular, {
         params: { country, limit, excludeBroken: true, tv: 1 },
@@ -92,18 +151,18 @@ export const stationService = {
       
       console.log('[stationService] Got', stations.length, 'popular stations from API for', country || 'global');
 
-      // Cache for offline use (only cache small requests for app home page)
+      // Cache for future use
       if (stations.length > 0 && !isLargeRequest) {
         await stationCache.setPopularStations(stations, country, limit);
       }
 
       return { stations, count: stations.length };
     } catch (error) {
-      console.error('[stationService] getPopularStations error:', error);
+      console.error('[stationService] fetchPopularStationsFromAPI error:', error);
       
-      // Graceful degradation: use cache
+      // Graceful degradation: try cache again
       const cached = await stationCache.getPopularStations(country, limit);
-      if (cached) {
+      if (cached && cached.length > 0) {
         console.log('[stationService] Using cached popular stations (API error)');
         return { stations: cached, count: cached.length };
       }
