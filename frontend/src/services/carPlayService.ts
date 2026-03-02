@@ -284,7 +284,17 @@ const createFavoritesTemplate = async (): Promise<any> => {
   
   try {
     CarPlayLogger.dataLoading('favorites');
-    const favorites = await getFavoritesCallback();
+    
+    // NON-BLOCKING: Race with timeout - return empty if data takes too long
+    const TIMEOUT_MS = 2000;
+    const timeoutPromise = new Promise<Station[]>((resolve) => 
+      setTimeout(() => {
+        console.log('[CarPlay] Favorites timeout - returning empty');
+        resolve([]);
+      }, TIMEOUT_MS)
+    );
+    
+    const favorites = await Promise.race([getFavoritesCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('favorites', favorites.length);
     
     // Build items with imgUrl for async native image loading
@@ -340,7 +350,17 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
   
   try {
     CarPlayLogger.dataLoading('recentlyPlayed');
-    const recentStations = await getRecentlyPlayedCallback();
+    
+    // NON-BLOCKING: Race with timeout - return empty if data takes too long
+    const TIMEOUT_MS = 2000;
+    const timeoutPromise = new Promise<Station[]>((resolve) => 
+      setTimeout(() => {
+        console.log('[CarPlay] RecentlyPlayed timeout - returning empty');
+        resolve([]);
+      }, TIMEOUT_MS)
+    );
+    
+    const recentStations = await Promise.race([getRecentlyPlayedCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
     // Build items with imgUrl for async native image loading
@@ -444,7 +464,17 @@ const createGenresTemplate = async (): Promise<any> => {
   
   try {
     CarPlayLogger.dataLoading('genres');
-    const genres = await getGenresCallback();
+    
+    // NON-BLOCKING: Race with timeout - return empty if data takes too long
+    const TIMEOUT_MS = 2000;
+    const timeoutPromise = new Promise<{ name: string; count: number }[]>((resolve) => 
+      setTimeout(() => {
+        console.log('[CarPlay] Genres timeout - returning empty');
+        resolve([]);
+      }, TIMEOUT_MS)
+    );
+    
+    const genres = await Promise.race([getGenresCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('genres', genres.length);
     
     // Using ListTemplate with genre-specific LOCAL icons - no backend dependency
@@ -552,7 +582,17 @@ const createBrowseTemplate = async (): Promise<any> => {
   
   try {
     CarPlayLogger.dataLoading('popularStations');
-    const stations = await getStationsCallback();
+    
+    // NON-BLOCKING: Race with timeout - return empty if data takes too long
+    const TIMEOUT_MS = 2000;
+    const timeoutPromise = new Promise<Station[]>((resolve) => 
+      setTimeout(() => {
+        console.log('[CarPlay] Browse/Popular timeout - returning empty');
+        resolve([]);
+      }, TIMEOUT_MS)
+    );
+    
+    const stations = await Promise.race([getStationsCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('popularStations', stations.length);
     
     // Build items with imgUrl for async native image loading (max 50)

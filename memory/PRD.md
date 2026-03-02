@@ -1505,5 +1505,43 @@ CarPlay'in bazen geç yüklenmesinin nedenleri tespit edildi:
 - `src/components/CarPlayHandler.tsx` - Non-blocking favorites, cache pre-warm
 - `ios/MegaRadio/CarPlaySceneDelegate.swift` - Reduced delays
 
+---
+
+## March 2025 - Non-Blocking API Calls & tv=1 Parameter
+
+### tv=1 Parametresi:
+✅ **Zaten ekleniyor** - `api.ts` içindeki request interceptor tüm isteklere otomatik `tv=1` ekliyor (satır 36-42)
+
+### Non-Blocking Template Creation:
+Tüm CarPlay template callback'lerine **2 saniye timeout** eklendi. Böylece:
+- API yavaş olsa bile UI hızlıca yüklenir
+- Timeout sonrası boş liste gösterilir
+- Arka planda data geldiğinde refresh tetiklenir
+
+### Güncellenen Template'ler:
+| Template | Timeout | Fallback |
+|----------|---------|----------|
+| Favorites | 2000ms | Boş liste |
+| Recently Played | 2000ms | Boş liste |
+| Browse (Popular) | 2000ms | Boş liste |
+| Genres | 2000ms | Boş liste |
+
+### Kod Pattern:
+```typescript
+// NON-BLOCKING: Race with timeout
+const TIMEOUT_MS = 2000;
+const timeoutPromise = new Promise<Station[]>((resolve) => 
+  setTimeout(() => resolve([]), TIMEOUT_MS)
+);
+const data = await Promise.race([callback(), timeoutPromise]);
+```
+
+### Avantajlar:
+1. ✅ **Blocking yok** - API ne kadar yavaş olursa olsun UI 2s içinde yüklenir
+2. ✅ **Graceful degradation** - Timeout olursa boş liste gösterilir
+3. ✅ **UX iyileştirmesi** - Kullanıcı "Yükleniyor..." yerine hızlıca UI görür
+4. ✅ **tv=1 otomatik** - Tüm isteklere interceptor ile ekleniyor
+
+
 
 
