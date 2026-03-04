@@ -73,10 +73,10 @@ let handlersRegistered = false;
 // Queue for pending operations when CarPlay connects before service is initialized
 let pendingConnection = false;
 
-// Cold-start retry mechanism
+// Cold-start retry mechanism - more aggressive polling for race condition fix
 let coldStartRetryCount = 0;
-const MAX_COLD_START_RETRIES = 15;
-const COLD_START_RETRY_INTERVAL = 2000; // 2 seconds
+const MAX_COLD_START_RETRIES = 30; // Increased to 30 attempts
+const COLD_START_RETRY_INTERVAL = 500; // Reduced to 500ms for faster response
 let coldStartRetryTimer: ReturnType<typeof setInterval> | null = null;
 
 // Mutex to prevent concurrent template creation (crash fix)
@@ -1115,10 +1115,23 @@ const CarPlayService: CarPlayServiceType = {
     
     // COLD-START FIX: Start periodic check for CarPlay connection
     // This handles the case where CarPlay connects before React Native is fully ready
+    // The key issue is that RNCarPlay's hasListeners flag may not be set when
+    // checkForConnection() is first called, so we need to retry it periodically
     if (!coldStartRetryTimer) {
-      CarPlayLogger.info('[RN] Starting cold-start retry timer');
+      CarPlayLogger.info('[RN] Starting cold-start retry timer with checkForConnection polling');
       coldStartRetryTimer = setInterval(() => {
         coldStartRetryCount++;
+        
+        // CRITICAL: Call checkForConnection() again - this may now succeed
+        // because hasListeners should be true after NativeEventEmitter initialization
+        try {
+          if (CarPlay?.bridge?.checkForConnection) {
+            CarPlay.bridge.checkForConnection();
+            CarPlayLogger.info('[RN] Called checkForConnection() - attempt', { attempt: coldStartRetryCount });
+          }
+        } catch (e) {
+          // Ignore errors, some versions may not have this method exposed
+        }
         
         // Check if CarPlay is now connected
         const nowConnected = CarPlay?.connected || pendingConnection;

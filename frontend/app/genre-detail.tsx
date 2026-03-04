@@ -17,6 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useGenreStations } from '../src/hooks/useQueries';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
@@ -30,6 +31,7 @@ import type { Station } from '../src/types';
 const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
 
 export default function GenreDetailScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   const slug = params.slug as string;
@@ -319,7 +321,7 @@ export default function GenreDetailScreen() {
               <Ionicons name="search" size={18} color={colors.textMuted} />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search stations..."
+                placeholder={t('search_stations', 'Search stations...')}
                 placeholderTextColor={colors.textMuted}
                 value={searchQuery}
                 onChangeText={setSearchQuery}

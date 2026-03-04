@@ -620,7 +620,7 @@ export default function PlayerScreen() {
                     console.log('[Player] Car Mode button pressed');
                     setShowCarMode(true);
                   }}
-                  accessibilityLabel="Car Mode"
+                  accessibilityLabel={t('car_mode', 'Car Mode')}
                   accessibilityRole="button"
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >

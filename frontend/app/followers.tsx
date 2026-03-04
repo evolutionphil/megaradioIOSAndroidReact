@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import api from '../src/services/api';
 import { useAuthStore } from '../src/store/authStore';
 
@@ -27,6 +28,7 @@ interface Follower {
 const DEFAULT_AVATAR = 'https://themegaradio.com/images/default-avatar.png';
 
 export default function FollowersScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const [followers, setFollowers] = useState<Follower[]>([]);
@@ -76,17 +78,17 @@ export default function FollowersScreen() {
 
   const handleRemove = async (followerId: string) => {
     if (!isAuthenticated) {
-      Alert.alert('Login Required', 'Please login to manage your followers.');
+      Alert.alert(t('login_required', 'Login Required'), t('login_required_followers', 'Please login to manage your followers.'));
       return;
     }
 
     Alert.alert(
-      'Remove Follower',
-      'Are you sure you want to remove this follower?',
+      t('remove_follower', 'Remove Follower'),
+      t('remove_follower_confirm', 'Are you sure you want to remove this follower?'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('cancel', 'Cancel'), style: 'cancel' },
         {
-          text: 'Remove',
+          text: t('remove', 'Remove'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -97,7 +99,7 @@ export default function FollowersScreen() {
               setFollowers(prev => prev.filter(f => f._id !== followerId));
             } catch (error: any) {
               console.error('Error removing follower:', error);
-              Alert.alert('Error', 'Failed to remove follower. Please try again.');
+              Alert.alert(t('error', 'Error'), t('remove_follower_failed', 'Failed to remove follower. Please try again.'));
             } finally {
               setRemoving(null);
             }
@@ -179,7 +181,7 @@ export default function FollowersScreen() {
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search followers..."
+            placeholder={t('search_followers', 'Search followers...')}
             placeholderTextColor="#666"
             value={searchQuery}
             onChangeText={setSearchQuery}

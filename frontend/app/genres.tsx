@@ -14,12 +14,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
 import { usePrecomputedGenres } from '../src/hooks/useQueries';
 import { useLocationStore } from '../src/store/locationStore';
 import type { Genre } from '../src/types';
 
 export default function GenresScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -104,7 +106,7 @@ export default function GenresScreen() {
               <Ionicons name="search" size={18} color={colors.textMuted} />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search genre"
+                placeholder={t('search_genre', 'Search genre')}
                 placeholderTextColor={colors.textMuted}
                 value={searchQuery}
                 onChangeText={setSearchQuery}

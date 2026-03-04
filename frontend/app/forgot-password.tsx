@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
 import authService from '../src/services/authService';
 
@@ -20,6 +21,7 @@ import authService from '../src/services/authService';
 const EMAIL_ICON = require('../assets/icons/email-input.png');
 
 export default function ForgotPasswordScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -126,7 +128,7 @@ export default function ForgotPasswordScreen() {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={t('email', 'Email')}
                 placeholderTextColor={colors.inputPlaceholder}
                 value={email}
                 onChangeText={(text) => {

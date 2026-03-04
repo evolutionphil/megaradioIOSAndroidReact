@@ -14,18 +14,30 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 
 ### 🔧 Yapılan Düzeltmeler (Bu Session)
 
-1. **CarPlay Cold-Start Timeout Artırımları**
+1. **CarPlay Cold-Start Race Condition Fix (KÖK NEDEN ANALİZİ YAPILDI)**
+   - **Kök Neden**: RNCarPlay modülünün `hasListeners` flag'i JS tarafında event listener'lar kayıt olmadan önce `checkForConnection()` çağrılıyor
+   - **Çözüm**: Cold-start retry mekanizmasına periyodik `checkForConnection()` çağrısı eklendi
+   - Retry interval: 2000ms → 500ms (daha agresif)
+   - Max retries: 15 → 30 (toplam 15 saniye)
    - iOS Swift tarafı: Cold start gecikmeleri 3s → 5s
    - iOS Swift tarafı: Template kontrol gecikmesi 8s → 15s
    - JS tarafı: Tüm template timeout'ları 5s → 10s
-   - Amaç: JS bundle'ın tam yüklenmesini beklemek
 
 2. **Cache-First Pattern İyileştirmeleri**
    - `stationService.getPopularStations()`: Ülke cache'i boşsa global cache'i fallback olarak kullan
    - `stationService.getStations()`: Önce popular stations cache'ini, sonra all stations cache'ini dene
    - Background refresh tüm senaryolarda tetikleniyor
 
-3. **Build Numarası**
+3. **Hardcoded String Temizliği (10+ dosya)**
+   - `genres.tsx`: Search placeholder çevirisi
+   - `follows.tsx`: Search placeholder ve Alert mesajları çevirisi
+   - `followers.tsx`: Search placeholder ve Alert mesajları çevirisi
+   - `forgot-password.tsx`: Email placeholder çevirisi
+   - `genre-detail.tsx`: Search placeholder çevirisi
+   - `player.tsx`: Car Mode accessibility label çevirisi
+   - `i18nService.ts`: 15+ yeni çeviri anahtarı eklendi
+
+4. **Build Numarası**
    - iOS buildNumber: 47 → 48
    - Android versionCode: 47 → 48
 
@@ -33,9 +45,17 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 
 | Sorun | Yapılan Düzeltme | Test Durumu |
 |-------|------------------|-------------|
-| CarPlay cold-start "Yükleniyor..." | Timeout'lar 5-15s'ye artırıldı | ❓ Test edilmeli |
+| CarPlay cold-start "Yükleniyor..." | checkForConnection() polling + timeout artırımı | ❓ Test edilmeli |
 | "Tüm İstasyonlar" boş | Popular cache fallback eklendi | ❓ Test edilmeli |
 | CarPlay "Keşfet" boş | Timeout ve cache fallback | ❓ Test edilmeli |
+
+### 📋 Backend'e Gönderilmesi Gereken Yeni Çeviri Anahtarları:
+```
+search_genre, search_following, search_followers, search_stations, car_mode,
+login_required, login_required_follow, login_required_followers,
+unfollow_confirm, unfollow_failed, remove_follower, remove_follower_confirm,
+remove_follower_failed, remove
+```
 
 ### 📝 Yeni Build Komutu:
 ```bash

@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import api from '../src/services/api';
 import { useAuthStore } from '../src/store/authStore';
 
@@ -27,6 +28,7 @@ interface Following {
 const DEFAULT_AVATAR = 'https://themegaradio.com/images/default-avatar.png';
 
 export default function FollowsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const [following, setFollowing] = useState<Following[]>([]);
@@ -75,17 +77,17 @@ export default function FollowsScreen() {
 
   const handleUnfollow = async (userId: string, userName: string) => {
     if (!isAuthenticated) {
-      Alert.alert('Login Required', 'Please login to manage who you follow.');
+      Alert.alert(t('login_required', 'Login Required'), t('login_required_follow', 'Please login to manage who you follow.'));
       return;
     }
 
     Alert.alert(
-      'Unfollow',
-      `Are you sure you want to unfollow ${userName}?`,
+      t('unfollow', 'Unfollow'),
+      t('unfollow_confirm', `Are you sure you want to unfollow ${userName}?`),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('cancel', 'Cancel'), style: 'cancel' },
         {
-          text: 'Unfollow',
+          text: t('unfollow', 'Unfollow'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -95,7 +97,7 @@ export default function FollowsScreen() {
               setFollowing(prev => prev.filter(f => f._id !== userId));
             } catch (error: any) {
               console.error('Error unfollowing:', error);
-              Alert.alert('Error', 'Failed to unfollow. Please try again.');
+              Alert.alert(t('error', 'Error'), t('unfollow_failed', 'Failed to unfollow. Please try again.'));
             } finally {
               setUnfollowing(null);
             }
@@ -177,7 +179,7 @@ export default function FollowsScreen() {
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search following..."
+            placeholder={t('search_following', 'Search following...')}
             placeholderTextColor="#666"
             value={searchQuery}
             onChangeText={setSearchQuery}
