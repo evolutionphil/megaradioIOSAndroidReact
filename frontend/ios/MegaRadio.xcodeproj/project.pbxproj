@@ -13,6 +13,10 @@
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		CARPLAY001D0307B40044C1D9 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CARPLAY002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */; };
 		PHONE001D0307B40044C1D9 /* PhoneSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = PHONE002D0307B40044C1D9 /* PhoneSceneDelegate.swift */; };
+		CACHE001D0307B40044C1D9 /* CarPlayCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACHE002D0307B40044C1D9 /* CarPlayCacheManager.swift */; };
+		BGREF001D0307B40044C1D9 /* BackgroundRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BGREF002D0307B40044C1D9 /* BackgroundRefreshManager.swift */; };
+		SPUSH001D0307B40044C1D9 /* SilentPushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = SPUSH002D0307B40044C1D9 /* SilentPushHandler.swift */; };
+		VOICE001D0307B40044C1D9 /* VoiceCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = VOICE002D0307B40044C1D9 /* VoiceCommandHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		CARPLAY002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CarPlaySceneDelegate.swift; path = MegaRadio/CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		PHONE002D0307B40044C1D9 /* PhoneSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhoneSceneDelegate.swift; path = MegaRadio/PhoneSceneDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* MegaRadio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MegaRadio-Bridging-Header.h"; path = "MegaRadio/MegaRadio-Bridging-Header.h"; sourceTree = "<group>"; };
+		CACHE002D0307B40044C1D9 /* CarPlayCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CarPlayCacheManager.swift; path = MegaRadio/CarPlayCacheManager.swift; sourceTree = "<group>"; };
+		BGREF002D0307B40044C1D9 /* BackgroundRefreshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BackgroundRefreshManager.swift; path = MegaRadio/BackgroundRefreshManager.swift; sourceTree = "<group>"; };
+		SPUSH002D0307B40044C1D9 /* SilentPushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SilentPushHandler.swift; path = MegaRadio/SilentPushHandler.swift; sourceTree = "<group>"; };
+		VOICE002D0307B40044C1D9 /* VoiceCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VoiceCommandHandler.swift; path = MegaRadio/VoiceCommandHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +53,10 @@
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				CARPLAY002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */,
 				PHONE002D0307B40044C1D9 /* PhoneSceneDelegate.swift */,
+				CACHE002D0307B40044C1D9 /* CarPlayCacheManager.swift */,
+				BGREF002D0307B40044C1D9 /* BackgroundRefreshManager.swift */,
+				SPUSH002D0307B40044C1D9 /* SilentPushHandler.swift */,
+				VOICE002D0307B40044C1D9 /* VoiceCommandHandler.swift */,
 				F11748442D0722820044C1D9 /* MegaRadio-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -238,6 +250,10 @@
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
 				CARPLAY001D0307B40044C1D9 /* CarPlaySceneDelegate.swift in Sources */,
 				PHONE001D0307B40044C1D9 /* PhoneSceneDelegate.swift in Sources */,
+				CACHE001D0307B40044C1D9 /* CarPlayCacheManager.swift in Sources */,
+				BGREF001D0307B40044C1D9 /* BackgroundRefreshManager.swift in Sources */,
+				SPUSH001D0307B40044C1D9 /* SilentPushHandler.swift in Sources */,
+				VOICE001D0307B40044C1D9 /* VoiceCommandHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

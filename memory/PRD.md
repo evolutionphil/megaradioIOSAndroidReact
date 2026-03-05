@@ -10,6 +10,32 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
+## Build 50 - December 2025 (XCODE PROJECT FIX)
+
+### ✅ TAMAMLANDI: Xcode Project Dosyası Düzeltmesi
+
+**Sorun:** Yeni Swift dosyaları `project.pbxproj` dosyasına eklenmemişti, bu yüzden EAS Build'de derlenmeyeceklerdi.
+
+**Çözüm:** `PBXSourcesBuildPhase` section'ına 4 yeni Swift dosyası eklendi:
+
+| Dosya | ID | Açıklama |
+|-------|-----|----------|
+| `CarPlayCacheManager.swift` | CACHE001D0307B40044C1D9 | Native caching (UserDefaults) |
+| `BackgroundRefreshManager.swift` | BGREF001D0307B40044C1D9 | iOS Background App Refresh |
+| `SilentPushHandler.swift` | SPUSH001D0307B40044C1D9 | APNs silent push handler |
+| `VoiceCommandHandler.swift` | VOICE001D0307B40044C1D9 | Siri sesli komutlar |
+
+**Değişen Dosya:**
+- `ios/MegaRadio.xcodeproj/project.pbxproj` - PBXSourcesBuildPhase güncellendi
+
+### 📱 Yeni iOS Build Komutu:
+```bash
+cd frontend
+eas build --platform ios --clear-cache
+```
+
+---
+
 ## Build 49 - December 2025 (COMPLETE BACKGROUND SYNC SYSTEM)
 
 ### 🚀 TAM ARKA PLAN SENKRONİZASYON SİSTEMİ
