@@ -374,9 +374,62 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     private func setLoadingTemplate(interfaceController: CPInterfaceController) {
         templateSetAttempts += 1
         
-        sendRemoteLog(level: "info", message: "Setting LOADING template", data: [
+        sendRemoteLog(level: "info", message: "Setting template - checking native cache first", data: [
             "attempt": templateSetAttempts
         ])
+        
+        // COLD START FIX: Try native cache first for INSTANT data
+        if let cachedStations = CarPlayCacheManager.shared.loadStationsWithStaleFallback(forKey: "popular"),
+           !cachedStations.isEmpty {
+            
+            sendRemoteLog(level: "info", message: "NATIVE CACHE HIT: Using cached stations for instant display", data: [
+                "stationCount": cachedStations.count
+            ])
+            
+            // Create list items from cached data
+            let items = cachedStations.prefix(20).compactMap { station -> CPListItem? in
+                guard let name = station["name"] as? String else { return nil }
+                let country = station["country"] as? String ?? "Radio"
+                
+                let item = CPListItem(text: name, detailText: country)
+                
+                // Try to get logo URL and set it
+                if let logoUrl = (station["favicon"] as? String) ?? (station["logo"] as? String),
+                   let url = URL(string: logoUrl) {
+                    // For cold start, we skip async image loading - will be updated by JS
+                }
+                
+                // Set default logo
+                if let logoImage = UIImage(named: "DefaultStationLogo") {
+                    item.setImage(logoImage)
+                }
+                
+                item.accessoryType = .disclosureIndicator
+                return item
+            }
+            
+            let section = CPListSection(items: items)
+            let cachedTemplate = CPListTemplate(title: "MegaRadio", sections: [section])
+            
+            interfaceController.setRootTemplate(cachedTemplate, animated: false) { [weak self] success, error in
+                if success {
+                    self?.sendRemoteLog(level: "info", message: "NATIVE CACHED template SET - user sees \(items.count) stations INSTANTLY", data: [
+                        "stationCount": items.count,
+                        "waitingFor": "React Native to replace with full tab bar template"
+                    ])
+                }
+            }
+            
+            // Trigger native API refresh in background for next cold start
+            DispatchQueue.global(qos: .background).async {
+                CarPlayCacheManager.shared.prefetchForColdStart(country: nil)
+            }
+            
+            return
+        }
+        
+        // No cache - show loading template
+        sendRemoteLog(level: "warn", message: "NO NATIVE CACHE - showing loading template, triggering native fetch")
         
         // Use our default station logo from iOS assets
         let loadingItem = CPListItem(text: "MegaRadio", detailText: "Yükleniyor...")
@@ -404,6 +457,13 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                     "error": error?.localizedDescription ?? "unknown",
                     "errorCode": (error as NSError?)?.code ?? -1
                 ])
+            }
+        }
+        
+        // Trigger native API fetch as fallback
+        CarPlayCacheManager.shared.fetchPopularStationsNatively { [weak self] stations in
+            if !stations.isEmpty {
+                self?.sendRemoteLog(level: "info", message: "Native fetch complete - cached \(stations.count) stations for next cold start")
             }
         }
     }

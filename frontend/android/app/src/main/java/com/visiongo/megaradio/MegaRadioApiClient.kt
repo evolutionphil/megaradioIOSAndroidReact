@@ -1,5 +1,7 @@
 package com.visiongo.megaradio
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,22 +14,35 @@ import java.util.concurrent.TimeUnit
 /**
  * API Client for MegaRadio Android Auto
  * Handles all API calls to themegaradio.com
+ * NOW WITH PERSISTENT CACHE for cold-start support!
  */
-class MegaRadioApiClient {
+class MegaRadioApiClient private constructor(private val context: Context) {
     
     companion object {
         private const val TAG = "MegaRadioApiClient"
         private const val BASE_URL = "https://themegaradio.com"
         private const val API_KEY = "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw"
+        private const val CACHE_PREFS_NAME = "megaradio_auto_cache"
+        private const val CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000L // 7 days
         
         // Singleton instance
         @Volatile
         private var instance: MegaRadioApiClient? = null
         
-        fun getInstance(): MegaRadioApiClient {
+        fun getInstance(context: Context? = null): MegaRadioApiClient {
             return instance ?: synchronized(this) {
-                instance ?: MegaRadioApiClient().also { instance = it }
+                instance ?: run {
+                    if (context == null) {
+                        throw IllegalStateException("MegaRadioApiClient must be initialized with context first")
+                    }
+                    MegaRadioApiClient(context.applicationContext).also { instance = it }
+                }
             }
+        }
+        
+        // For backward compatibility - initialize with context
+        fun initialize(context: Context) {
+            getInstance(context)
         }
     }
     
@@ -36,6 +51,11 @@ class MegaRadioApiClient {
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
+    
+    // SharedPreferences for persistent cache
+    private val cachePrefs: SharedPreferences by lazy {
+        context.getSharedPreferences(CACHE_PREFS_NAME, Context.MODE_PRIVATE)
+    }
     
     /**
      * Station data class
@@ -385,5 +405,209 @@ class MegaRadioApiClient {
                 emptyList()
             }
         }
+    }
+    
+    // ==================== CACHE METHODS FOR COLD START SUPPORT ====================
+    
+    /**
+     * Get popular stations with CACHE-FIRST pattern for instant cold start
+     * Returns cached data immediately, refreshes in background
+     */
+    suspend fun getPopularStationsCached(country: String? = null, limit: Int = 50): List<Station> {
+        val cacheKey = "popular_${country ?: "global"}_$limit"
+        
+        // Try cache first (INSTANT - no network delay)
+        val cached = getCachedStations(cacheKey)
+        if (cached != null && !isCacheExpired(cacheKey)) {
+            Log.d(TAG, "CACHE HIT: Returning ${cached.size} stations from persistent cache INSTANTLY")
+            return cached
+        }
+        
+        Log.d(TAG, "CACHE MISS: Fetching from network...")
+        
+        // Fetch from API
+        val fresh = getPopularStations(country, limit)
+        if (fresh.isNotEmpty()) {
+            saveCachedStations(cacheKey, fresh)
+            Log.d(TAG, "Cached ${fresh.size} stations for next cold start")
+        }
+        
+        // Return fresh data or stale cache as fallback
+        return fresh.ifEmpty { 
+            Log.w(TAG, "Network failed, using stale cache")
+            cached ?: emptyList() 
+        }
+    }
+    
+    /**
+     * Get genres with CACHE-FIRST pattern
+     */
+    suspend fun getGenresCached(country: String? = null, limit: Int = 40): List<Genre> {
+        val cacheKey = "genres_${country ?: "global"}_$limit"
+        
+        // Try cache first
+        val cached = getCachedGenres(cacheKey)
+        if (cached != null && !isCacheExpired(cacheKey)) {
+            Log.d(TAG, "CACHE HIT: Returning ${cached.size} genres from persistent cache")
+            return cached
+        }
+        
+        Log.d(TAG, "CACHE MISS: Fetching genres from network...")
+        
+        // Fetch from API
+        val fresh = getGenres(country, limit)
+        if (fresh.isNotEmpty()) {
+            saveCachedGenres(cacheKey, fresh)
+        }
+        
+        return fresh.ifEmpty { cached ?: emptyList() }
+    }
+    
+    /**
+     * Background refresh - update cache silently without returning
+     */
+    suspend fun refreshCacheInBackground(country: String? = null) {
+        try {
+            Log.d(TAG, "Background cache refresh started for country: $country")
+            
+            // Refresh popular stations
+            val stations = getPopularStations(country, 50)
+            if (stations.isNotEmpty()) {
+                saveCachedStations("popular_${country ?: "global"}_50", stations)
+            }
+            
+            // Refresh genres
+            val genres = getGenres(country, 40)
+            if (genres.isNotEmpty()) {
+                saveCachedGenres("genres_${country ?: "global"}_40", genres)
+            }
+            
+            Log.d(TAG, "Background cache refresh completed: ${stations.size} stations, ${genres.size} genres")
+        } catch (e: Exception) {
+            Log.e(TAG, "Background cache refresh failed: ${e.message}")
+        }
+    }
+    
+    // ==================== PRIVATE CACHE HELPERS ====================
+    
+    private fun getCachedStations(key: String): List<Station>? {
+        return try {
+            val json = cachePrefs.getString(key, null) ?: return null
+            val array = JSONArray(json)
+            val stations = mutableListOf<Station>()
+            for (i in 0 until array.length()) {
+                stations.add(stationFromCacheJson(array.getJSONObject(i)))
+            }
+            stations
+        } catch (e: Exception) {
+            Log.e(TAG, "Error reading stations cache: ${e.message}")
+            null
+        }
+    }
+    
+    private fun saveCachedStations(key: String, stations: List<Station>) {
+        try {
+            val array = JSONArray()
+            stations.forEach { station ->
+                array.put(stationToCacheJson(station))
+            }
+            cachePrefs.edit()
+                .putString(key, array.toString())
+                .putLong("${key}_timestamp", System.currentTimeMillis())
+                .apply()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving stations cache: ${e.message}")
+        }
+    }
+    
+    private fun getCachedGenres(key: String): List<Genre>? {
+        return try {
+            val json = cachePrefs.getString(key, null) ?: return null
+            val array = JSONArray(json)
+            val genres = mutableListOf<Genre>()
+            for (i in 0 until array.length()) {
+                val obj = array.getJSONObject(i)
+                genres.add(Genre(
+                    name = obj.getString("name"),
+                    slug = obj.getString("slug"),
+                    stationCount = obj.getInt("stationCount")
+                ))
+            }
+            genres
+        } catch (e: Exception) {
+            Log.e(TAG, "Error reading genres cache: ${e.message}")
+            null
+        }
+    }
+    
+    private fun saveCachedGenres(key: String, genres: List<Genre>) {
+        try {
+            val array = JSONArray()
+            genres.forEach { genre ->
+                array.put(JSONObject().apply {
+                    put("name", genre.name)
+                    put("slug", genre.slug)
+                    put("stationCount", genre.stationCount)
+                })
+            }
+            cachePrefs.edit()
+                .putString(key, array.toString())
+                .putLong("${key}_timestamp", System.currentTimeMillis())
+                .apply()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving genres cache: ${e.message}")
+        }
+    }
+    
+    private fun isCacheExpired(key: String): Boolean {
+        val timestamp = cachePrefs.getLong("${key}_timestamp", 0)
+        val expired = System.currentTimeMillis() - timestamp > CACHE_MAX_AGE_MS
+        if (expired) {
+            Log.d(TAG, "Cache expired for key: $key")
+        }
+        return expired
+    }
+    
+    private fun stationToCacheJson(station: Station): JSONObject {
+        return JSONObject().apply {
+            put("id", station.id)
+            put("name", station.name)
+            put("streamUrl", station.streamUrl)
+            put("logoUrl", station.logoUrl)
+            put("country", station.country)
+            put("genre", station.genre)
+            put("tags", station.tags)
+        }
+    }
+    
+    private fun stationFromCacheJson(json: JSONObject): Station {
+        return Station(
+            id = json.getString("id"),
+            name = json.getString("name"),
+            streamUrl = json.getString("streamUrl"),
+            logoUrl = json.getString("logoUrl"),
+            country = json.optString("country", ""),
+            genre = json.optString("genre", ""),
+            tags = json.optString("tags", "")
+        )
+    }
+    
+    /**
+     * Clear all cached data (for debugging/testing)
+     */
+    fun clearCache() {
+        cachePrefs.edit().clear().apply()
+        Log.d(TAG, "Cache cleared")
+    }
+    
+    /**
+     * Get cache statistics (for debugging)
+     */
+    fun getCacheStats(): Map<String, Any> {
+        val keys = cachePrefs.all.keys.filter { !it.endsWith("_timestamp") }
+        return mapOf(
+            "cachedKeys" to keys.size,
+            "keys" to keys.toList()
+        )
     }
 }

@@ -40,7 +40,7 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
-    private val apiClient = MegaRadioApiClient.getInstance()
+    private lateinit var apiClient: MegaRadioApiClient
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     
     // Cache for stations and genres
@@ -70,6 +70,9 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Android Auto Service created")
+
+        // Initialize API client with context for SharedPreferences cache
+        apiClient = MegaRadioApiClient.getInstance(this)
 
         // Register country change receiver
         val filter = IntentFilter("com.visiongo.megaradio.SET_COUNTRY")
@@ -122,19 +125,30 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
 
     /**
      * Pre-load popular stations and genres for faster browsing
+     * NOW WITH CACHE-FIRST PATTERN - instant data on cold start!
      */
     private fun preloadData() {
         serviceScope.launch {
             try {
-                Log.d(TAG, "Preloading data...")
+                Log.d(TAG, "=== COLD START: Preloading data with CACHE-FIRST pattern ===")
                 
-                // Fetch popular stations
-                cachedPopularStations = apiClient.getPopularStations(selectedCountry, 50)
-                Log.d(TAG, "Preloaded ${cachedPopularStations.size} popular stations")
+                // INSTANT: Load from SharedPreferences cache first (< 100ms)
+                cachedPopularStations = apiClient.getPopularStationsCached(selectedCountry, 50)
+                Log.d(TAG, "CACHE-FIRST: Loaded ${cachedPopularStations.size} popular stations INSTANTLY")
                 
-                // Fetch genres
-                cachedGenres = apiClient.getGenres(selectedCountry, 40)
-                Log.d(TAG, "Preloaded ${cachedGenres.size} genres")
+                cachedGenres = apiClient.getGenresCached(selectedCountry, 40)
+                Log.d(TAG, "CACHE-FIRST: Loaded ${cachedGenres.size} genres INSTANTLY")
+                
+                // Background: Refresh cache for next time (non-blocking)
+                launch(Dispatchers.IO) {
+                    try {
+                        Log.d(TAG, "Background refresh started...")
+                        apiClient.refreshCacheInBackground(selectedCountry)
+                        Log.d(TAG, "Background refresh completed")
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Background refresh failed: ${e.message}")
+                    }
+                }
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Error preloading data: ${e.message}", e)

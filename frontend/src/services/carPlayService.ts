@@ -1,10 +1,34 @@
 // CarPlay & Android Auto Service
 // Handles connection events and template management for in-car displays
 
-import { Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
 import i18n, { addLanguageChangeListener } from './i18nService';
+
+// Native module for cache bridge (iOS only)
+const CarPlayCacheModule = NativeModules.CarPlayCacheModule;
+
+// Helper to save stations to native cache (iOS only)
+const saveToNativeCache = (stations: any[], key: string = 'popular') => {
+  if (Platform.OS === 'ios' && CarPlayCacheModule?.saveStations) {
+    try {
+      // Convert to simple format for native cache
+      const cacheData = stations.map(s => ({
+        id: s._id || s.id,
+        name: s.name,
+        country: s.country || '',
+        favicon: s.favicon || s.logo || '',
+        url: s.url || s.streamUrl || '',
+        genre: s.genre || s.tags?.split(',')[0] || '',
+      }));
+      CarPlayCacheModule.saveStations(cacheData, key);
+      console.log(`[CarPlay] Saved ${cacheData.length} stations to native cache for key: ${key}`);
+    } catch (e) {
+      console.log('[CarPlay] Native cache save failed (module may not be available):', e);
+    }
+  }
+};
 
 // LOCAL ASSETS for CarPlay - NO backend dependency
 // These ensure CarPlay works even when offline
@@ -635,6 +659,11 @@ const createBrowseTemplate = async (): Promise<any> => {
     
     const stations = await Promise.race([getStationsCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('popularStations', stations.length);
+    
+    // SAVE TO NATIVE CACHE for next cold start
+    if (stations.length > 0) {
+      saveToNativeCache(stations, 'popular');
+    }
     
     // Build items with imgUrl for async native image loading (max 50)
     const items = stations.slice(0, 50).map(station => {
