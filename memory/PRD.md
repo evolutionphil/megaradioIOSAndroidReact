@@ -23,12 +23,21 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
    - iOS Swift tarafı: Template kontrol gecikmesi 8s → 15s
    - JS tarafı: Tüm template timeout'ları 5s → 10s
 
-2. **Cache-First Pattern İyileştirmeleri**
+2. **"Alle Sender" (All Stations) Boş Sorunu (DÜZELTİLDİ)**
+   - **Kök Neden**: `countryCode` (TR) gönderiliyordu ama API İngilizce ülke adı (`Turkey`) bekliyor
+   - **Düzeltme**: `all-stations.tsx`'te `countryEnglish` kullanılacak şekilde güncellendi
+
+3. **Discover Genres - Discoverable Endpoint (DÜZELTİLDİ)**
+   - **Kök Neden**: `/api/genres/discoverable` endpoint'i kullanılmıyordu
+   - **Düzeltme**: `useDiscoverableGenres()` hook'u eklendi ve "Browse Genres" bölümünde 3 featured genre gösteriyor
+   - Fallback: Discoverable boşsa precomputed genres'tan ilk 3 tanesi gösteriliyor
+
+4. **Cache-First Pattern İyileştirmeleri**
    - `stationService.getPopularStations()`: Ülke cache'i boşsa global cache'i fallback olarak kullan
    - `stationService.getStations()`: Önce popular stations cache'ini, sonra all stations cache'ini dene
    - Background refresh tüm senaryolarda tetikleniyor
 
-3. **Hardcoded String Temizliği (10+ dosya)**
+5. **Hardcoded String Temizliği (10+ dosya)**
    - `genres.tsx`: Search placeholder çevirisi
    - `follows.tsx`: Search placeholder ve Alert mesajları çevirisi
    - `followers.tsx`: Search placeholder ve Alert mesajları çevirisi
@@ -37,7 +46,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
    - `player.tsx`: Car Mode accessibility label çevirisi
    - `i18nService.ts`: 15+ yeni çeviri anahtarı eklendi
 
-4. **Build Numarası**
+6. **Build Numarası**
    - iOS buildNumber: 47 → 48
    - Android versionCode: 47 → 48
 
@@ -46,8 +55,8 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 | Sorun | Yapılan Düzeltme | Test Durumu |
 |-------|------------------|-------------|
 | CarPlay cold-start "Yükleniyor..." | checkForConnection() polling + timeout artırımı | ❓ Test edilmeli |
-| "Tüm İstasyonlar" boş | Popular cache fallback eklendi | ❓ Test edilmeli |
-| CarPlay "Keşfet" boş | Timeout ve cache fallback | ❓ Test edilmeli |
+| "Tüm İstasyonlar" boş | countryEnglish kullanımı | ❓ Test edilmeli |
+| Discover Genres 3 tane | useDiscoverableGenres() eklendi | ❓ Test edilmeli |
 
 ### 📋 Backend'e Gönderilmesi Gereken Yeni Çeviri Anahtarları:
 ```

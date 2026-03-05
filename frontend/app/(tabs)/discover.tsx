@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../../src/constants/theme';
 import { StationCard, GenreCard, SectionHeader } from '../../src/components';
 import { DiscoverSkeleton, GenreGridSkeleton, StationListItemSkeleton } from '../../src/components/Skeleton';
-import { usePrecomputedGenres, useStations } from '../../src/hooks/useQueries';
+import { usePrecomputedGenres, useStations, useDiscoverableGenres } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useLocationStore } from '../../src/store/locationStore';
@@ -39,6 +39,8 @@ export default function DiscoverScreen() {
   const gridMetrics = responsive.getGridMetrics();
 
   const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryCode || undefined);
+  // Discoverable genres - shows 3 featured genres from /api/genres/discoverable
+  const { data: discoverableGenres, isLoading: discoverableLoading, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: stationsData, isLoading: stationsLoading, refetch: refetchStations } = useStations({
     sort: 'votes',
     order: 'desc',
@@ -51,9 +53,9 @@ export default function DiscoverScreen() {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([refetchGenres(), refetchStations()]);
+    await Promise.all([refetchGenres(), refetchStations(), refetchDiscoverable()]);
     setRefreshing(false);
-  }, [refetchGenres, refetchStations]);
+  }, [refetchGenres, refetchStations, refetchDiscoverable]);
 
   const handleStationPress = (station: Station) => {
     playStation(station);
@@ -175,27 +177,52 @@ export default function DiscoverScreen() {
             )}
           </View>
 
-          {/* Browse All Genres */}
+          {/* Discoverable Genres - Featured 3 genres from /api/genres/discoverable */}
           <View style={styles.section}>
             <SectionHeader 
               title={t('browse_genres')} 
               showSeeAll={true}
               onSeeAll={() => router.push('/genres')}
             />
-            <View style={[styles.genresGrid, responsive.isTablet && { gap: gridMetrics.gap }]}>
-              {genres.slice(0, responsive.isTablet ? 12 : 8).map((genre) => (
-                <GenreCard
-                  key={genre._id}
-                  genre={genre}
-                  onPress={(g) => router.push({
-                    pathname: '/genre-detail',
-                    params: { slug: g.slug, name: g.name },
-                  })}
-                  size={responsive.isTablet ? 'medium' : 'small'}
-                  style={[styles.genreGridItem, { width: responsive.isTablet ? `${100 / 4 - 2}%` : '48%' }]}
-                />
-              ))}
-            </View>
+            {discoverableLoading ? (
+              <View style={[styles.genresGrid, responsive.isTablet && { gap: gridMetrics.gap }]}>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <View key={i} style={[styles.genreGridItem, { width: '31%' }]}>
+                    <GenreGridSkeleton />
+                  </View>
+                ))}
+              </View>
+            ) : (discoverableGenres && discoverableGenres.length > 0) ? (
+              <View style={[styles.genresGrid, responsive.isTablet && { gap: gridMetrics.gap }]}>
+                {discoverableGenres.map((genre) => (
+                  <GenreCard
+                    key={genre._id}
+                    genre={genre}
+                    onPress={(g) => router.push({
+                      pathname: '/genre-detail',
+                      params: { slug: g.slug, name: g.name },
+                    })}
+                    size={responsive.isTablet ? 'medium' : 'small'}
+                    style={[styles.genreGridItem, { width: '31%' }]}
+                  />
+                ))}
+              </View>
+            ) : (
+              <View style={[styles.genresGrid, responsive.isTablet && { gap: gridMetrics.gap }]}>
+                {genres.slice(0, 3).map((genre) => (
+                  <GenreCard
+                    key={genre._id}
+                    genre={genre}
+                    onPress={(g) => router.push({
+                      pathname: '/genre-detail',
+                      params: { slug: g.slug, name: g.name },
+                    })}
+                    size={responsive.isTablet ? 'medium' : 'small'}
+                    style={[styles.genreGridItem, { width: '31%' }]}
+                  />
+                ))}
+              </View>
+            )}
           </View>
 
           {/* Top Stations List */}
