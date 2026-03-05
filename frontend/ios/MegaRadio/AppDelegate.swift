@@ -60,6 +60,11 @@ public class AppDelegate: ExpoAppDelegate {
     // This enables cache updates when app is in background/terminated
     print("[AppDelegate] Registering background tasks...")
     BackgroundRefreshManager.shared.registerBackgroundTasks()
+    
+    // SILENT PUSH: Register for remote notifications (no user permission needed for silent)
+    // This enables server-triggered cache updates
+    print("[AppDelegate] Registering for remote notifications...")
+    SilentPushHandler.registerForRemoteNotifications()
     #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -82,6 +87,35 @@ public class AppDelegate: ExpoAppDelegate {
   ) {
     print("[AppDelegate] Legacy background fetch triggered")
     BackgroundRefreshManager.shared.simulateBackgroundRefresh(completion: completionHandler)
+  }
+  
+  // MARK: - Silent Push Notification Handler
+  
+  /// Handle silent push notifications (content-available: 1)
+  /// This is called when a silent push arrives to trigger background cache updates
+  public func application(
+    _ application: UIApplication,
+    didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+  ) {
+    print("[AppDelegate] Remote notification received")
+    SilentPushHandler.shared.handleSilentPush(userInfo: userInfo, completion: completionHandler)
+  }
+  
+  /// Device token registration success
+  public func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    SilentPushHandler.didRegisterForRemoteNotifications(deviceToken: deviceToken)
+  }
+  
+  /// Device token registration failure
+  public func application(
+    _ application: UIApplication,
+    didFailToRegisterForRemoteNotificationsWithError error: Error
+  ) {
+    SilentPushHandler.didFailToRegisterForRemoteNotifications(error: error)
   }
   
   // MARK: - React Native Bridge Initialization for Scene Lifecycle
