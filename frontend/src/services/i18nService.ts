@@ -618,6 +618,9 @@ const germanTranslations: Record<string, string> = {
   search: 'Suche',
   search_placeholder: 'Suchen...',
   search_stations: 'Sender suchen...',
+  search_genre: 'Genre suchen',
+  search_following: 'Folgende suchen...',
+  search_followers: 'Follower suchen...',
   search_radio_user: 'Radio, Benutzer suchen',
   all: 'Alle',
   see_more: 'Mehr anzeigen',
@@ -628,8 +631,21 @@ const germanTranslations: Record<string, string> = {
   done: 'Fertig',
   ok: 'OK',
   back: 'Zurück',
+  error: 'Fehler',
+  remove: 'Entfernen',
+  
+  // User Management
+  login_required: 'Anmeldung erforderlich',
+  login_required_follow: 'Bitte melden Sie sich an, um Ihre Followings zu verwalten.',
+  login_required_followers: 'Bitte melden Sie sich an, um Ihre Follower zu verwalten.',
+  unfollow_confirm: 'Möchten Sie wirklich entfolgen?',
+  unfollow_failed: 'Entfolgen fehlgeschlagen. Bitte versuchen Sie es erneut.',
+  remove_follower: 'Follower entfernen',
+  remove_follower_confirm: 'Möchten Sie diesen Follower wirklich entfernen?',
+  remove_follower_failed: 'Entfernen des Followers fehlgeschlagen. Bitte versuchen Sie es erneut.',
   
   // CarPlay
+  car_mode: 'Auto-Modus',
   carplay_favorites: 'Favoriten',
   carplay_recently_played: 'Zuletzt gespielt',
   carplay_discover: 'Entdecken',
