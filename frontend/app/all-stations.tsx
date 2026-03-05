@@ -87,10 +87,14 @@ export default function AllStationsScreen() {
   }, []);
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
-  const { data, isLoading, refetch } = useStations({
+  // Use countryEnglish for API as backend expects English country names
+  const { countryEnglish } = useLocationStore();
+  const apiCountry = countryEnglish || country || undefined;
+  
+  const { data, isLoading, refetch, error } = useStations({
     limit: 100,
     genre: genreSlug || undefined,
-    country: countryCode || undefined,
+    country: apiCountry,
   });
 
   const { playStation } = useAudioPlayer();
