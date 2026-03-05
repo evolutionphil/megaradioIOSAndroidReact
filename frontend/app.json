@@ -46,6 +46,11 @@
           "com.visiongo.megaradio.refresh",
           "com.visiongo.megaradio.processing"
         ],
+        "NSUserActivityTypes": [
+          "INPlayMediaIntent",
+          "com.visiongo.megaradio.playMedia"
+        ],
+        "NSSiriUsageDescription": "MegaRadio uses Siri to play radio stations with voice commands.",
         "UIApplicationSceneManifest": {
           "UIApplicationSupportsMultipleScenes": true,
           "UISceneConfigurations": {
