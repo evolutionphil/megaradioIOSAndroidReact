@@ -55,9 +55,33 @@ public class AppDelegate: ExpoAppDelegate {
       launchOptions: launchOptions)
     isReactNativeInitialized = true
     print("[AppDelegate] React Native bridge initialized successfully")
+    
+    // BACKGROUND REFRESH: Register background tasks BEFORE app finishes launching
+    // This enables cache updates when app is in background/terminated
+    print("[AppDelegate] Registering background tasks...")
+    BackgroundRefreshManager.shared.registerBackgroundTasks()
     #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+  
+  // MARK: - Background App Refresh
+  
+  /// Called when app enters background - schedule next refresh
+  public override func applicationDidEnterBackground(_ application: UIApplication) {
+    print("[AppDelegate] App entered background - scheduling background refresh")
+    BackgroundRefreshManager.shared.scheduleAppRefresh()
+    BackgroundRefreshManager.shared.scheduleProcessingTask()
+    super.applicationDidEnterBackground(application)
+  }
+  
+  /// Legacy background fetch handler (for iOS < 13 compatibility)
+  public func application(
+    _ application: UIApplication,
+    performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+  ) {
+    print("[AppDelegate] Legacy background fetch triggered")
+    BackgroundRefreshManager.shared.simulateBackgroundRefresh(completion: completionHandler)
   }
   
   // MARK: - React Native Bridge Initialization for Scene Lifecycle

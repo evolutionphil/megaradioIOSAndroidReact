@@ -10,38 +10,72 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Build 49 - December 2025 (MAJOR NATIVE CACHE UPDATE)
+## Build 49 - December 2025 (MAJOR NATIVE CACHE & BACKGROUND REFRESH UPDATE)
 
-### 🚀 BÜYÜK GÜNCELLEMELERİ: Native Cache for Cold Start
+### 🚀 BÜYÜK GÜNCELLEMELERİ
 
-Bu güncelleme ile CarPlay ve Android Auto **uygulama kapalıyken bile** anında veri gösterebilecek!
+Bu güncelleme ile CarPlay ve Android Auto:
+- **Uygulama kapalıyken bile** anında veri gösterebilir
+- **Arka planda otomatik cache güncelleme** yapar
+- **Offline modda** cache'ten çalışır
 
-#### 🍎 iOS CarPlay - Native Swift Cache
-**Yeni Dosya: `CarPlayCacheManager.swift`**
+---
+
+#### 🍎 iOS - Native Swift Implementation
+
+**1. CarPlayCacheManager.swift**
 - UserDefaults tabanlı kalıcı cache (7 gün)
 - Native HTTP client (JS bridge'e gerek yok!)
-- Cold start'ta cache'ten anında veri gösterme
-- Arka planda API refresh
-- Çalışma mantığı:
-  1. CarPlay bağlandığında → Önce native cache kontrol
-  2. Cache varsa → Anında station listesi göster (~100ms)
-  3. JS hazır olunca → Full template ile değiştir
-  4. Cache yoksa → Native HTTP ile API'den çek
+- Cold start'ta cache'ten anında veri (~100ms)
+- `prefetchForColdStart()` - Arka planda refresh
 
-#### 🤖 Android Auto - SharedPreferences Cache
-**Güncellenen: `MegaRadioApiClient.kt`**
+**2. BackgroundRefreshManager.swift (BGAppRefreshTask)**
+- `BGAppRefreshTask` - Hızlı cache güncellemeler (~30 saniye)
+- `BGProcessingTask` - Daha uzun güncellemeler (birkaç dakika)
+- iOS sistem tarafından optimize edilen zamanlama
+- 15 dakika minimum interval (iOS kontrol eder)
+- Pil ve ağ durumuna göre akıllı çalışma
+
+**Info.plist Ayarları:**
+```json
+"UIBackgroundModes": ["fetch", "processing"]
+"BGTaskSchedulerPermittedIdentifiers": [
+  "com.visiongo.megaradio.refresh",
+  "com.visiongo.megaradio.processing"
+]
+```
+
+**Çalışma Mantığı:**
+1. App arka plana geçtiğinde → `scheduleAppRefresh()` çağrılır
+2. iOS uygun zamanda → `handleAppRefreshTask()` tetikler
+3. Cache güncellenir → CarPlay cold-start için hazır
+4. Sonraki refresh zamanlanır → Döngü devam eder
+
+---
+
+#### 🤖 Android - WorkManager Implementation
+
+**1. MegaRadioApiClient.kt (Güncellenmiş)**
 - SharedPreferences tabanlı kalıcı cache (7 gün)
-- `getPopularStationsCached()` - Cache-first pattern
-- `getGenresCached()` - Cache-first pattern
-- `refreshCacheInBackground()` - Arka plan refresh
-- Service context ile cache başlatma
+- Context-based singleton pattern
+- `getPopularStationsCached()`, `getGenresCached()`
+- `refreshCacheInBackground()`
 
-**Güncellenen: `MegaRadioAutoService.kt`**
-- `preloadData()` artık CACHE-FIRST kullanıyor
-- Anında cached data gösterir
-- Arka planda refresh yapar
+**2. BackgroundSyncWorker.kt (YENİ)**
+- WorkManager tabanlı periyodik sync
+- 15 dakika minimum interval
+- Pil ve ağ koşullarına göre çalışma
+- Uygulama kapatılsa bile devam eder
 
-#### 📊 Performans Karşılaştırması:
+**MainApplication.kt Integration:**
+```kotlin
+BackgroundSyncWorker.schedulePeriodicSync(this)
+MegaRadioApiClient.initialize(this)
+```
+
+---
+
+### 📊 Performans Karşılaştırması
 
 | Senaryo | Önceki | Şimdi |
 |---------|--------|-------|
@@ -49,28 +83,19 @@ Bu güncelleme ile CarPlay ve Android Auto **uygulama kapalıyken bile** anında
 | Cold Start (cache yok) | 5-15s bekleme | Native fetch ~2s |
 | Warm Start | ~1s | ~100ms |
 | Offline | Boş ekran | Cache'ten göster |
+| Arka plan güncelleme | ❌ Yok | ✅ 15 dk interval |
 
-### 🔧 Önceki Düzeltmeler (Bu Session)
-
-1. **"Alle Sender" Boş Sorunu (DÜZELTİLDİ)**
-   - `countryEnglish` kullanılacak şekilde güncellendi
-
-2. **Discover Genres (DÜZELTİLDİ)**
-   - `useDiscoverableGenres()` hook'u eklendi - 3 featured genre
-
-3. **Hardcoded String Temizliği (10+ dosya)**
-
-4. **Build Numarası**
-   - iOS buildNumber: 48 → 49
-   - Android versionCode: 48 → 49
+---
 
 ### ⚠️ Xcode'da Yapılması Gerekenler
 
-`CarPlayCacheManager.swift` dosyası Xcode projesine manuel olarak eklenmelidir:
-1. Xcode'da projeyi aç
-2. `MegaRadio` klasörüne sağ tıkla → "Add Files to MegaRadio"
-3. `CarPlayCacheManager.swift` seç
-4. Build Phases → Compile Sources'ta olduğunu doğrula
+Yeni Swift dosyaları projeye manuel olarak eklenmelidir:
+
+1. **CarPlayCacheManager.swift** ekle
+2. **BackgroundRefreshManager.swift** ekle
+3. Build Phases → Compile Sources'ta doğrula
+
+---
 
 ### 📝 Yeni Build Komutu:
 ```bash

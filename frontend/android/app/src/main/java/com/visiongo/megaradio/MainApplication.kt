@@ -48,6 +48,14 @@ class MainApplication : Application(), ReactApplication {
     }
     loadReactNative(this)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
+    
+    // Initialize background sync for Android Auto cache
+    // This ensures cache is updated even when app is killed
+    android.util.Log.d("MainApplication", "Scheduling background sync for Android Auto...")
+    BackgroundSyncWorker.schedulePeriodicSync(this)
+    
+    // Initialize API client with context
+    MegaRadioApiClient.initialize(this)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {

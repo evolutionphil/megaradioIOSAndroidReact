@@ -42,6 +42,10 @@
         "NSCameraUsageDescription": "Camera access is required to take a profile picture.",
         "NSMicrophoneUsageDescription": "Microphone access is required for audio recording.",
         "ITSAppUsesNonExemptEncryption": false,
+        "BGTaskSchedulerPermittedIdentifiers": [
+          "com.visiongo.megaradio.refresh",
+          "com.visiongo.megaradio.processing"
+        ],
         "UIApplicationSceneManifest": {
           "UIApplicationSupportsMultipleScenes": true,
           "UISceneConfigurations": {
