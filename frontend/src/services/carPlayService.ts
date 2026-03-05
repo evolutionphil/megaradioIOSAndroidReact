@@ -394,10 +394,12 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
       
       const gridButtons = recentStations.slice(0, 24).map((station, index) => {
         const imgUrl = getArtworkUrl(station);
+        console.log(`[CarPlay] RecentlyPlayed Grid item ${index}: ${station.name}, imgUrl: ${imgUrl}`);
         return {
           id: `recent_${index}`,
           titleVariants: [station.name],
-          image: imgUrl,
+          // CarPlay GridTemplate needs imgUrl for async image loading (not 'image')
+          imgUrl: imgUrl,
         };
       });
       
@@ -588,13 +590,52 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
   
   if (!ListTemplate || !CarPlay || !getStationsByGenreCallback) {
     CarPlayLogger.templateFailed(`GenreStations-${genre}`, 'Dependencies not available');
+    console.error('[CarPlay] showGenreStationsTemplate failed - missing dependencies:', {
+      ListTemplate: !!ListTemplate,
+      CarPlay: !!CarPlay,
+      getStationsByGenreCallback: !!getStationsByGenreCallback,
+    });
     return;
   }
   
   try {
     CarPlayLogger.dataLoading(`genreStations-${genre}`);
-    const stations = await getStationsByGenreCallback(genre);
+    console.log('[CarPlay] Fetching stations for genre:', genre);
+    
+    // Add timeout for genre station fetch (max 15 seconds)
+    const TIMEOUT_MS = 15000;
+    const timeoutPromise = new Promise<Station[]>((resolve) => 
+      setTimeout(() => {
+        console.warn('[CarPlay] Genre stations timeout for:', genre);
+        resolve([]);
+      }, TIMEOUT_MS)
+    );
+    
+    const stations = await Promise.race([getStationsByGenreCallback(genre), timeoutPromise]);
     CarPlayLogger.dataLoaded(`genreStations-${genre}`, stations.length);
+    
+    console.log('[CarPlay] Got', stations.length, 'stations for genre:', genre);
+    
+    // If no stations found, show an informative message
+    if (!stations || stations.length === 0) {
+      console.warn('[CarPlay] No stations found for genre:', genre);
+      CarPlayLogger.warn(`[RN] No stations found for genre: ${genre}`);
+      
+      // Show empty state template
+      const emptyTemplate = new ListTemplate({
+        title: genre,
+        sections: [{
+          header: genre,
+          items: [{
+            text: t('carplay_no_stations', 'No stations found'),
+            detailText: t('carplay_try_another_genre', 'Try another genre'),
+          }],
+        }],
+      });
+      
+      CarPlay.pushTemplate(emptyTemplate, true);
+      return;
+    }
     
     // Build items with imgUrl for async native image loading (max 50)
     const items = stations.slice(0, 50).map(station => {

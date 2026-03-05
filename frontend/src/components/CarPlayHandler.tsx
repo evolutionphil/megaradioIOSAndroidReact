@@ -148,12 +148,25 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
     const { countryEnglish, country } = useLocationStore.getState();
     const selectedCountry = countryEnglish || country || undefined;
     
-    console.log('[CarPlayHandler] Fetching stations for genre:', genre, 'country:', selectedCountry);
+    // Genre slug should be lowercase with hyphens (e.g., "hip-hop", "rock", "pop")
+    // DO NOT convert to lowercase if already in correct format from API
+    const genreSlug = genre.toLowerCase().replace(/\s+/g, '-');
+    
+    console.log('[CarPlayHandler] Fetching stations for genre:', genre, '-> slug:', genreSlug, 'country:', selectedCountry);
     
     // Use genreService for better country filtering
-    const response = await genreService.getGenreStations(genre.toLowerCase(), 1, 50, selectedCountry);
+    const response = await genreService.getGenreStations(genreSlug, 1, 50, selectedCountry);
     
     console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'stations for genre', genre);
+    
+    // Log first 3 stations for debugging
+    if (response.stations && response.stations.length > 0) {
+      console.log('[CarPlayHandler] First 3 genre stations:', 
+        response.stations.slice(0, 3).map(s => s.name).join(', '));
+    } else {
+      console.warn('[CarPlayHandler] NO STATIONS returned for genre:', genre);
+    }
+    
     return response.stations || [];
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genre stations:', error);

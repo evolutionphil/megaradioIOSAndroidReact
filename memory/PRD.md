@@ -10,7 +10,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
-## Build 50 - December 2025 (XCODE PROJECT FIX)
+## Build 50 - December 2025 (XCODE PROJECT FIX + CARPLAY BUG FIXES)
 
 ### ✅ TAMAMLANDI: Xcode Project Dosyası Düzeltmesi
 
@@ -25,8 +25,31 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 | `SilentPushHandler.swift` | SPUSH001D0307B40044C1D9 | APNs silent push handler |
 | `VoiceCommandHandler.swift` | VOICE001D0307B40044C1D9 | Siri sesli komutlar |
 
-**Değişen Dosya:**
-- `ios/MegaRadio.xcodeproj/project.pbxproj` - PBXSourcesBuildPhase güncellendi
+### ✅ CarPlay Bug Fixes
+
+**1. Recently Played (Zuletzt gespielt) - Logo Görünmüyor Sorunu**
+- **Sorun:** Grid view'da station logoları/faviconları görünmüyordu
+- **Kök Neden:** GridTemplate için `image` yerine `imgUrl` property kullanılmalıydı
+- **Çözüm:** `carPlayService.ts`'de `createRecentlyPlayedTemplate()` fonksiyonunda `image` → `imgUrl` değiştirildi
+- **Dosya:** `src/services/carPlayService.ts`
+
+**2. Genres İçi Boş Kalıyor Sorunu**
+- **Sorun:** Bir genre seçildiğinde içi boş kalıyordu
+- **Potansiyel Nedenler:** 
+  - Genre slug formatı düzgün dönüştürülmüyordu
+  - Hata durumunda kullanıcıya bilgi verilmiyordu
+- **Çözümler:**
+  - `CarPlayHandler.tsx`'de `getStationsByGenre()` fonksiyonuna genre slug düzeltmesi eklendi (spaces → hyphens)
+  - `carPlayService.ts`'de `showGenreStationsTemplate()` fonksiyonuna:
+    - 15 saniye timeout eklendi
+    - Boş sonuç durumunda bilgilendirici mesaj gösterilir
+    - Detaylı debug logging eklendi
+- **Dosyalar:** `src/services/carPlayService.ts`, `src/components/CarPlayHandler.tsx`
+
+**3. Eksik i18n Keys Eklendi**
+- `carplay_no_stations`: "No stations found"
+- `carplay_try_another_genre`: "Try another genre"
+- **Dosya:** `src/services/i18nService.ts`
 
 ### 📱 Yeni iOS Build Komutu:
 ```bash

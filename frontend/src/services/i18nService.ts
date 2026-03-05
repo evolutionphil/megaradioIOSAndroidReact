@@ -81,6 +81,8 @@ const defaultTranslations: Record<string, string> = {
   carplay_favorite_stations: 'Favorite Stations',
   carplay_recent_stations: 'Recent Stations',
   carplay_stations: 'stations',
+  carplay_no_stations: 'No stations found',
+  carplay_try_another_genre: 'Try another genre',
   
   // Auth
   login: 'Login',
