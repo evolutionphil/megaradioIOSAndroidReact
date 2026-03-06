@@ -115,17 +115,22 @@ export default function HomeScreen() {
 
   // Fetch location on mount - only if no stored country exists
   useEffect(() => {
-    // If country already loaded from storage, don't fetch location immediately
-    // This prevents race condition on first launch
-    if (country || countryCode) {
-      console.log('[HomeScreen] Country already available:', country, countryCode);
+    // If country already loaded from storage, don't fetch location
+    if (country || countryCode || countryEnglish) {
+      console.log('[HomeScreen] Country already available:', country, countryCode, countryEnglish);
+      return;
+    }
+    
+    // Check if isLoaded is already true (means stored country was loaded)
+    if (isLoaded) {
+      console.log('[HomeScreen] isLoaded true but no country - already detected or failed');
       return;
     }
     
     // Only fetch location if no stored country (first-time users)
     console.log('[HomeScreen] No stored country, fetching location...');
     fetchLocation();
-  }, []); // Empty deps - only run once on mount
+  }, [country, countryCode, countryEnglish, isLoaded]); // Re-run when these change
 
   // Recently played from local storage
   const { stations: localRecentStations, loadFromStorage: loadRecent } = useRecentlyPlayedStore();

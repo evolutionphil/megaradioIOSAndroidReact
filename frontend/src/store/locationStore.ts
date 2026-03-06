@@ -170,16 +170,17 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           countryCode,
           countryEnglish,
           isManuallySet: true,
-          isLoaded: true, // Mark as loaded
+          isLoaded: true, // Mark as loaded - we have a stored country
         });
       } else {
-        // No stored country - mark as loaded but will need detection
-        console.log('[LocationStore] No stored country found');
-        set({ isLoaded: true });
+        // No stored country - DO NOT set isLoaded yet!
+        // Wait for fetchLocation() to complete before setting isLoaded
+        console.log('[LocationStore] No stored country found, waiting for location detection...');
+        // isLoaded stays false until fetchLocation() completes
       }
     } catch (error) {
       console.error('[LocationStore] Failed to load stored country:', error);
-      set({ isLoaded: true }); // Mark as loaded even on error
+      // On error, also don't set isLoaded - let fetchLocation() handle it
     }
   },
 
@@ -187,6 +188,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     // If user manually set a country, don't override with geolocation
     if (get().isManuallySet) {
       console.log('[LocationStore] Country manually set, skipping geolocation');
+      set({ isLoaded: true }); // Still mark as loaded
       return;
     }
     
@@ -206,7 +208,8 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       }
       
       if (!permissionGranted) {
-        set({ loading: false, error: 'Permission denied' });
+        console.log('[LocationStore] Permission denied, setting isLoaded');
+        set({ loading: false, error: 'Permission denied', isLoaded: true });
         return;
       }
 
@@ -223,18 +226,21 @@ export const useLocationStore = create<LocationState>((set, get) => ({
         const countryName = geo.country || null;
         // expo-location returns English names typically
         const nativeName = COUNTRY_NATIVE_MAP[countryName || ''] || countryName;
+        console.log('[LocationStore] Location detected:', countryName, nativeName);
         set({
           countryCode: geo.isoCountryCode || null,
           country: nativeName,
           countryEnglish: countryName,
           loading: false,
+          isLoaded: true, // CRITICAL: Mark as loaded after location detection
         });
       } else {
-        set({ loading: false });
+        console.log('[LocationStore] No geo data, setting isLoaded');
+        set({ loading: false, isLoaded: true });
       }
     } catch (err) {
       console.log('[Location] Error:', err);
-      set({ loading: false, error: 'Failed to get location' });
+      set({ loading: false, error: 'Failed to get location', isLoaded: true });
     }
   },
 

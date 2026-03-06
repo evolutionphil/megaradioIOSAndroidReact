@@ -48,12 +48,28 @@ export interface TvInitStation {
 }
 
 export interface TvInitResponse {
-  countries: string[];           // 219 countries
-  genres: TvInitGenre[];         // 13 genres (slim)
-  translations: Record<string, string>;  // 724 translation keys
-  popularStations: TvInitStation[];      // 21 popular stations (slim format)
-  responseTime: number;
-  cacheAge: number;
+  popularStations: TvInitStation[];      // Popüler istasyonlar
+  trendingStations: TvInitStation[];     // Trend istasyonlar (yeni!)
+  genres: TvInitGenre[];                 // Genre listesi
+  countries: TvInitCountry[];            // Ülke listesi (yeni format!)
+  meta: {
+    country: string | null;
+    countryCode: string | null;
+    totalPopular: number;
+    totalGenres: number;
+    totalCountries: number;
+    generatedAt: string;
+  };
+  // Legacy fields (backward compatibility)
+  translations?: Record<string, string>;
+  responseTime?: number;
+  cacheAge?: number;
+}
+
+export interface TvInitCountry {
+  name: string;
+  code: string;
+  stationCount: number;
 }
 
 interface CachedData {
@@ -106,16 +122,28 @@ const saveToAsyncStorage = async (data: TvInitResponse, country?: string, lang?:
 
 /**
  * Fetch data from API and cache it
+ * NEW: Supports both country and countryCode parameters
  */
-const fetchAndCache = async (country?: string, lang?: string): Promise<TvInitResponse> => {
-  console.log('[TvInit] Fetching from API...', { country, lang });
+const fetchAndCache = async (country?: string, countryCode?: string, lang?: string): Promise<TvInitResponse> => {
+  console.log('[TvInit] Fetching from API...', { country, countryCode, lang });
   
-  const response = await api.get<TvInitResponse>('/api/tv/init', {
-    params: {
-      country: country || undefined,
-      lang: lang || 'tr',
-    },
-  });
+  const params: Record<string, any> = {
+    limit: 20,
+    genreLimit: 20,
+  };
+  
+  // Backend accepts both country and countryCode - prefer country (English name)
+  if (country) {
+    params.country = country;
+  } else if (countryCode) {
+    params.countryCode = countryCode;
+  }
+  
+  if (lang) {
+    params.lang = lang;
+  }
+  
+  const response = await api.get<TvInitResponse>('/api/tv/init', { params });
 
   const data = response.data;
   
@@ -129,11 +157,11 @@ const fetchAndCache = async (country?: string, lang?: string): Promise<TvInitRes
   saveToAsyncStorage(data, country, lang).catch(() => {});
 
   console.log('[TvInit] Data fetched successfully:', {
-    countries: data.countries?.length || 0,
-    genres: data.genres?.length || 0,
-    translations: Object.keys(data.translations || {}).length,
     popularStations: data.popularStations?.length || 0,
-    responseTime: data.responseTime,
+    trendingStations: data.trendingStations?.length || 0,
+    genres: data.genres?.length || 0,
+    countries: data.countries?.length || 0,
+    meta: data.meta,
   });
 
   return data;
