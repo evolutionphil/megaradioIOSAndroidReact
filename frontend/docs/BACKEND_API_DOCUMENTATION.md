@@ -449,71 +449,87 @@ GET /api/genres/pop/stations?country=Austria&limit=50&tv=1
 
 ---
 
-## 7. Device Token (Silent Push)
+## 7. Device Token (Push Notifications)
 
-### 7.1 POST /api/devices/register
+### 7.1 POST /api/user/push-token
 **Amaç:** Push notification için device token kaydet
 
 **Kullanım:** Uygulama açıldığında ve login sonrası
 
+**Headers:** `Authorization: Bearer {token}` (opsiyonel - user association için)
+
 **Body:**
 ```json
 {
-  "platform": "ios",
   "token": "apns_device_token_here",
-  "userId": "user123",
+  "platform": "ios",
+  "deviceName": "iPhone 15 Pro",
   "country": "Turkey",
-  "countryCode": "TR",
-  "appVersion": "1.0.61",
-  "osVersion": "17.0"
+  "language": "tr",
+  "tokenType": "apns"
 }
 ```
 
 | Alan | Tip | Zorunlu | Açıklama |
 |------|-----|---------|----------|
-| `platform` | string | ✅ | "ios" veya "android" |
 | `token` | string | ✅ | APNs (iOS) veya FCM (Android) token |
-| `userId` | string | ❌ | Giriş yapmışsa user ID |
-| `country` | string | ❌ | İngilizce ülke adı |
-| `countryCode` | string | ❌ | ISO ülke kodu |
-| `appVersion` | string | ❌ | Uygulama versiyonu |
-| `osVersion` | string | ❌ | İşletim sistemi versiyonu |
+| `platform` | string | ✅ | "ios" veya "android" |
+| `deviceName` | string | ❌ | Cihaz adı |
+| `country` | string | ❌ | Ülke (İngilizce veya native) |
+| `language` | string | ❌ | Dil kodu (tr, en, de) |
+| `tokenType` | string | ❌ | "apns" (iOS) veya "fcm" (Android) |
+
+**NOT:** `userId` body'de GÖNDERİLMEZ - Authorization header'dan otomatik çıkarılır.
 
 ---
 
-### 7.2 POST /api/devices/unregister
+### 7.2 DELETE /api/user/push-token
 **Amaç:** Device token'ı sil (logout'ta)
+
+**Headers:** `Authorization: Bearer {token}` gerekli
 
 **Body:**
 ```json
 {
-  "platform": "ios",
-  "token": "apns_device_token_here"
+  "token": "apns_device_token_here",
+  "platform": "ios"
 }
+```
+
+**⚠️ NOT:** Bu endpoint **DELETE** method kullanır, POST değil!
 ```
 
 ---
 
 ## 8. Diğer Endpoints
 
-### 8.1 GET /api/tv/init
+### 8.1 GET /api/tv/init ⚠️ BACKEND'DE OLUŞTURULMASI GEREKİYOR
 **Amaç:** TV/CarPlay başlangıç verileri (tek istekle çoklu veri)
 
-**Kullanım:** Uygulama açılışında ön yükleme
+**Durum:** Frontend bu endpoint'i kullanıyor ancak backend'de henüz MEVCUT DEĞİL!
+
+**Kullanım:** Uygulama açılışında ön yükleme - performans için kritik
 
 **Parametreler:**
 | Parametre | Tip | Açıklama |
 |-----------|-----|----------|
 | `country` | string | İngilizce ülke adı |
-| `limit` | number | İstasyon limiti |
+| `lang` | string | Dil kodu (tr, en, de) |
 
-**Yanıt:**
+**Beklenen Yanıt:**
 ```json
 {
-  "popularStations": [...],
-  "genres": [...],
-  "countries": [...]
+  "popularStations": [...],  // 21 popüler istasyon (slim format)
+  "genres": [...],           // 13 genre (name, slug, stationCount)
+  "countries": [...],        // 219 ülke listesi
+  "translations": {...},     // Çeviri key-value'ları
+  "responseTime": 123,       // API response süresi (ms)
+  "cacheAge": 0              // Cache yaşı (saniye)
 }
+```
+
+**⚠️ Backend developer'ın bu endpoint'i oluşturması ÖNERİLİR.**
+Bu endpoint tek istekle birden fazla veri döndürür ve uygulama açılış süresini önemli ölçüde kısaltır.
 ```
 
 ---
@@ -617,18 +633,33 @@ Tutarlı hata formatı önerisi:
 
 ## Özet Tablo
 
-| Endpoint | Method | Auth | Cache | Kullanım |
-|----------|--------|------|-------|----------|
-| `/api/stations` | GET | ❌ | 10 dk | İstasyon listesi |
-| `/api/stations/popular` | GET | ❌ | 10 dk | Popüler istasyonlar |
-| `/api/station/{id}` | GET | ❌ | 30 dk | Tek istasyon |
-| `/api/genres/precomputed` | GET | ❌ | 24 sa | Genre listesi |
-| `/api/genres/{slug}/stations` | GET | ❌ | 1 sa | Genre istasyonları |
-| `/api/user/favorites` | GET/POST/DELETE | ✅ | 1 dk | Favoriler |
-| `/api/recently-played` | GET/POST | ✅ | 30 sn | Son dinlenenler |
-| `/api/devices/register` | POST | ❌ | - | Token kayıt |
-| `/api/auth/login` | POST | ❌ | - | Giriş |
-| `/api/tv/init` | GET | ❌ | 10 dk | Ön yükleme |
+| Endpoint | Method | Auth | Cache | Durum |
+|----------|--------|------|-------|-------|
+| `/api/stations` | GET | ❌ | 10 dk | ✅ Çalışıyor |
+| `/api/stations/popular` | GET | ❌ | 10 dk | ✅ Çalışıyor |
+| `/api/station/{id}` | GET | ❌ | 30 dk | ✅ Çalışıyor |
+| `/api/genres/precomputed` | GET | ❌ | 24 sa | ✅ Çalışıyor |
+| `/api/genres/{slug}/stations` | GET | ❌ | 1 sa | ✅ Çalışıyor |
+| `/api/genres/discoverable` | GET | ❌ | 24 sa | ✅ Çalışıyor |
+| `/api/user/favorites` | GET/POST/DELETE | ✅ | 1 dk | ✅ Çalışıyor |
+| `/api/recently-played` | GET/POST | ✅ | 30 sn | ✅ Çalışıyor |
+| `/api/user/push-token` | POST/DELETE | ✅ | - | ✅ Çalışıyor |
+| `/api/auth/login` | POST | ❌ | - | ✅ Çalışıyor |
+| `/api/auth/signup` | POST | ❌ | - | ✅ Çalışıyor |
+| `/api/tv/init` | GET | ❌ | 24 sa | ⚠️ OLUŞTURULMALI |
+| `/api/stream/resolve` | GET | ❌ | - | ✅ Çalışıyor |
+| `/api/translations/{lang}` | GET | ❌ | 24 sa | ✅ Çalışıyor |
+
+---
+
+## Headers Özeti
+
+| Header | Değer | Açıklama |
+|--------|-------|----------|
+| `X-API-Key` | `mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw` | TÜM isteklerde zorunlu |
+| `X-Device-Type` | `mobile` | Login'de token almak için gerekli |
+| `Authorization` | `Bearer {token}` | Auth gerektiren endpoint'ler için |
+| `Content-Type` | `application/json` | POST/PUT/DELETE istekleri için |
 
 ---
 

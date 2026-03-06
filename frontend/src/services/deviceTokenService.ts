@@ -1,24 +1,24 @@
 // deviceTokenService - Register device tokens for push notifications
 // Supports both APNs (iOS) and FCM (Android)
+// BACKEND ENDPOINT: /api/user/push-token (POST for register, DELETE for unregister)
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './api';
 import useLocationStore from '../store/locationStore';
+import i18n from 'i18next';
 
 const DEVICE_TOKEN_KEY = '@megaradio_device_token';
 const DEVICE_TOKEN_REGISTERED_KEY = '@megaradio_device_token_registered';
 
+// Backend expects this payload format
 interface DeviceTokenPayload {
-  platform: 'ios' | 'android';
   token: string;
-  userId?: string;
+  platform: 'ios' | 'android';
+  deviceName?: string;
   country?: string;
-  countryCode?: string;
   language?: string;
-  appVersion?: string;
-  deviceModel?: string;
-  osVersion?: string;
+  tokenType?: 'apns' | 'fcm';
 }
 
 class DeviceTokenService {
@@ -81,8 +81,9 @@ class DeviceTokenService {
   /**
    * Register device token with backend
    * Called after app launch and when user logs in
+   * NOTE: userId is extracted from Authorization header by backend, not sent in body
    */
-  async registerToken(userId?: string): Promise<boolean> {
+  async registerToken(): Promise<boolean> {
     // Prevent duplicate registrations
     if (this.isRegistering) {
       console.log('[DeviceToken] Registration already in progress');
@@ -98,38 +99,38 @@ class DeviceTokenService {
         return false;
       }
 
-      // Check if already registered (unless userId changed)
+      // Check if already registered
       const alreadyRegistered = await this.isTokenRegistered();
-      if (alreadyRegistered && !userId) {
+      if (alreadyRegistered) {
         console.log('[DeviceToken] Token already registered');
         return true;
       }
 
-      // Get location info
-      const { country, countryCode, countryEnglish } = useLocationStore.getState();
+      // Get location and language info
+      const { country, countryEnglish } = useLocationStore.getState();
+      const currentLanguage = i18n.language || 'en';
 
+      // Backend expects this exact payload format
       const payload: DeviceTokenPayload = {
-        platform: Platform.OS as 'ios' | 'android',
         token: token,
-        userId: userId,
+        platform: Platform.OS as 'ios' | 'android',
+        deviceName: undefined, // Optional
         country: countryEnglish || country || undefined,
-        countryCode: countryCode || undefined,
-        language: undefined, // Will be set from i18n
-        appVersion: '1.0.58', // TODO: Get from app.json
-        deviceModel: undefined, // TODO: Get from device info
-        osVersion: Platform.Version?.toString(),
+        language: currentLanguage,
+        tokenType: Platform.OS === 'ios' ? 'apns' : 'fcm',
       };
 
       console.log('[DeviceToken] Registering token:', {
         platform: payload.platform,
+        tokenType: payload.tokenType,
         country: payload.country,
-        hasUserId: !!payload.userId,
+        language: payload.language,
       });
 
-      // Call backend API
-      const response = await api.post('/api/devices/register', payload);
+      // CORRECT ENDPOINT: /api/user/push-token (POST)
+      const response = await api.post('/api/user/push-token', payload);
 
-      if (response.data.success) {
+      if (response.data.success || response.status === 200 || response.status === 201) {
         await AsyncStorage.setItem(DEVICE_TOKEN_REGISTERED_KEY, 'true');
         console.log('[DeviceToken] Registration successful');
         return true;
@@ -153,6 +154,7 @@ class DeviceTokenService {
 
   /**
    * Unregister device token (on logout)
+   * CORRECT: Uses DELETE method, not POST
    */
   async unregisterToken(): Promise<boolean> {
     try {
@@ -161,9 +163,12 @@ class DeviceTokenService {
         return true;
       }
 
-      await api.post('/api/devices/unregister', {
-        platform: Platform.OS,
-        token: token,
+      // CORRECT ENDPOINT: /api/user/push-token (DELETE)
+      await api.delete('/api/user/push-token', {
+        data: {
+          token: token,
+          platform: Platform.OS,
+        }
       });
 
       await AsyncStorage.removeItem(DEVICE_TOKEN_REGISTERED_KEY);
@@ -176,10 +181,12 @@ class DeviceTokenService {
   }
 
   /**
-   * Update user association (after login)
+   * Re-register token (after login - user association happens via auth header)
    */
-  async updateUser(userId: string): Promise<boolean> {
-    return this.registerToken(userId);
+  async updateUser(): Promise<boolean> {
+    // Clear old registration and re-register
+    await this.clearRegistrationStatus();
+    return this.registerToken();
   }
 
   /**
