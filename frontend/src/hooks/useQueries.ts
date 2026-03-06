@@ -67,9 +67,13 @@ export const queryKeys = {
 
 // Station hooks with backend-recommended caching
 export const useStations = (params: StationQueryParams = {}) => {
+  // Only fetch if country is provided (to avoid global results on first load)
+  const hasCountry = params.country !== undefined;
+  
   return useQuery({
     queryKey: [...queryKeys.stations, params],
     queryFn: () => stationService.getStations(params),
+    enabled: hasCountry, // Wait for country to be set
     staleTime: CACHE_TTL.STATIONS_LIST,
     gcTime: CACHE_TTL.STATIONS_LIST * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
@@ -78,19 +82,22 @@ export const useStations = (params: StationQueryParams = {}) => {
 };
 
 export const usePopularStations = (country?: string, limit: number = 12) => {
+  // Only fetch if country is provided (to avoid global results on first load)
+  const hasCountry = country !== undefined;
+  
   return useQuery({
     queryKey: ['popularStations', country || 'global', limit],
     queryFn: async () => {
       // Fetch popular stations from API
-      // Note: React Query cache is pre-populated by initializeApp via TV init
-      console.log('[useQueries] Fetching popular stations from API');
+      console.log('[useQueries] Fetching popular stations from API, country:', country);
       const stations = await stationService.getPopularStations(country, limit);
       return { stations: stations.stations || [] };
     },
+    enabled: hasCountry, // Wait for country to be set
     staleTime: CACHE_TTL.POPULAR_STATIONS,
     gcTime: CACHE_TTL.POPULAR_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // React Query cache is pre-populated by initializeApp
+    refetchOnMount: false,
   });
 };
 
@@ -179,6 +186,9 @@ export const useGenres = (page: number = 1, limit: number = 50) => {
 };
 
 export const usePrecomputedGenres = (country?: string) => {
+  // Only fetch if country is provided (to avoid global results on first load)
+  const hasCountry = country !== undefined;
+  
   return useQuery({
     queryKey: ['precomputedGenres', country],
     queryFn: async () => {
@@ -188,6 +198,7 @@ export const usePrecomputedGenres = (country?: string) => {
       console.log('[useQueries] API returned genres:', result?.data?.length || 0);
       return result;
     },
+    enabled: hasCountry, // Wait for country to be set
     staleTime: 5 * 60 * 1000, // 5 minutes - shorter to allow country changes
     gcTime: 30 * 60 * 1000,   // 30 minutes
     refetchOnWindowFocus: false,
@@ -203,10 +214,13 @@ export const useGenreStations = (
   sort?: 'votes' | 'name' | 'createdAt',
   order?: 'asc' | 'desc'
 ) => {
+  // Only fetch if both slug AND country are provided
+  const hasCountry = country !== undefined;
+  
   return useQuery({
     queryKey: [...queryKeys.genreStations(slug), page, limit, country, sort, order],
     queryFn: () => genreService.getGenreStations(slug, page, limit, country, sort, order),
-    enabled: !!slug,
+    enabled: !!slug && hasCountry, // Wait for country to be set
     staleTime: CACHE_TTL.GENRE_STATIONS,
     gcTime: CACHE_TTL.GENRE_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,

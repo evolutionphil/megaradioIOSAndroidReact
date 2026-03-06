@@ -141,20 +141,20 @@ export default function HomeScreen() {
   // - /api/stations/popular: accepts both English and native names
   // - /api/genres/:slug/stations: requires English name only
   // - /api/genres/precomputed: accepts native names
-  // Using countryEnglish for popular stations for consistency
+  // - /api/stations: requires English name (e.g., "Austria" not "Österreich")
+  // Using countryEnglish for all API calls for consistency
   // Fetch 12 stations, display 8 on homepage
   // IMPORTANT: Wait for country to load before making API calls to prevent race condition
   const countryForApi = isLoaded ? (countryEnglish || country || undefined) : undefined;
-  const nativeCountryForApi = isLoaded ? (country || undefined) : undefined;
   
   const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryForApi, 12);
-  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(nativeCountryForApi);
+  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(countryForApi);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
   const { data: publicProfiles, refetch: refetchProfiles } = usePublicProfiles(10);
-  // Use native country name for stations list API
-  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: nativeCountryForApi });
+  // FIXED: Use countryForApi (English name) for stations list API - "Austria" not "Österreich"
+  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: countryForApi });
   
   // Nearby stations - 50km radius
   const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 50, 12);
