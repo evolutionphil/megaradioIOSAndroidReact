@@ -37,11 +37,18 @@ Authorization: Bearer {token}  # Auth gerektiren endpoint'ler için
 ```
 
 ### TV Parameter
-Tüm istasyonlarla ilgili endpoint'lere `tv=1` parametresi eklenir:
+**TÜM API isteklerine otomatik olarak `tv=1` parametresi eklenir.**
+
+Bu, frontend'deki global interceptor tarafından yapılır:
+```javascript
+// api.ts - Request Interceptor
+config.params = { ...config.params, tv: 1 };
 ```
-?tv=1
-```
-Bu, TV/CarPlay/Android Auto için optimize edilmiş veri döndürür.
+
+Bu parametre, TV/CarPlay/Android Auto için optimize edilmiş veri döndürür:
+- Gereksiz alanlar filtrelenir
+- Response boyutu küçülür
+- Mobil için optimize edilmiş format
 
 ---
 
