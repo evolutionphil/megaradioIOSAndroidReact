@@ -66,7 +66,7 @@ export default function HomeScreen() {
   const preloadStarted = useRef(false);
   const { user, isAuthenticated } = useAuthStore();
   const { width: windowWidth } = useWindowDimensions();
-  const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation } = useLocationStore();
+  const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation, isLoaded } = useLocationStore();
   const insets = useSafeAreaInsets();
   
   // MiniPlayer visibility for scroll padding
@@ -113,15 +113,19 @@ export default function HomeScreen() {
     console.log('[HomeScreen] User avatar:', user?.avatar, 'profilePhoto:', user?.profilePhoto);
   }, [user]);
 
-  // Fetch location on mount - with delay to avoid crash during initialization
+  // Fetch location on mount - only if no stored country exists
   useEffect(() => {
-    // Delay location request to allow app to fully initialize
-    const timer = setTimeout(() => {
-      fetchLocation();
-    }, 2000); // 2 second delay
+    // If country already loaded from storage, don't fetch location immediately
+    // This prevents race condition on first launch
+    if (country || countryCode) {
+      console.log('[HomeScreen] Country already available:', country, countryCode);
+      return;
+    }
     
-    return () => clearTimeout(timer);
-  }, []);
+    // Only fetch location if no stored country (first-time users)
+    console.log('[HomeScreen] No stored country, fetching location...');
+    fetchLocation();
+  }, []); // Empty deps - only run once on mount
 
   // Recently played from local storage
   const { stations: localRecentStations, loadFromStorage: loadRecent } = useRecentlyPlayedStore();
@@ -139,14 +143,18 @@ export default function HomeScreen() {
   // - /api/genres/precomputed: accepts native names
   // Using countryEnglish for popular stations for consistency
   // Fetch 12 stations, display 8 on homepage
-  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryEnglish || country || undefined, 12);
-  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(country || undefined);
+  // IMPORTANT: Wait for country to load before making API calls to prevent race condition
+  const countryForApi = isLoaded ? (countryEnglish || country || undefined) : undefined;
+  const nativeCountryForApi = isLoaded ? (country || undefined) : undefined;
+  
+  const { data: popularData, isLoading: popularLoading, refetch: refetchPopular } = usePopularStations(countryForApi, 12);
+  const { data: genresData, isLoading: genresLoading, refetch: refetchGenres } = usePrecomputedGenres(nativeCountryForApi);
   const { data: discoverableGenres, refetch: refetchDiscoverable } = useDiscoverableGenres();
   const { data: recentlyPlayedData, refetch: refetchRecent } = useRecentlyPlayed();
   const { data: communityFavorites, refetch: refetchCommunity } = useCommunityFavorites(10);
   const { data: publicProfiles, refetch: refetchProfiles } = usePublicProfiles(10);
   // Use native country name for stations list API
-  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: country || undefined });
+  const { data: allStationsData, isLoading: allStationsLoading, refetch: refetchAll } = useStations({ limit: 21, country: nativeCountryForApi });
   
   // Nearby stations - 50km radius
   const { data: nearbyData, refetch: refetchNearby } = useNearbyStations(latitude, longitude, 50, 12);

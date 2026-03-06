@@ -56,7 +56,7 @@ export default function GenreDetailScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   
-  const { countryCode, country, countryEnglish } = useLocationStore();
+  const { countryCode, country, countryEnglish, isLoaded } = useLocationStore();
 
   // Load saved view mode preference on mount
   useEffect(() => {
@@ -85,11 +85,14 @@ export default function GenreDetailScreen() {
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
   // IMPORTANT: Genre stations API requires English country name (e.g., "Austria" not "Österreich")
+  // Wait for country to load before making API call
+  const countryForApi = isLoaded ? (countryEnglish || country || undefined) : undefined;
+  
   const { data, isLoading, refetch } = useGenreStations(
     slug, 
     page, 
     100, 
-    countryEnglish || country || undefined
+    countryForApi
   );
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();

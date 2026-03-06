@@ -160,7 +160,9 @@ export default function RootLayout() {
     loadAuth();
   }, []);
 
-  // Load stored country selection on app startup
+  // Load stored country selection on app startup - WAIT FOR IT
+  const [countryLoaded, setCountryLoaded] = useState(false);
+  
   useEffect(() => {
     const loadCountry = async () => {
       console.log('[Layout] Loading stored country selection...');
@@ -169,6 +171,9 @@ export default function RootLayout() {
         console.log('[Layout] Country loaded:', useLocationStore.getState().country);
       } catch (error) {
         console.error('[Layout] Failed to load stored country:', error);
+      } finally {
+        // Always mark as loaded, even on error (will use default/detection)
+        setCountryLoaded(true);
       }
     };
     loadCountry();

@@ -10,6 +10,55 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
+## Build 60 - December 2025 (CRITICAL BUG FIX - RACE CONDITION)
+
+### ✅ TAMAMLANDI: İlk Açılışta Station Yüklenmeme Sorunu (Race Condition)
+
+**Sorun:** İlk açılışta:
+- "All Stations" 0 station gösteriyordu
+- "Popular Stations" "no station found" mesajı
+- Genre içi 0 station
+- İkinci açılışta çalışıyor ama country filtresi yok
+
+**Kök Neden:** Race Condition
+- **t=0ms:** App açılıyor → AsyncStorage boş → `country = null`
+- **t=50ms:** Homepage mount → API çağrıları `country=undefined` ile yapılıyor (GLOBAL sonuçlar)
+- **t=200ms:** Global sonuçlar cache'leniyor
+- **t=2000ms:** `fetchLocation()` çağrılıyor (2 saniye gecikme)
+- **t=2001ms:** Country değişiyor → Yanlış cache zaten mevcut
+
+**Çözümler:**
+
+1. **locationStore.ts: `isLoaded` state eklendi**
+   - `loadStoredCountry()` tamamlandığında `isLoaded = true`
+   - Country yoksa da `isLoaded = true` (detection yapılacak)
+
+2. **_layout.tsx: `countryLoaded` state eklendi**
+   - Country yüklenene kadar bekleniyor
+   - Race condition önlendi
+
+3. **index.tsx: 2 saniyelik gecikme kaldırıldı**
+   - `fetchLocation()` artık sadece stored country yoksa çağrılıyor
+   - API çağrıları `isLoaded` kontrolüyle yapılıyor
+
+4. **genre-detail.tsx ve all-stations.tsx: `isLoaded` kontrolü eklendi**
+   - Country yüklenene kadar API çağrısı yapılmıyor
+
+### Değişen Dosyalar:
+- `src/store/locationStore.ts` - `isLoaded` state eklendi
+- `app/_layout.tsx` - `countryLoaded` kontrolü
+- `app/(tabs)/index.tsx` - 2s gecikme kaldırıldı, `isLoaded` kontrolü
+- `app/genre-detail.tsx` - `isLoaded` kontrolü
+- `app/all-stations.tsx` - `isLoaded` kontrolü
+
+### 📱 Yeni Build Komutları:
+```bash
+cd frontend && eas build --platform ios --clear-cache
+cd frontend && eas build --platform android --clear-cache
+```
+
+---
+
 ## Build 59 - December 2025 (NEW FEATURES)
 
 ### ✅ TAMAMLANDI: P0/P1 Yeni Özellikler

@@ -57,7 +57,7 @@ export default function AllStationsScreen() {
   const [page, setPage] = useState(1);
   
   // Use param country if available, otherwise use location store
-  const { countryCode: storeCountryCode, country: storeCountry } = useLocationStore();
+  const { countryCode: storeCountryCode, country: storeCountry, countryEnglish, isLoaded } = useLocationStore();
   const countryCode = paramCountryCode || storeCountryCode;
   const country = paramCountry || storeCountry;
 
@@ -88,8 +88,8 @@ export default function AllStationsScreen() {
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
   // Use countryEnglish for API as backend expects English country names
-  const { countryEnglish } = useLocationStore();
-  const apiCountry = countryEnglish || country || undefined;
+  // Wait for country to load before making API call
+  const apiCountry = isLoaded ? (countryEnglish || country || undefined) : undefined;
   
   const { data, isLoading, refetch, error } = useStations({
     limit: 100,

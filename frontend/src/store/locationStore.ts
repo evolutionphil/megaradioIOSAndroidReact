@@ -140,6 +140,7 @@ interface LocationState {
   loading: boolean;
   error: string | null;
   isManuallySet: boolean; // Track if country was manually selected
+  isLoaded: boolean; // Track if initial country data has been loaded (from storage or detection)
   loadStoredCountry: () => Promise<void>;
   fetchLocation: () => Promise<void>;
   setCountryManual: (country: string) => Promise<void>;
@@ -155,6 +156,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   loading: false,
   error: null,
   isManuallySet: false,
+  isLoaded: false, // Initially not loaded
 
   // Load stored country from AsyncStorage on app startup
   loadStoredCountry: async () => {
@@ -162,16 +164,22 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       const storedData = await AsyncStorage.getItem(COUNTRY_KEY);
       if (storedData) {
         const { country, countryCode, countryEnglish } = JSON.parse(storedData);
-        console.log('[LocationStore] Loaded stored country:', country);
+        console.log('[LocationStore] Loaded stored country:', country, countryCode);
         set({
           country,
           countryCode,
           countryEnglish,
           isManuallySet: true,
+          isLoaded: true, // Mark as loaded
         });
+      } else {
+        // No stored country - mark as loaded but will need detection
+        console.log('[LocationStore] No stored country found');
+        set({ isLoaded: true });
       }
     } catch (error) {
       console.error('[LocationStore] Failed to load stored country:', error);
+      set({ isLoaded: true }); // Mark as loaded even on error
     }
   },
 
