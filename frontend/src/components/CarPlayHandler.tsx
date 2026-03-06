@@ -119,14 +119,15 @@ const getRecentStations = async (): Promise<Station[]> => {
 
 const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
   try {
-    // Get selected country for filtering genres
-    const { country } = useLocationStore.getState();
+    // Get selected country code for filtering genres
+    // API expects ISO country code (e.g., "TR", "DE") not country name
+    const { countryCode, country } = useLocationStore.getState();
     
-    console.log('[CarPlayHandler] Fetching genres for country:', country);
+    console.log('[CarPlayHandler] Fetching genres for countryCode:', countryCode, 'country:', country);
     
     // Use precomputed genres endpoint - faster and cached, limit=40 for CarPlay
-    // Pass country for filtered results
-    const response = await genreService.getPrecomputedGenres(country || undefined, 40);
+    // Pass countryCode for filtered results (API expects ISO code like "TR")
+    const response = await genreService.getPrecomputedGenres(countryCode || undefined, 40);
     
     // Return top 40 genres for CarPlay list
     const genres = (response.data || []).slice(0, 40).map((g: any) => ({
@@ -134,7 +135,7 @@ const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
       count: g.stationCount || g.total_stations || g.count || 0,
     }));
     
-    console.log('[CarPlayHandler] Got', genres.length, 'genres for CarPlay');
+    console.log('[CarPlayHandler] Got', genres.length, 'genres for CarPlay (countryCode:', countryCode, ')');
     return genres;
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genres:', error);
@@ -145,6 +146,7 @@ const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
 const getStationsByGenre = async (genre: string): Promise<Station[]> => {
   try {
     // Get selected country for filtering
+    // Use countryEnglish for genre stations API (expects English name like "Turkey")
     const { countryEnglish, country } = useLocationStore.getState();
     const selectedCountry = countryEnglish || country || undefined;
     
@@ -155,16 +157,17 @@ const getStationsByGenre = async (genre: string): Promise<Station[]> => {
     console.log('[CarPlayHandler] Fetching stations for genre:', genre, '-> slug:', genreSlug, 'country:', selectedCountry);
     
     // Use genreService for better country filtering
+    // Pass countryEnglish (e.g., "Turkey") for genre stations API
     const response = await genreService.getGenreStations(genreSlug, 1, 50, selectedCountry);
     
-    console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'stations for genre', genre);
+    console.log('[CarPlayHandler] Got', response.stations?.length || 0, 'stations for genre', genre, '(country:', selectedCountry, ')');
     
     // Log first 3 stations for debugging
     if (response.stations && response.stations.length > 0) {
       console.log('[CarPlayHandler] First 3 genre stations:', 
-        response.stations.slice(0, 3).map(s => s.name).join(', '));
+        response.stations.slice(0, 3).map(s => `${s.name} (${s.country})`).join(', '));
     } else {
-      console.warn('[CarPlayHandler] NO STATIONS returned for genre:', genre);
+      console.warn('[CarPlayHandler] NO STATIONS returned for genre:', genre, 'country:', selectedCountry);
     }
     
     return response.stations || [];

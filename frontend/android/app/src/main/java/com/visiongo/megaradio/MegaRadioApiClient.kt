@@ -212,20 +212,21 @@ class MegaRadioApiClient private constructor(private val context: Context) {
     
     /**
      * Get genres list
-     * @param country Optional country filter
+     * @param countryCode Optional country code filter (ISO code like "TR", "DE")
      * @param limit Number of genres to fetch
      */
-    suspend fun getGenres(country: String? = null, limit: Int = 40): List<Genre> {
+    suspend fun getGenres(countryCode: String? = null, limit: Int = 40): List<Genre> {
         return withContext(Dispatchers.IO) {
             try {
                 val url = buildString {
-                    append("$BASE_URL/api/genres/precomputed?limit=$limit")
-                    if (!country.isNullOrEmpty()) {
-                        append("&country=${java.net.URLEncoder.encode(country, "UTF-8")}")
+                    append("$BASE_URL/api/genres/precomputed?limit=$limit&tv=1")
+                    if (!countryCode.isNullOrEmpty()) {
+                        // API expects ISO country code (e.g., "TR", "DE") for filtering
+                        append("&countrycode=${java.net.URLEncoder.encode(countryCode, "UTF-8")}")
                     }
                 }
                 
-                Log.d(TAG, "Fetching genres: $url")
+                Log.d(TAG, "Fetching genres with countryCode=$countryCode: $url")
                 
                 val response = makeRequest(url) ?: return@withContext emptyList()
                 val json = JSONObject(response)
@@ -255,7 +256,7 @@ class MegaRadioApiClient private constructor(private val context: Context) {
                     }
                 }
                 
-                Log.d(TAG, "Fetched ${genres.size} genres")
+                Log.d(TAG, "Fetched ${genres.size} genres for countryCode=$countryCode")
                 genres
             } catch (e: Exception) {
                 Log.e(TAG, "Error fetching genres: ${e.message}", e)
@@ -441,9 +442,10 @@ class MegaRadioApiClient private constructor(private val context: Context) {
     
     /**
      * Get genres with CACHE-FIRST pattern
+     * @param countryCode ISO country code (e.g., "TR", "DE")
      */
-    suspend fun getGenresCached(country: String? = null, limit: Int = 40): List<Genre> {
-        val cacheKey = "genres_${country ?: "global"}_$limit"
+    suspend fun getGenresCached(countryCode: String? = null, limit: Int = 40): List<Genre> {
+        val cacheKey = "genres_${countryCode ?: "global"}_$limit"
         
         // Try cache first
         val cached = getCachedGenres(cacheKey)
@@ -454,8 +456,8 @@ class MegaRadioApiClient private constructor(private val context: Context) {
         
         Log.d(TAG, "CACHE MISS: Fetching genres from network...")
         
-        // Fetch from API
-        val fresh = getGenres(country, limit)
+        // Fetch from API (now with countryCode)
+        val fresh = getGenres(countryCode, limit)
         if (fresh.isNotEmpty()) {
             saveCachedGenres(cacheKey, fresh)
         }
@@ -465,21 +467,23 @@ class MegaRadioApiClient private constructor(private val context: Context) {
     
     /**
      * Background refresh - update cache silently without returning
+     * @param countryCode ISO country code (e.g., "TR", "DE") for filtering
+     * @param countryEnglish English country name (e.g., "Turkey") for popular stations
      */
-    suspend fun refreshCacheInBackground(country: String? = null) {
+    suspend fun refreshCacheInBackground(countryCode: String? = null, countryEnglish: String? = null) {
         try {
-            Log.d(TAG, "Background cache refresh started for country: $country")
+            Log.d(TAG, "Background cache refresh started for countryCode=$countryCode, countryEnglish=$countryEnglish")
             
-            // Refresh popular stations
-            val stations = getPopularStations(country, 50)
+            // Refresh popular stations (uses English name)
+            val stations = getPopularStations(countryEnglish, 50)
             if (stations.isNotEmpty()) {
-                saveCachedStations("popular_${country ?: "global"}_50", stations)
+                saveCachedStations("popular_${countryEnglish ?: "global"}_50", stations)
             }
             
-            // Refresh genres
-            val genres = getGenres(country, 40)
+            // Refresh genres (uses ISO country code)
+            val genres = getGenres(countryCode, 40)
             if (genres.isNotEmpty()) {
-                saveCachedGenres("genres_${country ?: "global"}_40", genres)
+                saveCachedGenres("genres_${countryCode ?: "global"}_40", genres)
             }
             
             Log.d(TAG, "Background cache refresh completed: ${stations.size} stations, ${genres.size} genres")

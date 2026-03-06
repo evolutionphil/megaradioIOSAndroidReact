@@ -324,12 +324,14 @@ const createFavoritesTemplate = async (): Promise<any> => {
     
     // Build items with imgUrl for async native image loading
     // Native iOS uses imgUrl property to download images asynchronously
+    // Also provide 'image' local fallback for guaranteed display
     const items = favorites.map(station => {
       const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        imgUrl: imgUrl, // Native will download this asynchronously
+        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
+        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
       };
     });
     
@@ -393,13 +395,16 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
       console.log('[CarPlay] Using GridTemplate for Recently Played (Zuletzt gespielt)');
       
       const gridButtons = recentStations.slice(0, 24).map((station, index) => {
+        // For GridTemplate, we need local assets for reliable image loading
+        // Use LOCAL_FALLBACK_LOGO as primary, CarPlay will use imgUrl for async loading if supported
         const imgUrl = getArtworkUrl(station);
         console.log(`[CarPlay] RecentlyPlayed Grid item ${index}: ${station.name}, imgUrl: ${imgUrl}`);
         return {
           id: `recent_${index}`,
           titleVariants: [station.name],
-          // CarPlay GridTemplate needs imgUrl for async image loading (not 'image')
-          imgUrl: imgUrl,
+          // Use both: 'image' for local fallback, 'imgUrl' for async URL loading
+          image: LOCAL_FALLBACK_LOGO, // Guaranteed to work (local asset)
+          imgUrl: imgUrl, // Will be used if CarPlay supports async loading
         };
       });
       
@@ -430,13 +435,14 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     // Fallback to ListTemplate if GridTemplate not available or no stations
     console.log('[CarPlay] Using ListTemplate for Recently Played (fallback)');
     
-    // Build items with imgUrl for async native image loading
+    // Build items with imgUrl for async native image loading + local fallback
     const items = recentStations.map(station => {
       const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        imgUrl: imgUrl,
+        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
+        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
       };
     });
     
@@ -638,12 +644,14 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     }
     
     // Build items with imgUrl for async native image loading (max 50)
+    // Also provide local fallback for guaranteed image display
     const items = stations.slice(0, 50).map(station => {
       const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || 'Radio',
-        imgUrl: imgUrl, // Native will download this asynchronously
+        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
+        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
       };
     });
     
@@ -707,12 +715,14 @@ const createBrowseTemplate = async (): Promise<any> => {
     }
     
     // Build items with imgUrl for async native image loading (max 50)
+    // Also provide local fallback for guaranteed image display
     const items = stations.slice(0, 50).map(station => {
       const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        imgUrl: imgUrl, // Native will download this asynchronously
+        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
+        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
       };
     });
     

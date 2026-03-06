@@ -25,36 +25,43 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 | `SilentPushHandler.swift` | SPUSH001D0307B40044C1D9 | APNs silent push handler |
 | `VoiceCommandHandler.swift` | VOICE001D0307B40044C1D9 | Siri sesli komutlar |
 
-### ✅ CarPlay Bug Fixes
+### ✅ CarPlay/Android Auto - Logo ve Ülke Filtresi Bug Fixes
 
 **1. Recently Played (Zuletzt gespielt) - Logo Görünmüyor Sorunu**
 - **Sorun:** Grid view'da station logoları/faviconları görünmüyordu
-- **Kök Neden:** GridTemplate için `image` yerine `imgUrl` property kullanılmalıydı
-- **Çözüm:** `carPlayService.ts`'de `createRecentlyPlayedTemplate()` fonksiyonunda `image` → `imgUrl` değiştirildi
-- **Dosya:** `src/services/carPlayService.ts`
+- **Kök Neden:** CarPlay GridTemplate hem `image` (local asset) hem `imgUrl` (URL) bekler
+- **Çözüm:** Tüm template'lerde `LOCAL_FALLBACK_LOGO` + `imgUrl` kombinasyonu uygulandı
+- **Değişen Template'ler:** Favorites, RecentlyPlayed (Grid & List), Browse, GenreStations
 
-**2. Genres İçi Boş Kalıyor Sorunu**
-- **Sorun:** Bir genre seçildiğinde içi boş kalıyordu
-- **Potansiyel Nedenler:** 
-  - Genre slug formatı düzgün dönüştürülmüyordu
-  - Hata durumunda kullanıcıya bilgi verilmiyordu
-- **Çözümler:**
-  - `CarPlayHandler.tsx`'de `getStationsByGenre()` fonksiyonuna genre slug düzeltmesi eklendi (spaces → hyphens)
-  - `carPlayService.ts`'de `showGenreStationsTemplate()` fonksiyonuna:
-    - 15 saniye timeout eklendi
-    - Boş sonuç durumunda bilgilendirici mesaj gösterilir
-    - Detaylı debug logging eklendi
-- **Dosyalar:** `src/services/carPlayService.ts`, `src/components/CarPlayHandler.tsx`
+**2. Genre Ülke Filtresi Çalışmıyor (2000+ radyo gösterme sorunu)**
+- **Sorun:** Türkiye seçiliyken Pop genre'de 2000+ global radyo görünüyordu
+- **Kök Neden:** API `countrycode` parametresi (ISO kodu "TR") beklerken, kod `country` (native name "Türkiye") gönderiyordu
+- **Çözüm:**
+  - `CarPlayHandler.tsx` → `getGenresList()` artık `countryCode` kullanıyor
+  - `MegaRadioApiClient.kt` (Android) → `getGenres()` artık `countrycode` parametresi gönderiyor
+- **Değişen Dosyalar:**
+  - `src/components/CarPlayHandler.tsx`
+  - `android/.../MegaRadioApiClient.kt`
 
-**3. Eksik i18n Keys Eklendi**
-- `carplay_no_stations`: "No stations found"
-- `carplay_try_another_genre`: "Try another genre"
-- **Dosya:** `src/services/i18nService.ts`
+**3. Tutarlı Local Fallback Image**
+- Tüm ListTemplate ve GridTemplate'lerde `image: LOCAL_FALLBACK_LOGO` + `imgUrl` pattern uygulandı
+- Bu sayede CarPlay imgUrl yükleyemezse bile default logo görünür
 
-### 📱 Yeni iOS Build Komutu:
+### API Parametre Formatı Özeti
+
+| API Endpoint | Parametre | Format | Örnek |
+|--------------|-----------|--------|-------|
+| `/api/genres/precomputed` | `countrycode` | ISO code | `TR`, `DE`, `AT` |
+| `/api/stations/popular` | `country` | English name | `Turkey`, `Germany` |
+| `/api/genres/{slug}/stations` | `country` | English name | `Turkey`, `Germany` |
+
+### 📱 Yeni Build Komutları:
 ```bash
-cd frontend
-eas build --platform ios --clear-cache
+# iOS
+cd frontend && eas build --platform ios --clear-cache
+
+# Android
+cd frontend && eas build --platform android --clear-cache
 ```
 
 ---
