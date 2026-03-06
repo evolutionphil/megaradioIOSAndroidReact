@@ -169,6 +169,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       switch (event.state) {
         case State.Playing:
           setPlaybackState('playing');
+          // Reset retry count on successful playback
+          failoverRetryCountRef.current = 0;
           break;
         case State.Paused:
           setPlaybackState('paused');
@@ -190,7 +192,50 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     
     if (event.type === Event.PlaybackError) {
       console.error('[AudioProvider] Playback error:', event);
-      setError('Stream playback error');
+      
+      // STREAM FAILOVER: Try next candidate URL automatically
+      const currentStation = usePlayerStore.getState().currentStation;
+      if (currentStation && streamCandidatesRef.current.length > 0) {
+        const candidates = streamCandidatesRef.current;
+        const currentIndex = currentCandidateIndexRef.current;
+        
+        console.log('[AudioProvider] Stream failed, attempting failover...');
+        console.log('[AudioProvider] Current candidate:', currentIndex + 1, '/', candidates.length);
+        
+        // Try next candidate
+        if (currentIndex + 1 < candidates.length) {
+          currentCandidateIndexRef.current++;
+          const nextUrl = candidates[currentCandidateIndexRef.current];
+          
+          console.log('[AudioProvider] FAILOVER: Trying next URL:', nextUrl.substring(0, 60));
+          
+          try {
+            await TrackPlayer.reset();
+            await TrackPlayer.add({
+              id: currentStation._id || `station_${Date.now()}`,
+              url: nextUrl,
+              title: currentStation.name || 'MegaRadio',
+              artist: 'MegaRadio',
+              album: getStationGenre(currentStation) || 'MegaRadio',
+              artwork: getArtworkUrl(currentStation) || 'https://themegaradio.com/logo.png',
+              duration: 86400, // Fake duration for skip buttons
+            });
+            await TrackPlayer.play();
+            
+            console.log('[AudioProvider] FAILOVER: Successfully switched to candidate', currentCandidateIndexRef.current + 1);
+            setStreamUrl(nextUrl);
+            setPlaybackState('playing');
+            return; // Don't set error state
+          } catch (fallbackError) {
+            console.error('[AudioProvider] FAILOVER: Candidate also failed:', fallbackError);
+          }
+        } else {
+          console.log('[AudioProvider] FAILOVER: All candidates exhausted');
+        }
+      }
+      
+      // All failover attempts failed
+      setError('Stream playback error - all URLs failed');
       setPlaybackState('error');
     }
     
@@ -346,22 +391,29 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
            lowerUrl.endsWith('.asx');
   }, []);
   
-  // Store candidates for fallback
+  // Store candidates for fallback - IMPROVED with retry count tracking
   const streamCandidatesRef = useRef<string[]>([]);
   const currentCandidateIndexRef = useRef<number>(0);
+  const failoverRetryCountRef = useRef<number>(0);
+  const MAX_FAILOVER_RETRIES = 3; // Max retries per candidate
   
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
     // Get urlResolved - API returns camelCase "urlResolved"
     const urlResolved = (station as any).urlResolved || station.url_resolved;
     const originalUrl = station.url;
+    // Check for backup URLs from station data
+    const urlBackup = (station as any).urlBackup || (station as any).url_backup;
+    const urlAlternatives = (station as any).urlAlternatives || (station as any).url_alternatives || [];
     
     console.log('[AudioProvider] Resolving stream for:', station.name);
     console.log('[AudioProvider] urlResolved:', urlResolved ? urlResolved.substring(0, 60) : 'EMPTY');
     console.log('[AudioProvider] originalUrl:', originalUrl ? originalUrl.substring(0, 60) : 'EMPTY');
+    console.log('[AudioProvider] urlBackup:', urlBackup ? urlBackup.substring(0, 60) : 'NONE');
     
-    // Reset candidates
+    // Reset candidates and retry count
     streamCandidatesRef.current = [];
     currentCandidateIndexRef.current = 0;
+    failoverRetryCountRef.current = 0;
     
     // Determine which URL to use as base
     let streamUrl = (urlResolved && urlResolved.trim() !== '') ? urlResolved : originalUrl;
@@ -397,14 +449,21 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         }
       }
       
-      // Direct stream URL - use as is
-      // Add both urlResolved and url as candidates for fallback
+      // Direct stream URL - build candidates list for fallback
+      // Priority: urlResolved > url > urlBackup > urlAlternatives
       const candidates: string[] = [];
       if (urlResolved && urlResolved.trim() !== '') candidates.push(urlResolved);
       if (originalUrl && originalUrl !== urlResolved) candidates.push(originalUrl);
+      if (urlBackup && !candidates.includes(urlBackup)) candidates.push(urlBackup);
+      if (Array.isArray(urlAlternatives)) {
+        urlAlternatives.forEach((alt: string) => {
+          if (alt && !candidates.includes(alt)) candidates.push(alt);
+        });
+      }
       streamCandidatesRef.current = candidates;
       
-      console.log('[AudioProvider] Native: Using stream URL directly:', streamUrl.substring(0, 60));
+      console.log('[AudioProvider] Native: Stream candidates:', candidates.length);
+      console.log('[AudioProvider] Native: Using primary URL:', streamUrl.substring(0, 60));
       return streamUrl;
     }
     

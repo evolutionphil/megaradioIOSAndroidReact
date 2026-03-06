@@ -84,6 +84,11 @@ const defaultTranslations: Record<string, string> = {
   carplay_no_stations: 'No stations found',
   carplay_try_another_genre: 'Try another genre',
   
+  // Offline mode
+  offline_mode: 'Offline - Showing cached data',
+  offline_no_connection: 'No internet connection',
+  offline_reconnecting: 'Reconnecting...',
+  
   // Auth
   login: 'Login',
   log_in: 'Log in',

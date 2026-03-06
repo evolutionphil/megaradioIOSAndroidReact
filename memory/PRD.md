@@ -10,6 +10,49 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
+## Build 59 - December 2025 (NEW FEATURES)
+
+### ✅ TAMAMLANDI: P0/P1 Yeni Özellikler
+
+**1. Stream URL Failover/Fallback (P0-2)**
+- Stream düştüğünde otomatik olarak alternatif URL'lere geçiş
+- `urlResolved` → `url` → `urlBackup` → `urlAlternatives` sırası
+- PlaybackError event'inde otomatik retry mekanizması
+- Tüm adaylar denenene kadar devam eder
+- **Dosya:** `src/providers/AudioProvider.tsx`
+
+**2. Offline Mode UI Feedback (P0-3)**
+- Network durumunu izleyen `useNetworkStatus` hook oluşturuldu
+- `OfflineBanner` component'i eklendi - offline durumunda turuncu banner gösterir
+- i18n çevirileri eklendi: `offline_mode`, `offline_no_connection`, `offline_reconnecting`
+- **Dosyalar:**
+  - `src/hooks/useNetworkStatus.ts` (YENİ)
+  - `src/components/OfflineBanner.tsx` (YENİ)
+  - `src/services/i18nService.ts` (güncellendi)
+
+**3. Device Token Registration (P0-1)**
+- Silent push için device token kayıt servisi
+- APNs (iOS) ve FCM (Android) desteği
+- User login sonrası token güncelleme
+- Logout'ta token silme
+- **Dosya:** `src/services/deviceTokenService.ts` (YENİ)
+
+**4. Xcode Build Hataları Düzeltildi**
+- `AppDelegate.swift`'te override keyword'leri düzeltildi
+- `#if DEBUG` bloğundaki metod çağrısı düzeltildi
+- Swift dosyaları `project.pbxproj`'a eklendi
+
+### 📱 Yeni Build Komutları:
+```bash
+# iOS
+cd frontend && eas build --platform ios --clear-cache
+
+# Android
+cd frontend && eas build --platform android --clear-cache
+```
+
+---
+
 ## Build 50 - December 2025 (XCODE PROJECT FIX + CARPLAY BUG FIXES)
 
 ### ✅ TAMAMLANDI: Xcode Project Dosyası Düzeltmesi
