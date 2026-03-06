@@ -81,7 +81,7 @@ public class AppDelegate: ExpoAppDelegate {
   }
   
   /// Legacy background fetch handler (for iOS < 13 compatibility)
-  public func application(
+  public override func application(
     _ application: UIApplication,
     performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
   ) {
@@ -93,7 +93,7 @@ public class AppDelegate: ExpoAppDelegate {
   
   /// Handle silent push notifications (content-available: 1)
   /// This is called when a silent push arrives to trigger background cache updates
-  public func application(
+  public override func application(
     _ application: UIApplication,
     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
@@ -103,7 +103,7 @@ public class AppDelegate: ExpoAppDelegate {
   }
   
   /// Device token registration success
-  public func application(
+  public override func application(
     _ application: UIApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
@@ -111,7 +111,7 @@ public class AppDelegate: ExpoAppDelegate {
   }
   
   /// Device token registration failure
-  public func application(
+  public override func application(
     _ application: UIApplication,
     didFailToRegisterForRemoteNotificationsWithError error: Error
   ) {
@@ -161,7 +161,7 @@ public class AppDelegate: ExpoAppDelegate {
   
   /// Returns the scene configuration for connecting scene sessions
   /// This is called when a new scene session is created (phone or CarPlay)
-  public func application(
+  public override func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
     options: UIScene.ConnectionOptions
@@ -189,7 +189,7 @@ public class AppDelegate: ExpoAppDelegate {
   }
   
   /// Called when a scene session is being discarded
-  public func application(
+  public override func application(
     _ application: UIApplication,
     didDiscardSceneSessions sceneSessions: Set<UISceneSession>
   ) {
