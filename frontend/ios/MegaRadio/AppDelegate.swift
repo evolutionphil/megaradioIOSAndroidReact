@@ -86,7 +86,15 @@ public class AppDelegate: ExpoAppDelegate {
     performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
   ) {
     print("[AppDelegate] Legacy background fetch triggered")
+    // Note: simulateBackgroundRefresh is only available in DEBUG builds
+    // In production, we schedule regular background tasks instead
+    #if DEBUG
     BackgroundRefreshManager.shared.simulateBackgroundRefresh(completion: completionHandler)
+    #else
+    // In production, just schedule the next refresh and return
+    BackgroundRefreshManager.shared.scheduleAppRefresh()
+    completionHandler(.newData)
+    #endif
   }
   
   // MARK: - Silent Push Notification Handler
