@@ -161,7 +161,7 @@ public class AppDelegate: ExpoAppDelegate {
   
   /// Returns the scene configuration for connecting scene sessions
   /// This is called when a new scene session is created (phone or CarPlay)
-  public override func application(
+  public func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
     options: UIScene.ConnectionOptions
@@ -189,7 +189,7 @@ public class AppDelegate: ExpoAppDelegate {
   }
   
   /// Called when a scene session is being discarded
-  public override func application(
+  public func application(
     _ application: UIApplication,
     didDiscardSceneSessions sceneSessions: Set<UISceneSession>
   ) {
