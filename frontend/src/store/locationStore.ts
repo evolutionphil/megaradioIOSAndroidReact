@@ -173,14 +173,16 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           isLoaded: true, // Mark as loaded - we have a stored country
         });
       } else {
-        // No stored country - DO NOT set isLoaded yet!
-        // Wait for fetchLocation() to complete before setting isLoaded
-        console.log('[LocationStore] No stored country found, waiting for location detection...');
-        // isLoaded stays false until fetchLocation() completes
+        // No stored country - STILL mark as loaded to prevent circular dependency
+        // Queries will run with undefined country (global results)
+        // Then fetchLocation() will update country and trigger refetch
+        console.log('[LocationStore] No stored country found, marking as loaded for initial queries');
+        set({ isLoaded: true });
       }
     } catch (error) {
       console.error('[LocationStore] Failed to load stored country:', error);
-      // On error, also don't set isLoaded - let fetchLocation() handle it
+      // On error, also mark as loaded to prevent blocking
+      set({ isLoaded: true });
     }
   },
 
