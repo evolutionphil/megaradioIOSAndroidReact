@@ -92,7 +92,24 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - `app/genre-detail.tsx` - `countryCode` kullanılıyor
 - `app/_layout.tsx` - TV init mobilde çalışıyor
 - `src/services/tvInitService.ts` - Cache key'leri düzeltildi
+- `app/(tabs)/index.tsx` - Country change instant refresh
 - `app.json` - v1.0.65, buildNumber: 65
+
+### Country Değişince Anında Refresh (Ek Düzeltme)
+**Sorun**: Country değiştirildiğinde eski ülkenin station'ları kalıyor, manuel refresh gerekiyordu.
+
+**Çözüm**: `queryClient.invalidateQueries` predicate ile tüm country-dependent query'leri invalidate ediyor ve `setTimeout` ile anında refetch tetikleniyor.
+
+```typescript
+// app/(tabs)/index.tsx
+useEffect(() => {
+  if (!isLoaded) return;
+  queryClient.invalidateQueries({ 
+    predicate: (query) => ['popularStations', 'genres', 'precomputedGenres', 'stations', 'nearby'].includes(query.queryKey[0] as string)
+  });
+  setTimeout(() => { refetchGenres(); refetchPopular(); refetchAll(); refetchNearby(); }, 100);
+}, [country, countryEnglish, countryCode, isLoaded]);
+```
 
 ### 📱 Yeni Build Komutları:
 ```bash

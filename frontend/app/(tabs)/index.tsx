@@ -180,22 +180,35 @@ export default function HomeScreen() {
   const { currentStation, playbackState } = usePlayerStore();
 
   // Refetch genres and popular stations when country changes
+  // CRITICAL: Must refetch immediately when country changes
   useEffect(() => {
-    console.log('[HomeScreen] Country changed, invalidating and refetching data...', country, countryEnglish);
+    // Skip initial render when country is not yet loaded
+    if (!isLoaded) {
+      console.log('[HomeScreen] Country not loaded yet, skipping refetch');
+      return;
+    }
     
-    // Invalidate ALL country-dependent queries to ensure fresh data
-    // This fixes the "double loading" issue where old country data appears first
-    queryClient.invalidateQueries({ queryKey: ['popularStations'] });
-    queryClient.invalidateQueries({ queryKey: ['genres'] });
-    queryClient.invalidateQueries({ queryKey: ['precomputedGenres'] });
-    queryClient.invalidateQueries({ queryKey: ['stations'] });
-    queryClient.invalidateQueries({ queryKey: ['nearby'] });
+    console.log('[HomeScreen] Country changed to:', countryEnglish || country || 'global', '- Invalidating and refetching all data...');
     
-    // Then trigger refetch
-    refetchGenres();
-    refetchPopular();
-    refetchAll();
-  }, [country, countryEnglish]);
+    // Invalidate ALL country-dependent queries with predicate to catch all variations
+    // This ensures ALL cached data for different countries is cleared
+    queryClient.invalidateQueries({ 
+      predicate: (query) => {
+        const key = query.queryKey[0] as string;
+        return ['popularStations', 'genres', 'precomputedGenres', 'stations', 'nearby'].includes(key);
+      }
+    });
+    
+    // Force immediate refetch with new country parameter
+    // Using setTimeout to ensure state has propagated
+    setTimeout(() => {
+      console.log('[HomeScreen] Triggering refetch with country:', countryForApi);
+      refetchGenres();
+      refetchPopular();
+      refetchAll();
+      refetchNearby();
+    }, 100);
+  }, [country, countryEnglish, countryCode, isLoaded]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
