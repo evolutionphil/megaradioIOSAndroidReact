@@ -8,226 +8,158 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 -   **Authentication:** All API requests must include .
 -   **Platform Expansion:** CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV.
 
-**User's preferred language**: Turkish
+**User's preferred language**: Turkish. The next agent MUST respond in Turkish only (İletişimi Türkçe sürdürün).
 
 **what currently exists?**
-The application is an Expo-based mobile radio app with a primary focus on native integrations like CarPlay and Android Auto. In this session, the agent addressed several critical user-reported issues:
+The project is an Expo (Bare Workflow) mobile radio app with extensive native integrations for iOS and Android. This session was primarily focused on fixing critical bugs.
 
--   **iOS Crash Resolution:** Fixed a crash related to a conflict between the  library and React Native's UI Manager by implementing debounce and mutex locks in  and .
--   **CarPlay Enhancements:**
-    -   A **Search feature** was added, first as a tab and then correctly moved into the Discover list to comply with iOS guidelines.
-    -   **Custom local genre icons** (PNGs) were generated and integrated into the CarPlay GridView, replacing the non-functional SF Symbols.
-    -   The Recently Played (Zuletzt gespielt) view was changed from a  to a  as requested.
--   **Performance & Caching:**
-    -   A **cache-first, with background refresh** strategy was implemented in  and  to improve offline availability and app startup speed.
-    -   **Non-blocking logic** with timeouts was added to CarPlay data fetching to prevent the UI from freezing while waiting for slow API responses.
-    -   Fixed a double loading issue with popular stations by adding React Query cache invalidation on country change.
--   **Android Auto:** Progress was made on the API integration by adding a  to  to handle state synchronization (like country changes) from the React Native layer.
--   **Hardcoded Strings:** The agent began a user-requested analysis to find and replace hardcoded strings, successfully refactoring the  screen and creating a list of missing translation keys.
+Key Accomplishments:
+-   **Build System Fixes:** Resolved a series of show-stopping iOS build failures by correcting the  file to include new Swift sources and fixing multiple  keyword errors in .
+-   **API Alignment:** The frontend's API service layer was significantly overhauled to match the backend's actual implementation, based on a report from the backend developer. This included correcting endpoint URLs, request bodies (e.g., for push tokens), and adding necessary headers ().
+-   **New Endpoint Integration:** Started integrating the new, optimized  endpoint designed to fetch all initial app data in a single call.
+-   **Bug Fixing:** Addressed a severe race condition on app startup where data would not load until the app was restarted. The root cause was identified, and a fix was in progress.
+-   **Documentation:** Created a comprehensive API usage document for the backend developer at .
+
+Despite these fixes, the core issue of data failing to load on the first launch persists and is the main blocker.
 
 **Last working item**:
--   **Last item agent was working**: The agent was addressing multiple critical issues reported by the user: CarPlay cold start failure, empty All Stations and CarPlay Discovery tabs, and changing the Recently Played CarPlay view to a grid layout. The agent attempted to fix the loading issues by increasing timeout values in  and , and successfully implemented the grid layout for Recently Played.
+-   **Last item agent was working**: Diagnosing and fixing a critical and recurring race condition that causes All Stations and Genres lists to be empty on the initial app launch. The user reported this requires multiple app restarts to resolve.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Manual testing by the user on a new TestFlight build is required to verify all the native changes (CarPlay cold start, layout changes, performance improvements).
+-   **Which testing method agent to use?**: Frontend testing agent. The issue is a complex data flow and state management problem in React Native. After the fix, a new build and on-device user testing will be essential for final verification.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: CarPlay fails to load on cold start (P0)
--   Issue 2: All Stations screen and CarPlay Discovery tab are empty (P0)
--   Issue 3: Complete the systematic removal of all hardcoded strings from the app (P1)
--   Issue 4: Android Auto API integration is not fully complete (P1)
--   Issue 5: Language switching does not work for all languages (e.g., German) (P1)
--   Issue 6: Next/Previous button logic might be incorrect or not meeting user expectations (P2)
--   Issue 7: Several translation keys are still missing from the backend API response (P2)
+-   Issue 1: App shows empty lists on first launch (P0)
 
 **Issues Detail:**
--   **Issue 1: CarPlay fails to load on cold start (P0)**
-    -   **Attempted fixes**: The agent increased the  delays in  and  from 1-2 seconds to 3-5 seconds, suspecting a race condition where the JS bundle isn't ready.
-    -   **Next debug checklist**: A new iOS build must be created and tested. Force-quit the app, connect to CarPlay, and check if it loads past the Yükleniyor... screen. If it still fails, investigate the React Native bridge initialization process further.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical bug making the CarPlay feature unusable for users who haven't pre-launched the app.
+-   **Issue 1: App shows empty lists on first launch**
+    -   **Attempted fixes**: The agent identified that API calls were being blocked by a faulty  flag logic in React Query hooks, which was intended to wait for the user's country to be loaded. The  (Message 407, 422) confirmed this was a circular dependency: the query was disabled because the country was , so it never ran, even after the country was loaded.
+    -   **Next debug checklist**:
+        1.  Implement the solution from the  analysis.
+        2.  Modify the React Query hooks in  and the new  call.
+        3.  The logic should allow the initial API call to proceed with  (to fetch global data) and then automatically refetch when the  updates the country.
+        4.  Remove the  flag's dependency on the country *existing*. Instead, make the query key dependent on the country so React Query handles refetching automatically.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical P0 bug that makes the application appear broken and unusable on first start. Fixing it will ensure a smooth and reliable user experience.
     -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires a new iOS build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 2: All Stations screen and CarPlay Discovery tab are empty (P0)**
-    -   **Attempted fixes**: Agent implemented a cache-first logic and later added timeouts to  to prevent blocking. The timeout was increased from 2s to 5s. This suggests that API calls are either failing or timing out, and the cache is empty.
-    -   **Next debug checklist**: Verify API connectivity from the device. Check the implementation of the cache-first logic in  and  to ensure the background refresh part correctly populates the cache and updates the UI. Add logging to see what the API calls return and if they are timing out.
-    -   **Why fix this issue and what will be achieved with the fix?**: Core content is not visible to the user, making the app appear broken.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Both (Frontend logic and Backend API health).
-    -   **Blocked on other issue**: None.
-
--   **Issue 3: Complete the systematic removal of all hardcoded strings (P1)**
-    -   **Attempted fixes**: The agent identified numerous hardcoded strings and successfully refactored . A list of new keys was created and added to local translation files.
-    -   **Next debug checklist**: Continue the systematic scan of all remaining files in , especially components in , , and . Identify all user-facing strings, replace them with , and compile a final, comprehensive list of all new keys required for the backend developer.
-    -   **Why fix this issue and what will be achieved with the fix?**: Enables full internationalization of the app and centralizes translations.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend.
-    -   **Blocked on other issue**: None.
-
--   **Issue 4: Android Auto API integration is not fully complete (P1)**
-    -   **Attempted fixes**: The agent connected the React Native layer to the native Android Auto service for country synchronization using a .
-    -   **Next debug checklist**: Resume work in . Ensure all media browsing categories (Genres, Popular, Recents, Favorites) fetch data from the API client, not hardcoded sources. Verify that playback commands from Android Auto are correctly handled by the React Native .
-    -   **Why fix this issue and what will be achieved with the fix?**: Provides a fully functional Android Auto experience with real-time data.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Both (requires new Android build).
-    -   **Blocked on other issue**: None.
-
--   **Issue 5: Language switching not working for all languages (P1)**
-    -   **Attempted fixes**: Previous agent fixed a cache invalidation issue in . No new fixes in this session.
-    -   **Next debug checklist**: Requires user testing on a new build to confirm if the issue persists, especially for German.
-    -   **Why fix this issue and what will be achieved with the fix?**: Supports the app's global user base.
-    -   **Status**: USER VERIFICATION PENDING
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend.
-    -   **Blocked on other issue**: Issue 7.
-
--   **Issue 6: Next/Previous button logic (P2)**
-    -   **Attempted fixes**: None in this session. Analysis from a previous session suggests the logic in  is present but may not be working as expected.
-    -   **Next debug checklist**: Requires user verification. If it fails, add logging to  and  to check the data being used.
-    -   **Why fix this issue and what will be achieved with the fix?**: Improves core player navigation UX.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend.
-    -   **Blocked on other issue**: None.
-
--   **Issue 7: Missing backend translation keys (P2)**
-    -   **Attempted fixes**: Agent identified a list of hardcoded strings that need to become backend keys.
-    -   **Next debug checklist**: Provide the final, consolidated list of all missing keys to the user/backend developer.
-    -   **Why fix this issue and what will be achieved with the fix?**: Centralizes all translations for easier management.
-    -   **Status**: BLOCKED (on backend).
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Backend.
+    -   **Should Test frontend/backend/both after fix?**: Frontend
     -   **Blocked on other issue**: None.
 
 **In progress Task List**:
--   **Task 1: Full Hardcoded String Elimination (P1)**
-    -   **Where to resume**: Systematically scan all files under  that were not yet checked.
-    -   **What will be achieved with this?**: A fully translatable application and a final list of missing keys for the backend.
+-   **Task 1: Finalize  Integration & Fix Startup Race Condition (P0)**
+    -   **Where to resume**: The primary task is to fix the race condition. This should be done by fully implementing the new  endpoint as the single source of truth for initial data. The previous attempts to patch individual hooks (, ) should be removed in favor of this new, simpler approach.
+    -   **What will be achieved with this?**: A faster, more reliable app startup that correctly loads country-specific data without race conditions or empty screens. It will also simplify the data-fetching logic significantly.
     -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Frontend.
-    -   **Blocked on something**: None.
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on something**: The backend developer had not yet deployed the  endpoint at the time of the last message, but the agent was instructed to prepare the frontend code.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1**: Implement Voice Commands for CarPlay and Android Auto (research done).
--   **P1**: Re-evaluate Google Cast integration.
--   **P1**: Implement a premium (ad-free) subscription model.
--   **P1**: Resolve App Store Rejection reason regarding content rights.
--   **P1**: Implement UI updates for background refresh (so the user sees new data without a manual refresh).
+-   **P1**: Integrate the native Apple Watch and Wear OS app targets into the main iOS () and Android () projects so they are included in the builds. The code for these apps exists in  but is not currently being compiled.
+-   **P1**: Implement the CarPlay  for a richer now playing experience within CarPlay.
+-   **P1**: Implement an audio quality selection feature (e.g., based on network type WiFi/Cellular).
 
 **Future Tasks:**
--   **P2**: UI animations.
--   **P2**: Add support for tvOS & Android TV.
--   **P3**: Re-integrate FlowAlive if the NPM package is fixed.
+-   **P2**: Add an Equalizer (EQ) with presets.
+-   **P2**: Enhance Bluetooth metadata support (AVRCP).
+-   **P2**: Implement a station alarm feature.
+-   **P3**: Build and integrate apps for tvOS and Android TV.
+-   **P3**: Integrate a song recognition feature (e.g., ShazamKit).
 
 **Completed work in this session**
--   **iOS Crash Fix**: Resolved a  vs  crash by adding debounce/mutex logic.
--   **CarPlay Search Feature**: Implemented and correctly placed the CarPlay search functionality.
--   **CarPlay Genre Icons**: Generated and integrated 13 new custom local PNG icons for CarPlay genres.
--   **CarPlay Layout Update**: Changed Recently Played view to a  as requested.
--   **Performance/Cache Overhaul**: Implemented a cache-first strategy and non-blocking timeouts for CarPlay data fetching.
--   **Popular Stations Bug Fix**: Fixed a double-loading bug by invalidating the React Query cache on country change.
--   **Android Auto Sync**: Added a  for country synchronization.
--   **Build Path Error Fix**: Corrected an invalid asset path that was failing the iOS build.
--   **Hardcoded Strings (Partial Fix)**: Refactored  and created a list of missing keys.
--   **New Fallback Logo**: Replaced the default station logo with a new user-provided asset.
+-   **iOS Build System:** Successfully fixed the  and resolved all  keyword errors in , making the iOS app buildable again.
+-   **API Alignment:** Corrected multiple API calls and data structures in the frontend to match the actual backend implementation, fixing bugs related to push token registration and authentication.
+-   **Startup Optimization:** Began integration of the new  endpoint to replace multiple startup API calls.
+-   **CarPlay/Android Auto Fixes:** Resolved issues with country filtering and image rendering in CarPlay templates.
+-   **Race Condition Investigation:** Identified the root cause of the persistent empty list bug on app startup.
+-   **Documentation:** Created and updated a comprehensive backend API documentation file ().
+-   **Feature Implementation:** Completed the implementation for Stream URL Failover, Offline Mode UI Feedback, and Device Token Registration.
 
 **Earlier issues found/mentioned but not fixed**
--   The core logic for the Next/Previous buttons in  appears to be implemented correctly, but the user has repeatedly reported it as an issue. This requires careful re-verification with the user.
+-   The Next/Previous button logic from the initial handoff still requires user verification after a successful build is produced.
 
 **Known issue recurrence from previous fork**
--   **CarPlay cold-start failure**: This is a highly persistent issue. Multiple fixes have been attempted across forks, including the most recent timeout increase.
--   **Data loading/caching issues**: Problems with popular stations and other lists being empty or showing stale data have occurred frequently. The new cache-first strategy is the latest attempt to solve this class of problem.
+-   **Data loading/caching issues:** This remains a persistent theme. While previous specific bugs were fixed, a fundamental race condition in the app's startup logic was discovered and is the current focus. The architectural approach to data loading on startup has been fragile.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Non-Blocking CarPlay Templates**: Using  with a  (now 5 seconds) in  to prevent slow API calls from freezing the CarPlay UI.
--   **Cache-First with Background Refresh**: A new data fetching pattern in services (, ) to show cached data instantly while fetching updates in the background.
--   **Custom PNG Icons for CarPlay**: The solution to the non-functional SF Symbols problem. Genre-specific icons are now stored locally and mapped by slug.
--   **Android BroadcastReceiver for State Sync**: Using native Android broadcasts () to sync state from React Native to the .
--   **Debounce/Mutex for Crash Prevention**: Using  and a simple boolean lock () in  and  to prevent rapid, concurrent UI updates that were causing a  crash.
--   **Troubleshoot Agent for Root Cause Analysis**: Utilized to diagnose complex issues like the  restriction, caching problems, and CarPlay loading delays.
+-   **Race Condition Debugging:** Analyzing and fixing timing issues between asynchronous operations (location fetching) and data-dependent UI rendering (React Query hooks).
+-   **React Query State Control:** Using  and  flags to manage data fetching, and understanding the pitfalls that can lead to queries not firing.
+-   **API Abstraction & Alignment:** Refactoring service layers (, ) to match a backend source of truth, including changes to URLs, HTTP methods, and request bodies.
+-   **Expo Bare Workflow (Native Build):** Debugging native Swift build errors ( keywords, conditional compilation) directly within the Expo project structure.
+-   **Centralized API Endpoint:** Migrating from multiple data-fetching hooks to a single, optimized endpoint () to improve performance and reduce complexity.
 
 **key DB schema**
--   No changes were made to the database schema.
+-   No changes made to the database schema.
 
 **All files of reference**
--   : **(CRITICAL)** Contains logic for CarPlay templates, search, timeouts, and new genre icons.
--   : **(CRITICAL)** Contains crash fixes, state listeners, and cache invalidation logic.
--    & : **(CRITICAL)** Contain the latest attempt at fixing the CarPlay cold-start issue by increasing delays.
--   : **(CRITICAL)** Entry point for Android Auto work, now includes country sync.
--   : Contains the new cache-first logic.
--   : Contains the new cache-first logic.
--   : Directory containing the new custom icons.
+-    (Core of the race condition bug)
+-    (Manages country state, part of the bug)
+-    (Main screen where data loading occurs)
+-    (New service for optimized startup)
+-    (Global API configuration)
+-    (Push token registration, was incorrect)
+-    (Location of multiple build errors)
+-    (Key documentation created)
 
 **Areas that need refactoring**:
--   The backend API's inconsistent requirement for country name formats ( vs ) remains a potential source of bugs. Standardizing on ISO codes is recommended.
--   The data fetching logic is becoming complex. The cache-first and timeout patterns in , , and  could potentially be abstracted into a reusable custom hook or a middleware layer for  or  to reduce duplication.
+-   The data loading flow on app startup is the main fragile area. The introduction of  is the correct step. The refactoring needs to be completed by removing the old, individual data hooks (, etc.) from the main screen and relying solely on the data from the new endpoint. This will eliminate the source of the race conditions.
 
 **key api endpoints**
--   
--   
--   
+-    (Newly introduced for optimized app startup)
+-    (Corrected endpoint for push token registration)
+-    (Corrected endpoint for push token removal)
 -   
 -   
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **A NEW BUILD IS REQUIRED FOR VERIFICATION.** The user's most critical reported issues (CarPlay cold-start, empty lists) and all recent fixes can only be tested on a new native build (iOS and Android). This is the highest priority.
--   **FOCUS ON THE LATEST CRITICAL BUGS.** The user's last message is a blocker: CarPlay cold start failure and empty content screens. The timeout increases were an attempt to fix this, but the root cause may be deeper in the caching or API logic.
--   **CARPLAY RESTRICTIONS:** Remember that  cannot be in a , and SF Symbols do not work (use local PNGs).
--   **COMPLETE THE HARDCODED STRINGS TASK.** The user was explicit about wanting a full-app scan. This task was started but is incomplete and needs to be finished.
+-   **PRIORITY #1: FIX THE STARTUP RACE CONDITION.** This is the most critical issue. The app currently fails to load data on the first launch. Your main task is to correctly implement the  endpoint and ensure it runs *after* the initial location is determined. The last analysis from  (Message 422) is the best starting point. Do not try to patch the old, separate hooks; replace them with the new, unified  call.
+-   **A SUCCESSFUL BUILD IS THE GOAL.** The user has been blocked by multiple build failures and now a critical runtime bug. The top priority after fixing the race condition is to provide the user with commands for a new, working build.
+-   **WATCH APPS EXIST BUT ARE NOT BUILT.** The source code for fully-featured Apple Watch and Wear OS apps was found in . However, they are likely not integrated into the native projects to be compiled. After fixing the main app, the next step should be to verify and add these watch targets to the respective builds.
 
 **documents and test reports created in this job**
--    (updated with completed tasks and new feature requests).
--   The user provided a crash log: .
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User (LATEST):** Reported multiple critical failures: CarPlay cold start still not working, All Stations is empty, CarPlay Discovery is empty. Also requested Recently Played be a grid layout. (PENDING)
-2.  **User:** Asked for a list of existing genre icons. (Completed)
-3.  **User:** Requested using local images for CarPlay genres instead of relying on the backend. (Completed)
-4.  **User:** Asked for an analysis of why CarPlay is loading slowly. (Completed, fixes attempted)
-5.  **User:** Asked for all API calls to be asynchronous and confirmed  parameter usage. (Completed)
-6.  **User:** Requested generation of 10-15 unique PNG icons for each genre. (Completed)
-7.  **User:** Reported the iOS build was failing due to a path error. (Completed)
-8.  **User:** **CRITICAL REQUEST:** Asked for a detailed analysis of all pages/popups to find and replace ALL hardcoded strings with translation keys, and to provide a list of missing keys for the backend developer. (IN PROGRESS)
-9.  **User:** Reported a new CarPlay crash when loading and that changing the country sometimes causes popular stations to load incorrectly (global then local). (Completed)
-10. **User:** Requested the implementation of Search for CarPlay and Voice Commands for both platforms. (Completed search part, voice commands pending)
+1.  **(LATEST)** Reports persistent cache/race condition issue: app shows empty lists on first launch and requires multiple restarts. Asks for a detailed sub-agent analysis. 
+2.  Asks for an explanation for the backend dev about inconsistent country parameter handling and wants an investigation into what changed in the last week to cause this. 
+3.  Reports startup data is global, not local, until app restart. Provides the spec for the new  endpoint from the backend developer. 
+4.  Forwards a critical analysis from the backend developer showing major mismatches in the frontend's API usage (wrong URLs, bodies, methods). 
+5.  Asks if the  parameter is used in all API calls. 
+6.  Requests a detailed API documentation for the backend developer, explaining all endpoints and caching logic. 
+7.  States the  folder exists and asks the agent to analyze it. 
+8.  Corrects the agent's summary of completed tasks, confirming that features like Sleep Timer, Sharing, and Recently Played are already implemented. 
+9.  Asks for a status update on the list of Missing Features from a previously generated document. 
+10. Suggests that having the frontend always send the country name in English would be a simpler solution than backend mapping. 
 
 **Project Health Check:**
--   **Broken**:
-    -   CarPlay cold-start functionality.
-    -   All Stations screen (shows empty).
-    -   CarPlay Discovery tab (shows empty).
+-   **Broken**: The application's initial data loading is broken. On first launch, key screens like All Stations and Genres are empty due to a race condition.
 -   **Mocked**: None.
--   **Unverified (In Progress/Fixed, pending user testing)**:
-    -   The entire cache-first data loading strategy.
-    -   All performance-related timeout adjustments.
-    -   Android Auto API integration and state sync.
-    -   CarPlay Recently Played grid layout.
-    -   Full removal of hardcoded strings.
+-   **Unverified**:
+    -   All the fixes from this session, including build error corrections and API alignment, require a new successful build to be verified.
+    -   The functionality and build-integration of the discovered Apple Watch and Wear OS apps are completely unverified.
 
 **3rd Party Integrations**
 -   : Core audio streaming.
 -   : For CarPlay features.
 -   : For ads.
 -   : For internationalization.
--    (Android Native): For native API calls in Android Auto.
+-    (Android Native): For native API calls.
+-   **Native Platform APIs**: ,  (iOS); ,  (Android).
 
 **Testing status**
--   **Testing agent used after significant changes**: YES,  was used multiple times to successfully diagnose complex native and caching issues.
+-   **Testing agent used after significant changes**: YES, the  was used extensively to diagnose build errors and the startup race condition.
 -   **Troubleshoot agent used after agent stuck in loop**: YES
 -   **Test files created**: []
--   **Known regressions**: The CarPlay cold-start issue has regressed and is currently not working. The new caching logic appears to have caused a regression where content lists are now empty.
+-   **Known regressions**: A major regression occurred where data stopped loading correctly on app startup, which was reportedly working a week ago.
+
+**Credentials to test flow:**
+-   None required.
 
 **What agent forgot to execute**
--   The user requested a complete and systematic scan of **all** pages and popups to find and remove hardcoded strings. The agent started this task, fixed one screen (), and identified many missing keys, but did not complete the full sweep across the entire application as requested before moving on to other tasks. A final, comprehensive list of all required backend keys was not delivered.
--   The agent did not implement the **Voice Commands** feature for CarPlay and Android Auto, which was part of the user's request. Research was done, but the implementation was not started.</analysis>
+-   The agent did not verify if the discovered watch app sources in  are correctly configured in the  and  files to be included in the final builds. This is a crucial missing step for that feature.
+-   The agent was in the middle of implementing the final fix for the startup race condition and did not complete it.</analysis>
