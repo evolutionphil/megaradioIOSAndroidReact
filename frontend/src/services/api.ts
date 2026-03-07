@@ -41,8 +41,11 @@ api.interceptors.request.use(
     if (config.headers) {
       config.headers['X-API-Key'] = MEGARADIO_API_KEY;
       
-      // Add X-Device-Type header for mobile to ensure token is returned on login
-      config.headers['X-Device-Type'] = 'mobile';
+      // Add X-Device-Type header ONLY for native platforms (not web)
+      // Web preview has CORS restrictions that don't allow custom headers
+      if (!isWeb) {
+        config.headers['X-Device-Type'] = 'mobile';
+      }
       
       // Add mobile auth token if available and not already set
       const token = getAuthToken();

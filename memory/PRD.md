@@ -33,6 +33,13 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - Mobil platformda bu endpoint kullanılmıyordu
 - Country yüklenme sırası garanti değildi
 
+**Sorun #3: CORS Hatası (Web Preview)**
+- `X-Device-Type: mobile` header'ı web preview'de CORS hatasına neden oluyordu
+
+**Sorun #4: All Stations Hook Hatası**
+- `useState` hook'u render fonksiyonu içinde çağrılıyordu
+- "Rendered more hooks than during the previous render" hatası
+
 **Çözümler:**
 
 1. **genreService.ts: Parametre adı düzeltildi**
@@ -56,6 +63,20 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 5. **tvInitService.ts: Cache key'leri düzeltildi**
    - `usePrecomputedGenres` hook'unun kullandığı key formatıyla uyumlu hale getirildi
    - `['precomputedGenres', country || 'global']` formatı kullanılıyor
+
+6. **api.ts: CORS düzeltmesi**
+   - `X-Device-Type` header'ı sadece native platformda gönderiliyor
+   - Web preview'de CORS hatası artık yok
+
+7. **all-stations.tsx: Hook kuralları düzeltmesi**
+   - `useState` render fonksiyonundan kaldırıldı
+   - `useCallback` ile render fonksiyonları optimize edildi
+
+### Web Preview Test Sonuçları (7 Aralık 2026):
+- ✅ Home Screen: Genres + Popular Stations yükleniyor
+- ✅ Genres Tab: 210+ genre listeleniyor  
+- ✅ Genre Detail (Pop): 100 station görüntüleniyor
+- ✅ All Stations: 51,814 station grid görünümünde
 
 ### API Parametre Rehberi (Backend Referans)
 | API Endpoint | Desteklediği Parametre | Örnek |
