@@ -251,6 +251,8 @@ export const fetchTvInit = async (
  * - Loads translations into i18n
  * - Caches genres and popular stations in React Query
  * - Returns countries list for picker
+ * 
+ * CRITICAL: This must be called AFTER country is loaded to ensure proper caching
  */
 export const initializeApp = async (
   queryClient: QueryClient,
@@ -258,7 +260,8 @@ export const initializeApp = async (
   lang?: string
 ): Promise<TvInitResponse | null> => {
   try {
-    const data = await fetchTvInit(country, lang);
+    console.log('[TvInit] initializeApp called with country:', country, 'lang:', lang);
+    const data = await fetchTvInit(country, undefined, lang);
 
     // 1. Load translations into i18n
     if (data.translations && Object.keys(data.translations).length > 0) {
@@ -269,35 +272,44 @@ export const initializeApp = async (
       console.log('[TvInit] Loaded', Object.keys(data.translations).length, 'translations for', currentLang);
     }
 
-    // 2. Cache genres in React Query (only for precomputed, NOT for discoverable)
-    // Note: Discoverable genres must come from /api/genres/discoverable to get discoverableImage
+    // 2. Cache genres in React Query with CORRECT keys
+    // usePrecomputedGenres uses ['precomputedGenres', country || 'global'] as query key
     if (data.genres && data.genres.length > 0) {
-      // Don't cache to 'discoverableGenres' - that needs discoverableImage from separate API
-      queryClient.setQueryData(['precomputedGenres'], data.genres);
-      console.log('[TvInit] Cached', data.genres.length, 'genres (precomputed only)');
+      const genresResponse = { success: true, data: data.genres };
+      
+      // Cache with country-specific key (matches usePrecomputedGenres query key)
+      queryClient.setQueryData(['precomputedGenres', country || 'global'], genresResponse);
+      
+      // Also cache with 'global' key for fallback
+      if (country) {
+        queryClient.setQueryData(['precomputedGenres', 'global'], genresResponse);
+      }
+      
+      console.log('[TvInit] Cached', data.genres.length, 'genres for key:', country || 'global');
     }
 
-    // 3. Cache popular stations in React Query
+    // 3. Cache popular stations in React Query with CORRECT keys
+    // usePopularStations uses ['popularStations', country || 'global', limit] as query key
     if (data.popularStations && data.popularStations.length > 0) {
-      // Cache with multiple keys for flexibility
-      // Format: { stations: Station[] } to match usePopularStations return format
+      // Cache with multiple limits for flexibility
       const stationsData8 = { stations: data.popularStations.slice(0, 8) };
       const stationsData12 = { stations: data.popularStations.slice(0, 12) };
-      const stationsData21 = { stations: data.popularStations };
+      const stationsData20 = { stations: data.popularStations };
       
       // Cache with country-specific key
-      queryClient.setQueryData(['popularStations', country || 'global', 8], stationsData8);
-      queryClient.setQueryData(['popularStations', country || 'global', 12], stationsData12);
-      queryClient.setQueryData(['popularStations', country || 'global', 21], stationsData21);
+      const cacheKey = country || 'global';
+      queryClient.setQueryData(['popularStations', cacheKey, 8], stationsData8);
+      queryClient.setQueryData(['popularStations', cacheKey, 12], stationsData12);
+      queryClient.setQueryData(['popularStations', cacheKey, 20], stationsData20);
       
       // Also cache with 'global' key for fallback when no country is selected
       if (country) {
         queryClient.setQueryData(['popularStations', 'global', 8], stationsData8);
         queryClient.setQueryData(['popularStations', 'global', 12], stationsData12);
-        queryClient.setQueryData(['popularStations', 'global', 21], stationsData21);
+        queryClient.setQueryData(['popularStations', 'global', 20], stationsData20);
       }
       
-      console.log('[TvInit] Cached', data.popularStations.length, 'popular stations');
+      console.log('[TvInit] Cached', data.popularStations.length, 'popular stations for key:', cacheKey);
     }
 
     // 4. Cache countries list

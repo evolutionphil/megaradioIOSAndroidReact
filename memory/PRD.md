@@ -10,6 +10,77 @@ Build a production-ready mobile radio streaming app called "MegaRadio" with supp
 - **Wear OS**: Kotlin + Jetpack Compose for Wear OS
 - **API**: MegaRadio API (https://themegaradio.com)
 
+## Build 65 - December 2025 (KRITIK HATA DÜZELTMESI - GENRE STATIONS & RACE CONDITION)
+
+### ✅ TAMAMLANDI: Genre Stations Boş Liste & App Startup Race Condition
+
+**Sorun #1: Genre Detail Sayfası Boş Liste**
+- Genre'ye girince (Pop, Rock vs.) 0 station gösteriyordu
+- "All Stations" da bazen boş geliyordu
+- Defalarca kapatıp açmak gerekiyordu
+
+**Kök Neden #1: API Parametre Adı Uyumsuzluğu**
+- `/api/genres/{slug}/stations` API'si `countryCode` parametresi bekliyor (ISO kodu: "TR", "AT")
+- Frontend `country` parametresi gönderiyordu ("Turkey", "Austria")
+- API yanlış parametreyi sessizce yok sayıyordu → 0 sonuç döndürüyordu
+
+**Sorun #2: İlk Açılışta Boş Cache**
+- App açıldığında country henüz yüklenmeden API çağrıları yapılıyordu
+- `undefined` country ile global sonuçlar cache'e yazılıyordu
+- `refetchOnMount: false` olduğu için sonraki açılışlarda stale data kullanılıyordu
+
+**Kök Neden #2: `/api/tv/init` Sadece TV'de Çalışıyordu**
+- Mobil platformda bu endpoint kullanılmıyordu
+- Country yüklenme sırası garanti değildi
+
+**Çözümler:**
+
+1. **genreService.ts: Parametre adı düzeltildi**
+   ```typescript
+   // ESKİ: params: { page, limit, country, sort, order }
+   // YENİ: params: { page, limit, countryCode, sort, order }
+   ```
+
+2. **useQueries.ts: useGenreStations hook güncellendi**
+   - Parametre adı `country` → `countryCode` olarak değiştirildi
+   - `refetchOnMount: true` yapıldı
+
+3. **genre-detail.tsx: Doğru alan kullanılıyor**
+   - `countryEnglish || country` yerine `countryCode` (ISO kodu) kullanılıyor
+
+4. **_layout.tsx: TV Init mobilde de çalışıyor**
+   - `/api/tv/init` endpoint'i artık mobile platformda da çağrılıyor
+   - `countryLoaded` kontrolü eklendi - country yüklendikten sonra init çalışıyor
+   - React Query cache'e doğru key'lerle veri yazılıyor
+
+5. **tvInitService.ts: Cache key'leri düzeltildi**
+   - `usePrecomputedGenres` hook'unun kullandığı key formatıyla uyumlu hale getirildi
+   - `['precomputedGenres', country || 'global']` formatı kullanılıyor
+
+### API Parametre Rehberi (Backend Referans)
+| API Endpoint | Desteklediği Parametre | Örnek |
+|--------------|------------------------|-------|
+| `/api/stations/popular` | `country` (isim) | `country=Turkey` |
+| `/api/stations` | `country` (isim/kod) | `country=Turkey` veya `country=TR` |
+| `/api/genres/{slug}/stations` | `countryCode` (ISO KODU) | `countryCode=TR` |
+| `/api/genres/precomputed` | `countrycode` (karışık) | `countrycode=TR` veya `countrycode=Turkey` |
+
+### Değişen Dosyalar:
+- `src/services/genreService.ts` - `countryCode` parametresi
+- `src/hooks/useQueries.ts` - `useGenreStations` düzeltildi
+- `app/genre-detail.tsx` - `countryCode` kullanılıyor
+- `app/_layout.tsx` - TV init mobilde çalışıyor
+- `src/services/tvInitService.ts` - Cache key'leri düzeltildi
+- `app.json` - v1.0.65, buildNumber: 65
+
+### 📱 Yeni Build Komutları:
+```bash
+cd frontend && eas build --platform ios --clear-cache
+cd frontend && eas build --platform android --clear-cache
+```
+
+---
+
 ## Build 60 - December 2025 (CRITICAL BUG FIX - RACE CONDITION)
 
 ### ✅ TAMAMLANDI: İlk Açılışta Station Yüklenmeme Sorunu (Race Condition)

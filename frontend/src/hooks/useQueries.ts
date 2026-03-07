@@ -204,20 +204,24 @@ export const useGenreStations = (
   slug: string,
   page: number = 1,
   limit: number = 25,
-  country?: string,
+  countryCode?: string, // MUST be ISO country code (e.g., "TR", "AT"), NOT country name!
   sort?: 'votes' | 'name' | 'createdAt',
   order?: 'asc' | 'desc'
 ) => {
-  // Run query when slug is provided - country is optional
-  // Backend will return global results if country is undefined
+  // Run query when slug is provided - countryCode is optional
+  // Backend will return global results if countryCode is undefined
+  // IMPORTANT: API requires countryCode (ISO code), not country name
   return useQuery({
-    queryKey: [...queryKeys.genreStations(slug), page, limit, country || 'global', sort, order],
-    queryFn: () => genreService.getGenreStations(slug, page, limit, country, sort, order),
+    queryKey: [...queryKeys.genreStations(slug), page, limit, countryCode || 'global', sort, order],
+    queryFn: () => {
+      console.log('[useQueries] useGenreStations - slug:', slug, 'countryCode:', countryCode || 'global');
+      return genreService.getGenreStations(slug, page, limit, countryCode, sort, order);
+    },
     enabled: !!slug, // Only need slug to be set
     staleTime: CACHE_TTL.GENRE_STATIONS,
     gcTime: CACHE_TTL.GENRE_STATIONS * GC_MULTIPLIER,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true, // Allow refetch on mount to get fresh data when country changes
   });
 };
 

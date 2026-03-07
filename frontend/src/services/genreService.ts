@@ -159,18 +159,22 @@ export const genreService = {
   },
 
   // Get stations within a genre with error handling
+  // IMPORTANT: This API requires `countryCode` (ISO code like "TR", "AT"), NOT country name!
   async getGenreStations(
     slug: string,
     page: number = 1,
     limit: number = 25,
-    country?: string,
+    countryCode?: string,
     sort?: 'votes' | 'name' | 'createdAt',
     order?: 'asc' | 'desc'
   ): Promise<{ stations: Station[]; pagination: any }> {
     try {
+      console.log('[genreService] getGenreStations - slug:', slug, 'countryCode:', countryCode);
       const response = await api.get(API_ENDPOINTS.genres.stations(slug), {
-        params: { page, limit, country, sort, order },
+        // API expects `countryCode` parameter (ISO code), not `country` (name)
+        params: { page, limit, countryCode, sort, order },
       });
+      console.log('[genreService] getGenreStations result - stations:', response.data?.stations?.length || 0);
       return response.data;
     } catch (error) {
       console.error('[genreService] getGenreStations error:', error);

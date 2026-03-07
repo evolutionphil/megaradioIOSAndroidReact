@@ -84,15 +84,18 @@ export default function GenreDetailScreen() {
   }, []);
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
-  // IMPORTANT: Genre stations API requires English country name (e.g., "Austria" not "Österreich")
-  // Wait for country to load before making API call
-  const countryForApi = isLoaded ? (countryEnglish || country || undefined) : undefined;
+  // CRITICAL FIX: Genre stations API requires countryCode (ISO code like "TR", "AT")
+  // NOT country name like "Turkey" or "Austria"
+  // This was the root cause of empty genre lists!
+  const countryCodeForApi = isLoaded ? (countryCode || undefined) : undefined;
+  
+  console.log('[GenreDetail] Fetching stations with countryCode:', countryCodeForApi, 'slug:', slug);
   
   const { data, isLoading, refetch } = useGenreStations(
     slug, 
     page, 
     100, 
-    countryForApi
+    countryCodeForApi // Pass ISO country code, NOT country name
   );
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();

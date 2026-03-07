@@ -251,30 +251,48 @@ export default function RootLayout() {
     };
   }, []);
 
-  // Preload TV data if on TV platform
+  // Preload TV/Mobile init data - Works for BOTH TV and mobile platforms
+  // This fetches all essential startup data in one API call
+  const [appDataReady, setAppDataReady] = useState(false);
+  
   useEffect(() => {
-    const preloadTV = async () => {
-      if (Platform.isTV && !preloadStarted.current) {
-        preloadStarted.current = true;
-        try {
-          console.log('[Layout] Preloading TV data...');
-          await initializeTvData();
-          console.log('[Layout] TV init complete');
-        } catch (error) {
-          console.error('[Layout] TV init error:', error);
+    const initAppData = async () => {
+      if (preloadStarted.current) return;
+      preloadStarted.current = true;
+      
+      try {
+        console.log('[Layout] Initializing app data with /api/tv/init...');
+        
+        // Wait for country to be loaded first
+        const locationState = useLocationStore.getState();
+        const country = locationState.countryEnglish || locationState.country;
+        const countryCode = locationState.countryCode;
+        
+        console.log('[Layout] Using country:', country, 'code:', countryCode);
+        
+        // Initialize TV/Mobile data - this caches genres, popular stations, etc.
+        const data = await initializeTvData(queryClient, country);
+        
+        if (data) {
+          console.log('[Layout] App data initialized:', {
+            popularStations: data.popularStations?.length || 0,
+            genres: data.genres?.length || 0,
+            countries: data.countries?.length || 0,
+          });
         }
+        
+        setAppDataReady(true);
+      } catch (error) {
+        console.error('[Layout] App data init error:', error);
+        setAppDataReady(true); // Continue anyway
       }
     };
-    preloadTV();
-  }, []);
-
-  // Preload essential data in background
-  useEffect(() => {
-    if (!preloadStarted.current && !Platform.isTV) {
-      preloadStarted.current = true;
-      preloadEssentialData().catch(console.error);
+    
+    // Only run after country is loaded
+    if (countryLoaded) {
+      initAppData();
     }
-  }, []);
+  }, [countryLoaded]);
 
   // App state listener for background/foreground
   useEffect(() => {
