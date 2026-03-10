@@ -85,10 +85,10 @@ export default function GenreDetailScreen() {
   }, []);
 
   // Note: Backend doesn't support sort/order params reliably, so we fetch all and sort client-side
-  // CRITICAL: Genre stations API requires 'country' parameter with NATIVE country name
-  // NOT countryCode (ISO code) - API uses the actual country name stored in database
-  // Examples: "Türkiye" (not "Turkey" or "TR"), "Austria" (not "AT")
-  const countryForApi = country || undefined;
+  // CRITICAL: Genre stations API requires 'country' parameter with ENGLISH country name
+  // Examples: "Austria" (not "Österreich"), "Germany" (not "Deutschland")
+  // Exception: Turkey is stored as "Türkiye" in the database
+  const countryForApi = countryEnglish || country || undefined;
   
   console.log('[GenreDetail] Fetching stations - country:', countryForApi, 'isLoaded:', isLoaded, 'slug:', slug);
   
@@ -96,7 +96,7 @@ export default function GenreDetailScreen() {
     slug, 
     page, 
     100, 
-    countryForApi // Pass native country name, NOT ISO code
+    countryForApi // Pass English country name for API
   );
   
   // Refetch when country changes - ensures country filter is applied
