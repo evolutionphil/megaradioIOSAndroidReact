@@ -509,26 +509,23 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Popular Genres Swiper - Horizontal Carousel (Top 4 genres by station count) */}
-          {genres.length > 0 && (
+          {/* Discoverable Genres Swiper - Horizontal Carousel (3 discoverable genres) */}
+          {discoverableGenresList.length > 0 && (
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING, gap: 12, marginBottom: spacing.lg }}
             >
-              {genres.slice(0, 4).map((genre: any, index: number) => {
-                // Use posterImage from genre data if available
-                const apiImageUrl = genre.posterImage 
-                  ? `https://themegaradio.com${genre.posterImage}`
-                  : null;
+              {discoverableGenresList.map((genre: any, index: number) => {
+                // Use discoverableImage from API or fallback
+                const apiImageUrl = getDiscoverableGenreImage(genre) || getGenreBannerImage(genre);
                 
                 // Fallback gradient colors if no image
                 const gradientColors = [
                   ['#667eea', '#764ba2'],
                   ['#f093fb', '#f5576c'],
                   ['#4facfe', '#00f2fe'],
-                  ['#43e97b', '#38f9d7'],
-                ][index % 4] as [string, string];
+                ][index % 3] as [string, string];
                 
                 return (
                   <TouchableOpacity 
