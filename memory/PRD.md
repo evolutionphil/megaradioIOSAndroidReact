@@ -119,6 +119,38 @@ cd frontend && eas build --platform android --clear-cache
 
 ---
 
+## Build 65.4 - GRID ALIGNMENT & AUTH ISSUE INVESTIGATION (10 Aralık 2026)
+
+### ✅ TAMAMLANDI: Genre Detail Grid Hizalama Düzeltildi
+
+**Sorun**: Grid view sağa yapışık gösteriyordu, sol ve sağ tarafta eşit boşluk olmalıydı.
+
+**Çözüm**:
+- `gridRow` yerine tek `gridWrapper` container kullanıldı
+- `flexWrap: 'wrap'` ile item'lar otomatik sarılıyor
+- `justifyContent: 'flex-start'` ile soldan sağa diziliyor
+- `paddingHorizontal: gridMetrics.sidePadding` ile eşit kenar boşlukları
+
+### ⚠️ BACKEND SORUNU: Apple ve Google Auth Çalışmıyor
+
+**Hata Mesajları:**
+- Apple: "Backend authentication failed"
+- Google: "No authentication code received from google"
+
+**Kök Neden:**
+- `/api/auth/google` ve `/api/auth/apple` endpoint'leri **HTML sayfası dönüyor** (JSON değil)
+- API route'ları backend'de muhtemelen kaldırılmış veya nginx yanlış yapılandırılmış
+
+**Backend Developer için Doküman:**
+- `/app/frontend/docs/BACKEND_AUTH_ISSUE.md` oluşturuldu
+- Kontrol edilmesi gereken noktalar detaylandırıldı
+
+### Değişen Dosyalar:
+- `app/genre-detail.tsx` - Grid layout düzeltildi
+- `docs/BACKEND_AUTH_ISSUE.md` - Auth sorunu belgelendi
+
+---
+
 ## Build 65.3 - GENRE COUNTRY FILTER & GPS DETECTION FIX (10 Aralık 2026)
 
 ### ✅ TAMAMLANDI: Genre Country Filter Düzeltildi

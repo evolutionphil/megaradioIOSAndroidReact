@@ -357,7 +357,7 @@ export default function GenreDetailScreen() {
           ) : (
             <ScrollView
               style={styles.scrollView}
-              contentContainerStyle={[styles.scrollContent, { paddingHorizontal: responsive.sidePadding }]}
+              contentContainerStyle={styles.scrollContent}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -368,16 +368,14 @@ export default function GenreDetailScreen() {
               showsVerticalScrollIndicator={false}
             >
               {viewMode === 'grid' ? (
-                <View style={styles.gridContainer}>
-                  {/* Render items in rows based on responsive columns */}
-                  {Array.from({ length: Math.ceil(filteredStations.length / GRID_COLUMNS) }).map((_, rowIndex) => (
-                    <View key={`row-${rowIndex}`} style={[styles.gridRow, { gap: gridMetrics.gap }]}>
-                      {filteredStations.slice(rowIndex * GRID_COLUMNS, (rowIndex + 1) * GRID_COLUMNS).map(renderGridItem)}
-                    </View>
-                  ))}
+                <View style={[styles.gridContainer, { paddingHorizontal: gridMetrics.sidePadding }]}>
+                  {/* Single flexWrap container for proper centering */}
+                  <View style={[styles.gridWrapper, { gap: gridMetrics.gap }]}>
+                    {filteredStations.map(renderGridItem)}
+                  </View>
                 </View>
               ) : (
-                <View style={[styles.listContainer, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
+                <View style={[styles.listContainer, { paddingHorizontal: responsive.sidePadding }, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
                   {filteredStations.map((station) => (
                     <View key={station._id} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
                       {renderListItem(station)}
@@ -514,11 +512,17 @@ const styles = StyleSheet.create({
 
   // Grid View
   gridContainer: {
-    paddingHorizontal: spacing.md,
+    // Padding is now set dynamically from gridMetrics.sidePadding
+  },
+  gridWrapper: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
   },
   gridRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start', // Changed from space-between to prevent last row alignment issues
     marginBottom: spacing.md,
   },
   gridItem: {
