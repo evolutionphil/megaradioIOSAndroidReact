@@ -119,6 +119,65 @@ cd frontend && eas build --platform android --clear-cache
 
 ---
 
+## Build 65.3 - GENRE COUNTRY FILTER & GPS DETECTION FIX (10 Aralık 2026)
+
+### ✅ TAMAMLANDI: Genre Country Filter Düzeltildi
+
+**Sorun 1: Genres ülke değiştirmeme rağmen halen global gösteriyor**
+- Pop genre'sine girince hala global istasyonlar gösteriyordu
+- Country değiştiğinde filtre uygulanmıyordu
+
+**Kök Neden:**
+1. Genre stations API `country` parametresi bekliyor (native isim: "Türkiye")
+2. Frontend `countryCode` (ISO: "TR") gönderiyordu - API bunu tanımıyordu
+3. Component mount olduğunda country store'dan henüz yüklenmemişti
+
+**Çözümler:**
+
+1. **genreService.ts: `countryCode` → `country` olarak değiştirildi**
+   ```typescript
+   // ESKİ: params: { page, limit, countryCode }
+   // YENİ: params: { page, limit, country }
+   // country = native isim (örn: "Türkiye", "Austria")
+   ```
+
+2. **genre-detail.tsx: useEffect ile country değişimini takip ediyor**
+   ```typescript
+   useEffect(() => {
+     if (isLoaded && country) {
+       refetch();  // Country değişince yeniden yükle
+     }
+   }, [country, isLoaded, refetch]);
+   ```
+
+3. **_layout.tsx: GPS detection eklendi**
+   ```typescript
+   // Stored country yoksa GPS ile ülke tespit et
+   if (!state.country && !state.isManuallySet) {
+     await useLocationStore.getState().fetchLocation();
+   }
+   ```
+
+### Test Sonuçları (10 Aralık 2026):
+- ✅ Country: Türkiye seçildi
+- ✅ Pop genre'sine girildi
+- ✅ **43 Türk istasyonu gösterildi** (Power POP, Süper FM, TRT3 vb.)
+- ✅ Console: `[genreService] getGenreStations - slug: pop country: Türkiye`
+
+### Değişen Dosyalar:
+- `src/services/genreService.ts` - `country` parametresi kullanılıyor
+- `src/hooks/useQueries.ts` - `useGenreStations` güncellendi
+- `app/genre-detail.tsx` - Country değişim useEffect eklendi
+- `app/_layout.tsx` - GPS detection eklendi
+
+### 📱 Yeni Build Komutları:
+```bash
+cd frontend && eas build --platform ios --clear-cache
+cd frontend && eas build --platform android --clear-cache
+```
+
+---
+
 ## Build 65.2 - LOCAL CACHE TAMAMEN KALDIRILDI (7 Aralık 2026)
 
 ### ✅ TAMAMLANDI: Cache/Race Condition Sorunları Tamamen Çözüldü

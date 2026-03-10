@@ -87,9 +87,9 @@ export default function GenreDetailScreen() {
   // CRITICAL: Genre stations API requires 'country' parameter with NATIVE country name
   // NOT countryCode (ISO code) - API uses the actual country name stored in database
   // Examples: "Türkiye" (not "Turkey" or "TR"), "Austria" (not "AT")
-  const countryForApi = isLoaded ? (country || undefined) : undefined;
+  const countryForApi = country || undefined;
   
-  console.log('[GenreDetail] Fetching stations with country:', countryForApi, 'slug:', slug);
+  console.log('[GenreDetail] Fetching stations - country:', countryForApi, 'isLoaded:', isLoaded, 'slug:', slug);
   
   const { data, isLoading, refetch } = useGenreStations(
     slug, 
@@ -97,6 +97,15 @@ export default function GenreDetailScreen() {
     100, 
     countryForApi // Pass native country name, NOT ISO code
   );
+  
+  // Refetch when country changes - ensures country filter is applied
+  useEffect(() => {
+    if (isLoaded && country) {
+      console.log('[GenreDetail] Country changed to:', country, '- Refetching genre stations...');
+      refetch();
+    }
+  }, [country, isLoaded, refetch]);
+  
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
   const { isMiniPlayerVisible } = usePlayerStore();
