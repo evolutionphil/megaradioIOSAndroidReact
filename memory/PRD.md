@@ -119,6 +119,34 @@ cd frontend && eas build --platform android --clear-cache
 
 ---
 
+## Build 65.2 - LOCAL CACHE TAMAMEN KALDIRILDI (7 Aralık 2026)
+
+### ✅ TAMAMLANDI: Cache/Race Condition Sorunları Tamamen Çözüldü
+
+**Kullanıcı Şikayetleri:**
+1. Country değişince veriler anında güncellenmiyor
+2. All Stations ilk açılışta yüklenmiyor
+3. Discoverable Genres yanlış veri gösteriyor (tüm genreler)
+4. Genre detail sayfaları boş liste gösteriyor
+
+**Çözüm: Local Cache Tamamen Kaldırıldı!**
+
+**Değişen Dosyalar:**
+1. **stationService.ts** - `stationCache` kaldırıldı, direkt API
+2. **genreService.ts** - `stationCache` kaldırıldı, direkt API
+3. **tvInitService.ts** - AsyncStorage cache kaldırıldı
+4. **useQueries.ts** - `staleTime: 0` (her zaman fresh data)
+
+**Test Sonuçları (Testing Agent - 100% Pass):**
+- ✅ Home: 12 popular stations
+- ✅ Country change: Anında Türk istasyonları
+- ✅ Genres: 40 genres yükleniyor
+- ✅ Genre detail (Pop): 100 station
+- ✅ All Stations: 51,814 station
+- ✅ Discoverable: Sadece 3 genre (Folk, Jazz, Rock)
+
+---
+
 ## Build 60 - December 2025 (CRITICAL BUG FIX - RACE CONDITION)
 
 ### ✅ TAMAMLANDI: İlk Açılışta Station Yüklenmeme Sorunu (Race Condition)
