@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
   Image,
   ActivityIndicator,
@@ -216,12 +216,12 @@ export default function GenreDetailScreen() {
     return (
       <TouchableOpacity
         key={station._id}
-        style={[styles.gridItem, { width: GRID_ITEM_WIDTH }, playing && styles.gridItemActive]}
+        style={[styles.gridItem, playing && styles.gridItemActive]}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
         data-testid={`grid-station-${station._id}`}
       >
-        <View style={[styles.gridLogoContainer, { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}>
+        <View style={styles.gridLogoContainer}>
           {logoUrl ? (
             <Image
               source={{ uri: logoUrl }}
@@ -234,8 +234,8 @@ export default function GenreDetailScreen() {
             </View>
           )}
         </View>
-        <Text style={[styles.gridName, { maxWidth: GRID_ITEM_WIDTH }]} numberOfLines={1} ellipsizeMode="tail">{station.name}</Text>
-        <Text style={[styles.gridLocation, { maxWidth: GRID_ITEM_WIDTH }]} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={styles.gridName} numberOfLines={1} ellipsizeMode="tail">{station.name}</Text>
+        <Text style={styles.gridLocation} numberOfLines={1} ellipsizeMode="tail">
           {station.country}{station.state ? `, ${station.state}` : ''}
         </Text>
       </TouchableOpacity>
@@ -354,10 +354,26 @@ export default function GenreDetailScreen() {
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={colors.primary} />
             </View>
-          ) : (
-            <ScrollView
-              style={styles.scrollView}
-              contentContainerStyle={styles.scrollContent}
+          ) : viewMode === 'grid' ? (
+            <FlatList
+              data={filteredStations}
+              renderItem={({ item, index }) => {
+                // Calculate percentage width to ensure even distribution
+                const itemPercentWidth = (100 - (GRID_COLUMNS + 1) * 2) / GRID_COLUMNS; // 2% margin on each side
+                return (
+                  <View style={{ 
+                    width: `${itemPercentWidth}%` as any, 
+                    marginHorizontal: '1%' as any,
+                    marginBottom: gridMetrics.gap,
+                  }}>
+                    {renderGridItem(item)}
+                  </View>
+                );
+              }}
+              keyExtractor={(item) => item._id}
+              numColumns={GRID_COLUMNS}
+              key={`grid-${GRID_COLUMNS}`}
+              contentContainerStyle={styles.gridFlatListContent}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -366,47 +382,55 @@ export default function GenreDetailScreen() {
                 />
               }
               showsVerticalScrollIndicator={false}
-            >
-              {viewMode === 'grid' ? (
-                <View style={[styles.gridContainer, { paddingHorizontal: gridMetrics.sidePadding }]}>
-                  {/* Single flexWrap container for proper centering */}
-                  <View style={[styles.gridWrapper, { gap: gridMetrics.gap }]}>
-                    {filteredStations.map(renderGridItem)}
+              ListEmptyComponent={
+                !isLoading ? (
+                  <View style={styles.emptyState}>
+                    <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
+                    <Text style={styles.emptyText}>
+                      {searchQuery ? 'No stations found' : 'No stations in this genre'}
+                    </Text>
                   </View>
-                </View>
-              ) : (
-                <View style={[styles.listContainer, { paddingHorizontal: responsive.sidePadding }, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
-                  {filteredStations.map((station) => (
-                    <View key={station._id} style={responsive.isTablet ? { width: '50%', paddingHorizontal: 4 } : undefined}>
-                      {renderListItem(station)}
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              {filteredStations.length === 0 && !isLoading && (
-                <View style={styles.emptyState}>
-                  <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
-                  <Text style={styles.emptyText}>
-                    {searchQuery ? 'No stations found' : 'No stations in this genre'}
-                  </Text>
-                </View>
-              )}
-
-              {/* See More Button */}
-              {stations.length >= 100 && (
-                <View style={styles.seeMoreContainer}>
-                  <TouchableOpacity 
-                    style={styles.seeMoreButton}
-                    onPress={() => setPage(p => p + 1)}
-                    data-testid="see-more-btn"
-                  >
-                    <Text style={styles.seeMoreText}>See More</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </ScrollView>
-          )}
+                ) : null
+              }
+              ListFooterComponent={
+                stations.length >= 100 ? (
+                  <View style={styles.seeMoreContainer}>
+                    <TouchableOpacity 
+                      style={styles.seeMoreButton}
+                      onPress={() => {/* Handle see more */}}
+                    >
+                      <Text style={styles.seeMoreText}>See More on Web</Text>
+                      <Ionicons name="open-outline" size={16} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                ) : null
+              }
+            />
+          ) : (
+            <FlatList
+              data={filteredStations}
+              renderItem={({ item }) => renderListItem(item)}
+              keyExtractor={(item) => item._id}
+              contentContainerStyle={[styles.listFlatListContent, { paddingHorizontal: responsive.sidePadding }]}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor={colors.primary}
+                />
+              }
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                !isLoading ? (
+                  <View style={styles.emptyState}>
+                    <Ionicons name="radio-outline" size={48} color={colors.textMuted} />
+                    <Text style={styles.emptyText}>
+                      {searchQuery ? 'No stations found' : 'No stations in this genre'}
+                    </Text>
+                  </View>
+                ) : null
+              }
+            />
 
           <SortBottomSheet
             visible={showSortSheet}
@@ -510,6 +534,16 @@ const styles = StyleSheet.create({
     paddingBottom: 180, // Extra padding for MiniPlayer + system nav bar
   },
 
+  // FlatList styles
+  gridFlatListContent: {
+    paddingBottom: 180,
+    paddingTop: spacing.sm,
+  },
+  listFlatListContent: {
+    paddingBottom: 180,
+    paddingTop: spacing.sm,
+  },
+
   // Grid View
   gridContainer: {
     // Padding is now set dynamically from gridMetrics.sidePadding
@@ -517,7 +551,8 @@ const styles = StyleSheet.create({
   gridWrapper: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    justifyContent: 'center', // Center items horizontally
+    alignItems: 'flex-start',
   },
   gridRow: {
     flexDirection: 'row',
