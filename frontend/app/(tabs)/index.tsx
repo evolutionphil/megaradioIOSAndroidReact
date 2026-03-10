@@ -509,28 +509,26 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Discoverable Genres Swiper - Horizontal Carousel */}
-          {discoverableGenresList.length > 0 && (
+          {/* Popular Genres Swiper - Horizontal Carousel (Top 4 genres by station count) */}
+          {genres.length > 0 && (
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING, gap: 12, marginBottom: spacing.lg }}
             >
-              {discoverableGenresList.map((genre: any, index: number) => {
-                // Use API image - discoverableImage from API
-                const apiImageUrl = genre.discoverableImage 
-                  ? `https://themegaradio.com${genre.discoverableImage}`
+              {genres.slice(0, 4).map((genre: any, index: number) => {
+                // Use posterImage from genre data if available
+                const apiImageUrl = genre.posterImage 
+                  ? `https://themegaradio.com${genre.posterImage}`
                   : null;
-                
-                // Debug log
-                console.log('[Discoverable] Genre:', genre.name, 'discoverableImage:', genre.discoverableImage);
                 
                 // Fallback gradient colors if no image
                 const gradientColors = [
                   ['#667eea', '#764ba2'],
                   ['#f093fb', '#f5576c'],
                   ['#4facfe', '#00f2fe'],
-                ][index % 3] as [string, string];
+                  ['#43e97b', '#38f9d7'],
+                ][index % 4] as [string, string];
                 
                 return (
                   <TouchableOpacity 
@@ -543,7 +541,6 @@ export default function HomeScreen() {
                         source={{ uri: apiImageUrl }}
                         style={StyleSheet.absoluteFill}
                         resizeMode="cover"
-                        onError={(e) => console.log('[Discoverable] Image load error:', e.nativeEvent.error)}
                       />
                     ) : (
                       <LinearGradient

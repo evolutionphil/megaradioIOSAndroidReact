@@ -11,54 +11,88 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish. The next agent MUST respond in Turkish only (İletişimi Türkçe sürdürün).
 
 **what currently exists?**
-The project is an Expo (Bare Workflow) mobile radio app with extensive native integrations for iOS and Android. This session was primarily focused on fixing critical bugs.
+The project is an Expo (Bare Workflow) mobile radio app. This session was dedicated to fixing a cascade of critical bugs related to data loading, caching, and UI consistency.
 
 Key Accomplishments:
--   **Build System Fixes:** Resolved a series of show-stopping iOS build failures by correcting the  file to include new Swift sources and fixing multiple  keyword errors in .
--   **API Alignment:** The frontend's API service layer was significantly overhauled to match the backend's actual implementation, based on a report from the backend developer. This included correcting endpoint URLs, request bodies (e.g., for push tokens), and adding necessary headers ().
--   **New Endpoint Integration:** Started integrating the new, optimized  endpoint designed to fetch all initial app data in a single call.
--   **Bug Fixing:** Addressed a severe race condition on app startup where data would not load until the app was restarted. The root cause was identified, and a fix was in progress.
--   **Documentation:** Created a comprehensive API usage document for the backend developer at .
-
-Despite these fixes, the core issue of data failing to load on the first launch persists and is the main blocker.
+-   **Caching System Removed:** Per the user's request, all custom client-side caching logic was completely removed from , , and . The application now relies on React Query with  to ensure fresh data is always fetched from the API, eliminating a major source of bugs.
+-   **Data-Loading Race Condition Fixed:** A critical bug causing empty screens on app startup was resolved. The fix involved correcting API parameter mismatches ( vs. ,  vs. ) and ensuring React Query keys were dependent on the country to trigger refetches.
+-   **Country Change Auto-Refresh:** The application now correctly and immediately refetches all relevant data and updates the UI when the user changes their country in the profile settings.
+-   **UI & Layout Fixes:**
+    -   The grid layout on the genre detail page was fixed to have equal horizontal padding, matching the user's design specification.
+    -   A React Hook rule violation (Rendered more hooks than during the previous render) on the All Stations page was resolved.
+-   **Geolocation Fix:** A missing call to  was added to the app's startup sequence in  to re-enable automatic country detection.
+-   **Social Login Investigation:** It was discovered that Google & Apple sign-in are broken because the backend API changed. The user provided new, detailed documentation for a POST-based mobile authentication flow.
 
 **Last working item**:
--   **Last item agent was working**: Diagnosing and fixing a critical and recurring race condition that causes All Stations and Genres lists to be empty on the initial app launch. The user reported this requires multiple app restarts to resolve.
--   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. The issue is a complex data flow and state management problem in React Native. After the fix, a new build and on-device user testing will be essential for final verification.
+-   **Last item agent was working**: Fixing the grid layout alignment on the genre detail page (). The user reported that items were flush with the right edge of the screen. The agent successfully implemented a fix using percentage-based widths and flexbox properties to ensure equal padding on both left and right sides.
+-   **Status**: USER VERIFICATION PENDING
+-   **Agent Testing Done**: Y (Verified the final layout via screenshot, which matched the user's request).
+-   **Which testing method agent to use?**: Frontend testing agent. The next steps involve implementing a new authentication flow and fixing other UI bugs, which require comprehensive testing across multiple screens and user flows.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: App shows empty lists on first launch (P0)
+-   Issue 1: Social Login (Google & Apple) is broken (P0)
+-   Issue 2: Inconsistent Image Loading (P1)
+-   Issue 3: Browse Genres section on Home screen shows wrong content (P1)
+-   Issue 4: Geolocation on fresh install needs verification (P2)
 
 **Issues Detail:**
--   **Issue 1: App shows empty lists on first launch**
-    -   **Attempted fixes**: The agent identified that API calls were being blocked by a faulty  flag logic in React Query hooks, which was intended to wait for the user's country to be loaded. The  (Message 407, 422) confirmed this was a circular dependency: the query was disabled because the country was , so it never ran, even after the country was loaded.
+-   **Issue 1: Social Login (Google & Apple) is broken**
+    -   **Attempted fixes**: The agent investigated and confirmed that the current implementation fails because the backend endpoints (, ) no longer support the old GET-based flow and return HTML. The user has provided new backend documentation for a POST-based flow.
     -   **Next debug checklist**:
-        1.  Implement the solution from the  analysis.
-        2.  Modify the React Query hooks in  and the new  call.
-        3.  The logic should allow the initial API call to proceed with  (to fetch global data) and then automatically refetch when the  updates the country.
-        4.  Remove the  flag's dependency on the country *existing*. Instead, make the query key dependent on the country so React Query handles refetching automatically.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical P0 bug that makes the application appear broken and unusable on first start. Fixing it will ensure a smooth and reliable user experience.
-    -   **Status**: IN PROGRESS
+        1.  Read the new documentation provided by the user in message 536 (saved to ).
+        2.  Update  to implement the  requests for  and  with the correct body structure (, , etc.).
+        3.  Update  and the sign-in components (, ) to pass the required tokens from the respective SDKs to .
+        4.  Ensure the  for Google Sign-In is correctly configured as per the new documentation.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical P0 regression. Fixing it will restore user authentication, a core feature of the app.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: Y (It was working before the backend change).
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on other issue**: None.
+
+-   **Issue 2: Inconsistent Image Loading**
+    -   **Attempted fixes**: The agent identified that some API responses lack the  object and only provide a . An attempt was made to add fallback logic, but the issue persists. Station logos appear on the Home screen but are missing on the All Stations and Genre Detail pages for the same station (e.g., Arabesk FM).
+    -   **Next debug checklist**:
+        1.  Review the  and  components in  and .
+        2.  Verify how the image URL is constructed. Check if the  utility correctly handles cases where  is null but  exists.
+        3.  Use the testing agent to navigate to these screens and inspect the props being passed to the  component for a station with a missing image.
+    -   **Why fix this issue and what will be achieved with the fix?**: Missing images degrade the user experience and make the app look broken.
+    -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend
     -   **Blocked on other issue**: None.
 
-**In progress Task List**:
--   **Task 1: Finalize  Integration & Fix Startup Race Condition (P0)**
-    -   **Where to resume**: The primary task is to fix the race condition. This should be done by fully implementing the new  endpoint as the single source of truth for initial data. The previous attempts to patch individual hooks (, ) should be removed in favor of this new, simpler approach.
-    -   **What will be achieved with this?**: A faster, more reliable app startup that correctly loads country-specific data without race conditions or empty screens. It will also simplify the data-fetching logic significantly.
-    -   **Status**: IN PROGRESS
+-   **Issue 3: Browse Genres section on Home screen shows wrong content**
+    -   **Attempted fixes**: The user wants this section to display Popular Genres (), not Discoverable Genres (). The agent changed the component in  to use the  hook instead of .
+    -   **Next debug checklist**:
+        1.  Use the frontend testing agent or a screenshot to verify that the Browse Genres section on the home screen now displays the list of popular genres (Pop, Music, News, Rock, etc.) instead of the three discoverable ones (Folk, Jazz, Rock).
+    -   **Why fix this issue and what will be achieved with the fix?**: Aligns the app with the user's product requirements for the home screen layout.
+    -   **Status**: IN PROGRESS (Fix implemented, but not verified).
+    -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on something**: The backend developer had not yet deployed the  endpoint at the time of the last message, but the agent was instructed to prepare the frontend code.
+    -   **Blocked on other issue**: None.
+
+-   **Issue 4: Geolocation on fresh install needs verification**
+    -   **Attempted fixes**: The user reported that on a clean app install, automatic country detection via GPS was not working. The agent fixed this by adding a  call to the startup logic in .
+    -   **Next debug checklist**:
+        1.  This can only be verified with a new native build (An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username). After the other critical issues are resolved, provide the user with the build command and ask them to test on a physical device after uninstalling the previous version.
+    -   **Why fix this issue and what will be achieved with the fix?**: Ensures a smooth onboarding experience by automatically setting the user's country.
+    -   **Status**: TESTING PENDING
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend (via user testing a new build).
+    -   **Blocked on other issue**: None.
+
+**In progress Task List**:
+-   None. All work is categorized under the issues above.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1**: Integrate the native Apple Watch and Wear OS app targets into the main iOS () and Android () projects so they are included in the builds. The code for these apps exists in  but is not currently being compiled.
--   **P1**: Implement the CarPlay  for a richer now playing experience within CarPlay.
--   **P1**: Implement an audio quality selection feature (e.g., based on network type WiFi/Cellular).
+-   **P1**: Integrate the native Apple Watch and Wear OS app targets into the main iOS () and Android () projects so they are included in the builds.
+-   **P1**: Implement the CarPlay  for a richer now playing experience.
+-   **P1**: Implement an audio quality selection feature.
 
 **Future Tasks:**
 -   **P2**: Add an Equalizer (EQ) with presets.
@@ -68,98 +102,95 @@ Despite these fixes, the core issue of data failing to load on the first launch 
 -   **P3**: Integrate a song recognition feature (e.g., ShazamKit).
 
 **Completed work in this session**
--   **iOS Build System:** Successfully fixed the  and resolved all  keyword errors in , making the iOS app buildable again.
--   **API Alignment:** Corrected multiple API calls and data structures in the frontend to match the actual backend implementation, fixing bugs related to push token registration and authentication.
--   **Startup Optimization:** Began integration of the new  endpoint to replace multiple startup API calls.
--   **CarPlay/Android Auto Fixes:** Resolved issues with country filtering and image rendering in CarPlay templates.
--   **Race Condition Investigation:** Identified the root cause of the persistent empty list bug on app startup.
--   **Documentation:** Created and updated a comprehensive backend API documentation file ().
--   **Feature Implementation:** Completed the implementation for Stream URL Failover, Offline Mode UI Feedback, and Device Token Registration.
-
-**Earlier issues found/mentioned but not fixed**
--   The Next/Previous button logic from the initial handoff still requires user verification after a successful build is produced.
-
-**Known issue recurrence from previous fork**
--   **Data loading/caching issues:** This remains a persistent theme. While previous specific bugs were fixed, a fundamental race condition in the app's startup logic was discovered and is the current focus. The architectural approach to data loading on startup has been fragile.
+-   **Local Caching System:** Completely removed all client-side caching logic as requested, simplifying the data flow and fixing numerous stale data bugs.
+-   **Data Loading & Race Conditions:** Resolved a series of critical data loading bugs, including empty screens on startup and data not refreshing after changing the country.
+-   **API Parameter Mismatches:** Corrected several API calls to use the right parameters ( vs. ,  vs. ).
+-   **UI Layout & Hook Rules:** Fixed the grid layout alignment on the genre detail page and resolved a React Hook rule violation on the all stations page.
+-   **Geolocation on Startup:** Re-enabled automatic country detection by adding a missing  call.
+-   **Browse Genres Content:** Modified the home screen to use popular genres instead of discoverable genres, as per user request.
 
 **Code Architecture**
-
+fetchLocationfetchLocation()
 
 **Key Technical Concepts**
--   **Race Condition Debugging:** Analyzing and fixing timing issues between asynchronous operations (location fetching) and data-dependent UI rendering (React Query hooks).
--   **React Query State Control:** Using  and  flags to manage data fetching, and understanding the pitfalls that can lead to queries not firing.
--   **API Abstraction & Alignment:** Refactoring service layers (, ) to match a backend source of truth, including changes to URLs, HTTP methods, and request bodies.
--   **Expo Bare Workflow (Native Build):** Debugging native Swift build errors ( keywords, conditional compilation) directly within the Expo project structure.
--   **Centralized API Endpoint:** Migrating from multiple data-fetching hooks to a single, optimized endpoint () to improve performance and reduce complexity.
+-   **React Query Strategy:** Shifted from a cache-heavy approach to a fetch-fresh-data strategy by setting  and , simplifying state management.
+-   **API Debugging:** Diagnosing and fixing inconsistencies between frontend assumptions and backend reality (e.g.,  vs. ,  vs. ).
+-   **React Native Layout (Flexbox):** Fixing complex grid alignment issues by moving from manual row calculation to a more robust percentage-based width approach with flexbox properties.
+-   **Conditional Platform Logic:** Implementing platform-specific code, such as adding a request header () only on native to avoid CORS issues in web previews.
+-   **Social Authentication (OAuth/JWT):** Understanding the difference between web redirect flows (GET) and mobile SDK flows (POST with token) for Google and Apple sign-in.
 
 **key DB schema**
 -   No changes made to the database schema.
 
 **All files of reference**
--    (Core of the race condition bug)
--    (Manages country state, part of the bug)
--    (Main screen where data loading occurs)
--    (New service for optimized startup)
--    (Global API configuration)
--    (Push token registration, was incorrect)
--    (Location of multiple build errors)
--    (Key documentation created)
+-    (NEEDS to be updated for new social login)
+-    (Definitive guide for social login implementation)
+-    (Contains the fixed grid layout)
+-    (Contains the new  caching strategy)
+-    (Home screen logic, including country change handling)
+-    (App startup logic where  was added)
+-    (Example of removed caching logic)
+-    (Example of removed caching logic)
 
 **Areas that need refactoring**:
--   The data loading flow on app startup is the main fragile area. The introduction of  is the correct step. The refactoring needs to be completed by removing the old, individual data hooks (, etc.) from the main screen and relying solely on the data from the new endpoint. This will eliminate the source of the race conditions.
+-    and  must be refactored to support the new POST-based mobile authentication flow.
 
 **key api endpoints**
--    (Newly introduced for optimized app startup)
--    (Corrected endpoint for push token registration)
--    (Corrected endpoint for push token removal)
+-    (**NEW**: Needs implementation)
+-    (**NEW**: Needs implementation)
+-    (Parameter fixed to )
 -   
 -   
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **PRIORITY #1: FIX THE STARTUP RACE CONDITION.** This is the most critical issue. The app currently fails to load data on the first launch. Your main task is to correctly implement the  endpoint and ensure it runs *after* the initial location is determined. The last analysis from  (Message 422) is the best starting point. Do not try to patch the old, separate hooks; replace them with the new, unified  call.
--   **A SUCCESSFUL BUILD IS THE GOAL.** The user has been blocked by multiple build failures and now a critical runtime bug. The top priority after fixing the race condition is to provide the user with commands for a new, working build.
--   **WATCH APPS EXIST BUT ARE NOT BUILT.** The source code for fully-featured Apple Watch and Wear OS apps was found in . However, they are likely not integrated into the native projects to be compiled. After fixing the main app, the next step should be to verify and add these watch targets to the respective builds.
+-   **PRIORITY #1: FIX SOCIAL LOGIN.** This is a critical regression. The user has provided complete documentation for the new backend APIs in message 536. You must update  and related files to use the new  endpoints. Refer to .
+-   **NO MORE CACHING.** The user was very clear: all custom local caching logic has been **intentionally removed** due to the bugs it caused. Do not re-introduce it. Rely on React Query to fetch fresh data.
+-   **WEB PREVIEW LIMITATIONS.** Be aware that  is not persistent in the web preview. Issues like country selection being lost on page navigation are expected on the web but should work correctly in a native build. Your primary testing should focus on logic that works within a single session.
 
 **documents and test reports created in this job**
 -   
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **(LATEST)** Reports persistent cache/race condition issue: app shows empty lists on first launch and requires multiple restarts. Asks for a detailed sub-agent analysis. 
-2.  Asks for an explanation for the backend dev about inconsistent country parameter handling and wants an investigation into what changed in the last week to cause this. 
-3.  Reports startup data is global, not local, until app restart. Provides the spec for the new  endpoint from the backend developer. 
-4.  Forwards a critical analysis from the backend developer showing major mismatches in the frontend's API usage (wrong URLs, bodies, methods). 
-5.  Asks if the  parameter is used in all API calls. 
-6.  Requests a detailed API documentation for the backend developer, explaining all endpoints and caching logic. 
-7.  States the  folder exists and asks the agent to analyze it. 
-8.  Corrects the agent's summary of completed tasks, confirming that features like Sleep Timer, Sharing, and Recently Played are already implemented. 
-9.  Asks for a status update on the list of Missing Features from a previously generated document. 
-10. Suggests that having the frontend always send the country name in English would be a simpler solution than backend mapping. 
+1.  **(LATEST)** Provides a screenshot and asks to fix the grid layout to have equal side padding. 
+2.  Provides detailed backend documentation for the new Google & Apple POST-based login. Also reports missing images on some screens and that the Browse Genres section should show popular, not discoverable, genres. 
+3.  Reports that the grid layout is still stuck to the right side. 
+4.  Reports bugs with the grid layout and social login. Asks for an investigation and a prepared question for the backend developer about the auth issue. 
+5.  Reports that after changing country, the UI does not update automatically, All Stations is empty for Turkey, and the Discoverable Genres section is showing the wrong content. 
+6.  Reports that country change is not reflected and  is not loading for the selected country. States that local cache is causing severe issues and must be removed entirely. 
+7.  Asks to test setting the country to Turkey in the app preview. 
+8.  Reports that All Stations is not working after the latest fixes. 
+9.  Reports that the app preview is completely blank and asks to check logs. 
+10. Provides the go-ahead for the agent to proceed with a build after a series of fixes. 
 
 **Project Health Check:**
--   **Broken**: The application's initial data loading is broken. On first launch, key screens like All Stations and Genres are empty due to a race condition.
+-   **Broken**:
+    -   User authentication via Google and Apple is non-functional due to backend API changes.
 -   **Mocked**: None.
 -   **Unverified**:
-    -   All the fixes from this session, including build error corrections and API alignment, require a new successful build to be verified.
-    -   The functionality and build-integration of the discovered Apple Watch and Wear OS apps are completely unverified.
+    -   The fix for inconsistent image loading across different screens.
+    -   The fix for showing Popular Genres on the home screen.
+    -   The fix for enabling geolocation on a fresh native build (requires user testing).
 
 **3rd Party Integrations**
 -   : Core audio streaming.
 -   : For CarPlay features.
+-   : For Google authentication.
+-   : For Apple authentication.
 -   : For ads.
 -   : For internationalization.
 -    (Android Native): For native API calls.
 -   **Native Platform APIs**: ,  (iOS); ,  (Android).
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, the  was used extensively to diagnose build errors and the startup race condition.
--   **Troubleshoot agent used after agent stuck in loop**: YES
+-   **Testing agent used after significant changes**: YES, used to validate the removal of the caching system and to debug data loading issues.
+-   **Troubleshoot agent used after agent stuck in loop**: YES, used early in the session to diagnose the root cause of the startup race condition.
 -   **Test files created**: []
--   **Known regressions**: A major regression occurred where data stopped loading correctly on app startup, which was reportedly working a week ago.
+-   **Known regressions**: Social Login (Google/Apple) was working in a previous session but is now broken due to backend API changes.
 
 **Credentials to test flow:**
--   None required.
+-   None required for general testing. Social login testing will require a Google/Apple account.
 
 **What agent forgot to execute**
--   The agent did not verify if the discovered watch app sources in  are correctly configured in the  and  files to be included in the final builds. This is a crucial missing step for that feature.
--   The agent was in the middle of implementing the final fix for the startup race condition and did not complete it.</analysis>
+-   The agent analyzed the new social login documentation provided by the user but did not proceed with the implementation in  and . This is the highest priority pending task.</analysis>
