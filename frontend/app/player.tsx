@@ -34,6 +34,7 @@ import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
 import CastModal from '../src/components/CastModal';
 import { UniversalCastButton } from '../src/components/UniversalCastButton';
 import { sendLog } from '../src/services/remoteLog';
+import { getStationLogoUrl } from '../src/utils/stationLogoHelper';
 import type { Station } from '../src/types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -433,38 +434,8 @@ export default function PlayerScreen() {
   const isPlaying = playbackState === 'playing';
 
   const getLogoUrl = useCallback((station: Station) => {
-    // Default fallback logo (pink MegaRadio logo)
-    const DEFAULT_LOGO = 'https://themegaradio.com/logo.png';
-    
-    // Check logoAssets first (best quality)
-    if (station.logoAssets?.webp192 && station.logoAssets?.folder) {
-      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp192}`;
-    }
-    
-    // Check favicon
-    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
-      const favicon = station.favicon.trim();
-      if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-        return favicon;
-      }
-      if (favicon.startsWith('/')) {
-        return `https://themegaradio.com${favicon}`;
-      }
-    }
-    
-    // Check logo
-    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
-      const logo = station.logo.trim();
-      if (logo.startsWith('http://') || logo.startsWith('https://')) {
-        return logo;
-      }
-      if (logo.startsWith('/')) {
-        return `https://themegaradio.com${logo}`;
-      }
-    }
-    
-    // Return default logo
-    return DEFAULT_LOGO;
+    // Use centralized helper with 'large' preference for player screen
+    return getStationLogoUrl(station, 'large') || 'https://themegaradio.com/logo.png';
   }, []);
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;

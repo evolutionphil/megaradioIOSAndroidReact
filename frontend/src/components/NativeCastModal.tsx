@@ -17,6 +17,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { colors, typography, spacing } from '../constants/theme';
+import { getStationLogoUrl } from '../utils/stationLogoHelper';
 import type { Station } from '../types';
 
 // Custom message namespace for MegaRadio
@@ -216,9 +217,7 @@ const NativeCastContent: React.FC<{
         stationId: station._id || station.stationuuid,
         stationName: station.name,
         streamUrl: streamUrl,
-        imageUrl: station.favicon ? 
-          (station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`) 
-          : null,
+        imageUrl: getStationLogoUrl(station) || null,
       };
       
       const sentViaCustomChannel = await sendCustomMessage(customMessage);
@@ -237,9 +236,10 @@ const NativeCastContent: React.FC<{
             type: 'generic',
             title: nowPlaying?.title || station.name,
             subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
-            images: station.favicon ? [{ 
-              url: station.favicon.startsWith('http') ? station.favicon : `https://themegaradio.com${station.favicon}`
-            }] : [],
+            images: (() => {
+              const logoUrl = getStationLogoUrl(station);
+              return logoUrl ? [{ url: logoUrl }] : [];
+            })(),
           },
         };
 

@@ -5,6 +5,7 @@ import { Platform, NativeModules } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
 import i18n, { addLanguageChangeListener } from './i18nService';
+import { getStationLogoUrl as centralGetStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../utils/stationLogoHelper';
 
 // Native module for cache bridge (iOS only)
 const CarPlayCacheModule = NativeModules.CarPlayCacheModule;
@@ -219,82 +220,15 @@ const getStationImage = async (station: Station): Promise<{ uri: string } | null
   }
 };
 
-// Synchronous helper for immediate use (no caching, just returns URL for non-CarPlay use)
+// Synchronous helper for immediate use - delegates to centralized stationLogoHelper
 const getStationImageSync = (station: Station): { uri: string } => {
-  try {
-    // Priority 1: logoAssets (best quality, our CDN)
-    if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-      return { uri: `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}` };
-    }
-    
-    // Priority 2: favicon (most common)
-    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
-      const favicon = station.favicon.trim();
-      if (favicon !== 'null' && favicon !== 'undefined') {
-        if (favicon.startsWith('http')) {
-          return { uri: favicon.replace('http://', 'https://') };
-        } else if (favicon.startsWith('/')) {
-          return { uri: `https://themegaradio.com${favicon}` };
-        }
-      }
-    }
-    
-    // Priority 3: logo
-    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
-      const logo = station.logo.trim();
-      if (logo !== 'null' && logo !== 'undefined') {
-        if (logo.startsWith('http')) {
-          return { uri: logo.replace('http://', 'https://') };
-        } else if (logo.startsWith('/')) {
-          return { uri: `https://themegaradio.com${logo}` };
-        }
-      }
-    }
-  } catch (e) {
-    console.log('[CarPlay] Error getting station image:', e);
-  }
-  
-  // Fallback: MegaRadio pink logo (URL for backward compat)
-  return { uri: FALLBACK_LOGO_URL };
+  const url = centralGetStationLogoUrl(station);
+  return { uri: url || FALLBACK_LOGO_URL };
 };
 
 // Legacy helper (string version) for backward compatibility and CarPlay imgUrl
 const getArtworkUrl = (station: Station): string => {
-  try {
-    // Priority 1: logoAssets (best quality, our CDN)
-    if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
-    }
-    
-    // Priority 2: favicon
-    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
-      const favicon = station.favicon.trim();
-      if (favicon !== 'null' && favicon !== 'undefined') {
-        if (favicon.startsWith('http')) {
-          return favicon.replace('http://', 'https://');
-        } else if (favicon.startsWith('/')) {
-          return `https://themegaradio.com${favicon}`;
-        }
-      }
-    }
-    
-    // Priority 3: logo
-    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
-      const logo = station.logo.trim();
-      if (logo !== 'null' && logo !== 'undefined') {
-        if (logo.startsWith('http')) {
-          return logo.replace('http://', 'https://');
-        } else if (logo.startsWith('/')) {
-          return `https://themegaradio.com${logo}`;
-        }
-      }
-    }
-  } catch (e) {
-    console.log('[CarPlay] Error getting artwork URL:', e);
-  }
-  
-  // Fallback: MegaRadio pink logo (URL)
-  return FALLBACK_LOGO_URL;
+  return centralGetStationLogoUrl(station) || FALLBACK_LOGO_URL;
 };
 
 // Create Favorites List Template

@@ -1,74 +1,118 @@
 // Station Logo Helper - Centralized logo URL resolution
+// Based on: MegaRadio Mobile - Station Logo/Favicon Kullanım Rehberi (Mart 2026)
 // Use this helper in ALL components that display station logos
 
 import type { Station } from '../types';
 
 // MegaRadio pink logo - LOCAL asset for fallback (no network required)
-// Use require() for React Native to bundle the asset
 export const DEFAULT_STATION_LOGO_SOURCE = require('../../assets/images/default-station-logo.png');
 
-// For components that need a URL string (like CarPlay), use this
+// For components that need a URL string (like CarPlay)
 export const DEFAULT_STATION_LOGO_URL = 'https://themegaradio.com/logo.png';
 
 /**
- * Get a reliable logo URL for a station
- * Priority: logoAssets.webp96 > favicon > logo > null (use local fallback)
- * 
- * @param station - Station object (can be partial)
- * @returns Valid URL string for the logo, or null if should use local fallback
+ * Encode HTTP URL for image proxy (URL-safe Base64)
+ * Proxy: https://themegaradio.com/api/image/{encoded}
  */
-export const getStationLogoUrl = (station: Station | null | undefined): string | null => {
+const encodeForProxy = (httpUrl: string): string => {
+  // Use a simple btoa polyfill for React Native
+  const base64 = typeof btoa !== 'undefined'
+    ? btoa(httpUrl)
+    : Buffer.from(httpUrl).toString('base64');
+  return base64
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+};
+
+/**
+ * Sanitize and normalize a favicon/external URL
+ * Handles: protocol-relative, missing protocol, HTTP→proxy
+ */
+const sanitizeFaviconUrl = (rawUrl: string): string | null => {
+  let url = rawUrl.trim();
+
+  if (!url || url === 'null' || url === 'undefined') return null;
+
+  // Protocol-relative URL
+  if (url.startsWith('//')) {
+    url = 'https:' + url;
+  }
+  // Missing protocol entirely (not data: or /)
+  if (!url.startsWith('http') && !url.startsWith('data:') && !url.startsWith('/')) {
+    url = 'https://' + url;
+  }
+  // Relative path on themegaradio
+  if (url.startsWith('/')) {
+    url = `https://themegaradio.com${url}`;
+  }
+
+  // CRITICAL: HTTP URLs must go through proxy (iOS ATS + mixed content)
+  if (url.startsWith('http://')) {
+    const encoded = encodeForProxy(url);
+    return `https://themegaradio.com/api/image/${encoded}`;
+  }
+
+  return url;
+};
+
+/**
+ * Get the best available logo URL for a station.
+ *
+ * Priority order (from documentation):
+ *   1. logoAssets.webp256 (S3, optimized, most reliable)  — status must be 'completed'
+ *   2. localImagePath      (legacy server file)
+ *   3. favicon              (external URL, lowest reliability)
+ *   4. null                 → caller must show local placeholder
+ *
+ * @param station   Station object (can be partial / any)
+ * @param preferSize  'large' uses webp256 first, 'small' uses webp96 first
+ */
+export const getStationLogoUrl = (
+  station: Station | any | null | undefined,
+  preferSize: 'large' | 'small' = 'small',
+): string | null => {
   if (!station) return null;
 
   try {
-    // Priority 1: logoAssets (best quality, our CDN)
-    if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-      const folder = encodeURIComponent(station.logoAssets.folder);
-      const file = encodeURIComponent(station.logoAssets.webp96);
-      return `https://themegaradio.com/station-logos/${folder}/${file}`;
-    }
+    // ── 1. S3 optimized logo (best quality, fastest) ──────────────
+    if (station.logoAssets?.status === 'completed' && station.logoAssets?.folder) {
+      // Pick best available size based on preference
+      const webpUrl = preferSize === 'large'
+        ? (station.logoAssets.webp256 || station.logoAssets.webp96 || station.logoAssets.webp48)
+        : (station.logoAssets.webp256 || station.logoAssets.webp96 || station.logoAssets.webp48);
 
-    // Priority 2: favicon field (most common)
-    if (station.favicon && typeof station.favicon === 'string' && station.favicon.trim()) {
-      const favicon = station.favicon.trim();
-      // Skip invalid URLs
-      if (favicon === '' || favicon === 'null' || favicon === 'undefined') {
-        // Continue to next priority
-      } else if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-        return favicon;
-      } else if (favicon.startsWith('/')) {
-        return `https://themegaradio.com${favicon}`;
+      if (webpUrl && typeof webpUrl === 'string' && webpUrl.trim()) {
+        // New data: full URL (https://megaradio-station-logos.s3...)
+        if (webpUrl.startsWith('https://') || webpUrl.startsWith('http://')) {
+          return webpUrl;
+        }
+        // Old data: just filename (logo-256.webp)
+        return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${webpUrl}`;
       }
     }
 
-    // Priority 3: logo field
-    if (station.logo && typeof station.logo === 'string' && station.logo.trim()) {
-      const logo = station.logo.trim();
-      // Skip invalid URLs
-      if (logo === '' || logo === 'null' || logo === 'undefined') {
-        // Continue to default
-      } else if (logo.startsWith('http://') || logo.startsWith('https://')) {
-        return logo;
-      } else if (logo.startsWith('/')) {
-        return `https://themegaradio.com${logo}`;
-      }
+    // ── 2. Legacy local image path (server file) ──────────────────
+    if (station.localImagePath && typeof station.localImagePath === 'string' && station.localImagePath.trim()) {
+      return `https://themegaradio.com/station-images/${station.localImagePath}`;
     }
 
-    // Priority 4: img field (some stations use this)
-    if ((station as any).img && typeof (station as any).img === 'string' && (station as any).img.trim()) {
-      const img = (station as any).img.trim();
-      if (img.startsWith('http://') || img.startsWith('https://')) {
-        return img;
-      } else if (img.startsWith('/')) {
-        return `https://themegaradio.com${img}`;
-      }
+    // ── 3. External favicon URL (least reliable) ──────────────────
+    if (station.favicon && typeof station.favicon === 'string') {
+      const result = sanitizeFaviconUrl(station.favicon);
+      if (result) return result;
     }
 
+    // ── Fallback: logo field (some older stations) ────────────────
+    if (station.logo && typeof station.logo === 'string') {
+      const result = sanitizeFaviconUrl(station.logo);
+      if (result) return result;
+    }
   } catch (e) {
     console.log('[StationLogoHelper] Error:', e);
   }
 
-  // Return null - caller should use DEFAULT_STATION_LOGO_SOURCE
+  // 4. No logo available → caller should use DEFAULT_STATION_LOGO_SOURCE
   return null;
 };
 

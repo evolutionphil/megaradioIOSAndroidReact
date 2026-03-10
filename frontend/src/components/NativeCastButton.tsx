@@ -13,6 +13,7 @@ import {
   ActionSheetIOS,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getStationLogoUrl as centralGetStationLogoUrl } from '../utils/stationLogoHelper';
 
 // Google Cast imports - dynamically loaded to prevent crashes if not available
 let GoogleCast: any = null;
@@ -105,14 +106,8 @@ export const NativeCastButton: React.FC<NativeCastButtonProps> = ({
     }
   }, [castState, station, streamUrl]);
 
-  const getStationLogoUrl = (station: any): string => {
-    if (!station) return 'https://themegaradio.com/logo.png';
-    
-    const logo = station.favicon || station.logo;
-    if (!logo) return 'https://themegaradio.com/logo.png';
-    
-    if (logo.startsWith('http')) return logo;
-    return `https://themegaradio.com${logo.startsWith('/') ? '' : '/'}${logo}`;
+  const getStationLogoUrlLocal = (station: any): string => {
+    return centralGetStationLogoUrl(station) || 'https://themegaradio.com/logo.png';
   };
 
   const castToDevice = useCallback(async () => {
@@ -156,7 +151,7 @@ export const NativeCastButton: React.FC<NativeCastButtonProps> = ({
           subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
           albumTitle: 'MegaRadio',
           images: [{
-            url: getStationLogoUrl(station),
+            url: getStationLogoUrlLocal(station),
           }],
         },
       };

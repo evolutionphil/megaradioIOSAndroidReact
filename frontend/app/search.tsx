@@ -21,6 +21,7 @@ import stationService from '../src/services/stationService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useResponsive } from '../src/hooks/useResponsive';
+import { getStationLogoUrl } from '../src/utils/stationLogoHelper';
 import type { Station, Genre } from '../src/types';
 import api from '../src/services/api';
 import { API_ENDPOINTS } from '../src/constants/api';
@@ -79,45 +80,7 @@ export default function SearchScreen() {
 
   // Convert station to search result
   const stationToResult = (station: Station): SearchResultItem => {
-    let imageUrl: string | null = null;
-    
-    try {
-      // Safely build image URL with validation
-      if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-        const folder = encodeURIComponent(station.logoAssets.folder);
-        const file = encodeURIComponent(station.logoAssets.webp96);
-        imageUrl = `https://themegaradio.com/station-logos/${folder}/${file}`;
-      } else if (station.favicon) {
-        // Validate and sanitize favicon URL
-        const faviconUrl = station.favicon.trim();
-        if (faviconUrl.startsWith('http://') || faviconUrl.startsWith('https://')) {
-          // Validate it's a proper URL
-          try {
-            new URL(faviconUrl);
-            imageUrl = faviconUrl;
-          } catch {
-            imageUrl = null;
-          }
-        } else if (faviconUrl.startsWith('/')) {
-          imageUrl = `https://themegaradio.com${faviconUrl}`;
-        }
-      } else if (station.logo) {
-        const logoUrl = station.logo.trim();
-        if (logoUrl.startsWith('http://') || logoUrl.startsWith('https://')) {
-          try {
-            new URL(logoUrl);
-            imageUrl = logoUrl;
-          } catch {
-            imageUrl = null;
-          }
-        } else if (logoUrl.startsWith('/')) {
-          imageUrl = `https://themegaradio.com${logoUrl}`;
-        }
-      }
-    } catch (e) {
-      console.log('[Search] Error building image URL:', e);
-      imageUrl = null;
-    }
+    const imageUrl = getStationLogoUrl(station);
     
     // Get proper genre/tag for subtitle
     let subtitle = 'Radio';

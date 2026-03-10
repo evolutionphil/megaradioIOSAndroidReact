@@ -21,6 +21,7 @@ import { useNearbyStations } from '../src/hooks/useQueries';
 import { useLocationStore } from '../src/store/locationStore';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useResponsive } from '../src/hooks/useResponsive';
+import { getStationLogoUrl, DEFAULT_STATION_LOGO_SOURCE } from '../src/utils/stationLogoHelper';
 import type { Station } from '../src/types';
 
 type ViewMode = 'grid' | 'list';
@@ -83,19 +84,7 @@ export default function NearbyStationsScreen() {
 
   // Get logo URL helper
   const getLogoUrl = useCallback((station: Station): string | null => {
-    if (station.logoAssets?.webp96) {
-      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
-    }
-    const favicon = station.favicon || station.logo;
-    if (favicon && favicon.startsWith('https://')) {
-      try {
-        new URL(favicon);
-        return favicon;
-      } catch {
-        return null;
-      }
-    }
-    return null;
+    return getStationLogoUrl(station);
   }, []);
 
   // Format distance

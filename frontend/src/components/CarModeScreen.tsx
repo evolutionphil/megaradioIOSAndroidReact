@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePlayerStore } from '../store/playerStore';
 import { GlowEffect } from './GlowEffect';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
+import { getStationLogoUrl } from '../utils/stationLogoHelper';
 import type { Station } from '../types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -432,12 +433,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   }, [visible]);
 
   const getLogoUrl = useCallback((station: Station) => {
-    if (station.logoAssets?.webp192) {
-      return `https://themegaradio.com/station-logos/${(station.logoAssets as any).folder}/${station.logoAssets.webp192}`;
-    }
-    const raw = station.favicon || station.logo || null;
-    if (raw && raw.startsWith('/')) return `https://themegaradio.com${raw}`;
-    return raw;
+    return getStationLogoUrl(station, 'large');
   }, []);
 
   const handleIndexChange = useCallback((newIndex: number) => {

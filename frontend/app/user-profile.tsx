@@ -18,6 +18,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import api from '../src/services/api';
 import { useAuthStore } from '../src/store/authStore';
+import { getStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../src/utils/stationLogoHelper';
 import { useUserFavorites, useUserProfile } from '../src/hooks/useQueries';
 import { getPreloadedFavorites } from '../src/services/preloadService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
@@ -68,7 +69,7 @@ export default function UserProfileScreen() {
           id: s._id || s.id,
           name: s.name,
           genre: s.genre || 'Radio',
-          logo: s.logo || s.favicon || 'https://themegaradio.com/logo.png',
+          logo: getStationLogoUrl(s) || DEFAULT_STATION_LOGO_URL,
         })));
       }
     }
@@ -81,7 +82,7 @@ export default function UserProfileScreen() {
         id: s._id || s.id,
         name: s.name,
         genre: s.genre || 'Radio',
-        logo: s.logo || s.favicon || 'https://themegaradio.com/images/default-station.png',
+        logo: getStationLogoUrl(s) || DEFAULT_STATION_LOGO_URL,
       })));
     }
   }, [favoritesData]);

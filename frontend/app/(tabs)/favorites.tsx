@@ -23,16 +23,14 @@ import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
 import { useResponsive } from '../../src/hooks/useResponsive';
+import { getStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../../src/utils/stationLogoHelper';
 import type { Station } from '../../src/types';
 
-const FALLBACK_LOGO = 'https://themegaradio.com/logo.png';
+const FALLBACK_LOGO = DEFAULT_STATION_LOGO_URL;
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const getLogoUrl = (station: Station): string => {
-  const logo = station.logo || station.favicon;
-  if (!logo) return FALLBACK_LOGO;
-  if (logo.startsWith('http')) return logo;
-  return `https://themegaradio.com${logo.startsWith('/') ? '' : '/'}${logo}`;
+  return getStationLogoUrl(station) || FALLBACK_LOGO;
 };
 
 export default function FavoritesScreen() {

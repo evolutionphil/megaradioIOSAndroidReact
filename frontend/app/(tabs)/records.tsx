@@ -14,6 +14,7 @@ import { colors, typography, spacing } from '../../src/constants/theme';
 import { useRecentlyPlayed } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { useResponsive } from '../../src/hooks/useResponsive';
+import { getStationLogoUrl } from '../../src/utils/stationLogoHelper';
 import type { Station } from '../../src/types';
 
 export default function RecordsScreen() {
@@ -24,10 +25,7 @@ export default function RecordsScreen() {
   const responsive = useResponsive();
 
   const getLogoUrl = (station: Station) => {
-    if (station.logoAssets?.webp96) {
-      return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${station.logoAssets.webp96}`;
-    }
-    return station.favicon || station.logo || null;
+    return getStationLogoUrl(station);
   };
 
   const handleStationPress = (station: Station) => {

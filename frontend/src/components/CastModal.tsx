@@ -19,6 +19,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../store/authStore';
 import { castService } from '../services/castService';
 import { colors, typography, spacing, borderRadius } from '../constants/theme';
+import { getStationLogoUrl } from '../utils/stationLogoHelper';
 
 const { width, height } = Dimensions.get('window');
 
@@ -140,10 +141,7 @@ export const CastModal: React.FC<CastModalProps> = ({
   // Get station logo
   const getLogoUrl = () => {
     if (!currentStation) return null;
-    if (currentStation.logoAssets?.webp96) {
-      return `https://themegaradio.com/station-logos/${currentStation.logoAssets.folder}/${currentStation.logoAssets.webp96}`;
-    }
-    return currentStation.favicon || currentStation.logo;
+    return getStationLogoUrl(currentStation, 'large');
   };
 
   return (
