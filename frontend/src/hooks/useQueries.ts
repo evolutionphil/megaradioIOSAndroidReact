@@ -3,54 +3,19 @@ import stationService, { StationQueryParams } from '../services/stationService';
 import genreService from '../services/genreService';
 import userService from '../services/userService';
 import api from '../services/api';
-import { getCachedPopularStations, getCachedGenres } from '../services/tvInitService';
 import type { Station } from '../types';
 
-// Cache TTL Configuration (based on backend developer recommendations)
-// staleTime: How long data is considered fresh (won't refetch)
-// gcTime: How long to keep unused data in memory cache
-export const CACHE_TTL = {
-  // Static data - changes rarely (24 hours)
-  GENRES_ALL: 24 * 60 * 60 * 1000,        // 24 hours
-  COUNTRIES: 24 * 60 * 60 * 1000,          // 24 hours
-  TRANSLATIONS: 24 * 60 * 60 * 1000,       // 24 hours
-  
-  // Semi-static data (30 min - 1 hour)
-  STATION_DETAIL: 30 * 60 * 1000,          // 30 minutes
-  GENRE_STATIONS: 60 * 60 * 1000,          // 1 hour
-  SIMILAR_STATIONS: 30 * 60 * 1000,        // 30 minutes
-  
-  // Dynamic lists (5-10 minutes)
-  STATIONS_LIST: 10 * 60 * 1000,           // 10 minutes
-  POPULAR_STATIONS: 10 * 60 * 1000,        // 10 minutes
-  TRENDING: 5 * 60 * 1000,                 // 5 minutes
-  TOP_100: 10 * 60 * 1000,                 // 10 minutes
-  NEARBY_STATIONS: 10 * 60 * 1000,         // 10 minutes
-  
-  // User-specific data (30 sec - 2 min)
-  RECENTLY_PLAYED: 30 * 1000,              // 30 seconds
-  FAVORITES: 60 * 1000,                    // 1 minute
-  USER_PROFILE: 2 * 60 * 1000,             // 2 minutes
-  FOLLOWERS: 2 * 60 * 1000,                // 2 minutes
-  FOLLOWING: 2 * 60 * 1000,                // 2 minutes
-  IS_FOLLOWING: 2 * 60 * 1000,             // 2 minutes
-  NOTIFICATIONS: 30 * 1000,                // 30 seconds
-  
-  // Search - short cache for fresh results
-  SEARCH: 2 * 60 * 1000,                   // 2 minutes
-  
-  // Community data
-  COMMUNITY_FAVORITES: 5 * 60 * 1000,      // 5 minutes
-  PUBLIC_PROFILES: 5 * 60 * 1000,          // 5 minutes
+// NO LOCAL CACHING - Always fetch fresh data from API
+// React Query is only used for state management, not caching
+const FRESH_DATA = {
+  staleTime: 0,    // Always consider data stale - refetch on every mount
+  gcTime: 5 * 60 * 1000, // Keep in memory for 5 mins to avoid unnecessary re-renders
 };
-
-// gcTime multiplier (2x staleTime for most cases)
-const GC_MULTIPLIER = 2;
 
 // Query keys
 export const queryKeys = {
   stations: ['stations'] as const,
-  popularStations: ['stations', 'popular'] as const,
+  popularStations: (country?: string) => ['popularStations', country || 'global'] as const,
   nearbyStations: (lat: number, lng: number) => ['stations', 'nearby', lat, lng] as const,
   precomputedStations: (country?: string) => ['stations', 'precomputed', country] as const,
   station: (id: string) => ['station', id] as const,
@@ -58,54 +23,53 @@ export const queryKeys = {
   searchStations: (query: string) => ['stations', 'search', query] as const,
   top100: (country?: string) => ['stations', 'top100', country] as const,
   genres: ['genres'] as const,
-  precomputedGenres: (country?: string) => ['genres', 'precomputed', country] as const,
-  genreStations: (slug: string) => ['genres', slug, 'stations'] as const,
+  precomputedGenres: (country?: string) => ['precomputedGenres', country || 'global'] as const,
+  discoverableGenres: ['discoverableGenres'] as const,
+  genreStations: (slug: string) => ['genreStations', slug] as const,
   favorites: ['user', 'favorites'] as const,
   recentlyPlayed: ['recentlyPlayed'] as const,
   communityFavorites: ['communityFavorites'] as const,
 };
 
-// Station hooks with backend-recommended caching
+// Station hooks - ALWAYS FRESH DATA
 export const useStations = (params: StationQueryParams = {}) => {
-  // Run query even without country - backend will return global results
-  // When country changes, React Query will refetch with new key
   return useQuery({
     queryKey: [...queryKeys.stations, params],
-    queryFn: () => stationService.getStations(params),
-    staleTime: CACHE_TTL.STATIONS_LIST,
-    gcTime: CACHE_TTL.STATIONS_LIST * GC_MULTIPLIER,
+    queryFn: () => {
+      console.log('[useQueries] useStations - params:', params);
+      return stationService.getStations(params);
+    },
+    ...FRESH_DATA,
+    refetchOnMount: true, // Always refetch when component mounts
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 };
 
 export const usePopularStations = (country?: string, limit: number = 12) => {
-  // Run query even without country - backend will return global popular stations
-  // When country changes, React Query will refetch with new key
   return useQuery({
-    queryKey: ['popularStations', country || 'global', limit],
+    queryKey: queryKeys.popularStations(country),
     queryFn: async () => {
-      // Fetch popular stations from API
-      console.log('[useQueries] Fetching popular stations from API, country:', country || 'global');
-      const stations = await stationService.getPopularStations(country, limit);
-      return { stations: stations.stations || [] };
+      console.log('[useQueries] usePopularStations - fetching from API, country:', country || 'global');
+      const result = await stationService.getPopularStations(country, limit);
+      return { stations: result.stations || [] };
     },
-    staleTime: CACHE_TTL.POPULAR_STATIONS,
-    gcTime: CACHE_TTL.POPULAR_STATIONS * GC_MULTIPLIER,
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 };
 
 export const useNearbyStations = (lat: number | null, lng: number | null, radius: number = 150, limit: number = 12) => {
   return useQuery({
     queryKey: [...queryKeys.nearbyStations(lat || 0, lng || 0), radius, limit],
-    queryFn: () => stationService.getNearbyStations(lat!, lng!, radius, limit),
+    queryFn: () => {
+      console.log('[useQueries] useNearbyStations - fetching from API, lat:', lat, 'lng:', lng);
+      return stationService.getNearbyStations(lat!, lng!, radius, limit);
+    },
     enabled: lat !== null && lng !== null,
-    staleTime: CACHE_TTL.NEARBY_STATIONS,
-    gcTime: CACHE_TTL.NEARBY_STATIONS * GC_MULTIPLIER,
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 };
 
@@ -117,9 +81,12 @@ export const usePrecomputedStations = (
 ) => {
   return useQuery({
     queryKey: [...queryKeys.precomputedStations(country), page, limit],
-    queryFn: () => stationService.getPrecomputedStations(country, countryName, page, limit),
-    staleTime: CACHE_TTL.STATIONS_LIST,
-    gcTime: CACHE_TTL.STATIONS_LIST * GC_MULTIPLIER,
+    queryFn: () => {
+      console.log('[useQueries] usePrecomputedStations - fetching from API, country:', country);
+      return stationService.getPrecomputedStations(country, countryName, page, limit);
+    },
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
 };
@@ -129,8 +96,7 @@ export const useStation = (identifier: string) => {
     queryKey: queryKeys.station(identifier),
     queryFn: () => stationService.getStation(identifier),
     enabled: !!identifier,
-    staleTime: CACHE_TTL.STATION_DETAIL,
-    gcTime: CACHE_TTL.STATION_DETAIL * GC_MULTIPLIER,
+    ...FRESH_DATA,
     refetchOnWindowFocus: false,
   });
 };
@@ -140,10 +106,8 @@ export const useSimilarStations = (stationId: string, limit: number = 12) => {
     queryKey: queryKeys.similarStations(stationId),
     queryFn: () => stationService.getSimilarStations(stationId, limit),
     enabled: stationId.length > 0,
-    staleTime: CACHE_TTL.SIMILAR_STATIONS,
-    gcTime: CACHE_TTL.SIMILAR_STATIONS * GC_MULTIPLIER,
+    ...FRESH_DATA,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
     retry: false,
   });
 };
@@ -153,8 +117,7 @@ export const useSearchStations = (query: string, limit: number = 20) => {
     queryKey: queryKeys.searchStations(query),
     queryFn: () => stationService.searchStations(query, limit),
     enabled: query.length >= 2,
-    staleTime: CACHE_TTL.SEARCH,
-    gcTime: CACHE_TTL.SEARCH * GC_MULTIPLIER,
+    ...FRESH_DATA,
     refetchOnWindowFocus: false,
   });
 };
@@ -162,41 +125,42 @@ export const useSearchStations = (query: string, limit: number = 20) => {
 export const useTop100 = (country?: string) => {
   return useQuery({
     queryKey: queryKeys.top100(country),
-    queryFn: () => stationService.getTop100(country),
-    staleTime: CACHE_TTL.TOP_100,
-    gcTime: CACHE_TTL.TOP_100 * GC_MULTIPLIER,
+    queryFn: () => {
+      console.log('[useQueries] useTop100 - fetching from API, country:', country);
+      return stationService.getTop100(country);
+    },
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
 };
 
-// Genre hooks with backend-recommended caching
+// Genre hooks - ALWAYS FRESH DATA
 export const useGenres = (page: number = 1, limit: number = 50) => {
   return useQuery({
     queryKey: [...queryKeys.genres, page, limit],
-    queryFn: () => genreService.getGenres(page, limit),
-    staleTime: CACHE_TTL.GENRES_ALL,
-    gcTime: CACHE_TTL.GENRES_ALL * GC_MULTIPLIER,
+    queryFn: () => {
+      console.log('[useQueries] useGenres - fetching from API');
+      return genreService.getGenres(page, limit);
+    },
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 };
 
 export const usePrecomputedGenres = (country?: string) => {
-  // Run query even without country - backend will return global genres
-  // When country changes, React Query will refetch with new key
   return useQuery({
-    queryKey: ['precomputedGenres', country || 'global'],
+    queryKey: queryKeys.precomputedGenres(country),
     queryFn: async () => {
-      // ALWAYS call API with country parameter for filtered results
-      console.log('[useQueries] Fetching genres from API with country:', country || 'global');
+      console.log('[useQueries] usePrecomputedGenres - fetching from API, country:', country || 'global');
       const result = await genreService.getPrecomputedGenres(country);
-      console.log('[useQueries] API returned genres:', result?.data?.length || 0);
+      console.log('[useQueries] usePrecomputedGenres result:', result?.data?.length || 0, 'genres');
       return result;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes - shorter to allow country changes
-    gcTime: 30 * 60 * 1000,   // 30 minutes
-    refetchOnWindowFocus: false,
+    ...FRESH_DATA,
     refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -208,45 +172,41 @@ export const useGenreStations = (
   sort?: 'votes' | 'name' | 'createdAt',
   order?: 'asc' | 'desc'
 ) => {
-  // Run query when slug is provided - countryCode is optional
-  // Backend will return global results if countryCode is undefined
-  // IMPORTANT: API requires countryCode (ISO code), not country name
   return useQuery({
     queryKey: [...queryKeys.genreStations(slug), page, limit, countryCode || 'global', sort, order],
     queryFn: () => {
       console.log('[useQueries] useGenreStations - slug:', slug, 'countryCode:', countryCode || 'global');
       return genreService.getGenreStations(slug, page, limit, countryCode, sort, order);
     },
-    enabled: !!slug, // Only need slug to be set
-    staleTime: CACHE_TTL.GENRE_STATIONS,
-    gcTime: CACHE_TTL.GENRE_STATIONS * GC_MULTIPLIER,
+    enabled: !!slug,
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Allow refetch on mount to get fresh data when country changes
   });
 };
 
 export const useDiscoverableGenres = () => {
   return useQuery({
-    queryKey: ['discoverableGenres'],
+    queryKey: queryKeys.discoverableGenres,
     queryFn: async () => {
-      console.log('[useQueries] Fetching discoverable genres from API...');
+      console.log('[useQueries] useDiscoverableGenres - fetching from API');
       const result = await genreService.getDiscoverableGenres();
-      console.log('[useQueries] Discoverable genres result:', JSON.stringify(result?.slice?.(0, 2)));
+      console.log('[useQueries] useDiscoverableGenres result:', result?.length || 0, 'genres');
       return Array.isArray(result) ? result : (result?.data || []);
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000,
+    ...FRESH_DATA,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
 };
 
-// User hooks with backend-recommended caching
+// User hooks - keep some caching for user data
 export const useFavorites = () => {
   return useQuery({
     queryKey: queryKeys.favorites,
     queryFn: () => userService.getFavorites(),
-    staleTime: CACHE_TTL.FAVORITES,
-    gcTime: CACHE_TTL.FAVORITES * GC_MULTIPLIER,
+    staleTime: 60 * 1000, // 1 minute
+    gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };
@@ -259,10 +219,10 @@ export const useRecentlyPlayed = () => {
   
   return useQuery({
     queryKey: [...queryKeys.recentlyPlayed, isAuthenticated, userId],
-    queryFn: () => stationService.getRecentlyPlayed(),
+    queryFn: () => userService.getRecentlyPlayed(),
     retry: false,
-    staleTime: CACHE_TTL.RECENTLY_PLAYED,
-    gcTime: CACHE_TTL.RECENTLY_PLAYED * GC_MULTIPLIER,
+    staleTime: 30 * 1000,  // 30 seconds
+    gcTime: 5 * 60 * 1000,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
@@ -272,8 +232,8 @@ export const useCommunityFavorites = (limit: number = 20) => {
   return useQuery({
     queryKey: [...queryKeys.communityFavorites, limit],
     queryFn: () => stationService.getCommunityFavorites(limit),
-    staleTime: CACHE_TTL.COMMUNITY_FAVORITES,
-    gcTime: CACHE_TTL.COMMUNITY_FAVORITES * GC_MULTIPLIER,
+    staleTime: 5 * 60 * 1000,  // 5 minutes
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };
@@ -282,13 +242,13 @@ export const usePublicProfiles = (limit: number = 10) => {
   return useQuery({
     queryKey: ['publicProfiles', limit],
     queryFn: () => stationService.getPublicProfiles(limit),
-    staleTime: CACHE_TTL.PUBLIC_PROFILES,
-    gcTime: CACHE_TTL.PUBLIC_PROFILES * GC_MULTIPLIER,
+    staleTime: 5 * 60 * 1000,  // 5 minutes
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };
 
-// User profile favorites hook with preloading support
+// User profile favorites hook
 export const useUserFavorites = (userId: string) => {
   return useQuery({
     queryKey: ['userFavorites', userId],
@@ -297,10 +257,10 @@ export const useUserFavorites = (userId: string) => {
       return response.data?.favorites || response.data || [];
     },
     enabled: !!userId,
-    staleTime: CACHE_TTL.COMMUNITY_FAVORITES,
-    gcTime: CACHE_TTL.COMMUNITY_FAVORITES * GC_MULTIPLIER,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Use cached/preloaded data
+    refetchOnMount: true,
   });
 };
 
@@ -313,8 +273,8 @@ export const useUserProfile = (userId: string) => {
       return response.data;
     },
     enabled: !!userId,
-    staleTime: CACHE_TTL.USER_PROFILE,
-    gcTime: CACHE_TTL.USER_PROFILE * GC_MULTIPLIER,
+    staleTime: 2 * 60 * 1000,  // 2 minutes
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

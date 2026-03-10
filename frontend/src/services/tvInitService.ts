@@ -1,17 +1,10 @@
 // TV Init Service - Fetches all essential data in one request
 // Endpoint: GET /api/tv/init?country=TR&lang=tr
 // Returns: countries, genres, translations, popularStations
-// 
-// Implements stale-while-revalidate pattern with AsyncStorage for instant app startup
+// NO LOCAL CACHING - Always fetch fresh from API
 
 import api from './api';
-import { QueryClient } from '@tanstack/react-query';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './i18nService';
-
-// AsyncStorage keys
-const TV_INIT_CACHE_KEY = '@megaradio_tv_init_cache';
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 export interface TvInitGenre {
   _id: string;
@@ -48,214 +41,56 @@ export interface TvInitStation {
 }
 
 export interface TvInitResponse {
-  popularStations: TvInitStation[];      // Popüler istasyonlar
-  trendingStations: TvInitStation[];     // Trend istasyonlar (yeni!)
-  genres: TvInitGenre[];                 // Genre listesi
-  countries: TvInitCountry[];            // Ülke listesi (yeni format!)
-  meta: {
-    country: string | null;
-    countryCode: string | null;
-    totalPopular: number;
+  countries: any[];
+  genres: TvInitGenre[];
+  translations: Record<string, string>;
+  popularStations: TvInitStation[];
+  trendingStations?: TvInitStation[];
+  meta?: {
+    country: string;
+    countryCode: string;
+    timestamp: string;
+    genreLimit: number;
+    stationsLimit: number;
     totalGenres: number;
     totalCountries: number;
     generatedAt: string;
   };
-  // Legacy fields (backward compatibility)
-  translations?: Record<string, string>;
-  responseTime?: number;
-  cacheAge?: number;
 }
 
-export interface TvInitCountry {
-  name: string;
-  code: string;
-  stationCount: number;
-}
-
-interface CachedData {
-  data: TvInitResponse;
-  timestamp: number;
-  country?: string;
-  lang?: string;
-}
-
-// In-memory cache for init data (fast access)
-let cachedInitData: TvInitResponse | null = null;
-let cacheTimestamp: number = 0;
-let cachedCountry: string | null = null;
-let cachedLang: string | null = null;
-const CACHE_DURATION = CACHE_TTL;
-
 /**
- * Load cached data from AsyncStorage (persistent)
- */
-const loadFromAsyncStorage = async (): Promise<CachedData | null> => {
-  try {
-    const cached = await AsyncStorage.getItem(TV_INIT_CACHE_KEY);
-    if (cached) {
-      const parsed: CachedData = JSON.parse(cached);
-      return parsed;
-    }
-  } catch (error) {
-    console.log('[TvInit] Error loading from AsyncStorage:', error);
-  }
-  return null;
-};
-
-/**
- * Save data to AsyncStorage (persistent)
- */
-const saveToAsyncStorage = async (data: TvInitResponse, country?: string, lang?: string): Promise<void> => {
-  try {
-    const cacheData: CachedData = {
-      data,
-      timestamp: Date.now(),
-      country,
-      lang,
-    };
-    await AsyncStorage.setItem(TV_INIT_CACHE_KEY, JSON.stringify(cacheData));
-    console.log('[TvInit] Saved to AsyncStorage');
-  } catch (error) {
-    console.log('[TvInit] Error saving to AsyncStorage:', error);
-  }
-};
-
-/**
- * Fetch data from API and cache it
- * NEW: Supports both country and countryCode parameters
- */
-const fetchAndCache = async (country?: string, countryCode?: string, lang?: string): Promise<TvInitResponse> => {
-  console.log('[TvInit] Fetching from API...', { country, countryCode, lang });
-  
-  const params: Record<string, any> = {
-    limit: 20,
-    genreLimit: 20,
-  };
-  
-  // Backend accepts both country and countryCode - prefer country (English name)
-  if (country) {
-    params.country = country;
-  } else if (countryCode) {
-    params.countryCode = countryCode;
-  }
-  
-  if (lang) {
-    params.lang = lang;
-  }
-  
-  const response = await api.get<TvInitResponse>('/api/tv/init', { params });
-
-  const data = response.data;
-  
-  // Update in-memory cache
-  cachedInitData = data;
-  cacheTimestamp = Date.now();
-  cachedCountry = country || null;
-  cachedLang = lang || null;
-
-  // Save to persistent storage (async, non-blocking)
-  saveToAsyncStorage(data, country, lang).catch(() => {});
-
-  console.log('[TvInit] Data fetched successfully:', {
-    popularStations: data.popularStations?.length || 0,
-    trendingStations: data.trendingStations?.length || 0,
-    genres: data.genres?.length || 0,
-    countries: data.countries?.length || 0,
-    meta: data.meta,
-  });
-
-  return data;
-};
-
-/**
- * Refresh data in background without blocking UI
- */
-const refreshInBackground = (country?: string, lang?: string): void => {
-  console.log('[TvInit] Starting background refresh...');
-  fetchAndCache(country, lang).catch((error) => {
-    console.log('[TvInit] Background refresh failed:', error);
-  });
-};
-
-/**
- * Fetch all initial app data in one request
- * Implements stale-while-revalidate pattern:
- * 1. Return cached data immediately (if available)
- * 2. Refresh in background if cache is stale
- * 
- * @param country - Country name or ISO code (Turkey, TR, Germany, DE)
- * @param lang - Language code (tr, en, de, ar)
+ * Fetch TV init data from API
+ * Always fetches fresh data, no caching
  */
 export const fetchTvInit = async (
   country?: string,
+  limit?: number,
   lang?: string
 ): Promise<TvInitResponse> => {
-  const now = Date.now();
+  const params: Record<string, any> = {};
+  if (country) params.country = country;
+  if (limit) params.limit = limit;
+  if (lang) params.lang = lang;
 
-  // 1. Check in-memory cache first (fastest)
-  if (cachedInitData && (now - cacheTimestamp) < CACHE_DURATION) {
-    console.log('[TvInit] Returning in-memory cached data');
-    return cachedInitData;
-  }
+  console.log('[TvInit] Fetching from API with country:', country || 'global');
+  const response = await api.get('/api/tv/init', { params });
+  
+  console.log('[TvInit] Data fetched successfully:', {
+    popularStations: response.data?.popularStations?.length || 0,
+    trendingStations: response.data?.trendingStations?.length || 0,
+    genres: response.data?.genres?.length || 0,
+    countries: response.data?.countries?.length || 0,
+    translations: Object.keys(response.data?.translations || {}).length,
+  });
 
-  // 2. Check AsyncStorage cache (persistent, survives app restart)
-  try {
-    const persistedCache = await loadFromAsyncStorage();
-    if (persistedCache) {
-      const isExpired = (now - persistedCache.timestamp) > CACHE_TTL;
-      
-      // Update in-memory cache from persisted data
-      cachedInitData = persistedCache.data;
-      cacheTimestamp = persistedCache.timestamp;
-      cachedCountry = persistedCache.country || null;
-      cachedLang = persistedCache.lang || null;
-      
-      if (!isExpired) {
-        console.log('[TvInit] Cache valid, returning persisted data (age:', Math.round((now - persistedCache.timestamp) / 1000 / 60), 'minutes)');
-        // Optionally refresh in background if cache is more than 12 hours old
-        if ((now - persistedCache.timestamp) > CACHE_TTL / 2) {
-          refreshInBackground(country, lang);
-        }
-        return persistedCache.data;
-      } else {
-        console.log('[TvInit] Cache expired, returning stale data and refreshing...');
-        // Return stale data immediately, refresh in background
-        refreshInBackground(country, lang);
-        return persistedCache.data;
-      }
-    }
-  } catch (error) {
-    console.log('[TvInit] Error checking persistent cache:', error);
-  }
-
-  // 3. No cache available, fetch from API (blocking) - with graceful error handling
-  console.log('[TvInit] No cache, fetching fresh data...');
-  try {
-    return await fetchAndCache(country, lang);
-  } catch (error) {
-    console.error('[TvInit] Failed to fetch from API and no cache available:', error);
-    // Return empty structure to prevent crashes - app will work with empty data
-    return {
-      countries: [],
-      genres: [],
-      translations: {},
-      popularStations: [],
-      responseTime: 0,
-      cacheAge: 0,
-    };
-  }
+  return response.data;
 };
 
 /**
  * Initialize app with TV init data
  * - Loads translations into i18n
- * - Caches genres and popular stations in React Query
- * - Returns countries list for picker
- * 
- * CRITICAL: This must be called AFTER country is loaded to ensure proper caching
  */
 export const initializeApp = async (
-  queryClient: QueryClient,
   country?: string,
   lang?: string
 ): Promise<TvInitResponse | null> => {
@@ -263,59 +98,11 @@ export const initializeApp = async (
     console.log('[TvInit] initializeApp called with country:', country, 'lang:', lang);
     const data = await fetchTvInit(country, undefined, lang);
 
-    // 1. Load translations into i18n
+    // Load translations into i18n
     if (data.translations && Object.keys(data.translations).length > 0) {
       const currentLang = lang || i18n.language || 'tr';
-      
-      // Add translations as a resource bundle
       i18n.addResourceBundle(currentLang, 'translation', data.translations, true, true);
       console.log('[TvInit] Loaded', Object.keys(data.translations).length, 'translations for', currentLang);
-    }
-
-    // 2. Cache genres in React Query with CORRECT keys
-    // usePrecomputedGenres uses ['precomputedGenres', country || 'global'] as query key
-    if (data.genres && data.genres.length > 0) {
-      const genresResponse = { success: true, data: data.genres };
-      
-      // Cache with country-specific key (matches usePrecomputedGenres query key)
-      queryClient.setQueryData(['precomputedGenres', country || 'global'], genresResponse);
-      
-      // Also cache with 'global' key for fallback
-      if (country) {
-        queryClient.setQueryData(['precomputedGenres', 'global'], genresResponse);
-      }
-      
-      console.log('[TvInit] Cached', data.genres.length, 'genres for key:', country || 'global');
-    }
-
-    // 3. Cache popular stations in React Query with CORRECT keys
-    // usePopularStations uses ['popularStations', country || 'global', limit] as query key
-    if (data.popularStations && data.popularStations.length > 0) {
-      // Cache with multiple limits for flexibility
-      const stationsData8 = { stations: data.popularStations.slice(0, 8) };
-      const stationsData12 = { stations: data.popularStations.slice(0, 12) };
-      const stationsData20 = { stations: data.popularStations };
-      
-      // Cache with country-specific key
-      const cacheKey = country || 'global';
-      queryClient.setQueryData(['popularStations', cacheKey, 8], stationsData8);
-      queryClient.setQueryData(['popularStations', cacheKey, 12], stationsData12);
-      queryClient.setQueryData(['popularStations', cacheKey, 20], stationsData20);
-      
-      // Also cache with 'global' key for fallback when no country is selected
-      if (country) {
-        queryClient.setQueryData(['popularStations', 'global', 8], stationsData8);
-        queryClient.setQueryData(['popularStations', 'global', 12], stationsData12);
-        queryClient.setQueryData(['popularStations', 'global', 20], stationsData20);
-      }
-      
-      console.log('[TvInit] Cached', data.popularStations.length, 'popular stations for key:', cacheKey);
-    }
-
-    // 4. Cache countries list
-    if (data.countries && data.countries.length > 0) {
-      queryClient.setQueryData(['countries'], data.countries);
-      console.log('[TvInit] Cached', data.countries.length, 'countries');
     }
 
     return data;
@@ -323,66 +110,4 @@ export const initializeApp = async (
     console.error('[TvInit] Failed to initialize app:', error);
     return null;
   }
-};
-
-/**
- * Get cached init data (if available)
- */
-export const getCachedInitData = (): TvInitResponse | null => {
-  const now = Date.now();
-  if (cachedInitData && (now - cacheTimestamp) < CACHE_DURATION) {
-    return cachedInitData;
-  }
-  return null;
-};
-
-/**
- * Clear cached init data (both in-memory and persistent)
- */
-export const clearInitCache = async (): Promise<void> => {
-  cachedInitData = null;
-  cacheTimestamp = 0;
-  cachedCountry = null;
-  cachedLang = null;
-  try {
-    await AsyncStorage.removeItem(TV_INIT_CACHE_KEY);
-    console.log('[TvInit] Cache cleared');
-  } catch (error) {
-    console.log('[TvInit] Error clearing cache:', error);
-  }
-};
-
-/**
- * Get popular stations from cache (instant, no API call)
- */
-export const getCachedPopularStations = (limit?: number): TvInitStation[] => {
-  if (!cachedInitData?.popularStations) return [];
-  if (limit) {
-    return cachedInitData.popularStations.slice(0, limit);
-  }
-  return cachedInitData.popularStations;
-};
-
-/**
- * Get genres from cache (instant, no API call)
- */
-export const getCachedGenres = (): TvInitGenre[] => {
-  return cachedInitData?.genres || [];
-};
-
-/**
- * Get countries from cache (instant, no API call)
- */
-export const getCachedCountries = (): string[] => {
-  return cachedInitData?.countries || [];
-};
-
-export default {
-  fetchTvInit,
-  initializeApp,
-  getCachedInitData,
-  clearInitCache,
-  getCachedPopularStations,
-  getCachedGenres,
-  getCachedCountries,
 };

@@ -270,8 +270,8 @@ export default function RootLayout() {
         
         console.log('[Layout] Using country:', country, 'code:', countryCode);
         
-        // Initialize TV/Mobile data - this caches genres, popular stations, etc.
-        const data = await initializeTvData(queryClient, country);
+        // Initialize app data (translations only - no caching)
+        const data = await initializeTvData(country);
         
         if (data) {
           console.log('[Layout] App data initialized:', {
