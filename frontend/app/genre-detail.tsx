@@ -357,23 +357,16 @@ export default function GenreDetailScreen() {
           ) : viewMode === 'grid' ? (
             <FlatList
               data={filteredStations}
-              renderItem={({ item, index }) => {
-                // Calculate percentage width to ensure even distribution
-                const itemPercentWidth = (100 - (GRID_COLUMNS + 1) * 2) / GRID_COLUMNS; // 2% margin on each side
-                return (
-                  <View style={{ 
-                    width: `${itemPercentWidth}%` as any, 
-                    marginHorizontal: '1%' as any,
-                    marginBottom: gridMetrics.gap,
-                  }}>
-                    {renderGridItem(item)}
-                  </View>
-                );
-              }}
+              renderItem={({ item }) => (
+                <View style={[styles.gridItemWrapper, { width: GRID_ITEM_WIDTH, marginBottom: gridMetrics.gap }]}>
+                  {renderGridItem(item)}
+                </View>
+              )}
               keyExtractor={(item) => item._id}
               numColumns={GRID_COLUMNS}
               key={`grid-${GRID_COLUMNS}`}
-              contentContainerStyle={styles.gridFlatListContent}
+              contentContainerStyle={[styles.gridFlatListContent, { paddingHorizontal: 16 }]}
+              columnWrapperStyle={{ justifyContent: 'space-between' }}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -560,8 +553,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start', // Changed from space-between to prevent last row alignment issues
     marginBottom: spacing.md,
   },
+  gridItemWrapper: {
+    // Width is set dynamically
+  },
   gridItem: {
     alignItems: 'center',
+    width: '100%',
   },
   gridItemActive: {
     opacity: 0.8,
