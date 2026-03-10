@@ -195,6 +195,7 @@ const searchStations = async (query: string): Promise<Station[]> => {
 export const CarPlayHandler: React.FC = () => {
   const { playStation } = useAudioPlayer();
   const queryClient = useQueryClient();
+  const initializedRef = useRef(false);
   
   // Watch favorites, location, and recently played changes
   const favorites = useFavoritesStore(state => state.favorites);
@@ -233,56 +234,86 @@ export const CarPlayHandler: React.FC = () => {
           isRefreshing = false;
         }
       }
-    }, 1000); // Increased from 500ms to 1000ms for stability
+    }, 1000);
   };
-  
-  // Log on every render to debug
-  console.log('[CarPlayHandler] Component rendering, playStation:', !!playStation);
-  sendLog('[CarPlayHandler] Component RENDER', { 
-    hasPlayStation: !!playStation,
-    platform: Platform.OS 
-  });
 
+  // COLD START FIX: Initialize CarPlayService IMMEDIATELY when component mounts
+  // Don't wait for playStation - create templates without play capability first.
+  // This ensures CarPlay shows real data instead of "Loading..." on cold start.
   useEffect(() => {
-    console.log('[CarPlayHandler] useEffect RUNNING');
-    sendLog('[CarPlayHandler] useEffect RUNNING', { platform: Platform.OS });
+    if (Platform.OS === 'web') return;
     
-    // Only initialize on native platforms
-    if (Platform.OS === 'web') {
-      console.log('[CarPlayHandler] Skipping on web platform');
-      sendLog('[CarPlayHandler] Skipping - web platform');
-      return;
-    }
+    console.log('[CarPlayHandler] Component mounted - initializing CarPlay early (without playStation)');
+    sendLog('[CarPlayHandler] EARLY INIT - mounting', { hasPlayStation: !!playStation });
 
-    // PERFORMANCE: Pre-warm the cache in the background
-    // This ensures data is ready BEFORE CarPlay connects
-    const preWarmCache = async () => {
-      console.log('[CarPlayHandler] Pre-warming cache for faster CarPlay loading...');
-      const { country, countryEnglish } = useLocationStore.getState();
-      const selectedCountry = country || countryEnglish || undefined;
-      
-      // Fire all preload requests in parallel (non-blocking)
-      Promise.all([
-        stationService.getPopularStations(selectedCountry, 50).catch(() => {}),
-        genreService.getPrecomputedGenres(selectedCountry, 40).catch(() => {}),
-        useFavoritesStore.getState().loadLocalFavorites().catch(() => {}),
-      ]).then(() => {
-        console.log('[CarPlayHandler] Cache pre-warmed successfully');
-        sendLog('[CarPlayHandler] Cache pre-warmed');
-      }).catch(() => {});
+    // Pre-warm the cache in background
+    const { country: c, countryEnglish: ce } = useLocationStore.getState();
+    Promise.all([
+      stationService.getPopularStations(ce || c || undefined, 50).catch(() => {}),
+      genreService.getPrecomputedGenres(ce || c || undefined, 40).catch(() => {}),
+      useFavoritesStore.getState().loadLocalFavorites().catch(() => {}),
+    ]).then(() => {
+      console.log('[CarPlayHandler] Cache pre-warmed successfully');
+      sendLog('[CarPlayHandler] Cache pre-warmed');
+    }).catch(() => {});
+
+    // Initialize with a no-op playStation placeholder
+    // Templates will be created and visible, play will work once playStation is available
+    const deferredPlayStation = async (station: any) => {
+      console.log('[CarPlayHandler] Deferred play - playStation not ready yet, retrying...');
+      sendLog('[CarPlayHandler] Deferred play attempt', { station: station?.name });
+      // Wait a bit and retry - playStation might be available by then
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const currentPlayStation = playStationRef.current;
+      if (currentPlayStation) {
+        return currentPlayStation(station);
+      }
+      console.warn('[CarPlayHandler] playStation still not available for deferred play');
     };
-    
-    preWarmCache();
 
-    if (!playStation) {
-      console.log('[CarPlayHandler] playStation not ready yet');
-      sendLog('[CarPlayHandler] playStation NOT READY - waiting');
-      return;
+    try {
+      CarPlayService.initialize(
+        deferredPlayStation,
+        getPopularStations,
+        getFavoriteStations,
+        getRecentStations,
+        getGenresList,
+        getStationsByGenre,
+        searchStations
+      );
+      initializedRef.current = true;
+      console.log('[CarPlayHandler] CarPlayService.initialize completed (early, deferred play)');
+      sendLog('[CarPlayHandler] CarPlayService.initialize COMPLETED (early)');
+    } catch (error: any) {
+      console.error('[CarPlayHandler] Error initializing:', error);
+      sendLog('[CarPlayHandler] ERROR initializing', { error: String(error) });
     }
 
-    console.log('[CarPlayHandler] ========== INITIALIZING ==========');
-    sendLog('[CarPlayHandler] INITIALIZING CarPlayService');
+    return () => {
+      console.log('[CarPlayHandler] Cleaning up CarPlay service');
+      if (refreshDebounceTimer) {
+        clearTimeout(refreshDebounceTimer);
+        refreshDebounceTimer = null;
+      }
+      isRefreshing = false;
+      initializedRef.current = false;
+      CarPlayService.disconnect();
+    };
+  }, []);
 
+  // Store ref to latest playStation for deferred play
+  const playStationRef = useRef(playStation);
+  playStationRef.current = playStation;
+  
+  // When playStation becomes available, update the callback in CarPlayService
+  // and refresh templates so play actually works
+  useEffect(() => {
+    if (Platform.OS === 'web' || !playStation || !initializedRef.current) return;
+    
+    console.log('[CarPlayHandler] playStation NOW AVAILABLE - updating CarPlay callbacks');
+    sendLog('[CarPlayHandler] playStation READY - updating callbacks');
+    
+    // Re-initialize with real playStation to update the callback
     try {
       CarPlayService.initialize(
         playStation,
@@ -291,26 +322,13 @@ export const CarPlayHandler: React.FC = () => {
         getRecentStations,
         getGenresList,
         getStationsByGenre,
-        searchStations  // Add search callback
+        searchStations
       );
-      
-      console.log('[CarPlayHandler] CarPlayService.initialize completed');
-      sendLog('[CarPlayHandler] CarPlayService.initialize COMPLETED');
+      console.log('[CarPlayHandler] CarPlayService re-initialized with real playStation');
+      sendLog('[CarPlayHandler] CarPlayService RE-INITIALIZED with playStation');
     } catch (error: any) {
-      console.error('[CarPlayHandler] Error initializing:', error);
-      sendLog('[CarPlayHandler] ERROR initializing', { error: String(error) });
+      console.error('[CarPlayHandler] Error re-initializing:', error);
     }
-
-    // Cleanup on unmount
-    return () => {
-      console.log('[CarPlayHandler] Cleaning up CarPlay service');
-      if (refreshDebounceTimer) {
-        clearTimeout(refreshDebounceTimer);
-        refreshDebounceTimer = null;
-      }
-      isRefreshing = false; // Reset refresh flag
-      CarPlayService.disconnect();
-    };
   }, [playStation]);
   
   // Watch for country changes - when user changes country, refresh CarPlay stations

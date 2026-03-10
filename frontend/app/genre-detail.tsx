@@ -26,6 +26,7 @@ import { useLocationStore } from '../src/store/locationStore';
 import { useResponsive } from '../src/hooks/useResponsive';
 import { SortBottomSheet, SortOption, ViewMode } from '../src/components/SortBottomSheet';
 import { MiniPlayer } from '../src/components/MiniPlayer';
+import { getStationLogoUrl, DEFAULT_STATION_LOGO_SOURCE, DEFAULT_STATION_LOGO_URL } from '../src/utils/stationLogoHelper';
 import type { Station } from '../src/types';
 
 const VIEW_MODE_STORAGE_KEY = '@megaradio_view_mode';
@@ -169,43 +170,9 @@ export default function GenreDetailScreen() {
   };
 
   // Helper function to build reliable logo URL
+  // Helper function to build reliable logo URL with fallback - using centralized helper
   const getLogoUrl = useCallback((station: Station): string | null => {
-    try {
-      if (station.logoAssets?.webp96 && station.logoAssets?.folder) {
-        const folder = encodeURIComponent(station.logoAssets.folder);
-        const file = encodeURIComponent(station.logoAssets.webp96);
-        return `https://themegaradio.com/station-logos/${folder}/${file}`;
-      }
-      if (station.favicon) {
-        const favicon = station.favicon.trim();
-        if (favicon.startsWith('http://') || favicon.startsWith('https://')) {
-          try {
-            new URL(favicon);
-            return favicon;
-          } catch {
-            return null;
-          }
-        } else if (favicon.startsWith('/')) {
-          return `https://themegaradio.com${favicon}`;
-        }
-      }
-      if (station.logo) {
-        const logo = station.logo.trim();
-        if (logo.startsWith('http://') || logo.startsWith('https://')) {
-          try {
-            new URL(logo);
-            return logo;
-          } catch {
-            return null;
-          }
-        } else if (logo.startsWith('/')) {
-          return `https://themegaradio.com${logo}`;
-        }
-      }
-    } catch (e) {
-      console.log('[GenreDetail] Error building logo URL:', e);
-    }
-    return null;
+    return getStationLogoUrl(station);
   }, []);
 
   // Grid Item Component
@@ -424,6 +391,7 @@ export default function GenreDetailScreen() {
                 ) : null
               }
             />
+          )}
 
           <SortBottomSheet
             visible={showSortSheet}

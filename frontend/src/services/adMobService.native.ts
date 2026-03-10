@@ -60,6 +60,29 @@ class AdMobService {
     try {
       const mobileAds = require('react-native-google-mobile-ads').default;
       
+      // iOS 14+: Request ATT (App Tracking Transparency) consent BEFORE initializing ads
+      // Without this, AdMob will not serve personalized ads on iOS and may return no-fill
+      if (Platform.OS === 'ios') {
+        try {
+          const { AdsConsent, AdsConsentStatus } = require('react-native-google-mobile-ads');
+          
+          // Request consent info update
+          const consentInfo = await AdsConsent.requestInfoUpdate();
+          console.log('[AdMob] Consent info:', consentInfo.status);
+          
+          // If consent is required and not obtained, show consent form
+          if (consentInfo.isConsentFormAvailable && 
+              (consentInfo.status === AdsConsentStatus.REQUIRED || 
+               consentInfo.status === AdsConsentStatus.UNKNOWN)) {
+            console.log('[AdMob] Showing consent form...');
+            await AdsConsent.showForm();
+          }
+        } catch (consentError) {
+          console.log('[AdMob] ATT consent request error (non-fatal):', consentError);
+          // Continue with initialization even if consent fails
+        }
+      }
+      
       await mobileAds().initialize();
       console.log('[AdMob] SDK initialized successfully');
       

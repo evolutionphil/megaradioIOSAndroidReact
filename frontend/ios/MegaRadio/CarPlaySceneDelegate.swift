@@ -276,10 +276,17 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 sendRemoteLog(level: "info", message: "Cold-start detected - initializing React Native from CarPlay scene")
                 appDelegate.initAppFromScene(connectionOptions: nil)
                 
-                // COLD START FIX: Increased to 5.0s - JS bundle needs more time on cold start
-                // Previous 3.0s was too aggressive, causing empty templates
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
-                    self?.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
+                // COLD START FIX: Staggered retry - first at 3s, then 6s, then 10s
+                // JS bundle + RN init + component mount can take 5-15s on cold start
+                let retryDelays: [TimeInterval] = [3.0, 6.0, 10.0, 15.0]
+                for delay in retryDelays {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        guard let self = self else { return }
+                        self.sendRemoteLog(level: "info", message: "Cold-start retry at \(delay)s", data: [
+                            "bridgeReady": self.isBridgeReady()
+                        ])
+                        self.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: templateApplicationScene.carWindow)
+                    }
                 }
                 return
             }
@@ -349,9 +356,17 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
                 sendRemoteLog(level: "info", message: "Cold-start detected (iOS 14+) - initializing React Native from CarPlay scene")
                 appDelegate.initAppFromScene(connectionOptions: nil)
                 
-                // COLD START FIX: Increased to 5.0s - JS bundle needs more time on cold start
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
-                    self?.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: window)
+                // COLD START FIX: Staggered retry - first at 3s, then 6s, then 10s, then 15s
+                // JS bundle + RN init + component mount can take 5-15s on cold start
+                let retryDelays: [TimeInterval] = [3.0, 6.0, 10.0, 15.0]
+                for delay in retryDelays {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        guard let self = self else { return }
+                        self.sendRemoteLog(level: "info", message: "Cold-start retry (iOS 14+) at \(delay)s", data: [
+                            "bridgeReady": self.isBridgeReady()
+                        ])
+                        self.connectToRNCarPlayAfterInit(interfaceController: interfaceController, window: window)
+                    }
                 }
                 return
             }

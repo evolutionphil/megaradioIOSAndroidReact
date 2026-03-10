@@ -237,49 +237,100 @@ export const authService = {
   // ─── SOCIAL LOGIN (Mobile) ───
 
   /**
-   * Google Sign-In
+   * Google Sign-In (POST-based mobile flow)
    * POST /api/auth/google
+   * 
+   * Backend verifies idToken with Google and creates/returns user + JWT token.
+   * Required: idToken (from Google SDK)
+   * Optional: email, name, googleId, platform
    */
-  async googleSignIn(idToken: string): Promise<MobileLoginResponse> {
-    const { deviceInfo } = useAuthStore.getState();
-    
+  async googleSignIn(
+    idToken: string,
+    userInfo?: { email?: string; name?: string; googleId?: string }
+  ): Promise<MobileLoginResponse> {
     console.log('[AuthService] Google Sign-In with token:', idToken.substring(0, 50) + '...');
     
-    const response = await api.post(`${API_BASE}/api/auth/google`, {
-      idToken,
-      deviceType: deviceInfo.deviceType || 'mobile',
-      deviceName: deviceInfo.deviceName || 'Mobile Device',
+    const response = await fetch(`${API_BASE}/api/auth/google`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+        'X-Device-Type': 'mobile',
+      },
+      body: JSON.stringify({
+        idToken,
+        email: userInfo?.email,
+        name: userInfo?.name,
+        googleId: userInfo?.googleId,
+        platform: 'mobile',
+      }),
     });
+
+    const data = await response.json();
+    console.log('[AuthService] Google Sign-In response status:', response.status);
     
-    console.log('[AuthService] Google Sign-In response:', response.data);
-    return response.data;
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || data.message || 'Google Sign-In failed');
+    }
+    
+    return {
+      success: true,
+      token: data.token,
+      user: data.user,
+      message: data.message,
+    };
   },
 
   /**
-   * Apple Sign-In
+   * Apple Sign-In (POST-based mobile flow)
    * POST /api/auth/apple
+   * 
+   * Backend verifies identityToken with Apple JWKS and creates/returns user + JWT token.
+   * Required: identityToken (from Apple SDK)
+   * Optional: authorizationCode, fullName, email, user, platform
+   * 
+   * IMPORTANT: Apple provides fullName and email ONLY on first sign-in.
+   * Subsequent sign-ins will have null for these fields.
    */
   async appleSignIn(
     identityToken: string,
     authorizationCode: string,
-    fullName?: string,
-    email?: string
+    fullName?: { givenName?: string | null; familyName?: string | null } | null,
+    email?: string | null,
+    appleUserId?: string
   ): Promise<MobileLoginResponse> {
-    const { deviceInfo } = useAuthStore.getState();
-    
     console.log('[AuthService] Apple Sign-In');
     
-    const response = await api.post(`${API_BASE}/api/auth/apple`, {
-      identityToken,
-      authorizationCode,
-      fullName: fullName || undefined,
-      email: email || undefined,
-      deviceType: deviceInfo.deviceType || 'mobile',
-      deviceName: deviceInfo.deviceName || 'Mobile Device',
+    const response = await fetch(`${API_BASE}/api/auth/apple`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
+        'X-Device-Type': 'mobile',
+      },
+      body: JSON.stringify({
+        identityToken,
+        authorizationCode,
+        fullName: fullName || undefined,
+        email: email || undefined,
+        user: appleUserId || undefined,
+        platform: 'mobile',
+      }),
     });
+
+    const data = await response.json();
+    console.log('[AuthService] Apple Sign-In response status:', response.status);
     
-    console.log('[AuthService] Apple Sign-In response:', response.data);
-    return response.data;
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || data.message || 'Apple Sign-In failed');
+    }
+    
+    return {
+      success: true,
+      token: data.token,
+      user: data.user,
+      message: data.message,
+    };
   },
 };
 

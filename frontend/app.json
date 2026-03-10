@@ -161,8 +161,9 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
-          "iosAppId": "ca-app-pub-3940256099942544~1458002511"
+          "androidAppId": "ca-app-pub-8771434485570434~7427742767",
+          "iosAppId": "ca-app-pub-8771434485570434~4044224468",
+          "userTrackingPermission": "MegaRadio, size daha iyi ve kişiselleştirilmiş bir reklam deneyimi sunmak için cihaz bilgilerinizi kullanmak istiyor."
         }
       ]
     ],

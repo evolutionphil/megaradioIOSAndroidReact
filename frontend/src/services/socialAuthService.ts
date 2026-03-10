@@ -77,7 +77,8 @@ export const socialAuthService = {
 
   /**
    * Google Sign-In using expo-auth-session
-   * Works in Expo Go without native builds
+   * Uses PKCE code flow → exchange for tokens → send idToken to backend
+   * Backend POST /api/auth/google verifies idToken with Google
    */
   async signInWithGoogle(): Promise<SocialAuthResponse> {
     try {
@@ -103,7 +104,6 @@ export const socialAuthService = {
       console.log('[SocialAuth] Auth result type:', result.type);
 
       if (result.type === 'success') {
-        // Get authorization code from params
         const code = result.params?.code;
         
         if (code) {
@@ -128,8 +128,26 @@ export const socialAuthService = {
             if (idToken) {
               console.log('[SocialAuth] Got ID token, sending to backend...');
               
-              // Send to backend
-              const backendResponse = await authService.googleSignIn(idToken);
+              // Optionally fetch user info for additional context
+              let userInfo: { email?: string; name?: string; googleId?: string } = {};
+              if (tokenResponse.accessToken) {
+                try {
+                  const userInfoResponse = await fetch(GOOGLE_DISCOVERY.userInfoEndpoint, {
+                    headers: { Authorization: `Bearer ${tokenResponse.accessToken}` },
+                  });
+                  const userData = await userInfoResponse.json();
+                  userInfo = {
+                    email: userData.email,
+                    name: userData.name,
+                    googleId: userData.sub,
+                  };
+                } catch (e) {
+                  console.log('[SocialAuth] Could not fetch user info, continuing with idToken only');
+                }
+              }
+              
+              // Send to backend - POST /api/auth/google
+              const backendResponse = await authService.googleSignIn(idToken, userInfo);
               
               if (backendResponse.token && backendResponse.user) {
                 return {
@@ -179,6 +197,9 @@ export const socialAuthService = {
   /**
    * Apple Sign-In using expo-apple-authentication
    * Only available on iOS 13+
+   * Backend POST /api/auth/apple verifies identityToken with Apple JWKS
+   * 
+   * IMPORTANT: Apple provides fullName and email ONLY on first sign-in.
    */
   async signInWithApple(): Promise<SocialAuthResponse> {
     try {
@@ -206,32 +227,26 @@ export const socialAuthService = {
 
       console.log('[SocialAuth] Got Apple credential');
 
-      // Extract user info
-      const { identityToken, authorizationCode, fullName, email } = credential;
+      const { identityToken, authorizationCode, fullName, email, user } = credential;
 
-      if (!identityToken || !authorizationCode) {
+      if (!identityToken) {
         return {
           success: false,
-          error: 'Failed to get Apple credentials',
+          error: 'Failed to get Apple identity token',
         };
-      }
-
-      // Build full name from Apple's name components
-      let userName = '';
-      if (fullName) {
-        const nameParts = [fullName.givenName, fullName.familyName].filter(Boolean);
-        userName = nameParts.join(' ');
       }
 
       console.log('[SocialAuth] Sending Apple credentials to backend...');
 
-      // Send to backend
+      // Send to backend - POST /api/auth/apple
+      // Pass fullName as object { givenName, familyName } as backend expects
       try {
         const backendResponse = await authService.appleSignIn(
           identityToken,
-          authorizationCode,
-          userName || undefined,
-          email || undefined
+          authorizationCode || '',
+          fullName ? { givenName: fullName.givenName, familyName: fullName.familyName } : null,
+          email || null,
+          user
         );
 
         if (backendResponse.token && backendResponse.user) {
@@ -250,7 +265,7 @@ export const socialAuthService = {
         console.error('[SocialAuth] Backend error:', backendError);
         return {
           success: false,
-          error: backendError.response?.data?.error || 'Backend authentication failed',
+          error: backendError.message || 'Backend authentication failed',
         };
       }
 

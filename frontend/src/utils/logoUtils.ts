@@ -13,10 +13,9 @@ export const getStationLogoUrl = (station: Station | null | undefined): string =
   if (!station) return DEFAULT_STATION_LOGO;
   
   try {
-    // Priority 1: logoAssets (best quality, our own CDN) - only if status is completed
+    // Priority 1: logoAssets (best quality, our own CDN)
     if (station.logoAssets?.webp96 && 
-        station.logoAssets?.folder && 
-        station.logoAssets?.status === 'completed') {
+        station.logoAssets?.folder) {
       const folder = encodeURIComponent(station.logoAssets.folder);
       const file = encodeURIComponent(station.logoAssets.webp96);
       return `https://themegaradio.com/station-logos/${folder}/${file}`;
