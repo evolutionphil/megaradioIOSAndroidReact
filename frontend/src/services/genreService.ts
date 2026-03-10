@@ -62,20 +62,21 @@ export const genreService = {
   },
 
   // Get stations within a genre - direct API call
-  // IMPORTANT: This API requires `countryCode` (ISO code like "TR", "AT"), NOT country name!
+  // IMPORTANT: This API requires `country` parameter with NATIVE country name!
+  // Examples: "Türkiye" (not "Turkey" or "TR"), "Austria" (not "AT")
   async getGenreStations(
     slug: string,
     page: number = 1,
     limit: number = 25,
-    countryCode?: string,
+    country?: string, // Native country name from database, NOT ISO code
     sort?: 'votes' | 'name' | 'createdAt',
     order?: 'asc' | 'desc'
   ): Promise<{ stations: Station[]; pagination: any }> {
     try {
-      console.log('[genreService] getGenreStations - slug:', slug, 'countryCode:', countryCode);
+      console.log('[genreService] getGenreStations - slug:', slug, 'country:', country);
       const response = await api.get(API_ENDPOINTS.genres.stations(slug), {
-        // API expects `countryCode` parameter (ISO code), not `country` (name)
-        params: { page, limit, countryCode, sort, order },
+        // API expects `country` parameter with native name (e.g., "Türkiye", "Austria")
+        params: { page, limit, country, sort, order },
       });
       console.log('[genreService] getGenreStations result - stations:', response.data?.stations?.length || 0);
       return response.data;

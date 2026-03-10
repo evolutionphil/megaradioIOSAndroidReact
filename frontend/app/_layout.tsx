@@ -168,7 +168,16 @@ export default function RootLayout() {
       console.log('[Layout] Loading stored country selection...');
       try {
         await useLocationStore.getState().loadStoredCountry();
-        console.log('[Layout] Country loaded:', useLocationStore.getState().country);
+        const state = useLocationStore.getState();
+        console.log('[Layout] Country loaded:', state.country, 'isManuallySet:', state.isManuallySet);
+        
+        // If no stored country and not manually set, try to detect via GPS
+        if (!state.country && !state.isManuallySet) {
+          console.log('[Layout] No stored country, attempting GPS detection...');
+          await useLocationStore.getState().fetchLocation();
+          const newState = useLocationStore.getState();
+          console.log('[Layout] GPS detection result:', newState.country, newState.countryCode);
+        }
       } catch (error) {
         console.error('[Layout] Failed to load stored country:', error);
       } finally {

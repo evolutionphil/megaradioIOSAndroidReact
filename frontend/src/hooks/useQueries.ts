@@ -168,15 +168,15 @@ export const useGenreStations = (
   slug: string,
   page: number = 1,
   limit: number = 25,
-  countryCode?: string, // MUST be ISO country code (e.g., "TR", "AT"), NOT country name!
+  country?: string, // Native country name (e.g., "Türkiye", "Austria"), NOT ISO code!
   sort?: 'votes' | 'name' | 'createdAt',
   order?: 'asc' | 'desc'
 ) => {
   return useQuery({
-    queryKey: [...queryKeys.genreStations(slug), page, limit, countryCode || 'global', sort, order],
+    queryKey: [...queryKeys.genreStations(slug), page, limit, country || 'global', sort, order],
     queryFn: () => {
-      console.log('[useQueries] useGenreStations - slug:', slug, 'countryCode:', countryCode || 'global');
-      return genreService.getGenreStations(slug, page, limit, countryCode, sort, order);
+      console.log('[useQueries] useGenreStations - slug:', slug, 'country:', country || 'global');
+      return genreService.getGenreStations(slug, page, limit, country, sort, order);
     },
     enabled: !!slug,
     ...FRESH_DATA,

@@ -1,0 +1,89 @@
+{
+  "summary": "Frontend testing for MegaRadio genre filter by country bug. Testing revealed MIXED results - Country selection works and Home Screen refetches correctly with Turkey country, but Genre Detail page shows 'country: undefined' in console logs even after country is set. This indicates a potential bug where the country is not being passed to the Genre Stations API.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "Various 400 errors in console",
+        "issue": "Multiple 400 status errors from favicon/logo requests - likely invalid image URLs in station data",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Tab Navigation",
+        "issue": "Clicking 'Discover' text navigates to About page instead of Home tab - navigation text collision",
+        "selector": "text=Discover",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Genre Detail Country Filter",
+        "issue": "CRITICAL: Genre detail page shows 'country: undefined' in API call even after country is set to Turkey. Console shows: '[GenreDetail] Fetching stations with country: undefined slug: pop' despite Turkey being selected. This causes global stations to be shown instead of Turkish stations.",
+        "affected_selectors": ["genre-detail page", "useGenreStations hook"],
+        "root_cause_analysis": "The genre-detail.tsx line 90 uses 'const countryForApi = isLoaded ? (country || undefined) : undefined'. The issue appears to be that when navigating to genre detail page, either: 1) isLoaded is false at render time, 2) country is null/empty, or 3) the component doesn't re-render/re-fetch when country changes in the store."
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Discoverable Genre Banners",
+        "issues": ["Discoverable genre images fail to load (404 from themegaradio.com) - falling back to gradient colors"]
+      }
+    ]
+  },
+  "test_results": {
+    "home_screen_loads": {
+      "status": "PASS",
+      "evidence": "[stationService] Got 12 popular stations for global, then 12 popular stations for Turkey after country change"
+    },
+    "country_change_to_turkey": {
+      "status": "PASS",
+      "evidence": "[LocationStore] setCountryManual: {countryName: Turkey, englishName: Turkey, nativeName: Türkiye, countryCode: TR}"
+    },
+    "genre_detail_with_country_filter": {
+      "status": "FAIL",
+      "evidence": "[GenreDetail] Fetching stations with country: undefined slug: pop - Country parameter not being passed to API, resulting in global stations instead of Turkish stations"
+    },
+    "all_stations_loads": {
+      "status": "NOT TESTED",
+      "note": "Navigation issues prevented testing"
+    },
+    "discoverable_genres_shows_3": {
+      "status": "PASS",
+      "evidence": "[genreService] getDiscoverableGenres result: 3 genres - Folk music, Jazz Music, Rock"
+    }
+  },
+  "test_report_links": [],
+  "action_items": [
+    "CRITICAL BUG: Genre Detail page does not pass country filter to API. Fix in app/genre-detail.tsx - the countryForApi variable shows 'undefined' in console logs even when Turkey is selected. The issue is likely a timing/reactivity issue where useLocationStore().country is not available when the hook runs.",
+    "Suggested fix: Add useEffect to refetch genre stations when country changes, similar to how HomeScreen handles country changes",
+    "Alternative fix: Ensure useGenreStations hook invalidates and refetches when country changes in query key"
+  ],
+  "critical_code_review_comments": [
+    "genre-detail.tsx line 90: countryForApi = isLoaded ? (country || undefined) : undefined - This should work but country is coming as null/undefined",
+    "The query key in useQueries.ts line 176 includes country, but if countryForApi is undefined on first render, it won't refetch when country loads",
+    "Consider adding a refetch mechanism when country changes from undefined to a value"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - frontend only testing",
+    "frontend": "60% - Country selection works, but Genre Detail filter is NOT working"
+  },
+  "seed_data_creation": "None",
+  "test_credentials": {},
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "CRITICAL BUG FOUND: Genre detail page does NOT filter stations by country even when country is set to Turkey. Console shows '[GenreDetail] Fetching stations with country: undefined' despite Turkey being selected. The fix needs to ensure country is properly passed to useGenreStations hook and the query refetches when country changes.",
+  "rca_of_the_issue": {
+    "original_issues": [
+      "1. Genres don't filter by country - Pop still shows global stations even after changing country",
+      "2. GPS/Geolocation not working - Station Near You and auto country detection not working after fresh install"
+    ],
+    "root_cause": "Genre Detail page uses useLocationStore() to get country, but the country value appears to be undefined when the component mounts. The console clearly shows '[GenreDetail] Fetching stations with country: undefined slug: pop' even after Turkey was selected. This is likely because: 1) The store subscription in the component doesn't trigger a re-render/re-fetch when country changes, OR 2) The component renders before the country is loaded from the store.",
+    "fix_suggestion": "Add useEffect in genre-detail.tsx to watch for country changes and call refetch() when country changes. Similar pattern used in HomeScreen: useEffect with [countryEnglish] dependency that calls queryClient.invalidateQueries and refetch.",
+    "verification_needed": "After fix, navigate to Pop genre with Turkey selected and verify API is called with country=Türkiye and stations shown are from Turkey"
+  }
+}
