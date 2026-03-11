@@ -120,16 +120,22 @@ export default function UserProfileScreen() {
   }, [userId, isAuthenticated]);
 
   const loadFollowStatus = async () => {
-    if (!userId) return;
+    if (!userId || !isAuthenticated || isOwnProfile) return;
 
-    // Check if current user is following this user
-    if (isAuthenticated && !isOwnProfile) {
-      try {
-        const isFollowingRes = await api.get(`https://themegaradio.com/api/user/is-following/${userId}`);
-        setIsFollowing(isFollowingRes.data.isFollowing || false);
-      } catch (e) {
-        console.log('Could not check following status');
+    // Check follow status via followers list (is-following endpoint doesn't exist yet)
+    // When backend adds /api/user/is-following/:userId with Bearer auth, switch to that
+    try {
+      const followersRes = await api.get(`https://themegaradio.com/api/user/followers/${userId}`);
+      const followers = followersRes.data?.followers || followersRes.data || [];
+      const currentUserId = currentUser?._id;
+      if (currentUserId && Array.isArray(followers)) {
+        const isFollow = followers.some((f: any) => 
+          (f._id === currentUserId || f.userId === currentUserId || f === currentUserId)
+        );
+        setIsFollowing(isFollow);
       }
+    } catch (e) {
+      console.log('[UserProfile] Could not check following status:', e);
     }
   };
 
@@ -144,14 +150,14 @@ export default function UserProfileScreen() {
     if (!userId) return;
     try {
       const [followersRes, followingRes] = await Promise.all([
-        api.get(`https://themegaradio.com/api/users/${userId}/followers`),
-        api.get(`https://themegaradio.com/api/users/${userId}/following`),
+        api.get(`https://themegaradio.com/api/user/followers/${userId}`),
+        api.get(`https://themegaradio.com/api/user/following/${userId}`),
       ]);
       // API returns {followers: [], total: X} or {following: [], total: X}
-      setFollowerCount(followersRes.data.total ?? (followersRes.data.followers || []).length);
-      setFollowingCount(followingRes.data.total ?? (followingRes.data.following || []).length);
+      setFollowerCount(followersRes.data.total ?? (followersRes.data.followers || followersRes.data || []).length);
+      setFollowingCount(followingRes.data.total ?? (followingRes.data.following || followingRes.data || []).length);
     } catch (e) {
-      console.log('Could not fetch follower counts');
+      console.log('[UserProfile] Could not fetch follower counts:', e);
     }
   };
 
@@ -180,9 +186,11 @@ export default function UserProfileScreen() {
 
     try {
       if (wasFollowing) {
-        await api.post(`https://themegaradio.com/api/user-engagement/unfollow/${userId}`);
+        // Backend expects DELETE for unfollow
+        await api.delete(`https://themegaradio.com/api/user/unfollow/${userId}`);
       } else {
-        await api.post(`https://themegaradio.com/api/user-engagement/follow/${userId}`);
+        // Backend expects POST for follow
+        await api.post(`https://themegaradio.com/api/user/follow/${userId}`);
       }
     } catch (error: any) {
       console.error('Follow/unfollow error:', error);
