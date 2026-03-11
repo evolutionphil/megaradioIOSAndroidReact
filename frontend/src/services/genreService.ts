@@ -61,25 +61,58 @@ export const genreService = {
     }
   },
 
-  // Get stations within a genre - direct API call
-  // IMPORTANT: This API requires `country` parameter with NATIVE country name!
-  // Examples: "Türkiye" (not "Turkey" or "TR"), "Austria" (not "AT")
+  /**
+   * Get stations within a genre - with automatic country name fallback.
+   * 
+   * The genre stations API uses a direct DB match for the country field,
+   * which is inconsistent:
+   *   - Most countries: English name (e.g., "Austria", "Germany")
+   *   - Turkey: Native name "Türkiye" (not "Turkey")
+   * 
+   * This function tries `countryEnglish` first, then falls back to
+   * `countryNative` if the first attempt returns 0 stations.
+   */
   async getGenreStations(
     slug: string,
     page: number = 1,
     limit: number = 25,
-    country?: string, // Native country name from database, NOT ISO code
+    countryEnglish?: string,
     sort?: 'votes' | 'name' | 'createdAt',
-    order?: 'asc' | 'desc'
-  ): Promise<{ stations: Station[]; pagination: any }> {
+    order?: 'asc' | 'desc',
+    countryNative?: string
+  ): Promise<{ genre?: any; stations: Station[]; total?: number; page?: number; pages?: number; pagination?: any }> {
     try {
-      console.log('[genreService] getGenreStations - slug:', slug, 'country:', country);
+      console.log('[genreService] getGenreStations - slug:', slug, 'countryEnglish:', countryEnglish, 'countryNative:', countryNative);
+      
+      // First attempt with the primary country name (usually English)
       const response = await api.get(API_ENDPOINTS.genres.stations(slug), {
-        // API expects `country` parameter with native name (e.g., "Türkiye", "Austria")
-        params: { page, limit, country, sort, order },
+        params: { page, limit, country: countryEnglish, sort, order },
       });
-      console.log('[genreService] getGenreStations result - stations:', response.data?.stations?.length || 0);
-      return response.data;
+      
+      const data = response.data;
+      const stationCount = data?.stations?.length || 0;
+      const totalCount = data?.total || 0;
+      
+      console.log('[genreService] getGenreStations result - stations:', stationCount, 'total:', totalCount);
+      
+      // If 0 results AND we have a different native name to try, retry with native name
+      // This handles the Turkey case: English "Turkey" returns 0, native "Türkiye" returns results
+      if (totalCount === 0 && countryNative && countryNative !== countryEnglish) {
+        console.log('[genreService] getGenreStations - 0 results, retrying with native name:', countryNative);
+        
+        const retryResponse = await api.get(API_ENDPOINTS.genres.stations(slug), {
+          params: { page, limit, country: countryNative, sort, order },
+        });
+        
+        const retryData = retryResponse.data;
+        console.log('[genreService] getGenreStations retry result - stations:', retryData?.stations?.length || 0, 'total:', retryData?.total || 0);
+        
+        if ((retryData?.total || 0) > 0) {
+          return retryData;
+        }
+      }
+      
+      return data;
     } catch (error) {
       console.error('[genreService] getGenreStations error:', error);
       return { 

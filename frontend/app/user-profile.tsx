@@ -46,12 +46,17 @@ export default function UserProfileScreen() {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
 
-  // User info from params - build full avatar URL
+  // User info from params - build full avatar URL SAFELY
   const userName = params.userName || 'User';
   const rawAvatar = params.userAvatar || '';
-  const userAvatar = rawAvatar 
-    ? (rawAvatar.startsWith('http') ? rawAvatar : `https://themegaradio.com${rawAvatar}`)
-    : 'https://themegaradio.com/images/default-avatar.png';
+  const userAvatar = (() => {
+    if (!rawAvatar || rawAvatar === 'null' || rawAvatar === 'undefined' || rawAvatar.trim() === '') {
+      return 'https://themegaradio.com/images/default-avatar.png';
+    }
+    if (rawAvatar.startsWith('http')) return rawAvatar;
+    if (rawAvatar.startsWith('/')) return `https://themegaradio.com${rawAvatar}`;
+    return 'https://themegaradio.com/images/default-avatar.png';
+  })();
   const userId = params.userId || '';
   const isOwnProfile = currentUser?._id === userId;
 
@@ -191,33 +196,23 @@ export default function UserProfileScreen() {
   };
 
   const handlePlayStation = async (station: FavoriteStation) => {
-    console.log('[UserProfile] Play station:', station.name);
+    console.log('[UserProfile] Play station:', station.name, 'id:', station.id);
     
-    // Convert FavoriteStation to Station format for playStation
-    const stationToPlay = {
-      _id: station.id,
-      name: station.name,
-      url: '', // Will be resolved by useAudioPlayer
-      favicon: station.logo,
-      country: '',
-      language: '',
-      tags: station.genre,
-    };
+    if (!station.id) {
+      console.warn('[UserProfile] No station ID, cannot play');
+      return;
+    }
     
-    // Fetch full station data first
+    // Fetch full station data first - need stream URL for TrackPlayer
     try {
       const response = await api.get(`https://themegaradio.com/api/station/${station.id}`);
-      if (response.data) {
-        // Use full station data
+      if (response.data && (response.data.url || response.data.streamUrl)) {
         await playStation(response.data);
       } else {
-        // Fallback to basic data
-        await playStation(stationToPlay as any);
+        console.warn('[UserProfile] Station has no stream URL');
       }
     } catch (error) {
       console.error('[UserProfile] Error fetching station:', error);
-      // Try with basic data anyway
-      await playStation(stationToPlay as any);
     }
   };
 
@@ -250,22 +245,29 @@ export default function UserProfileScreen() {
     }
   };
 
-  const renderStation = ({ item }: { item: FavoriteStation }) => (
-    <View style={styles.stationCard}>
-      <Image source={{ uri: item.logo }} style={styles.stationLogo} />
-      <View style={styles.stationInfo}>
-        <Text style={styles.stationName}>{item.name}</Text>
-        <Text style={styles.stationGenre}>{item.genre}</Text>
+  const renderStation = ({ item }: { item: FavoriteStation }) => {
+    // CRASH FIX: NEVER pass undefined/null/empty uri to native Image component
+    const logoUri = item.logo && item.logo.trim() && item.logo !== 'null' && item.logo !== 'undefined'
+      ? item.logo
+      : DEFAULT_STATION_LOGO_URL;
+    
+    return (
+      <View style={styles.stationCard}>
+        <Image source={{ uri: logoUri }} style={styles.stationLogo} />
+        <View style={styles.stationInfo}>
+          <Text style={styles.stationName}>{item.name || 'Unknown Station'}</Text>
+          <Text style={styles.stationGenre}>{item.genre || ''}</Text>
+        </View>
+        <TouchableOpacity 
+          style={styles.playButton} 
+          onPress={() => handlePlayStation(item)}
+          data-testid={`play-station-${item.id || 'unknown'}`}
+        >
+          <Ionicons name="play" size={22} color="#FFFFFF" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity 
-        style={styles.playButton} 
-        onPress={() => handlePlayStation(item)}
-        data-testid={`play-station-${item.id}`}
-      >
-        <Ionicons name="play" size={22} color="#FFFFFF" />
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -314,8 +316,12 @@ export default function UserProfileScreen() {
         <FlatList
           data={stations}
           renderItem={renderStation}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => item.id || `station-${index}`}
           contentContainerStyle={styles.listContent}
+          initialNumToRender={8}
+          maxToRenderPerBatch={5}
+          windowSize={5}
+          removeClippedSubviews={true}
           ListEmptyComponent={
             <Text style={styles.emptyText}>No favorite stations yet</Text>
           }
