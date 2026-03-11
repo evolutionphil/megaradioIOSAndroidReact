@@ -122,20 +122,13 @@ export default function UserProfileScreen() {
   const loadFollowStatus = async () => {
     if (!userId || !isAuthenticated || isOwnProfile) return;
 
-    // Check follow status via followers list (is-following endpoint doesn't exist yet)
-    // When backend adds /api/user/is-following/:userId with Bearer auth, switch to that
+    // Use the dedicated is-following endpoint (now supports Bearer auth)
     try {
-      const followersRes = await api.get(`https://themegaradio.com/api/user/followers/${userId}`);
-      const followers = followersRes.data?.followers || followersRes.data || [];
-      const currentUserId = currentUser?._id;
-      if (currentUserId && Array.isArray(followers)) {
-        const isFollow = followers.some((f: any) => 
-          (f._id === currentUserId || f.userId === currentUserId || f === currentUserId)
-        );
-        setIsFollowing(isFollow);
-      }
-    } catch (e) {
-      console.log('[UserProfile] Could not check following status:', e);
+      const res = await api.get(`https://themegaradio.com/api/user/is-following/${userId}`);
+      setIsFollowing(res.data?.isFollowing || false);
+    } catch (e: any) {
+      console.log('[UserProfile] Could not check following status:', e?.response?.status);
+      setIsFollowing(false);
     }
   };
 
