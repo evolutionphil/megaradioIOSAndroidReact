@@ -60,6 +60,16 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - Updated `Station.logoAssets` type to include `webp256`, `webp48`, `status`, `original`, `processedAt` fields matching API response
 - **Files**: types/index.ts
 
+#### 4. iOS Reklamlar ATT Fix (P0) - KÖK NEDEN
+- **Kök Neden**: Sadece Google UMP consent kullanılıyordu, Apple ATT HİÇ çağrılmıyordu. iOS 14+'da ATT izni olmadan IDFA erişimi engellenir → AdMob reklam göstermez.
+- **Fix**: `expo-tracking-transparency` ile native ATT prompt eklendi (AdMob init'ten ÖNCE)
+- **Dosyalar**: adMobService.native.ts, app.json, package.json
+
+#### 5. Follow/Unfollow Endpoint Fix (P0) - KÖK NEDEN
+- **Kök Neden**: `users.tsx` yanlış endpoint'ler kullanıyordu (`/api/user-engagement/` yerine `/api/user/`) ve unfollow için POST yerine DELETE gerekiyordu
+- **Fix**: Endpoint path'leri ve HTTP method'lar düzeltildi
+- **Dosyalar**: users.tsx
+
 ### Session 2 Fixes (March 2026)
 
 #### Genre Stations Empty Page Fix

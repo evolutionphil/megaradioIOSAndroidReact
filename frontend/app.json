@@ -159,6 +159,12 @@
       "./plugins/withCleartextTraffic.js",
       "./plugins/withSwift5Mode.js",
       [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "MegaRadio, size daha iyi ve kişiselleştirilmiş bir reklam deneyimi sunmak için cihaz bilgilerinizi kullanmak istiyor."
+        }
+      ],
+      [
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-8771434485570434~7427742767",

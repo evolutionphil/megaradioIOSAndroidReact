@@ -60,26 +60,34 @@ class AdMobService {
     try {
       const mobileAds = require('react-native-google-mobile-ads').default;
       
-      // iOS 14+: Request ATT (App Tracking Transparency) consent BEFORE initializing ads
-      // Without this, AdMob will not serve personalized ads on iOS and may return no-fill
+      // iOS 14+: Request ATT (App Tracking Transparency) BEFORE initializing ads
+      // Without ATT permission, AdMob cannot access IDFA and ads won't serve (or very low fill rate)
       if (Platform.OS === 'ios') {
         try {
+          // STEP 1: Request native iOS ATT permission (this shows the system prompt)
+          const { requestTrackingPermissionsAsync } = require('expo-tracking-transparency');
+          const { status } = await requestTrackingPermissionsAsync();
+          console.log('[AdMob] ATT permission status:', status);
+          // Continue regardless of status - AdMob will serve non-personalized ads if denied
+        } catch (attError) {
+          console.log('[AdMob] ATT request error (non-fatal):', attError);
+        }
+        
+        try {
+          // STEP 2: Request Google UMP consent (for GDPR regions)
           const { AdsConsent, AdsConsentStatus } = require('react-native-google-mobile-ads');
           
-          // Request consent info update
           const consentInfo = await AdsConsent.requestInfoUpdate();
-          console.log('[AdMob] Consent info:', consentInfo.status);
+          console.log('[AdMob] UMP Consent info:', consentInfo.status);
           
-          // If consent is required and not obtained, show consent form
           if (consentInfo.isConsentFormAvailable && 
               (consentInfo.status === AdsConsentStatus.REQUIRED || 
                consentInfo.status === AdsConsentStatus.UNKNOWN)) {
-            console.log('[AdMob] Showing consent form...');
+            console.log('[AdMob] Showing UMP consent form...');
             await AdsConsent.showForm();
           }
         } catch (consentError) {
-          console.log('[AdMob] ATT consent request error (non-fatal):', consentError);
-          // Continue with initialization even if consent fails
+          console.log('[AdMob] UMP consent request error (non-fatal):', consentError);
         }
       }
       
