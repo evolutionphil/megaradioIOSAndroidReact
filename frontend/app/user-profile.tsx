@@ -67,28 +67,36 @@ export default function UserProfileScreen() {
   // Check for preloaded data first
   useEffect(() => {
     if (userId) {
-      const preloaded = getPreloadedFavorites(userId);
-      if (preloaded) {
-        console.log('[UserProfile] Using preloaded favorites');
-        setAllStations(preloaded.map((s: any) => ({
-          id: s._id || s.id,
-          name: s.name,
-          genre: s.genre || 'Radio',
-          logo: getStationLogoUrl(s) || DEFAULT_STATION_LOGO_URL,
-        })));
+      try {
+        const preloaded = getPreloadedFavorites(userId);
+        if (preloaded && Array.isArray(preloaded)) {
+          console.log('[UserProfile] Using preloaded favorites');
+          setAllStations(preloaded.map((s: any) => ({
+            id: s?._id || s?.id || '',
+            name: s?.name || 'Unknown Station',
+            genre: s?.genre || 'Radio',
+            logo: getStationLogoUrl(s) || DEFAULT_STATION_LOGO_URL,
+          })));
+        }
+      } catch (e) {
+        console.log('[UserProfile] Preload cache error (non-fatal):', e);
       }
     }
   }, [userId]);
 
   // Update stations when React Query data arrives
   useEffect(() => {
-    if (favoritesData && favoritesData.length > 0) {
-      setAllStations(favoritesData.map((s: any) => ({
-        id: s._id || s.id,
-        name: s.name,
-        genre: s.genre || 'Radio',
-        logo: getStationLogoUrl(s) || DEFAULT_STATION_LOGO_URL,
-      })));
+    try {
+      if (favoritesData && Array.isArray(favoritesData) && favoritesData.length > 0) {
+        setAllStations(favoritesData.map((s: any) => ({
+          id: s?._id || s?.id || '',
+          name: s?.name || 'Unknown Station',
+          genre: s?.genre || 'Radio',
+          logo: getStationLogoUrl(s) || DEFAULT_STATION_LOGO_URL,
+        })));
+      }
+    } catch (e) {
+      console.log('[UserProfile] Error processing favorites data:', e);
     }
   }, [favoritesData]);
 
@@ -109,8 +117,8 @@ export default function UserProfileScreen() {
   // Update profile counts from React Query
   useEffect(() => {
     if (profileData) {
-      setFollowerCount(profileData.followersCount || 0);
-      setFollowingCount(profileData.followingCount || 0);
+      setFollowerCount(profileData.followersCount ?? profileData.followers ?? 0);
+      setFollowingCount(profileData.followingCount ?? profileData.following ?? 0);
     }
   }, [profileData]);
 
@@ -143,12 +151,14 @@ export default function UserProfileScreen() {
     if (!userId) return;
     try {
       const [followersRes, followingRes] = await Promise.all([
-        api.get(`https://themegaradio.com/api/user/followers/${userId}`),
-        api.get(`https://themegaradio.com/api/user/following/${userId}`),
+        api.get(`https://themegaradio.com/api/user/followers/${userId}`).catch(() => ({ data: {} })),
+        api.get(`https://themegaradio.com/api/user/following/${userId}`).catch(() => ({ data: {} })),
       ]);
       // API returns {followers: [], total: X} or {following: [], total: X}
-      setFollowerCount(followersRes.data.total ?? (followersRes.data.followers || followersRes.data || []).length);
-      setFollowingCount(followingRes.data.total ?? (followingRes.data.following || followingRes.data || []).length);
+      const fData = followersRes.data || {};
+      const gData = followingRes.data || {};
+      setFollowerCount(fData.total ?? (Array.isArray(fData.followers) ? fData.followers.length : 0));
+      setFollowingCount(gData.total ?? (Array.isArray(gData.following) ? gData.following.length : 0));
     } catch (e) {
       console.log('[UserProfile] Could not fetch follower counts:', e);
     }

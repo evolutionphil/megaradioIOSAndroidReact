@@ -12,6 +12,13 @@ const FRESH_DATA = {
   gcTime: 5 * 60 * 1000, // Keep in memory for 5 mins to avoid unnecessary re-renders
 };
 
+// Cache TTL constants (exported for preloadService and other consumers)
+export const CACHE_TTL = {
+  COMMUNITY_FAVORITES: 5 * 60 * 1000, // 5 minutes
+  USER_PROFILE: 2 * 60 * 1000,        // 2 minutes
+  STATIONS: 60 * 1000,                 // 1 minute
+};
+
 // Query keys
 export const queryKeys = {
   stations: ['stations'] as const,

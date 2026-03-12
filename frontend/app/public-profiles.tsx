@@ -74,7 +74,11 @@ export default function PublicProfilesScreen() {
   const handleProfilePress = (profile: PublicProfile) => {
     router.push({
       pathname: '/user-profile',
-      params: { userId: profile._id, userName: profile.name }
+      params: { 
+        userId: profile._id, 
+        userName: profile.name,
+        userAvatar: profile.profileImageUrl || profile.avatar || '',
+      }
     });
   };
 

@@ -127,6 +127,7 @@ const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
     
     // Use precomputed genres endpoint - faster and cached, limit=40 for CarPlay
     // Pass countryCode for filtered results (API expects ISO code like "TR")
+    // COLD START FIX: If no countryCode available, fetch global genres (no country filter)
     const response = await genreService.getPrecomputedGenres(countryCode || undefined, 40);
     
     // Return top 40 genres for CarPlay list
@@ -136,6 +137,19 @@ const getGenresList = async (): Promise<{ name: string; count: number }[]> => {
     }));
     
     console.log('[CarPlayHandler] Got', genres.length, 'genres for CarPlay (countryCode:', countryCode, ')');
+    
+    // If no genres returned and we had a country filter, try without country filter
+    if (genres.length === 0 && countryCode) {
+      console.log('[CarPlayHandler] No genres with country filter, trying global...');
+      const globalResponse = await genreService.getPrecomputedGenres(undefined, 40);
+      const globalGenres = (globalResponse.data || []).slice(0, 40).map((g: any) => ({
+        name: g.name || g.slug || g,
+        count: g.stationCount || g.total_stations || g.count || 0,
+      }));
+      console.log('[CarPlayHandler] Got', globalGenres.length, 'global genres (fallback)');
+      return globalGenres;
+    }
+    
     return genres;
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching genres:', error);
@@ -260,15 +274,20 @@ export const CarPlayHandler: React.FC = () => {
     // Initialize with a no-op playStation placeholder
     // Templates will be created and visible, play will work once playStation is available
     const deferredPlayStation = async (station: any) => {
-      console.log('[CarPlayHandler] Deferred play - playStation not ready yet, retrying...');
+      console.log('[CarPlayHandler] Deferred play - waiting for playStation...');
       sendLog('[CarPlayHandler] Deferred play attempt', { station: station?.name });
-      // Wait a bit and retry - playStation might be available by then
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const currentPlayStation = playStationRef.current;
-      if (currentPlayStation) {
-        return currentPlayStation(station);
+      
+      // Retry up to 10 times (5 seconds total) for cold start scenarios
+      for (let attempt = 0; attempt < 10; attempt++) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const currentPlayStation = playStationRef.current;
+        if (currentPlayStation) {
+          console.log('[CarPlayHandler] playStation available after', (attempt + 1) * 500, 'ms');
+          return currentPlayStation(station);
+        }
       }
-      console.warn('[CarPlayHandler] playStation still not available for deferred play');
+      console.warn('[CarPlayHandler] playStation still not available after 5s - giving up');
+      sendLog('[CarPlayHandler] Deferred play FAILED - playStation never became available');
     };
 
     try {
@@ -326,6 +345,18 @@ export const CarPlayHandler: React.FC = () => {
       );
       console.log('[CarPlayHandler] CarPlayService re-initialized with real playStation');
       sendLog('[CarPlayHandler] CarPlayService RE-INITIALIZED with playStation');
+      
+      // COLD START FIX: If CarPlay is already connected, force a template refresh
+      // This ensures playback works even if templates were created with deferred play
+      if (CarPlayService.isConnected) {
+        console.log('[CarPlayHandler] CarPlay is connected - forcing template refresh with real playStation');
+        sendLog('[CarPlayHandler] Forcing template refresh (connected + playStation ready)');
+        setTimeout(() => {
+          CarPlayService.refreshTemplates?.().catch((err: any) => {
+            console.error('[CarPlayHandler] Template refresh error:', err);
+          });
+        }, 300);
+      }
     } catch (error: any) {
       console.error('[CarPlayHandler] Error re-initializing:', error);
     }

@@ -6,6 +6,7 @@ import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
 import i18n, { addLanguageChangeListener } from './i18nService';
 import { getStationLogoUrl as centralGetStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../utils/stationLogoHelper';
+import { getCarPlayImagePath } from './carPlayImageCache';
 
 // Native module for cache bridge (iOS only)
 const CarPlayCacheModule = NativeModules.CarPlayCacheModule;
@@ -106,6 +107,8 @@ let coldStartRetryTimer: ReturnType<typeof setInterval> | null = null;
 
 // Mutex to prevent concurrent template creation (crash fix)
 let isCreatingTemplate = false;
+// Flag to indicate callbacks were updated while template was being created
+let pendingCallbackRefresh = false;
 
 if (Platform.OS !== 'web') {
   try {
@@ -187,6 +190,9 @@ interface CarPlayServiceType {
   updateNowPlaying: (station: Station, songTitle?: string, artistName?: string) => void;
   disconnect: () => void;
   openSearch?: () => void;
+  refreshTemplates?: () => Promise<void>;
+  refreshFavorites?: () => Promise<void>;
+  refreshRecentlyPlayed?: () => Promise<void>;
 }
 
 // Global state
@@ -816,11 +822,14 @@ const createRootTemplate = async (): Promise<void> => {
   // CRASH FIX: Prevent concurrent template creation which can cause
   // REASwizzledUIManager race condition with RCTUIManager
   if (isCreatingTemplate) {
-    CarPlayLogger.info('[RN] createRootTemplate() SKIPPED - already creating template');
+    CarPlayLogger.info('[RN] createRootTemplate() QUEUED - already creating template');
+    // Mark that a refresh is pending so we rebuild after current creation finishes
+    pendingCallbackRefresh = true;
     return;
   }
   
   isCreatingTemplate = true;
+  pendingCallbackRefresh = false;
   CarPlayLogger.info('[RN] createRootTemplate() STARTED');
   
   if (!TabBarTemplate || !CarPlay) {
@@ -971,6 +980,19 @@ const createRootTemplate = async (): Promise<void> => {
     // Release mutex after success
     isCreatingTemplate = false;
     
+    // COLD START FIX: If callbacks were updated while we were creating,
+    // rebuild templates with the new callbacks (e.g., real playStation)
+    if (pendingCallbackRefresh) {
+      CarPlayLogger.info('[RN] Pending callback refresh detected - rebuilding templates');
+      pendingCallbackRefresh = false;
+      // Small delay to avoid rapid successive template changes
+      setTimeout(() => {
+        createRootTemplate().catch((err) => {
+          CarPlayLogger.error('[RN] Pending refresh createRootTemplate FAILED', { error: String(err) });
+        });
+      }, 500);
+    }
+    
   } catch (error: any) {
     console.error('[CarPlay] Error creating root template:', error);
     CarPlayLogger.error('[RN] FATAL ERROR in createRootTemplate', { 
@@ -980,6 +1002,15 @@ const createRootTemplate = async (): Promise<void> => {
     });
     // Release mutex on error as well
     isCreatingTemplate = false;
+    
+    // Even on error, retry if callbacks were updated
+    if (pendingCallbackRefresh) {
+      CarPlayLogger.info('[RN] Pending callback refresh after error - retrying');
+      pendingCallbackRefresh = false;
+      setTimeout(() => {
+        createRootTemplate().catch(() => {});
+      }, 1000);
+    }
   }
 };
 
@@ -1286,9 +1317,8 @@ const CarPlayService: CarPlayServiceType = {
     
     try {
       const favTemplate = await createFavoritesTemplate();
-      if (favTemplate && rootTabBarTemplate) {
-        // Update the favorites tab in the existing tab bar
-        // Note: Some versions of react-native-carplay may require full refresh
+      if (favTemplate) {
+        // Full refresh since individual tab update may not be supported
         await createRootTemplate();
       }
     } catch (err) {

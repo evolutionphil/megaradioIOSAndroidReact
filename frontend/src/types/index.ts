@@ -10,9 +10,14 @@ export interface Station {
   logo?: string;
   logoAssets?: {
     folder?: string;
+    webp48?: string;
     webp96?: string;
     webp192?: string;
+    webp256?: string;
     webp384?: string;
+    original?: string;
+    status?: string;
+    processedAt?: string;
   };
   tags?: string;
   country?: string;
