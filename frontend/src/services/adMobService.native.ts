@@ -143,6 +143,11 @@ class AdMobService {
       this.interstitialAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
         console.error('[AdMob] Interstitial ad error:', error);
         this.isInterstitialLoaded = false;
+        // Retry loading after a delay on error
+        setTimeout(() => {
+          console.log('[AdMob] Retrying interstitial ad load...');
+          this.loadInterstitialAd();
+        }, 30000); // Retry after 30 seconds
       });
 
       this.interstitialAd.load();
@@ -178,6 +183,11 @@ class AdMobService {
       this.rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error: any) => {
         console.error('[AdMob] Rewarded ad error:', error);
         this.isRewardedLoaded = false;
+        // Retry loading after a delay on error
+        setTimeout(() => {
+          console.log('[AdMob] Retrying rewarded ad load...');
+          this.loadRewardedAd();
+        }, 30000); // Retry after 30 seconds
       });
 
       this.rewardedAd.load();
@@ -234,6 +244,12 @@ class AdMobService {
 
   // Track station change and show interstitial if needed
   async onStationChange(): Promise<boolean> {
+    // Don't track if not initialized yet
+    if (Platform.OS === 'web' || !this.isInitialized) {
+      console.log('[AdMob] onStationChange skipped - not initialized');
+      return false;
+    }
+    
     // Check if user is ad-free
     if (await this.isAdFree()) {
       console.log('[AdMob] User is ad-free, skipping interstitial');
@@ -242,13 +258,24 @@ class AdMobService {
 
     this.stationChangeCount++;
     await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, String(this.stationChangeCount));
+    console.log('[AdMob] Station change count:', this.stationChangeCount, '/', INTERSTITIAL_FREQUENCY);
 
     // Show interstitial every N station changes
     if (this.stationChangeCount >= INTERSTITIAL_FREQUENCY) {
-      this.stationChangeCount = 0;
-      await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, '0');
+      const adShown = await this.showInterstitialAd();
       
-      return await this.showInterstitialAd();
+      if (adShown) {
+        // Only reset counter if ad was actually shown
+        this.stationChangeCount = 0;
+        await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, '0');
+      } else {
+        // Ad wasn't ready - try to reload it for next time
+        // Keep counter at threshold so next station change tries again
+        console.log('[AdMob] Ad not shown, will retry on next station change');
+        this.loadInterstitialAd();
+      }
+      
+      return adShown;
     }
 
     return false;
