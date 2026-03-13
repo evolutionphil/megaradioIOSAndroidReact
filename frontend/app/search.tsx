@@ -236,10 +236,19 @@ export default function SearchScreen() {
     if (item.type === 'radio') {
       playStation(item.data as Station);
     } else if (item.type === 'genre') {
-      router.push(`/discover?genre=${item.data.slug}`);
+      router.push({
+        pathname: '/genre-detail',
+        params: { slug: item.data.slug, name: item.data.name },
+      });
     } else if (item.type === 'profile') {
-      // Navigate to profile page (future implementation)
-      console.log('Navigate to profile:', item.data.slug);
+      router.push({
+        pathname: '/user-profile',
+        params: { 
+          userId: item.data._id,
+          userName: item.data.name,
+          userAvatar: item.data.profileImageUrl || '',
+        },
+      });
     }
   };
 
