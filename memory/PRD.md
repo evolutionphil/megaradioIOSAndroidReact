@@ -70,6 +70,20 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - **Fix**: Endpoint path'leri ve HTTP method'lar düzeltildi
 - **Dosyalar**: users.tsx
 
+#### 6. CarPlay Logoları - Image Pre-download (P0) - KÖK NEDEN
+- **Kök Neden**: iOS'ta `CPListItem` görüntüsü oluşturulduktan sonra DEĞİŞTİRİLEMEZ (immutable). Kod önce `LOCAL_FALLBACK_LOGO` (pembe ikon) koyuyor, sonra `imgUrl` ile async güncellemeye çalışıyordu ama iOS bunu reddediyordu! Ayrıca `imgUrl` property'si `react-native-carplay` v2.7.22'de `null` type olarak tanımlı.
+- **Fix**: 
+  - `cacheStationImages()` ile resimleri template oluşturmadan ÖNCE indirme
+  - `image: { uri: localPath }` olarak önceden indirilmiş resmi kullanma
+  - Tüm template fonksiyonları güncellendi (favorites, recently played, browse, genre stations)
+  - `imgUrl` kullanımı tamamen kaldırıldı
+- **Dosyalar**: carPlayService.ts
+
+#### 7. Followers/Following Hep 0 Gösterme (P0) - KÖK NEDEN
+- **Kök Neden**: `loadFollowerCounts()` fonksiyonu bozuk `/api/user/followers/:id` endpoint'ini çağırıyordu → başarısız → `profileData`'dan gelen doğru değerleri (3, 0) sıfır ile eziyordu
+- **Fix**: `loadFollowerCounts()` tamamen kaldırıldı. `useUserProfile` hook'unun döndürdüğü `profileData.followersCount` tek kaynak (single source of truth)
+- **Dosyalar**: user-profile.tsx
+
 ### Session 2 Fixes (March 2026)
 
 #### Genre Stations Empty Page Fix

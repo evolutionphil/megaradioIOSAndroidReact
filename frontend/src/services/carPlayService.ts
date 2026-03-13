@@ -6,7 +6,7 @@ import TrackPlayer from 'react-native-track-player';
 import CarPlayLogger from './carPlayLogService';
 import i18n, { addLanguageChangeListener } from './i18nService';
 import { getStationLogoUrl as centralGetStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../utils/stationLogoHelper';
-import { getCarPlayImagePath } from './carPlayImageCache';
+import { getCarPlayImagePath, cacheStationImages } from './carPlayImageCache';
 
 // Native module for cache bridge (iOS only)
 const CarPlayCacheModule = NativeModules.CarPlayCacheModule;
@@ -226,6 +226,40 @@ const getStationImage = async (station: Station): Promise<{ uri: string } | null
   }
 };
 
+// Pre-download images for a list of stations and return a map of stationId -> local image source
+// CRITICAL: CPListItem image is IMMUTABLE after creation on iOS!
+// We MUST download images BEFORE creating template items, not after.
+const preloadStationImages = async (stations: Station[]): Promise<Map<string, any>> => {
+  const imageMap = new Map<string, any>();
+  
+  try {
+    // Use batch download from carPlayImageCache
+    const cachedPaths = await cacheStationImages(stations as any[]);
+    
+    // Convert local paths to ImageSourcePropType
+    cachedPaths.forEach((localPath, stationId) => {
+      if (localPath && localPath.length > 0) {
+        imageMap.set(stationId, { uri: localPath });
+      }
+    });
+    
+    console.log(`[CarPlay] Pre-loaded ${imageMap.size}/${stations.length} station images`);
+  } catch (error) {
+    console.error('[CarPlay] Error pre-loading station images:', error);
+  }
+  
+  return imageMap;
+};
+
+// Get the correct image for a station: pre-downloaded local image or fallback
+const getStationImageFromMap = (station: Station, imageMap: Map<string, any>): any => {
+  const id = station._id || (station as any).id || '';
+  if (imageMap.has(id)) {
+    return imageMap.get(id);
+  }
+  return LOCAL_FALLBACK_LOGO;
+};
+
 // Synchronous helper for immediate use - delegates to centralized stationLogoHelper
 const getStationImageSync = (station: Station): { uri: string } => {
   const url = centralGetStationLogoUrl(station);
@@ -262,16 +296,17 @@ const createFavoritesTemplate = async (): Promise<any> => {
     const favorites = await Promise.race([getFavoritesCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('favorites', favorites.length);
     
-    // Build items with imgUrl for async native image loading
-    // Native iOS uses imgUrl property to download images asynchronously
-    // Also provide 'image' local fallback for guaranteed display
+    // PRE-DOWNLOAD images before creating template items
+    // CPListItem image is IMMUTABLE after creation - must set correct image upfront!
+    const imageMap = await preloadStationImages(favorites);
+    
+    // Build items with pre-downloaded local images
     const items = favorites.map(station => {
-      const imgUrl = getArtworkUrl(station);
+      const stationImage = getStationImageFromMap(station, imageMap);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
-        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
+        image: stationImage,
       };
     });
     
@@ -330,21 +365,19 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const recentStations = await Promise.race([getRecentlyPlayedCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
+    // PRE-DOWNLOAD images before creating template items
+    const imageMap = await preloadStationImages(recentStations);
+    
     // Use GridTemplate for Recently Played if available (better visual layout)
     if (GridTemplate && recentStations.length > 0) {
       console.log('[CarPlay] Using GridTemplate for Recently Played (Zuletzt gespielt)');
       
       const gridButtons = recentStations.slice(0, 24).map((station, index) => {
-        // For GridTemplate, we need local assets for reliable image loading
-        // Use LOCAL_FALLBACK_LOGO as primary, CarPlay will use imgUrl for async loading if supported
-        const imgUrl = getArtworkUrl(station);
-        console.log(`[CarPlay] RecentlyPlayed Grid item ${index}: ${station.name}, imgUrl: ${imgUrl}`);
+        const stationImage = getStationImageFromMap(station, imageMap);
         return {
           id: `recent_${index}`,
           titleVariants: [station.name],
-          // Use both: 'image' for local fallback, 'imgUrl' for async URL loading
-          image: LOCAL_FALLBACK_LOGO, // Guaranteed to work (local asset)
-          imgUrl: imgUrl, // Will be used if CarPlay supports async loading
+          image: stationImage,
         };
       });
       
@@ -375,14 +408,13 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     // Fallback to ListTemplate if GridTemplate not available or no stations
     console.log('[CarPlay] Using ListTemplate for Recently Played (fallback)');
     
-    // Build items with imgUrl for async native image loading + local fallback
+    // Build items with pre-downloaded local images
     const items = recentStations.map(station => {
-      const imgUrl = getArtworkUrl(station);
+      const stationImage = getStationImageFromMap(station, imageMap);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
-        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
+        image: stationImage,
       };
     });
     
@@ -583,26 +615,28 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
       return;
     }
     
-    // Build items with imgUrl for async native image loading (max 50)
-    // Also provide local fallback for guaranteed image display
-    const items = stations.slice(0, 50).map(station => {
-      const imgUrl = getArtworkUrl(station);
+    // Build items with pre-downloaded local images (max 50)
+    // PRE-DOWNLOAD images - CPListItem is IMMUTABLE after creation!
+    const stationsSlice = stations.slice(0, 50);
+    const imageMap = await preloadStationImages(stationsSlice);
+    
+    const items = stationsSlice.map(station => {
+      const stationImage = getStationImageFromMap(station, imageMap);
       return {
         text: station.name,
         detailText: station.country || 'Radio',
-        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
-        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
+        image: stationImage,
       };
     });
     
     const template = new ListTemplate({
       title: genre,
       sections: [{
-        header: `${genre} (${Math.min(stations.length, 50)})`,
+        header: `${genre} (${stationsSlice.length})`,
         items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
-        const station = stations[index];
+        const station = stationsSlice[index];
         if (station && playStationCallback) {
           CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing from genre:', station.name);
@@ -649,20 +683,22 @@ const createBrowseTemplate = async (): Promise<any> => {
     const stations = await Promise.race([getStationsCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('popularStations', stations.length);
     
+    // Build items with pre-downloaded local images (max 50)
+    // PRE-DOWNLOAD images - CPListItem is IMMUTABLE after creation!
+    const stationsSlice = stations.slice(0, 50);
+    const imageMap = await preloadStationImages(stationsSlice);
+    
     // SAVE TO NATIVE CACHE for next cold start
     if (stations.length > 0) {
       saveToNativeCache(stations, 'popular');
     }
     
-    // Build items with imgUrl for async native image loading (max 50)
-    // Also provide local fallback for guaranteed image display
-    const items = stations.slice(0, 50).map(station => {
-      const imgUrl = getArtworkUrl(station);
+    const items = stationsSlice.map(station => {
+      const stationImage = getStationImageFromMap(station, imageMap);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        image: LOCAL_FALLBACK_LOGO, // Guaranteed fallback (local asset)
-        imgUrl: imgUrl, // Native will download this asynchronously (preferred)
+        image: stationImage,
       };
     });
     
@@ -673,7 +709,7 @@ const createBrowseTemplate = async (): Promise<any> => {
         items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
-        const station = stations[index];
+        const station = stationsSlice[index];
         if (station && playStationCallback) {
           CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing from browse:', station.name);
