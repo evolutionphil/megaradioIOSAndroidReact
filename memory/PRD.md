@@ -202,6 +202,12 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - **Web preview'da test edildi ve doğrulandı** ✅
 - **Dosyalar**: `app/search.tsx`
 
+#### 5. Genre Stations Country Parametresi Fix
+- **Kök Neden**: `country=undefined` string olarak gönderilince API 0 sonuç döndürüyordu
+- **Fix**: `genreService.getGenreStations()` fonksiyonunda `undefined`, `null`, string `"undefined"`, string `"null"` değerleri filtreleniyor — parametre tamamen çıkarılıyor
+- **Web preview'da test edildi** ✅ (Pop genre-detail 100 stations gösteriyor)
+- **Dosyalar**: `src/services/genreService.ts`
+
 ### Favoriler Kaybolma (P1)
 - API boş dönerse yerel favoriler korunuyor
 

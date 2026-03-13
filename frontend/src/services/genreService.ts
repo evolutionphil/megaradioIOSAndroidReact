@@ -84,9 +84,16 @@ export const genreService = {
     try {
       console.log('[genreService] getGenreStations - slug:', slug, 'countryEnglish:', countryEnglish, 'countryNative:', countryNative);
       
+      // CRITICAL: Never send country=undefined or country=null as string params
+      // If country is falsy, omit it entirely so the API returns global results
+      const safeCountry = countryEnglish && countryEnglish !== 'undefined' && countryEnglish !== 'null' 
+        ? countryEnglish : undefined;
+      const safeSortParam = sort || undefined;
+      const safeOrderParam = order || undefined;
+      
       // First attempt with the primary country name (usually English)
       const response = await api.get(API_ENDPOINTS.genres.stations(slug), {
-        params: { page, limit, country: countryEnglish, sort, order },
+        params: { page, limit, country: safeCountry, sort: safeSortParam, order: safeOrderParam },
       });
       
       const data = response.data;
@@ -97,11 +104,13 @@ export const genreService = {
       
       // If 0 results AND we have a different native name to try, retry with native name
       // This handles the Turkey case: English "Turkey" returns 0, native "Türkiye" returns results
-      if (totalCount === 0 && countryNative && countryNative !== countryEnglish) {
-        console.log('[genreService] getGenreStations - 0 results, retrying with native name:', countryNative);
+      const safeNativeCountry = countryNative && countryNative !== 'undefined' && countryNative !== 'null' 
+        ? countryNative : undefined;
+      if (totalCount === 0 && safeNativeCountry && safeNativeCountry !== safeCountry) {
+        console.log('[genreService] getGenreStations - 0 results, retrying with native name:', safeNativeCountry);
         
         const retryResponse = await api.get(API_ENDPOINTS.genres.stations(slug), {
-          params: { page, limit, country: countryNative, sort, order },
+          params: { page, limit, country: safeNativeCountry, sort: safeSortParam, order: safeOrderParam },
         });
         
         const retryData = retryResponse.data;
