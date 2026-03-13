@@ -139,8 +139,27 @@ export default function ProfileScreen() {
   console.log('[Profile] Final userAvatar:', userAvatar);
   
   // Use real followers/following count from user data
-  const followersCount = user?.followersCount || 0;
-  const followsCount = user?.followingCount || 0;
+  // Login response may not include these - fetch from API
+  const [followersCount, setFollowersCount] = useState(user?.followersCount || 0);
+  const [followsCount, setFollowsCount] = useState(user?.followingCount || 0);
+  
+  // Refresh profile data from API to get accurate follower/following counts
+  useEffect(() => {
+    if (user?._id || user?.id) {
+      const userId = user._id || user.id;
+      api.get(`https://themegaradio.com/api/user-profile/${userId}`)
+        .then(res => {
+          const data = res.data;
+          if (data) {
+            const fc = data.followersCount ?? data.followers ?? 0;
+            const gc = data.followingCount ?? data.following ?? 0;
+            setFollowersCount(typeof fc === 'number' ? fc : 0);
+            setFollowsCount(typeof gc === 'number' ? gc : 0);
+          }
+        })
+        .catch(e => console.log('[Profile] Could not refresh profile counts:', e?.message));
+    }
+  }, [user?._id, user?.id]);
 
   // Fetch countries from API with rich format (includes flags)
   useEffect(() => {

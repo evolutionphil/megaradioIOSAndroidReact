@@ -37,6 +37,7 @@ export const useAudioPlayer = () => {
       togglePlayPause: () => {},
       setVolume: (_volume: number) => {},
       reset: store.reset,
+      isReady: false,
     };
   }
   
@@ -51,6 +52,7 @@ export const useAudioPlayer = () => {
     togglePlayPause: context.togglePlayPause,
     setVolume: context.setVolume,
     reset: store.reset,
+    isReady: true,
   };
 };
 

@@ -108,12 +108,41 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
             const extractedFavorites = (favorites as any)?.favorites || (favorites as any)?.stations || [];
             console.log('[FavoritesStore] Extracted length:', extractedFavorites.length);
             
+            // Don't overwrite local if API returns empty but we have local data
+            if (extractedFavorites.length === 0) {
+              const localJson = await AsyncStorage.getItem(FAVORITES_KEY);
+              const localFavs = localJson ? JSON.parse(localJson) : [];
+              if (localFavs.length > 0) {
+                console.log('[FavoritesStore] API returned empty, keeping', localFavs.length, 'local favorites');
+                const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
+                const customOrder = orderJson ? JSON.parse(orderJson) : [];
+                set({ favorites: localFavs, customOrder, isLoaded: true, isLoading: false });
+                syncToAndroidAuto(localFavs);
+                return;
+              }
+            }
+            
             const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
             const customOrder = orderJson ? JSON.parse(orderJson) : [];
             set({ favorites: extractedFavorites, customOrder, isLoaded: true, isLoading: false });
             await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(extractedFavorites));
             syncToAndroidAuto(extractedFavorites);
             return;
+          }
+          
+          // PROTECT LOCAL DATA: If API returns empty but local storage has favorites,
+          // keep local favorites (API sync might have failed previously)
+          if (favorites.length === 0) {
+            const localJson = await AsyncStorage.getItem(FAVORITES_KEY);
+            const localFavs = localJson ? JSON.parse(localJson) : [];
+            if (localFavs.length > 0) {
+              console.log('[FavoritesStore] API returned empty, keeping', localFavs.length, 'local favorites');
+              const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
+              const customOrder = orderJson ? JSON.parse(orderJson) : [];
+              set({ favorites: localFavs, customOrder, isLoaded: true, isLoading: false });
+              syncToAndroidAuto(localFavs);
+              return;
+            }
           }
           
           // Also load custom order from local storage

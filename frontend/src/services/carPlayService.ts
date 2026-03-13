@@ -296,17 +296,15 @@ const createFavoritesTemplate = async (): Promise<any> => {
     const favorites = await Promise.race([getFavoritesCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('favorites', favorites.length);
     
-    // PRE-DOWNLOAD images before creating template items
-    // CPListItem image is IMMUTABLE after creation - must set correct image upfront!
-    const imageMap = await preloadStationImages(favorites);
-    
-    // Build items with pre-downloaded local images
+    // Build items with imgUrl for async native image loading
+    // Native iOS downloads images asynchronously via imgUrl during item creation
     const items = favorites.map(station => {
-      const stationImage = getStationImageFromMap(station, imageMap);
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        image: stationImage,
+        image: LOCAL_FALLBACK_LOGO,
+        imgUrl: imgUrl,
       };
     });
     
@@ -365,19 +363,17 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const recentStations = await Promise.race([getRecentlyPlayedCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
-    // PRE-DOWNLOAD images before creating template items
-    const imageMap = await preloadStationImages(recentStations);
-    
     // Use GridTemplate for Recently Played if available (better visual layout)
     if (GridTemplate && recentStations.length > 0) {
       console.log('[CarPlay] Using GridTemplate for Recently Played (Zuletzt gespielt)');
       
       const gridButtons = recentStations.slice(0, 24).map((station, index) => {
-        const stationImage = getStationImageFromMap(station, imageMap);
+        const imgUrl = getArtworkUrl(station);
         return {
           id: `recent_${index}`,
           titleVariants: [station.name],
-          image: stationImage,
+          image: LOCAL_FALLBACK_LOGO,
+          imgUrl: imgUrl,
         };
       });
       
@@ -408,13 +404,13 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     // Fallback to ListTemplate if GridTemplate not available or no stations
     console.log('[CarPlay] Using ListTemplate for Recently Played (fallback)');
     
-    // Build items with pre-downloaded local images
     const items = recentStations.map(station => {
-      const stationImage = getStationImageFromMap(station, imageMap);
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        image: stationImage,
+        image: LOCAL_FALLBACK_LOGO,
+        imgUrl: imgUrl,
       };
     });
     
@@ -615,17 +611,15 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
       return;
     }
     
-    // Build items with pre-downloaded local images (max 50)
-    // PRE-DOWNLOAD images - CPListItem is IMMUTABLE after creation!
+    // Build items with imgUrl for async native image loading (max 50)
     const stationsSlice = stations.slice(0, 50);
-    const imageMap = await preloadStationImages(stationsSlice);
-    
     const items = stationsSlice.map(station => {
-      const stationImage = getStationImageFromMap(station, imageMap);
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || 'Radio',
-        image: stationImage,
+        image: LOCAL_FALLBACK_LOGO,
+        imgUrl: imgUrl,
       };
     });
     
@@ -683,10 +677,8 @@ const createBrowseTemplate = async (): Promise<any> => {
     const stations = await Promise.race([getStationsCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('popularStations', stations.length);
     
-    // Build items with pre-downloaded local images (max 50)
-    // PRE-DOWNLOAD images - CPListItem is IMMUTABLE after creation!
+    // Build items with imgUrl for async native image loading (max 50)
     const stationsSlice = stations.slice(0, 50);
-    const imageMap = await preloadStationImages(stationsSlice);
     
     // SAVE TO NATIVE CACHE for next cold start
     if (stations.length > 0) {
@@ -694,11 +686,12 @@ const createBrowseTemplate = async (): Promise<any> => {
     }
     
     const items = stationsSlice.map(station => {
-      const stationImage = getStationImageFromMap(station, imageMap);
+      const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
         detailText: station.country || station.tags?.split(',')[0] || 'Radio',
-        image: stationImage,
+        image: LOCAL_FALLBACK_LOGO,
+        imgUrl: imgUrl,
       };
     });
     

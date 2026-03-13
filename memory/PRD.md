@@ -147,3 +147,30 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - HTTP favicon URLs must be proxied for iOS ATS
 - Genre stations API needs both countryEnglish AND countryNative for fallback
 - CarPlay cold start requires staggered retries + queued template refresh
+
+## Session 3 Additional Fixes
+
+### CarPlay Recently Played (P0) - KÖK NEDEN
+- `CarPlayHandler.tsx` → `stationService.getRecentlyPlayed()` çağırıyordu ama bu fonksiyon `stationService`'te YOK! `userService` olmalıydı.
+
+### CarPlay Playback Cold Start (P0)
+- `deferredPlayStation` dummy fonksiyonu gerçek olarak algılıyordu. `isReady` flag ile düzeltildi.
+
+### CarPlay Logoları REVERT (P0)
+- `preloadStationImages` yaklaşımı logoları bozdu. Native `imgUrl` geri döndürüldü.
+
+### All Stations Pagination (P1)
+- `limit:100` sabit → `page` parametresi ile API pagination eklendi
+
+### Profil Followers/Following 0 (P1)
+- Login yanıtı `followersCount` içermiyor → API'den ayrıca çekiliyor
+
+### Users Follow Butonu Flicker (P1)
+- Follow durumu AsyncStorage'da cache'leniyor
+
+### Favoriler Kaybolma (P1)
+- API boş dönerse yerel favoriler korunuyor
+
+### ATT Module Xcode Projesi (P0)
+- ATTModule.swift ve ATTModule.m `project.pbxproj`'a eklendi (önceki build'de derlenmemişti!)
+- `NSUserTrackingUsageDescription` Info.plist'e eklendi

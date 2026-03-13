@@ -6,6 +6,7 @@ import { Platform, NativeModules, NativeEventEmitter } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
+import userService from '../services/userService';
 import genreService from '../services/genreService';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useLocationStore } from '../store/locationStore';
@@ -109,11 +110,21 @@ const getFavoriteStations = async (): Promise<Station[]> => {
 
 const getRecentStations = async (): Promise<Station[]> => {
   try {
-    const response = await stationService.getRecentlyPlayed();
+    // Use userService which has the getRecentlyPlayed method (not stationService!)
+    const response = await userService.getRecentlyPlayed();
+    console.log('[CarPlayHandler] Got', (response || []).length, 'recently played stations');
     return response || [];
   } catch (error) {
     console.error('[CarPlayHandler] Error fetching recent:', error);
-    return [];
+    // Fallback: try from recentlyPlayedStore
+    try {
+      const recentlyPlayedStore = require('../store/recentlyPlayedStore').default;
+      const recentStations = recentlyPlayedStore.getState()?.recentStations || [];
+      console.log('[CarPlayHandler] Using local recently played:', recentStations.length);
+      return recentStations;
+    } catch {
+      return [];
+    }
   }
 };
 
@@ -207,7 +218,7 @@ const searchStations = async (query: string): Promise<Station[]> => {
 };
 
 export const CarPlayHandler: React.FC = () => {
-  const { playStation } = useAudioPlayer();
+  const { playStation, isReady: isAudioReady } = useAudioPlayer();
   const queryClient = useQueryClient();
   const initializedRef = useRef(false);
   
@@ -277,17 +288,21 @@ export const CarPlayHandler: React.FC = () => {
       console.log('[CarPlayHandler] Deferred play - waiting for playStation...');
       sendLog('[CarPlayHandler] Deferred play attempt', { station: station?.name });
       
-      // Retry up to 10 times (5 seconds total) for cold start scenarios
-      for (let attempt = 0; attempt < 10; attempt++) {
+      // Retry up to 20 times (10 seconds total) for cold start scenarios
+      // Check BOTH isAudioReady AND playStationRef to ensure real audio provider is ready
+      for (let attempt = 0; attempt < 20; attempt++) {
         await new Promise(resolve => setTimeout(resolve, 500));
         const currentPlayStation = playStationRef.current;
-        if (currentPlayStation) {
-          console.log('[CarPlayHandler] playStation available after', (attempt + 1) * 500, 'ms');
+        const audioReady = isAudioReadyRef.current;
+        
+        if (audioReady && currentPlayStation) {
+          console.log('[CarPlayHandler] playStation + AudioProvider ready after', (attempt + 1) * 500, 'ms');
+          sendLog('[CarPlayHandler] Deferred play SUCCESS', { delay: (attempt + 1) * 500 });
           return currentPlayStation(station);
         }
       }
-      console.warn('[CarPlayHandler] playStation still not available after 5s - giving up');
-      sendLog('[CarPlayHandler] Deferred play FAILED - playStation never became available');
+      console.warn('[CarPlayHandler] playStation still not available after 10s - giving up');
+      sendLog('[CarPlayHandler] Deferred play FAILED - timeout after 10s');
     };
 
     try {
@@ -320,9 +335,11 @@ export const CarPlayHandler: React.FC = () => {
     };
   }, []);
 
-  // Store ref to latest playStation for deferred play
+  // Store ref to latest playStation and isReady for deferred play
   const playStationRef = useRef(playStation);
   playStationRef.current = playStation;
+  const isAudioReadyRef = useRef(isAudioReady);
+  isAudioReadyRef.current = isAudioReady;
   
   // When playStation becomes available, update the callback in CarPlayService
   // and refresh templates so play actually works

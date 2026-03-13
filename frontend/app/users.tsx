@@ -62,7 +62,24 @@ export default function UsersScreen() {
     gcTime: 10 * 60 * 1000,
   });
 
-  // Check follow status for all users
+  // Load cached follow status immediately to prevent flicker
+  const [followStatusLoaded, setFollowStatusLoaded] = useState(false);
+  
+  React.useEffect(() => {
+    const loadCachedStatus = async () => {
+      try {
+        const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+        const cached = await AsyncStorage.getItem('megaradio_follow_status');
+        if (cached) {
+          setFollowingStatus(JSON.parse(cached));
+        }
+      } catch {}
+      setFollowStatusLoaded(true);
+    };
+    loadCachedStatus();
+  }, []);
+
+  // Check follow status for all users (background refresh)
   const checkFollowStatus = useCallback(async (users: PublicUser[]) => {
     if (!isAuthenticated || !users.length) return;
     
@@ -79,6 +96,12 @@ export default function UsersScreen() {
       })
     );
     setFollowingStatus(statusMap);
+    
+    // Cache follow status for next visit (prevent flicker)
+    try {
+      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+      await AsyncStorage.setItem('megaradio_follow_status', JSON.stringify(statusMap));
+    } catch {}
   }, [isAuthenticated, currentUser]);
 
   // Effect to check follow status when data loads

@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { colors, gradients, spacing, borderRadius, typography } from '../src/constants/theme';
 import { useStations } from '../src/hooks/useQueries';
+import { stationService } from '../src/services/stationService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { useLocationStore } from '../src/store/locationStore';
@@ -53,6 +54,8 @@ export default function AllStationsScreen() {
   const [showSortSheet, setShowSortSheet] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
+  const [allLoadedStations, setAllLoadedStations] = useState<Station[]>([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   
   // Use param country if available, otherwise use location store
   const { countryCode: storeCountryCode, country: storeCountry, countryEnglish, isLoaded } = useLocationStore();
@@ -91,6 +94,7 @@ export default function AllStationsScreen() {
   
   const { data, isLoading, refetch, error } = useStations({
     limit: 100,
+    page: 1,
     genre: genreSlug || undefined,
     country: apiCountry,
   });
@@ -98,8 +102,39 @@ export default function AllStationsScreen() {
   const { playStation } = useAudioPlayer();
   const { currentStation, playbackState } = usePlayerStore();
 
-  const stations = data?.stations || [];
+  // Accumulate stations from API and additional pages
+  useEffect(() => {
+    if (data?.stations && data.stations.length > 0) {
+      setAllLoadedStations(data.stations);
+      setPage(1);
+    }
+  }, [data?.stations]);
+
+  const stations = allLoadedStations.length > 0 ? allLoadedStations : (data?.stations || []);
   const totalCount = data?.totalCount || stations.length;
+  const hasMore = stations.length < totalCount;
+
+  const loadMore = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return;
+    setIsLoadingMore(true);
+    try {
+      const nextPage = page + 1;
+      const result = await stationService.getStations({
+        limit: 100,
+        page: nextPage,
+        genre: genreSlug || undefined,
+        country: apiCountry,
+      });
+      if (result.stations && result.stations.length > 0) {
+        setAllLoadedStations(prev => [...prev, ...result.stations]);
+        setPage(nextPage);
+      }
+    } catch (e) {
+      console.error('[AllStations] Load more error:', e);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [page, hasMore, isLoadingMore, genreSlug, apiCountry]);
 
   // Client-side sorting function (backend doesn't support all sort options)
   const sortStations = useCallback((stationsToSort: Station[], option: SortOption): Station[] => {
@@ -345,15 +380,22 @@ export default function AllStationsScreen() {
                 </View>
               )}
 
-              {/* See More Button */}
-              {stations.length >= 100 && (
+              {/* Load More Button */}
+              {hasMore && (
                 <View style={styles.seeMoreContainer}>
                   <TouchableOpacity 
                     style={styles.seeMoreButton}
-                    onPress={() => setPage(p => p + 1)}
+                    onPress={loadMore}
+                    disabled={isLoadingMore}
                     data-testid="see-more-btn"
                   >
-                    <Text style={styles.seeMoreText}>See More</Text>
+                    {isLoadingMore ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Text style={styles.seeMoreText}>
+                        {t('load_more', 'Load More')} ({stations.length}/{totalCount})
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </View>
               )}
