@@ -39,6 +39,8 @@
     <string>ca-app-pub-8771434485570434~4044224468</string>
     <key>GADDelayAppMeasurementInit</key>
     <false/>
+    <key>GADIsStatusBarHiddenForFullScreenAds</key>
+    <true/>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
     <key>LSMinimumSystemVersion</key>

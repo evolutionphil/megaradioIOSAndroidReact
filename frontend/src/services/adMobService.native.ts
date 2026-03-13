@@ -2,7 +2,7 @@
 // Google AdMob Integration Service for MegaRadio
 // Handles Interstitial and Rewarded ads
 
-import { Platform, NativeModules } from 'react-native';
+import { Platform, NativeModules, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Storage keys
@@ -62,15 +62,15 @@ class AdMobService {
       const { MaxAdContentRating } = require('react-native-google-mobile-ads');
       
       // CRITICAL: Set request configuration BEFORE initializing
-      // This was previously handled internally by expo-tracking-transparency
-      // Without this, AdMob may not serve ads properly in production
+      // requestNonPersonalizedAdsOnly ensures ads serve even when ATT is denied
       try {
         await mobileAds().setRequestConfiguration({
           maxAdContentRating: MaxAdContentRating.T,
           tagForChildDirectedTreatment: false,
           tagForUnderAgeOfConsent: false,
+          requestNonPersonalizedAdsOnly: true,
         });
-        console.log('[AdMob] Request configuration set');
+        console.log('[AdMob] Request configuration set (non-personalized ads enabled)');
       } catch (configError) {
         console.error('[AdMob] Request configuration error (non-fatal):', configError);
       }
@@ -153,6 +153,7 @@ class AdMobService {
       console.log('[AdMob] Loading interstitial with adUnitId:', adUnitId);
       
       this.interstitialAd = InterstitialAd.createForAdRequest(adUnitId, {
+        requestNonPersonalizedAdsOnly: true,
         keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
@@ -161,8 +162,19 @@ class AdMobService {
         this.isInterstitialLoaded = true;
       });
 
+      // iOS: Hide status bar when ad opens to prevent display issues
+      this.interstitialAd.addAdEventListener(AdEventType.OPENED, () => {
+        console.log('[AdMob] Interstitial ad OPENED');
+        if (Platform.OS === 'ios') {
+          StatusBar.setHidden(true);
+        }
+      });
+
       this.interstitialAd.addAdEventListener(AdEventType.CLOSED, () => {
         console.log('[AdMob] Interstitial ad closed by user');
+        if (Platform.OS === 'ios') {
+          StatusBar.setHidden(false);
+        }
         this.isInterstitialLoaded = false;
         this.loadInterstitialAd();
       });
@@ -204,6 +216,7 @@ class AdMobService {
       console.log('[AdMob] Loading rewarded with adUnitId:', adUnitId);
       
       this.rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
+        requestNonPersonalizedAdsOnly: true,
         keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
