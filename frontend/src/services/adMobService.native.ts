@@ -2,7 +2,7 @@
 // Google AdMob Integration Service for MegaRadio
 // Handles Interstitial and Rewarded ads
 
-import { Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Storage keys
@@ -64,10 +64,15 @@ class AdMobService {
       // Without ATT permission, AdMob cannot access IDFA and ads won't serve (or very low fill rate)
       if (Platform.OS === 'ios') {
         try {
-          // STEP 1: Request native iOS ATT permission (this shows the system prompt)
-          const { requestTrackingPermissionsAsync } = require('expo-tracking-transparency');
-          const { status } = await requestTrackingPermissionsAsync();
-          console.log('[AdMob] ATT permission status:', status);
+          // STEP 1: Request native iOS ATT permission via our custom native module
+          // ATTModule is defined in ios/MegaRadio/ATTModule.swift - zero dependencies
+          const { ATTModule } = NativeModules;
+          if (ATTModule) {
+            const status = await ATTModule.requestPermission();
+            console.log('[AdMob] ATT permission status:', status);
+          } else {
+            console.log('[AdMob] ATTModule not available (non-fatal)');
+          }
           // Continue regardless of status - AdMob will serve non-personalized ads if denied
         } catch (attError) {
           console.log('[AdMob] ATT request error (non-fatal):', attError);
