@@ -225,6 +225,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Logout - clear everything
   logout: async () => {
     try {
+      const currentUser = get().user;
+      
       // Delete push token from backend FIRST (while we still have auth token)
       if (Platform.OS !== 'web') {
         try {
@@ -248,14 +250,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         console.log('[AuthStore] FlowAlive clearUser error:', e);
       }
       
+      // BEFORE clearing: backup favorites keyed by user ID so they survive logout/re-login
+      const AsyncStorage = await import('@react-native-async-storage/async-storage');
+      if (currentUser?._id) {
+        try {
+          const currentFavJson = await AsyncStorage.default.getItem('@megaradio_favorites');
+          if (currentFavJson) {
+            const parsed = JSON.parse(currentFavJson);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              await AsyncStorage.default.setItem(
+                `@megaradio_favorites_backup_${currentUser._id}`,
+                currentFavJson
+              );
+              console.log('[AuthStore] Backed up', parsed.length, 'favorites for user', currentUser._id);
+            }
+          }
+        } catch (e) {
+          console.log('[AuthStore] Failed to backup favorites:', e);
+        }
+      }
+      
       await Promise.all([
         secureStorage.removeItem(TOKEN_KEY),
         secureStorage.removeItem(USER_KEY),
       ]);
       
-      // Clear guest favorites on logout to ensure clean state for new users
-      // Import dynamically to avoid circular dependency
-      const AsyncStorage = await import('@react-native-async-storage/async-storage');
+      // Clear active favorites on logout to ensure clean state for new users
       await Promise.all([
         AsyncStorage.default.removeItem('@megaradio_favorites'),
         AsyncStorage.default.removeItem('@megaradio_favorites_order'),
@@ -266,17 +286,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { useFavoritesStore } = await import('./favoritesStore');
       useFavoritesStore.setState({ favorites: [], customOrder: [], isLoaded: false });
       
-      // Clear react-query cache for favorites to prevent stale data on new login
-      // This is important because queryClient caches API responses
-      try {
-        const { queryClient } = await import('@tanstack/react-query');
-        // Note: queryClient is created in _layout.tsx, we need to invalidate via the store
-        // The next login will fetch fresh data
-      } catch (e) {
-        console.log('[AuthStore] Could not clear query cache:', e);
-      }
-      
-      console.log('[AuthStore] Logout complete - favorites and push token cleared');
+      console.log('[AuthStore] Logout complete - favorites backed up and cleared');
     } catch (error) {
       console.error('Error clearing auth storage:', error);
     }

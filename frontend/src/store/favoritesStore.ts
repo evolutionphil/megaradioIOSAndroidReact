@@ -42,6 +42,22 @@ const isAuthenticated = (): boolean => {
   return useAuthStore.getState().isAuthenticated;
 };
 
+// Helper to load user-specific backup favorites from AsyncStorage
+const loadUserBackup = async (userId: string): Promise<Station[]> => {
+  try {
+    const backupJson = await AsyncStorage.getItem(`@megaradio_favorites_backup_${userId}`);
+    if (backupJson) {
+      const parsed = JSON.parse(backupJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.log('[FavoritesStore] Error loading user backup:', e);
+  }
+  return [];
+};
+
 // Helper to sync favorites to Android Auto via SharedPreferences
 // This is needed because Android Auto's MediaBrowserService runs in native code
 const syncToAndroidAuto = async (favorites: Station[]): Promise<void> => {
@@ -104,20 +120,19 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           if (!Array.isArray(favorites)) {
             console.log('[FavoritesStore] WARNING: favorites is not an array!');
             console.log('[FavoritesStore] Keys:', Object.keys(favorites || {}));
-            // Try to extract from object
             const extractedFavorites = (favorites as any)?.favorites || (favorites as any)?.stations || [];
             console.log('[FavoritesStore] Extracted length:', extractedFavorites.length);
             
-            // Don't overwrite local if API returns empty but we have local data
             if (extractedFavorites.length === 0) {
-              const localJson = await AsyncStorage.getItem(FAVORITES_KEY);
-              const localFavs = localJson ? JSON.parse(localJson) : [];
-              if (localFavs.length > 0) {
-                console.log('[FavoritesStore] API returned empty, keeping', localFavs.length, 'local favorites');
+              // Try user-specific backup
+              const backupFavs = await loadUserBackup(user._id);
+              if (backupFavs.length > 0) {
+                console.log('[FavoritesStore] Restored', backupFavs.length, 'favorites from user backup');
                 const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
                 const customOrder = orderJson ? JSON.parse(orderJson) : [];
-                set({ favorites: localFavs, customOrder, isLoaded: true, isLoading: false });
-                syncToAndroidAuto(localFavs);
+                set({ favorites: backupFavs, customOrder, isLoaded: true, isLoading: false });
+                await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(backupFavs));
+                syncToAndroidAuto(backupFavs);
                 return;
               }
             }
@@ -130,17 +145,24 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
             return;
           }
           
-          // PROTECT LOCAL DATA: If API returns empty but local storage has favorites,
-          // keep local favorites (API sync might have failed previously)
+          // If API returns empty, try user-specific backup before giving up
           if (favorites.length === 0) {
-            const localJson = await AsyncStorage.getItem(FAVORITES_KEY);
-            const localFavs = localJson ? JSON.parse(localJson) : [];
-            if (localFavs.length > 0) {
-              console.log('[FavoritesStore] API returned empty, keeping', localFavs.length, 'local favorites');
+            const backupFavs = await loadUserBackup(user._id);
+            if (backupFavs.length > 0) {
+              console.log('[FavoritesStore] API returned empty, restored', backupFavs.length, 'from user backup');
               const orderJson = await AsyncStorage.getItem(FAVORITES_ORDER_KEY);
               const customOrder = orderJson ? JSON.parse(orderJson) : [];
-              set({ favorites: localFavs, customOrder, isLoaded: true, isLoading: false });
-              syncToAndroidAuto(localFavs);
+              set({ favorites: backupFavs, customOrder, isLoaded: true, isLoading: false });
+              await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(backupFavs));
+              syncToAndroidAuto(backupFavs);
+              // Try to re-sync backup favorites to server
+              for (const station of backupFavs) {
+                try {
+                  await userService.addFavorite(station._id);
+                } catch (e) {
+                  // Ignore individual sync errors
+                }
+              }
               return;
             }
           }
@@ -152,8 +174,16 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           set({ favorites, customOrder, isLoaded: true, isLoading: false });
           console.log('[FavoritesStore] ========== SUCCESS: ' + favorites.length + ' favorites ==========');
           
-          // Also save to local storage as backup
+          // Save to local storage as backup
           await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+          
+          // Also update user-specific backup
+          if (favorites.length > 0) {
+            await AsyncStorage.setItem(
+              `@megaradio_favorites_backup_${user._id}`,
+              JSON.stringify(favorites)
+            );
+          }
           
           // Sync to Android Auto
           syncToAndroidAuto(favorites);
@@ -162,6 +192,18 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           console.log('[FavoritesStore] API ERROR:', apiError.message);
           console.log('[FavoritesStore] Status:', apiError.response?.status);
           console.log('[FavoritesStore] Data:', JSON.stringify(apiError.response?.data || {}).substring(0, 200));
+          
+          // API failed - try user-specific backup
+          if (user?._id) {
+            const backupFavs = await loadUserBackup(user._id);
+            if (backupFavs.length > 0) {
+              console.log('[FavoritesStore] API failed, restored', backupFavs.length, 'from user backup');
+              set({ favorites: backupFavs, isLoaded: true, isLoading: false });
+              await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(backupFavs));
+              syncToAndroidAuto(backupFavs);
+              return;
+            }
+          }
         }
       } else {
         console.log('[FavoritesStore] NOT AUTHENTICATED - falling back to local');
@@ -247,6 +289,15 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       // Sync to Android Auto
       syncToAndroidAuto(updatedFavorites);
       
+      // Update user-specific backup
+      const authState = useAuthStore.getState();
+      if (authState.isAuthenticated && authState.user?._id) {
+        await AsyncStorage.setItem(
+          `@megaradio_favorites_backup_${authState.user._id}`,
+          JSON.stringify(updatedFavorites)
+        );
+      }
+      
       console.log('[FavoritesStore] addFavorite complete');
     } catch (error: any) {
       console.error('[FavoritesStore] Error adding favorite:', error?.message || error);
@@ -296,6 +347,15 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       
       // Sync to Android Auto
       syncToAndroidAuto(updatedFavorites);
+      
+      // Update user-specific backup
+      const authState = useAuthStore.getState();
+      if (authState.isAuthenticated && authState.user?._id) {
+        await AsyncStorage.setItem(
+          `@megaradio_favorites_backup_${authState.user._id}`,
+          JSON.stringify(updatedFavorites)
+        );
+      }
       
       console.log('[FavoritesStore] removeFavorite complete');
     } catch (error: any) {
@@ -414,12 +474,16 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
     const { favorites } = get();
     
     try {
-      // Get server favorites
-      const serverResponse = await userService.getFavorites();
-      const serverFavorites = serverResponse.favorites || [];
+      // Get server favorites - getFavorites() returns Station[] directly
+      const serverFavorites = await userService.getFavorites();
+      
+      if (!Array.isArray(serverFavorites)) {
+        console.error('[FavoritesStore] syncWithServer: unexpected response type');
+        return;
+      }
       
       // Merge: server + local (server takes priority for duplicates)
-      const serverIds = new Set(serverFavorites.map(f => f._id));
+      const serverIds = new Set(serverFavorites.map((f: Station) => f._id));
       const localOnly = favorites.filter(f => !serverIds.has(f._id));
       
       // Add local-only favorites to server
@@ -427,14 +491,14 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         try {
           await userService.addFavorite(station._id);
         } catch (e) {
-          // Ignore errors for individual stations
+          console.log('[FavoritesStore] Failed to sync station to server:', station._id);
         }
       }
       
       // Reload to get merged list
       await get().loadFavorites();
     } catch (error) {
-      console.error('Error syncing favorites:', error);
+      console.error('[FavoritesStore] Error syncing favorites:', error);
     }
   },
 }));

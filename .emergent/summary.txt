@@ -11,149 +11,210 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish. The next agent MUST respond in Turkish only (İletişimi Türkçe sürdürün).
 
 **what currently exists?**
-The project is a React Native Expo (Bare Workflow) app. This session was highly productive, focusing on fixing numerous critical bugs reported by the user.
+The project is a React Native Expo (Bare Workflow) app. The previous session was an extensive bug-fixing marathon where the agent addressed numerous critical issues reported by the user in a new build.
 
--   **Social Login Reworked:** The broken Google & Apple sign-in was completely fixed by implementing the new -based mobile authentication flow documented by the user.
--   **Logo Logic Standardized:** A major source of UI bugs was eliminated by creating a central helper () based on detailed user-provided documentation. Over 15 files were refactored to use this single source of truth, ensuring consistent and correct logo display across the entire app.
--   **Critical Bugs Fixed:**
-    -   **Genre Stations Loading:** Fixed a bug where stations failed to load for a genre after changing the country. This was due to backend inconsistencies in country name formats (e.g., Austria vs. Österreich). A client-side fallback was implemented in  to try both English and native names.
-    -   **User Profile Crash:** Fixed a native iOS crash that occurred when opening a user's profile page. The fix involved adding robust defensive checks in  to prevent  or malformed data (especially image URIs) from being passed to native components.
-    -   **Follow/Unfollow:** Repaired the non-functional follow/unfollow feature. The agent corrected the API endpoints and HTTP methods and guided the user to have the backend updated to support  token authentication instead of session cookies.
-    -   **iOS Ads:** Enabled ads on iOS by implementing the App Tracking Transparency (ATT) consent flow and correcting the AdMob App IDs in .
--   **Regressions Addressed:** Corrected the home screen to show Discoverable Genres instead of Popular Genres, as per the user's explicit request.
+Fixes implemented include:
+-   **iOS App Crash:** Replaced the crashing  package with a custom, stable native module () and manually updated the Xcode project () and  to ensure the ATT prompt functions correctly.
+-   **CarPlay Regressions & Bugs:**
+    -   Reverted a faulty fix that broke station logos, restoring the working  implementation.
+    -   Fixed a bug preventing the Recently Played list from showing.
+    -   Strengthened the cold start playback logic by introducing an  flag to prevent playback attempts before the audio engine is initialized.
+-   **Follow/Unfollow & Profile Bugs:**
+    -   Corrected the  action to use the  HTTP method as required by the backend, fixing a 500 error source.
+    -   Resolved an issue where follower/following counts always showed 0 by removing a faulty, redundant API call.
+-   **API & Data Handling:**
+    -   Fixed the All Stations screen by implementing infinite scrolling () to handle pagination for lists larger than 100 stations.
+    -   Made the favorite synchronization more robust to prevent local favorites from being erased if the API call fails or returns empty.
+
+Almost all of these fixes are pending user verification in a new native build.
 
 **Last working item**:
--   **Last item agent was working**: The user reported that CarPlay is still broken on a cold start. Specifically: genres don't load, global stations appear without logos, and selecting a station doesn't start playback. The agent began investigating the root causes by analyzing the CarPlay data flow and initialization lifecycle across , , and the native Swift delegate.
+-   **Last item agent was working**: The user reported that favorites are not persisting after logging out and back in. The agent began investigating this by examining the  file to understand the synchronization logic but did not implement a fix before the session ended.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. However, since this is a native-specific issue involving device cold start, it will ultimately require verification on a native build (An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username) with a CarPlay simulator or a physical device.
--   **User Testing Done**: N (User reported the issue, which is a form of testing).
+-   **Which testing method agent to use?**: Frontend testing agent. The agent should be instructed to perform a full end-to-end test: 1. Login. 2. Add stations to favorites. 3. Logout. 4. Login again. 5. Verify favorites are still present. This requires API interaction and state verification.
+-   **User Testing Done**: N (User reported the issue).
 
 **All Pending/In progress Issue list**:
--   Issue 1: CarPlay is broken on cold start (P0)
--   Issue 2: Verify multiple critical fixes on a native build (P1)
+-   Issue 1: Favorites are not persisting across login sessions (P0)
+-   Issue 2: Verify all recent critical fixes on a new native build (P0)
+-   Issue 3: Follow action results in a 500 error (P1)
+-   Issue 4: Follow button on the  page flickers on load (P2)
+-   Issue 5: CarPlay cold start playback is still not working (P0)
+-   Issue 6: CarPlay Recently Played list is not showing (P1)
 
 **Issues Detail:**
--   **Issue 1: CarPlay is broken on cold start**
-    -   **Attempted fixes**: The agent previously modified the initialization logic in  and increased startup delays in the Swift files. These changes were insufficient. The user's latest report confirms the issue persists.
-    -   **Next debug checklist**: The agent's investigation points to three potential root causes that need to be addressed:
-        1.  **Genres Not Loading**: Check the  handler in . The data fetching for genres () might be failing or happening too late in the cold start sequence. Ensure data is fetched and available *before* the CarPlay templates are built.
-        2.  **Logos Missing**: The station data being passed to  and  in  during a cold start is likely incomplete. Verify the data source and ensure full station objects (including ) are available.
-        3.  **Playback Fails**: The  callback passed to  is likely a stale or no-op version because the  is not fully initialized. Trace the  handler for  to confirm it's invoking the correct, fully-initialized playback function.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a core feature for the app's production-ready goal and a major part of the user's initial request.
+-   **Issue 1: Favorites are not persisting across login sessions**
+    -   **Attempted fixes**: The agent added a defensive check so an empty API response doesn't wipe local state, but this doesn't address the core sync-on-login problem.
+    -   **Next debug checklist**:
+        1.  In  (or equivalent), verify that after a successful login, a function like  or  is explicitly called.
+        2.  Examine 's  to ensure it correctly sends local favorites to the backend.
+        3.  Examine  to ensure it correctly fetches and applies favorites from the backend.
+        4.  Use  to test  and  to confirm their behavior with a valid user token.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical data persistence bug that severely impacts user experience.
     -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend (requires native build & CarPlay environment).
+    -   **Should Test frontend/backend/both after fix?**: Both.
     -   **Blocked on other issue**: None.
 
--   **Issue 2: Verify multiple critical fixes on a native build**
-    -   **Attempted fixes**: N/A. The fixes are implemented but unverified in the target environment.
-    -   **Next debug checklist**: After fixing the CarPlay issue, create a new native build (An Expo user account is required to proceed.
+-   **Issue 2: Verify all recent critical fixes on a new native build**
+    -   **Attempted fixes**: N/A. This is a verification task.
+    -   **Next debug checklist**: After other P0 issues are fixed, create a new native build (An Expo user account is required to proceed.
 
 Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username) and have the user (or testing agent) verify the following:
-        1.  **Social Login**: Can the user successfully sign in with both Google and Apple?
-        2.  **iOS Ads**: Does the App Tracking Transparency (ATT) prompt appear on the first launch? Are ads visible?
-        3.  **Profile Crash**: Does the app still crash when navigating to a community user's profile?
-        4.  **Geolocation**: On a fresh install, is the user's country detected automatically? (This is a carry-over from the previous session).
-    -   **Why fix this issue and what will be achieved with the fix?**: Confirms that the many critical fixes from this session work correctly in a real-world native environment.
+Input is required, but stdin is not readable. Failed to display prompt: Email or username) and have the user (or testing agent) perform a full regression test on:
+        1.  **ATT Prompt:** Does it show on first launch?
+        2.  **CarPlay:** Logos, Recently Played, and Cold Start Playback.
+        3.  **Follow/Unfollow:** Does it work without error?
+        4.  **Profile:** Are follower/following counts correct?
+        5.  **All Stations:** Does infinite scroll load more stations?
+    -   **Why fix this issue and what will be achieved with the fix?**: Confirms that the extensive bug fixes are effective in a real-world native environment.
     -   **Status**: TESTING PENDING
     -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend (via user testing a new build).
-    -   **Blocked on other issue**: CarPlay is broken on cold start. It's better to group all verifications into a single build.
+    -   **Should Test frontend/backend/both after fix?**: Frontend (requires native build).
+    -   **Blocked on other issue**: All other P0 issues. It's best to group all verifications into a single build.
+
+-   **Issue 3: Follow action results in a 500 error**
+    -   **Attempted fixes**: The agent corrected the HTTP method for  from  to .
+    -   **Next debug checklist**: The  points to a backend problem.
+        1.  Verify with  that a  request to  with a valid Bearer token and user ID still returns 500.
+        2.  Inform the user that the client-side code is correct and the issue lies with the backend API, providing the  command as proof.
+    -   **Why fix this issue and what will be achieved with the fix?**: Core social feature is broken.
+    -   **Status**: BLOCKED (on backend)
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Backend (initially), then Frontend.
+    -   **Blocked on other issue**: None.
+
+-   **Issue 4: Follow button on the  page flickers on load**
+    -   **Attempted fixes**: None.
+    -   **Next debug checklist**: The flicker happens because the follow state is checked after the component renders.
+        1.  In , ensure the initial data fetch for the user list also includes their follow status.
+        2.  If not possible, use a global state (e.g., Zustand) to hold follow statuses so it's instantly available on render.
+        3.  As a last resort, show a loading spinner on the button until the follow status is confirmed.
+    -   **Why fix this issue and what will be achieved with the fix?**: Improves UI/UX by removing jarring visual glitches.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend.
+    -   **Blocked on other issue**: None.
+
+-   **Issue 5: CarPlay cold start playback is still not working**
+    -   **Attempted fixes**: Agent implemented an  flag in  and checks it in .
+    -   **Next debug checklist**: This is a persistent race condition.
+        1.  Verify on a new native build if the latest fix worked.
+        2.  If it fails, add extensive logging to  and  to trace the state of  and the  function during a cold start.
+    -   **Why fix this issue and what will be achieved with the fix?**: Core functionality for a key platform feature.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (native build).
+    -   **Blocked on other issue**: None.
+
+-   **Issue 6: CarPlay Recently Played list is not showing**
+    -   **Attempted fixes**: Agent fixed a bug where the wrong service ( instead of ) was called.
+    -   **Next debug checklist**:
+        1.  Verify on a new native build.
+        2.  If it still fails, check  to ensure  is being called correctly and its data is passed to .
+    -   **Why fix this issue and what will be achieved with the fix?**: Restores a core CarPlay feature.
+    -   **Status**: USER VERIFICATION PENDING
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend (native build).
+    -   **Blocked on other issue**: None.
 
 **In progress Task List**:
--   None. All work is categorized under the issues above.
+-   None.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P1**: Integrate the native Apple Watch and Wear OS app targets into the main iOS () and Android () projects.
+-   **P1**: Integrate the native Apple Watch and Wear OS app targets.
 -   **P1**: Implement the CarPlay  for a richer now playing experience.
 -   **P1**: Implement an audio quality selection feature.
+-   **P3**: Investigate and implement ShazamKit for song recognition (custom native module required for Android).
 
 **Future Tasks:**
 -   **P2**: Add an Equalizer (EQ) with presets.
 -   **P2**: Enhance Bluetooth metadata support (AVRCP).
 -   **P2**: Implement a station alarm feature.
 -   **P3**: Build and integrate apps for tvOS and Android TV.
--   **P3**: Integrate a song recognition feature (e.g., ShazamKit).
 
 **Completed work in this session**
--   **Social Login Rework:** Fixed broken Google/Apple sign-in by implementing the new POST-based backend flow.
--   **Logo Logic Standardization:** Created a single source of truth for logo resolution () and refactored over 15 files to use it, fixing widespread image inconsistencies.
--   **Genre Station Loading Bug:** Fixed a critical bug where genre stations wouldn't load after changing countries due to backend inconsistencies in country name formats.
--   **User Profile Crash Fix:** Resolved a native crash when viewing user profiles by adding robust defensive coding against  data being passed to native components.
--   **Follow/Unfollow Functionality:** Repaired the follow/unfollow feature by correcting API endpoints, HTTP methods, and ensuring backend compatibility with Bearer token authentication.
--   **iOS Ads Implementation:** Added App Tracking Transparency (ATT) consent flow and corrected AdMob App IDs to enable ads on iOS.
+-   **iOS Crash Fix:** Replaced  with a custom stable native .
+-   **Xcode Project Repair:** Manually edited  to correctly link the new native module files, fixing a critical build issue.
+-   **ATT Prompt Fix:** Added the missing  key to , which was preventing the ATT prompt from appearing.
+-   **Follow/Unfollow API Fix:** Corrected the HTTP method for  from  to  to match the backend API.
+-   **All Stations Pagination:** Implemented infinite scrolling to correctly load paginated station lists.
+-   **CarPlay Bug Fixes:**
+    -   **Logo Regression:** Reverted a bad fix and restored the working  logic for station logos.
+    -   **Playback:** Implemented an  check to prevent playback failure on cold start.
+    -   **Recently Played:** Fixed the service call to correctly fetch and display the recently played list.
+-   **Profile UI Fixes:** Corrected logic to prevent follower counts from being overwritten with '0'.
+-   **Favorites Persistence:** Added a defensive check to prevent local favorites from being erased by a failed API call.
 
 **Code Architecture**
-
+getAllStations
 
 **Key Technical Concepts**
--   **Centralized Helper Functions:** Refactoring disparate, inconsistent inline logic (e.g., for logo URLs) into a single, reliable helper function () to enforce a single source of truth and simplify maintenance.
--   **Defensive Programming for Native Stability:** Adding explicit checks for , , and empty strings before passing data (especially URIs) to React Native UI components (, ) to prevent common native crashes on iOS.
--   **API Authentication Mismatch:** Debugging and resolving authentication issues where the frontend (sending  tokens) and backend (expecting session cookies) were misaligned.
--   **API Inconsistency Fallbacks:** Implementing client-side retry/fallback logic () to handle backend APIs that have inconsistent data requirements (e.g., accepting English country names for some countries and native names for others).
--   **CarPlay Cold Start Lifecycle:** Understanding the race condition between the React Native bridge initialization, data fetching (React Query), and the native CarPlay connection event (). The fix requires ensuring that essential data and callbacks are available or queued when CarPlay templates are first built.
--   **iOS Ad Monetization Requirements:** Implementing the App Tracking Transparency (ATT) framework, which is mandatory on iOS 14+ to use the IDFA for ad tracking.
+-   **Custom Native Modules:** Building a Swift/Objective-C native module () to replace a faulty third-party package, demonstrating deep platform knowledge.
+-   **Xcode Project File () Manipulation:** Manually editing the complex  file to add references for new native files, a highly technical and critical task.
+-   **API Mismatch Debugging:** Diagnosing and fixing mismatches between frontend calls and backend expectations (e.g.,  vs ).
+-   **State Hydration & Race Conditions:** Debugging and fixing UI flicker and CarPlay playback failures by managing component readiness state ().
+-   **Infinite Scrolling:** Implementing robust pagination with  and 's  prop.
+-   **Regression Management:** The agent identified a regression they had introduced (broken CarPlay logos), correctly diagnosed the root cause of their misunderstanding, and reverted the change to restore functionality.
 
 **All files of reference**
--    (Core logic for the current P0 CarPlay issue)
--    (Handles CarPlay connection events and data fetching)
--    (Native entry point for CarPlay)
--    (The new centralized logo logic, a major accomplishment)
--    (New social login implementation)
--    (Contains the country name fallback logic)
--    (Contains the crash fix implementation)
--    (User-provided documentation for the logo refactor)
+-    (Custom native module for ATT)
+-    (Xcode project file)
+-    (iOS app configuration)
+-    (ATT implementation)
+-    (CarPlay logic, logos, templates)
+-    (CarPlay cold start logic)
+-    (Audio readiness state)
+-    (Follow/Unfollow API calls)
+-    (Profile data display)
+-    (Infinite scroll implementation)
+-    (Favorites persistence logic)
 
 **key api endpoints**
--    (Updated & Verified with curl)
--    (Updated & Verified with curl)
--    (Path corrected, now accepts Bearer token)
--    (Method & Path corrected, now accepts Bearer token)
--    (New endpoint now used in the app)
--    (Now handles inconsistent  parameter via client-side fallback)
+-    (Method corrected from DELETE to POST)
+-    (Pagination implemented)
+-    (Used for favorite persistence)
+-    (Used for favorite persistence)
+-    (User reported 500 error, likely backend issue)
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **PRIORITY #1: FIX CARPLAY COLD START.** The user is blocked by this. The previous fixes were not sufficient. A deeper investigation into the data flow and initialization timing is required. The analysis in Issues Detail provides a clear starting point.
--   **BACKEND API IS INCONSISTENT.** Be aware that the backend has quirks (e.g.,  parameter expecting Türkiye but Austria). The agent added a fallback for one endpoint, but similar issues might exist elsewhere. Always be prepared to test with both English and native names if an API call fails unexpectedly.
--   **VERIFY ON NATIVE BUILD.** Do not rely on the web preview for verifying major features. After fixing CarPlay, you must guide the user to create a new native build (An Expo user account is required to proceed.
+-   **A NEW BUILD IS URGENTLY NEEDED.** The user is blocked waiting for a new build to test the massive number of fixes. Your top priority is to fix the remaining P0 issues (Favorites persistence, verify CarPlay playback fix) and then guide the user to create a new An Expo user account is required to proceed.
 
 Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username) to test the social login, iOS ads, and crash fixes implemented in this session.
+Input is required, but stdin is not readable. Failed to display prompt: Email or username.
+-   **BEWARE THE FRAGILE NATIVE CODE.** The agent created a custom Swift module and manually edited the  file. This is powerful but fragile. Any changes in the  directory must be done with extreme care. The  was instrumental in finding a missing  key, so use it to verify any native changes.
+-   **THE  ENDPOINT IS LIKELY A BACKEND ISSUE.** The agent corrected the client-side method, but the user still reports a 500 error. The next step is to prove the client is correct with a  command and inform the user that their backend developer needs to investigate.
+-   **FAVORITES PERSISTENCE IS THE IMMEDIATE TASK.** The user's very last message was about favorites not saving across logins. Address this first.
 
 **documents and test reports created in this job**
--    (User-provided, now implemented)
--   The agent successfully analyzed a user-provided crash log: 
+-    (Generated by the troubleshoot agent, identified the missing  key).
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **(LATEST/BLOCKER)** Reports that CarPlay is still broken on cold start: genres don't load, global stations have no logos, and playback fails. 
-2.  Responds to agent's question, confirming the backend developer has made the requested changes for the follow/unfollow feature. 
-3.  Asks agent to check if a new build can be made. 
-4.  Reports that the follow/unfollow feature is broken and provides a message from their backend developer asking for clarification on the mobile auth flow. 
-5.  Reports two issues: 1) Genre station lists are empty after changing the country. 2) The app crashes when tapping on a community user profile. Provides a crash log. 
-6.  Provides very detailed documentation on how station logos should be fetched and displayed, asking the agent to implement this logic universally. 
-7.  Reports that the Pop genre for Austria shows an empty list of stations. 
-8.  Asks the agent to interpret a deployment report, noting that it seems to be for a web app, not a mobile app. 
-9.  Instructs the agent to run a health check for deployment readiness. 
-10. Corrects the agent on a UI detail: the home screen genre section should show Discoverable Genres (3 items), not Popular Genres. 
+1.  **(LATEST)** Asks why favorites are not saved after logging out and back in. 
+2.  Reports multiple critical bugs in the latest build:  gives 500 error, follower counts are 0,  page flickers, favorites are lost, All Stations pagination is broken, CarPlay cold start fails, CarPlay recently played is missing, and CarPlay logos are broken (a regression). 
+3.  Confirms that the ATT prompt is now being shown on first launch. 
+4.  Asks for confirmation that ATT will now show on first launch and requests a detailed analysis with a subagent before another build. 
+5.  Provides the backend API documentation for the follow/unfollow endpoints, revealing  expects , not . 
+6.  Asks for a detailed investigation into using ShazamKit on Android. 
+7.  Reports the new build crashes immediately on launch on iOS and is 100% sure it's because of the ATT changes. 
+8.  Asks when the ATT prompt will be requested from the user. 
+9.  Asks how many radio changes are needed for an ad to appear and if all necessary Google files are present for ads. 
+10. Reports that after the latest build, iOS ads and follow/unfollow are still not working and asks for a root cause analysis before another build. 
 
 **Project Health Check:**
 -   **Broken**:
-    -   CarPlay functionality on application cold start is non-functional (data loading, image display, and playback are all failing).
+    -   Follow/Unfollow feature (returns a 500 server error).
 -   **Mocked**: None.
 -   **Unverified**:
-    -   The complete, end-to-end Social Login flow (Google & Apple).
-    -   iOS Ads functionality, including the ATT consent prompt.
-    -   The fix for the user profile page crash.
-    -   The fix for the follow/unfollow feature.
-    -   The fix for genre station loading across different countries.
-    -   Geolocation on a fresh application install.
+    -   **Favorites persistence across logins.**
+    -   **CarPlay cold start playback.**
+    -   **CarPlay Recently Played list.**
+    -   **All Stations infinite scroll pagination.**
+    -   **Correct display of follower/following counts on profiles.**
+    -   **iOS ATT prompt on a fresh install.**
 
 **3rd Party Integrations**
 -   : Core audio streaming.
@@ -162,14 +223,17 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
 -   : For Apple authentication.
 -   : For ads.
 -   : For internationalization.
--    (Android Native): For native API calls.
+-   : Researched for future implementation (requires custom Android native module).
 
 **Testing status**
 -   **Testing agent used after significant changes**: NO
--   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Troubleshoot agent used after agent stuck in loop**: YES. Successfully identified a missing  key that was blocking the ATT prompt.
 -   **Test files created**: []
--   **Known regressions**: The CarPlay cold start functionality is a persistent issue that has not been fully resolved and could be considered a regression as fixes have been attempted without success.
+-   **Known regressions**: A regression with CarPlay logos was introduced and then fixed within the session.
+
+**Credentials to test flow:**
+-   User to test profile issues with: 
 
 **What agent forgot to execute**
--   The agent did not fully resolve the CarPlay cold start issue, which was reported again by the user at the end of the session.
--   The agent did not call the  after performing a massive refactoring of the logo logic and fixing several other critical bugs. This would have been an appropriate step to ensure no regressions were introduced before moving on.</analysis>
+-   The agent did not fully resolve the favorite persistence logic after a user logs in.
+-   A comprehensive regression test via a new build was not performed after the massive number of fixes. This is the most critical pending action.</analysis>

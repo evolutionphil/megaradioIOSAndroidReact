@@ -199,13 +199,14 @@ export default function UsersScreen() {
             style={[
               styles.followBtn,
               isFollowing && styles.followingBtn,
+              !followStatusLoaded && styles.followBtnLoading,
             ]}
             onPress={() => handleFollowToggle(item._id)}
-            disabled={isLoadingThisUser}
+            disabled={isLoadingThisUser || !followStatusLoaded}
             data-testid={`follow-btn-${item._id}`}
           >
-            {isLoadingThisUser ? (
-              <ActivityIndicator size="small" color={isFollowing ? '#FF4081' : '#FFFFFF'} />
+            {isLoadingThisUser || !followStatusLoaded ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
               <Text style={[
                 styles.followBtnText,
@@ -414,6 +415,9 @@ const styles = StyleSheet.create({
   },
   followingBtnText: {
     color: '#FF4081',
+  },
+  followBtnLoading: {
+    opacity: 0.6,
   },
   separator: {
     height: 1,

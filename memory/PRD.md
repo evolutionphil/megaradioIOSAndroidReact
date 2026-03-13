@@ -168,6 +168,25 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 ### Users Follow Butonu Flicker (P1)
 - Follow durumu AsyncStorage'da cache'leniyor
 
+### Session 4 Fixes (Feb 2026)
+
+#### 1. Favoriler Oturum Arası Kaybolma Fix (P0) - KÖK NEDEN
+- **Kök Neden**: 3 ayrı sorun tespit edildi:
+  1. `logout()` AsyncStorage'daki tüm favorileri siliyordu ama kullanıcıya özel yedek almıyordu. Tekrar login olunca sunucu boş dönerse veya API başarısız olursa, geri dönüş yapılacak hiç veri kalmıyordu.
+  2. `syncWithServer()` fonksiyonundaki kritik bug: `getFavorites()` doğrudan `Station[]` döndürüyor ama kod `serverResponse.favorites` ile erişmeye çalışıyordu (her zaman `undefined` oluyordu).
+  3. `loadFavorites()` API başarısız olunca sessizce boş local storage'a düşüyordu.
+- **Düzeltmeler**:
+  - **Kullanıcıya Özel Yedekleme**: Logout sırasında favoriler `@megaradio_favorites_backup_{userId}` anahtarıyla AsyncStorage'a yedekleniyor.
+  - **Geri Yükleme**: Login sonrası `loadFavorites()` sunucu boş dönerse veya API başarısız olursa, kullanıcıya özel yedekten geri yükleniyor.
+  - **Sürekli Yedek Güncelleme**: Her favori eklendiğinde/silindiğinde ve sunucudan başarılı yükleme yapıldığında yedek güncelleniyor.
+  - **syncWithServer Bug Fix**: `serverResponse.favorites` → doğrudan `serverResponse` (zaten `Station[]`).
+- **Dosyalar**: `src/store/favoritesStore.ts`, `src/store/authStore.ts`
+
+#### 2. Users Sayfası Follow Butonu Titreme Fix (P2)
+- **Kök Neden**: `followStatusLoaded` state'i tanımlanmış ama hiçbir yerde kullanılmıyordu. Follow butonu ilk render'da her zaman "follow" gösterip, cache/API cevabı gelince "unfollow"a geçiyordu.
+- **Fix**: Follow butonu `followStatusLoaded` false iken loading spinner gösteriyor ve tıklanamaz durumda.
+- **Dosyalar**: `app/users.tsx`
+
 ### Favoriler Kaybolma (P1)
 - API boş dönerse yerel favoriler korunuyor
 
