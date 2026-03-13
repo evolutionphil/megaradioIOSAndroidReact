@@ -93,7 +93,7 @@ export default function FollowsScreen() {
             try {
               setUnfollowing(userId);
               // API docs: DELETE /api/user/unfollow/:userId
-              await api.delete(`https://themegaradio.com/api/user/unfollow/${userId}`);
+              await api.post(`https://themegaradio.com/api/user/unfollow/${userId}`);
               setFollowing(prev => prev.filter(f => f._id !== userId));
             } catch (error: any) {
               console.error('Error unfollowing:', error);
