@@ -138,36 +138,47 @@ class AdMobService {
     try {
       const { InterstitialAd, AdEventType } = require('react-native-google-mobile-ads');
       
+      // CRITICAL: Clean up old instance before creating new one
+      if (this.interstitialAd) {
+        try {
+          this.interstitialAd.removeAllListeners();
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+        this.interstitialAd = null;
+      }
+      this.isInterstitialLoaded = false;
+      
       const adUnitId = this.getAdUnitId('interstitial');
+      console.log('[AdMob] Loading interstitial with adUnitId:', adUnitId);
+      
       this.interstitialAd = InterstitialAd.createForAdRequest(adUnitId, {
         keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
       this.interstitialAd.addAdEventListener(AdEventType.LOADED, () => {
-        console.log('[AdMob] Interstitial ad loaded');
+        console.log('[AdMob] Interstitial ad LOADED successfully');
         this.isInterstitialLoaded = true;
       });
 
       this.interstitialAd.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('[AdMob] Interstitial ad closed');
+        console.log('[AdMob] Interstitial ad closed by user');
         this.isInterstitialLoaded = false;
-        // Reload for next time
         this.loadInterstitialAd();
       });
 
       this.interstitialAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
-        console.error('[AdMob] Interstitial ad error:', error);
+        console.error('[AdMob] Interstitial ad ERROR:', error?.message || error);
         this.isInterstitialLoaded = false;
-        // Retry loading after a delay on error
         setTimeout(() => {
           console.log('[AdMob] Retrying interstitial ad load...');
           this.loadInterstitialAd();
-        }, 30000); // Retry after 30 seconds
+        }, 15000);
       });
 
       this.interstitialAd.load();
     } catch (error) {
-      console.error('[AdMob] Error loading interstitial:', error);
+      console.error('[AdMob] Error creating interstitial:', error);
     }
   }
 
@@ -176,38 +187,52 @@ class AdMobService {
     if (Platform.OS === 'web' || !this.isInitialized) return;
 
     try {
-      const { RewardedAd, RewardedAdEventType } = require('react-native-google-mobile-ads');
+      const { RewardedAd, RewardedAdEventType, AdEventType } = require('react-native-google-mobile-ads');
+      
+      // CRITICAL: Clean up old instance before creating new one
+      if (this.rewardedAd) {
+        try {
+          this.rewardedAd.removeAllListeners();
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+        this.rewardedAd = null;
+      }
+      this.isRewardedLoaded = false;
       
       const adUnitId = this.getAdUnitId('rewarded');
+      console.log('[AdMob] Loading rewarded with adUnitId:', adUnitId);
+      
       this.rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
         keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
+      // RewardedAdEventType only has LOADED and EARNED_REWARD (NO ERROR or CLOSED!)
       this.rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        console.log('[AdMob] Rewarded ad loaded');
+        console.log('[AdMob] Rewarded ad LOADED successfully');
         this.isRewardedLoaded = true;
       });
 
-      this.rewardedAd.addAdEventListener(RewardedAdEventType.CLOSED, () => {
-        console.log('[AdMob] Rewarded ad closed');
-        this.isRewardedLoaded = false;
-        // Reload for next time
-        this.loadRewardedAd();
-      });
-
-      this.rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error: any) => {
-        console.error('[AdMob] Rewarded ad error:', error);
-        this.isRewardedLoaded = false;
-        // Retry loading after a delay on error
-        setTimeout(() => {
-          console.log('[AdMob] Retrying rewarded ad load...');
+      // Use addAdEventsListener for ERROR and CLOSED events 
+      // because RewardedAdEventType doesn't have these properties
+      this.rewardedAd.addAdEventsListener(({ type, payload }: { type: string; payload?: any }) => {
+        if (type === AdEventType.CLOSED || type === 'closed') {
+          console.log('[AdMob] Rewarded ad closed');
+          this.isRewardedLoaded = false;
           this.loadRewardedAd();
-        }, 30000); // Retry after 30 seconds
+        } else if (type === AdEventType.ERROR || type === 'error') {
+          console.error('[AdMob] Rewarded ad ERROR:', payload?.message || payload);
+          this.isRewardedLoaded = false;
+          setTimeout(() => {
+            console.log('[AdMob] Retrying rewarded ad load...');
+            this.loadRewardedAd();
+          }, 15000);
+        }
       });
 
       this.rewardedAd.load();
     } catch (error) {
-      console.error('[AdMob] Error loading rewarded ad:', error);
+      console.error('[AdMob] Error creating rewarded ad:', error);
     }
   }
 
