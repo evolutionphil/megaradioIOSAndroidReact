@@ -196,6 +196,12 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - **Curl ile doğrulandı**: Follow → is-following(true) → Unfollow → is-following(false) tam akış çalışıyor.
 - **Dosyalar**: `src/services/userService.ts`, `app/users.tsx`, `app/user-profile.tsx`
 
+#### 4. Search Navigation Fix
+- **Profile tıklama**: Sadece `console.log` yapıyordu → `/user-profile` sayfasına yönlendiriyor (userId, userName, userAvatar parametreleriyle)
+- **Genre tıklama**: Yanlış sayfa `/discover?genre=...` → `/genre-detail` sayfasına yönlendiriyor (slug, name parametreleriyle)
+- **Web preview'da test edildi ve doğrulandı** ✅
+- **Dosyalar**: `app/search.tsx`
+
 ### Favoriler Kaybolma (P1)
 - API boş dönerse yerel favoriler korunuyor
 
