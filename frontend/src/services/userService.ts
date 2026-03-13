@@ -72,9 +72,9 @@ export const userService = {
     return response.data;
   },
 
-  // Unfollow user
+  // Unfollow user (backend expects DELETE method)
   async unfollowUser(userId: string): Promise<{ message: string }> {
-    const response = await api.post(API_ENDPOINTS.user.unfollow(userId));
+    const response = await api.delete(API_ENDPOINTS.user.unfollow(userId));
     return response.data;
   },
 

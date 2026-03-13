@@ -187,6 +187,15 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - **Fix**: Follow butonu `followStatusLoaded` false iken loading spinner gösteriyor ve tıklanamaz durumda.
 - **Dosyalar**: `app/users.tsx`
 
+#### 3. Follow/Unfollow HTTP Method Fix (P1) - KÖK NEDEN
+- **Kök Neden**: Önceki agent backend developer'ın yanlış bilgisi ile unfollow'u `POST`'a çevirmişti. Curl ile test edince:
+  - `POST /api/user/unfollow/:userId` → HTML döndürüyor (route yok!)
+  - `DELETE /api/user/unfollow/:userId` → ✅ Çalışıyor
+  - Backend gerçekte: **Follow = POST, Unfollow = DELETE**
+- **Fix**: `userService.ts`, `users.tsx`, `user-profile.tsx` dosyalarında unfollow `api.post` → `api.delete` olarak düzeltildi.
+- **Curl ile doğrulandı**: Follow → is-following(true) → Unfollow → is-following(false) tam akış çalışıyor.
+- **Dosyalar**: `src/services/userService.ts`, `app/users.tsx`, `app/user-profile.tsx`
+
 ### Favoriler Kaybolma (P1)
 - API boş dönerse yerel favoriler korunuyor
 

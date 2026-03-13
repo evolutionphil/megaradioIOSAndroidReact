@@ -130,7 +130,7 @@ export default function UsersScreen() {
 
     try {
       if (wasFollowing) {
-        await api.post(`https://themegaradio.com/api/user/unfollow/${userId}`);
+        await api.delete(`https://themegaradio.com/api/user/unfollow/${userId}`);
       } else {
         await api.post(`https://themegaradio.com/api/user/follow/${userId}`);
       }

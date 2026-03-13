@@ -170,7 +170,7 @@ export default function UserProfileScreen() {
     try {
       if (wasFollowing) {
         // Backend expects DELETE for unfollow
-        await api.post(`https://themegaradio.com/api/user/unfollow/${userId}`);
+        await api.delete(`https://themegaradio.com/api/user/unfollow/${userId}`);
       } else {
         // Backend expects POST for follow
         await api.post(`https://themegaradio.com/api/user/follow/${userId}`);
