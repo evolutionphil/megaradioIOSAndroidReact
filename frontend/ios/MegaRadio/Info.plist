@@ -144,5 +144,7 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>MegaRadio, size daha iyi ve kişiselleştirilmiş bir reklam deneyimi sunmak için cihaz bilgilerinizi kullanmak istiyor.</string>
   </dict>
 </plist>
