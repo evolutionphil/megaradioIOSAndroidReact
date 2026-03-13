@@ -218,8 +218,21 @@ export default function RootLayout() {
   useEffect(() => {
     const initAds = async () => {
       try {
-        await adMobService.initialize();
-        console.log('[Layout] AdMob initialized');
+        const success = await adMobService.initialize();
+        console.log('[Layout] AdMob initialized:', success);
+        
+        // Retry once after 5s if first attempt failed
+        if (!success) {
+          console.log('[Layout] AdMob init failed, retrying in 5s...');
+          setTimeout(async () => {
+            try {
+              const retrySuccess = await adMobService.initialize();
+              console.log('[Layout] AdMob retry result:', retrySuccess);
+            } catch (retryError) {
+              console.error('[Layout] AdMob retry error:', retryError);
+            }
+          }, 5000);
+        }
       } catch (error) {
         console.error('[Layout] AdMob initialization error:', error);
       }

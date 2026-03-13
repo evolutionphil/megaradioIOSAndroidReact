@@ -59,6 +59,21 @@ class AdMobService {
 
     try {
       const mobileAds = require('react-native-google-mobile-ads').default;
+      const { MaxAdContentRating } = require('react-native-google-mobile-ads');
+      
+      // CRITICAL: Set request configuration BEFORE initializing
+      // This was previously handled internally by expo-tracking-transparency
+      // Without this, AdMob may not serve ads properly in production
+      try {
+        await mobileAds().setRequestConfiguration({
+          maxAdContentRating: MaxAdContentRating.T,
+          tagForChildDirectedTreatment: false,
+          tagForUnderAgeOfConsent: false,
+        });
+        console.log('[AdMob] Request configuration set');
+      } catch (configError) {
+        console.error('[AdMob] Request configuration error (non-fatal):', configError);
+      }
       
       // iOS 14+: Request ATT (App Tracking Transparency) BEFORE initializing ads
       // Without ATT permission, AdMob cannot access IDFA and ads won't serve (or very low fill rate)
