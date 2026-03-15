@@ -9,6 +9,70 @@ import type { Station } from '../types';
 const FAVORITES_KEY = '@megaradio_favorites';
 const FAVORITES_ORDER_KEY = '@megaradio_favorites_order';
 const ANDROID_AUTO_FAVORITES_KEY = 'megaradio_android_auto_favorites';
+const SYNC_QUEUE_KEY = '@megaradio_favorites_sync_queue';
+
+// Pending sync queue types
+interface SyncQueueItem {
+  action: 'add' | 'remove';
+  stationId: string;
+  timestamp: number;
+}
+
+// Process pending sync queue - retry failed API operations
+const processSyncQueue = async (): Promise<void> => {
+  try {
+    const queueJson = await AsyncStorage.getItem(SYNC_QUEUE_KEY);
+    if (!queueJson) return;
+    
+    const queue: SyncQueueItem[] = JSON.parse(queueJson);
+    if (queue.length === 0) return;
+    
+    console.log('[FavoritesStore] Processing sync queue:', queue.length, 'items');
+    const remaining: SyncQueueItem[] = [];
+    
+    for (const item of queue) {
+      try {
+        if (item.action === 'add') {
+          await userService.addFavorite(item.stationId);
+          console.log('[FavoritesStore] Sync queue: added', item.stationId);
+        } else {
+          await userService.removeFavorite(item.stationId);
+          console.log('[FavoritesStore] Sync queue: removed', item.stationId);
+        }
+      } catch (e) {
+        // Keep in queue if still failing
+        remaining.push(item);
+      }
+    }
+    
+    if (remaining.length > 0) {
+      await AsyncStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(remaining));
+      console.log('[FavoritesStore] Sync queue: still pending', remaining.length, 'items');
+    } else {
+      await AsyncStorage.removeItem(SYNC_QUEUE_KEY);
+      console.log('[FavoritesStore] Sync queue: all synced!');
+    }
+  } catch (e) {
+    console.log('[FavoritesStore] Sync queue processing error:', e);
+  }
+};
+
+// Add item to sync queue
+const addToSyncQueue = async (action: 'add' | 'remove', stationId: string): Promise<void> => {
+  try {
+    const queueJson = await AsyncStorage.getItem(SYNC_QUEUE_KEY);
+    const queue: SyncQueueItem[] = queueJson ? JSON.parse(queueJson) : [];
+    
+    // Remove conflicting entries for same station
+    const filtered = queue.filter(q => q.stationId !== stationId);
+    filtered.push({ action, stationId, timestamp: Date.now() });
+    
+    await AsyncStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(filtered));
+    console.log('[FavoritesStore] Added to sync queue:', action, stationId);
+  } catch (e) {
+    console.log('[FavoritesStore] Error adding to sync queue:', e);
+  }
+};
 
 export type SortOption = 'newest' | 'oldest' | 'az' | 'za' | 'custom';
 export type ViewMode = 'list' | 'grid';
@@ -105,6 +169,11 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       console.log('[FavoritesStore] isAuthenticated:', authStatus);
       console.log('[FavoritesStore] user._id:', user?._id);
       console.log('[FavoritesStore] token:', token ? token.substring(0, 20) + '...' : 'NULL');
+      
+      // Process any pending sync operations first
+      if (authStatus && token) {
+        await processSyncQueue();
+      }
       
       if (authStatus && user?._id && token) {
         try {
@@ -279,8 +348,8 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           console.log('[FavoritesStore] API sync SUCCESS:', result);
         } catch (apiError: any) {
           console.error('[FavoritesStore] API sync FAILED:', apiError?.response?.status, apiError?.response?.data || apiError.message);
-          // Don't revert - local storage is the source of truth
-          // API sync will happen on next app open
+          // Queue for retry on next loadFavorites
+          await addToSyncQueue('add', station._id);
         }
       } else {
         console.log('[FavoritesStore] User not authenticated, skipping API sync');
@@ -339,7 +408,8 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
           console.log('[FavoritesStore] API remove SUCCESS:', result);
         } catch (apiError: any) {
           console.error('[FavoritesStore] API remove FAILED:', apiError?.response?.status, apiError?.response?.data || apiError.message);
-          // Don't revert - local storage is the source of truth
+          // Queue for retry on next loadFavorites
+          await addToSyncQueue('remove', stationId);
         }
       } else {
         console.log('[FavoritesStore] User not authenticated, skipping API sync');

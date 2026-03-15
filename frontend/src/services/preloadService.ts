@@ -156,10 +156,85 @@ export const preloadEssentialData = async (queryClient: QueryClient): Promise<vo
   }
 };
 
+/**
+ * Preload station & genre data for a given country
+ * Populates disk cache for instant screen loads
+ */
+export const preloadStationData = async (country: string): Promise<void> => {
+  if (!country) return;
+  
+  console.log('[Preload] Starting station data preload for:', country);
+  
+  try {
+    const { diskCache, cacheKeys, CACHE_TTL } = await import('./diskCacheService');
+    
+    // Skip if already cached and fresh
+    const popularKey = cacheKeys.popularStations(country);
+    const genresKey = cacheKeys.genres(country);
+    
+    const popularFresh = diskCache.isFresh(popularKey, CACHE_TTL.POPULAR_STATIONS);
+    const genresFresh = diskCache.isFresh(genresKey, CACHE_TTL.GENRES);
+    
+    const fetches: Promise<void>[] = [];
+    
+    // 1. Popular stations
+    if (!popularFresh) {
+      fetches.push(
+        api.get('/api/stations/popular', { params: { country, limit: 50 } })
+          .then(res => {
+            const stations = res.data?.stations || res.data || [];
+            if (stations.length > 0) {
+              diskCache.set(popularKey, stations);
+              console.log('[Preload] Cached', stations.length, 'popular stations for', country);
+            }
+          })
+          .catch(() => {})
+      );
+    }
+    
+    // 2. Genres
+    if (!genresFresh) {
+      fetches.push(
+        api.get('/api/genres', { params: { country } })
+          .then(res => {
+            const genres = res.data?.genres || res.data || [];
+            if (genres.length > 0) {
+              diskCache.set(genresKey, genres);
+              console.log('[Preload] Cached', genres.length, 'genres for', country);
+            }
+          })
+          .catch(() => {})
+      );
+    }
+    
+    // 3. Precomputed genres
+    const precomputedKey = cacheKeys.precomputedGenres(country);
+    if (!diskCache.isFresh(precomputedKey, CACHE_TTL.PRECOMPUTED_GENRES)) {
+      fetches.push(
+        api.get('/api/genres/precomputed', { params: { country } })
+          .then(res => {
+            const data = res.data;
+            if (data) {
+              diskCache.set(precomputedKey, data);
+              console.log('[Preload] Cached precomputed genres for', country);
+            }
+          })
+          .catch(() => {})
+      );
+    }
+    
+    await Promise.all(fetches);
+    console.log('[Preload] Station data preload complete for:', country);
+  } catch (error) {
+    console.log('[Preload] Station data preload error:', error);
+  }
+};
+
 export default {
   preloadUserFavorites,
   preloadPublicProfileFavorites,
   getPreloadedFavorites,
   clearPreloadedCache,
   preloadEssentialData,
+  preloadStationData,
 };

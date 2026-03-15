@@ -16,7 +16,7 @@ sendLog('LAYOUT_IMPORTS_1');
 import i18n, { initI18n } from '../src/services/i18nService';
 import { colors } from '../src/constants/theme';
 import { RadioErrorModal } from '../src/components/RadioErrorModal';
-import { preloadEssentialData } from '../src/services/preloadService';
+import { preloadEssentialData, preloadStationData } from '../src/services/preloadService';
 import { initializeApp as initializeTvData } from '../src/services/tvInitService';
 import { useLocationStore } from '../src/store/locationStore';
 import { useLanguageStore } from '../src/store/languageStore';
@@ -304,6 +304,11 @@ export default function RootLayout() {
         }
         
         setAppDataReady(true);
+        
+        // Background pre-fetch station data to disk cache
+        if (country) {
+          preloadStationData(country).catch(() => {});
+        }
       } catch (error) {
         console.error('[Layout] App data init error:', error);
         setAppDataReady(true); // Continue anyway

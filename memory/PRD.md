@@ -110,6 +110,10 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 ### P0 (Critical) - VERIFICATION PENDING
 - [x] Global caching implementation (MMKV stale-while-revalidate) ✅ TAMAMLANDI
 - [x] Avatar upload/delete ✅ TAMAMLANDI (backend deployed, curl verified)
+- [x] MMKV Expo Go + Web crash ✅ TAMAMLANDI (try-catch fallback + .web.ts)
+- [x] Apple Review Reddi (Guideline 2.5.4) ✅ TAMAMLANDI (external-accessory kaldırıldı)
+- [x] Favoriler sync queue ✅ TAMAMLANDI (AsyncStorage persistent queue)
+- [x] Background pre-fetching ✅ TAMAMLANDI (preloadStationData)
 - [ ] Verify CarPlay cold start fix with native build
 - [ ] Verify user profile crash fix with native build  
 - [ ] Verify social login (Google/Apple) end-to-end
@@ -262,9 +266,9 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 #### 4. MMKV Web Crash Düzeltmesi (P0)
 - **Sorun:** `react-native-mmkv` native modül, web'de `MMKV is not a constructor` hatası veriyordu
 - **Çözüm:** Platform-specific dosya ayrımı:
-  - `diskCacheService.ts` → Native (iOS/Android) - gerçek MMKV kullanır
-  - `diskCacheService.web.ts` → Web - in-memory Map kullanır (Metro otomatik resolve eder)
-- Web bundle başarıyla derlendi ✅
+  - `diskCacheService.ts` → Native (iOS/Android) - MMKV ile try-catch, Expo Go'da in-memory fallback
+  - `diskCacheService.web.ts` → Web - in-memory Map (Metro otomatik resolve eder)
+- Web bundle ve Expo Go hatasız derleniyor ✅
 
 #### 5. Apple App Store Review Reddi Düzeltmesi (P0 - Guideline 2.5.4)
 - **Sorun:** `UIBackgroundModes` içinde `external-accessory` var ama `UISupportedExternalAccessoryProtocols` boş. Apple: "MFi donanım kullanmıyorsanız kaldırın."
@@ -272,3 +276,28 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
   - `app.json`: `external-accessory` ve `UISupportedExternalAccessoryProtocols` kaldırıldı
   - `Info.plist`: `external-accessory` ve `UISupportedExternalAccessoryProtocols` kaldırıldı
   - Kalan UIBackgroundModes: `audio`, `fetch`, `remote-notification`, `processing`
+
+#### 6. Favoriler Sync Queue Mekanizması (P0)
+- **Sorun:** API sync başarısız olduğunda hata sessizce yutuluyordu, favoriler sadece lokalde kalıyordu
+- **Çözüm:** AsyncStorage tabanlı persistent sync queue:
+  - Başarısız add/remove işlemleri `@megaradio_favorites_sync_queue`'ya ekleniyor
+  - Her `loadFavorites()` çağrısında (login/app açılış) bekleyen kuyruk otomatik işleniyor
+  - Aynı istasyon için çakışan entry'ler otomatik temizleniyor
+  - Hala başarısız olanlar kuyrukta kalıyor, sonraki açılışta tekrar deneniyor
+- **Dosyalar**: `favoritesStore.ts`
+
+#### 7. Background Pre-fetching İstasyon Verileri (P1)
+- **`preloadService.ts`'e `preloadStationData()` fonksiyonu eklendi:**
+  - Kullanıcının ülkesinin popular stations'ı → disk cache
+  - Genres → disk cache
+  - Precomputed genres → disk cache
+  - Zaten cache'de fresh data varsa atlanıyor
+  - Paralel fetch (Promise.all)
+- **`_layout.tsx`'de uygulama açılışında çağrılıyor:**
+  - `initAppData` sonrasında background'da çalışıyor
+  - UI'ı bloklamıyor (`.catch(() => {})`)
+- **Dosyalar**: `preloadService.ts`, `_layout.tsx`
+
+#### 8. Apple Watch İncelemesi
+- Tüm Swift dosyaları incelendi (WatchSessionManager, NowPlayingView, FavoritesView, GenresView)
+- İmplementasyon sağlam - değişiklik yapılmadı
