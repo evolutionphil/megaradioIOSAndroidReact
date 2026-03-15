@@ -109,7 +109,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 
 ### P0 (Critical) - VERIFICATION PENDING
 - [x] Global caching implementation (MMKV stale-while-revalidate) ✅ TAMAMLANDI
-- [x] Avatar upload/delete client-side ✅ TAMAMLANDI (backend deploy bekliyor)
+- [x] Avatar upload/delete ✅ TAMAMLANDI (backend deployed, curl verified)
 - [ ] Verify CarPlay cold start fix with native build
 - [ ] Verify user profile crash fix with native build  
 - [ ] Verify social login (Google/Apple) end-to-end
@@ -118,7 +118,6 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - [ ] Verify follow/unfollow feature
 
 ### P1 (High)
-- [ ] Avatar backend deploy sonrası uçtan uca doğrulama
 - [ ] Background pre-fetching of station data
 - [ ] Apple Watch / Wear OS target integration
 - [ ] CarPlay CPNowPlayingTemplate
@@ -246,7 +245,10 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
   - Avatar varsa: ActionSheet (Değiştir / Sil / İptal) gösteriliyor
   - Avatar yoksa: Doğrudan fotoğraf seçici açılıyor
 - Avatar delete handler eklendi (DELETE /api/user/avatar)
-- **NOT**: Backend henüz deploy edilmedi. Client-side hazır, deploy olunca çalışacak.
+- **Backend deploy edildi ve curl ile uçtan uca doğrulandı** ✅
+  - Upload: `{ success: true, avatar: "https://megaradio-...s3...webp" }` ✅
+  - Delete: `{ success: true, message: "Avatar removed" }` ✅
+  - Login response'da `avatar` alanı dönüyor ✅
 - **Dosyalar**: `constants/api.ts`, `userService.ts`, `profile.tsx`
 
 #### 3. Hardcoded URL Temizliği (Refactoring)

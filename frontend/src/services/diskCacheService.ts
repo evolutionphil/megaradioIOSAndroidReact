@@ -2,10 +2,24 @@
 // Ultra-fast key-value storage (30x faster than AsyncStorage)
 // Used for persisting API data between app launches
 
-import { MMKV } from 'react-native-mmkv';
+import { Platform } from 'react-native';
 
-// Separate MMKV instances for different data types
-const cacheStorage = new MMKV({ id: 'megaradio-cache' });
+// Web fallback: use in-memory Map when MMKV isn't available (web preview)
+let cacheStorage: any;
+
+if (Platform.OS === 'web') {
+  const memStore = new Map<string, string>();
+  cacheStorage = {
+    set: (key: string, value: string) => memStore.set(key, value),
+    getString: (key: string) => memStore.get(key) || null,
+    delete: (key: string) => memStore.delete(key),
+    getAllKeys: () => Array.from(memStore.keys()),
+    clearAll: () => memStore.clear(),
+  };
+} else {
+  const { MMKV } = require('react-native-mmkv');
+  cacheStorage = new MMKV({ id: 'megaradio-cache' });
+}
 
 // Cache TTL Constants
 export const CACHE_TTL = {
