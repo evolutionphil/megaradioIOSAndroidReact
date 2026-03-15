@@ -258,3 +258,17 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - `preloadService.ts`: favorites ve public-profiles URL'leri düzeltildi
 - `appService.ts`: pages ve info URL'leri düzeltildi
 - **Tüm API çağrıları artık `api` instance'ının `baseURL`'ini kullanıyor**
+
+#### 4. MMKV Web Crash Düzeltmesi (P0)
+- **Sorun:** `react-native-mmkv` native modül, web'de `MMKV is not a constructor` hatası veriyordu
+- **Çözüm:** Platform-specific dosya ayrımı:
+  - `diskCacheService.ts` → Native (iOS/Android) - gerçek MMKV kullanır
+  - `diskCacheService.web.ts` → Web - in-memory Map kullanır (Metro otomatik resolve eder)
+- Web bundle başarıyla derlendi ✅
+
+#### 5. Apple App Store Review Reddi Düzeltmesi (P0 - Guideline 2.5.4)
+- **Sorun:** `UIBackgroundModes` içinde `external-accessory` var ama `UISupportedExternalAccessoryProtocols` boş. Apple: "MFi donanım kullanmıyorsanız kaldırın."
+- **Çözüm:**
+  - `app.json`: `external-accessory` ve `UISupportedExternalAccessoryProtocols` kaldırıldı
+  - `Info.plist`: `external-accessory` ve `UISupportedExternalAccessoryProtocols` kaldırıldı
+  - Kalan UIBackgroundModes: `audio`, `fetch`, `remote-notification`, `processing`

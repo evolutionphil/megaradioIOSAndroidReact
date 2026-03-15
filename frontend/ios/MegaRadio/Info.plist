@@ -88,7 +88,6 @@
       <string>audio</string>
       <string>fetch</string>
       <string>remote-notification</string>
-      <string>external-accessory</string>
     </array>
     <key>UIApplicationSceneManifest</key>
     <dict>
@@ -126,8 +125,6 @@
     <false/>
     <key>UIStatusBarStyle</key>
     <string>UIStatusBarStyleDefault</string>
-    <key>UISupportedExternalAccessoryProtocols</key>
-    <array/>
     <key>UISupportedInterfaceOrientations</key>
     <array>
       <string>UIInterfaceOrientationPortrait</string>

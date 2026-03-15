@@ -1,25 +1,11 @@
-// Disk Cache Service using MMKV
+// Disk Cache Service using MMKV (Native only)
 // Ultra-fast key-value storage (30x faster than AsyncStorage)
 // Used for persisting API data between app launches
 
-import { Platform } from 'react-native';
+import { MMKV } from 'react-native-mmkv';
 
-// Web fallback: use in-memory Map when MMKV isn't available (web preview)
-let cacheStorage: any;
-
-if (Platform.OS === 'web') {
-  const memStore = new Map<string, string>();
-  cacheStorage = {
-    set: (key: string, value: string) => memStore.set(key, value),
-    getString: (key: string) => memStore.get(key) || null,
-    delete: (key: string) => memStore.delete(key),
-    getAllKeys: () => Array.from(memStore.keys()),
-    clearAll: () => memStore.clear(),
-  };
-} else {
-  const { MMKV } = require('react-native-mmkv');
-  cacheStorage = new MMKV({ id: 'megaradio-cache' });
-}
+// Separate MMKV instances for different data types
+const cacheStorage = new MMKV({ id: 'megaradio-cache' });
 
 // Cache TTL Constants
 export const CACHE_TTL = {
@@ -42,9 +28,6 @@ interface CacheEntry<T> {
 const CACHE_VERSION = 1;
 
 export const diskCache = {
-  /**
-   * Set data in disk cache with TTL
-   */
   set<T>(key: string, data: T): void {
     try {
       const entry: CacheEntry<T> = {
@@ -58,9 +41,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Get data from disk cache if not expired
-   */
   get<T>(key: string, ttl: number): T | null {
     try {
       const raw = cacheStorage.getString(key);
@@ -68,15 +48,13 @@ export const diskCache = {
 
       const entry: CacheEntry<T> = JSON.parse(raw);
 
-      // Version check - invalidate old cache format
       if (entry.version !== CACHE_VERSION) {
         cacheStorage.delete(key);
         return null;
       }
 
-      // TTL check
       if (ttl > 0 && Date.now() - entry.timestamp > ttl) {
-        return null; // Expired - but don't delete, might be used as stale fallback
+        return null;
       }
 
       return entry.data;
@@ -86,9 +64,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Get stale data (ignoring TTL) - used as fallback when API fails
-   */
   getStale<T>(key: string): T | null {
     try {
       const raw = cacheStorage.getString(key);
@@ -101,9 +76,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Check if cache entry exists and is fresh
-   */
   isFresh(key: string, ttl: number): boolean {
     try {
       const raw = cacheStorage.getString(key);
@@ -116,9 +88,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Delete specific cache entry
-   */
   delete(key: string): void {
     try {
       cacheStorage.delete(key);
@@ -127,9 +96,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Invalidate all cache entries matching a prefix
-   */
   invalidatePrefix(prefix: string): void {
     try {
       const allKeys = cacheStorage.getAllKeys();
@@ -143,9 +109,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Clear all cache
-   */
   clearAll(): void {
     try {
       cacheStorage.clearAll();
@@ -155,9 +118,6 @@ export const diskCache = {
     }
   },
 
-  /**
-   * Get cache stats (for debugging)
-   */
   getStats(): { totalKeys: number; sizeEstimate: string } {
     const allKeys = cacheStorage.getAllKeys();
     let totalSize = 0;

@@ -17,13 +17,11 @@
           "audio",
           "fetch",
           "remote-notification",
-          "external-accessory",
           "processing"
         ],
         "UIRequiredDeviceCapabilities": [
           "armv7"
         ],
-        "UISupportedExternalAccessoryProtocols": [],
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
