@@ -1,11 +1,25 @@
 // Disk Cache Service using MMKV (Native only)
 // Ultra-fast key-value storage (30x faster than AsyncStorage)
 // Used for persisting API data between app launches
+// Falls back to in-memory Map when MMKV is not available (e.g., Expo Go)
 
-import { MMKV } from 'react-native-mmkv';
+let cacheStorage: any;
 
-// Separate MMKV instances for different data types
-const cacheStorage = new MMKV({ id: 'megaradio-cache' });
+try {
+  const { MMKV } = require('react-native-mmkv');
+  cacheStorage = new MMKV({ id: 'megaradio-cache' });
+} catch {
+  // Fallback for Expo Go or environments without native MMKV
+  console.warn('[DiskCache] MMKV not available, using in-memory fallback');
+  const memStore = new Map<string, string>();
+  cacheStorage = {
+    set: (key: string, value: string) => memStore.set(key, value),
+    getString: (key: string) => memStore.get(key) ?? null,
+    delete: (key: string) => memStore.delete(key),
+    getAllKeys: () => Array.from(memStore.keys()),
+    clearAll: () => memStore.clear(),
+  };
+}
 
 // Cache TTL Constants
 export const CACHE_TTL = {
@@ -119,16 +133,20 @@ export const diskCache = {
   },
 
   getStats(): { totalKeys: number; sizeEstimate: string } {
-    const allKeys = cacheStorage.getAllKeys();
-    let totalSize = 0;
-    for (const key of allKeys) {
-      const val = cacheStorage.getString(key);
-      if (val) totalSize += val.length;
+    try {
+      const allKeys = cacheStorage.getAllKeys();
+      let totalSize = 0;
+      for (const key of allKeys) {
+        const val = cacheStorage.getString(key);
+        if (val) totalSize += val.length;
+      }
+      return {
+        totalKeys: allKeys.length,
+        sizeEstimate: `${(totalSize / 1024).toFixed(1)}KB`,
+      };
+    } catch {
+      return { totalKeys: 0, sizeEstimate: '0KB' };
     }
-    return {
-      totalKeys: allKeys.length,
-      sizeEstimate: `${(totalSize / 1024).toFixed(1)}KB`,
-    };
   },
 };
 
