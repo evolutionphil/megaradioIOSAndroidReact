@@ -32,6 +32,7 @@ const RewardedAdButton = Platform.OS !== 'web'
   ? require('../../src/components/RewardedAdButton.native').RewardedAdButton
   : () => null;
 import api from '../../src/services/api';
+import userService from '../../src/services/userService';
 import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
 import appService, { AppInfo } from '../../src/services/appService';
@@ -147,7 +148,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (user?._id || user?.id) {
       const userId = user._id || user.id;
-      api.get(`https://themegaradio.com/api/user-profile/${userId}`)
+      api.get(`/api/user-profile/${userId}`)
         .then(res => {
           const data = res.data;
           if (data) {
@@ -215,7 +216,7 @@ export default function ProfileScreen() {
     
     try {
       // API expects isPublicProfile (inverse of privateProfile)
-      await api.put('https://themegaradio.com/api/auth/profile', {
+      await api.put('/api/auth/profile', {
         isPublicProfile: !value
       });
       
@@ -273,16 +274,32 @@ export default function ProfileScreen() {
 
   // Avatar upload handler
   const handleAvatarUpload = async () => {
+    // If user has an avatar, show options (change/delete)
+    if (hasValidAvatar || localAvatar) {
+      Alert.alert(
+        t('avatar', 'Profile Photo'),
+        t('avatar_options', 'What would you like to do?'),
+        [
+          { text: t('change_photo', 'Change Photo'), onPress: pickAndUploadAvatar },
+          { text: t('remove_photo', 'Remove Photo'), style: 'destructive', onPress: handleAvatarDelete },
+          { text: t('cancel', 'Cancel'), style: 'cancel' },
+        ]
+      );
+    } else {
+      await pickAndUploadAvatar();
+    }
+  };
+
+  // Pick image and upload
+  const pickAndUploadAvatar = async () => {
     try {
-      // Request permission
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       
       if (!permissionResult.granted) {
-        Alert.alert('Permission Required', 'Please allow access to your photo library to upload an avatar.');
+        Alert.alert(t('permission_required', 'Permission Required'), t('photo_library_permission', 'Please allow access to your photo library to upload an avatar.'));
         return;
       }
 
-      // Pick image
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -290,17 +307,12 @@ export default function ProfileScreen() {
         quality: 0.8,
       });
 
-      if (result.canceled || !result.assets?.[0]) {
-        return;
-      }
+      if (result.canceled || !result.assets?.[0]) return;
 
       const asset = result.assets[0];
       setAvatarUploading(true);
-      
-      // Show local preview immediately
       setLocalAvatar(asset.uri);
 
-      // Create form data for upload
       const formData = new FormData();
       const fileName = asset.uri.split('/').pop() || 'avatar.jpg';
       const match = /\.(\w+)$/.exec(fileName);
@@ -312,26 +324,41 @@ export default function ProfileScreen() {
         type,
       } as any);
 
-      // Upload to API
-      const response = await api.post('https://themegaradio.com/api/auth/avatar', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await userService.uploadAvatar(formData);
 
-      if (response.data?.avatar || response.data?.user?.avatar) {
-        const newAvatarUrl = response.data.avatar || response.data.user?.avatar;
-        // Update auth store with new avatar
+      if (response?.avatar || response?.success) {
+        const newAvatarUrl = response.avatar;
         const { updateUser } = useAuthStore.getState();
         if (updateUser && user) {
           updateUser({ ...user, avatar: newAvatarUrl, profilePhoto: newAvatarUrl });
         }
-        Alert.alert('Success', 'Avatar updated successfully!');
+        Alert.alert(t('success', 'Success'), t('avatar_updated', 'Avatar updated successfully!'));
       }
     } catch (error: any) {
       console.error('Avatar upload error:', error);
-      setLocalAvatar(null); // Revert preview
-      Alert.alert('Error', error.response?.data?.message || 'Failed to upload avatar. Please try again.');
+      setLocalAvatar(null);
+      const msg = error.response?.data?.error || error.response?.data?.message || t('avatar_upload_failed', 'Failed to upload avatar. Please try again.');
+      Alert.alert(t('error', 'Error'), msg);
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  // Avatar delete handler
+  const handleAvatarDelete = async () => {
+    try {
+      setAvatarUploading(true);
+      await userService.deleteAvatar();
+      
+      setLocalAvatar(null);
+      const { updateUser } = useAuthStore.getState();
+      if (updateUser && user) {
+        updateUser({ ...user, avatar: null, profilePhoto: null });
+      }
+      Alert.alert(t('success', 'Success'), t('avatar_removed', 'Avatar removed.'));
+    } catch (error: any) {
+      console.error('Avatar delete error:', error);
+      Alert.alert(t('error', 'Error'), t('avatar_delete_failed', 'Failed to remove avatar.'));
     } finally {
       setAvatarUploading(false);
     }

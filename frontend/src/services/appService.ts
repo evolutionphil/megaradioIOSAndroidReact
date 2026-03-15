@@ -47,7 +47,7 @@ const appService = {
       }
 
       // Fetch from API
-      const response = await api.get('https://themegaradio.com/api/app/pages');
+      const response = await api.get('/api/app/pages');
       const pages = response.data?.pages;
 
       if (pages) {
@@ -80,7 +80,7 @@ const appService = {
       }
 
       // Fetch from API
-      const response = await api.get('https://themegaradio.com/api/app/info');
+      const response = await api.get('/api/app/info');
       const appInfo = response.data?.app;
 
       if (appInfo) {

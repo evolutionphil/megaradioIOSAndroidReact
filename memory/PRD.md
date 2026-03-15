@@ -108,6 +108,8 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 ## Prioritized Backlog
 
 ### P0 (Critical) - VERIFICATION PENDING
+- [x] Global caching implementation (MMKV stale-while-revalidate) ✅ TAMAMLANDI
+- [x] Avatar upload/delete client-side ✅ TAMAMLANDI (backend deploy bekliyor)
 - [ ] Verify CarPlay cold start fix with native build
 - [ ] Verify user profile crash fix with native build  
 - [ ] Verify social login (Google/Apple) end-to-end
@@ -116,6 +118,8 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - [ ] Verify follow/unfollow feature
 
 ### P1 (High)
+- [ ] Avatar backend deploy sonrası uçtan uca doğrulama
+- [ ] Background pre-fetching of station data
 - [ ] Apple Watch / Wear OS target integration
 - [ ] CarPlay CPNowPlayingTemplate
 - [ ] Audio quality selection
@@ -134,19 +138,25 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - `src/services/carPlayService.ts` - CarPlay template management + cold start logic
 - `src/components/CarPlayHandler.tsx` - CarPlay data fetching + initialization
 - `ios/MegaRadio/CarPlaySceneDelegate.swift` - Native CarPlay lifecycle
-- `src/hooks/useQueries.ts` - React Query hooks + CACHE_TTL constants
+- `src/hooks/useQueries.ts` - React Query hooks + disk cache integration
+- `src/services/diskCacheService.ts` - MMKV-based persistent cache (stale-while-revalidate)
 - `src/services/preloadService.ts` - User favorites preloading
 - `src/services/genreService.ts` - Genre stations with country fallback
 - `src/services/authService.ts` - Social login endpoints
+- `src/services/userService.ts` - Follow/unfollow, favorites, avatar upload/delete
+- `app/(tabs)/profile.tsx` - Profile with avatar upload, settings
 - `app/user-profile.tsx` - Community user profile
 - `src/services/adMobService.native.ts` - AdMob + ATT consent
+- `src/constants/api.ts` - All API endpoints (including avatar)
 
 ## Notes
 - User communicates in Turkish
-- No client-side caching - React Query handles freshness
+- Persistent disk caching via MMKV (stale-while-revalidate pattern)
 - HTTP favicon URLs must be proxied for iOS ATS
 - Genre stations API needs both countryEnglish AND countryNative for fallback
 - CarPlay cold start requires staggered retries + queued template refresh
+- Avatar upload endpoint: POST /api/user/avatar (multipart/form-data)
+- Avatar delete endpoint: DELETE /api/user/avatar
 
 ## Session 3 Additional Fixes
 
@@ -214,3 +224,35 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 ### ATT Module Xcode Projesi (P0)
 - ATTModule.swift ve ATTModule.m `project.pbxproj`'a eklendi (önceki build'de derlenmemişti!)
 - `NSUserTrackingUsageDescription` Info.plist'e eklendi
+
+### Session 5 (Mar 2026)
+
+#### 1. Global Caching Implementation TAMAMLANDI (P0)
+- **Tüm hook'lara MMKV disk cache entegre edildi** (stale-while-revalidate pattern):
+  - `useCommunityFavorites` → disk cache + MEDIUM_CACHE
+  - `usePublicProfiles` → disk cache + MEDIUM_CACHE
+  - `useUserProfile` → disk cache + SHORT_CACHE
+  - `useUserFavorites` → SHORT_CACHE (user-specific, no disk persist)
+- **TypeScript hata düzeltmesi**: `useDiscoverableGenres` - `result?.data` on `Genre[]` type
+- **Import düzeltmesi**: `preloadService.ts` - `CACHE_TTL` doğru modülden import (`diskCacheService`)
+- **Dosyalar**: `useQueries.ts`, `preloadService.ts`
+
+#### 2. Avatar Upload/Delete Client-Side TAMAMLANDI (P0)
+- `API_ENDPOINTS.user.avatar` endpoint'i eklendi (`/api/user/avatar`)
+- `userService.uploadAvatar()` ve `userService.deleteAvatar()` metotları eklendi
+- Avatar upload handler refactored:
+  - Endpoint URL düzeltildi: `/api/auth/avatar` → `/api/user/avatar` (spec'e uygun)
+  - `userService` kullanılıyor (hardcoded URL yerine)
+  - Avatar varsa: ActionSheet (Değiştir / Sil / İptal) gösteriliyor
+  - Avatar yoksa: Doğrudan fotoğraf seçici açılıyor
+- Avatar delete handler eklendi (DELETE /api/user/avatar)
+- **NOT**: Backend henüz deploy edilmedi. Client-side hazır, deploy olunca çalışacak.
+- **Dosyalar**: `constants/api.ts`, `userService.ts`, `profile.tsx`
+
+#### 3. Hardcoded URL Temizliği (Refactoring)
+- `profile.tsx`: `https://themegaradio.com/api/...` → relative paths
+- `user-profile.tsx`: follow/unfollow/is-following URL'leri düzeltildi
+- `useQueries.ts`: `useUserFavorites` ve `useUserProfile` relative paths
+- `preloadService.ts`: favorites ve public-profiles URL'leri düzeltildi
+- `appService.ts`: pages ve info URL'leri düzeltildi
+- **Tüm API çağrıları artık `api` instance'ının `baseURL`'ini kullanıyor**

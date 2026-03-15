@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import api from './api';
-import { CACHE_TTL, queryKeys } from '../hooks/useQueries';
+import { CACHE_TTL } from './diskCacheService';
+import { queryKeys } from '../hooks/useQueries';
 
 // Preload user favorites for faster profile loading
 // This runs in background without blocking UI
@@ -45,7 +46,7 @@ export const preloadUserFavorites = async (
   loadingUsers.add(userId);
 
   try {
-    const response = await api.get(`https://themegaradio.com/api/users/${userId}/favorites`);
+    const response = await api.get(`/api/users/${userId}/favorites`);
     const favorites = response.data?.favorites || response.data || [];
 
     // Store in local cache
@@ -136,7 +137,7 @@ export const preloadEssentialData = async (queryClient: QueryClient): Promise<vo
 
   try {
     // 1. Fetch public profiles first
-    const profilesResponse = await api.get('https://themegaradio.com/api/public-profiles', {
+    const profilesResponse = await api.get('/api/public-profiles', {
       params: { limit: 20 }
     });
     

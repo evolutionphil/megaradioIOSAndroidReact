@@ -136,7 +136,7 @@ export default function UserProfileScreen() {
 
     // Use the dedicated is-following endpoint (now supports Bearer auth)
     try {
-      const res = await api.get(`https://themegaradio.com/api/user/is-following/${userId}`);
+      const res = await api.get(`/api/user/is-following/${userId}`);
       setIsFollowing(res.data?.isFollowing || false);
     } catch (e: any) {
       console.log('[UserProfile] Could not check following status:', e?.response?.status);
@@ -170,10 +170,10 @@ export default function UserProfileScreen() {
     try {
       if (wasFollowing) {
         // Backend expects DELETE for unfollow
-        await api.delete(`https://themegaradio.com/api/user/unfollow/${userId}`);
+        await api.delete(`/api/user/unfollow/${userId}`);
       } else {
         // Backend expects POST for follow
-        await api.post(`https://themegaradio.com/api/user/follow/${userId}`);
+        await api.post(`/api/user/follow/${userId}`);
       }
     } catch (error: any) {
       const status = error?.response?.status;

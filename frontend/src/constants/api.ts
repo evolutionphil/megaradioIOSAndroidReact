@@ -82,6 +82,7 @@ export const API_ENDPOINTS = {
     markAllNotificationsRead: '/api/user/notifications/read-all',
     pushToken: '/api/user/push-token',
     deletePushToken: '/api/user/push-token',
+    avatar: '/api/user/avatar',
   },
   
   // Profile endpoints

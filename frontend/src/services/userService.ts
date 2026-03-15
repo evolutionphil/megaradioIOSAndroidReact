@@ -95,6 +95,20 @@ export const userService = {
     const response = await api.get(API_ENDPOINTS.user.following(userId));
     return response.data;
   },
+
+  // Upload avatar
+  async uploadAvatar(formData: FormData): Promise<{ success: boolean; avatar: string }> {
+    const response = await api.post(API_ENDPOINTS.user.avatar, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  // Delete avatar
+  async deleteAvatar(): Promise<{ success: boolean; message: string }> {
+    const response = await api.delete(API_ENDPOINTS.user.avatar);
+    return response.data;
+  },
 };
 
 export default userService;
