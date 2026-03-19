@@ -54,7 +54,7 @@
       <key>NSAllowsArbitraryLoadsForMedia</key>
       <true/>
       <key>NSAllowsArbitraryLoadsInWebContent</key>
-      <false/>
+      <true/>
     </dict>
     <key>NSBonjourServices</key>
     <array>
