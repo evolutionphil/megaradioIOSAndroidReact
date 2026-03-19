@@ -11,84 +11,58 @@ The user wants to build a production-ready mobile radio streaming app called Meg
 **User's preferred language**: Turkish. The next agent MUST respond in Turkish only (İletişimi Türkçe sürdürün).
 
 **what currently exists?**
-The project is a React Native Expo (Bare Workflow) app. The agent has just completed an extremely intensive bug-fixing and feature implementation session.
-
-**Key fixes and implementations:**
--   **Follow/Unfollow:** After extensive  testing, the agent discovered and fixed a critical bug where the  action was incorrectly using  instead of . This was corrected in all relevant files (, , ).
--   **Favorites Persistence:** A robust, user-specific backup system was implemented using  in  to prevent favorites from being lost during logout/login cycles.
--   **Ad System (iOS):** A deep-dive investigation was conducted to fix non-working ads. This involved:
-    -   Adding missing  and  to .
-    -   Refactoring  to fix memory leaks, add retry logic for failed ad loads, implement non-personalized ads for users who deny ATT, and manage the status bar during ad display.
-    -   The logic was updated to show an ad on the very first station change, and every 4th change thereafter.
--   **Search & Navigation:** Fixed a bug in  where tapping on user profiles or genres in search results did not navigate correctly.
--   **Genre Loading:** Fixed a bug where genre detail screens were empty by ensuring the API is not called with .
--   **Caching Layer (In Progress):** The agent began implementing a global, persistent caching layer using  to address the user's request for better performance and reduced API calls. The  library was installed and a  was created.
+The project is a React Native Expo application with a significant number of features and fixes implemented. The agent has just completed a session focused on fixing critical bugs, completing the client-side implementation for avatar uploads, making the caching system more robust, and providing extensive step-by-step support for the user's local Xcode build issues. The backend for avatar uploads is confirmed to be working. The user is currently blocked by a native iOS crash that prevents the app from launching.
 
 **Last working item**:
--   **Last item agent was working**: Implementing a global caching strategy using . The agent installed the library, created , and began integrating it into the application's core data fetching hooks in  to apply a stale-while-revalidate pattern.
+-   **Last item agent was working**: Debugging a native iOS crash on app startup. The crash log provided by the user shows an  in . The agent has correctly identified that the root cause is the React Native bridge being initialized twice, once in the  and likely again in the multi-scene setup ().
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. Once the caching logic is fully integrated, the agent should test key screens (Discover, Genres, Stations) to ensure data is loaded from the cache on subsequent visits and that the app works correctly offline (using cached data).
+-   **Which testing method agent to use?**: Manual analysis of native Swift files. The agent needs to view  and  to find the source of the double initialization and guide the user on how to refactor the code to create the bridge only once.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Avatar Upload and Persistence (P0)**
--   **Issue 2: Verify all recent critical fixes on a new native build (P0)**
--   **Issue 3: Follow action results in a 500 error (P1)** - *Note: Client-side is fixed, user confirmed backend is also fixed, but this requires end-to-end verification.*
--   **Issue 4: CarPlay cold start playback is still not working (P0)** - *Note: From previous session, pending verification.*
--   **Issue 5: Genre stations loading bug (P1)** - *Note: Fix implemented, needs verification on a device with a selected country.*
+-   Issue 1: Native iOS crash on startup (P0)
+-   Issue 2: iOS ads not showing on native build (P1)
+-   Issue 3: Verify all recent critical fixes on a new native build (P1)
+-   Issue 4: CarPlay cold start playback is still not working (P1)
 
 **Issues Detail:**
--   **Issue 1: Avatar Upload and Persistence**
-    -   **Attempted fixes**: The agent provided the backend developer with a detailed specification for the required  endpoint. No client-side code has been written yet.
+-   **Issue 1: Native iOS crash on startup**
+    -   **Attempted fixes**: The agent guided the user to resolve several prerequisite issues: a Metro bundler connection error, multiple Xcode build cycle errors, and Info.plist conflicts. The agent then analyzed the final crash log and identified the double bridge initialization as the root cause.
     -   **Next debug checklist**:
-        1.  Once the backend endpoint is ready, implement the avatar upload logic in the user profile/settings screen.
-        2.  Use a library like  to allow users to select an image.
-        3.  Send the image as  to the new endpoint.
-        4.  On successful upload, update the user's avatar URL in the  (Zustand) to immediately reflect the change across the app.
-        5.  Ensure the updated user object (with the new avatar URL) is fetched upon next login.
-    -   **Why fix this issue and what will be achieved with the fix?**: It's a core profile customization feature. It will fix the visual bug of the fallback avatar showing everywhere.
-    -   **Status**: BLOCKED (on backend implementation)
+        1.  View the contents of .
+        2.  View the contents of .
+        3.  Compare the two files to identify where the React Native bridge is being created in both.
+        4.  Propose a code modification to ensure the bridge is initialized only once and reused across scenes.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is an absolute blocker. The app is unlaunchable on the user's iOS simulator. Fixing it will unblock all other testing.
+    -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Both.
-    -   **Blocked on other issue**: None.
+    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS native build).
+    -   **Blocked on other issue**: None. This is the primary blocker.
 
--   **Issue 2: Verify all recent critical fixes on a new native build**
-    -   **Attempted fixes**: N/A. This is a verification task.
-    -   **Next debug checklist**: Once the caching task is complete, a new native build (An Expo user account is required to proceed.
+-   **Issue 2: iOS ads not showing on native build**
+    -   **Attempted fixes**: Agent confirmed all AdMob App IDs and Ad Unit IDs are correct across , , and .
+    -   **Next debug checklist**: Once Issue 1 is resolved, guide the user to get runtime console logs from their Xcode build. Specifically, filter for  to check for errors like No fill or SDK initialization failures.
+    -   **Why fix this issue and what will be achieved with the fix?**: Monetization is a core product requirement.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: Frontend (iOS native build).
+    -   **Blocked on other issue**: Issue 1: Native iOS crash on startup
 
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username) is mandatory. The user (or testing agent) must perform a full regression test on:
-        1.  **Ads (iOS):** Do ads appear on the 1st station change and then every 4th? Does it work even if ATT is denied?
-        2.  **Follow/Unfollow:** Does it work without error?
-        3.  **Favorites:** Add favorites, logout, login. Are they still there?
-        4.  **Search:** Can you navigate to user profiles and genre details from search results?
-        5.  **Genres:** Select a country. Do genre detail pages show the correct stations?
-        6.  **CarPlay/Android Auto:** Verify all fixes from the previous session.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is the most critical action item. It will confirm that weeks of bug fixing have been successful in a real-world environment.
-    -   **Status**: TESTING PENDING
-    -   **Is recurring issue?**: Y (many of these are)
-    -   **Should Test frontend/backend/both after fix?**: Both (requires native build).
-    -   **Blocked on other issue**: In-progress caching task.
+-   **Issue 3: Verify all recent critical fixes on a new native build**
+    -   **Next debug checklist**: After the crash is fixed, a new build is needed to verify: favorites sync with the new retry queue, background data pre-fetching, avatar functionality in the UI, and the fix for the Apple Review rejection.
+    -   **Status**: BLOCKED
+    -   **Blocked on other issue**: Issue 1: Native iOS crash on startup
+
+-   **Issue 4: CarPlay cold start playback**
+    -   **Status**: NOT STARTED (pending from previous sessions, needs verification after a stable build is achieved).
 
 **In progress Task List**:
--   **Task 1: Complete Global Caching Implementation (P0)**
-
-**Task Detail:**
--   **Task 1: Complete Global Caching Implementation**
-    -   **Where to resume**: The agent has created  and started modifying . The next step is to complete the refactoring of  to fully wrap all  and  calls with the caching logic, implementing a stale-while-revalidate strategy.
-    -   **What will be achieved with this?**: Drastically improved app performance, reduced API load, and offline capabilities for previously viewed data. This addresses a major architectural request from the user.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: Frontend.
-    -   **Blocked on something**: No.
+-   None. Current focus is on the critical P0 bug fix.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **P0**: Implement client-side avatar upload functionality (blocked on backend).
--   **P1**: Implement background pre-fetching of station data for all countries to populate the cache.
--   **P1**: Integrate native Apple Watch and Wear OS app targets.
--   **P1**: Implement the CarPlay .
--   **P2**: Implement an audio quality selection feature.
+-   **P1**: Implement/enhance the CarPlay .
 
 **Future Tasks:**
 -   **P2**: Investigate and implement ShazamKit for song recognition.
@@ -98,84 +72,67 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
 -   **P3**: Build and integrate apps for tvOS and Android TV.
 
 **Completed work in this session**
--   **Follow/Unfollow API Fix:** Corrected  method to  across the app, resolving a 500 error.
--   **Favorites Persistence Logic:** Implemented a user-specific backup system on logout/login.
--   **iOS Ad System Overhaul:**
-    -   Fixed native  with  and .
-    -   Refactored  to fix memory leaks, add robust retry logic, and handle ATT denial.
-    -   Updated ad frequency to show on the 1st and every 4th station change.
--   **Search Navigation Fix:** Enabled navigation to user profiles and genre pages from search results.
--   **Genre Station Loading Fix:** Prevented invalid API calls by removing .
--   **Android Build Analysis:** Provided a detailed report confirming that most fixes will apply to Android and that its build should be less problematic than iOS.
--   **Caching Layer Foundation:** Installed  and created the initial  and  structure.
-
-**Earlier issues found/mentioned but not fixed**
--   All known issues are captured in the Pending/In progress Issue list.
+-   **Avatar Upload & Delete (End-to-End):** Successfully implemented and tested the full avatar workflow (upload, delete, persistence on login) after backend deployment. Updated the test user's profile with a real photo.
+-   **Global Caching & Platform Stability:** Completed the caching logic for all data hooks and fixed crashes on both Web and Expo Go by implementing platform-specific fallbacks.
+-   **Favorites Sync Robustness:** Diagnosed and fixed an issue where network errors caused favorites to be lost. Implemented a persistent retry queue using AsyncStorage to ensure offline changes are synced later.
+-   **Background Pre-fetching:** Implemented a service to pre-load station and genre data on app startup to improve perceived performance.
+-   **Apple Review Rejection Fix:** Resolved the external-accessory issue by removing the unnecessary keys from  and .
+-   **Xcode Build & Debugging Support:** Provided extensive, step-by-step guidance to the user to resolve a series of complex local build issues, including  failures (), Xcode build cycles, and  conflicts.
+-   **Apple Watch Implementation Review:** Analyzed the existing WatchOS codebase and confirmed it is robust and does not require changes.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Native Configuration ():** Critical modifications to support the iOS ad ecosystem ().
--   **API Debugging ():** Extensive use of  to diagnose and prove API contract mismatches (e.g.,  vs  for unfollow).
--   **Robust State Management (Zustand):** Used for auth state, but extended with manual backup/restore for favorites.
--   **Persistent Caching ():** Introduction of a fast, synchronous, persistent key-value store to act as a global application cache.
--   **Stale-While-Revalidate:** The caching pattern being implemented to provide an instant UI response from cache while fetching fresh data in the background.
--   **Ad SDK Lifecycle Management:** Deep refactoring of the ad service to handle initialization, configuration, loading, errors, retries, and memory management correctly.
+-   **Native iOS Crash Debugging:** Analyzing crash logs (, ) to pinpoint issues in the native Swift app lifecycle (, ).
+-   **React Native Bridge Lifecycle:** Understanding that the RN bridge must be initialized only once.
+-   **Platform-Specific Code:** Using file extensions () and runtime checks ( for native modules) to support multiple environments (native, web, Expo Go).
+-   **Xcode Build System:** Debugging complex Xcode errors like build cycles, dependency conflicts, and code signing issues.
+-   **Robust Offline Sync:** Implementing a persistent queue with  to retry failed API requests, ensuring eventual data consistency.
 
 **All files of reference**
--    (Completely refactored for ads)
--    (Crucial for the iOS ad fix)
--    (New backup/restore logic)
--    (Correct  method)
--    (In-progress caching integration)
--    (New caching service)
--    (Fixed navigation)
--    (Correct  method)
--    (Correct  method)
+-    (Critical for debugging the current crash)
+-    (Critical for debugging the current crash)
+-    (Contains the new robust sync logic)
+-    (Contains new avatar functions)
+-    (Contains the Expo Go fallback fix)
 
 **key api endpoints**
--    (Works)
--    (Corrected from , now works)
--    (Works)
--    (Works)
--    (Works)
--    (Works, client-side fix applied)
--    (Spec provided to user, awaiting backend implementation)
+-    (Implemented and tested)
+-    (Implemented and tested)
 
 **Critical Info for New Agent**
 -   **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN (COMMUNICATE IN TURKISH).**
--   **A NEW NATIVE BUILD IS URGENTLY REQUIRED** after the current tasks are done. The user has been waiting to verify a massive number of fixes, especially the critical ad system overhaul on iOS, which depends on  changes. Do not proceed to other tasks without planning for this build.
--   **COMPLETE THE CACHING IMPLEMENTATION.** This is the active, high-priority task. Resume work in  to wrap all data-fetching hooks with the  logic using .
--   **AVATAR UPLOAD IS BLOCKED ON THE BACKEND.** The agent has already provided the backend developer with the necessary endpoint specifications. Do not attempt to implement the client side until the user confirms the backend is ready.
+-   **CRITICAL BLOCKER:** The app crashes immediately on native iOS launch. The crash report indicates the React Native bridge is being created more than once. You must fix this first by examining  and  to centralize the bridge initialization.
+-   **Xcode Expertise Required:** The user is building the app locally in Xcode and encountering native-level problems. You must be able to interpret crash logs and guide the user through fixing Swift code and Xcode project settings.
+-   **Ads Issue is Pending Logs:** Do not attempt to fix the ads issue until the app launches. Once it does, you must ask the user for the  logs from the Xcode console to diagnose the problem.
+-   **New Build Is Essential:** The user's current build does not contain the latest fixes for the Apple Review rejection, favorites sync, and caching. A new, successful build is required to verify all completed work.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **(LATEST)** Requests a detailed analysis and implementation plan for avatar uploads and a global caching mechanism to improve performance and reduce API calls. (Status: IN PROGRESS)
-2.  Reports that ads are not working on iOS even after 10 station changes. (Status: Addressed, pending verification)
-3.  Confirms backend is deployed with fixes for genre loading. (Status: Completed)
-4.  Provides detailed backend update notes for Follow/Unfollow, Genre Stations, and Favorites APIs. (Status: Completed)
-5.  Asks agent to self-test the fixed search navigation. (Status: Completed)
-6.  Reports that tapping on users or genres in search results does nothing. (Status: Addressed, pending verification)
-7.  Reports that genre detail pages are empty for Austria/Pop despite the genre list showing a count of 30. (Status: Addressed, pending verification)
-8.  Asks to clear the Metro cache completely. (Status: Completed)
-9.  Asks if the agent has any questions for the backend developer regarding the favorites system. (Status: Completed)
-10. Provides backend update confirming the  500 error is fixed. (Status: Completed)
+-   **(LATEST)** User provides a new crash log showing the  assertion failure, even after starting the Metro bundler.
+-   User provides Xcode logs showing Connection refused to localhost:8081. Agent correctly identifies Metro isn't running and instructs the user to start it first.
+-   User reports a crash: . Agent identifies it as a debugger breakpoint and instructs the user how to continue or disable it.
+-   User reports a build cycle error. Agent provides a fix by modifying the Google Mobile Ads build script settings.
+-   User reports the same build cycle error again.
+-   User asks how to add the  key after being unable to find it.
+-   User reports a  error: Unable to find a specification for NitroModules. Agent correctly diagnoses a missing peer dependency () and provides the fix.
+-   User asks for a new, comprehensive step-by-step guide for building the app with the WatchOS target in Xcode.
+-   User asks if CarPlay can run without an iPhone and reports that ads are still not working on their native build.
+-   User confirms the  bundle identifier is being set automatically and asks if it's correct.
 
 **Project Health Check:**
 -   **Broken**:
-    -   Avatar Upload/Display (pending backend and client implementation).
+    -   **iOS App Launch**: The application is not launchable on iOS due to a native crash on startup.
 -   **Mocked**: None.
 -   **Unverified**:
-    -   **iOS Ad System**: The entire ad flow is unverified on a native build.
-    -   **Follow/Unfollow**: The  method fix is unverified on a native build.
-    -   **Favorites Persistence**: The backup/restore logic is unverified.
-    -   **Search Navigation**: The fix is unverified by the user.
-    -   **Genre Station Loading**: The fix is unverified on a device.
-    -   **CarPlay & Android Auto**: All fixes from the previous session are still pending verification.
+    -   **iOS Ad System**: Not showing on the user's native build.
+    -   **Favorites Sync Retry Queue**: Implemented but not verified on a device.
+    -   **Background Data Pre-fetching**: Implemented but not verified on a device.
 
 **3rd Party Integrations**
 -   : Core audio streaming.
--   : **(NEW)** For persistent, fast caching.
+-   : For persistent caching.
+-   : **(NEW)** Peer dependency for .
 -   : For CarPlay features.
 -   : For Google authentication.
 -   : For Apple authentication.
@@ -183,14 +140,15 @@ Input is required, but stdin is not readable. Failed to display prompt: Email or
 -   : For internationalization.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, for analyzing the ad system () and attempting to verify search navigation.
--   **Troubleshoot agent used after agent stuck in loop**: YES, successfully identified root causes for the ad system failure.
+-   **Testing agent used after significant changes**: NO
+-   **Troubleshoot agent used after agent stuck in loop**: NO
 -   **Test files created**: []
--   **Known regressions**: None in this session. The agent corrected a regression from a previous session (unfollow method).
+-   **Known regressions**: None.
 
 **Credentials to test flow:**
 -   Email: 
 -   Password: 
+-   (Note: This user account now has a real avatar and 6 favorite stations for testing purposes.)
 
 **What agent forgot to execute**
--   The agent is in the middle of a large, user-requested task (caching implementation). Nothing has been forgotten, but this task is the immediate priority to complete.</analysis>
+The agent has been methodically working through a complex, multi-step debugging process with the user. Nothing has been forgotten; the current priority is resolving the critical native crash that is blocking all further progress.</analysis>
