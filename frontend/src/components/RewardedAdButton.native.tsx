@@ -6,24 +6,10 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Platform }
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/theme';
 
-interface RewardedAdButtonProps {
-  onRewardEarned?: () => void;
-}
-
-// Web'de bu component'i render etme
-if (Platform.OS === 'web') {
-  // Web için boş export
-  module.exports = {
-    RewardedAdButton: () => null,
-    default: () => null,
-  };
-}
-
 // Native için adMobService'i import et
-const getAdMobService = () => {
-  if (Platform.OS === 'web') return null;
-  return require('../services/adMobService').adMobService;
-};
+const adMobService = Platform.OS !== 'web' 
+  ? require('../services/adMobService').adMobService 
+  : null;
 
 interface RewardedAdButtonProps {
   onRewardEarned?: () => void;
