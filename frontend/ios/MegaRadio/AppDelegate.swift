@@ -43,26 +43,19 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-    // CRITICAL FOR COLD-START: Initialize React Native bridge IMMEDIATELY
-    // This ensures JS runtime is available when CarPlay connects first (app was killed)
-    // Without this, CarPlay shows "Loading" indefinitely
-    #if os(iOS) || os(tvOS)
-    print("[AppDelegate] Initializing React Native bridge for cold-start support...")
-    window = UIWindow(frame: UIScreen.main.bounds)
-    factory.startReactNative(
-      withModuleName: "main",
-      in: window,
-      launchOptions: launchOptions)
-    isReactNativeInitialized = true
-    print("[AppDelegate] React Native bridge initialized successfully")
+    // NOTE: Do NOT call startReactNative() here!
+    // With scene-based lifecycle (iOS 13+), the window and RN root view
+    // must be created by the scene delegate (PhoneSceneDelegate).
+    // Creating it here AND in the scene delegate causes:
+    // "Manually adding the rootViewController's view to the view hierarchy is no longer supported"
+    // CarPlay cold-start is handled by initAppFromScene() when CarPlay connects first.
     
+    #if os(iOS) || os(tvOS)
     // BACKGROUND REFRESH: Register background tasks BEFORE app finishes launching
-    // This enables cache updates when app is in background/terminated
     print("[AppDelegate] Registering background tasks...")
     BackgroundRefreshManager.shared.registerBackgroundTasks()
     
     // SILENT PUSH: Register for remote notifications (no user permission needed for silent)
-    // This enables server-triggered cache updates
     print("[AppDelegate] Registering for remote notifications...")
     SilentPushHandler.registerForRemoteNotifications()
     #endif
@@ -163,6 +156,11 @@ public class AppDelegate: ExpoAppDelegate {
   /// Check if React Native is initialized
   @objc public func isReactNativeReady() -> Bool {
     return isReactNativeInitialized
+  }
+  
+  /// Mark React Native as initialized (called by PhoneSceneDelegate after startReactNative)
+  @objc public func markReactNativeInitialized() {
+    isReactNativeInitialized = true
   }
   
   // MARK: - Scene Configuration (iOS 13+)
