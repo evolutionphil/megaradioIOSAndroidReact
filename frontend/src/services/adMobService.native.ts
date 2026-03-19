@@ -194,12 +194,12 @@ class AdMobService {
     }
   }
 
-  // Load Rewarded Ad
+  // Load Rewarded Interstitial Ad
   async loadRewardedAd(): Promise<void> {
     if (Platform.OS === 'web' || !this.isInitialized) return;
 
     try {
-      const { RewardedAd, RewardedAdEventType, AdEventType } = require('react-native-google-mobile-ads');
+      const { RewardedInterstitialAd, AdEventType } = require('react-native-google-mobile-ads');
       
       // CRITICAL: Clean up old instance before creating new one
       if (this.rewardedAd) {
@@ -213,39 +213,36 @@ class AdMobService {
       this.isRewardedLoaded = false;
       
       const adUnitId = this.getAdUnitId('rewarded');
-      console.log('[AdMob] Loading rewarded with adUnitId:', adUnitId);
+      console.log('[AdMob] Loading rewarded interstitial with adUnitId:', adUnitId);
       
-      this.rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
+      this.rewardedAd = RewardedInterstitialAd.createForAdRequest(adUnitId, {
         requestNonPersonalizedAdsOnly: true,
         keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
-      // RewardedAdEventType only has LOADED and EARNED_REWARD (NO ERROR or CLOSED!)
-      this.rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
-        console.log('[AdMob] Rewarded ad LOADED successfully');
+      this.rewardedAd.addAdEventListener(AdEventType.LOADED, () => {
+        console.log('[AdMob] Rewarded interstitial ad LOADED successfully');
         this.isRewardedLoaded = true;
       });
 
-      // Use addAdEventsListener for ERROR and CLOSED events 
-      // because RewardedAdEventType doesn't have these properties
-      this.rewardedAd.addAdEventsListener(({ type, payload }: { type: string; payload?: any }) => {
-        if (type === AdEventType.CLOSED || type === 'closed') {
-          console.log('[AdMob] Rewarded ad closed');
-          this.isRewardedLoaded = false;
+      this.rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
+        console.log('[AdMob] Rewarded interstitial ad closed');
+        this.isRewardedLoaded = false;
+        this.loadRewardedAd();
+      });
+
+      this.rewardedAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
+        console.error('[AdMob] Rewarded interstitial ad ERROR:', error?.message || error);
+        this.isRewardedLoaded = false;
+        setTimeout(() => {
+          console.log('[AdMob] Retrying rewarded interstitial ad load...');
           this.loadRewardedAd();
-        } else if (type === AdEventType.ERROR || type === 'error') {
-          console.error('[AdMob] Rewarded ad ERROR:', payload?.message || payload);
-          this.isRewardedLoaded = false;
-          setTimeout(() => {
-            console.log('[AdMob] Retrying rewarded ad load...');
-            this.loadRewardedAd();
-          }, 15000);
-        }
+        }, 15000);
       });
 
       this.rewardedAd.load();
     } catch (error) {
-      console.error('[AdMob] Error creating rewarded ad:', error);
+      console.error('[AdMob] Error creating rewarded interstitial ad:', error);
     }
   }
 
@@ -363,23 +360,23 @@ class AdMobService {
     }
   }
 
-  // Show Rewarded Ad and return promise that resolves when reward is earned
+  // Show Rewarded Interstitial Ad and return promise that resolves when reward is earned
   async showRewardedAd(): Promise<{ success: boolean; reward?: { type: string; amount: number } }> {
     if (Platform.OS === 'web') {
       return { success: false };
     }
 
     if (!this.isRewardedLoaded || !this.rewardedAd) {
-      console.log('[AdMob] Rewarded ad not ready');
+      console.log('[AdMob] Rewarded interstitial ad not ready');
       return { success: false };
     }
 
     return new Promise((resolve) => {
-      const { RewardedAdEventType } = require('react-native-google-mobile-ads');
+      const { AdEventType } = require('react-native-google-mobile-ads');
       
-      // Listen for reward earned
+      // RewardedInterstitialAd uses AdEventType.EARNED_REWARD
       const rewardListener = this.rewardedAd.addAdEventListener(
-        RewardedAdEventType.EARNED_REWARD,
+        AdEventType.EARNED_REWARD,
         async (reward: { type: string; amount: number }) => {
           console.log('[AdMob] Reward earned:', reward);
           
@@ -393,7 +390,7 @@ class AdMobService {
 
       // Show the ad
       this.rewardedAd.show().catch((error: any) => {
-        console.error('[AdMob] Error showing rewarded ad:', error);
+        console.error('[AdMob] Error showing rewarded interstitial ad:', error);
         rewardListener();
         resolve({ success: false });
       });
