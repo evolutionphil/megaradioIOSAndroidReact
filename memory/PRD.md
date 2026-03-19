@@ -114,6 +114,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - [x] Apple Review Reddi (Guideline 2.5.4) ✅ TAMAMLANDI (external-accessory kaldırıldı)
 - [x] Favoriler sync queue ✅ TAMAMLANDI (AsyncStorage persistent queue)
 - [x] Background pre-fetching ✅ TAMAMLANDI (preloadStationData)
+- [x] iOS Startup Crash Fix ✅ TAMAMLANDI (PhoneSceneDelegate çift bridge başlatma düzeltildi - Feb 2026)
 - [ ] Verify CarPlay cold start fix with native build
 - [ ] Verify user profile crash fix with native build  
 - [ ] Verify social login (Google/Apple) end-to-end
@@ -301,3 +302,18 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 #### 8. Apple Watch İncelemesi
 - Tüm Swift dosyaları incelendi (WatchSessionManager, NowPlayingView, FavoritesView, GenresView)
 - İmplementasyon sağlam - değişiklik yapılmadı
+
+### Session 6 (Feb 2026)
+
+#### 1. iOS Startup Crash Fix - KÖK NEDEN (P0) ✅
+- **Kök Neden**: `PhoneSceneDelegate.swift` içinde `factory.startReactNative(withModuleName: "main", in: window, launchOptions: nil)` çağrılıyordu. Ancak React Native bridge zaten `AppDelegate.didFinishLaunchingWithOptions` içinde başlatılmıştı. İkinci kez `startReactNative()` çağrılması, Fabric (yeni mimari) altında `Assertion failed: recreateRootViewWithBundleURL: does not support when react instance is created` hatasına yol açıyordu.
+- **Uygulama Yaşam Döngüsü**: 
+  1. `AppDelegate.didFinishLaunchingWithOptions` → RN bridge başlatılıyor (isReactNativeInitialized = true)
+  2. `PhoneSceneDelegate.scene:willConnectTo:` → ESKİ: `startReactNative()` tekrar çağrılıyordu → CRASH
+- **Düzeltme**: 
+  - `PhoneSceneDelegate.swift`'de `startReactNative()` çağrısı tamamen kaldırıldı
+  - Yerine: `appDelegate.isReactNativeReady()` ile RN durumu kontrol ediliyor
+  - RN hazırsa: Mevcut `rootViewController` AppDelegate'den alınıp yeni scene window'a taşınıyor
+  - RN hazır değilse (fallback): `initAppFromScene()` çağrılıyor (guard ile korumalı)
+- **Doğrulama**: `CarPlaySceneDelegate.swift` ve `CarSceneDelegate.m` zaten `isReactNativeReady` kontrolü kullanıyor - etkilenmedi
+- **Dosyalar**: `ios/MegaRadio/PhoneSceneDelegate.swift`
