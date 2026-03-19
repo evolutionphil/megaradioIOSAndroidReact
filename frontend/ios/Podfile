@@ -71,5 +71,13 @@ target 'MegaRadio' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
+
+    # Fix: Force all pods to use iOS 15.1 minimum deployment target
+    # Prevents "only available in iOS 13.4 or newer" errors in react-native-carplay
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+      end
+    end
   end
 end
