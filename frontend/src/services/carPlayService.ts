@@ -868,6 +868,8 @@ const createRootTemplate = async (): Promise<void> => {
       CarPlay: !!CarPlay,
       ListTemplate: !!ListTemplate,
     });
+    // CRITICAL: Release mutex before returning!
+    isCreatingTemplate = false;
     return;
   }
   
@@ -984,6 +986,8 @@ const createRootTemplate = async (): Promise<void> => {
         CarPlay.setRootTemplate(fallbackTemplate, true);
         CarPlayLogger.warn('[RN] Fallback template SET');
       }
+      // CRITICAL: Release mutex before returning!
+      isCreatingTemplate = false;
       return;
     }
     
@@ -999,14 +1003,19 @@ const createRootTemplate = async (): Promise<void> => {
     
     // Set as root template
     CarPlayLogger.info('[RN] Calling CarPlay.setRootTemplate()...');
-    CarPlay.setRootTemplate(tabBarTemplate, true);
-    console.log('[CarPlay] Root template set successfully with', templates.length, 'tabs');
-    CarPlayLogger.info('[RN] ROOT TEMPLATE SET SUCCESSFULLY', { 
-      tabCount: templates.length,
-      tabs: templates.map((t, i) => t.tabTitle || `Tab ${i}`)
-    });
+    try {
+      CarPlay.setRootTemplate(tabBarTemplate, true);
+      console.log('[CarPlay] Root template set successfully with', templates.length, 'tabs');
+      CarPlayLogger.info('[RN] ROOT TEMPLATE SET SUCCESSFULLY', { 
+        tabCount: templates.length,
+        tabs: templates.map((t, i) => t.tabTitle || `Tab ${i}`)
+      });
+    } catch (setRootError: any) {
+      CarPlayLogger.error('[RN] setRootTemplate FAILED', { error: String(setRootError) });
+      console.error('[CarPlay] setRootTemplate failed:', setRootError);
+    }
     
-    // Release mutex after success
+    // Release mutex after template creation (success or setRootTemplate failure)
     isCreatingTemplate = false;
     
     // COLD START FIX: If callbacks were updated while we were creating,
@@ -1187,24 +1196,22 @@ const CarPlayService: CarPlayServiceType = {
     CarPlayLogger.info('[RN] CarPlay service INITIALIZED - waiting for connection');
     console.log('[CarPlayService] Initialized and waiting for connection');
     
-    // COLD-START FIX: Start periodic check for CarPlay connection
-    // This handles the case where CarPlay connects before React Native is fully ready
-    // The key issue is that RNCarPlay's hasListeners flag may not be set when
-    // checkForConnection() is first called, so we need to retry it periodically
+    // COLD-START FIX: Start periodic check for CarPlay connection AND template health
+    // Handles TWO scenarios:
+    // 1. CarPlay connects before React Native is ready (original cold-start fix)
+    // 2. createRootTemplate() fails after connection (NEW: watchdog retry)
     if (!coldStartRetryTimer) {
-      CarPlayLogger.info('[RN] Starting cold-start retry timer with checkForConnection polling');
+      CarPlayLogger.info('[RN] Starting cold-start retry timer with checkForConnection polling + watchdog');
       coldStartRetryTimer = setInterval(() => {
         coldStartRetryCount++;
         
         // CRITICAL: Call checkForConnection() again - this may now succeed
-        // because hasListeners should be true after NativeEventEmitter initialization
         try {
           if (CarPlay?.bridge?.checkForConnection) {
             CarPlay.bridge.checkForConnection();
-            CarPlayLogger.info('[RN] Called checkForConnection() - attempt', { attempt: coldStartRetryCount });
           }
         } catch (e) {
-          // Ignore errors, some versions may not have this method exposed
+          // Ignore errors
         }
         
         // Check if CarPlay is now connected
@@ -1216,9 +1223,10 @@ const CarPlayService: CarPlayServiceType = {
           isConnected: isCarPlayConnected,
           carPlayConnected: nowConnected,
           hasCallbacks: !!playStationCallback,
+          isCreatingTemplate,
         });
         
-        // If connected but template not created, try again
+        // SCENARIO 1: Connected but not yet initialized
         if (nowConnected && !isCarPlayConnected && playStationCallback) {
           CarPlayLogger.info('[RN] Cold-start: CarPlay connected but not initialized, creating template...');
           isCarPlayConnected = true;
@@ -1227,16 +1235,33 @@ const CarPlayService: CarPlayServiceType = {
           
           createRootTemplate().then(() => {
             CarPlayLogger.info('[RN] Cold-start: createRootTemplate() completed');
-            // Stop retry timer on success
             if (coldStartRetryTimer) {
               clearInterval(coldStartRetryTimer);
               coldStartRetryTimer = null;
             }
           }).catch((err) => {
-            CarPlayLogger.error('[RN] Cold-start: createRootTemplate() FAILED', {
-              error: String(err),
-            });
+            CarPlayLogger.error('[RN] Cold-start: createRootTemplate() FAILED', { error: String(err) });
           });
+        }
+        
+        // SCENARIO 2 (NEW): Already connected + initialized but template may have failed
+        // This is a WATCHDOG: if CarPlay is connected but still showing loading/empty,
+        // retry template creation. This fixes the "blank screen" issue.
+        if (isCarPlayConnected && playStationCallback && !isCreatingTemplate) {
+          // Only retry on specific intervals (every 3 seconds: attempts 6, 12, 18, 24, 30)
+          if (coldStartRetryCount % 6 === 0) {
+            CarPlayLogger.info('[RN] Watchdog: Re-creating root template (attempt ' + coldStartRetryCount + ')');
+            createRootTemplate().then(() => {
+              CarPlayLogger.info('[RN] Watchdog: createRootTemplate() completed');
+              // Stop retry after successful watchdog
+              if (coldStartRetryTimer) {
+                clearInterval(coldStartRetryTimer);
+                coldStartRetryTimer = null;
+              }
+            }).catch((err) => {
+              CarPlayLogger.error('[RN] Watchdog: createRootTemplate() FAILED', { error: String(err) });
+            });
+          }
         }
         
         // Stop after max retries

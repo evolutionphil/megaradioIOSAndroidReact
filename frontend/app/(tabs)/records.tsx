@@ -14,7 +14,7 @@ import { colors, typography, spacing } from '../../src/constants/theme';
 import { useRecentlyPlayed } from '../../src/hooks/useQueries';
 import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { useResponsive } from '../../src/hooks/useResponsive';
-import { getStationLogoUrl } from '../../src/utils/stationLogoHelper';
+import { getStationLogoUrl } from '../../src/utils/logoUtils';
 import type { Station } from '../../src/types';
 
 export default function RecordsScreen() {
@@ -24,7 +24,8 @@ export default function RecordsScreen() {
   // Responsive layout
   const responsive = useResponsive();
 
-  const getLogoUrl = (station: Station) => {
+  // logoUtils always returns a valid URL (with fallback), never null
+  const getLogoUrl = (station: Station): string => {
     return getStationLogoUrl(station);
   };
 
@@ -59,15 +60,11 @@ export default function RecordsScreen() {
                   onPress={() => handleStationPress(station)}
                 >
                   <View style={styles.stationLogo}>
-                    {getLogoUrl(station) ? (
-                      <Image
-                        source={{ uri: getLogoUrl(station)! }}
-                        style={styles.logoImage}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <Ionicons name="radio" size={24} color="#5B5B5B" />
-                    )}
+                    <Image
+                      source={{ uri: getLogoUrl(station) }}
+                      style={styles.logoImage}
+                      resizeMode="cover"
+                    />
                   </View>
                   <View style={styles.stationInfo}>
                     <Text style={styles.stationName} numberOfLines={1}>

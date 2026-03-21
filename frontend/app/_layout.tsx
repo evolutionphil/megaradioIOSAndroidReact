@@ -112,6 +112,7 @@ export default function RootLayout() {
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
   const preloadStarted = useRef(false);
+  const [splashHidden, setSplashHidden] = useState(false);
   
   const segments = useSegments();
   const navigationState = useRootNavigationState();
@@ -386,6 +387,15 @@ export default function RootLayout() {
 
     checkAndRoute();
   }, [isNavigationReady, hasCheckedOnboarding, segments]);
+
+  // Mark splash as hidden once fonts are loaded and app data is ready
+  // This triggers AdMob/ATT initialization (must happen AFTER splash hides on iOS)
+  useEffect(() => {
+    if ((fontsLoaded || fontError) && countryLoaded && !splashHidden) {
+      console.log('[Layout] App ready - marking splash as hidden (triggers AdMob init)');
+      setSplashHidden(true);
+    }
+  }, [fontsLoaded, fontError, countryLoaded, splashHidden]);
 
   const onLayoutRootView = useCallback(async () => {
     // Fonts loaded - app is ready

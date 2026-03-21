@@ -8,6 +8,9 @@ import Expo
 import React
 import ReactAppDependencyProvider
 import CarPlay
+#if os(iOS)
+import WatchConnectivity
+#endif
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -18,6 +21,11 @@ public class AppDelegate: ExpoAppDelegate {
   
   // Flag to track if React Native has been initialized
   private var isReactNativeInitialized = false
+  
+  #if os(iOS)
+  // WatchConnectivity session manager for Apple Watch companion app
+  private var wcSessionDelegate: WCSessionDelegateHandler?
+  #endif
 
   public override func application(
     _ application: UIApplication,
@@ -58,6 +66,22 @@ public class AppDelegate: ExpoAppDelegate {
     // SILENT PUSH: Register for remote notifications (no user permission needed for silent)
     print("[AppDelegate] Registering for remote notifications...")
     SilentPushHandler.registerForRemoteNotifications()
+    #endif
+    
+    #if os(iOS)
+    // WATCHOS: Activate WatchConnectivity session
+    // This is REQUIRED for the Apple Watch companion app to detect the iPhone app
+    // Without this, Watch shows "Companion app is not installed" error
+    if WCSession.isSupported() {
+      print("[AppDelegate] WCSession is supported - activating...")
+      let session = WCSession.default
+      wcSessionDelegate = WCSessionDelegateHandler()
+      session.delegate = wcSessionDelegate
+      session.activate()
+      print("[AppDelegate] WCSession activated successfully")
+    } else {
+      print("[AppDelegate] WCSession is NOT supported on this device")
+    }
     #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -238,3 +262,53 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 #endif
   }
 }
+
+// MARK: - WatchConnectivity Session Delegate
+// Required for Apple Watch companion app to detect the iPhone app
+#if os(iOS)
+class WCSessionDelegateHandler: NSObject, WCSessionDelegate {
+  
+  func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    if let error = error {
+      print("[WCSession] Activation failed: \(error.localizedDescription)")
+    } else {
+      print("[WCSession] Activation completed. State: \(activationState.rawValue), isPaired: \(session.isPaired), isWatchAppInstalled: \(session.isWatchAppInstalled)")
+    }
+  }
+  
+  func sessionDidBecomeInactive(_ session: WCSession) {
+    print("[WCSession] Session became inactive")
+  }
+  
+  func sessionDidDeactivate(_ session: WCSession) {
+    print("[WCSession] Session deactivated - reactivating...")
+    // Re-activate for switching between Apple Watches
+    session.activate()
+  }
+  
+  // Handle messages from Watch app
+  func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+    print("[WCSession] Received message from Watch: \(message)")
+  }
+  
+  // Handle messages with reply handler
+  func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
+    print("[WCSession] Received message with reply from Watch: \(message)")
+    
+    // Handle common watch requests
+    if let action = message["action"] as? String {
+      switch action {
+      case "ping":
+        replyHandler(["status": "ok", "appName": "MegaRadio"])
+      case "getNowPlaying":
+        // TODO: Return current playing station info
+        replyHandler(["status": "ok", "playing": false])
+      default:
+        replyHandler(["status": "unknown_action"])
+      }
+    } else {
+      replyHandler(["status": "ok"])
+    }
+  }
+}
+#endif

@@ -278,8 +278,12 @@ export const useCommunityFavorites = (limit: number = 20) => {
       diskCache.set(dKey, result);
       return result;
     },
-    initialData: () => diskCache.get(dKey, CACHE_TTL.COMMUNITY_FAVORITES),
-    ...MEDIUM_CACHE,
+    // Use placeholderData instead of initialData to always fetch fresh data
+    placeholderData: () => diskCache.get(dKey, CACHE_TTL.COMMUNITY_FAVORITES),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -293,8 +297,15 @@ export const usePublicProfiles = (limit: number = 10) => {
       diskCache.set(dKey, result);
       return result;
     },
-    initialData: () => diskCache.get(dKey, CACHE_TTL.COMMUNITY_FAVORITES),
-    ...MEDIUM_CACHE,
+    // Use placeholderData instead of initialData:
+    // - Shows cached data instantly (no loading flash)
+    // - ALWAYS fetches fresh data from API (doesn't treat cache as "real" data)
+    // - Fixes issue where empty cached array prevented API refetch
+    placeholderData: () => diskCache.get(dKey, CACHE_TTL.COMMUNITY_FAVORITES),
+    staleTime: 5 * 60 * 1000,  // 5 min - refresh more often for user profiles
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: 'always',   // ALWAYS refetch on mount, even if data exists
+    refetchOnWindowFocus: false,
   });
 };
 
