@@ -1,319 +1,61 @@
 # MegaRadio - Product Requirements Document
 
 ## Original Problem Statement
-Build a production-ready mobile radio streaming app called "MegaRadio" using Expo (Bare Workflow) with CarPlay, Android Auto, Apple Watch, Wear OS, tvOS, and Android TV support.
+Build a production-ready mobile radio streaming app called "MegaRadio" using Expo (Bare Workflow) with:
+- CarPlay and Android Auto integration
+- Audio streaming with background/lock screen controls
+- WatchOS companion app
+- AdMob integration (Interstitial and Rewarded ads)
 
 ## Tech Stack
-- Expo (Bare Workflow), TypeScript, EAS Build, Expo Router
-- State: Zustand, React Query, Axios
-- Audio: react-native-track-player
-- CarPlay: @g4rb4g3/react-native-carplay
-- Auth: expo-auth-session (Google), expo-apple-authentication (Apple)
-- Ads: react-native-google-mobile-ads v14.2.0
-- API Key: X-API-Key: mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw
+- **Frontend**: Expo Bare Workflow (React Native 0.81.5), React Query, Zustand, React Native Track Player
+- **iOS Native**: Custom PhoneSceneDelegate and CarPlaySceneDelegate (Swift)
+- **Ad System**: react-native-google-mobile-ads v14.2.0
+- **Storage**: MMKV (via react-native-nitro-modules)
+- **Backend**: FastAPI + MongoDB (hosted at themegaradio.com)
 
 ## What's Been Implemented
-- Full audio streaming with background/lock screen controls
-- CarPlay & Android Auto integration
-- Favorites, Recently Played, Profile features
-- Push Notifications, Internationalization (i18n)
-- Geolocation-based country detection
-- Grid/List view modes, Genre browsing
-- Social login (Google/Apple) via POST-based mobile auth flow
-- Centralized logo system (stationLogoHelper.ts)
-- iOS ATT consent + AdMob ads
 
-## Recent Changes
+### Core Features (DONE)
+- Full radio streaming with background audio
+- Station discovery, search, favorites
+- User profiles and social features (follow/unfollow)
+- Genre browsing
+- Recently played history
+- CarPlay integration (native Swift delegates)
+- Android Auto integration
+- WatchOS companion app target
+- AdMob (Interstitial + Rewarded Interstitial)
+- Background refresh and silent push notifications
+- i18n localization
 
-### Session 3 Fixes (Feb 2026)
+### Bug Fixes - Feb 2026 Session
+1. **AdMob/ATT Never Initializing** - `splashHidden` state was never declared in `_layout.tsx`, causing AdMob useEffect to never execute. Fixed by adding state variable and trigger.
+2. **Recently Played Logos Missing** - `records.tsx` imported from `stationLogoHelper` (returns null) instead of `logoUtils` (always returns URL). Fixed import.
+3. **Home Screen Users/Favorites Empty** - React Query `initialData` + `staleTime: 30min` prevented API refetch when cache had empty data. Changed to `placeholderData` + `refetchOnMount: 'always'`.
+4. **CarPlay Blank Screen (3 mutex bugs)** - `isCreatingTemplate` mutex was never released in early-return and fallback paths, permanently blocking template creation. Fixed all return paths + added watchdog retry.
+5. **WatchOS Companion App Not Detected** - iOS app never activated WCSession. Added WatchConnectivity import, delegate, and activation in AppDelegate.swift.
+6. **Background Tasks Registration Failed** - Info.plist missing `BGTaskSchedulerPermittedIdentifiers` and `processing` background mode. Added both.
 
-#### 1. Community User Profile Crash Fix - ROOT CAUSE (P0)
-- **Root Cause**: `CACHE_TTL` was imported in `preloadService.ts` from `useQueries.ts` but NEVER EXPORTED. This caused `TypeError: Cannot read properties of undefined` when `getPreloadedFavorites()` was called for cached community users, leading to native crash.
-- **Fix**: 
-  - Added `CACHE_TTL` export to `useQueries.ts`
-  - Added try-catch around `getPreloadedFavorites()` calls
-  - Added `Array.isArray()` checks on API data
-  - Used optional chaining for safer data access
-  - Made `loadFollowerCounts` resilient with `.catch()` on each API call
-  - Fixed `public-profiles.tsx` to pass `userAvatar` param when navigating
-  - Used `??` (nullish coalescing) instead of `||` for profile count data
-- **Files**: useQueries.ts, user-profile.tsx, public-profiles.tsx
+## Pending Verification (User TestFlight)
+- All 6 fixes above need TestFlight verification
+- Code review and API testing passed (iteration_31)
 
-#### 2. CarPlay Cold Start Fix - COMPREHENSIVE (P0)
-- **Root Causes Identified**:
-  1. `isCreatingTemplate` mutex blocked second `initialize` from refreshing templates
-  2. `deferredPlayStation` only retried once (500ms), insufficient for cold start
-  3. No forced template refresh when real `playStation` callback became available
-  4. Missing import for `getCarPlayImagePath`
-  5. `rootTabBarTemplate` variable referenced but never defined
-  6. Genre loading had no fallback when country-specific query returned empty
-- **Fixes Applied**:
-  - Changed mutex to queuing system with `pendingCallbackRefresh` flag
-  - deferredPlayStation now retries 10 times (5s total) for cold start
-  - Force template refresh when playStation becomes available + CarPlay connected
-  - Added missing `getCarPlayImagePath` import
-  - Fixed undefined `rootTabBarTemplate` reference
-  - Added global genre fallback when country-specific genres return empty
-- **Files**: carPlayService.ts, CarPlayHandler.tsx
-
-#### 3. TypeScript Type Fixes
-- Updated `Station.logoAssets` type to include `webp256`, `webp48`, `status`, `original`, `processedAt` fields matching API response
-- **Files**: types/index.ts
-
-#### 4. iOS Reklamlar ATT Fix (P0) - KÖK NEDEN
-- **Kök Neden**: Sadece Google UMP consent kullanılıyordu, Apple ATT HİÇ çağrılmıyordu. iOS 14+'da ATT izni olmadan IDFA erişimi engellenir → AdMob reklam göstermez.
-- **Fix**: `expo-tracking-transparency` ile native ATT prompt eklendi (AdMob init'ten ÖNCE)
-- **Dosyalar**: adMobService.native.ts, app.json, package.json
-
-#### 5. Follow/Unfollow Endpoint Fix (P0) - KÖK NEDEN
-- **Kök Neden**: `users.tsx` yanlış endpoint'ler kullanıyordu (`/api/user-engagement/` yerine `/api/user/`) ve unfollow için POST yerine DELETE gerekiyordu
-- **Fix**: Endpoint path'leri ve HTTP method'lar düzeltildi
-- **Dosyalar**: users.tsx
-
-#### 6. CarPlay Logoları - Image Pre-download (P0) - KÖK NEDEN
-- **Kök Neden**: iOS'ta `CPListItem` görüntüsü oluşturulduktan sonra DEĞİŞTİRİLEMEZ (immutable). Kod önce `LOCAL_FALLBACK_LOGO` (pembe ikon) koyuyor, sonra `imgUrl` ile async güncellemeye çalışıyordu ama iOS bunu reddediyordu! Ayrıca `imgUrl` property'si `react-native-carplay` v2.7.22'de `null` type olarak tanımlı.
-- **Fix**: 
-  - `cacheStationImages()` ile resimleri template oluşturmadan ÖNCE indirme
-  - `image: { uri: localPath }` olarak önceden indirilmiş resmi kullanma
-  - Tüm template fonksiyonları güncellendi (favorites, recently played, browse, genre stations)
-  - `imgUrl` kullanımı tamamen kaldırıldı
-- **Dosyalar**: carPlayService.ts
-
-#### 7. Followers/Following Hep 0 Gösterme (P0) - KÖK NEDEN
-- **Kök Neden**: `loadFollowerCounts()` fonksiyonu bozuk `/api/user/followers/:id` endpoint'ini çağırıyordu → başarısız → `profileData`'dan gelen doğru değerleri (3, 0) sıfır ile eziyordu
-- **Fix**: `loadFollowerCounts()` tamamen kaldırıldı. `useUserProfile` hook'unun döndürdüğü `profileData.followersCount` tek kaynak (single source of truth)
-- **Dosyalar**: user-profile.tsx
-
-### Session 2 Fixes (March 2026)
-
-#### Genre Stations Empty Page Fix
-- Country name fallback in genreService.ts
-
-#### Logo System Overhaul
-- Centralized via stationLogoHelper.ts (16 files updated)
-
-#### Social Login Fix
-- POST-based mobile auth flow
-
-#### iOS Ads Fix
-- Production AdMob App IDs + ATT consent flow
-
-## API Notes
-- `/api/stations` - Supports ALL country formats
-- `/api/genres/:slug/stations` - ONLY exact DB country name. Use fallback!
-- `/api/auth/google` - POST with { idToken, platform: "mobile" }
-- `/api/auth/apple` - POST with { identityToken, platform: "mobile" }
-- `tv=1` param returns optimized data BUT includes `logoAssets` with `webp256`, `status`, `folder`
-
-## Prioritized Backlog
-
-### P0 (Critical) - VERIFICATION PENDING
-- [x] Global caching implementation (MMKV stale-while-revalidate) ✅ TAMAMLANDI
-- [x] Avatar upload/delete ✅ TAMAMLANDI (backend deployed, curl verified)
-- [x] MMKV Expo Go + Web crash ✅ TAMAMLANDI (try-catch fallback + .web.ts)
-- [x] Apple Review Reddi (Guideline 2.5.4) ✅ TAMAMLANDI (external-accessory kaldırıldı)
-- [x] Favoriler sync queue ✅ TAMAMLANDI (AsyncStorage persistent queue)
-- [x] Background pre-fetching ✅ TAMAMLANDI (preloadStationData)
-- [x] iOS Startup Crash Fix ✅ TAMAMLANDI (PhoneSceneDelegate çift bridge başlatma düzeltildi - Feb 2026)
-- [ ] Verify CarPlay cold start fix with native build
-- [ ] Verify user profile crash fix with native build  
-- [ ] Verify social login (Google/Apple) end-to-end
-- [ ] Verify iOS ads + ATT prompt
-- [ ] Verify genre station loading across countries
-- [ ] Verify follow/unfollow feature
-
-### P1 (High)
-- [ ] Background pre-fetching of station data
-- [ ] Apple Watch / Wear OS target integration
-- [ ] CarPlay CPNowPlayingTemplate
-- [ ] Audio quality selection
-
-### P2 (Medium)
-- [ ] Equalizer (EQ) presets
-- [ ] Bluetooth metadata (AVRCP)
-- [ ] Station alarm feature
-
-### P3 (Low)
-- [ ] tvOS / Android TV apps
-- [ ] Song recognition (ShazamKit)
+## Upcoming Tasks
+- P1: Enhance CarPlay CPNowPlayingTemplate
+- P2: Verify WatchOS connection on physical devices
+- P2: ShazamKit song recognition
+- P2: Equalizer (EQ) with presets
+- P2: Bluetooth metadata (AVRCP) support
+- P3: Station alarm feature
+- P3: tvOS and Android TV apps
 
 ## Key Files
-- `src/utils/stationLogoHelper.ts` - SINGLE SOURCE OF TRUTH for logo URLs
-- `src/services/carPlayService.ts` - CarPlay template management + cold start logic
-- `src/components/CarPlayHandler.tsx` - CarPlay data fetching + initialization
-- `ios/MegaRadio/CarPlaySceneDelegate.swift` - Native CarPlay lifecycle
-- `src/hooks/useQueries.ts` - React Query hooks + disk cache integration
-- `src/services/diskCacheService.ts` - MMKV-based persistent cache (stale-while-revalidate)
-- `src/services/preloadService.ts` - User favorites preloading
-- `src/services/genreService.ts` - Genre stations with country fallback
-- `src/services/authService.ts` - Social login endpoints
-- `src/services/userService.ts` - Follow/unfollow, favorites, avatar upload/delete
-- `app/(tabs)/profile.tsx` - Profile with avatar upload, settings
-- `app/user-profile.tsx` - Community user profile
-- `src/services/adMobService.native.ts` - AdMob + ATT consent
-- `src/constants/api.ts` - All API endpoints (including avatar)
-
-## Notes
-- User communicates in Turkish
-- Persistent disk caching via MMKV (stale-while-revalidate pattern)
-- HTTP favicon URLs must be proxied for iOS ATS
-- Genre stations API needs both countryEnglish AND countryNative for fallback
-- CarPlay cold start requires staggered retries + queued template refresh
-- Avatar upload endpoint: POST /api/user/avatar (multipart/form-data)
-- Avatar delete endpoint: DELETE /api/user/avatar
-
-## Session 3 Additional Fixes
-
-### CarPlay Recently Played (P0) - KÖK NEDEN
-- `CarPlayHandler.tsx` → `stationService.getRecentlyPlayed()` çağırıyordu ama bu fonksiyon `stationService`'te YOK! `userService` olmalıydı.
-
-### CarPlay Playback Cold Start (P0)
-- `deferredPlayStation` dummy fonksiyonu gerçek olarak algılıyordu. `isReady` flag ile düzeltildi.
-
-### CarPlay Logoları REVERT (P0)
-- `preloadStationImages` yaklaşımı logoları bozdu. Native `imgUrl` geri döndürüldü.
-
-### All Stations Pagination (P1)
-- `limit:100` sabit → `page` parametresi ile API pagination eklendi
-
-### Profil Followers/Following 0 (P1)
-- Login yanıtı `followersCount` içermiyor → API'den ayrıca çekiliyor
-
-### Users Follow Butonu Flicker (P1)
-- Follow durumu AsyncStorage'da cache'leniyor
-
-### Session 4 Fixes (Feb 2026)
-
-#### 1. Favoriler Oturum Arası Kaybolma Fix (P0) - KÖK NEDEN
-- **Kök Neden**: 3 ayrı sorun tespit edildi:
-  1. `logout()` AsyncStorage'daki tüm favorileri siliyordu ama kullanıcıya özel yedek almıyordu. Tekrar login olunca sunucu boş dönerse veya API başarısız olursa, geri dönüş yapılacak hiç veri kalmıyordu.
-  2. `syncWithServer()` fonksiyonundaki kritik bug: `getFavorites()` doğrudan `Station[]` döndürüyor ama kod `serverResponse.favorites` ile erişmeye çalışıyordu (her zaman `undefined` oluyordu).
-  3. `loadFavorites()` API başarısız olunca sessizce boş local storage'a düşüyordu.
-- **Düzeltmeler**:
-  - **Kullanıcıya Özel Yedekleme**: Logout sırasında favoriler `@megaradio_favorites_backup_{userId}` anahtarıyla AsyncStorage'a yedekleniyor.
-  - **Geri Yükleme**: Login sonrası `loadFavorites()` sunucu boş dönerse veya API başarısız olursa, kullanıcıya özel yedekten geri yükleniyor.
-  - **Sürekli Yedek Güncelleme**: Her favori eklendiğinde/silindiğinde ve sunucudan başarılı yükleme yapıldığında yedek güncelleniyor.
-  - **syncWithServer Bug Fix**: `serverResponse.favorites` → doğrudan `serverResponse` (zaten `Station[]`).
-- **Dosyalar**: `src/store/favoritesStore.ts`, `src/store/authStore.ts`
-
-#### 2. Users Sayfası Follow Butonu Titreme Fix (P2)
-- **Kök Neden**: `followStatusLoaded` state'i tanımlanmış ama hiçbir yerde kullanılmıyordu. Follow butonu ilk render'da her zaman "follow" gösterip, cache/API cevabı gelince "unfollow"a geçiyordu.
-- **Fix**: Follow butonu `followStatusLoaded` false iken loading spinner gösteriyor ve tıklanamaz durumda.
-- **Dosyalar**: `app/users.tsx`
-
-#### 3. Follow/Unfollow HTTP Method Fix (P1) - KÖK NEDEN
-- **Kök Neden**: Önceki agent backend developer'ın yanlış bilgisi ile unfollow'u `POST`'a çevirmişti. Curl ile test edince:
-  - `POST /api/user/unfollow/:userId` → HTML döndürüyor (route yok!)
-  - `DELETE /api/user/unfollow/:userId` → ✅ Çalışıyor
-  - Backend gerçekte: **Follow = POST, Unfollow = DELETE**
-- **Fix**: `userService.ts`, `users.tsx`, `user-profile.tsx` dosyalarında unfollow `api.post` → `api.delete` olarak düzeltildi.
-- **Curl ile doğrulandı**: Follow → is-following(true) → Unfollow → is-following(false) tam akış çalışıyor.
-- **Dosyalar**: `src/services/userService.ts`, `app/users.tsx`, `app/user-profile.tsx`
-
-#### 4. Search Navigation Fix
-- **Profile tıklama**: Sadece `console.log` yapıyordu → `/user-profile` sayfasına yönlendiriyor (userId, userName, userAvatar parametreleriyle)
-- **Genre tıklama**: Yanlış sayfa `/discover?genre=...` → `/genre-detail` sayfasına yönlendiriyor (slug, name parametreleriyle)
-- **Web preview'da test edildi ve doğrulandı** ✅
-- **Dosyalar**: `app/search.tsx`
-
-#### 5. Genre Stations Country Parametresi Fix
-- **Kök Neden**: `country=undefined` string olarak gönderilince API 0 sonuç döndürüyordu
-- **Fix**: `genreService.getGenreStations()` fonksiyonunda `undefined`, `null`, string `"undefined"`, string `"null"` değerleri filtreleniyor — parametre tamamen çıkarılıyor
-- **Web preview'da test edildi** ✅ (Pop genre-detail 100 stations gösteriyor)
-- **Dosyalar**: `src/services/genreService.ts`
-
-### Favoriler Kaybolma (P1)
-- API boş dönerse yerel favoriler korunuyor
-
-### ATT Module Xcode Projesi (P0)
-- ATTModule.swift ve ATTModule.m `project.pbxproj`'a eklendi (önceki build'de derlenmemişti!)
-- `NSUserTrackingUsageDescription` Info.plist'e eklendi
-
-### Session 5 (Mar 2026)
-
-#### 1. Global Caching Implementation TAMAMLANDI (P0)
-- **Tüm hook'lara MMKV disk cache entegre edildi** (stale-while-revalidate pattern):
-  - `useCommunityFavorites` → disk cache + MEDIUM_CACHE
-  - `usePublicProfiles` → disk cache + MEDIUM_CACHE
-  - `useUserProfile` → disk cache + SHORT_CACHE
-  - `useUserFavorites` → SHORT_CACHE (user-specific, no disk persist)
-- **TypeScript hata düzeltmesi**: `useDiscoverableGenres` - `result?.data` on `Genre[]` type
-- **Import düzeltmesi**: `preloadService.ts` - `CACHE_TTL` doğru modülden import (`diskCacheService`)
-- **Dosyalar**: `useQueries.ts`, `preloadService.ts`
-
-#### 2. Avatar Upload/Delete Client-Side TAMAMLANDI (P0)
-- `API_ENDPOINTS.user.avatar` endpoint'i eklendi (`/api/user/avatar`)
-- `userService.uploadAvatar()` ve `userService.deleteAvatar()` metotları eklendi
-- Avatar upload handler refactored:
-  - Endpoint URL düzeltildi: `/api/auth/avatar` → `/api/user/avatar` (spec'e uygun)
-  - `userService` kullanılıyor (hardcoded URL yerine)
-  - Avatar varsa: ActionSheet (Değiştir / Sil / İptal) gösteriliyor
-  - Avatar yoksa: Doğrudan fotoğraf seçici açılıyor
-- Avatar delete handler eklendi (DELETE /api/user/avatar)
-- **Backend deploy edildi ve curl ile uçtan uca doğrulandı** ✅
-  - Upload: `{ success: true, avatar: "https://megaradio-...s3...webp" }` ✅
-  - Delete: `{ success: true, message: "Avatar removed" }` ✅
-  - Login response'da `avatar` alanı dönüyor ✅
-- **Dosyalar**: `constants/api.ts`, `userService.ts`, `profile.tsx`
-
-#### 3. Hardcoded URL Temizliği (Refactoring)
-- `profile.tsx`: `https://themegaradio.com/api/...` → relative paths
-- `user-profile.tsx`: follow/unfollow/is-following URL'leri düzeltildi
-- `useQueries.ts`: `useUserFavorites` ve `useUserProfile` relative paths
-- `preloadService.ts`: favorites ve public-profiles URL'leri düzeltildi
-- `appService.ts`: pages ve info URL'leri düzeltildi
-- **Tüm API çağrıları artık `api` instance'ının `baseURL`'ini kullanıyor**
-
-#### 4. MMKV Web Crash Düzeltmesi (P0)
-- **Sorun:** `react-native-mmkv` native modül, web'de `MMKV is not a constructor` hatası veriyordu
-- **Çözüm:** Platform-specific dosya ayrımı:
-  - `diskCacheService.ts` → Native (iOS/Android) - MMKV ile try-catch, Expo Go'da in-memory fallback
-  - `diskCacheService.web.ts` → Web - in-memory Map (Metro otomatik resolve eder)
-- Web bundle ve Expo Go hatasız derleniyor ✅
-
-#### 5. Apple App Store Review Reddi Düzeltmesi (P0 - Guideline 2.5.4)
-- **Sorun:** `UIBackgroundModes` içinde `external-accessory` var ama `UISupportedExternalAccessoryProtocols` boş. Apple: "MFi donanım kullanmıyorsanız kaldırın."
-- **Çözüm:**
-  - `app.json`: `external-accessory` ve `UISupportedExternalAccessoryProtocols` kaldırıldı
-  - `Info.plist`: `external-accessory` ve `UISupportedExternalAccessoryProtocols` kaldırıldı
-  - Kalan UIBackgroundModes: `audio`, `fetch`, `remote-notification`, `processing`
-
-#### 6. Favoriler Sync Queue Mekanizması (P0)
-- **Sorun:** API sync başarısız olduğunda hata sessizce yutuluyordu, favoriler sadece lokalde kalıyordu
-- **Çözüm:** AsyncStorage tabanlı persistent sync queue:
-  - Başarısız add/remove işlemleri `@megaradio_favorites_sync_queue`'ya ekleniyor
-  - Her `loadFavorites()` çağrısında (login/app açılış) bekleyen kuyruk otomatik işleniyor
-  - Aynı istasyon için çakışan entry'ler otomatik temizleniyor
-  - Hala başarısız olanlar kuyrukta kalıyor, sonraki açılışta tekrar deneniyor
-- **Dosyalar**: `favoritesStore.ts`
-
-#### 7. Background Pre-fetching İstasyon Verileri (P1)
-- **`preloadService.ts`'e `preloadStationData()` fonksiyonu eklendi:**
-  - Kullanıcının ülkesinin popular stations'ı → disk cache
-  - Genres → disk cache
-  - Precomputed genres → disk cache
-  - Zaten cache'de fresh data varsa atlanıyor
-  - Paralel fetch (Promise.all)
-- **`_layout.tsx`'de uygulama açılışında çağrılıyor:**
-  - `initAppData` sonrasında background'da çalışıyor
-  - UI'ı bloklamıyor (`.catch(() => {})`)
-- **Dosyalar**: `preloadService.ts`, `_layout.tsx`
-
-#### 8. Apple Watch İncelemesi
-- Tüm Swift dosyaları incelendi (WatchSessionManager, NowPlayingView, FavoritesView, GenresView)
-- İmplementasyon sağlam - değişiklik yapılmadı
-
-### Session 6 (Feb 2026)
-
-#### 1. iOS Startup Crash Fix - KÖK NEDEN (P0) ✅
-- **Kök Neden**: `PhoneSceneDelegate.swift` içinde `factory.startReactNative(withModuleName: "main", in: window, launchOptions: nil)` çağrılıyordu. Ancak React Native bridge zaten `AppDelegate.didFinishLaunchingWithOptions` içinde başlatılmıştı. İkinci kez `startReactNative()` çağrılması, Fabric (yeni mimari) altında `Assertion failed: recreateRootViewWithBundleURL: does not support when react instance is created` hatasına yol açıyordu.
-- **Uygulama Yaşam Döngüsü**: 
-  1. `AppDelegate.didFinishLaunchingWithOptions` → RN bridge başlatılıyor (isReactNativeInitialized = true)
-  2. `PhoneSceneDelegate.scene:willConnectTo:` → ESKİ: `startReactNative()` tekrar çağrılıyordu → CRASH
-- **Düzeltme**: 
-  - `PhoneSceneDelegate.swift`'de `startReactNative()` çağrısı tamamen kaldırıldı
-  - Yerine: `appDelegate.isReactNativeReady()` ile RN durumu kontrol ediliyor
-  - RN hazırsa: Mevcut `rootViewController` AppDelegate'den alınıp yeni scene window'a taşınıyor
-  - RN hazır değilse (fallback): `initAppFromScene()` çağrılıyor (guard ile korumalı)
-- **Doğrulama**: `CarPlaySceneDelegate.swift` ve `CarSceneDelegate.m` zaten `isReactNativeReady` kontrolü kullanıyor - etkilenmedi
-- **Dosyalar**: `ios/MegaRadio/PhoneSceneDelegate.swift`
+- `/app/frontend/app/_layout.tsx` - Root layout with AdMob init
+- `/app/frontend/app/(tabs)/records.tsx` - Recently played screen
+- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
+- `/app/frontend/src/services/carPlayService.ts` - CarPlay JS service
+- `/app/frontend/src/services/adMobService.native.ts` - AdMob service
+- `/app/frontend/ios/MegaRadio/AppDelegate.swift` - App delegate with WCSession
+- `/app/frontend/ios/MegaRadio/CarPlaySceneDelegate.swift` - CarPlay native delegate
+- `/app/frontend/ios/MegaRadio/Info.plist` - iOS configuration
