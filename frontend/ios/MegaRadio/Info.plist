@@ -88,6 +88,12 @@
       <string>audio</string>
       <string>fetch</string>
       <string>remote-notification</string>
+      <string>processing</string>
+    </array>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+      <string>com.visiongo.megaradio.refresh</string>
+      <string>com.visiongo.megaradio.processing</string>
     </array>
     <key>UIApplicationSceneManifest</key>
     <dict>
