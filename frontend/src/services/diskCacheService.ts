@@ -55,26 +55,26 @@ export const diskCache = {
     }
   },
 
-  get<T>(key: string, ttl: number): T | null {
+  get<T>(key: string, ttl: number): T | undefined {
     try {
       const raw = cacheStorage.getString(key);
-      if (!raw) return null;
+      if (!raw) return undefined;
 
       const entry: CacheEntry<T> = JSON.parse(raw);
 
       if (entry.version !== CACHE_VERSION) {
         cacheStorage.delete(key);
-        return null;
+        return undefined;
       }
 
       if (ttl > 0 && Date.now() - entry.timestamp > ttl) {
-        return null;
+        return undefined;
       }
 
       return entry.data;
     } catch (e) {
       console.warn('[DiskCache] Get error:', key, e);
-      return null;
+      return undefined;
     }
   },
 

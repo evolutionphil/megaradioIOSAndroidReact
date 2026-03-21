@@ -214,16 +214,23 @@ export default function RootLayout() {
     init();
   }, []);
 
-  // Initialize AdMob
+  // Initialize AdMob - MUST wait for splash to hide
+  // iOS requires the app to be fully visible for ATT prompt to appear
+  // If called during splash screen, iOS silently ignores the ATT request
   useEffect(() => {
+    if (!splashHidden) return; // Wait for splash to hide first
+    
     const initAds = async () => {
+      // Small delay to ensure UI is fully rendered and interactive
+      await new Promise(r => setTimeout(r, 1500));
+      
       try {
         const success = await adMobService.initialize();
         console.log('[Layout] AdMob initialized:', success);
         
-        // Retry once after 5s if first attempt failed
+        // Retry once after 10s if first attempt failed
         if (!success) {
-          console.log('[Layout] AdMob init failed, retrying in 5s...');
+          console.log('[Layout] AdMob init failed, retrying in 10s...');
           setTimeout(async () => {
             try {
               const retrySuccess = await adMobService.initialize();
@@ -231,14 +238,14 @@ export default function RootLayout() {
             } catch (retryError) {
               console.error('[Layout] AdMob retry error:', retryError);
             }
-          }, 5000);
+          }, 10000);
         }
       } catch (error) {
         console.error('[Layout] AdMob initialization error:', error);
       }
     };
     initAds();
-  }, []);
+  }, [splashHidden]);
 
   // Setup Track Player once (only on native platforms, not web, and don't block UI)
   // NOTE: Full Track Player setup with capabilities is done in AudioProvider.tsx

@@ -116,9 +116,12 @@ class AdMobService {
       
       this.isInitialized = true;
       
-      // Load initial ads
-      await this.loadInterstitialAd();
-      await this.loadRewardedAd();
+      // Load initial ads IN PARALLEL (not sequential)
+      await Promise.allSettled([
+        this.loadInterstitialAd(),
+        this.loadRewardedAd(),
+      ]);
+      console.log('[AdMob] Initial ads loading started');
       
       // Load station change count from storage
       const countStr = await AsyncStorage.getItem(STATION_CHANGE_COUNT_KEY);
