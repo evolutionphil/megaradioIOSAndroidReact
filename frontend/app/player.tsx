@@ -33,6 +33,7 @@ import { GlowEffect } from '../src/components/GlowEffect';
 import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
 import CastModal from '../src/components/CastModal';
 import { UniversalCastButton } from '../src/components/UniversalCastButton';
+import { NativeCastModal } from '../src/components/NativeCastModal';
 import { sendLog } from '../src/services/remoteLog';
 import { getStationLogoUrl } from '../src/utils/stationLogoHelper';
 import type { Station } from '../src/types';
@@ -263,6 +264,7 @@ export default function PlayerScreen() {
   const [showSleepTimer, setShowSleepTimer] = useState(false);
   const [showSleepCounter, setShowSleepCounter] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
+  const [showNativeCastModal, setShowNativeCastModal] = useState(false);
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
@@ -363,9 +365,9 @@ export default function PlayerScreen() {
   const { data: similarData } = useSimilarStations(currentStation?._id || '', 9);
   const { data: popularData } = usePopularStations(undefined, 12);
 
-  // Handle cast button - show cast modal (login check happens inside modal)
+  // Handle cast button - show native cast modal (Chromecast + AirPlay)
   const handleCastPress = () => {
-    setShowCastModal(true);
+    setShowNativeCastModal(true);
   };
 
   // Use favoritesStore for guest/authenticated favorites
@@ -861,6 +863,16 @@ export default function PlayerScreen() {
         visible={showCastModal}
         onClose={() => setShowCastModal(false)}
         currentStation={currentStation}
+      />
+
+      {/* Native Cast Modal (Chromecast + AirPlay) */}
+      <NativeCastModal
+        visible={showNativeCastModal}
+        onClose={() => setShowNativeCastModal(false)}
+        station={currentStation}
+        streamUrl={streamUrl || currentStation?.urlResolved || currentStation?.url_resolved || currentStation?.url || null}
+        nowPlaying={nowPlaying}
+        onStopLocalAudio={stopPlayback}
       />
 
       {/* Player Options Sheet */}

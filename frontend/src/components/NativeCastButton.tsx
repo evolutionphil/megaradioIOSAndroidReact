@@ -1,7 +1,6 @@
 // NativeCastButton - Universal Cast button for Chromecast + AirPlay
-// Shows native device picker when tapped
-// Chromecast: react-native-google-cast
-// AirPlay: iOS native AVRoutePickerView (when no Chromecast available)
+// Shows native Google Cast button when available, AirPlay route picker on iOS
+// When tapped on Chromecast, opens native device picker automatically
 
 import React, { useEffect, useCallback, useState } from 'react';
 import { 
@@ -10,47 +9,47 @@ import {
   StyleSheet, 
   Platform, 
   Alert,
-  ActionSheetIOS,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getStationLogoUrl as centralGetStationLogoUrl } from '../utils/stationLogoHelper';
+import { getStationLogoUrl } from '../utils/stationLogoHelper';
 
-// Google Cast imports - dynamically loaded to prevent crashes if not available
+// Google Cast - dynamically loaded
 let GoogleCast: any = null;
 let CastButton: any = null;
 let useCastState: any = null;
 let useRemoteMediaClient: any = null;
-let useCastSession: any = null;
-let useDevices: any = null;
+let isChromecastAvailable = false;
 
-// Try to load Google Cast module
 try {
-  const googleCastModule = require('react-native-google-cast');
-  GoogleCast = googleCastModule.default;
-  CastButton = googleCastModule.CastButton;
-  useCastState = googleCastModule.useCastState;
-  useRemoteMediaClient = googleCastModule.useRemoteMediaClient;
-  useCastSession = googleCastModule.useCastSession;
-  useDevices = googleCastModule.useDevices;
-  console.log('[NativeCastButton] Google Cast module loaded successfully');
-} catch (error) {
-  console.log('[NativeCastButton] Google Cast not available:', error);
+  const mod = require('react-native-google-cast');
+  GoogleCast = mod.default || mod.GoogleCast;
+  CastButton = mod.CastButton;
+  useCastState = mod.useCastState;
+  useRemoteMediaClient = mod.useRemoteMediaClient;
+  isChromecastAvailable = true;
+} catch (e) {
+  // Expected on web
+}
+
+// AirPlay - dynamically loaded (iOS only)
+let AirplayButton: any = null;
+let showRoutePicker: any = null;
+let isAirplayAvailable = false;
+
+try {
+  const airplayMod = require('react-airplay');
+  AirplayButton = airplayMod.AirplayButton;
+  showRoutePicker = airplayMod.showRoutePicker;
+  isAirplayAvailable = true;
+} catch (e) {
+  // Expected on non-iOS
 }
 
 interface NativeCastButtonProps {
   size?: number;
   color?: string;
-  station?: {
-    _id?: string;
-    stationuuid?: string;
-    name: string;
-    url?: string;
-    url_resolved?: string;
-    urlResolved?: string;
-    favicon?: string;
-    logo?: string;
-    country?: string;
-  } | null;
+  activeColor?: string;
+  station?: any;
   streamUrl?: string | null;
   nowPlaying?: { title?: string; artist?: string } | null;
   onStopLocalAudio?: () => void;
@@ -59,78 +58,32 @@ interface NativeCastButtonProps {
 export const NativeCastButton: React.FC<NativeCastButtonProps> = ({
   size = 22,
   color = '#FFFFFF',
+  activeColor = '#4CAF50',
   station,
   streamUrl,
   nowPlaying,
   onStopLocalAudio,
 }) => {
-  const [isDiscovering, setIsDiscovering] = useState(true);
-  
-  // Use hooks conditionally
+  // Chromecast hooks (conditionally called)
   const castState = useCastState?.();
   const remoteMediaClient = useRemoteMediaClient?.();
-  const castSession = useCastSession?.();
-  const devices = useDevices?.();
 
-  // Start discovery on mount
+  // Auto-cast when device connects
   useEffect(() => {
-    if (GoogleCast && Platform.OS !== 'web') {
-      console.log('[NativeCastButton] Starting device discovery...');
-      GoogleCast.showIntroductoryOverlay?.();
-      
-      // Discovery timeout
-      const timeout = setTimeout(() => {
-        setIsDiscovering(false);
-      }, 5000);
-      
-      return () => clearTimeout(timeout);
+    if (castState === 'connected' && station && streamUrl && remoteMediaClient) {
+      castToChromecast();
     }
-  }, []);
+  }, [castState, station, streamUrl, remoteMediaClient]);
 
-  // Log cast state changes
-  useEffect(() => {
-    console.log('[NativeCastButton] Cast state:', castState);
-    console.log('[NativeCastButton] Devices found:', devices?.length || 0);
-    
-    if (castState === 'CONNECTED') {
-      console.log('[NativeCastButton] Connected to device!');
-      setIsDiscovering(false);
-    }
-  }, [castState, devices]);
-
-  // Auto-cast when connected
-  useEffect(() => {
-    if (castState === 'CONNECTED' && station && streamUrl && remoteMediaClient) {
-      console.log('[NativeCastButton] Connected! Starting cast...');
-      castToDevice();
-    }
-  }, [castState, station, streamUrl]);
-
-  const getStationLogoUrlLocal = (station: any): string => {
-    return centralGetStationLogoUrl(station) || 'https://themegaradio.com/logo.png';
-  };
-
-  const castToDevice = useCallback(async () => {
-    if (!remoteMediaClient || !station) {
-      console.log('[NativeCastButton] Cannot cast - missing client or station');
-      return;
-    }
+  const castToChromecast = useCallback(async () => {
+    if (!remoteMediaClient || !station) return;
 
     const url = streamUrl || station.url_resolved || station.urlResolved || station.url;
-    if (!url) {
-      console.log('[NativeCastButton] Cannot cast - no stream URL');
-      return;
-    }
+    if (!url) return;
 
     try {
-      console.log('[NativeCastButton] Casting to device...');
-      
-      // Stop local audio first
-      if (onStopLocalAudio) {
-        onStopLocalAudio();
-      }
+      onStopLocalAudio?.();
 
-      // Determine content type
       let contentType = 'audio/mp3';
       const urlLower = url.toLowerCase();
       if (urlLower.includes('.m3u8') || urlLower.includes('hls')) {
@@ -141,111 +94,71 @@ export const NativeCastButton: React.FC<NativeCastButtonProps> = ({
         contentType = 'audio/ogg';
       }
 
-      const mediaInfo = {
-        contentUrl: url,
-        contentType,
-        streamType: 'LIVE',
-        metadata: {
-          type: 'musicTrack',
-          title: nowPlaying?.title || station.name,
-          subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
-          albumTitle: 'MegaRadio',
-          images: [{
-            url: getStationLogoUrlLocal(station),
-          }],
-        },
-      };
+      const logoUrl = getStationLogoUrl(station) || 'https://themegaradio.com/logo.png';
 
-      console.log('[NativeCastButton] Loading media:', mediaInfo);
-      
       await remoteMediaClient.loadMedia({
-        mediaInfo,
+        mediaInfo: {
+          contentUrl: url,
+          contentType,
+          streamType: 'live',
+          metadata: {
+            type: 'musicTrack',
+            title: nowPlaying?.title || station.name,
+            subtitle: nowPlaying?.artist || station.country || 'MegaRadio',
+            images: [{ url: logoUrl }],
+          },
+        },
         autoplay: true,
-        playPosition: 0,
       });
 
-      console.log('[NativeCastButton] ✅ Cast started successfully:', station.name);
+      console.log('[NativeCastButton] Cast started:', station.name);
     } catch (err) {
-      console.error('[NativeCastButton] ❌ Cast error:', err);
-      Alert.alert('Cast Hatası', 'Cihaza bağlanırken bir hata oluştu. Lütfen tekrar deneyin.');
+      console.error('[NativeCastButton] Cast error:', err);
     }
   }, [remoteMediaClient, station, streamUrl, nowPlaying, onStopLocalAudio]);
 
-  // Handle manual button press (for when native button doesn't work)
-  const handleManualCast = useCallback(() => {
-    if (Platform.OS === 'ios') {
-      // On iOS, show action sheet with options
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ['İptal', 'Chromecast Ara', 'AirPlay Kullan'],
-          cancelButtonIndex: 0,
-          title: 'Cihaz Seç',
-          message: 'Radyoyu hangi cihazda çalmak istiyorsunuz?',
-        },
-        (buttonIndex) => {
-          if (buttonIndex === 1) {
-            // Chromecast
-            if (GoogleCast) {
-              GoogleCast.showCastDialog?.();
-            } else {
-              Alert.alert('Chromecast', 'Chromecast özelliği native build gerektirir.');
-            }
-          } else if (buttonIndex === 2) {
-            // AirPlay
-            Alert.alert(
-              'AirPlay',
-              'AirPlay kullanmak için:\n\n1. Kontrol Merkezi\'ni açın (sağ üstten kaydırın)\n2. Ses çıkışını değiştirin\n3. AirPlay cihazınızı seçin',
-              [{ text: 'Tamam' }]
-            );
-          }
-        }
-      );
-    } else {
-      // Android - just try to show cast dialog
-      if (GoogleCast) {
-        GoogleCast.showCastDialog?.();
-      } else {
-        Alert.alert('Cast', 'Cast özelliği native build gerektirir.');
-      }
-    }
-  }, []);
+  const isConnected = castState === 'connected';
+  const isConnecting = castState === 'connecting';
 
-  // Show native CastButton if Google Cast is available
-  if (CastButton && Platform.OS !== 'web') {
-    // Check if we have devices or are connected
-    const hasDevices = devices && devices.length > 0;
-    const isConnected = castState === 'CONNECTED' || castState === 'CONNECTING';
-    
-    // Always show the native CastButton - it handles discovery internally
+  // Priority 1: Show native CastButton if Google Cast is available
+  if (isChromecastAvailable && CastButton && Platform.OS !== 'web') {
     return (
-      <TouchableOpacity 
-        style={styles.container}
-        onLongPress={handleManualCast}
-        delayLongPress={500}
-      >
+      <View style={styles.container}>
         <CastButton 
           style={[
             styles.castButton, 
-            { tintColor: isConnected ? '#4CAF50' : color }
+            { tintColor: isConnected ? activeColor : isConnecting ? '#FFA000' : color }
           ]} 
+        />
+      </View>
+    );
+  }
+
+  // Priority 2: Show AirPlay button on iOS
+  if (Platform.OS === 'ios' && isAirplayAvailable && AirplayButton) {
+    return (
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => showRoutePicker?.({ prioritizesVideoDevices: false })}
+      >
+        <AirplayButton
+          tintColor={color}
+          activeTintColor={activeColor}
+          style={{ width: size, height: size }}
         />
       </TouchableOpacity>
     );
   }
 
-  // Fallback for web or when Google Cast is not available
+  // Fallback: TV icon (opens CastModal via parent)
   return (
     <TouchableOpacity
       style={styles.fallbackButton}
       onPress={() => {
-        if (Platform.OS === 'ios') {
-          handleManualCast();
-        } else {
-          Alert.alert(
-            'Cast Kullanılamıyor',
-            'Cast özelliği için native build gereklidir.\n\nEAS build oluşturun:\neas build --profile preview --platform all',
-            [{ text: 'Tamam' }]
-          );
+        if (Platform.OS === 'ios' && showRoutePicker) {
+          showRoutePicker({ prioritizesVideoDevices: false });
+        } else if (GoogleCast) {
+          GoogleCast.showCastDialog?.();
         }
       }}
     >
@@ -253,7 +166,7 @@ export const NativeCastButton: React.FC<NativeCastButtonProps> = ({
         name="tv-outline" 
         size={size} 
         color={color} 
-        style={{ opacity: 0.5 }} 
+        style={{ opacity: 0.7 }} 
       />
     </TouchableOpacity>
   );

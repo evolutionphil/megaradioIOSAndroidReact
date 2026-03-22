@@ -1,67 +1,58 @@
-// UniversalCastButton - Opens NativeCastModal for Chromecast/AirPlay
+// UniversalCastButton.tsx - Top-level cast button wrapper
+// Used in the player UI to show Chromecast/AirPlay controls
+
 import React, { useState } from 'react';
-import { TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Platform, StyleSheet } from 'react-native';
+import NativeCastButton from './NativeCastButton';
 import { NativeCastModal } from './NativeCastModal';
-import { usePlayerStore } from '../store/playerStore';
+import type { Station } from '../types';
 
 interface UniversalCastButtonProps {
   size?: number;
   color?: string;
   activeColor?: string;
-  station?: any;
+  station?: Station | null;
   streamUrl?: string | null;
   nowPlaying?: { title?: string; artist?: string } | null;
   onStopLocalAudio?: () => void;
 }
 
 export const UniversalCastButton: React.FC<UniversalCastButtonProps> = ({
-  size = 24,
+  size = 22,
   color = '#FFFFFF',
+  activeColor = '#4CAF50',
   station,
   streamUrl,
   nowPlaying,
   onStopLocalAudio,
 }) => {
-  const [showCastModal, setShowCastModal] = useState(false);
-  
-  // Get current station from player store if not provided
-  const { currentStation, streamUrl: storeStreamUrl, nowPlaying: storeNowPlaying } = usePlayerStore();
-  
-  const activeStation = station || currentStation;
-  const activeStreamUrl = streamUrl || storeStreamUrl;
-  const activeNowPlaying = nowPlaying || storeNowPlaying;
-
-  const handlePress = () => {
-    setShowCastModal(true);
-  };
+  const [showModal, setShowModal] = useState(false);
 
   return (
-    <>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handlePress}
-        activeOpacity={0.7}
-      >
-        <Ionicons name="tv-outline" size={size} color={color} />
-      </TouchableOpacity>
-      
-      <NativeCastModal
-        visible={showCastModal}
-        onClose={() => setShowCastModal(false)}
-        station={activeStation}
-        streamUrl={activeStreamUrl}
-        nowPlaying={activeNowPlaying}
+    <View style={styles.container}>
+      <NativeCastButton
+        size={size}
+        color={color}
+        activeColor={activeColor}
+        station={station}
+        streamUrl={streamUrl}
+        nowPlaying={nowPlaying}
         onStopLocalAudio={onStopLocalAudio}
       />
-    </>
+      <NativeCastModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        station={station as Station}
+        streamUrl={streamUrl || null}
+        nowPlaying={nowPlaying}
+        onStopLocalAudio={onStopLocalAudio}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    width: 44,
-    height: 44,
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
   },
