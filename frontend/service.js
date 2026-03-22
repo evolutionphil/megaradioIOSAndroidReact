@@ -6,6 +6,15 @@
 import TrackPlayer, { Event, State } from 'react-native-track-player';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Import Zustand store for direct state sync (works on iOS same-context, graceful fail on Android headless)
+let playerStoreRef = null;
+try {
+  const { usePlayerStore } = require('./src/store/playerStore');
+  playerStoreRef = usePlayerStore;
+} catch (e) {
+  console.log('[Service] playerStore not available in this context');
+}
+
 // Storage keys (must match the keys used in the app)
 const CURRENT_STATION_KEY = '@megaradio_current_station';
 const RECENTLY_PLAYED_KEY = '@megaradio_recently_played';
@@ -93,6 +102,20 @@ const playStation = async (station) => {
     
     // Save current station
     await AsyncStorage.setItem(CURRENT_STATION_KEY, JSON.stringify(station));
+    
+    // CRITICAL: Sync Zustand store directly so AudioProvider uses correct station
+    // This prevents the lock screen metadata from reverting to old station name
+    // when ICY metadata arrives and AudioProvider reads currentStation from store
+    try {
+      if (playerStoreRef) {
+        const store = playerStoreRef.getState();
+        store.setCurrentStation(station);
+        store.setPlaybackState('playing');
+        console.log('[Service] Zustand store synced with new station:', station.name);
+      }
+    } catch (storeError) {
+      console.log('[Service] Could not sync Zustand store (expected in headless mode):', storeError);
+    }
     
     // Add to playback history (for previous button)
     await addToPlaybackHistory(station);

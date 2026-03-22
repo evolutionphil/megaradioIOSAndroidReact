@@ -229,8 +229,19 @@ export default function RootLayout() {
         const success = await adMobService.initialize();
         console.log('[Layout] AdMob initialized:', success);
         
-        // Retry once after 10s if first attempt failed
-        if (!success) {
+        if (success) {
+          // Show first-launch interstitial after a brief delay
+          // This gives ads time to load after initialization
+          setTimeout(async () => {
+            try {
+              const shown = await adMobService.showInterstitialAd();
+              console.log('[Layout] First-launch interstitial shown:', shown);
+            } catch (e) {
+              console.log('[Layout] First-launch interstitial not ready yet');
+            }
+          }, 5000); // Wait 5s for ad to load
+        } else {
+          // Retry once after 10s if first attempt failed
           console.log('[Layout] AdMob init failed, retrying in 10s...');
           setTimeout(async () => {
             try {

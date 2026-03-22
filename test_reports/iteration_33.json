@@ -1,0 +1,113 @@
+{
+  "summary": "Code review of 4 bug fixes for MegaRadio React Native app - Lock screen metadata revert, rewarded ad cancel stuck, interstitial frequency, and first-launch interstitial. ALL BUG FIXES VERIFIED CORRECT.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "bug_fix_verification": {
+    "BUG_FIX_1_Lock_Screen_Metadata": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/service.js",
+      "findings": [
+        "Lines 9-16: playerStoreRef import wrapped in try/catch for Android headless mode graceful handling",
+        "Lines 103-104: AsyncStorage.setItem saves station for persistence",
+        "Lines 106-118: CRITICAL FIX - After AsyncStorage save, directly syncs Zustand store via playerStoreRef.getState().setCurrentStation(station) and setPlaybackState('playing')",
+        "This ensures AudioProvider reads CORRECT station from Zustand when ICY metadata arrives, preventing metadata revert to old station name"
+      ],
+      "root_cause_addressed": "service.js was updating TrackPlayer and AsyncStorage but NOT Zustand store. AudioProvider's ICY metadata handler reads currentStation from Zustand, so it was using stale data."
+    },
+    "BUG_FIX_2_Rewarded_Ad_Cancel_Stuck": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Line 381: 'resolved' flag declared to prevent double-resolution",
+        "Lines 384-397: RewardedAdEventType.EARNED_REWARD listener sets resolved=true and resolves with {success: true, reward}",
+        "Lines 399-411: CRITICAL FIX - AdEventType.CLOSED listener added that checks !resolved and resolves with {success: false}",
+        "Lines 414-422: Error handler also checks !resolved before resolving",
+        "All code paths properly clean up listeners via rewardListener() and closeListener()"
+      ],
+      "root_cause_addressed": "Old code only had EARNED_REWARD listener. If user closed ad without earning reward, promise NEVER resolved, causing button to stay in loading state forever."
+    },
+    "BUG_FIX_3_Interstitial_Frequency": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Line 11: INTERSTITIAL_FREQUENCY = 3 (was 4)",
+        "Line 316-322: onStationChange() shows ad on first play (count===1) AND every 3 station changes"
+      ]
+    },
+    "BUG_FIX_4_First_Launch_Interstitial": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/app/_layout.tsx",
+      "findings": [
+        "Line 115: splashHidden state declared with useState(false)",
+        "Lines 404-409: useEffect sets splashHidden=true when fontsLoaded && countryLoaded",
+        "Lines 221-260: AdMob useEffect depends on splashHidden, only runs when true",
+        "Lines 233-242: After successful initialization, setTimeout calls showInterstitialAd() after 5000ms (5 seconds)",
+        "Timing chain: splash hides → 1.5s delay → AdMob.initialize() → 5s delay → showInterstitialAd()"
+      ]
+    },
+    "BUG_FIX_5_Graceful_Headless_Mode": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/service.js",
+      "findings": [
+        "Lines 9-16: playerStoreRef import wrapped in try/catch",
+        "Lines 116-118: Zustand store sync also wrapped in try/catch with descriptive error message",
+        "This handles Android headless mode where Zustand store may not be available"
+      ]
+    }
+  },
+  "code_quality_review": {
+    "service.js": {
+      "status": "GOOD",
+      "notes": [
+        "Proper error handling with try/catch for both import and usage",
+        "Clear comments explaining the fix rationale",
+        "Graceful degradation - if store unavailable, continues without crashing"
+      ]
+    },
+    "adMobService.native.ts": {
+      "status": "GOOD",
+      "notes": [
+        "Proper use of 'resolved' flag pattern to prevent race conditions",
+        "Both EARNED_REWARD and CLOSED listeners properly clean up",
+        "Error handler also respects the resolved flag"
+      ]
+    },
+    "_layout.tsx": {
+      "status": "GOOD",
+      "notes": [
+        "Proper dependency array [splashHidden] for useEffect",
+        "Retry logic for failed AdMob initialization",
+        "Clear logging for debugging"
+      ]
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "All 4 bug fixes are correctly implemented with proper error handling",
+    "Lock screen metadata fix correctly syncs Zustand store to prevent ICY metadata from reverting to old station",
+    "Rewarded ad cancel fix uses 'resolved' flag pattern correctly to prevent stuck loading state",
+    "First-launch interstitial timing (5s after init) gives ads time to load",
+    "Android headless mode gracefully handled with try/catch"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - Code review only",
+    "frontend": "100% - All bug fixes verified via code review"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 4 bug fixes verified via code review. Lock screen metadata, rewarded ad cancel, interstitial frequency (3), and first-launch interstitial (5s delay) are all correctly implemented. Native iOS/Android features cannot be tested in this environment but code logic is correct.",
+  "rca_of_the_issue": {
+    "Lock_Screen_Metadata_Revert": "Root cause: service.js updated TrackPlayer and AsyncStorage when switching stations via lock screen, but AudioProvider's ICY metadata handler reads currentStation from Zustand store which was NOT updated. Fix: service.js now directly updates Zustand store after AsyncStorage.setItem.",
+    "Rewarded_Ad_Cancel_Stuck": "Root cause: showRewardedAd() Promise only had EARNED_REWARD listener. If user closed ad without watching fully, no listener fired and Promise never resolved, leaving button in loading state. Fix: Added CLOSED listener that resolves with {success: false}."
+  }
+}

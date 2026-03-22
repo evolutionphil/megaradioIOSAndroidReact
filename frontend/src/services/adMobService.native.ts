@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Storage keys
 const AD_FREE_UNTIL_KEY = '@megaradio_ad_free_until';
 const STATION_CHANGE_COUNT_KEY = '@megaradio_station_change_count';
-const INTERSTITIAL_FREQUENCY = 4; // Show ad every 4 station changes
+const INTERSTITIAL_FREQUENCY = 3; // Show ad every 3 station changes
 
 // Ad Unit IDs (Production)
 const AD_UNITS = {
@@ -377,9 +377,10 @@ class AdMobService {
     }
 
     return new Promise((resolve) => {
-      const { RewardedAdEventType } = require('react-native-google-mobile-ads');
+      const { RewardedAdEventType, AdEventType } = require('react-native-google-mobile-ads');
+      let resolved = false;
       
-      // RewardedInterstitialAd uses RewardedAdEventType.EARNED_REWARD
+      // Listen for reward earned
       const rewardListener = this.rewardedAd.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward: { type: string; amount: number }) => {
@@ -388,16 +389,36 @@ class AdMobService {
           // Grant 30 minutes ad-free time
           await this.grantAdFreeTime(30);
           
+          resolved = true;
           rewardListener();
+          closeListener();
           resolve({ success: true, reward });
         }
       );
 
+      // CRITICAL: Listen for ad close WITHOUT earning reward (user cancelled)
+      // Without this, the promise would NEVER resolve and the button stays in loading state
+      const closeListener = this.rewardedAd.addAdEventsListener(({ type }: { type: string }) => {
+        if (type === AdEventType.CLOSED || type === 'closed') {
+          if (!resolved) {
+            console.log('[AdMob] Rewarded ad closed WITHOUT earning reward (user cancelled)');
+            resolved = true;
+            rewardListener();
+            closeListener();
+            resolve({ success: false });
+          }
+        }
+      });
+
       // Show the ad
       this.rewardedAd.show().catch((error: any) => {
         console.error('[AdMob] Error showing rewarded interstitial ad:', error);
-        rewardListener();
-        resolve({ success: false });
+        if (!resolved) {
+          resolved = true;
+          rewardListener();
+          closeListener();
+          resolve({ success: false });
+        }
       });
     });
   }
