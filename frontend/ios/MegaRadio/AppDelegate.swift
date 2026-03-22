@@ -64,12 +64,14 @@ public class AppDelegate: ExpoAppDelegate {
     #endif
     
     #if os(iOS)
-    // WATCHOS: Initialize WatchConnectivityHandler early
-    // WatchConnectivityHandler.shared activates WCSession and sets itself as delegate in init()
+    // WATCHOS: Initialize WatchConnectivity handler early
     // This ensures Watch app can detect the companion app from the very start
     // NOTE: WatchConnectivityHandler.swift must be added to the iOS target
-    let _ = WatchConnectivityHandler.shared
-    print("[AppDelegate] WatchConnectivityHandler initialized for Watch communication")
+    if WCSession.isSupported() {
+      print("[AppDelegate] WCSession supported - initializing WatchConnectivity...")
+      let handler = WatchConnectivityHandler.shared
+      print("[AppDelegate] WatchConnectivityHandler initialized, paired: \(WCSession.default.isPaired)")
+    }
     #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
