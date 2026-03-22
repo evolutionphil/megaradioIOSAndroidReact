@@ -746,6 +746,10 @@ export default function ProfileScreen() {
           />
         </View>
 
+        {/* Premium - Rewarded Ad Button (shown for ALL users, not just guests) */}
+        <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
+        <RewardedAdButton />
+
         {/* About */}
         <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
         <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'about' } } as any)}>

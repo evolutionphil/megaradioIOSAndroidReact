@@ -187,13 +187,6 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   },
 
   fetchLocation: async () => {
-    // If user manually set a country, don't override with geolocation
-    if (get().isManuallySet) {
-      console.log('[LocationStore] Country manually set, skipping geolocation');
-      set({ isLoaded: true }); // Still mark as loaded
-      return;
-    }
-    
     if (get().loading) return;
     set({ loading: true, error: null });
 
@@ -220,13 +213,20 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       });
 
       const { latitude, longitude } = location.coords;
+      // ALWAYS set GPS coordinates (used for "Stations Near You" regardless of manual country)
       set({ latitude, longitude });
 
-      // Reverse geocode to get country
+      // If user manually set a country, keep their country but still save GPS for nearby stations
+      if (get().isManuallySet) {
+        console.log('[LocationStore] Country manually set, keeping manual country but GPS coords updated');
+        set({ loading: false, isLoaded: true });
+        return;
+      }
+
+      // Reverse geocode to get country (only if NOT manually set)
       const [geo] = await Location.reverseGeocodeAsync({ latitude, longitude });
       if (geo) {
         const countryName = geo.country || null;
-        // expo-location returns English names typically
         const nativeName = COUNTRY_NATIVE_MAP[countryName || ''] || countryName;
         console.log('[LocationStore] Location detected:', countryName, nativeName);
         set({
@@ -234,7 +234,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           country: nativeName,
           countryEnglish: countryName,
           loading: false,
-          isLoaded: true, // CRITICAL: Mark as loaded after location detection
+          isLoaded: true,
         });
       } else {
         console.log('[LocationStore] No geo data, setting isLoaded');

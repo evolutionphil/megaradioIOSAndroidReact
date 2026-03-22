@@ -110,21 +110,32 @@ const getFavoriteStations = async (): Promise<Station[]> => {
 
 const getRecentStations = async (): Promise<Station[]> => {
   try {
-    // Use userService which has the getRecentlyPlayed method (not stationService!)
-    const response = await userService.getRecentlyPlayed();
-    console.log('[CarPlayHandler] Got', (response || []).length, 'recently played stations');
-    return response || [];
-  } catch (error) {
-    console.error('[CarPlayHandler] Error fetching recent:', error);
-    // Fallback: try from recentlyPlayedStore
+    // First try local store (fast, works without auth)
+    let localStations: Station[] = [];
     try {
       const recentlyPlayedStore = require('../store/recentlyPlayedStore').default;
-      const recentStations = recentlyPlayedStore.getState()?.recentStations || [];
-      console.log('[CarPlayHandler] Using local recently played:', recentStations.length);
-      return recentStations;
+      localStations = recentlyPlayedStore.getState()?.recentStations || [];
+      console.log('[CarPlayHandler] Local recently played:', localStations.length);
     } catch {
-      return [];
+      // Ignore store errors
     }
+    
+    // Then try API (might fail if not authenticated)
+    try {
+      const response = await userService.getRecentlyPlayed();
+      const apiStations = response || [];
+      console.log('[CarPlayHandler] API recently played:', apiStations.length);
+      
+      // Use API data if available, otherwise local
+      if (apiStations.length > 0) return apiStations;
+    } catch (apiError) {
+      console.log('[CarPlayHandler] API recently played failed (might not be logged in):', apiError);
+    }
+    
+    return localStations;
+  } catch (error) {
+    console.error('[CarPlayHandler] Error fetching recent:', error);
+    return [];
   }
 };
 
@@ -385,10 +396,16 @@ export const CarPlayHandler: React.FC = () => {
     
     const currentCountry = countryEnglish || country;
     
-    // Skip first run and only trigger on actual changes
-    if (lastCountry !== null && currentCountry !== lastCountry) {
-      console.log('[CarPlayHandler] Country changed from', lastCountry, 'to', currentCountry);
-      sendLog('[CarPlayHandler] Country changed', { from: lastCountry, to: currentCountry });
+    // Skip if no country yet, but trigger refresh on FIRST detection AND on changes
+    // This ensures genres show per-country counts after location is detected
+    if (currentCountry && currentCountry !== lastCountry) {
+      if (lastCountry !== null) {
+        console.log('[CarPlayHandler] Country changed from', lastCountry, 'to', currentCountry);
+        sendLog('[CarPlayHandler] Country changed', { from: lastCountry, to: currentCountry });
+      } else {
+        console.log('[CarPlayHandler] Country first detected:', currentCountry);
+        sendLog('[CarPlayHandler] Country first detected', { country: currentCountry });
+      }
       
       // IMPORTANT: Invalidate React Query cache to prevent showing old country data
       // This fixes the "double loading" issue where global stations appear first

@@ -65,9 +65,13 @@ const NativeCastUnavailable: React.FC<{ onClose: () => void }> = ({ onClose }) =
     <View style={styles.iconContainer}>
       <Ionicons name="tv-outline" size={48} color={colors.textMuted} />
     </View>
-    <Text style={styles.unavailableTitle}>Cast Mevcut Değil</Text>
+    <Text style={styles.unavailableTitle}>Chromecast Yakında</Text>
     <Text style={styles.unavailableText}>
-      Native cast özelliği için uygulamayı EAS Build ile oluşturmanız gerekmektedir.
+      Chromecast desteği yakında eklenecektir. Şimdilik AirPlay kullanarak Apple TV veya uyumlu hoparlörlere aktarabilirsiniz.
+    </Text>
+    <Text style={[styles.unavailableText, { marginTop: 12, fontSize: 13 }]}>
+      AirPlay için Kontrol Merkezi'ni açın ve ses çıkışını seçin.
+    </Text>
       {'\n\n'}
       Expo Go'da bu özellik desteklenmemektedir.
     </Text>

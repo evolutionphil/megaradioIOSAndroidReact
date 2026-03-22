@@ -390,26 +390,22 @@ class AdMobService {
 
     this.stationChangeCount++;
     await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, String(this.stationChangeCount));
-    console.log('[AdMob] Station change count:', this.stationChangeCount, '/', INTERSTITIAL_FREQUENCY);
+    console.log('[AdMob] Station change count:', this.stationChangeCount, '/ frequency:', INTERSTITIAL_FREQUENCY);
 
-    // Show ad on FIRST station play (count === 1) AND every N station changes after that
-    const isFirstPlay = this.stationChangeCount === 1;
-    const isFrequencyHit = this.stationChangeCount >= INTERSTITIAL_FREQUENCY;
-    
-    if (isFirstPlay || isFrequencyHit) {
+    // Show interstitial every INTERSTITIAL_FREQUENCY station changes (3, 6, 9, 12...)
+    // First-launch interstitial is handled separately in _layout.tsx via showAppOpenAd()
+    if (this.stationChangeCount % INTERSTITIAL_FREQUENCY === 0) {
+      console.log('[AdMob] Frequency hit! Attempting to show interstitial...');
+      console.log('[AdMob] isInterstitialLoaded:', this.isInterstitialLoaded);
+      
       const adShown = await this.showInterstitialAd();
       
       if (adShown) {
-        // Only reset counter if ad was actually shown
-        this.stationChangeCount = 0;
-        await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, '0');
+        console.log('[AdMob] Interstitial shown successfully');
       } else {
-        // Ad wasn't ready - try to reload it for next time
-        console.log('[AdMob] Ad not shown, will retry on next station change');
+        // Ad wasn't ready - preload for next time
+        console.log('[AdMob] Interstitial not ready, preloading for next time...');
         this.loadInterstitialAd();
-        
-        // For first play: don't block, let counter continue normally
-        // For frequency hit: keep counter so next change tries again
       }
       
       return adShown;
