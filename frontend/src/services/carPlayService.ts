@@ -185,7 +185,11 @@ interface CarPlayServiceType {
     getRecentlyPlayed: () => Promise<Station[]>,
     getGenres: () => Promise<{ name: string; count: number }[]>,
     getStationsByGenre: (genre: string) => Promise<Station[]>,
-    searchStations?: (query: string) => Promise<Station[]>
+    searchStations?: (query: string) => Promise<Station[]>,
+    toggleFavorite?: (station: Station) => Promise<void>,
+    isFavorite?: (stationId: string) => boolean,
+    getNextStation?: () => Promise<Station | null>,
+    getPreviousStation?: () => Promise<Station | null>
   ) => void;
   updateNowPlaying: (station: Station, songTitle?: string, artistName?: string) => void;
   disconnect: () => void;
@@ -204,6 +208,12 @@ let getRecentlyPlayedCallback: (() => Promise<Station[]>) | null = null;
 let getGenresCallback: (() => Promise<{ name: string; count: number }[]>) | null = null;
 let getStationsByGenreCallback: ((genre: string) => Promise<Station[]>) | null = null;
 let searchStationsCallback: ((query: string) => Promise<Station[]>) | null = null;
+let toggleFavoriteCallback: ((station: Station) => Promise<void>) | null = null;
+let isFavoriteCallback: ((stationId: string) => boolean) | null = null;
+let getNextStationCallback: (() => Promise<Station | null>) | null = null;
+let getPreviousStationCallback: (() => Promise<Station | null>) | null = null;
+// Track the currently playing station for NowPlaying button callbacks
+let currentNowPlayingStation: Station | null = null;
 
 // Helper to get station artwork as ImageSourcePropType
 // For CarPlay: Downloads and caches image locally, returns local file path
@@ -726,21 +736,103 @@ const createBrowseTemplate = async (): Promise<any> => {
   }
 };
 
-// Show Now Playing Template
+// Show Now Playing Template - Enhanced with favorite button, Up Next, and proper callbacks
 const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName?: string): void => {
   if (!NowPlayingTemplate || !CarPlay) return;
   
+  // Track the current station for button callbacks
+  currentNowPlayingStation = station;
+  
   try {
+    // Build buttons array for NowPlaying controls
+    // These appear as circular buttons below the main play/pause/skip controls
+    const buttons: any[] = [];
+    
+    // 1. Add-to-library button (heart/favorite toggle) - uses iOS system icon
+    buttons.push({
+      id: 'toggle-favorite',
+      type: 'add-to-library',
+    });
+    
+    // 2. More button - for additional options
+    buttons.push({
+      id: 'more-options',
+      type: 'more',
+    });
+    
     const nowPlayingTemplate = new NowPlayingTemplate({
+      // Enable Up Next button - shows next similar station
+      upNextButtonEnabled: true,
+      upNextButtonTitle: t('carplay_up_next', 'Up Next'),
+      // Disable album artist button - not needed for radio
       albumArtistButtonEnabled: false,
-      upNextButtonEnabled: false,
-      buttons: [],
+      // Custom buttons
+      buttons: buttons,
+      // Handle custom button presses
+      onButtonPressed: async (e: { id: string; templateId: string }) => {
+        console.log('[CarPlay NowPlaying] Button pressed:', e.id);
+        CarPlayLogger.info('[RN] NowPlaying button pressed', { buttonId: e.id });
+        
+        if (e.id === 'toggle-favorite' && currentNowPlayingStation) {
+          // Toggle favorite for current station
+          if (toggleFavoriteCallback) {
+            try {
+              await toggleFavoriteCallback(currentNowPlayingStation);
+              const stationId = currentNowPlayingStation._id || (currentNowPlayingStation as any).id;
+              const isNowFavorite = isFavoriteCallback ? isFavoriteCallback(stationId) : false;
+              console.log('[CarPlay NowPlaying] Favorite toggled:', currentNowPlayingStation.name, '-> isFavorite:', isNowFavorite);
+              CarPlayLogger.info('[RN] Favorite toggled', { 
+                station: currentNowPlayingStation.name, 
+                isFavorite: isNowFavorite 
+              });
+            } catch (err) {
+              console.error('[CarPlay NowPlaying] Toggle favorite error:', err);
+              CarPlayLogger.error('[RN] Toggle favorite error', { error: String(err) });
+            }
+          }
+        } else if (e.id === 'more-options') {
+          console.log('[CarPlay NowPlaying] More options pressed for:', currentNowPlayingStation?.name);
+          CarPlayLogger.info('[RN] More options pressed', { station: currentNowPlayingStation?.name });
+        }
+      },
+      // Handle Up Next button press - play next similar station
+      onUpNextButtonPressed: async () => {
+        console.log('[CarPlay NowPlaying] Up Next pressed');
+        CarPlayLogger.info('[RN] Up Next button pressed');
+        
+        if (getNextStationCallback && playStationCallback) {
+          try {
+            const nextStation = await getNextStationCallback();
+            if (nextStation) {
+              console.log('[CarPlay NowPlaying] Playing next station:', nextStation.name);
+              CarPlayLogger.info('[RN] Playing next station from Up Next', { station: nextStation.name });
+              await playStationCallback(nextStation);
+              // Update NowPlaying with new station
+              showNowPlayingTemplate(nextStation);
+            } else {
+              console.log('[CarPlay NowPlaying] No next station available');
+              CarPlayLogger.info('[RN] No next station available');
+            }
+          } catch (err) {
+            console.error('[CarPlay NowPlaying] Up Next error:', err);
+            CarPlayLogger.error('[RN] Up Next error', { error: String(err) });
+          }
+        }
+      },
     });
     
     CarPlay.pushTemplate(nowPlayingTemplate, true);
-    console.log('[CarPlay] Showing Now Playing for:', station.name);
+    console.log('[CarPlay] Showing enhanced NowPlaying for:', station.name, 
+      '| buttons:', buttons.length, 
+      '| upNext: enabled');
+    CarPlayLogger.info('[RN] NowPlaying template shown', { 
+      station: station.name, 
+      buttonCount: buttons.length,
+      upNextEnabled: true,
+    });
   } catch (error) {
     console.error('[CarPlay] Error showing now playing:', error);
+    CarPlayLogger.error('[RN] Error showing NowPlaying', { error: String(error) });
   }
 };
 
@@ -1063,7 +1155,11 @@ const CarPlayService: CarPlayServiceType = {
     getRecentlyPlayed,
     getGenres,
     getStationsByGenre,
-    searchStations
+    searchStations,
+    toggleFavorite,
+    isFavorite,
+    getNextStation,
+    getPreviousStation
   ) => {
     if (Platform.OS === 'web') {
       console.log('[CarPlayService] Not available on web platform');
@@ -1109,6 +1205,10 @@ const CarPlayService: CarPlayServiceType = {
     getGenresCallback = getGenres;
     getStationsByGenreCallback = getStationsByGenre;
     searchStationsCallback = searchStations || null;
+    toggleFavoriteCallback = toggleFavorite || null;
+    isFavoriteCallback = isFavorite || null;
+    getNextStationCallback = getNextStation || null;
+    getPreviousStationCallback = getPreviousStation || null;
     
     CarPlayLogger.info('[RN] Callbacks registered', {
       playStation: !!playStation,
@@ -1118,6 +1218,10 @@ const CarPlayService: CarPlayServiceType = {
       getGenres: !!getGenres,
       getStationsByGenre: !!getStationsByGenre,
       searchStations: !!searchStations,
+      toggleFavorite: !!toggleFavorite,
+      isFavorite: !!isFavorite,
+      getNextStation: !!getNextStation,
+      getPreviousStation: !!getPreviousStation,
     });
     
     // Re-register handlers with full callbacks now that we have them
@@ -1295,6 +1399,9 @@ const CarPlayService: CarPlayServiceType = {
   updateNowPlaying: (station, songTitle, artistName) => {
     if (!isCarPlayConnected) return;
     
+    // Track the current station for NowPlaying button callbacks
+    currentNowPlayingStation = station;
+    
     console.log('[CarPlay] Updating now playing:', station.name, songTitle, artistName);
     CarPlayLogger.nowPlayingUpdated(station.name, songTitle, artistName);
   },
@@ -1325,6 +1432,11 @@ const CarPlayService: CarPlayServiceType = {
     getGenresCallback = null;
     getStationsByGenreCallback = null;
     searchStationsCallback = null;
+    toggleFavoriteCallback = null;
+    isFavoriteCallback = null;
+    getNextStationCallback = null;
+    getPreviousStationCallback = null;
+    currentNowPlayingStation = null;
     isCarPlayConnected = false;
     CarPlayService.isConnected = false;
     pendingConnection = false;

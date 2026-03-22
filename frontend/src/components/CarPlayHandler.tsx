@@ -4,6 +4,7 @@
 import { useEffect, useRef } from 'react';
 import { Platform, NativeModules, NativeEventEmitter } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CarPlayService from '../services/carPlayService';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
@@ -228,6 +229,85 @@ const searchStations = async (query: string): Promise<Station[]> => {
   }
 };
 
+// AsyncStorage keys - must match AudioProvider.tsx
+const SIMILAR_STATIONS_KEY = '@megaradio_similar_stations';
+const SIMILAR_INDEX_KEY = '@megaradio_similar_index';
+const PLAYBACK_HISTORY_KEY = '@megaradio_playback_history';
+
+// Toggle favorite for a station (CarPlay NowPlaying button callback)
+const toggleFavoriteStation = async (station: Station): Promise<void> => {
+  try {
+    const store = useFavoritesStore.getState();
+    console.log('[CarPlayHandler] Toggle favorite for:', station.name);
+    await store.toggleFavorite(station);
+    console.log('[CarPlayHandler] Favorite toggled successfully');
+  } catch (error) {
+    console.error('[CarPlayHandler] Error toggling favorite:', error);
+  }
+};
+
+// Check if station is in favorites
+const isStationFavorite = (stationId: string): boolean => {
+  const store = useFavoritesStore.getState();
+  return store.isFavorite(stationId);
+};
+
+// Get next similar station (for CarPlay Up Next button)
+const getNextStation = async (): Promise<Station | null> => {
+  try {
+    const similarJson = await AsyncStorage.getItem(SIMILAR_STATIONS_KEY);
+    const similarStations = similarJson ? JSON.parse(similarJson) : [];
+    
+    if (similarStations.length > 0) {
+      const indexJson = await AsyncStorage.getItem(SIMILAR_INDEX_KEY);
+      let currentIdx = indexJson ? parseInt(indexJson, 10) : -1;
+      currentIdx = (currentIdx + 1) % similarStations.length;
+      await AsyncStorage.setItem(SIMILAR_INDEX_KEY, String(currentIdx));
+      
+      const nextStation = similarStations[currentIdx];
+      if (nextStation) {
+        console.log('[CarPlayHandler] Next station from similar:', nextStation.name);
+        return nextStation;
+      }
+    }
+    
+    // Fallback to favorites
+    const store = useFavoritesStore.getState();
+    if (store.favorites.length > 0) {
+      console.log('[CarPlayHandler] Next station from favorites (fallback)');
+      return store.favorites[0];
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('[CarPlayHandler] Error getting next station:', error);
+    return null;
+  }
+};
+
+// Get previous station from playback history
+const getPreviousStation = async (): Promise<Station | null> => {
+  try {
+    const historyJson = await AsyncStorage.getItem(PLAYBACK_HISTORY_KEY);
+    const history = historyJson ? JSON.parse(historyJson) : [];
+    
+    if (history.length >= 2) {
+      const previousStation = history[1]; // [0] is current, [1] is previous
+      if (previousStation) {
+        console.log('[CarPlayHandler] Previous station from history:', previousStation.name);
+        // Reset similar index
+        await AsyncStorage.setItem(SIMILAR_INDEX_KEY, '-1');
+        return previousStation;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('[CarPlayHandler] Error getting previous station:', error);
+    return null;
+  }
+};
+
 export const CarPlayHandler: React.FC = () => {
   const { playStation, isReady: isAudioReady } = useAudioPlayer();
   const queryClient = useQueryClient();
@@ -324,7 +404,11 @@ export const CarPlayHandler: React.FC = () => {
         getRecentStations,
         getGenresList,
         getStationsByGenre,
-        searchStations
+        searchStations,
+        toggleFavoriteStation,
+        isStationFavorite,
+        getNextStation,
+        getPreviousStation
       );
       initializedRef.current = true;
       console.log('[CarPlayHandler] CarPlayService.initialize completed (early, deferred play)');
@@ -369,7 +453,11 @@ export const CarPlayHandler: React.FC = () => {
         getRecentStations,
         getGenresList,
         getStationsByGenre,
-        searchStations
+        searchStations,
+        toggleFavoriteStation,
+        isStationFavorite,
+        getNextStation,
+        getPreviousStation
       );
       console.log('[CarPlayHandler] CarPlayService re-initialized with real playStation');
       sendLog('[CarPlayHandler] CarPlayService RE-INITIALIZED with playStation');
