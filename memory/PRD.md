@@ -19,43 +19,56 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 ### Core Features (DONE)
 - Full radio streaming with background audio
 - Station discovery, search, favorites
-- User profiles and social features (follow/unfollow)
-- Genre browsing
-- Recently played history
-- CarPlay integration (native Swift delegates)
-- Android Auto integration
+- User profiles and social features
+- Genre browsing, Recently played history
+- CarPlay + Android Auto integration
 - WatchOS companion app target
 - AdMob (Interstitial + Rewarded Interstitial)
-- Background refresh and silent push notifications
-- i18n localization
+- Background refresh, silent push, i18n
 
-### Bug Fixes - Feb 2026 Session
-1. **AdMob/ATT Never Initializing** - `splashHidden` state was never declared in `_layout.tsx`, causing AdMob useEffect to never execute. Fixed by adding state variable and trigger.
-2. **Recently Played Logos Missing** - `records.tsx` imported from `stationLogoHelper` (returns null) instead of `logoUtils` (always returns URL). Fixed import.
-3. **Home Screen Users/Favorites Empty** - React Query `initialData` + `staleTime: 30min` prevented API refetch when cache had empty data. Changed to `placeholderData` + `refetchOnMount: 'always'`.
-4. **CarPlay Blank Screen (3 mutex bugs)** - `isCreatingTemplate` mutex was never released in early-return and fallback paths, permanently blocking template creation. Fixed all return paths + added watchdog retry.
-5. **WatchOS Companion App Not Detected** - iOS app never activated WCSession. Added WatchConnectivity import, delegate, and activation in AppDelegate.swift.
-6. **Background Tasks Registration Failed** - Info.plist missing `BGTaskSchedulerPermittedIdentifiers` and `processing` background mode. Added both.
+### Bug Fixes - Feb 2026 Session 1
+1. **AdMob/ATT Never Initializing** - `splashHidden` state was never declared → AdMob never started
+2. **Recently Played Logos Missing** - Wrong import (stationLogoHelper vs logoUtils)
+3. **Home Screen Users Empty** - `initialData` + `staleTime` prevented API refetch
+4. **CarPlay Blank Screen** - 3 mutex bugs in `createRootTemplate()`
+5. **WatchOS Companion Not Detected** - iOS app never activated WCSession
+6. **Background Tasks** - Missing `BGTaskSchedulerPermittedIdentifiers` in Info.plist
+
+### Bug Fixes - Feb 2026 Session 2
+7. **Lock Screen Metadata Revert** - service.js changed station but never synced Zustand store → ICY metadata handler used old station name. Fixed by syncing playerStore directly in service.js.
+8. **Rewarded Ad Cancel → Stuck Loading** - showRewardedAd() promise never resolved when user cancelled. Added CLOSED event listener with resolved flag.
+9. **Interstitial Frequency** - Changed from every 4 to every 3 station changes.
+10. **First Launch Interstitial** - Added 5s delay after AdMob init to show interstitial on first launch.
+11. **AppDelegate WCSession Conflict** - Removed duplicate WCSessionDelegateHandler, now uses WatchConnectivityHandler.shared.
 
 ## Pending Verification (User TestFlight)
-- All 6 fixes above need TestFlight verification
-- Code review and API testing passed (iteration_31)
+- All fixes need TestFlight build and verification
+
+## WatchOS Setup Guide (Xcode)
+1. Create Watch target → watchOS → App → "MegaRadioWatch"
+2. Delete auto-generated files, add files from `watch/ios/MegaRadioWatch/`
+3. Add WatchConnectivity bridge files (3) to iOS target from `watch/ios/`
+4. Set Bundle ID: `com.visiongo.megaradio.watchkitapp`
+5. Remove Info.plist from "Copy Bundle Resources" if auto-added
 
 ## Upcoming Tasks
 - P1: Enhance CarPlay CPNowPlayingTemplate
-- P2: Verify WatchOS connection on physical devices
-- P2: ShazamKit song recognition
-- P2: Equalizer (EQ) with presets
-- P2: Bluetooth metadata (AVRCP) support
-- P3: Station alarm feature
-- P3: tvOS and Android TV apps
+- P2: Verify WatchOS on physical devices
+
+## Future/Backlog
+- ShazamKit song recognition
+- Equalizer (EQ) with presets
+- Bluetooth metadata (AVRCP) support
+- Station alarm feature
+- tvOS / Android TV apps
 
 ## Key Files
-- `/app/frontend/app/_layout.tsx` - Root layout with AdMob init
-- `/app/frontend/app/(tabs)/records.tsx` - Recently played screen
-- `/app/frontend/src/hooks/useQueries.ts` - React Query hooks
-- `/app/frontend/src/services/carPlayService.ts` - CarPlay JS service
-- `/app/frontend/src/services/adMobService.native.ts` - AdMob service
-- `/app/frontend/ios/MegaRadio/AppDelegate.swift` - App delegate with WCSession
-- `/app/frontend/ios/MegaRadio/CarPlaySceneDelegate.swift` - CarPlay native delegate
-- `/app/frontend/ios/MegaRadio/Info.plist` - iOS configuration
+- `app/_layout.tsx` - Root layout with AdMob/ATT init
+- `service.js` - Background playback service with lock screen controls
+- `src/services/adMobService.native.ts` - AdMob service
+- `src/providers/AudioProvider.tsx` - Audio provider with ICY metadata handling
+- `src/store/playerStore.ts` - Zustand player state store
+- `src/services/carPlayService.ts` - CarPlay JS service
+- `ios/MegaRadio/AppDelegate.swift` - App delegate with WCSession
+- `watch/ios/MegaRadioWatch/` - Watch app source files
+- `watch/ios/` - WatchConnectivity bridge files for iOS target
