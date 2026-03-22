@@ -231,10 +231,10 @@ export default function RootLayout() {
         
         if (success) {
           // Show first-launch interstitial after a brief delay
-          // This gives ads time to load after initialization
+          // Uses the separate appOpenInterstitial ad unit ID
           setTimeout(async () => {
             try {
-              const shown = await adMobService.showInterstitialAd();
+              const shown = await adMobService.showAppOpenAd();
               console.log('[Layout] First-launch interstitial shown:', shown);
             } catch (e) {
               console.log('[Layout] First-launch interstitial not ready yet');

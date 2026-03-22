@@ -14,10 +14,12 @@ const INTERSTITIAL_FREQUENCY = 3; // Show ad every 3 station changes
 const AD_UNITS = {
   ios: {
     interstitial: 'ca-app-pub-8771434485570434/6008042825',
+    appOpenInterstitial: 'ca-app-pub-8771434485570434/4798357761', // First-launch interstitial
     rewarded: 'ca-app-pub-8771434485570434/3488497756',
   },
   android: {
     interstitial: 'ca-app-pub-8771434485570434/7220363780',
+    appOpenInterstitial: 'ca-app-pub-8771434485570434/7220363780', // Same as regular for now
     rewarded: 'ca-app-pub-8771434485570434/8745886806',
   },
 };
@@ -31,15 +33,18 @@ const TEST_AD_UNITS = {
 class AdMobService {
   private interstitialAd: any = null;
   private rewardedAd: any = null;
+  private appOpenAd: any = null;
   private isInterstitialLoaded = false;
   private isRewardedLoaded = false;
+  private isAppOpenLoaded = false;
   private isInitialized = false;
   private stationChangeCount = 0;
 
   // Get the correct ad unit ID based on platform and environment
-  getAdUnitId(type: 'interstitial' | 'rewarded'): string {
+  getAdUnitId(type: 'interstitial' | 'rewarded' | 'appOpenInterstitial'): string {
     if (__DEV__) {
-      return TEST_AD_UNITS[type];
+      // Test ads don't have appOpenInterstitial, use regular interstitial
+      return TEST_AD_UNITS[type === 'appOpenInterstitial' ? 'interstitial' : type];
     }
     
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
@@ -120,6 +125,7 @@ class AdMobService {
       await Promise.allSettled([
         this.loadInterstitialAd(),
         this.loadRewardedAd(),
+        this.loadAppOpenAd(),
       ]);
       console.log('[AdMob] Initial ads loading started');
       
@@ -196,6 +202,77 @@ class AdMobService {
       console.error('[AdMob] Error creating interstitial:', error);
     }
   }
+
+  // Load App Open Interstitial Ad (separate ad unit for first-launch)
+  async loadAppOpenAd(): Promise<void> {
+    if (Platform.OS === 'web' || !this.isInitialized) return;
+
+    try {
+      const { InterstitialAd, AdEventType } = require('react-native-google-mobile-ads');
+      
+      if (this.appOpenAd) {
+        try { this.appOpenAd.removeAllListeners(); } catch (e) {}
+        this.appOpenAd = null;
+      }
+      this.isAppOpenLoaded = false;
+      
+      const adUnitId = this.getAdUnitId('appOpenInterstitial');
+      console.log('[AdMob] Loading app-open interstitial with adUnitId:', adUnitId);
+      
+      this.appOpenAd = InterstitialAd.createForAdRequest(adUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+        keywords: ['music', 'radio', 'streaming', 'entertainment'],
+      });
+
+      this.appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
+        console.log('[AdMob] App-open interstitial LOADED');
+        this.isAppOpenLoaded = true;
+      });
+
+      this.appOpenAd.addAdEventListener(AdEventType.CLOSED, () => {
+        console.log('[AdMob] App-open interstitial closed');
+        this.isAppOpenLoaded = false;
+      });
+
+      this.appOpenAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
+        console.error('[AdMob] App-open interstitial ERROR:', error?.message || error);
+        this.isAppOpenLoaded = false;
+      });
+
+      this.appOpenAd.load();
+    } catch (error) {
+      console.error('[AdMob] Error creating app-open interstitial:', error);
+    }
+  }
+
+  // Show App Open Interstitial (first-launch ad)
+  async showAppOpenAd(): Promise<boolean> {
+    if (Platform.OS === 'web') return false;
+    
+    // Check ad-free time
+    const adFreeUntil = await AsyncStorage.getItem(AD_FREE_UNTIL_KEY);
+    if (adFreeUntil && new Date(adFreeUntil) > new Date()) {
+      console.log('[AdMob] User has ad-free time, skipping app-open ad');
+      return false;
+    }
+
+    if (this.isAppOpenLoaded && this.appOpenAd) {
+      try {
+        await this.appOpenAd.show();
+        console.log('[AdMob] App-open interstitial shown');
+        this.isAppOpenLoaded = false;
+        return true;
+      } catch (error) {
+        console.error('[AdMob] Error showing app-open interstitial:', error);
+        return false;
+      }
+    }
+    
+    // Fall back to regular interstitial if app-open not loaded
+    console.log('[AdMob] App-open not loaded, trying regular interstitial');
+    return this.showInterstitialAd();
+  }
+
 
   // Load Rewarded Interstitial Ad
   async loadRewardedAd(): Promise<void> {
