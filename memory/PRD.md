@@ -23,6 +23,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - WatchOS companion app (NowPlaying, Favorites, Browse, Genres, Countries)
 - ATT prompt with lifecycle-aware timing
 - GPS/Manual country detection with persistence
+- **CarPlay CPNowPlayingTemplate (Enhanced)** - Favorite toggle button (add-to-library), More options button, Up Next support with similar stations, proper button/event callbacks
 
 ## Android Build Readiness (Mar 2026)
 ### Issues Found & Fixed by Testing Agent
@@ -40,13 +41,22 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - MegaRadioAutoService.kt (721 lines), MegaRadioApiClient.kt (617 lines)
 - BackgroundSyncWorker.kt, SilentPushService.kt
 
+## CarPlay NowPlayingTemplate Enhancement (Feb 2026)
+### Changes Made
+- `carPlayService.ts`: Enhanced `showNowPlayingTemplate` with buttons (add-to-library for favorite, more), Up Next support, onButtonPressed/onUpNextButtonPressed callbacks
+- `carPlayService.ts`: Extended `initialize()` with 4 new optional callbacks: toggleFavorite, isFavorite, getNextStation, getPreviousStation
+- `carPlayService.ts`: Added `currentNowPlayingStation` tracking for button callbacks
+- `CarPlayHandler.tsx`: Added `toggleFavoriteStation`, `isStationFavorite`, `getNextStation`, `getPreviousStation` helper functions
+- `CarPlayHandler.tsx`: Wired new callbacks to both initialize calls (deferred + real)
+- Static analysis: 100% pass (iteration_37)
+
 ## Pending (Device Testing Required)
+- CarPlay NowPlayingTemplate buttons (native build)
 - Chromecast actual casting (native build)
 - AirPlay actual routing (native build)
 - ATT prompt on fresh install (TestFlight)
 - WatchOS connectivity (TestFlight)
 
 ## Upcoming Tasks
-- P1: CarPlay CPNowPlayingTemplate
 - P2: ShazamKit, EQ, Bluetooth AVRCP
 - P3: Station alarm, tvOS/Android TV
