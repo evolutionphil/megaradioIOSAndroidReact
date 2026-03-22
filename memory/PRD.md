@@ -10,44 +10,47 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - **iOS Native**: PhoneSceneDelegate, CarPlaySceneDelegate, ATTModule.swift
 - **WatchOS**: Native Swift App + WCSession connectivity
 - **Ads**: Google AdMob (AppOpenAd, Interstitial, Rewarded)
+- **Casting**: react-native-google-cast (Chromecast), react-airplay (AirPlay)
 - **Backend API**: themegaradio.com (external)
 
 ## Completed Features
 - Background audio streaming with lock screen controls
-- CarPlay integration with templates
+- CarPlay + Android Auto integration
 - Native Splash Screen
 - Google AdMob (AppOpen + Interstitial + Rewarded)
-- WCSession delegate conflict resolution, transferUserInfo fallback
-- Rewarded Ad cancel-stuck fix
-- Lock Screen metadata sync with Zustand
+- WCSession Watch connectivity with transferUserInfo fallback
+
+### Chromecast + AirPlay Casting (Mar 2026)
+- **react-native-google-cast v4.9.1** installed and configured
+- **react-airplay v1.2.0** installed for native iOS AirPlay
+- iOS: GoogleCast SDK initialized in AppDelegate.swift (auto-discovery enabled)
+- Android: play-services-cast-framework + GoogleCastOptionsProvider configured
+- NativeCastModal: Full Chromecast section (connected/connecting/disconnected states)
+- NativeCastButton: Native CastButton from Google Cast SDK, AirPlay fallback on iOS
+- Auto-cast: When device connects, audio stream starts automatically
+- loadMedia: Sends correct metadata (title, artist, logo, contentType, streamType:live)
+- Player bottom cast button now opens NativeCastModal (native) instead of old API-based CastModal
 
 ### WatchOS App
-- NowPlayingView with custom SF Symbol icons (backward.end.fill, pause.fill, forward.end.fill)
-- FavoritesView with station list
-- Browse Tab (Kesfet) → Genres list + Countries list
-- Genre → Genre stations (tap to play)
-- Country → Country stations (tap to play)
-- Next/Previous uses similar stations logic (same as Control Center)
-- Precomputed genres (40+, country-specific)
-- WCSession: transferUserInfo fallback + didReceiveUserInfo delegate
+- NowPlayingView (backward.end.fill, pause.fill, forward.end.fill icons)
+- FavoritesView, Browse Tab (Genres + Countries)
+- Genre/Country → stations → tap to play
+- Next/Previous uses similar stations logic
 
-### Ads
-- AppOpenAd (4798357761) on first launch after splash
-- Rewarded Ad (3488497756) on first station click per session
-- Interstitial every 3 station changes
+### Bug Fixes
+- ATT prompt: AppState lifecycle + didBecomeActive notification observer
+- GPS location: isManuallySet persisted in AsyncStorage
+- CarPlay Recently Played: Fixed property name bug
+- RewardedAdButton: Section wrapper for logged-in profile
 
-### Bug Fixes (Mar 2026)
-- **ATT Prompt**: Enhanced to check UIApplication.applicationState, wait for didBecomeActive, then request with delay. Native ATTModule.swift uses NotificationCenter observer for app activation.
-- **GPS Location**: `isManuallySet` flag now persisted in AsyncStorage. GPS auto-detection runs on every launch UNLESS user explicitly chose country from picker. GPS-detected countries saved with `isManuallySet: false`.
-- **RewardedAdButton**: Wrapped in section View for logged-in profile for consistent layout.
-- **CarPlay Recently Played**: Fixed property name `.recentStations` → `.stations`. Store loaded early via `loadFromAPI()`.
-
-## Pending (Needs TestFlight Verification)
-- ATT prompt display on fresh install (improved but needs device testing)
-- WatchOS connectivity (improved sendMessage fallback but needs Watch testing)
+## Pending (Needs Device Testing)
+- Chromecast actual device casting (native build required)
+- AirPlay actual device routing (native build required)
+- ATT prompt display on fresh install (TestFlight)
+- WatchOS connectivity (TestFlight)
 
 ## Upcoming Tasks
-- P1: Verify CarPlay CPNowPlayingTemplate behavior
+- P1: Verify CarPlay CPNowPlayingTemplate
 - P2: ShazamKit integration
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth AVRCP metadata
