@@ -1,0 +1,155 @@
+{
+  "summary": "Deep code review of ATT and AdMob implementation for MegaRadio React Native app. ALL CODE PATHS VERIFIED CORRECT. The splashHidden fix from previous iteration is properly implemented.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "att_admob_code_review": {
+    "1_ATT_INITIALIZATION_CHAIN": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/app/_layout.tsx",
+      "findings": [
+        "Line 115: splashHidden state declared EXACTLY as useState(false) - CORRECT",
+        "Lines 404-409: useEffect sets splashHidden=true when (fontsLoaded || fontError) && countryLoaded - CORRECT",
+        "Lines 221-260: AdMob useEffect depends on [splashHidden] with 'if (!splashHidden) return;' guard - CORRECT",
+        "After 1500ms delay calls adMobService.initialize() - CORRECT",
+        "On success, waits 5s then calls adMobService.showAppOpenAd() - CORRECT",
+        "NO other code path can short-circuit this chain - VERIFIED"
+      ]
+    },
+    "2_ADMOB_SERVICE_INITIALIZE": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Lines 69-81: setRequestConfiguration with maxAdContentRating='T' and requestNonPersonalizedAdsOnly=true - CORRECT",
+        "Lines 85-99: Calls ATTModule.requestPermission() on iOS - CORRECT",
+        "Lines 101-116: Handles ATT result gracefully, requests UMP consent - CORRECT",
+        "Line 119: Calls mobileAds().initialize() - CORRECT",
+        "Lines 125-129: Loads ALL 3 ad types in parallel via Promise.allSettled - CORRECT"
+      ]
+    },
+    "3_ATT_MODULE_NATIVE": {
+      "status": "VERIFIED_CORRECT",
+      "files": ["/app/frontend/ios/MegaRadio/ATTModule.swift", "/app/frontend/ios/MegaRadio/ATTModule.m", "/app/frontend/ios/MegaRadio/Info.plist"],
+      "findings": [
+        "ATTModule.swift Lines 17-27: Checks iOS 14+, calls ATTrackingManager.requestTrackingAuthorization on main thread via DispatchQueue.main.async - CORRECT",
+        "ATTModule.swift Lines 44-56: Returns proper status strings (granted/denied/restricted/not-determined) - CORRECT",
+        "ATTModule.m Lines 7-10: Has correct RCT_EXTERN_METHOD declarations for requestPermission and getStatus - CORRECT",
+        "Info.plist Lines 152-153: Has NSUserTrackingUsageDescription key with Turkish description - CORRECT"
+      ]
+    },
+    "4_AD_UNIT_IDS": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Lines 14-25: Production ad unit IDs are correct - iOS interstitial='ca-app-pub-8771434485570434/6008042825', appOpenInterstitial='ca-app-pub-8771434485570434/4798357761', rewarded='ca-app-pub-8771434485570434/3488497756'",
+        "Lines 27-31: __DEV__ flag correctly switches to test IDs",
+        "Lines 44-52: getAdUnitId() correctly handles 'appOpenInterstitial' type by mapping to 'interstitial' for test ads"
+      ]
+    },
+    "5_APP_OPEN_AD": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Lines 207-246: loadAppOpenAd() creates InterstitialAd with appOpenInterstitial ad unit ID - CORRECT",
+        "Lines 249-274: showAppOpenAd() checks ad-free time first, tries app open ad, falls back to regular interstitial if not loaded - CORRECT"
+      ]
+    },
+    "6_INTERSTITIAL_FREQUENCY": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Line 11: INTERSTITIAL_FREQUENCY = 3 - CORRECT",
+        "Lines 378-419: onStationChange() shows ad on first play (count===1) AND every 3 station changes - CORRECT"
+      ]
+    },
+    "7_REWARDED_AD_CANCEL_FIX": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/services/adMobService.native.ts",
+      "findings": [
+        "Line 458: 'resolved' boolean flag initialized to false - CORRECT",
+        "Lines 461-474: EARNED_REWARD listener sets resolved=true and resolves with {success: true, reward} - CORRECT",
+        "Lines 478-488: CLOSED listener via addAdEventsListener checks !resolved and resolves with {success: false} - CORRECT",
+        "Lines 491-498: .show().catch() checks !resolved and resolves with {success: false} - CORRECT",
+        "All 3 paths properly clean up both listeners via rewardListener() and closeListener() - CORRECT"
+      ]
+    },
+    "8_REWARDED_AD_BUTTON": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/src/components/RewardedAdButton.native.tsx",
+      "findings": [
+        "Lines 38-59: handleWatchAd() properly handles both success and failure from showRewardedAd()",
+        "Line 57: Loading state reset in finally block - ALL cases (success, cancel, error) handled - CORRECT"
+      ]
+    },
+    "9_FIRST_LAUNCH_FLOW": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/app/_layout.tsx",
+      "findings": [
+        "Lines 232-242: After adMobService.initialize() returns true, setTimeout 5000ms, then calls adMobService.showAppOpenAd() - CORRECT",
+        "Lines 244-254: If initialize returns false, retries after 10000ms - CORRECT"
+      ]
+    },
+    "10_SPLASHHIDDEN_STATE": {
+      "status": "VERIFIED_CORRECT",
+      "file": "/app/frontend/app/_layout.tsx",
+      "findings": [
+        "Line 115: splashHidden declared EXACTLY as 'const [splashHidden, setSplashHidden] = useState(false)' in RootLayout component - CORRECT",
+        "NOT declared anywhere else in the file - VERIFIED",
+        "Lines 404-409: useEffect has correct dependencies [fontsLoaded, fontError, countryLoaded, splashHidden] - CORRECT"
+      ]
+    }
+  },
+  "potential_issues_investigated": {
+    "countryLoaded_timing": {
+      "status": "NO_ISSUE",
+      "analysis": "Lines 167-190: loadCountry() has finally block that ALWAYS sets countryLoaded=true, even on error. This ensures the chain continues."
+    },
+    "event_type_comparison": {
+      "status": "NO_ISSUE",
+      "analysis": "Lines 311, 315, 479: Code uses both AdEventType.CLOSED and string 'closed' for comparison. This is defensive coding for react-native-google-mobile-ads v14.2.0 compatibility."
+    },
+    "ATTModule_null_check": {
+      "status": "NO_ISSUE",
+      "analysis": "Lines 89-95: Code checks 'if (ATTModule)' before calling. If null, logs and continues - correct graceful degradation."
+    }
+  },
+  "react_native_google_mobile_ads_version": "14.2.0",
+  "event_types_verified": {
+    "AdEventType.LOADED": "Used for interstitial LOADED event - CORRECT",
+    "AdEventType.OPENED": "Used for interstitial OPENED event - CORRECT",
+    "AdEventType.CLOSED": "Used for interstitial/rewarded CLOSED event - CORRECT",
+    "AdEventType.ERROR": "Used for error handling - CORRECT",
+    "RewardedAdEventType.LOADED": "Used for rewarded ad LOADED event - CORRECT",
+    "RewardedAdEventType.EARNED_REWARD": "Used for reward earned event - CORRECT"
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ALL 10 verification points PASSED - code is correctly implemented",
+    "splashHidden state is properly declared and used as the trigger for AdMob initialization",
+    "ATT prompt will show on iOS 14+ after splash hides (1500ms delay ensures UI is visible)",
+    "Rewarded ad cancel fix uses 'resolved' flag pattern correctly to prevent stuck loading state",
+    "All ad types (interstitial, appOpenInterstitial, rewarded) load in parallel after initialization",
+    "Event listener names match react-native-google-mobile-ads v14.2.0 API"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - Code review only",
+    "frontend": "100% - All ATT/AdMob code paths verified correct"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Deep code review of ATT and AdMob implementation completed. ALL code paths verified correct. The splashHidden fix is properly implemented. The initialization chain is: splashHidden=true (when fonts+country loaded) -> 1500ms delay -> ATT request -> UMP consent -> mobileAds().initialize() -> load 3 ad types in parallel -> 5s delay -> showAppOpenAd(). Native iOS features cannot be tested in this environment but code logic is 100% correct. User should test via TestFlight to verify ATT prompt appears.",
+  "rca_of_the_issue": {
+    "original_root_cause": "splashHidden variable was used but never declared as a state variable, causing the AdMob useEffect to always return early (undefined is falsy).",
+    "fix_applied": "Line 115 now declares splashHidden as useState(false), and useEffect at lines 404-409 sets it to true when app is ready.",
+    "verification": "All code paths verified - the fix is correctly implemented and the initialization chain is complete."
+  }
+}
