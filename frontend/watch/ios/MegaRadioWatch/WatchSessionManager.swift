@@ -27,8 +27,13 @@ struct WatchNowPlaying: Codable {
 struct WatchGenre: Codable, Identifiable {
     var id: String { name }
     let name: String
+    let slug: String?
     let icon: String
     let stationCount: Int
+    
+    var resolvedSlug: String {
+        return slug ?? name.lowercased().replacingOccurrences(of: " ", with: "-")
+    }
 }
 
 // MARK: - Watch Session Manager
@@ -47,6 +52,8 @@ class WatchSessionManager: NSObject, ObservableObject {
     )
     @Published var genres: [WatchGenre] = []
     @Published var recentlyPlayed: [WatchStation] = []
+    @Published var genreStations: [WatchStation] = []
+    @Published var isLoadingGenreStations: Bool = false
     @Published var isConnected: Bool = false
     @Published var isReachable: Bool = false
     
@@ -104,26 +111,50 @@ class WatchSessionManager: NSObject, ObservableObject {
         sendMessage(["command": "requestRecentlyPlayed"])
     }
     
+    func requestGenreStations(slug: String) {
+        DispatchQueue.main.async {
+            self.isLoadingGenreStations = true
+            self.genreStations = []
+        }
+        sendMessage(["command": "requestGenreStations", "genreSlug": slug])
+    }
+    
     // MARK: - Private Methods
     
     private func sendMessage(_ message: [String: Any]) {
-        guard let session = session, session.isReachable else {
-            print("[WatchSession] iOS app not reachable")
-            // Try to send via application context for when app is not active
-            do {
-                try session?.updateApplicationContext(message)
-            } catch {
-                print("[WatchSession] Failed to update context: \(error)")
-            }
+        guard let session = session else {
+            print("[WatchSession] No session available")
             return
         }
         
-        session.sendMessage(message, replyHandler: { response in
-            print("[WatchSession] Response received: \(response)")
-            self.handleResponse(response)
-        }, errorHandler: { error in
-            print("[WatchSession] Error sending message: \(error)")
-        })
+        // Session must be activated
+        guard session.activationState == .activated else {
+            print("[WatchSession] Session not activated, activating...")
+            session.activate()
+            return
+        }
+        
+        if session.isReachable {
+            // Real-time messaging when iPhone app is foreground
+            session.sendMessage(message, replyHandler: { response in
+                print("[WatchSession] Response received: \(response)")
+                self.handleResponse(response)
+            }, errorHandler: { error in
+                print("[WatchSession] sendMessage error: \(error)")
+                // Fallback to transferUserInfo for commands
+                if let command = message["command"] as? String {
+                    session.transferUserInfo(message)
+                    print("[WatchSession] Fallback: transferUserInfo for command: \(command)")
+                }
+            })
+        } else {
+            // iPhone app is in background - use transferUserInfo for commands
+            // (applicationContext is for state, transferUserInfo is for queued messages)
+            if let command = message["command"] as? String {
+                session.transferUserInfo(message)
+                print("[WatchSession] Not reachable, using transferUserInfo for: \(command)")
+            }
+        }
     }
     
     private func handleResponse(_ response: [String: Any]) {
@@ -153,6 +184,14 @@ class WatchSessionManager: NSObject, ObservableObject {
             if let recentData = response["recentlyPlayed"] as? Data {
                 if let recent = try? JSONDecoder().decode([WatchStation].self, from: recentData) {
                     self.recentlyPlayed = recent
+                }
+            }
+            
+            // Handle genre stations response
+            if let genreStationsData = response["genreStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
+                    self.genreStations = stations
+                    self.isLoadingGenreStations = false
                 }
             }
         }
@@ -204,6 +243,11 @@ extension WatchSessionManager: WCSessionDelegate {
         handleIncomingMessage(applicationContext)
     }
     
+    // Receive queued user info transfers
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        handleIncomingMessage(userInfo)
+    }
+    
     private func handleIncomingMessage(_ message: [String: Any]) {
         DispatchQueue.main.async {
             // Update favorites
@@ -234,6 +278,18 @@ extension WatchSessionManager: WCSessionDelegate {
             if let recentData = message["recentlyPlayed"] as? Data {
                 if let recent = try? JSONDecoder().decode([WatchStation].self, from: recentData) {
                     self.recentlyPlayed = recent
+                }
+            }
+            
+            // Update genre stations (response from requestGenreStations)
+            if let genreStationsData = message["genreStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
+                    self.genreStations = stations
+                    self.isLoadingGenreStations = false
+                    print("[WatchSession] Received \(stations.count) genre stations")
+                } else {
+                    self.genreStations = []
+                    self.isLoadingGenreStations = false
                 }
             }
             

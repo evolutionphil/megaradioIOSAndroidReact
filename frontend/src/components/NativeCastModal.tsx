@@ -70,10 +70,9 @@ const NativeCastUnavailable: React.FC<{ onClose: () => void }> = ({ onClose }) =
       Chromecast desteği yakında eklenecektir. Şimdilik AirPlay kullanarak Apple TV veya uyumlu hoparlörlere aktarabilirsiniz.
     </Text>
     <Text style={[styles.unavailableText, { marginTop: 12, fontSize: 13 }]}>
-      AirPlay için Kontrol Merkezi'ni açın ve ses çıkışını seçin.
-    </Text>
+      AirPlay icin Kontrol Merkezi'ni acin ve ses cikisini secin.
       {'\n\n'}
-      Expo Go'da bu özellik desteklenmemektedir.
+      Expo Go'da bu ozellik desteklenmemektedir.
     </Text>
     <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
       <Text style={styles.closeBtnText}>Kapat</Text>

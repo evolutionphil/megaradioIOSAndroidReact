@@ -8,12 +8,20 @@ struct NowPlayingView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            // Connection Status (only show if not connected)
-            if !sessionManager.isReachable {
+            // Connection Status (show if not connected at all)
+            if !sessionManager.isConnected {
                 HStack {
                     Image(systemName: "iphone.slash")
                         .font(.system(size: 10))
-                    Text("iPhone bağlantısı yok")
+                    Text("iPhone baglantisi yok")
+                        .font(.system(size: 9))
+                }
+                .foregroundColor(.red)
+            } else if !sessionManager.isReachable {
+                HStack {
+                    Image(systemName: "iphone.gen3")
+                        .font(.system(size: 10))
+                    Text("iPhone arka planda")
                         .font(.system(size: 9))
                 }
                 .foregroundColor(.orange)

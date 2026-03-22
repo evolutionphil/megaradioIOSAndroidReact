@@ -27,6 +27,7 @@ interface WatchNowPlaying {
 
 interface WatchGenre {
   name: string;
+  slug: string;
   icon: string;
   stationCount: number;
 }
@@ -34,6 +35,7 @@ interface WatchGenre {
 interface WatchCommand {
   command: string;
   stationId?: string;
+  genreSlug?: string;
 }
 
 type WatchCommandListener = (command: WatchCommand) => void;
@@ -129,6 +131,7 @@ class WatchService {
     try {
       const watchGenres: WatchGenre[] = genres.map(genre => ({
         name: genre.name || '',
+        slug: genre.slug || genre.name?.toLowerCase().replace(/\s+/g, '-') || '',
         icon: genre.icon || 'radio',
         stationCount: genre.stationCount || genre.count || 0,
       }));
@@ -137,6 +140,27 @@ class WatchService {
       WatchConnectivityBridge.updateGenres(watchGenres);
     } catch (error) {
       console.log('[WatchService] Error updating genres:', error);
+    }
+  }
+
+  // Update genre stations on Watch (for genre detail view)
+  updateGenreStations(stations: any[]) {
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
+
+    try {
+      const watchStations: WatchStation[] = stations.map(station => ({
+        id: station._id || station.id || '',
+        name: station.name || '',
+        logo: station.logo || station.favicon || '',
+        streamUrl: station.streamUrl || station.url_resolved || station.urlResolved || station.url || '',
+        genre: station.genres?.[0] || station.genre || '',
+        country: station.country || '',
+      }));
+
+      console.log('[WatchService] Updating genre stations:', watchStations.length);
+      WatchConnectivityBridge.updateGenreStations(watchStations);
+    } catch (error) {
+      console.log('[WatchService] Error updating genre stations:', error);
     }
   }
 

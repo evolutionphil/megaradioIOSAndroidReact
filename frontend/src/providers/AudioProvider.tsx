@@ -24,6 +24,7 @@ import userService from '../services/userService';
 import statsService from '../services/statsService';
 import watchService from '../services/watchService';
 import { adMobService } from '../services/adMobService';
+import { genreService } from '../services/genreService';
 import type { Station } from '../types';
 sendLog('AUDIO_PROVIDER_IMPORTS_DONE');
 
@@ -1087,23 +1088,43 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     watchService.updateFavorites(favorites);
   }, [favorites]);
   
-  // Fetch and send genres to Watch on mount
+  // Fetch and send genres to Watch on mount - use precomputed for country-specific data
   useEffect(() => {
     if (Platform.OS !== 'ios') return;
     
     const fetchAndSendGenres = async () => {
       try {
-        const { genreService } = await import('../services/genreService');
-        const genres = await genreService.getDiscoverableGenres();
+        const { useLocationStore } = await import('../store/locationStore');
+        const locState = useLocationStore.getState();
+        const countryCode = locState.countryCode;
         
-        if (genres && genres.length > 0) {
-          const watchGenres = genres.map((g: any) => ({
+        console.log('[AudioProvider] Fetching genres for Watch, countryCode:', countryCode);
+        
+        // Use precomputed genres with country code for country-specific data
+        const result = await genreService.getPrecomputedGenres(countryCode || undefined, 40);
+        
+        if (result.success && result.data && result.data.length > 0) {
+          const watchGenres = result.data.map((g: any) => ({
             name: g.name || g.title || '',
+            slug: g.slug || g.name?.toLowerCase().replace(/\s+/g, '-') || '',
             icon: g.icon || 'radio',
             stationCount: g.stationCount || g.count || 0,
           }));
           watchService.updateGenres(watchGenres);
-          console.log('[AudioProvider] Sent', watchGenres.length, 'genres to Watch');
+          console.log('[AudioProvider] Sent', watchGenres.length, 'precomputed genres to Watch');
+        } else {
+          // Fallback to discoverable genres
+          const genres = await genreService.getDiscoverableGenres();
+          if (genres && genres.length > 0) {
+            const watchGenres = genres.map((g: any) => ({
+              name: g.name || g.title || '',
+              slug: g.slug || g.name?.toLowerCase().replace(/\s+/g, '-') || '',
+              icon: g.icon || 'radio',
+              stationCount: g.stationCount || g.count || 0,
+            }));
+            watchService.updateGenres(watchGenres);
+            console.log('[AudioProvider] Sent', watchGenres.length, 'discoverable genres to Watch (fallback)');
+          }
         }
       } catch (error) {
         console.log('[AudioProvider] Error fetching genres for Watch:', error);
@@ -1151,35 +1172,108 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         case 'togglePlayPause':
           togglePlayPause();
           break;
-        case 'nextStation':
-          // Play next favorite
-          const currentIndex = favorites.findIndex(
-            (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
-          );
-          if (currentIndex >= 0 && currentIndex < favorites.length - 1) {
-            await playStation(favorites[currentIndex + 1]);
-          } else if (favorites.length > 0) {
-            await playStation(favorites[0]); // Loop to first
+        case 'nextStation': {
+          // Use similar stations logic (same as lock screen / Control Center)
+          try {
+            const similarJson = await AsyncStorage.getItem(SIMILAR_STATIONS_KEY);
+            const similarStations = similarJson ? JSON.parse(similarJson) : [];
+            
+            if (similarStations.length > 0) {
+              const indexJson = await AsyncStorage.getItem(SIMILAR_INDEX_KEY);
+              let currentIdx = indexJson ? parseInt(indexJson, 10) : -1;
+              currentIdx = (currentIdx + 1) % similarStations.length;
+              await AsyncStorage.setItem(SIMILAR_INDEX_KEY, String(currentIdx));
+              const nextStation = similarStations[currentIdx];
+              if (nextStation) {
+                console.log('[AudioProvider] Watch: Playing next similar station:', nextStation.name);
+                await playStation(nextStation);
+                break;
+              }
+            }
+            // Fallback to favorites if no similar stations
+            const currentIndex = favorites.findIndex(
+              (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
+            );
+            if (currentIndex >= 0 && currentIndex < favorites.length - 1) {
+              await playStation(favorites[currentIndex + 1]);
+            } else if (favorites.length > 0) {
+              await playStation(favorites[0]);
+            }
+          } catch (e) {
+            console.log('[AudioProvider] Watch nextStation error:', e);
           }
           break;
-        case 'previousStation':
-          // Play previous favorite
-          const prevIndex = favorites.findIndex(
-            (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
-          );
-          if (prevIndex > 0) {
-            await playStation(favorites[prevIndex - 1]);
-          } else if (favorites.length > 0) {
-            await playStation(favorites[favorites.length - 1]); // Loop to last
+        }
+        case 'previousStation': {
+          // Use playback history (same as lock screen / Control Center)
+          try {
+            const historyJson = await AsyncStorage.getItem(PLAYBACK_HISTORY_KEY);
+            const history = historyJson ? JSON.parse(historyJson) : [];
+            
+            if (history.length >= 2) {
+              const previousStation = history[1]; // [0] is current, [1] is previous
+              if (previousStation) {
+                console.log('[AudioProvider] Watch: Playing previous station from history:', previousStation.name);
+                // Reset similar index
+                await AsyncStorage.setItem(SIMILAR_INDEX_KEY, '-1');
+                await playStation(previousStation);
+                break;
+              }
+            }
+            // Fallback to favorites if no history
+            const prevIndex = favorites.findIndex(
+              (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
+            );
+            if (prevIndex > 0) {
+              await playStation(favorites[prevIndex - 1]);
+            } else if (favorites.length > 0) {
+              await playStation(favorites[favorites.length - 1]);
+            }
+          } catch (e) {
+            console.log('[AudioProvider] Watch previousStation error:', e);
           }
           break;
+        }
         case 'playStation':
           if (command.stationId) {
-            const station = favorites.find(
+            // First check favorites, then try fetching from API
+            let station = favorites.find(
               (s: any) => (s._id || s.id) === command.stationId
             );
+            if (!station) {
+              try {
+                station = await stationService.getStation(command.stationId);
+              } catch (e) {
+                console.log('[AudioProvider] Could not fetch station:', e);
+              }
+            }
             if (station) {
               await playStation(station);
+            }
+          }
+          break;
+        case 'requestGenreStations':
+          // Watch is asking for stations within a genre
+          if ((command as any).genreSlug) {
+            try {
+              const { useLocationStore } = await import('../store/locationStore');
+              const locState = useLocationStore.getState();
+              const countryEn = locState.countryEnglish || locState.country;
+              const countryNative = locState.country;
+              
+              const result = await genreService.getGenreStations(
+                (command as any).genreSlug, 1, 20, countryEn, 'votes', 'desc', countryNative
+              );
+              
+              if (result.stations && result.stations.length > 0) {
+                watchService.updateGenreStations(result.stations);
+                console.log('[AudioProvider] Sent', result.stations.length, 'genre stations to Watch');
+              } else {
+                watchService.updateGenreStations([]);
+              }
+            } catch (e) {
+              console.log('[AudioProvider] Error fetching genre stations for Watch:', e);
+              watchService.updateGenreStations([]);
             }
           }
           break;

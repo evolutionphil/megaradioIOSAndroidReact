@@ -42,6 +42,14 @@ struct GenresView: View {
             return "mic"
         case let n where n.contains("religious"), let n where n.contains("dini"):
             return "moon.stars"
+        case let n where n.contains("folk"):
+            return "music.mic"
+        case let n where n.contains("ambient"), let n where n.contains("chill"):
+            return "cloud"
+        case let n where n.contains("blues"):
+            return "music.note.list"
+        case let n where n.contains("funk"):
+            return "waveform.path.ecg"
         default:
             return "radio"
         }
@@ -58,11 +66,11 @@ struct GenresView: View {
                                 .font(.system(size: 28))
                                 .foregroundColor(.orange)
                             
-                            Text("iPhone'a bağlan")
+                            Text("iPhone'a baglan")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundColor(.white)
                             
-                            Text("Türleri görmek için iPhone'da MegaRadio açık olmalı")
+                            Text("Turleri gormek icin iPhone'da MegaRadio acik olmali")
                                 .font(.system(size: 10))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -71,7 +79,7 @@ struct GenresView: View {
                             ProgressView()
                                 .tint(.pink)
                             
-                            Text("Türler yükleniyor...")
+                            Text("Turler yukleniyor...")
                                 .font(.system(size: 12))
                                 .foregroundColor(.gray)
                         }
@@ -86,31 +94,34 @@ struct GenresView: View {
                     }
                     .padding()
                 } else {
-                    // Genres list
+                    // Genres list - tappable with NavigationLink
                     List(sessionManager.genres) { genre in
-                        HStack(spacing: 10) {
-                            Image(systemName: iconForGenre(genre.name))
-                                .foregroundColor(.pink)
-                                .frame(width: 20)
-                            
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(genre.name)
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.white)
+                        NavigationLink(destination: GenreStationsView(genre: genre)
+                            .environmentObject(sessionManager)) {
+                            HStack(spacing: 10) {
+                                Image(systemName: iconForGenre(genre.name))
+                                    .foregroundColor(.pink)
+                                    .frame(width: 20)
                                 
-                                Text("\(genre.stationCount) istasyon")
-                                    .font(.system(size: 9))
-                                    .foregroundColor(.gray)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(genre.name)
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.white)
+                                    
+                                    Text("\(genre.stationCount) istasyon")
+                                        .font(.system(size: 9))
+                                        .foregroundColor(.gray)
+                                }
+                                
+                                Spacer()
                             }
-                            
-                            Spacer()
                         }
                         .listRowBackground(Color.clear)
                     }
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("Türler")
+            .navigationTitle("Turler")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {

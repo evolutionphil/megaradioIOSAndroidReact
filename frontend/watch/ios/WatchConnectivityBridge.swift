@@ -76,6 +76,12 @@ class WatchConnectivityBridge: RCTEventEmitter {
             name: Notification.Name("WatchCommandPlayStation"),
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRequestGenreStationsCommand(_:)),
+            name: Notification.Name("WatchCommandRequestGenreStations"),
+            object: nil
+        )
     }
     
     @objc private func handleWatchCommand(_ notification: Notification) {
@@ -111,6 +117,17 @@ class WatchConnectivityBridge: RCTEventEmitter {
         ])
     }
     
+    @objc private func handleRequestGenreStationsCommand(_ notification: Notification) {
+        guard hasListeners else { return }
+        guard let userInfo = notification.userInfo,
+              let genreSlug = userInfo["genreSlug"] as? String else { return }
+        
+        sendEvent(withName: "onWatchCommand", body: [
+            "command": "requestGenreStations",
+            "genreSlug": genreSlug
+        ])
+    }
+    
     // MARK: - Exported Methods
     
     @objc func updateFavorites(_ favorites: [[String: Any]]) {
@@ -123,6 +140,10 @@ class WatchConnectivityBridge: RCTEventEmitter {
     
     @objc func updateGenres(_ genres: [[String: Any]]) {
         WatchConnectivityHandler.shared.updateGenres(genres)
+    }
+    
+    @objc func updateGenreStations(_ stations: [[String: Any]]) {
+        WatchConnectivityHandler.shared.updateGenreStations(stations)
     }
     
     @objc func updatePlaybackState(_ isPlaying: Bool) {

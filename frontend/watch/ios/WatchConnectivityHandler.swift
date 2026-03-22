@@ -44,6 +44,10 @@ class WatchConnectivityHandler: NSObject {
         sendGenresToWatch()
     }
     
+    @objc func updateGenreStations(_ stations: [[String: Any]]) {
+        sendGenreStationsToWatch(stations)
+    }
+    
     @objc func updatePlaybackState(_ isPlaying: Bool) {
         sendMessageToWatch(["isPlaying": isPlaying])
     }
@@ -87,6 +91,7 @@ class WatchConnectivityHandler: NSObject {
         let genres = currentGenres.map { genre -> [String: Any] in
             return [
                 "name": genre["name"] as? String ?? "",
+                "slug": genre["slug"] as? String ?? (genre["name"] as? String ?? "").lowercased().replacingOccurrences(of: " ", with: "-"),
                 "icon": genre["icon"] as? String ?? "radio",
                 "stationCount": genre["stationCount"] as? Int ?? 0
             ]
@@ -94,6 +99,23 @@ class WatchConnectivityHandler: NSObject {
         
         if let data = try? JSONSerialization.data(withJSONObject: genres) {
             sendMessageToWatch(["genres": data])
+        }
+    }
+    
+    private func sendGenreStationsToWatch(_ stations: [[String: Any]]) {
+        let stationsList = stations.map { station -> [String: Any] in
+            return [
+                "id": station["_id"] as? String ?? station["id"] as? String ?? UUID().uuidString,
+                "name": station["name"] as? String ?? "",
+                "logo": station["logo"] as? String ?? station["favicon"] as? String ?? "",
+                "streamUrl": station["streamUrl"] as? String ?? station["url_resolved"] as? String ?? "",
+                "genre": (station["genres"] as? [String])?.first ?? station["genre"] as? String ?? "",
+                "country": station["country"] as? String ?? ""
+            ]
+        }
+        
+        if let data = try? JSONSerialization.data(withJSONObject: stationsList) {
+            sendMessageToWatch(["genreStations": data])
         }
     }
     
@@ -173,6 +195,11 @@ extension WatchConnectivityHandler: WCSessionDelegate {
         replyHandler(response)
     }
     
+    // Handle queued transfers from Watch (when Watch sends via transferUserInfo)
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        handleWatchMessage(userInfo)
+    }
+    
     private func handleWatchMessage(_ message: [String: Any]) {
         guard let command = message["command"] as? String else { return }
         
@@ -205,6 +232,14 @@ extension WatchConnectivityHandler: WCSessionDelegate {
                 self.sendNowPlayingToWatch()
             case "requestGenres":
                 self.sendGenresToWatch()
+            case "requestGenreStations":
+                if let genreSlug = message["genreSlug"] as? String {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("WatchCommandRequestGenreStations"),
+                        object: nil,
+                        userInfo: ["genreSlug": genreSlug]
+                    )
+                }
             default:
                 break
             }
