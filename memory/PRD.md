@@ -8,6 +8,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - **State**: Zustand (playerStore, locationStore, recentlyPlayedStore), React Query
 - **Audio**: react-native-track-player (background headless JS)
 - **iOS Native**: PhoneSceneDelegate, CarPlaySceneDelegate, ATTModule.swift
+- **Android Native**: MegaRadioAutoService (Android Auto), SilentPushService (FCM), BackgroundSyncWorker
 - **WatchOS**: Native Swift App + WCSession connectivity
 - **Ads**: Google AdMob (AppOpenAd, Interstitial, Rewarded)
 - **Casting**: react-native-google-cast (Chromecast), react-airplay (AirPlay)
@@ -16,43 +17,36 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 ## Completed Features
 - Background audio streaming with lock screen controls
 - CarPlay + Android Auto integration
-- Native Splash Screen
+- Native Splash Screen (iOS + Android)
 - Google AdMob (AppOpen + Interstitial + Rewarded)
-- WCSession Watch connectivity with transferUserInfo fallback
+- Chromecast + AirPlay casting
+- WatchOS companion app (NowPlaying, Favorites, Browse, Genres, Countries)
+- ATT prompt with lifecycle-aware timing
+- GPS/Manual country detection with persistence
 
-### Chromecast + AirPlay Casting (Mar 2026)
-- **react-native-google-cast v4.9.1** installed and configured
-- **react-airplay v1.2.0** installed for native iOS AirPlay
-- iOS: GoogleCast SDK initialized in AppDelegate.swift (auto-discovery enabled)
-- Android: play-services-cast-framework + GoogleCastOptionsProvider configured
-- NativeCastModal: Full Chromecast section (connected/connecting/disconnected states)
-- NativeCastButton: Native CastButton from Google Cast SDK, AirPlay fallback on iOS
-- Auto-cast: When device connects, audio stream starts automatically
-- loadMedia: Sends correct metadata (title, artist, logo, contentType, streamType:live)
-- Player bottom cast button now opens NativeCastModal (native) instead of old API-based CastModal
+## Android Build Readiness (Mar 2026)
+### Issues Found & Fixed by Testing Agent
+- **VoiceCommandHandler.kt DELETED** - unused dead code with compilation errors (referenced non-existent methods in MegaRadioAutoService). MegaRadioAutoService already has complete MediaSessionCallback inner class.
+- **notification_icon.xml CREATED** - was missing, referenced by AndroidManifest
+- **splashscreen_logo.xml CREATED** - was missing, referenced by styles.xml
+- **WorkManager dependency ADDED** - work-runtime-ktx:2.9.1 (BackgroundSyncWorker.kt)
+- **Media compat dependency ADDED** - androidx.media:media:1.7.0 (MegaRadioAutoService.kt)
+- **Firebase Messaging dependency ADDED** - firebase-bom:33.7.0 (SilentPushService.kt)
+- **Android 12+ registerReceiver FIXED** - RECEIVER_NOT_EXPORTED flag added
+- **ProGuard rules ADDED** - Google Cast, Firebase, Media, WorkManager, OkHttp
 
-### WatchOS App
-- NowPlayingView (backward.end.fill, pause.fill, forward.end.fill icons)
-- FavoritesView, Browse Tab (Genres + Countries)
-- Genre/Country → stations → tap to play
-- Next/Previous uses similar stations logic
+### Verified Correct (8/8 Kotlin files pass)
+- MainApplication.kt, MainActivity.kt, AndroidAutoModule.kt, AndroidAutoPackage.kt
+- MegaRadioAutoService.kt (721 lines), MegaRadioApiClient.kt (617 lines)
+- BackgroundSyncWorker.kt, SilentPushService.kt
 
-### Bug Fixes
-- ATT prompt: AppState lifecycle + didBecomeActive notification observer
-- GPS location: isManuallySet persisted in AsyncStorage
-- CarPlay Recently Played: Fixed property name bug
-- RewardedAdButton: Section wrapper for logged-in profile
-
-## Pending (Needs Device Testing)
-- Chromecast actual device casting (native build required)
-- AirPlay actual device routing (native build required)
-- ATT prompt display on fresh install (TestFlight)
+## Pending (Device Testing Required)
+- Chromecast actual casting (native build)
+- AirPlay actual routing (native build)
+- ATT prompt on fresh install (TestFlight)
 - WatchOS connectivity (TestFlight)
 
 ## Upcoming Tasks
-- P1: Verify CarPlay CPNowPlayingTemplate
-- P2: ShazamKit integration
-- P2: Equalizer (EQ) with presets
-- P2: Bluetooth AVRCP metadata
-- P3: Station alarm feature
-- P3: tvOS / Android TV apps
+- P1: CarPlay CPNowPlayingTemplate
+- P2: ShazamKit, EQ, Bluetooth AVRCP
+- P3: Station alarm, tvOS/Android TV

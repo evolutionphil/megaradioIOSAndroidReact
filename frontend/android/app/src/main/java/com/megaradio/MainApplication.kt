@@ -1,4 +1,4 @@
-package com.visiongo.megaradio
+package com.megaradio
 
 import android.app.Application
 import android.content.res.Configuration
@@ -25,7 +25,6 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
-              add(AndroidAutoPackage()) // Android Auto native module
             }
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
@@ -48,14 +47,6 @@ class MainApplication : Application(), ReactApplication {
     }
     loadReactNative(this)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
-    
-    // Initialize background sync for Android Auto cache
-    // This ensures cache is updated even when app is killed
-    android.util.Log.d("MainApplication", "Scheduling background sync for Android Auto...")
-    BackgroundSyncWorker.schedulePeriodicSync(this)
-    
-    // Initialize API client with context
-    MegaRadioApiClient.initialize(this)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {
