@@ -164,6 +164,39 @@ class WatchService {
     }
   }
 
+  // Update countries on Watch
+  updateCountries(countries: any[]) {
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
+
+    try {
+      console.log('[WatchService] Updating countries:', countries.length);
+      WatchConnectivityBridge.updateCountries(countries);
+    } catch (error) {
+      console.log('[WatchService] Error updating countries:', error);
+    }
+  }
+
+  // Update country stations on Watch
+  updateCountryStations(stations: any[]) {
+    if (!this.isInitialized || !WatchConnectivityBridge) return;
+
+    try {
+      const watchStations: WatchStation[] = stations.map(station => ({
+        id: station._id || station.id || '',
+        name: station.name || '',
+        logo: station.logo || station.favicon || '',
+        streamUrl: station.streamUrl || station.url_resolved || station.urlResolved || station.url || '',
+        genre: station.genres?.[0] || station.genre || '',
+        country: station.country || '',
+      }));
+
+      console.log('[WatchService] Updating country stations:', watchStations.length);
+      WatchConnectivityBridge.updateCountryStations(watchStations);
+    } catch (error) {
+      console.log('[WatchService] Error updating country stations:', error);
+    }
+  }
+
   // Update playback state
   updatePlaybackState(isPlaying: boolean) {
     if (!this.isInitialized || !WatchConnectivityBridge) return;

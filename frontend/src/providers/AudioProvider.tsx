@@ -25,8 +25,32 @@ import statsService from '../services/statsService';
 import watchService from '../services/watchService';
 import { adMobService } from '../services/adMobService';
 import { genreService } from '../services/genreService';
+import api from '../services/api';
+import { API_ENDPOINTS } from '../constants/api';
 import type { Station } from '../types';
 sendLog('AUDIO_PROVIDER_IMPORTS_DONE');
+
+// Country name to flag emoji mapping
+const COUNTRY_FLAGS: { [key: string]: string } = {
+  'Turkey': '\u{1F1F9}\u{1F1F7}', 'Germany': '\u{1F1E9}\u{1F1EA}', 'France': '\u{1F1EB}\u{1F1F7}',
+  'Italy': '\u{1F1EE}\u{1F1F9}', 'Spain': '\u{1F1EA}\u{1F1F8}', 'United Kingdom': '\u{1F1EC}\u{1F1E7}',
+  'United States': '\u{1F1FA}\u{1F1F8}', 'Brazil': '\u{1F1E7}\u{1F1F7}', 'Japan': '\u{1F1EF}\u{1F1F5}',
+  'Russia': '\u{1F1F7}\u{1F1FA}', 'Canada': '\u{1F1E8}\u{1F1E6}', 'Australia': '\u{1F1E6}\u{1F1FA}',
+  'Netherlands': '\u{1F1F3}\u{1F1F1}', 'Belgium': '\u{1F1E7}\u{1F1EA}', 'Austria': '\u{1F1E6}\u{1F1F9}',
+  'Switzerland': '\u{1F1E8}\u{1F1ED}', 'Poland': '\u{1F1F5}\u{1F1F1}', 'Sweden': '\u{1F1F8}\u{1F1EA}',
+  'Norway': '\u{1F1F3}\u{1F1F4}', 'Denmark': '\u{1F1E9}\u{1F1F0}', 'Finland': '\u{1F1EB}\u{1F1EE}',
+  'Portugal': '\u{1F1F5}\u{1F1F9}', 'Greece': '\u{1F1EC}\u{1F1F7}', 'Mexico': '\u{1F1F2}\u{1F1FD}',
+  'Argentina': '\u{1F1E6}\u{1F1F7}', 'Colombia': '\u{1F1E8}\u{1F1F4}', 'India': '\u{1F1EE}\u{1F1F3}',
+  'China': '\u{1F1E8}\u{1F1F3}', 'South Korea': '\u{1F1F0}\u{1F1F7}', 'Indonesia': '\u{1F1EE}\u{1F1E9}',
+  'Thailand': '\u{1F1F9}\u{1F1ED}', 'Egypt': '\u{1F1EA}\u{1F1EC}', 'South Africa': '\u{1F1FF}\u{1F1E6}',
+  'Nigeria': '\u{1F1F3}\u{1F1EC}', 'Romania': '\u{1F1F7}\u{1F1F4}', 'Czech Republic': '\u{1F1E8}\u{1F1FF}',
+  'Hungary': '\u{1F1ED}\u{1F1FA}', 'Ireland': '\u{1F1EE}\u{1F1EA}', 'Israel': '\u{1F1EE}\u{1F1F1}',
+  'Ukraine': '\u{1F1FA}\u{1F1E6}', 'Chile': '\u{1F1E8}\u{1F1F1}', 'Peru': '\u{1F1F5}\u{1F1EA}',
+  'Philippines': '\u{1F1F5}\u{1F1ED}', 'Malaysia': '\u{1F1F2}\u{1F1FE}', 'Vietnam': '\u{1F1FB}\u{1F1F3}',
+  'Pakistan': '\u{1F1F5}\u{1F1F0}', 'Bangladesh': '\u{1F1E7}\u{1F1E9}', 'Saudi Arabia': '\u{1F1F8}\u{1F1E6}',
+  'United Arab Emirates': '\u{1F1E6}\u{1F1EA}', 'Azerbaijan': '\u{1F1E6}\u{1F1FF}',
+};
+const countryNameToFlag = (name: string): string => COUNTRY_FLAGS[name] || '\u{1F30D}';
 
 // Storage keys - MUST match keys in service.js
 const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
@@ -1274,6 +1298,47 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             } catch (e) {
               console.log('[AudioProvider] Error fetching genre stations for Watch:', e);
               watchService.updateGenreStations([]);
+            }
+          }
+          break;
+        case 'requestCountries':
+          // Watch is asking for the country list
+          try {
+            const countriesResponse = await api.get(API_ENDPOINTS.filters.countries);
+            const countryNames: string[] = countriesResponse.data || [];
+            
+            // Convert country names to WatchCountry objects with flags
+            const watchCountries = countryNames
+              .filter((name: string) => name && name.length > 0)
+              .map((name: string) => ({
+                name,
+                code: name.substring(0, 2).toUpperCase(),
+                flag: countryNameToFlag(name),
+                stationCount: 0, // Count not available from filter endpoint
+              }));
+            
+            watchService.updateCountries(watchCountries);
+            console.log('[AudioProvider] Sent', watchCountries.length, 'countries to Watch');
+          } catch (e) {
+            console.log('[AudioProvider] Error fetching countries for Watch:', e);
+          }
+          break;
+        case 'requestCountryStations':
+          // Watch is asking for stations in a specific country
+          if ((command as any).countryName) {
+            try {
+              const countryName = (command as any).countryName;
+              const result = await stationService.getPopularStations(countryName, 1, 30);
+              
+              if (result.stations && result.stations.length > 0) {
+                watchService.updateCountryStations(result.stations);
+                console.log('[AudioProvider] Sent', result.stations.length, 'country stations to Watch');
+              } else {
+                watchService.updateCountryStations([]);
+              }
+            } catch (e) {
+              console.log('[AudioProvider] Error fetching country stations for Watch:', e);
+              watchService.updateCountryStations([]);
             }
           }
           break;

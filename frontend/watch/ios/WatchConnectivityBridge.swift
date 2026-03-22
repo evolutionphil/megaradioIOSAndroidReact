@@ -82,6 +82,18 @@ class WatchConnectivityBridge: RCTEventEmitter {
             name: Notification.Name("WatchCommandRequestGenreStations"),
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRequestCountriesCommand),
+            name: Notification.Name("WatchCommandRequestCountries"),
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRequestCountryStationsCommand(_:)),
+            name: Notification.Name("WatchCommandRequestCountryStations"),
+            object: nil
+        )
     }
     
     @objc private func handleWatchCommand(_ notification: Notification) {
@@ -128,6 +140,25 @@ class WatchConnectivityBridge: RCTEventEmitter {
         ])
     }
     
+    @objc private func handleRequestCountriesCommand() {
+        guard hasListeners else { return }
+        
+        sendEvent(withName: "onWatchCommand", body: [
+            "command": "requestCountries"
+        ])
+    }
+    
+    @objc private func handleRequestCountryStationsCommand(_ notification: Notification) {
+        guard hasListeners else { return }
+        guard let userInfo = notification.userInfo,
+              let countryName = userInfo["countryName"] as? String else { return }
+        
+        sendEvent(withName: "onWatchCommand", body: [
+            "command": "requestCountryStations",
+            "countryName": countryName
+        ])
+    }
+    
     // MARK: - Exported Methods
     
     @objc func updateFavorites(_ favorites: [[String: Any]]) {
@@ -144,6 +175,14 @@ class WatchConnectivityBridge: RCTEventEmitter {
     
     @objc func updateGenreStations(_ stations: [[String: Any]]) {
         WatchConnectivityHandler.shared.updateGenreStations(stations)
+    }
+    
+    @objc func updateCountries(_ countries: [[String: Any]]) {
+        WatchConnectivityHandler.shared.updateCountries(countries)
+    }
+    
+    @objc func updateCountryStations(_ stations: [[String: Any]]) {
+        WatchConnectivityHandler.shared.updateCountryStations(stations)
     }
     
     @objc func updatePlaybackState(_ isPlaying: Bool) {

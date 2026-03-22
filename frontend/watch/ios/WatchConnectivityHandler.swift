@@ -16,6 +16,7 @@ class WatchConnectivityHandler: NSObject {
     private var currentFavorites: [[String: Any]] = []
     private var currentNowPlaying: [String: Any] = [:]
     private var currentGenres: [[String: Any]] = []
+    private var currentCountries: [[String: Any]] = []
     
     override init() {
         super.init()
@@ -46,6 +47,15 @@ class WatchConnectivityHandler: NSObject {
     
     @objc func updateGenreStations(_ stations: [[String: Any]]) {
         sendGenreStationsToWatch(stations)
+    }
+    
+    @objc func updateCountries(_ countries: [[String: Any]]) {
+        currentCountries = countries
+        sendCountriesToWatch()
+    }
+    
+    @objc func updateCountryStations(_ stations: [[String: Any]]) {
+        sendCountryStationsToWatch(stations)
     }
     
     @objc func updatePlaybackState(_ isPlaying: Bool) {
@@ -116,6 +126,29 @@ class WatchConnectivityHandler: NSObject {
         
         if let data = try? JSONSerialization.data(withJSONObject: stationsList) {
             sendMessageToWatch(["genreStations": data])
+        }
+    }
+    
+    private func sendCountriesToWatch() {
+        if let data = try? JSONSerialization.data(withJSONObject: currentCountries) {
+            sendMessageToWatch(["countries": data])
+        }
+    }
+    
+    private func sendCountryStationsToWatch(_ stations: [[String: Any]]) {
+        let stationsList = stations.map { station -> [String: Any] in
+            return [
+                "id": station["_id"] as? String ?? station["id"] as? String ?? UUID().uuidString,
+                "name": station["name"] as? String ?? "",
+                "logo": station["logo"] as? String ?? station["favicon"] as? String ?? "",
+                "streamUrl": station["streamUrl"] as? String ?? station["url_resolved"] as? String ?? "",
+                "genre": (station["genres"] as? [String])?.first ?? station["genre"] as? String ?? "",
+                "country": station["country"] as? String ?? ""
+            ]
+        }
+        
+        if let data = try? JSONSerialization.data(withJSONObject: stationsList) {
+            sendMessageToWatch(["countryStations": data])
         }
     }
     
@@ -238,6 +271,23 @@ extension WatchConnectivityHandler: WCSessionDelegate {
                         name: Notification.Name("WatchCommandRequestGenreStations"),
                         object: nil,
                         userInfo: ["genreSlug": genreSlug]
+                    )
+                }
+            case "requestCountries":
+                if self.currentCountries.isEmpty {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("WatchCommandRequestCountries"),
+                        object: nil
+                    )
+                } else {
+                    self.sendCountriesToWatch()
+                }
+            case "requestCountryStations":
+                if let countryName = message["countryName"] as? String {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("WatchCommandRequestCountryStations"),
+                        object: nil,
+                        userInfo: ["countryName": countryName]
                     )
                 }
             default:

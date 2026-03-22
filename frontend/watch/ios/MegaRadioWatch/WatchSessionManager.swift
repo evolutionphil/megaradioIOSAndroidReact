@@ -36,6 +36,14 @@ struct WatchGenre: Codable, Identifiable {
     }
 }
 
+struct WatchCountry: Codable, Identifiable {
+    var id: String { name }
+    let name: String
+    let code: String
+    let flag: String
+    let stationCount: Int
+}
+
 // MARK: - Watch Session Manager
 class WatchSessionManager: NSObject, ObservableObject {
     static let shared = WatchSessionManager()
@@ -54,6 +62,9 @@ class WatchSessionManager: NSObject, ObservableObject {
     @Published var recentlyPlayed: [WatchStation] = []
     @Published var genreStations: [WatchStation] = []
     @Published var isLoadingGenreStations: Bool = false
+    @Published var countries: [WatchCountry] = []
+    @Published var countryStations: [WatchStation] = []
+    @Published var isLoadingCountryStations: Bool = false
     @Published var isConnected: Bool = false
     @Published var isReachable: Bool = false
     
@@ -117,6 +128,18 @@ class WatchSessionManager: NSObject, ObservableObject {
             self.genreStations = []
         }
         sendMessage(["command": "requestGenreStations", "genreSlug": slug])
+    }
+    
+    func requestCountries() {
+        sendMessage(["command": "requestCountries"])
+    }
+    
+    func requestCountryStations(countryName: String) {
+        DispatchQueue.main.async {
+            self.isLoadingCountryStations = true
+            self.countryStations = []
+        }
+        sendMessage(["command": "requestCountryStations", "countryName": countryName])
     }
     
     // MARK: - Private Methods
@@ -192,6 +215,21 @@ class WatchSessionManager: NSObject, ObservableObject {
                 if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
                     self.genreStations = stations
                     self.isLoadingGenreStations = false
+                }
+            }
+            
+            // Handle countries response
+            if let countriesData = response["countries"] as? Data {
+                if let countries = try? JSONDecoder().decode([WatchCountry].self, from: countriesData) {
+                    self.countries = countries
+                }
+            }
+            
+            // Handle country stations response
+            if let countryStationsData = response["countryStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: countryStationsData) {
+                    self.countryStations = stations
+                    self.isLoadingCountryStations = false
                 }
             }
         }
@@ -290,6 +328,26 @@ extension WatchSessionManager: WCSessionDelegate {
                 } else {
                     self.genreStations = []
                     self.isLoadingGenreStations = false
+                }
+            }
+            
+            // Update countries
+            if let countriesData = message["countries"] as? Data {
+                if let countries = try? JSONDecoder().decode([WatchCountry].self, from: countriesData) {
+                    self.countries = countries
+                    print("[WatchSession] Received \(countries.count) countries")
+                }
+            }
+            
+            // Update country stations
+            if let countryStationsData = message["countryStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: countryStationsData) {
+                    self.countryStations = stations
+                    self.isLoadingCountryStations = false
+                    print("[WatchSession] Received \(stations.count) country stations")
+                } else {
+                    self.countryStations = []
+                    self.isLoadingCountryStations = false
                 }
             }
             

@@ -17,7 +17,7 @@ struct ContentView: View {
                 .environmentObject(sessionManager)
                 .tag(1)
             
-            GenresView()
+            BrowseView()
                 .environmentObject(sessionManager)
                 .tag(2)
         }

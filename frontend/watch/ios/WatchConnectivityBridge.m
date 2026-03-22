@@ -11,6 +11,8 @@ RCT_EXTERN_METHOD(updateFavorites:(NSArray *)favorites)
 RCT_EXTERN_METHOD(updateNowPlaying:(NSDictionary *)nowPlaying)
 RCT_EXTERN_METHOD(updateGenres:(NSArray *)genres)
 RCT_EXTERN_METHOD(updateGenreStations:(NSArray *)stations)
+RCT_EXTERN_METHOD(updateCountries:(NSArray *)countries)
+RCT_EXTERN_METHOD(updateCountryStations:(NSArray *)stations)
 RCT_EXTERN_METHOD(updatePlaybackState:(BOOL)isPlaying)
 RCT_EXTERN_METHOD(isWatchAppInstalled:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
