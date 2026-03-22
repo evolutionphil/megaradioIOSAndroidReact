@@ -16,41 +16,38 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - Background audio streaming with lock screen controls
 - CarPlay integration with templates
 - Native Splash Screen
-- Google AdMob integration (AppOpen + Interstitial + Rewarded)
-- WCSession delegate conflict resolution
+- Google AdMob (AppOpen + Interstitial + Rewarded)
+- WCSession delegate conflict resolution, transferUserInfo fallback
 - Rewarded Ad cancel-stuck fix
 - Lock Screen metadata sync with Zustand
 
 ### WatchOS App
-- NowPlayingView with custom playback icons (backward.end.fill, pause.fill, forward.end.fill)
+- NowPlayingView with custom SF Symbol icons (backward.end.fill, pause.fill, forward.end.fill)
 - FavoritesView with station list
-- WCSession connectivity with transferUserInfo fallback
+- Browse Tab (Kesfet) → Genres list + Countries list
+- Genre → Genre stations (tap to play)
+- Country → Country stations (tap to play)
 - Next/Previous uses similar stations logic (same as Control Center)
-- Browse Tab (Kesfet) with Genres and Countries
-- Genre list → tap genre → Genre stations (play on tap)
-- Country list → tap country → Country stations (play on tap)
 - Precomputed genres (40+, country-specific)
-- Better connection status display
+- WCSession: transferUserInfo fallback + didReceiveUserInfo delegate
 
-### Ads (Mar 2026)
-- AppOpenAd (4798357761) shown on first launch after splash
-- Rewarded Ad (3488497756) shown on first station click per session
-- Interstitial shown every 3 station changes
-- Ad-free time granted after watching rewarded ad
+### Ads
+- AppOpenAd (4798357761) on first launch after splash
+- Rewarded Ad (3488497756) on first station click per session
+- Interstitial every 3 station changes
 
-### CarPlay Fixes (Mar 2026)
-- Recently Played fixed: wrong property name `.recentStations` → `.stations`
-- Early store initialization for CarPlay cold start
+### Bug Fixes (Mar 2026)
+- **ATT Prompt**: Enhanced to check UIApplication.applicationState, wait for didBecomeActive, then request with delay. Native ATTModule.swift uses NotificationCenter observer for app activation.
+- **GPS Location**: `isManuallySet` flag now persisted in AsyncStorage. GPS auto-detection runs on every launch UNLESS user explicitly chose country from picker. GPS-detected countries saved with `isManuallySet: false`.
+- **RewardedAdButton**: Wrapped in section View for logged-in profile for consistent layout.
+- **CarPlay Recently Played**: Fixed property name `.recentStations` → `.stations`. Store loaded early via `loadFromAPI()`.
 
-## Pending Issues
-- P1: ATT prompt not showing on fresh TestFlight install (recurring)
-- P1: WatchOS connectivity still needs TestFlight verification
-- P2: GPS location skipped after manual country set
-- P2: Rewarded Ad button hidden for logged-in users
-- Note: Genre station counts from API are global (not country-specific) - server-side limitation
+## Pending (Needs TestFlight Verification)
+- ATT prompt display on fresh install (improved but needs device testing)
+- WatchOS connectivity (improved sendMessage fallback but needs Watch testing)
 
 ## Upcoming Tasks
-- P1: Verify CarPlay CPNowPlayingTemplate
+- P1: Verify CarPlay CPNowPlayingTemplate behavior
 - P2: ShazamKit integration
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth AVRCP metadata

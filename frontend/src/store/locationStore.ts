@@ -163,25 +163,24 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     try {
       const storedData = await AsyncStorage.getItem(COUNTRY_KEY);
       if (storedData) {
-        const { country, countryCode, countryEnglish } = JSON.parse(storedData);
-        console.log('[LocationStore] Loaded stored country:', country, countryCode);
+        const parsed = JSON.parse(storedData);
+        const { country, countryCode, countryEnglish, isManuallySet: wasManual } = parsed;
+        console.log('[LocationStore] Loaded stored country:', country, countryCode, 'wasManual:', wasManual);
         set({
           country,
           countryCode,
           countryEnglish,
-          isManuallySet: true,
-          isLoaded: true, // Mark as loaded - we have a stored country
+          // Only preserve isManuallySet if it was explicitly set by user picker
+          isManuallySet: wasManual === true,
+          isLoaded: true,
         });
       } else {
-        // No stored country - STILL mark as loaded to prevent circular dependency
-        // Queries will run with undefined country (global results)
-        // Then fetchLocation() will update country and trigger refetch
+        // No stored country - mark as loaded for initial queries
         console.log('[LocationStore] No stored country found, marking as loaded for initial queries');
         set({ isLoaded: true });
       }
     } catch (error) {
       console.error('[LocationStore] Failed to load stored country:', error);
-      // On error, also mark as loaded to prevent blocking
       set({ isLoaded: true });
     }
   },
@@ -228,14 +227,26 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       if (geo) {
         const countryName = geo.country || null;
         const nativeName = COUNTRY_NATIVE_MAP[countryName || ''] || countryName;
-        console.log('[LocationStore] Location detected:', countryName, nativeName);
+        const code = geo.isoCountryCode || COUNTRY_CODE_MAP[countryName || ''] || null;
+        console.log('[LocationStore] Location detected:', countryName, nativeName, code);
         set({
-          countryCode: geo.isoCountryCode || null,
+          countryCode: code,
           country: nativeName,
           countryEnglish: countryName,
           loading: false,
           isLoaded: true,
         });
+        // Save GPS-detected country to storage (with isManuallySet: false)
+        try {
+          await AsyncStorage.setItem(COUNTRY_KEY, JSON.stringify({
+            country: nativeName,
+            countryCode: code,
+            countryEnglish: countryName,
+            isManuallySet: false,
+          }));
+        } catch (e) {
+          console.log('[LocationStore] Failed to save GPS country:', e);
+        }
       } else {
         console.log('[LocationStore] No geo data, setting isLoaded');
         set({ loading: false, isLoaded: true });
@@ -272,6 +283,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
         country: nativeName,
         countryCode: countryCode,
         countryEnglish: englishName,
+        isManuallySet: true,
       }));
       console.log('[LocationStore] Country saved to storage');
     } catch (error) {

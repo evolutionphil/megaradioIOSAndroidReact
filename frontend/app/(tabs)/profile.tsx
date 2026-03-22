@@ -746,9 +746,11 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {/* Premium - Rewarded Ad Button (shown for ALL users, not just guests) */}
-        <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
-        <RewardedAdButton />
+        {/* Premium - Rewarded Ad Button (shown for ALL users) */}
+        <View style={s.section}>
+          <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
+          <RewardedAdButton />
+        </View>
 
         {/* About */}
         <Text style={s.sectionLabel}>{t('about', 'About')}</Text>

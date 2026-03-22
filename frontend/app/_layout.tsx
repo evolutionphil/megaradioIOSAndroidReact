@@ -172,12 +172,15 @@ export default function RootLayout() {
         const state = useLocationStore.getState();
         console.log('[Layout] Country loaded:', state.country, 'isManuallySet:', state.isManuallySet);
         
-        // If no stored country and not manually set, try to detect via GPS
-        if (!state.country && !state.isManuallySet) {
-          console.log('[Layout] No stored country, attempting GPS detection...');
+        // Try GPS detection if country was NOT explicitly set by user (picker)
+        // GPS-detected countries stored previously will be refreshed
+        if (!state.isManuallySet) {
+          console.log('[Layout] Country not manually set, attempting GPS detection...');
           await useLocationStore.getState().fetchLocation();
           const newState = useLocationStore.getState();
           console.log('[Layout] GPS detection result:', newState.country, newState.countryCode);
+        } else {
+          console.log('[Layout] Country manually set by user, skipping GPS detection');
         }
       } catch (error) {
         console.error('[Layout] Failed to load stored country:', error);
@@ -215,35 +218,65 @@ export default function RootLayout() {
     init();
   }, []);
 
-  // Initialize AdMob - MUST wait for splash to hide
+  // Initialize AdMob - MUST wait for splash to hide AND app to be truly active
   // iOS requires the app to be fully visible for ATT prompt to appear
-  // If called during splash screen, iOS silently ignores the ATT request
+  // If called during splash screen or before applicationDidBecomeActive, iOS silently ignores ATT
   useEffect(() => {
     if (!splashHidden) return; // Wait for splash to hide first
     
+    let cancelled = false;
+    
     const initAds = async () => {
-      // Small delay to ensure UI is fully rendered and interactive
-      await new Promise(r => setTimeout(r, 1500));
+      // Wait for app to be truly active using AppState
+      // This ensures applicationDidBecomeActive has been called
+      const waitForActiveState = (): Promise<void> => {
+        return new Promise((resolve) => {
+          if (AppState.currentState === 'active') {
+            resolve();
+            return;
+          }
+          const subscription = AppState.addEventListener('change', (state: AppStateStatus) => {
+            if (state === 'active') {
+              subscription.remove();
+              resolve();
+            }
+          });
+          // Timeout after 10s even if we don't get active state
+          setTimeout(() => {
+            subscription.remove();
+            resolve();
+          }, 10000);
+        });
+      };
+      
+      await waitForActiveState();
+      if (cancelled) return;
+      
+      // Extra delay to ensure UI is fully rendered and interactive (iOS needs this)
+      await new Promise(r => setTimeout(r, 2500));
+      if (cancelled) return;
       
       try {
+        console.log('[Layout] Initializing AdMob (AppState:', AppState.currentState, ')');
         const success = await adMobService.initialize();
         console.log('[Layout] AdMob initialized:', success);
         
-        if (success) {
-          // Show first-launch interstitial after a brief delay
-          // Uses the separate appOpenInterstitial ad unit ID
+        if (success && !cancelled) {
+          // Show App Open Ad after a brief delay
           setTimeout(async () => {
+            if (cancelled) return;
             try {
               const shown = await adMobService.showAppOpenAd();
-              console.log('[Layout] First-launch interstitial shown:', shown);
+              console.log('[Layout] App Open Ad shown:', shown);
             } catch (e) {
-              console.log('[Layout] First-launch interstitial not ready yet');
+              console.log('[Layout] App Open Ad not ready yet');
             }
-          }, 5000); // Wait 5s for ad to load
-        } else {
+          }, 5000);
+        } else if (!cancelled) {
           // Retry once after 10s if first attempt failed
           console.log('[Layout] AdMob init failed, retrying in 10s...');
           setTimeout(async () => {
+            if (cancelled) return;
             try {
               const retrySuccess = await adMobService.initialize();
               console.log('[Layout] AdMob retry result:', retrySuccess);
@@ -257,6 +290,8 @@ export default function RootLayout() {
       }
     };
     initAds();
+    
+    return () => { cancelled = true; };
   }, [splashHidden]);
 
   // Setup Track Player once (only on native platforms, not web, and don't block UI)
