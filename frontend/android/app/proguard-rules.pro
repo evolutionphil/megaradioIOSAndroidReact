@@ -17,3 +17,22 @@
 -keep class io.invertase.** { *; }
 -keep class com.google.android.gms.ads.** { *; }
 # @generated end expo-build-properties
+
+# Google Cast SDK
+-keep class com.google.android.gms.cast.** { *; }
+-keep class com.google.android.gms.cast.framework.** { *; }
+-keep class com.reactnative.googlecast.** { *; }
+
+# Firebase Messaging
+-keep class com.google.firebase.messaging.** { *; }
+
+# Android Auto / Media
+-keep class android.support.v4.media.** { *; }
+-keep class androidx.media.** { *; }
+
+# WorkManager
+-keep class androidx.work.** { *; }
+
+# OkHttp
+-dontwarn okhttp3.**
+-keep class okhttp3.** { *; }

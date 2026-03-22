@@ -81,7 +81,12 @@ class AndroidAutoModule(reactContext: ReactApplicationContext) : ReactContextBas
                 addAction(ACTION_PLAYBACK_COMMAND)
             }
             
-            reactApplicationContext.registerReceiver(broadcastReceiver, filter)
+            // Android 12+ (API 33+) requires RECEIVER_NOT_EXPORTED flag
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                reactApplicationContext.registerReceiver(broadcastReceiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED)
+            } else {
+                reactApplicationContext.registerReceiver(broadcastReceiver, filter)
+            }
             isReceiverRegistered = true
             Log.d(TAG, "Broadcast receiver registered")
         } catch (e: Exception) {

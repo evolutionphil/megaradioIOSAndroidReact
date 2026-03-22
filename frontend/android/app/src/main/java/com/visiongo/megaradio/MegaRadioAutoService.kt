@@ -76,7 +76,12 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
 
         // Register country change receiver
         val filter = IntentFilter("com.visiongo.megaradio.SET_COUNTRY")
-        registerReceiver(countryReceiver, filter)
+        // Android 12+ (API 33+) requires RECEIVER_NOT_EXPORTED flag
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(countryReceiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(countryReceiver, filter)
+        }
         Log.d(TAG, "Registered country change receiver")
 
         // Initialize media session
