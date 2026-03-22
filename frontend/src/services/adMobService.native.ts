@@ -203,12 +203,12 @@ class AdMobService {
     }
   }
 
-  // Load App Open Interstitial Ad (separate ad unit for first-launch)
+  // Load App Open Ad (separate ad unit - App Open type in AdMob)
   async loadAppOpenAd(): Promise<void> {
     if (Platform.OS === 'web' || !this.isInitialized) return;
 
     try {
-      const { InterstitialAd, AdEventType } = require('react-native-google-mobile-ads');
+      const { AppOpenAd, AdEventType } = require('react-native-google-mobile-ads');
       
       if (this.appOpenAd) {
         try { this.appOpenAd.removeAllListeners(); } catch (e) {}
@@ -217,35 +217,35 @@ class AdMobService {
       this.isAppOpenLoaded = false;
       
       const adUnitId = this.getAdUnitId('appOpenInterstitial');
-      console.log('[AdMob] Loading app-open interstitial with adUnitId:', adUnitId);
+      console.log('[AdMob] Loading App Open ad with adUnitId:', adUnitId);
       
-      this.appOpenAd = InterstitialAd.createForAdRequest(adUnitId, {
+      // Use AppOpenAd (NOT InterstitialAd) for App Open ad units
+      this.appOpenAd = AppOpenAd.createForAdRequest(adUnitId, {
         requestNonPersonalizedAdsOnly: true,
-        keywords: ['music', 'radio', 'streaming', 'entertainment'],
       });
 
       this.appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
-        console.log('[AdMob] App-open interstitial LOADED');
+        console.log('[AdMob] App Open ad LOADED');
         this.isAppOpenLoaded = true;
       });
 
       this.appOpenAd.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('[AdMob] App-open interstitial closed');
+        console.log('[AdMob] App Open ad closed');
         this.isAppOpenLoaded = false;
       });
 
       this.appOpenAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
-        console.error('[AdMob] App-open interstitial ERROR:', error?.message || error);
+        console.error('[AdMob] App Open ad ERROR:', error?.message || error);
         this.isAppOpenLoaded = false;
       });
 
       this.appOpenAd.load();
     } catch (error) {
-      console.error('[AdMob] Error creating app-open interstitial:', error);
+      console.error('[AdMob] Error creating App Open ad:', error);
     }
   }
 
-  // Show App Open Interstitial (first-launch ad)
+  // Show App Open Ad
   async showAppOpenAd(): Promise<boolean> {
     if (Platform.OS === 'web') return false;
     
@@ -259,18 +259,17 @@ class AdMobService {
     if (this.isAppOpenLoaded && this.appOpenAd) {
       try {
         await this.appOpenAd.show();
-        console.log('[AdMob] App-open interstitial shown');
+        console.log('[AdMob] App Open ad shown');
         this.isAppOpenLoaded = false;
         return true;
       } catch (error) {
-        console.error('[AdMob] Error showing app-open interstitial:', error);
+        console.error('[AdMob] Error showing App Open ad:', error);
         return false;
       }
     }
     
-    // Fall back to regular interstitial if app-open not loaded
-    console.log('[AdMob] App-open not loaded, trying regular interstitial');
-    return this.showInterstitialAd();
+    console.log('[AdMob] App Open ad not loaded yet');
+    return false;
   }
 
 
