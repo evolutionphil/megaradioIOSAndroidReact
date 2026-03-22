@@ -5,7 +5,7 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 
 ## Architecture
 - **Frontend**: React Native (Expo Bare Workflow)
-- **State**: Zustand (playerStore, locationStore), React Query
+- **State**: Zustand (playerStore, locationStore, recentlyPlayedStore), React Query
 - **Audio**: react-native-track-player (background headless JS)
 - **iOS Native**: PhoneSceneDelegate, CarPlaySceneDelegate, ATTModule.swift
 - **WatchOS**: Native Swift App + WCSession connectivity
@@ -21,29 +21,33 @@ Build a production-ready mobile radio streaming app called "MegaRadio" using Exp
 - Rewarded Ad cancel-stuck fix
 - Lock Screen metadata sync with Zustand
 
-### WatchOS App (Feb 2026)
-- NowPlayingView with playback controls
+### WatchOS App
+- NowPlayingView with custom playback icons (backward.end.fill, pause.fill, forward.end.fill)
 - FavoritesView with station list
 - WCSession connectivity with transferUserInfo fallback
+- Next/Previous uses similar stations logic (same as Control Center)
+- Browse Tab (Kesfet) with Genres and Countries
+- Genre list → tap genre → Genre stations (play on tap)
+- Country list → tap country → Country stations (play on tap)
+- Precomputed genres (40+, country-specific)
+- Better connection status display
 
-### WatchOS Enhancements (Mar 2026)
-- **Next/Previous** now uses similar stations logic (same as Control Center)
-- **Precomputed Genres** - country-specific genres (40+) instead of 3 global
-- **Genre Detail** - NavigationLink on genres + GenreStationsView (tap to play)
-- **Browse Tab** with "Genres" and "Countries" sections
-- **Countries Feature** - Full country list with flags, NavigationLink to country stations
-- **Country Stations** - Play any station from selected country
-- **Improved WCSession** - transferUserInfo fallback + didReceiveUserInfo delegate
-- **Better Connection Status** - "iPhone baglantisi yok" (red) vs "iPhone arka planda" (orange)
+### Ads (Mar 2026)
+- AppOpenAd (4798357761) shown on first launch after splash
+- Rewarded Ad (3488497756) shown on first station click per session
+- Interstitial shown every 3 station changes
+- Ad-free time granted after watching rewarded ad
+
+### CarPlay Fixes (Mar 2026)
+- Recently Played fixed: wrong property name `.recentStations` → `.stations`
+- Early store initialization for CarPlay cold start
 
 ## Pending Issues
-- P0: WatchOS "No iPhone connection" (recurring - needs TestFlight verification)
-- P0: AppOpenAd (4798357761) first launch implementation
-- P0: Rewarded Ad (3488497756) on first station click
-- P1: ATT prompt not showing on fresh TestFlight install
-- P1: CarPlay UI sync bugs (Recently Played, Genres counts)
+- P1: ATT prompt not showing on fresh TestFlight install (recurring)
+- P1: WatchOS connectivity still needs TestFlight verification
 - P2: GPS location skipped after manual country set
 - P2: Rewarded Ad button hidden for logged-in users
+- Note: Genre station counts from API are global (not country-specific) - server-side limitation
 
 ## Upcoming Tasks
 - P1: Verify CarPlay CPNowPlayingTemplate

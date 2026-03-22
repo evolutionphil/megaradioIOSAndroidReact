@@ -114,7 +114,7 @@ const getRecentStations = async (): Promise<Station[]> => {
     let localStations: Station[] = [];
     try {
       const recentlyPlayedStore = require('../store/recentlyPlayedStore').default;
-      localStations = recentlyPlayedStore.getState()?.recentStations || [];
+      localStations = recentlyPlayedStore.getState()?.stations || [];
       console.log('[CarPlayHandler] Local recently played:', localStations.length);
     } catch {
       // Ignore store errors

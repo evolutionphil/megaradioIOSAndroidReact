@@ -9,6 +9,8 @@ class AdMobServiceWeb {
 
   async loadInterstitialAd(): Promise<void> {}
   async loadRewardedAd(): Promise<void> {}
+  async loadAppOpenAd(): Promise<void> {}
+  async showAppOpenAd(): Promise<boolean> { return false; }
   
   async isAdFree(): Promise<boolean> {
     return true; // Always ad-free on web
@@ -35,6 +37,12 @@ class AdMobServiceWeb {
   isRewardedAdReady(): boolean {
     return false;
   }
+
+  shouldShowFirstStationAd(): boolean {
+    return false;
+  }
+
+  markFirstStationAdShown(): void {}
 
   isInterstitialAdReady(): boolean {
     return false;

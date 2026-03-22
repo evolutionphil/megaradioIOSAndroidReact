@@ -81,14 +81,20 @@ struct NowPlayingView: View {
             Spacer()
             
             // Playback Controls
-            HStack(spacing: 24) {
+            HStack(spacing: 16) {
                 // Previous Station
                 Button(action: {
                     sessionManager.sendPreviousStation()
                 }) {
-                    Image(systemName: "backward.fill")
-                        .font(.system(size: 18))
-                        .foregroundColor(.white)
+                    ZStack {
+                        Circle()
+                            .fill(Color(white: 0.22))
+                            .frame(width: 48, height: 48)
+                        
+                        Image(systemName: "backward.end.fill")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
                 }
                 .buttonStyle(.plain)
                 
@@ -96,9 +102,15 @@ struct NowPlayingView: View {
                 Button(action: {
                     sessionManager.sendTogglePlayPause()
                 }) {
-                    Image(systemName: sessionManager.nowPlaying.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 40))
-                        .foregroundColor(.pink)
+                    ZStack {
+                        Circle()
+                            .fill(Color(white: 0.22))
+                            .frame(width: 56, height: 56)
+                        
+                        Image(systemName: sessionManager.nowPlaying.isPlaying ? "pause.fill" : "play.fill")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
                 }
                 .buttonStyle(.plain)
                 
@@ -106,9 +118,15 @@ struct NowPlayingView: View {
                 Button(action: {
                     sessionManager.sendNextStation()
                 }) {
-                    Image(systemName: "forward.fill")
-                        .font(.system(size: 18))
-                        .foregroundColor(.white)
+                    ZStack {
+                        Circle()
+                            .fill(Color(white: 0.22))
+                            .frame(width: 48, height: 48)
+                        
+                        Image(systemName: "forward.end.fill")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
                 }
                 .buttonStyle(.plain)
             }

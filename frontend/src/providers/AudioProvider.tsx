@@ -751,6 +751,21 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Ad error (non-blocking):', error);
     });
 
+    // FIRST STATION CLICK: Show rewarded ad on very first station play per session
+    if (adMobService.shouldShowFirstStationAd()) {
+      console.log('[AudioProvider] First station click - showing rewarded ad');
+      adMobService.markFirstStationAdShown();
+      try {
+        const result = await adMobService.showRewardedAd();
+        console.log('[AudioProvider] First station rewarded ad result:', result);
+      } catch (e) {
+        console.log('[AudioProvider] First station rewarded ad error (non-blocking):', e);
+      }
+    } else {
+      // Just mark as shown if ad wasn't ready
+      adMobService.markFirstStationAdShown();
+    }
+
     // NEW STATION - increment play ID for race condition prevention
     const myPlayId = ++globalPlayId;
     console.log('[AudioProvider] New PlayID:', myPlayId);
@@ -1106,6 +1121,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Get favorites for Watch
   const { favorites } = useFavoritesStore();
   
+  // Load recently played store from storage on mount (for CarPlay cold start)
+  useEffect(() => {
+    useRecentlyPlayedStore.getState().loadFromAPI();
+  }, []);
+
   // Send favorites to Watch when they change
   useEffect(() => {
     if (Platform.OS !== 'ios') return;
@@ -1328,7 +1348,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           if ((command as any).countryName) {
             try {
               const countryName = (command as any).countryName;
-              const result = await stationService.getPopularStations(countryName, 1, 30);
+              const result = await stationService.getPopularStations(countryName, 30);
               
               if (result.stations && result.stations.length > 0) {
                 watchService.updateCountryStations(result.stations);

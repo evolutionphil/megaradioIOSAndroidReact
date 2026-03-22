@@ -39,6 +39,7 @@ class AdMobService {
   private isAppOpenLoaded = false;
   private isInitialized = false;
   private stationChangeCount = 0;
+  private firstStationAdShown = false; // Per-session flag for first station rewarded ad
 
   // Get the correct ad unit ID based on platform and environment
   getAdUnitId(type: 'interstitial' | 'rewarded' | 'appOpenInterstitial'): string {
@@ -498,6 +499,16 @@ class AdMobService {
   // Check if rewarded ad is ready
   isRewardedAdReady(): boolean {
     return this.isRewardedLoaded && this.rewardedAd !== null;
+  }
+
+  // Check if first station rewarded ad should be shown (per session)
+  shouldShowFirstStationAd(): boolean {
+    return !this.firstStationAdShown && this.isRewardedLoaded && this.rewardedAd !== null;
+  }
+
+  // Mark first station ad as shown (per session)
+  markFirstStationAdShown(): void {
+    this.firstStationAdShown = true;
   }
 
   // Check if interstitial ad is ready
