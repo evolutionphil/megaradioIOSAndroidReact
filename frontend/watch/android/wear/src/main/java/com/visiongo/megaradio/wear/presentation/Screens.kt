@@ -1,5 +1,5 @@
 // Screens.kt
-// All screen composables for Wear OS
+// All screen composables for Wear OS - connected to phone via ViewModel
 
 package com.visiongo.megaradio.wear.presentation
 
@@ -33,7 +33,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
         delay(2000)
         onTimeout()
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,16 +44,15 @@ fun SplashScreen(onTimeout: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Logo icon placeholder
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.MusicNote,
+                imageVector = androidx.compose.material.icons.Icons.Default.Radio,
                 contentDescription = "Logo",
                 tint = AccentPink,
                 modifier = Modifier.size(48.dp)
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Row {
                 Text(
                     text = "mega",
@@ -63,7 +62,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 )
                 Text(
                     text = "radio",
-                    color = TextWhite,
+                    color = AccentPink,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Normal
                 )
@@ -77,9 +76,14 @@ fun SplashScreen(onTimeout: () -> Unit) {
 // ========================================
 @Composable
 fun HomeScreen(
+    isPhoneConnected: Boolean,
+    nowPlaying: Station?,
+    isPlaying: Boolean,
     onGenresClick: () -> Unit,
     onCountriesClick: () -> Unit,
-    onFavoritesClick: () -> Unit
+    onFavoritesClick: () -> Unit,
+    onNowPlayingClick: () -> Unit,
+    onRefreshClick: () -> Unit
 ) {
     ScalingLazyColumn(
         modifier = Modifier
@@ -92,25 +96,148 @@ fun HomeScreen(
         )
     ) {
         item {
-            Text(
-                text = "MegaRadio",
-                color = AccentPink,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "MegaRadio",
+                    color = AccentPink,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                // Connection indicator
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(if (isPhoneConnected) Color(0xFF4CAF50) else Color(0xFFFF5252))
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        // Now Playing mini card (if something is playing)
+        if (nowPlaying != null) {
+            item {
+                NowPlayingMiniCard(
+                    station = nowPlaying,
+                    isPlaying = isPlaying,
+                    onClick = onNowPlayingClick
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        item {
+            MenuButton(
+                text = "Genres",
+                icon = androidx.compose.material.icons.Icons.Default.LibraryMusic,
+                onClick = onGenresClick
             )
-            Spacer(modifier = Modifier.height(16.dp))
         }
-        
+
         item {
-            MenuButton(text = "Genres", onClick = onGenresClick)
+            MenuButton(
+                text = "Country",
+                icon = androidx.compose.material.icons.Icons.Default.Public,
+                onClick = onCountriesClick
+            )
         }
-        
+
         item {
-            MenuButton(text = "Country", onClick = onCountriesClick)
+            MenuButton(
+                text = "Favorites",
+                icon = androidx.compose.material.icons.Icons.Default.Favorite,
+                onClick = onFavoritesClick
+            )
         }
-        
-        item {
-            MenuButton(text = "Favorites", onClick = onFavoritesClick)
+
+        if (!isPhoneConnected) {
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = onRefreshClick,
+                    modifier = Modifier.size(36.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
+                    shape = CircleShape
+                ) {
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Default.Refresh,
+                        contentDescription = "Refresh",
+                        tint = TextGray,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+                Text(
+                    text = "No phone connection",
+                    color = TextGray,
+                    fontSize = 11.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+    }
+}
+
+// ========================================
+// NOW PLAYING MINI CARD (for Home Screen)
+// ========================================
+@Composable
+fun NowPlayingMiniCard(
+    station: Station,
+    isPlaying: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .padding(vertical = 2.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(0xFF1A1A2E)
+        ),
+        shape = RoundedCornerShape(14.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp, horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Station avatar
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(AccentPink.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = station.name.take(1).uppercase(),
+                    color = AccentPink,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = station.name,
+                    color = TextWhite,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Icon(
+                imageVector = if (isPlaying)
+                    androidx.compose.material.icons.Icons.Default.GraphicEq
+                else
+                    androidx.compose.material.icons.Icons.Default.PlayArrow,
+                contentDescription = if (isPlaying) "Playing" else "Paused",
+                tint = AccentPink,
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }
@@ -139,12 +266,16 @@ fun GenresScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
-        
-        items(genres) { genre ->
-            ListRowButton(
-                text = genre.name,
-                onClick = { onGenreClick(genre) }
-            )
+
+        if (genres.isEmpty()) {
+            item { EmptyState(text = "No genres available") }
+        } else {
+            items(genres, key = { it.id }) { genre ->
+                ListRowButton(
+                    text = genre.name,
+                    onClick = { onGenreClick(genre) }
+                )
+            }
         }
     }
 }
@@ -173,23 +304,28 @@ fun CountriesScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
-        
-        items(countries) { country ->
-            ListRowButton(
-                text = country.name,
-                onClick = { onCountryClick(country) }
-            )
+
+        if (countries.isEmpty()) {
+            item { EmptyState(text = "No countries available") }
+        } else {
+            items(countries, key = { it.code }) { country ->
+                ListRowButton(
+                    text = country.name,
+                    onClick = { onCountryClick(country) }
+                )
+            }
         }
     }
 }
 
 // ========================================
-// STATIONS SCREEN (Generic)
+// STATIONS SCREEN (Generic with loading)
 // ========================================
 @Composable
 fun StationsScreen(
     title: String,
     stations: List<Station>,
+    isLoading: Boolean = false,
     onStationClick: (Station) -> Unit
 ) {
     ScalingLazyColumn(
@@ -208,12 +344,26 @@ fun StationsScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
-        
-        items(stations) { station ->
-            StationRowButton(
-                text = station.name,
-                onClick = { onStationClick(station) }
-            )
+
+        if (isLoading) {
+            item {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(top = 16.dp),
+                    indicatorColor = AccentPink,
+                    strokeWidth = 3.dp
+                )
+            }
+        } else if (stations.isEmpty()) {
+            item { EmptyState(text = "No stations found") }
+        } else {
+            items(stations, key = { it.id }) { station ->
+                StationRowButton(
+                    station = station,
+                    onClick = { onStationClick(station) }
+                )
+            }
         }
     }
 }
@@ -242,7 +392,7 @@ fun FavoritesScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
-        
+
         if (favorites.isEmpty()) {
             item {
                 Column(
@@ -250,7 +400,7 @@ fun FavoritesScreen(
                     modifier = Modifier.padding(top = 24.dp)
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.HeartBroken,
+                        imageVector = androidx.compose.material.icons.Icons.Default.FavoriteBorder,
                         contentDescription = "No favorites",
                         tint = TextGray,
                         modifier = Modifier.size(32.dp)
@@ -261,12 +411,17 @@ fun FavoritesScreen(
                         color = TextGray,
                         fontSize = 14.sp
                     )
+                    Text(
+                        text = "Add from your phone",
+                        color = TextGray,
+                        fontSize = 11.sp
+                    )
                 }
             }
         } else {
-            items(favorites) { station ->
+            items(favorites, key = { it.id }) { station ->
                 StationRowButton(
-                    text = station.name,
+                    station = station,
                     onClick = { onStationClick(station) }
                 )
             }
@@ -281,6 +436,8 @@ fun FavoritesScreen(
 fun NowPlayingScreen(
     station: Station?,
     isPlaying: Boolean,
+    songTitle: String = "",
+    artistName: String = "",
     onPlayPauseClick: () -> Unit,
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit
@@ -299,97 +456,109 @@ fun NowPlayingScreen(
             // Station Logo Placeholder
             Box(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(56.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFF9C27B0)),
+                    .background(AccentPink.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = station?.name?.take(2)?.uppercase() ?: "MR",
-                    color = TextWhite,
-                    fontSize = 20.sp,
+                    color = AccentPink,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             // Station Name
             Text(
-                text = station?.name ?: "Unknown",
+                text = station?.name ?: "No Station",
                 color = TextWhite,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            
-            // Location
+
+            // Song Title (if available from metadata)
+            if (songTitle.isNotEmpty()) {
+                Text(
+                    text = songTitle,
+                    color = AccentPink,
+                    fontSize = 11.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+
+            // Artist / Location
             Text(
-                text = station?.locationText ?: "",
+                text = if (artistName.isNotEmpty()) artistName else station?.locationText ?: "",
                 color = TextGray,
                 fontSize = 11.sp,
                 maxLines = 1
             )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
+
+            Spacer(modifier = Modifier.height(14.dp))
+
             // Playback Controls
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Previous Button
                 Button(
                     onClick = onPreviousClick,
-                    modifier = Modifier.size(40.dp, 36.dp),
+                    modifier = Modifier.size(38.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = SurfaceDark
                     ),
-                    shape = RoundedCornerShape(50)
+                    shape = CircleShape
                 ) {
                     Icon(
                         imageVector = androidx.compose.material.icons.Icons.Default.SkipPrevious,
                         contentDescription = "Previous",
                         tint = TextWhite,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                 }
-                
-                // Play/Pause Button
+
+                // Play/Pause Button (larger, accent colored)
                 Button(
                     onClick = onPlayPauseClick,
-                    modifier = Modifier.size(52.dp, 44.dp),
+                    modifier = Modifier.size(48.dp),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = SurfaceDark
+                        backgroundColor = AccentPink
                     ),
-                    shape = RoundedCornerShape(50)
+                    shape = CircleShape
                 ) {
                     Icon(
-                        imageVector = if (isPlaying) 
-                            androidx.compose.material.icons.Icons.Default.Pause 
-                        else 
+                        imageVector = if (isPlaying)
+                            androidx.compose.material.icons.Icons.Default.Pause
+                        else
                             androidx.compose.material.icons.Icons.Default.PlayArrow,
                         contentDescription = if (isPlaying) "Pause" else "Play",
                         tint = TextWhite,
                         modifier = Modifier.size(24.dp)
                     )
                 }
-                
+
                 // Next Button
                 Button(
                     onClick = onNextClick,
-                    modifier = Modifier.size(40.dp, 36.dp),
+                    modifier = Modifier.size(38.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = SurfaceDark
                     ),
-                    shape = RoundedCornerShape(50)
+                    shape = CircleShape
                 ) {
                     Icon(
                         imageVector = androidx.compose.material.icons.Icons.Default.SkipNext,
                         contentDescription = "Next",
                         tint = TextWhite,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             }
@@ -402,8 +571,26 @@ fun NowPlayingScreen(
 // ========================================
 
 @Composable
+fun EmptyState(text: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(top = 16.dp)
+    ) {
+        Icon(
+            imageVector = androidx.compose.material.icons.Icons.Default.Info,
+            contentDescription = null,
+            tint = TextGray,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(text = text, color = TextGray, fontSize = 12.sp)
+    }
+}
+
+@Composable
 fun MenuButton(
     text: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector = androidx.compose.material.icons.Icons.Default.ChevronRight,
     onClick: () -> Unit
 ) {
     Button(
@@ -423,12 +610,21 @@ fun MenuButton(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = text,
-                color = TextWhite,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = AccentPink,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = text,
+                    color = TextWhite,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
             Icon(
                 imageVector = androidx.compose.material.icons.Icons.Default.ChevronRight,
                 contentDescription = "Go",
@@ -479,7 +675,7 @@ fun ListRowButton(
 
 @Composable
 fun StationRowButton(
-    text: String,
+    station: Station,
     onClick: () -> Unit
 ) {
     Button(
@@ -492,15 +688,46 @@ fun StationRowButton(
         ),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Text(
-            text = text,
-            color = TextWhite,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Medium,
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp, horizontal = 4.dp),
-            textAlign = TextAlign.Start
-        )
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Station initial avatar
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(AccentPink.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = station.name.take(1).uppercase(),
+                    color = AccentPink,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = station.name,
+                    color = TextWhite,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (station.locationText.isNotEmpty()) {
+                    Text(
+                        text = station.locationText,
+                        color = TextGray,
+                        fontSize = 10.sp,
+                        maxLines = 1
+                    )
+                }
+            }
+        }
     }
 }

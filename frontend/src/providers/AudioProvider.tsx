@@ -23,6 +23,7 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import statsService from '../services/statsService';
 import watchService from '../services/watchService';
+import wearOSService from '../services/wearOSService';
 import { adMobService } from '../services/adMobService';
 import { genreService } from '../services/genreService';
 import api from '../services/api';
@@ -1128,13 +1129,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // Send favorites to Watch when they change
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
-    watchService.updateFavorites(favorites);
+    if (Platform.OS === 'ios') {
+      watchService.updateFavorites(favorites);
+    } else if (Platform.OS === 'android') {
+      wearOSService.updateFavorites(favorites);
+    }
   }, [favorites]);
   
   // Fetch and send genres to Watch on mount - use precomputed for country-specific data
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
+    if (Platform.OS !== 'ios' && Platform.OS !== 'android') return;
     
     const fetchAndSendGenres = async () => {
       try {
@@ -1154,7 +1158,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             icon: g.icon || 'radio',
             stationCount: g.stationCount || g.count || 0,
           }));
-          watchService.updateGenres(watchGenres);
+          if (Platform.OS === 'ios') {
+            watchService.updateGenres(watchGenres);
+          } else {
+            wearOSService.updateGenres(watchGenres);
+          }
           console.log('[AudioProvider] Sent', watchGenres.length, 'precomputed genres to Watch');
         } else {
           // Fallback to discoverable genres
@@ -1166,7 +1174,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               icon: g.icon || 'radio',
               stationCount: g.stationCount || g.count || 0,
             }));
-            watchService.updateGenres(watchGenres);
+            if (Platform.OS === 'ios') {
+              watchService.updateGenres(watchGenres);
+            } else {
+              wearOSService.updateGenres(watchGenres);
+            }
             console.log('[AudioProvider] Sent', watchGenres.length, 'discoverable genres to Watch (fallback)');
           }
         }
@@ -1180,44 +1192,77 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
   // Send now playing info to Watch
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
-    
     const nowPlayingData = usePlayerStore.getState().nowPlaying;
-    watchService.updateNowPlaying({
-      stationId: currentStation?._id || currentStation?.id,
-      stationName: currentStation?.name,
-      stationLogo: currentStation?.logo || currentStation?.favicon,
-      songTitle: nowPlayingData?.title,
-      artistName: nowPlayingData?.artist,
-      isPlaying: isPlaying,
-    });
+    
+    if (Platform.OS === 'ios') {
+      watchService.updateNowPlaying({
+        stationId: currentStation?._id || currentStation?.id,
+        stationName: currentStation?.name,
+        stationLogo: currentStation?.logo || currentStation?.favicon,
+        songTitle: nowPlayingData?.title,
+        artistName: nowPlayingData?.artist,
+        isPlaying: isPlaying,
+      });
+    } else if (Platform.OS === 'android' && currentStation) {
+      wearOSService.updateNowPlaying(
+        currentStation,
+        isPlaying,
+        nowPlayingData?.title || '',
+        nowPlayingData?.artist || ''
+      );
+    }
   }, [currentStation, isPlaying]);
   
   // Update Watch playback state
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
-    watchService.updatePlaybackState(isPlaying);
+    if (Platform.OS === 'ios') {
+      watchService.updatePlaybackState(isPlaying);
+    } else if (Platform.OS === 'android') {
+      const nowPlayingData = usePlayerStore.getState().nowPlaying;
+      wearOSService.updatePlaybackState(isPlaying, nowPlayingData?.title, nowPlayingData?.artist);
+    }
   }, [isPlaying]);
   
-  // Listen to Watch commands
+  // Listen to Watch commands (iOS + Android)
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
+    if (Platform.OS !== 'ios' && Platform.OS !== 'android') return;
     
-    const unsubscribe = watchService.addCommandListener(async (command) => {
+    // Unified command handler for both iOS Watch and Android Wear OS
+    const handleWatchCommand = async (command: any) => {
       console.log('[AudioProvider] Watch command received:', command);
       
       switch (command.command) {
         case 'play':
-          resume();
+          // Wear OS sends stationId in data field
+          if (command.data && Platform.OS === 'android') {
+            let station = favorites.find(
+              (s: any) => (s._id || s.id) === command.data
+            );
+            if (!station) {
+              try {
+                station = await stationService.getStation(command.data);
+              } catch (e) {
+                console.log('[AudioProvider] Could not fetch station:', e);
+              }
+            }
+            if (station) {
+              await playStation(station);
+            }
+          } else {
+            resume();
+          }
           break;
         case 'pause':
           pause();
           break;
+        case 'resume':
+          resume();
+          break;
         case 'togglePlayPause':
           togglePlayPause();
           break;
+        case 'next':
         case 'nextStation': {
-          // Use similar stations logic (same as lock screen / Control Center)
           try {
             const similarJson = await AsyncStorage.getItem(SIMILAR_STATIONS_KEY);
             const similarStations = similarJson ? JSON.parse(similarJson) : [];
@@ -1234,7 +1279,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 break;
               }
             }
-            // Fallback to favorites if no similar stations
             const currentIndex = favorites.findIndex(
               (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
             );
@@ -1248,23 +1292,21 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           }
           break;
         }
+        case 'previous':
         case 'previousStation': {
-          // Use playback history (same as lock screen / Control Center)
           try {
             const historyJson = await AsyncStorage.getItem(PLAYBACK_HISTORY_KEY);
             const history = historyJson ? JSON.parse(historyJson) : [];
             
             if (history.length >= 2) {
-              const previousStation = history[1]; // [0] is current, [1] is previous
+              const previousStation = history[1];
               if (previousStation) {
                 console.log('[AudioProvider] Watch: Playing previous station from history:', previousStation.name);
-                // Reset similar index
                 await AsyncStorage.setItem(SIMILAR_INDEX_KEY, '-1');
                 await playStation(previousStation);
                 break;
               }
             }
-            // Fallback to favorites if no history
             const prevIndex = favorites.findIndex(
               (s: any) => (s._id || s.id) === (currentStation?._id || currentStation?.id)
             );
@@ -1278,9 +1320,38 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           }
           break;
         }
+        case 'toggle_favorite':
+          if (command.data) {
+            try {
+              const { useFavoritesStore } = await import('../store/favoritesStore');
+              const store = useFavoritesStore.getState();
+              let station = favorites.find(
+                (s: any) => (s._id || s.id) === command.data
+              );
+              if (!station) {
+                station = await stationService.getStation(command.data);
+              }
+              if (station) {
+                await store.toggleFavorite(station);
+              }
+            } catch (e) {
+              console.log('[AudioProvider] Watch toggle_favorite error:', e);
+            }
+          }
+          break;
+        case 'request_data':
+          // Wear OS requests data refresh
+          try {
+            const data = command.data ? JSON.parse(command.data) : { type: 'all' };
+            if (data.type === 'all' || data.type === 'genre_stations') {
+              // Handled by genre/country station logic below
+            }
+          } catch (e) {
+            console.log('[AudioProvider] request_data parse error:', e);
+          }
+          break;
         case 'playStation':
           if (command.stationId) {
-            // First check favorites, then try fetching from API
             let station = favorites.find(
               (s: any) => (s._id || s.id) === command.stationId
             );
@@ -1297,7 +1368,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           }
           break;
         case 'requestGenreStations':
-          // Watch is asking for stations within a genre
           if ((command as any).genreSlug) {
             try {
               const { useLocationStore } = await import('../store/locationStore');
@@ -1310,62 +1380,92 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               );
               
               if (result.stations && result.stations.length > 0) {
-                watchService.updateGenreStations(result.stations);
+                if (Platform.OS === 'ios') {
+                  watchService.updateGenreStations(result.stations);
+                } else {
+                  wearOSService.updateStations(result.stations);
+                }
                 console.log('[AudioProvider] Sent', result.stations.length, 'genre stations to Watch');
               } else {
-                watchService.updateGenreStations([]);
+                if (Platform.OS === 'ios') {
+                  watchService.updateGenreStations([]);
+                }
               }
             } catch (e) {
               console.log('[AudioProvider] Error fetching genre stations for Watch:', e);
-              watchService.updateGenreStations([]);
+              if (Platform.OS === 'ios') {
+                watchService.updateGenreStations([]);
+              }
             }
           }
           break;
         case 'requestCountries':
-          // Watch is asking for the country list
           try {
             const countriesResponse = await api.get(API_ENDPOINTS.filters.countries);
             const countryNames: string[] = countriesResponse.data || [];
             
-            // Convert country names to WatchCountry objects with flags
             const watchCountries = countryNames
               .filter((name: string) => name && name.length > 0)
               .map((name: string) => ({
                 name,
                 code: name.substring(0, 2).toUpperCase(),
                 flag: countryNameToFlag(name),
-                stationCount: 0, // Count not available from filter endpoint
+                stationCount: 0,
               }));
             
-            watchService.updateCountries(watchCountries);
+            if (Platform.OS === 'ios') {
+              watchService.updateCountries(watchCountries);
+            } else {
+              wearOSService.updateCountries(watchCountries);
+            }
             console.log('[AudioProvider] Sent', watchCountries.length, 'countries to Watch');
           } catch (e) {
             console.log('[AudioProvider] Error fetching countries for Watch:', e);
           }
           break;
         case 'requestCountryStations':
-          // Watch is asking for stations in a specific country
           if ((command as any).countryName) {
             try {
               const countryName = (command as any).countryName;
               const result = await stationService.getPopularStations(countryName, 30);
               
               if (result.stations && result.stations.length > 0) {
-                watchService.updateCountryStations(result.stations);
+                if (Platform.OS === 'ios') {
+                  watchService.updateCountryStations(result.stations);
+                } else {
+                  wearOSService.updateStations(result.stations);
+                }
                 console.log('[AudioProvider] Sent', result.stations.length, 'country stations to Watch');
               } else {
-                watchService.updateCountryStations([]);
+                if (Platform.OS === 'ios') {
+                  watchService.updateCountryStations([]);
+                }
               }
             } catch (e) {
               console.log('[AudioProvider] Error fetching country stations for Watch:', e);
-              watchService.updateCountryStations([]);
+              if (Platform.OS === 'ios') {
+                watchService.updateCountryStations([]);
+              }
             }
           }
           break;
       }
-    });
+    };
     
-    return () => unsubscribe();
+    // Register listeners per platform
+    let unsubscribeIOS: (() => void) | null = null;
+    let unsubscribeAndroid: (() => void) | null = null;
+    
+    if (Platform.OS === 'ios') {
+      unsubscribeIOS = watchService.addCommandListener(handleWatchCommand);
+    } else if (Platform.OS === 'android') {
+      unsubscribeAndroid = wearOSService.addCommandListener(handleWatchCommand);
+    }
+    
+    return () => {
+      unsubscribeIOS?.();
+      unsubscribeAndroid?.();
+    };
   }, [favorites, currentStation, playStation, pause, resume, togglePlayPause]);
 
   const value: AudioContextType = {

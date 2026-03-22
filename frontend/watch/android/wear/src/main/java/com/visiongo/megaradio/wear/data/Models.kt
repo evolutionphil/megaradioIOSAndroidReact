@@ -8,7 +8,9 @@ data class Station(
     val name: String,
     val country: String? = null,
     val city: String? = null,
-    val logoUrl: String? = null
+    val logoUrl: String? = null,
+    val streamUrl: String? = null,
+    val genre: String? = null
 ) {
     val locationText: String
         get() = when {
@@ -26,14 +28,4 @@ data class Genre(
 data class Country(
     val code: String,
     val name: String
-)
-
-// App State
-data class AppState(
-    val currentStation: Station? = null,
-    val isPlaying: Boolean = false,
-    val favorites: List<Station> = emptyList(),
-    val genres: List<Genre> = emptyList(),
-    val countries: List<Country> = emptyList(),
-    val isPhoneConnected: Boolean = false
 )

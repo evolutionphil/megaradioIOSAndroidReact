@@ -36,4 +36,6 @@ rootProject.name = 'MegaRadio'
 expoAutolinking.useExpoVersionCatalog()
 
 include ':app'
+include ':wear'
+project(':wear').projectDir = file('../watch/android/wear')
 includeBuild(expoAutolinking.reactNativeGradlePlugin)
