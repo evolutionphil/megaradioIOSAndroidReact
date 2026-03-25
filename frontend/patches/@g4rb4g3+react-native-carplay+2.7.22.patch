@@ -1,0 +1,74 @@
+diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
+index 034323b..8045c3a 100644
+--- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
++++ b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
+@@ -19,7 +19,7 @@ import com.facebook.react.bridge.LifecycleEventListener
+ import com.facebook.react.bridge.ReactContext
+ import com.facebook.react.bridge.WritableNativeMap
+ import com.facebook.react.modules.appregistry.AppRegistry
+-import com.facebook.react.uimanager.ReactRootViewTagGenerator
++import java.util.concurrent.atomic.AtomicInteger
+ import kotlinx.coroutines.CoroutineScope
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.launch
+@@ -105,11 +105,16 @@ class CarPlaySession(
+     return screen
+   }
+ 
++  private companion object {
++    private val sNextRootViewTag = AtomicInteger(11)
++    fun getNextRootViewTag(): Int = sNextRootViewTag.addAndGet(10)
++  }
++
+   private fun invokeStartTask() {
+     try {
+       val catalystInstance = reactContext.catalystInstance
+       val jsAppModuleName = if (isCluster) "AndroidAutoCluster" else "AndroidAuto"
+-      val rootTag = ReactRootViewTagGenerator.getNextRootViewTag()
++      val rootTag = getNextRootViewTag()
+ 
+       val appParams = WritableNativeMap().apply {
+         putInt("rootTag", rootTag)
+diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt
+index f326cee..ce338fc 100644
+--- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt
++++ b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt
+@@ -243,11 +243,11 @@ class Parser(
+       }
+       if (cue.type == ReadableType.Map) {
+         val cueMap = cue.asMap()
+-        val text = cueMap.getString("text")
+-        val image = parseCarIcon(cueMap.getMap("image")!!, context)
+-        val alignment = cueMap.getInt("alignment")
+-        val start = cueMap.getInt("start")
+-        val end = cueMap.getInt("end")
++        val text = cueMap?.getString("text")
++        val image = parseCarIcon(cueMap?.getMap("image")!!, context)
++        val alignment = cueMap?.getInt("alignment") ?: 0
++        val start = cueMap?.getInt("start") ?: 0
++        val end = cueMap?.getInt("end") ?: 0
+ 
+         return SpannableString(text).apply {
+           setSpan(
+diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/RCTTemplate.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/RCTTemplate.kt
+index 8c8342e..670e991 100644
+--- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/RCTTemplate.kt
++++ b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/RCTTemplate.kt
+@@ -187,7 +187,7 @@ abstract class RCTTemplate(
+           }
+         }
+         if (titleVariants.size() > 1) {
+-          setText(titleVariants.getString(1))
++          setText(titleVariants.getString(1) ?: "")
+         }
+       }
+       item.getMap("image")?.let { setImage(Parser.parseCarIcon(it, context)) }
+@@ -236,7 +236,7 @@ abstract class RCTTemplate(
+     )
+     props.getArray("texts")?.let {
+       for (i in 0 until it.size()) {
+-        builder.addText(it.getString(i))
++        builder.addText(it.getString(i) ?: "")
+       }
+     }
+     props.getMap("image")?.let {

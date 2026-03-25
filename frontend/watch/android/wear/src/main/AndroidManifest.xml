@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AndroidManifest.xml for Wear OS app -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.visiongo.megaradio.wear">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Wear OS feature -->
     <uses-feature android:name="android.hardware.type.watch" />

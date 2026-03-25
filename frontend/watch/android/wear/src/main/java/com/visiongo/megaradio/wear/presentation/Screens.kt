@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -20,6 +21,21 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.ArrowForward
 import com.visiongo.megaradio.wear.data.*
 import com.visiongo.megaradio.wear.presentation.theme.*
 import kotlinx.coroutines.delay
@@ -45,7 +61,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.Radio,
+                imageVector = Icons.Filled.MusicNote,
                 contentDescription = "Logo",
                 tint = AccentPink,
                 modifier = Modifier.size(48.dp)
@@ -130,7 +146,7 @@ fun HomeScreen(
         item {
             MenuButton(
                 text = "Genres",
-                icon = androidx.compose.material.icons.Icons.Default.LibraryMusic,
+                icon = Icons.Filled.List,
                 onClick = onGenresClick
             )
         }
@@ -138,7 +154,7 @@ fun HomeScreen(
         item {
             MenuButton(
                 text = "Country",
-                icon = androidx.compose.material.icons.Icons.Default.Public,
+                icon = Icons.Filled.Language,
                 onClick = onCountriesClick
             )
         }
@@ -146,7 +162,7 @@ fun HomeScreen(
         item {
             MenuButton(
                 text = "Favorites",
-                icon = androidx.compose.material.icons.Icons.Default.Favorite,
+                icon = Icons.Filled.Favorite,
                 onClick = onFavoritesClick
             )
         }
@@ -161,7 +177,7 @@ fun HomeScreen(
                     shape = CircleShape
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.Refresh,
+                        imageVector = Icons.Filled.Refresh,
                         contentDescription = "Refresh",
                         tint = TextGray,
                         modifier = Modifier.size(18.dp)
@@ -230,10 +246,7 @@ fun NowPlayingMiniCard(
                 )
             }
             Icon(
-                imageVector = if (isPlaying)
-                    androidx.compose.material.icons.Icons.Default.GraphicEq
-                else
-                    androidx.compose.material.icons.Icons.Default.PlayArrow,
+                imageVector = if (isPlaying) Icons.Filled.MusicNote else Icons.Filled.PlayArrow,
                 contentDescription = if (isPlaying) "Playing" else "Paused",
                 tint = AccentPink,
                 modifier = Modifier.size(16.dp)
@@ -400,7 +413,7 @@ fun FavoritesScreen(
                     modifier = Modifier.padding(top = 24.dp)
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.FavoriteBorder,
+                        imageVector = Icons.Filled.FavoriteBorder,
                         contentDescription = "No favorites",
                         tint = TextGray,
                         modifier = Modifier.size(32.dp)
@@ -512,13 +525,11 @@ fun NowPlayingScreen(
                 Button(
                     onClick = onPreviousClick,
                     modifier = Modifier.size(38.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = SurfaceDark
-                    ),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
                     shape = CircleShape
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.SkipPrevious,
+                        imageVector = Icons.Filled.SkipPrevious,
                         contentDescription = "Previous",
                         tint = TextWhite,
                         modifier = Modifier.size(18.dp)
@@ -529,16 +540,11 @@ fun NowPlayingScreen(
                 Button(
                     onClick = onPlayPauseClick,
                     modifier = Modifier.size(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AccentPink
-                    ),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = AccentPink),
                     shape = CircleShape
                 ) {
                     Icon(
-                        imageVector = if (isPlaying)
-                            androidx.compose.material.icons.Icons.Default.Pause
-                        else
-                            androidx.compose.material.icons.Icons.Default.PlayArrow,
+                        imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                         contentDescription = if (isPlaying) "Pause" else "Play",
                         tint = TextWhite,
                         modifier = Modifier.size(24.dp)
@@ -549,13 +555,11 @@ fun NowPlayingScreen(
                 Button(
                     onClick = onNextClick,
                     modifier = Modifier.size(38.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = SurfaceDark
-                    ),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
                     shape = CircleShape
                 ) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.SkipNext,
+                        imageVector = Icons.Filled.SkipNext,
                         contentDescription = "Next",
                         tint = TextWhite,
                         modifier = Modifier.size(18.dp)
@@ -577,7 +581,7 @@ fun EmptyState(text: String) {
         modifier = Modifier.padding(top = 16.dp)
     ) {
         Icon(
-            imageVector = androidx.compose.material.icons.Icons.Default.Info,
+            imageVector = Icons.Filled.Info,
             contentDescription = null,
             tint = TextGray,
             modifier = Modifier.size(24.dp)
@@ -590,7 +594,7 @@ fun EmptyState(text: String) {
 @Composable
 fun MenuButton(
     text: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector = androidx.compose.material.icons.Icons.Default.ChevronRight,
+    icon: ImageVector = Icons.Filled.ArrowForward,
     onClick: () -> Unit
 ) {
     Button(
@@ -598,9 +602,7 @@ fun MenuButton(
         modifier = Modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 4.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = SurfaceDark
-        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -626,7 +628,7 @@ fun MenuButton(
                 )
             }
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.ChevronRight,
+                imageVector = Icons.Filled.ArrowForward,
                 contentDescription = "Go",
                 tint = TextGray,
                 modifier = Modifier.size(16.dp)
@@ -645,9 +647,7 @@ fun ListRowButton(
         modifier = Modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 3.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = SurfaceDark
-        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
         shape = RoundedCornerShape(10.dp)
     ) {
         Row(
@@ -664,7 +664,7 @@ fun ListRowButton(
                 fontWeight = FontWeight.Medium
             )
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.ChevronRight,
+                imageVector = Icons.Filled.ArrowForward,
                 contentDescription = "Go",
                 tint = TextGray,
                 modifier = Modifier.size(14.dp)
@@ -683,9 +683,7 @@ fun StationRowButton(
         modifier = Modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 3.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = SurfaceDark
-        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
         shape = RoundedCornerShape(10.dp)
     ) {
         Row(
