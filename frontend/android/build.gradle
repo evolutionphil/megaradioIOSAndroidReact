@@ -9,6 +9,8 @@ buildscript {
     classpath('com.android.tools.build:gradle')
     classpath('com.facebook.react:react-native-gradle-plugin')
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    // Compose Compiler plugin for Kotlin 2.0+ (required by Wear OS module)
+    classpath('org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.0.0')
   }
 }
 

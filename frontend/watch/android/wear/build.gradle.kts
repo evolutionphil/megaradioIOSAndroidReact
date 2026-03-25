@@ -1,9 +1,11 @@
 // build.gradle.kts (Module: wear)
 // Wear OS app build configuration
+// Uses Kotlin 2.0.0 Compose Compiler Plugin (NOT legacy composeOptions)
 
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -39,10 +41,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
     }
 }
 
