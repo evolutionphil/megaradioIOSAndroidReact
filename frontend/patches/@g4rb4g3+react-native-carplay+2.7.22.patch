@@ -1,5 +1,5 @@
 diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
-index 034323b..8045c3a 100644
+index 034323b..5f3d532 100644
 --- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
 +++ b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
 @@ -19,7 +19,7 @@ import com.facebook.react.bridge.LifecycleEventListener
@@ -11,16 +11,7 @@ index 034323b..8045c3a 100644
  import kotlinx.coroutines.CoroutineScope
  import kotlinx.coroutines.Dispatchers
  import kotlinx.coroutines.launch
-@@ -105,11 +105,16 @@ class CarPlaySession(
-     return screen
-   }
- 
-+  private companion object {
-+    private val sNextRootViewTag = AtomicInteger(11)
-+    fun getNextRootViewTag(): Int = sNextRootViewTag.addAndGet(10)
-+  }
-+
-   private fun invokeStartTask() {
+@@ -109,7 +109,7 @@ class CarPlaySession(
      try {
        val catalystInstance = reactContext.catalystInstance
        val jsAppModuleName = if (isCluster) "AndroidAutoCluster" else "AndroidAuto"
@@ -29,6 +20,15 @@ index 034323b..8045c3a 100644
  
        val appParams = WritableNativeMap().apply {
          putInt("rootTag", rootTag)
+@@ -178,6 +178,8 @@ class CarPlaySession(
+ 
+   companion object {
+     const val TAG = "CarPlaySession"
++    private val sNextRootViewTag = AtomicInteger(11)
++    fun getNextRootViewTag(): Int = sNextRootViewTag.addAndGet(10)
+   }
+ 
+   override fun onHostDestroy() {
 diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt
 index f326cee..ce338fc 100644
 --- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/parser/Parser.kt
