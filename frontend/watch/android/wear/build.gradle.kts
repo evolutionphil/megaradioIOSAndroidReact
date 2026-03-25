@@ -13,7 +13,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.megaradio.wear"
+        applicationId = "com.megaradio"
         minSdk = 30  // Wear OS 3.0+
         targetSdk = 34
         versionCode = 1

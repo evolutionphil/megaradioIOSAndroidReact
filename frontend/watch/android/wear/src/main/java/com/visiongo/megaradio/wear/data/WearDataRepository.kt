@@ -98,11 +98,11 @@ object WearDataRepository {
                 Station(
                     id = obj.optString("id", ""),
                     name = obj.optString("name", ""),
-                    country = obj.optString("country", null),
-                    city = obj.optString("city", null),
-                    logoUrl = obj.optString("logoUrl", null),
-                    streamUrl = obj.optString("streamUrl", null),
-                    genre = obj.optString("genre", null)
+                    country = obj.optString("country", "").ifEmpty { null },
+                    city = obj.optString("city", "").ifEmpty { null },
+                    logoUrl = obj.optString("logoUrl", "").ifEmpty { null },
+                    streamUrl = obj.optString("streamUrl", "").ifEmpty { null },
+                    genre = obj.optString("genre", "").ifEmpty { null }
                 )
             }
         } catch (e: Exception) {

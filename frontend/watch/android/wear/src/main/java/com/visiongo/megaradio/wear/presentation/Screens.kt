@@ -34,8 +34,8 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import com.visiongo.megaradio.wear.data.*
 import com.visiongo.megaradio.wear.presentation.theme.*
 import kotlinx.coroutines.delay
@@ -146,7 +146,7 @@ fun HomeScreen(
         item {
             MenuButton(
                 text = "Genres",
-                icon = Icons.Filled.List,
+                icon = Icons.AutoMirrored.Filled.List,
                 onClick = onGenresClick
             )
         }
@@ -594,7 +594,7 @@ fun EmptyState(text: String) {
 @Composable
 fun MenuButton(
     text: String,
-    icon: ImageVector = Icons.Filled.ArrowForward,
+    icon: ImageVector = Icons.AutoMirrored.Filled.ArrowForward,
     onClick: () -> Unit
 ) {
     Button(
@@ -628,7 +628,7 @@ fun MenuButton(
                 )
             }
             Icon(
-                imageVector = Icons.Filled.ArrowForward,
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Go",
                 tint = TextGray,
                 modifier = Modifier.size(16.dp)
@@ -664,7 +664,7 @@ fun ListRowButton(
                 fontWeight = FontWeight.Medium
             )
             Icon(
-                imageVector = Icons.Filled.ArrowForward,
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Go",
                 tint = TextGray,
                 modifier = Modifier.size(14.dp)
