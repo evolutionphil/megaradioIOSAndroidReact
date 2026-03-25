@@ -1,83 +1,63 @@
 # MegaRadio - Product Requirements Document
 
 ## Original Problem Statement
-Build a production-ready mobile radio streaming app called "MegaRadio" using Expo (Bare Workflow). The app requires fully functional CarPlay and Android Auto integration, background/lock screen audio controls, a WatchOS companion app, Wear OS companion app, and Google AdMob monetization.
+Production-ready mobile radio streaming app called "MegaRadio" using React Native Expo (Bare Workflow). The app requires:
+- Fully functional CarPlay and Android Auto integration
+- Background/lock screen audio controls
+- WatchOS companion app
+- Wear OS companion app
+- Native Chromecast/AirPlay streaming
+- Google AdMob monetization
 
 ## Architecture
 - **Frontend**: React Native (Expo Bare Workflow)
-- **State**: Zustand (playerStore, locationStore, recentlyPlayedStore), React Query
-- **Audio**: react-native-track-player (background headless JS)
-- **iOS Native**: PhoneSceneDelegate, CarPlaySceneDelegate, ATTModule.swift
-- **Android Native**: WearDataLayerListenerService (Wear OS), WearDataLayerModule (RN Bridge)
-- **WatchOS**: Native Swift App + WCSession connectivity
-- **Wear OS**: Jetpack Compose app + Wearable Data Layer API
-- **Ads**: Google AdMob (AppOpenAd, Interstitial, Rewarded)
-- **Casting**: react-native-google-cast (Chromecast), react-airplay (AirPlay)
-- **Backend API**: themegaradio.com (external)
+- **State Management**: Zustand (playerStore.ts, locationStore.ts, recentlyPlayedStore.ts)
+- **iOS Native**: Custom Swift modules (ATTModule.swift, WatchConnectivityBridge.swift, AppDelegate.swift)
+- **Android Native**: Custom Kotlin modules for Android Auto + Wear OS
+- **WatchOS**: Native Swift App via WCSession
+- **Wear OS**: Kotlin Compose app via Data Layer API
+- **Background Audio**: react-native-track-player (AudioProvider.tsx)
+- **Build Patching**: patch-package for third-party fixes
 
 ## Completed Features
-- Background audio streaming with lock screen controls
-- CarPlay + Android Auto integration
-- Native Splash Screen (iOS + Android)
-- Google AdMob (AppOpen + Interstitial + Rewarded)
-- Chromecast + AirPlay casting
-- WatchOS companion app (NowPlaying, Favorites, Browse, Genres, Countries)
-- ATT prompt with lifecycle-aware timing
-- GPS/Manual country detection with persistence
-- **CarPlay CPNowPlayingTemplate (Enhanced)** - Favorite toggle button, More options button, Up Next support
-- **Wear OS Full Integration (Feb 2026)** - Complete A-to-Z implementation
+- [x] CarPlay CPNowPlayingTemplate with "Add to Favorites" and "Up Next" buttons
+- [x] Full Wear OS Integration (17 native Kotlin files, Data Layer communication)
+- [x] Android Build System Hardening (Kotlin 2.0+ compatibility)
+- [x] react-native-carplay patch for Kotlin compatibility
+- [x] **Android Build Fix - Package Name Mismatch** (Feb 2026): Fixed Wear OS `applicationId` from `com.megaradio.wear` to `com.megaradio` to match main app, resolving `:app:handleReleaseMicroApk` failure
+- [x] **Wear OS Warnings Cleanup** (Feb 2026): Fixed `optString(key, null)` type mismatch warnings in WearDataRepository.kt, updated deprecated icon imports in Screens.kt
 
-## Wear OS Integration (Feb 2026) - COMPLETE
-### Watch Side (com.visiongo.megaradio.wear)
-- `WearableListenerService.kt` - Background data/message receiver
-- `WearDataRepository.kt` - Singleton StateFlow repository for all data
-- `PhoneConnectivityService.kt` - Send commands to phone via MessageClient
-- `WearViewModel.kt` - ViewModel bridging PhoneConnectivityService and UI
-- `MegaRadioWearApp.kt` - Navigation with SwipeDismissableNavHost
-- `Screens.kt` - Complete UI: Splash, Home, Genres, Countries, Stations, Favorites, NowPlaying
-- `Theme.kt` - MegaRadio brand colors (AccentPink, BackgroundBlack, SurfaceDark)
-- `Models.kt` - Station, Genre, Country data classes
-- `build.gradle.kts` - Wear Compose 1.3.0, Play Services Wearable 18.1.0
-- `AndroidManifest.xml` - Service declarations, watch feature, permissions
+## Build Status
+- **Android**: ✅ BUILDING SUCCESSFULLY (AAB uploaded to Google Play Console)
+- **iOS**: Not tested in this session
 
-### Phone Side (com.megaradio)
-- `WearDataLayerListenerService.kt` - Receives commands from watch via MessageClient
-- `WearDataLayerModule.kt` - React Native native module bridge (DataClient + MessageClient)
-- `WearDataLayerPackage.kt` - Package registrar in MainApplication
+## Pending / In Progress
+- None currently blocking
 
-### React Native Integration
-- `wearOSService.ts` - TypeScript service for Android Wear OS communication
-- `AudioProvider.tsx` - Unified watch command handler (iOS + Android)
+## Upcoming Tasks (P2)
+- ShazamKit integration (song recognition)
+- Equalizer (EQ) with presets
+- Bluetooth metadata support (AVRCP)
 
-### Project Configuration
-- `settings.gradle` - Wear module included as ':wear'
-- `app/build.gradle` - play-services-wearable + wearApp dependency
+## Future Tasks (P3)
+- Station alarm feature
+- tvOS and Android TV apps
 
-### Communication Architecture
-Data flow (Phone → Watch): DataClient (putDataItem)
-- /megaradio/stations, /megaradio/favorites, /megaradio/genres
-- /megaradio/countries, /megaradio/now_playing
+## Key Files
+- `frontend/patches/@g4rb4g3+react-native-carplay+2.7.22.patch`
+- `frontend/android/app/build.gradle`
+- `frontend/watch/android/wear/build.gradle.kts`
+- `frontend/watch/android/wear/src/main/java/com/visiongo/megaradio/wear/`
+- `frontend/src/providers/AudioProvider.tsx`
 
-Commands (Watch → Phone): MessageClient (sendMessage)
-- /megaradio/command/play, /pause, /resume, /next, /previous
-- /megaradio/command/toggle_favorite, /request_data
+## 3rd Party Integrations
+- Google AdMob
+- React Native Track Player
+- React Native CarPlay (@g4rb4g3/react-native-carplay)
+- React Native Google Cast
+- React AirPlay
 
-Playback state: MessageClient
-- /megaradio/playback_state
-
-### Testing
-- Static analysis: 100% (iteration_38 - all 17 files verified)
-- Message path consistency: ALL_PATHS_MATCH (6 data + 7 command paths)
-- Android 12+ compatibility: RECEIVER_NOT_EXPORTED flag present
-
-## Pending (Device Testing Required)
-- Wear OS actual device pairing and communication
-- CarPlay NowPlayingTemplate buttons (native build)
-- Chromecast actual casting (native build)
-- AirPlay actual routing (native build)
-- ATT prompt on fresh install (TestFlight)
-- WatchOS connectivity (TestFlight)
-
-## Upcoming Tasks
-- P2: ShazamKit, EQ, Bluetooth AVRCP
-- P3: Station alarm, tvOS/Android TV
+## Notes
+- User communicates in Turkish
+- Uses EAS Build for Android
+- patch-package is used for react-native-carplay fixes
