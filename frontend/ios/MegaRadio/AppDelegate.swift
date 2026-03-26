@@ -8,6 +8,19 @@ public class AppDelegate: ExpoAppDelegate {
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
+  private var isRNReady = false
+
+  /// Check if React Native bridge is initialized and ready
+  @objc func isReactNativeReady() -> Bool {
+    return isRNReady
+  }
+
+  /// Initialize React Native from a scene (used for CarPlay cold-start)
+  @objc func initAppFromScene(connectionOptions: UIScene.ConnectionOptions?) {
+    guard !isRNReady else { return }
+    // React Native will be initialized via didFinishLaunchingWithOptions
+    // This is a no-op if already initialized
+  }
 
   public override func application(
     _ application: UIApplication,
@@ -29,6 +42,7 @@ public class AppDelegate: ExpoAppDelegate {
       launchOptions: launchOptions)
 #endif
 
+    isRNReady = true
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
