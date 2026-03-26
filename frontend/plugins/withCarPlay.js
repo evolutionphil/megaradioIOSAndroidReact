@@ -16,7 +16,7 @@ const withCarPlayEntitlement = (config) => {
     const backgroundModes = config.modResults.UIBackgroundModes || [];
     
     // Ensure all required background modes are present
-    const requiredModes = ['audio', 'fetch', 'remote-notification', 'external-accessory'];
+    const requiredModes = ['audio', 'fetch', 'remote-notification'];
     for (const mode of requiredModes) {
       if (!backgroundModes.includes(mode)) {
         backgroundModes.push(mode);

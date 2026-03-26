@@ -18,11 +18,6 @@ const withAirPlay = (config) => {
       backgroundModes.push('audio');
     }
     
-    // Add external-accessory for AirPlay accessories (optional)
-    if (!backgroundModes.includes('external-accessory')) {
-      backgroundModes.push('external-accessory');
-    }
-    
     // Add Bonjour services for AirPlay discovery
     if (!config.modResults.NSBonjourServices) {
       config.modResults.NSBonjourServices = [];
