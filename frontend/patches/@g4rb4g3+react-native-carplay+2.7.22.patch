@@ -72,3 +72,20 @@ index 8c8342e..670e991 100644
        }
      }
      props.getMap("image")?.let {
+diff --git a/node_modules/@g4rb4g3/react-native-carplay/ios/RNCarPlay.m b/node_modules/@g4rb4g3/react-native-carplay/ios/RNCarPlay.m
+index 0172a91..5460b59 100644
+--- a/node_modules/@g4rb4g3/react-native-carplay/ios/RNCarPlay.m
++++ b/node_modules/@g4rb4g3/react-native-carplay/ios/RNCarPlay.m
+@@ -1,7 +1,11 @@
+ #import "RNCarPlay.h"
+ #import <React/RCTConvert.h>
+ #import <React/RCTRootView.h>
+-#import "react_native_carplay/react_native_carplay-Swift.h"
++#if __has_include(<react_native_carplay/react_native_carplay-Swift.h>)
++#import <react_native_carplay/react_native_carplay-Swift.h>
++#else
++#import "react_native_carplay-Swift.h"
++#endif
+ 
+ static NSMutableDictionary<NSNumber *, CPNavigationAlert *> *navigationAlertWrappers;
+ 
