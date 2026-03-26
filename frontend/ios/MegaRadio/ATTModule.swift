@@ -4,6 +4,7 @@
 
 import Foundation
 import AppTrackingTransparency
+import React
 
 @objc(ATTModule)
 class ATTModule: NSObject {
