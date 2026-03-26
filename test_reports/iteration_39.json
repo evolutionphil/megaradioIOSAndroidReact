@@ -1,0 +1,234 @@
+{
+  "summary": "Comprehensive iOS native layer static analysis audit completed. Bundle identifiers are CORRECT (com.visiongo.megaradio) across all config files. objectVersion 54 is correct for Xcode 16.4. All Swift/ObjC files referenced in project.pbxproj exist on disk. CarPlay patch is correctly applied. Found 3 orphaned files not in pbxproj (CarSceneDelegate.h/m, MegaRadio-Bridging-Header.h) and watch bridge files not referenced. AppDelegate.swift is missing isReactNativeReady() and initAppFromScene() methods called by CarPlaySceneDelegate.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "ios_static_analysis": {
+    "bundle_identifier_check": {
+      "status": "PASS",
+      "project_pbxproj_debug": "com.visiongo.megaradio",
+      "project_pbxproj_release": "com.visiongo.megaradio",
+      "app_json": "com.visiongo.megaradio",
+      "watch_WKCompanionAppBundleIdentifier": "com.visiongo.megaradio",
+      "note": "All bundle identifiers match correctly - NOT org.name.MegaRadio"
+    },
+    "project_pbxproj_check": {
+      "objectVersion": {
+        "status": "PASS",
+        "value": 54,
+        "note": "Correct for Xcode 16.4 (version 70 breaks CocoaPods)"
+      },
+      "files_referenced_in_pbxproj": [
+        "AppDelegate.swift",
+        "CarPlaySceneDelegate.swift",
+        "PhoneSceneDelegate.swift",
+        "CarPlayCacheManager.swift",
+        "BackgroundRefreshManager.swift",
+        "SilentPushHandler.swift",
+        "VoiceCommandHandler.swift",
+        "ATTModule.swift",
+        "ATTModule.m",
+        "MegaRadio-Bridging-Header.h"
+      ],
+      "files_on_disk": [
+        "AppDelegate.swift",
+        "CarPlaySceneDelegate.swift",
+        "PhoneSceneDelegate.swift",
+        "CarPlayCacheManager.swift",
+        "BackgroundRefreshManager.swift",
+        "SilentPushHandler.swift",
+        "VoiceCommandHandler.swift",
+        "ATTModule.swift",
+        "ATTModule.m",
+        "MegaRadio-Bridging-Header.h",
+        "CarSceneDelegate.h",
+        "CarSceneDelegate.m"
+      ],
+      "missing_files": [],
+      "orphaned_files": [
+        "CarSceneDelegate.h - ObjC header on disk but not in pbxproj",
+        "CarSceneDelegate.m - ObjC implementation on disk but not in pbxproj"
+      ]
+    },
+    "watch_files_check": {
+      "status": "PASS",
+      "all_watch_swift_files_exist": true,
+      "files_verified": [
+        "MegaRadioWatchApp.swift",
+        "ContentView.swift",
+        "NowPlayingView.swift",
+        "FavoritesView.swift",
+        "BrowseView.swift",
+        "GenresView.swift",
+        "GenreStationsView.swift",
+        "CountriesView.swift",
+        "CountryStationsView.swift",
+        "WatchSessionManager.swift"
+      ],
+      "watch_bridge_files": {
+        "exist_on_disk": true,
+        "files": [
+          "WatchConnectivityBridge.swift",
+          "WatchConnectivityBridge.m",
+          "WatchConnectivityHandler.swift"
+        ],
+        "in_project_pbxproj": false,
+        "note": "Watch bridge files exist at watch/ios/ but are NOT referenced in project.pbxproj - need to be added to main iOS target in Xcode"
+      }
+    },
+    "info_plist_check": {
+      "ios_info_plist_exists": true,
+      "watch_info_plist_exists": true,
+      "carplay_scene_config": {
+        "status": "DEFINED_IN_APP_JSON",
+        "note": "UIApplicationSceneManifest is defined in app.json and will be merged during Expo prebuild",
+        "phone_scene_delegate": "$(PRODUCT_MODULE_NAME).PhoneSceneDelegate",
+        "carplay_scene_delegate": "$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate"
+      }
+    },
+    "app_icon_check": {
+      "ios_icon": {
+        "status": "PASS",
+        "file": "app-icon.png",
+        "exists": true,
+        "dimensions": "1024x1024",
+        "format": "PNG",
+        "contents_json_valid": true
+      },
+      "watchos_icon": {
+        "status": "PASS",
+        "file": "icon-1024.png",
+        "exists": true,
+        "dimensions": "1024x1024",
+        "format": "PNG",
+        "contents_json_valid": true
+      }
+    },
+    "carplay_patch_check": {
+      "status": "PASS",
+      "patch_file_exists": true,
+      "patch_applied": true,
+      "has_include_guard_present": true,
+      "note": "RNCarPlay.m has __has_include guard for Swift header import"
+    },
+    "bridging_header_check": {
+      "status": "PASS",
+      "file_exists": true,
+      "referenced_in_pbxproj": true,
+      "content": "Empty (default template) - may need React/RCTBridgeModule.h import for ObjC modules"
+    },
+    "podfile_check": {
+      "status": "PASS",
+      "exists": true,
+      "target": "MegaRadio",
+      "deployment_target": "15.1"
+    }
+  },
+  "critical_issues": [
+    {
+      "issue": "AppDelegate.swift missing methods",
+      "description": "CarPlaySceneDelegate.swift and CarSceneDelegate.m call appDelegate.isReactNativeReady() and appDelegate.initAppFromScene() but these methods don't exist in AppDelegate.swift",
+      "impact": "CarPlay cold-start initialization will fail at runtime",
+      "files_affected": [
+        "/app/frontend/ios/MegaRadio/AppDelegate.swift",
+        "/app/frontend/ios/MegaRadio/CarPlaySceneDelegate.swift",
+        "/app/frontend/ios/MegaRadio/CarSceneDelegate.m"
+      ],
+      "fix_required": "Add isReactNativeReady() and initAppFromScene(connectionOptions:) methods to AppDelegate.swift"
+    },
+    {
+      "issue": "Orphaned CarSceneDelegate files",
+      "description": "CarSceneDelegate.h and CarSceneDelegate.m exist on disk but are not referenced in project.pbxproj",
+      "impact": "These ObjC files won't be compiled - may be intentional if Swift CarPlaySceneDelegate is preferred",
+      "files_affected": [
+        "/app/frontend/ios/MegaRadio/CarSceneDelegate.h",
+        "/app/frontend/ios/MegaRadio/CarSceneDelegate.m"
+      ],
+      "fix_required": "Either add to project.pbxproj or remove from disk if not needed"
+    },
+    {
+      "issue": "Watch bridge files not in project.pbxproj",
+      "description": "WatchConnectivityBridge.swift, WatchConnectivityBridge.m, WatchConnectivityHandler.swift exist at watch/ios/ but are not referenced in project.pbxproj",
+      "impact": "Watch connectivity won't work - these files need to be added to main iOS target",
+      "files_affected": [
+        "/app/frontend/watch/ios/WatchConnectivityBridge.swift",
+        "/app/frontend/watch/ios/WatchConnectivityBridge.m",
+        "/app/frontend/watch/ios/WatchConnectivityHandler.swift"
+      ],
+      "fix_required": "Add these files to the MegaRadio target in Xcode"
+    }
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "CRITICAL: Add isReactNativeReady() and initAppFromScene(connectionOptions:) methods to AppDelegate.swift for CarPlay cold-start support",
+    "Add CarSceneDelegate.h and CarSceneDelegate.m to project.pbxproj OR remove from disk if Swift CarPlaySceneDelegate is preferred",
+    "Add watch bridge files (WatchConnectivityBridge.swift, WatchConnectivityBridge.m, WatchConnectivityHandler.swift) to MegaRadio target in Xcode",
+    "Consider adding React/RCTBridgeModule.h import to MegaRadio-Bridging-Header.h for ObjC native modules"
+  ],
+  "critical_code_review_comments": [
+    "Bundle identifier is CORRECT: com.visiongo.megaradio (not org.name.MegaRadio)",
+    "objectVersion 54 is CORRECT for Xcode 16.4 compatibility",
+    "All 9 Swift/ObjC files referenced in pbxproj exist on disk",
+    "CarPlay patch is correctly applied with __has_include guard",
+    "iOS and watchOS app icons are valid 1024x1024 PNGs",
+    "Watch Info.plist WKCompanionAppBundleIdentifier matches main app bundle ID",
+    "All 10 watchOS Swift files exist and are properly structured",
+    "ISSUE: AppDelegate.swift is missing isReactNativeReady() and initAppFromScene() methods that CarPlaySceneDelegate calls",
+    "ISSUE: CarSceneDelegate.h/m are orphaned (on disk but not in pbxproj)",
+    "ISSUE: Watch bridge files need to be added to project.pbxproj"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - React Native app",
+    "frontend": "N/A - Static analysis only",
+    "ios_static_analysis": "85% - 3 critical issues found"
+  },
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "iOS native layer audit (iteration 39) found 3 critical issues: 1) AppDelegate.swift missing isReactNativeReady() and initAppFromScene() methods, 2) CarSceneDelegate.h/m orphaned files, 3) Watch bridge files not in project.pbxproj. Bundle identifiers are all correct (com.visiongo.megaradio). objectVersion 54 is correct. All referenced files exist. CarPlay patch is applied. Previous iterations: 37 (CarPlay NowPlaying), 38 (Wear OS audit).",
+  "files_analyzed": [
+    "/app/frontend/ios/MegaRadio.xcodeproj/project.pbxproj",
+    "/app/frontend/ios/MegaRadio/AppDelegate.swift",
+    "/app/frontend/ios/MegaRadio/CarPlaySceneDelegate.swift",
+    "/app/frontend/ios/MegaRadio/PhoneSceneDelegate.swift",
+    "/app/frontend/ios/MegaRadio/ATTModule.swift",
+    "/app/frontend/ios/MegaRadio/ATTModule.m",
+    "/app/frontend/ios/MegaRadio/CarPlayCacheManager.swift",
+    "/app/frontend/ios/MegaRadio/BackgroundRefreshManager.swift",
+    "/app/frontend/ios/MegaRadio/SilentPushHandler.swift",
+    "/app/frontend/ios/MegaRadio/VoiceCommandHandler.swift",
+    "/app/frontend/ios/MegaRadio/CarSceneDelegate.h",
+    "/app/frontend/ios/MegaRadio/CarSceneDelegate.m",
+    "/app/frontend/ios/MegaRadio/MegaRadio-Bridging-Header.h",
+    "/app/frontend/ios/MegaRadio/Info.plist",
+    "/app/frontend/ios/MegaRadio/Images.xcassets/AppIcon.appiconset/Contents.json",
+    "/app/frontend/ios/MegaRadio/Images.xcassets/AppIcon.appiconset/app-icon.png",
+    "/app/frontend/ios/Podfile",
+    "/app/frontend/app.json",
+    "/app/frontend/watch/ios/MegaRadioWatch/Info.plist",
+    "/app/frontend/watch/ios/MegaRadioWatch/Assets.xcassets/AppIcon.appiconset/Contents.json",
+    "/app/frontend/watch/ios/MegaRadioWatch/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
+    "/app/frontend/watch/ios/MegaRadioWatch/MegaRadioWatchApp.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/ContentView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/NowPlayingView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/FavoritesView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/BrowseView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/GenresView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/GenreStationsView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/CountriesView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/CountryStationsView.swift",
+    "/app/frontend/watch/ios/MegaRadioWatch/WatchSessionManager.swift",
+    "/app/frontend/watch/ios/WatchConnectivityBridge.swift",
+    "/app/frontend/watch/ios/WatchConnectivityBridge.m",
+    "/app/frontend/watch/ios/WatchConnectivityHandler.swift",
+    "/app/frontend/patches/@g4rb4g3+react-native-carplay+2.7.22.patch",
+    "/app/frontend/node_modules/@g4rb4g3/react-native-carplay/ios/RNCarPlay.m"
+  ]
+}
