@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Storage keys
 const AD_FREE_UNTIL_KEY = '@megaradio_ad_free_until';
 const STATION_CHANGE_COUNT_KEY = '@megaradio_station_change_count';
-const INTERSTITIAL_FREQUENCY = 3; // Show ad every 3 station changes
+const INTERSTITIAL_FREQUENCY = 5; // Show ad every 5 station changes
 
 // Ad Unit IDs (Production)
 const AD_UNITS = {
@@ -351,8 +351,19 @@ class AdMobService {
     }
   }
 
-  // Check if user has ad-free time remaining
+  // Check if user has ad-free time remaining OR has premium/remove-ads plan
   async isAdFree(): Promise<boolean> {
+    try {
+      // Check premium status first (permanent ad removal)
+      const { usePremiumStore } = require('../store/premiumStore');
+      const premiumState = usePremiumStore.getState();
+      if (premiumState.isPremium || premiumState.isRemoveAds) {
+        return true;
+      }
+    } catch (e) {
+      // PremiumStore not available - continue with regular check
+    }
+    
     try {
       const adFreeUntil = await AsyncStorage.getItem(AD_FREE_UNTIL_KEY);
       if (!adFreeUntil) return false;

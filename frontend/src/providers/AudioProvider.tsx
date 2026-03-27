@@ -297,6 +297,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             timestamp: Date.now(),
           });
           
+          // Add to Song History from ICY metadata
+          if (artistName && songTitle && songTitle !== 'Live Stream' && songTitle !== station.name) {
+            try {
+              const { useSongHistoryStore } = require('../store/songHistoryStore');
+              useSongHistoryStore.getState().addEntry({
+                title: songTitle,
+                artist: artistName,
+                stationName: station.name,
+                stationId: station._id || '',
+                stationFavicon: station.favicon || station.logo,
+              });
+            } catch (e) {
+              // Non-blocking
+            }
+          }
+          
           // Update lock screen using existing helper functions (DRY principle)
           if (Platform.OS !== 'web') {
             // Use existing getArtworkUrl helper - ensure HTTPS
@@ -664,6 +680,22 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         if (lastMetadataTitle !== newMetadataKey && lastMetadataTitle !== null) {
           console.log('[AudioProvider] New song detected, incrementing music played count');
           statsService.incrementMusicPlayed().catch(console.error);
+          
+          // Add to Song History (only for actual songs with artist info)
+          if (artistName && songTitle && songTitle !== 'Live Stream' && songTitle !== station.name) {
+            try {
+              const { useSongHistoryStore } = require('../store/songHistoryStore');
+              useSongHistoryStore.getState().addEntry({
+                title: songTitle,
+                artist: artistName,
+                stationName: station.name,
+                stationId: station._id || '',
+                stationFavicon: station.favicon || station.logo,
+              });
+            } catch (e) {
+              // Non-blocking - Song History is a premium feature
+            }
+          }
         }
         lastMetadataTitle = newMetadataKey;
         

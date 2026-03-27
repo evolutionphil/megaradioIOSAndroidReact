@@ -35,6 +35,9 @@ import api from '../../src/services/api';
 import userService from '../../src/services/userService';
 import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
+import { usePremiumStore } from '../../src/store/premiumStore';
+import { PremiumPaywall } from '../../src/components/PremiumPaywall';
+import { useSongHistoryStore } from '../../src/store/songHistoryStore';
 import appService, { AppInfo } from '../../src/services/appService';
 
 // Language display names
@@ -109,6 +112,12 @@ export default function ProfileScreen() {
   
   // Logout modal
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // Premium
+  const [showPremiumPaywall, setShowPremiumPaywall] = useState(false);
+  const [showRemoveAdsPaywall, setShowRemoveAdsPaywall] = useState(false);
+  const { isPremium, isRemoveAds, plan, loadPremiumStatus } = usePremiumStore();
+  const songHistoryEntries = useSongHistoryStore((s) => s.entries);
   
   // Avatar upload
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -746,10 +755,82 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {/* Premium - Rewarded Ad Button (shown for ALL users) */}
+        {/* Premium Section */}
         <View style={s.section}>
           <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
+          
+          {/* Go Premium Button */}
+          {!isPremium && (
+            <TouchableOpacity
+              style={[s.row, { backgroundColor: 'rgba(255,215,0,0.06)' }]}
+              onPress={() => setShowPremiumPaywall(true)}
+              data-testid="go-premium-btn"
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
+                <Ionicons name="diamond" size={20} color="#FFD700" />
+                <View>
+                  <Text style={[s.rowTitle, { color: '#FFD700' }]}>{t('go_premium', 'Go Premium')}</Text>
+                  <Text style={{ fontSize: 12, color: '#999', fontFamily: 'Ubuntu-Regular' }}>
+                    {t('unlock_features', 'Unlock all features')}
+                  </Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#FFD700" />
+            </TouchableOpacity>
+          )}
+          {isPremium && (
+            <View style={[s.row, { backgroundColor: 'rgba(255,215,0,0.06)' }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
+                <Ionicons name="diamond" size={20} color="#FFD700" />
+                <Text style={[s.rowTitle, { color: '#FFD700' }]}>Premium Active</Text>
+              </View>
+              <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
+            </View>
+          )}
+          <View style={s.divider} />
+
+          {/* Remove Ads (only for non-premium, non-removeAds users) */}
+          {!isRemoveAds && (
+            <>
+              <TouchableOpacity
+                style={s.row}
+                onPress={() => setShowRemoveAdsPaywall(true)}
+                data-testid="remove-ads-btn"
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
+                  <Ionicons name="ban-outline" size={20} color="#FF4199" />
+                  <Text style={s.rowTitle}>{t('remove_ads', 'Remove Ads')}</Text>
+                </View>
+                <Text style={{ fontSize: 13, color: '#888', fontFamily: 'Ubuntu-Regular', marginRight: 8 }}>
+                  {t('from_price', '€5.99/yr')}
+                </Text>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </TouchableOpacity>
+              <View style={s.divider} />
+            </>
+          )}
+
+          {/* Rewarded Ad - Watch Ad for 30 min free */}
           <RewardedAdButton />
+          <View style={s.divider} />
+
+          {/* Song History */}
+          <TouchableOpacity
+            style={s.row}
+            onPress={() => router.push('/song-history' as any)}
+            data-testid="song-history-btn"
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
+              <Ionicons name="time-outline" size={20} color="#FFF" />
+              <Text style={s.rowTitle}>{t('song_history', 'Song History')}</Text>
+            </View>
+            {songHistoryEntries.length > 0 && (
+              <Text style={{ fontSize: 13, color: '#888', fontFamily: 'Ubuntu-Regular', marginRight: 8 }}>
+                {songHistoryEntries.length}
+              </Text>
+            )}
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
         </View>
 
         {/* About */}
@@ -798,6 +879,20 @@ export default function ProfileScreen() {
         visible={showLogoutModal}
         onCancel={() => setShowLogoutModal(false)}
         onConfirm={handleLogout}
+      />
+
+      {/* Premium Paywall */}
+      <PremiumPaywall
+        visible={showPremiumPaywall}
+        onClose={() => setShowPremiumPaywall(false)}
+        mode="premium"
+      />
+
+      {/* Remove Ads Paywall */}
+      <PremiumPaywall
+        visible={showRemoveAdsPaywall}
+        onClose={() => setShowRemoveAdsPaywall(false)}
+        mode="remove_ads"
       />
     </SafeAreaView>
   );
