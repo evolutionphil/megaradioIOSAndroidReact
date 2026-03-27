@@ -246,7 +246,7 @@ class AdMobService {
     }
   }
 
-  // Show App Open Ad
+  // Show App Open Ad (with rewarded fallback if no-fill)
   async showAppOpenAd(): Promise<boolean> {
     if (Platform.OS === 'web') return false;
     
@@ -257,6 +257,7 @@ class AdMobService {
       return false;
     }
 
+    // Try App Open ad first
     if (this.isAppOpenLoaded && this.appOpenAd) {
       try {
         await this.appOpenAd.show();
@@ -265,11 +266,26 @@ class AdMobService {
         return true;
       } catch (error) {
         console.error('[AdMob] Error showing App Open ad:', error);
-        return false;
       }
     }
     
-    console.log('[AdMob] App Open ad not loaded yet');
+    // Fallback: Try rewarded ad if app open not available
+    console.log('[AdMob] App Open ad not loaded, trying rewarded fallback...');
+    if (this.isRewardedLoaded && this.rewardedAd) {
+      try {
+        await this.rewardedAd.show();
+        console.log('[AdMob] Rewarded ad shown as fallback for app open');
+        this.isRewardedLoaded = false;
+        // Grant ad-free time as reward
+        await this.grantAdFreeTime(30);
+        this.loadRewardedAd();
+        return true;
+      } catch (error) {
+        console.error('[AdMob] Rewarded fallback error:', error);
+      }
+    }
+
+    console.log('[AdMob] No ad available for app open');
     return false;
   }
 
@@ -393,22 +409,38 @@ class AdMobService {
     console.log('[AdMob] Station change count:', this.stationChangeCount, '/ frequency:', INTERSTITIAL_FREQUENCY);
 
     // Show interstitial every INTERSTITIAL_FREQUENCY station changes (3, 6, 9, 12...)
-    // First-launch interstitial is handled separately in _layout.tsx via showAppOpenAd()
     if (this.stationChangeCount % INTERSTITIAL_FREQUENCY === 0) {
       console.log('[AdMob] Frequency hit! Attempting to show interstitial...');
       console.log('[AdMob] isInterstitialLoaded:', this.isInterstitialLoaded);
       
-      const adShown = await this.showInterstitialAd();
+      // Try interstitial first
+      let adShown = await this.showInterstitialAd();
       
       if (adShown) {
         console.log('[AdMob] Interstitial shown successfully');
-      } else {
-        // Ad wasn't ready - preload for next time
-        console.log('[AdMob] Interstitial not ready, preloading for next time...');
-        this.loadInterstitialAd();
+        return true;
       }
       
-      return adShown;
+      // Fallback: Try rewarded ad if interstitial not available
+      console.log('[AdMob] Interstitial not ready, trying rewarded fallback...');
+      if (this.isRewardedLoaded && this.rewardedAd) {
+        try {
+          await this.rewardedAd.show();
+          console.log('[AdMob] Rewarded ad shown as fallback');
+          this.isRewardedLoaded = false;
+          await this.grantAdFreeTime(30);
+          this.loadRewardedAd();
+          return true;
+        } catch (error) {
+          console.log('[AdMob] Rewarded fallback error:', error);
+        }
+      }
+
+      // Neither worked - preload both for next time
+      console.log('[AdMob] No ads available, preloading for next time...');
+      this.loadInterstitialAd();
+      this.loadRewardedAd();
+      return false;
     }
 
     return false;

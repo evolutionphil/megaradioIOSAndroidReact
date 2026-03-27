@@ -742,25 +742,31 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
 
-    // Track station change for ads (only for different stations)
-    // Shows interstitial ad every 3 station changes
-    adMobService.onStationChange().then((adShown) => {
-      if (adShown) {
-        console.log('[AudioProvider] Interstitial ad shown on station change');
-      }
-    }).catch((error) => {
-      console.log('[AudioProvider] Ad error (non-blocking):', error);
-    });
-
-    // FIRST STATION PLAY: Show app-open interstitial on very first station play per session
+    // FIRST STATION PLAY: Show app-open ad on very first station play per session
+    // Wait briefly for AdMob to initialize if needed
     if (!adMobService.firstStationAdShown) {
       adMobService.firstStationAdShown = true;
-      adMobService.showAppOpenAd().then((shown) => {
-        if (shown) {
-          console.log('[AudioProvider] First launch ad shown');
+      // Small delay to allow AdMob to finish loading ads
+      setTimeout(() => {
+        adMobService.showAppOpenAd().then((shown) => {
+          if (shown) {
+            console.log('[AudioProvider] First launch ad shown');
+          }
+        }).catch((e) => {
+          console.log('[AudioProvider] First launch ad error (non-blocking):', e);
+        });
+      }, 2000);
+    }
+
+    // Track station change for ads (only for different stations)
+    // Shows interstitial ad every 3 station changes (with rewarded fallback)
+    if (adMobService.isInitialized) {
+      adMobService.onStationChange().then((adShown) => {
+        if (adShown) {
+          console.log('[AudioProvider] Ad shown on station change');
         }
-      }).catch((e) => {
-        console.log('[AudioProvider] First launch ad error (non-blocking):', e);
+      }).catch((error) => {
+        console.log('[AudioProvider] Ad error (non-blocking):', error);
       });
     }
 
