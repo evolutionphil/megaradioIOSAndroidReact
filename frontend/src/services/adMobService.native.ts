@@ -40,6 +40,7 @@ class AdMobService {
   private isInitialized = false;
   private stationChangeCount = 0;
   private firstStationAdShown = false; // Per-session flag for first station rewarded ad
+  private isManualRewardedAd = false; // CRITICAL: Only true when user clicks "Watch Ad" button
 
   // Get the correct ad unit ID based on platform and environment
   getAdUnitId(type: 'interstitial' | 'rewarded' | 'appOpenInterstitial'): string {
@@ -251,8 +252,7 @@ class AdMobService {
     if (Platform.OS === 'web') return false;
     
     // Check ad-free time
-    const adFreeUntil = await AsyncStorage.getItem(AD_FREE_UNTIL_KEY);
-    if (adFreeUntil && new Date(adFreeUntil) > new Date()) {
+    if (await this.isAdFree()) {
       console.log('[AdMob] User has ad-free time, skipping app-open ad');
       return false;
     }
@@ -273,11 +273,11 @@ class AdMobService {
     console.log('[AdMob] App Open ad not loaded, trying rewarded fallback...');
     if (this.isRewardedLoaded && this.rewardedAd) {
       try {
+        // CRITICAL: Mark as automatic (NOT manual) so reward callback won't grant ad-free time
+        this.isManualRewardedAd = false;
         await this.rewardedAd.show();
-        console.log('[AdMob] Rewarded ad shown as fallback for app open');
+        console.log('[AdMob] Rewarded ad shown as fallback for app open (NO ad-free grant)');
         this.isRewardedLoaded = false;
-        // Do NOT grant ad-free time for auto-shown ads
-        // Only manual "watch ad" button grants ad-free time
         this.loadRewardedAd();
         return true;
       } catch (error) {
@@ -322,7 +322,7 @@ class AdMobService {
         this.isRewardedLoaded = true;
       });
 
-      // Use addAdEventsListener for ERROR and CLOSED (not available via RewardedAdEventType)
+      // Use addAdEventsListener for ERROR, CLOSED, and EARNED_REWARD safety check
       this.rewardedAd.addAdEventsListener(({ type, payload }: { type: string; payload?: any }) => {
         if (type === AdEventType.CLOSED || type === 'closed') {
           console.log('[AdMob] Rewarded interstitial ad closed');
@@ -335,6 +335,11 @@ class AdMobService {
             console.log('[AdMob] Retrying rewarded interstitial ad load...');
             this.loadRewardedAd();
           }, 15000);
+        } else if (type === 'rewarded_earned_reward' || type === 'earned_reward') {
+          // Safety: If reward earned during auto-fallback, do NOT grant ad-free time
+          if (!this.isManualRewardedAd) {
+            console.log('[AdMob] SAFETY: Reward earned from automatic ad - NOT granting ad-free time');
+          }
         }
       });
 
@@ -425,10 +430,12 @@ class AdMobService {
       console.log('[AdMob] Interstitial not ready, trying rewarded fallback...');
       if (this.isRewardedLoaded && this.rewardedAd) {
         try {
+          // CRITICAL: Mark as automatic (NOT manual) so reward callback won't grant ad-free time
+          this.isManualRewardedAd = false;
           await this.rewardedAd.show();
-          console.log('[AdMob] Rewarded ad shown as fallback');
+          console.log('[AdMob] Rewarded ad shown as auto-fallback (NO ad-free grant)');
           this.isRewardedLoaded = false;
-          await this.grantAdFreeTime(30);
+          // Do NOT grant ad-free time for automatic ads
           this.loadRewardedAd();
           return true;
         } catch (error) {
@@ -471,6 +478,7 @@ class AdMobService {
   }
 
   // Show Rewarded Interstitial Ad and return promise that resolves when reward is earned
+  // ONLY called from the manual "Watch Ad" button on profile page
   async showRewardedAd(): Promise<{ success: boolean; reward?: { type: string; amount: number } }> {
     if (Platform.OS === 'web') {
       return { success: false };
@@ -481,6 +489,10 @@ class AdMobService {
       return { success: false };
     }
 
+    // CRITICAL: Mark as manual ad - this is the ONLY path that should grant ad-free time
+    this.isManualRewardedAd = true;
+    console.log('[AdMob] Manual rewarded ad requested by user (will grant 30 min if completed)');
+
     return new Promise((resolve) => {
       const { RewardedAdEventType, AdEventType } = require('react-native-google-mobile-ads');
       let resolved = false;
@@ -489,12 +501,18 @@ class AdMobService {
       const rewardListener = this.rewardedAd.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward: { type: string; amount: number }) => {
-          console.log('[AdMob] Reward earned:', reward);
+          console.log('[AdMob] Manual reward earned:', reward);
           
-          // Grant 30 minutes ad-free time
-          await this.grantAdFreeTime(30);
+          // Grant 30 minutes ad-free time ONLY for manual button press
+          if (this.isManualRewardedAd) {
+            await this.grantAdFreeTime(30);
+            console.log('[AdMob] 30 min ad-free granted (manual button)');
+          } else {
+            console.log('[AdMob] Reward earned but NOT granting ad-free (automatic ad)');
+          }
           
           resolved = true;
+          this.isManualRewardedAd = false;
           rewardListener();
           closeListener();
           resolve({ success: true, reward });
@@ -502,12 +520,12 @@ class AdMobService {
       );
 
       // CRITICAL: Listen for ad close WITHOUT earning reward (user cancelled)
-      // Without this, the promise would NEVER resolve and the button stays in loading state
       const closeListener = this.rewardedAd.addAdEventsListener(({ type }: { type: string }) => {
         if (type === AdEventType.CLOSED || type === 'closed') {
           if (!resolved) {
             console.log('[AdMob] Rewarded ad closed WITHOUT earning reward (user cancelled)');
             resolved = true;
+            this.isManualRewardedAd = false;
             rewardListener();
             closeListener();
             resolve({ success: false });
@@ -520,6 +538,7 @@ class AdMobService {
         console.error('[AdMob] Error showing rewarded interstitial ad:', error);
         if (!resolved) {
           resolved = true;
+          this.isManualRewardedAd = false;
           rewardListener();
           closeListener();
           resolve({ success: false });
