@@ -1,105 +1,90 @@
 # MegaRadio - Product Requirements Document
 
 ## Original Problem Statement
-Production-ready mobile radio streaming app called "MegaRadio" using React Native Expo (Bare Workflow). The app requires:
-- Fully functional CarPlay and Android Auto integration
-- Background/lock screen audio controls
-- WatchOS companion app
-- Wear OS companion app
-- Native Chromecast/AirPlay streaming
-- Google AdMob monetization
+Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-App Purchases (2-tier premium system).
 
 ## Architecture
-- **Frontend**: React Native (Expo Bare Workflow)
-- **State Management**: Zustand (playerStore.ts, locationStore.ts, recentlyPlayedStore.ts)
-- **iOS Native**: Custom Swift modules (ATTModule.swift, WatchConnectivityBridge.swift, AppDelegate.swift)
-- **Android Native**: Custom Kotlin modules for Android Auto + Wear OS
-- **WatchOS**: Native Swift App via WCSession
-- **Wear OS**: Kotlin Compose app via Data Layer API
-- **Background Audio**: react-native-track-player (AudioProvider.tsx)
-- **Build Patching**: patch-package for third-party fixes
+- **Frontend**: React Native (Expo Bare Workflow) with Expo Router
+- **State Management**: Zustand (playerStore, locationStore, authStore, premiumStore, songHistoryStore)
+- **Monetization**: Google AdMob (adMobService.native.ts) + IAP (iapService.ts wrapping react-native-iap v14)
+- **Background Audio**: react-native-track-player (AudioProvider.tsx + service.js)
+- **iOS/Android**: Native modules for CarPlay, WearOS, Bluetooth
+
+## 2-Tier Premium Strategy
+### Tier 1: Remove Ads (€5.99/year)
+- Removes all interstitial and banner ads
+
+### Tier 2: Premium (€3.99/mo, €29.99/yr, €59.99/lifetime)
+- Remove Ads included
+- Song Info (Now Playing metadata)
+- Spotify/YouTube deep links
+- HD Streaming (320kbps)
+- Song History
 
 ## Completed Features
-- [x] CarPlay CPNowPlayingTemplate with "Add to Favorites" and "Up Next" buttons
-- [x] Full Wear OS Integration (17 native Kotlin files, Data Layer communication)
-- [x] Android Build System Hardening (Kotlin 2.0+ compatibility)
-- [x] react-native-carplay patch for Kotlin compatibility
-- [x] **Android Build Fix - Package Name Mismatch** (Feb 2026): Fixed Wear OS `applicationId` from `com.megaradio.wear` to `com.megaradio` to match main app, resolving `:app:handleReleaseMicroApk` failure
-- [x] **Wear OS Warnings Cleanup** (Feb 2026): Fixed `optString(key, null)` type mismatch warnings in WearDataRepository.kt, updated deprecated icon imports in Screens.kt
 
-## Build Status
-- **Android**: ✅ BUILDING SUCCESSFULLY (AAB uploaded to Google Play Console)
-- **iOS**: Not tested in this session
+### AdMob Fixes (Previous Session)
+- [x] Automatic fallback ads no longer grant 30-min ad-free rewards
+- [x] Fixed double-ad issue on initial app launch
+- [x] Changed interstitial frequency from 3 to 5 station changes
 
-## Pending / In Progress
-- User must create IAP products in App Store Connect & Google Play Console (see IAP_SETUP_GUIDE.md)
-- Physical device testing for IAP flow
+### IAP Infrastructure (Previous Session)
+- [x] Created premiumStore.ts and songHistoryStore.ts
+- [x] Created PremiumPaywall.tsx (premium + remove_ads modes)
+- [x] Created song-history.tsx screen
+- [x] Installed react-native-iap@14.7.19
+- [x] Configured iOS Entitlements and Android Manifest
+- [x] Created iapService.ts (StoreKit 2 + Google Play Billing)
+- [x] Updated AudioProvider.tsx for song history metadata push
+- [x] Rewrote Profile screen with premium navigation
+- [x] Created IAP_SETUP_GUIDE.md
+- [x] Generated 55-char App Store metadata for 4 IAP tiers
 
-## Completed Recently (Feb 2026)
-- [x] **AdMob Reward-Free Fallback Fix**: Fixed critical bug where automatic rewarded ad fallbacks were granting 30 min ad-free time. Added `isManualRewardedAd` flag. Only manual "Watch Ad" button grants ad-free time.
-- [x] **isAdFree() consistency fix**: Fixed broken `new Date(stringTimestamp)` comparison.
-- [x] **onStationChange grantAdFreeTime removal**: Removed `grantAdFreeTime(30)` from automatic rewarded fallback.
-- [x] **Ad Frequency 3→5**: Changed INTERSTITIAL_FREQUENCY from 3 to 5.
-- [x] **First Play Skip**: First station play no longer increments ad counter.
-- [x] **Session Counter Reset**: Station change counter resets to 0 on each app launch.
-- [x] **PremiumStore**: New Zustand store for premium/remove-ads status.
-- [x] **PremiumPaywall**: New component with both "Premium" and "Remove Ads" paywall modes.
-- [x] **SongHistoryStore**: New Zustand store for tracking played songs.
-- [x] **Song History Page**: New page at `/song-history` from profile, with Spotify/YouTube deep links (premium-gated).
-- [x] **Profile Premium Section**: Go Premium, Remove Ads, Watch Ad, Song History buttons.
-- [x] **AdMob Premium Integration**: `isAdFree()` checks PremiumStore for permanent ad removal.
-- [x] **Song History Recording**: AudioProvider records songs from API + ICY stream metadata.
-
-## AdMob Flow (Correct Behavior)
-1. **First launch**: App Open ad → if no-fill, rewarded fallback → NO 30-min grant → Counter NOT incremented
-2. **Every 5 station changes** (after first play): Interstitial → if no-fill, rewarded fallback → NO 30-min grant
-3. **Manual "Watch Ad" button (Profile)**: Rewarded ad → if completed → 30 min ad-free
-4. **During ad-free time**: No ads shown
-5. **Session counter**: Resets to 0 each app launch
-6. **Premium/Remove Ads users**: No ads ever (checked via PremiumStore)
-
-## Premium Monetization (2 Tiers)
-### Tier 1: Remove Ads (€5.99/year)
-- Remove all ads
-
-### Tier 2: MegaRadio Premium (€3.99/mo · €29.99/yr · €59.99/lifetime)
-- Remove all ads + Song Info + Spotify/YT Links + HD Stream + Song History
-
-## Upcoming Tasks (P2)
-- IAP Integration (react-native-iap for StoreKit 2 + Google Play Billing)
-- HD Stream gate (URL bitrate selection based on premium status)
-- Player song info premium gate (now playing visibility)
-- Spotify/YouTube link buttons on player page (premium)
-- ShazamKit integration (song recognition)
-- Equalizer (EQ) with presets
-- Bluetooth metadata support (AVRCP)
-
-## Future Tasks (P3)
-- Station alarm feature
-- tvOS and Android TV apps
-- Lock screen next/prev ad counter integration
+### Premium Feature Gating (Current Session - 2026-03-27)
+- [x] P0: Player Premium Gating UI (player.tsx)
+  - Song info blurred/hidden for free users with lock icon
+  - "Premium" badge on locked song info
+  - Spotify/YouTube deep link buttons locked for free users
+  - Spotify/YouTube deep link buttons functional for premium users
+  - HD badge only shown for premium users
+  - "Go Premium" banner for free users in player
+  - PremiumPaywall modal integrated in player
+- [x] P1: Lock Screen Next/Prev AdMob Counter (service.js)
+  - service.js increments STATION_CHANGE_COUNT_KEY in AsyncStorage on RemoteNext/Prev/JumpForward/JumpBackward
+  - adMobService.onStationChange() syncs from AsyncStorage before incrementing
+  - Prevents bypassing ad counter via lock screen controls
+- [x] P2: HD Stream Quality Gating (AudioProvider.tsx)
+  - Premium users get highest quality stream (urlHigh > urlResolved > url)
+  - Free users get standard quality (urlLow > url > urlResolved)
+  - Ready for backend to provide urlHigh/urlLow fields
+- [x] Guest Profile Premium Buttons
+  - Go Premium and Remove Ads buttons added to guest profile view
+  - PremiumPaywall modals added to guest view
 
 ## Key Files
-- `frontend/patches/@g4rb4g3+react-native-carplay+2.7.22.patch`
-- `frontend/android/app/build.gradle`
-- `frontend/watch/android/wear/build.gradle.kts`
-- `frontend/watch/android/wear/src/main/java/com/visiongo/megaradio/wear/`
-- `frontend/src/providers/AudioProvider.tsx`
-- `frontend/src/services/adMobService.native.ts`
-- `frontend/src/store/premiumStore.ts`
-- `frontend/src/store/songHistoryStore.ts`
-- `frontend/src/components/PremiumPaywall.tsx`
-- `frontend/app/song-history.tsx`
-- `frontend/app/(tabs)/profile.tsx`
+- `frontend/src/services/iapService.ts` - Core IAP logic
+- `frontend/src/components/PremiumPaywall.tsx` - Subscription/purchase UI
+- `frontend/src/store/premiumStore.ts` - Premium state
+- `frontend/src/store/songHistoryStore.ts` - Song history state
+- `frontend/src/providers/AudioProvider.tsx` - Audio + HD gating
+- `frontend/app/player.tsx` - Player with premium UI gating
+- `frontend/service.js` - Background task + AdMob counter sync
+- `frontend/src/services/adMobService.native.ts` - AdMob with counter sync
+- `frontend/app/(tabs)/profile.tsx` - Profile with premium navigation
 
-## 3rd Party Integrations
+## Backlog (Upcoming)
+- P2: ShazamKit integration (song recognition)
+- P2: Equalizer (EQ) with presets
+- P2: Bluetooth metadata (AVRCP) enhancement
+- P3: Station alarm feature
+- P3: tvOS and Android TV apps
+- P3: Premium feature images (1024x1024) for App Store/Play Console
+
+## Tech Stack
+- React Native (Expo Bare Workflow)
+- Expo Router (file-based routing)
+- Zustand (state management)
+- react-native-track-player
+- react-native-iap@14.7.19
 - Google AdMob
-- React Native Track Player
-- React Native CarPlay (@g4rb4g3/react-native-carplay)
-- React Native Google Cast
-- React AirPlay
-
-## Notes
-- User communicates in Turkish
-- Uses EAS Build for Android
-- patch-package is used for react-native-carplay fixes
+- patch-package for react-native-carplay fixes

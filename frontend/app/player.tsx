@@ -25,12 +25,14 @@ import { useRecentlyPlayedStore } from '../src/store/recentlyPlayedStore';
 import { useSimilarStations, usePopularStations } from '../src/hooks/useQueries';
 import { useAuthStore } from '../src/store/authStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
+import { usePremiumStore } from '../src/store/premiumStore';
 import { useResponsive } from '../src/hooks/useResponsive';
 import { CarModeScreen } from '../src/components/CarModeScreen';
 import { ShareModal } from '../src/components/ShareModal';
 import { SleepTimerModal, SleepCounterModal } from '../src/components/SleepTimerModal';
 import { GlowEffect } from '../src/components/GlowEffect';
 import { PlayerOptionsSheet } from '../src/components/PlayerOptionsSheet';
+import { PremiumPaywall } from '../src/components/PremiumPaywall';
 import CastModal from '../src/components/CastModal';
 import { UniversalCastButton } from '../src/components/UniversalCastButton';
 import { NativeCastModal } from '../src/components/NativeCastModal';
@@ -259,6 +261,7 @@ export default function PlayerScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { isAuthenticated, token } = useAuthStore();
+  const { isPremium, hasFeature } = usePremiumStore();
   const [showCarMode, setShowCarMode] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSleepTimer, setShowSleepTimer] = useState(false);
@@ -266,6 +269,8 @@ export default function PlayerScreen() {
   const [showCastModal, setShowCastModal] = useState(false);
   const [showNativeCastModal, setShowNativeCastModal] = useState(false);
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallMode, setPaywallMode] = useState<'premium' | 'remove_ads'>('premium');
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
@@ -571,9 +576,11 @@ export default function PlayerScreen() {
                 <Ionicons name="chevron-down" size={28} color="#FFFFFF" />
               </TouchableOpacity>
               <View style={styles.headerCenter}>
-                <View style={styles.hdBadge}>
-                  <Text style={styles.hdText}>HD</Text>
-                </View>
+                {hasFeature('hd_stream') && (
+                  <View style={styles.hdBadge}>
+                    <Text style={styles.hdText}>HD</Text>
+                  </View>
+                )}
                 <Text style={styles.headerTitle} numberOfLines={1}>{currentStation.name}</Text>
               </View>
               <View style={styles.headerRight}>
@@ -646,37 +653,74 @@ export default function PlayerScreen() {
             {/* Animated Equalizer Bars */}
             {isPlaying && <EqualizerBars />}
             <Text style={styles.stationName}>{currentStation.name}</Text>
-            <Text style={styles.artistName}>{getCurrentSongInfo()}</Text>
             
-            {/* Spotify & YouTube icons */}
-            <View style={styles.socialIcons}>
+            {/* Song Info - Premium Gated */}
+            {hasFeature('song_info') ? (
+              <Text style={styles.artistName} data-testid="now-playing-song-info">{getCurrentSongInfo()}</Text>
+            ) : (
               <TouchableOpacity 
-                style={[styles.socialButton, styles.spotifyButton]}
-                onPress={() => {
-                  const songInfo = getCurrentSongInfo();
-                  const query = encodeURIComponent(songInfo || currentStation.name);
-                  Linking.openURL(`spotify://search/${query}`).catch(() => {
-                    // Fallback to web if app not installed
-                    Linking.openURL(`https://open.spotify.com/search/${query}`);
-                  });
-                }}
+                style={styles.lockedSongInfo} 
+                onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
+                data-testid="locked-song-info"
               >
-                <Ionicons name="musical-notes" size={18} color="#FFFFFF" />
+                <View style={styles.blurredTextRow}>
+                  <Ionicons name="lock-closed" size={14} color="#FF4199" />
+                  <Text style={styles.blurredText}>
+                    {'\u2022\u2022\u2022\u2022\u2022 - \u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                  </Text>
+                </View>
+                <View style={styles.premiumUnlockBadge}>
+                  <Ionicons name="diamond" size={10} color="#FFD700" />
+                  <Text style={styles.premiumUnlockText}>{t('premium_unlock', 'Premium')}</Text>
+                </View>
               </TouchableOpacity>
+            )}
+            
+            {/* Spotify & YouTube icons - Premium Gated */}
+            {hasFeature('spotify_link') ? (
+              <View style={styles.socialIcons}>
+                <TouchableOpacity 
+                  style={[styles.socialButton, styles.spotifyButton]}
+                  onPress={() => {
+                    const songInfo = getCurrentSongInfo();
+                    const query = encodeURIComponent(songInfo || currentStation.name);
+                    Linking.openURL(`spotify://search/${query}`).catch(() => {
+                      Linking.openURL(`https://open.spotify.com/search/${query}`);
+                    });
+                  }}
+                  data-testid="spotify-deep-link-btn"
+                >
+                  <Ionicons name="musical-notes" size={18} color="#FFFFFF" />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.socialButton, styles.youtubeButton]}
+                  onPress={() => {
+                    const songInfo = getCurrentSongInfo();
+                    const query = encodeURIComponent(songInfo || currentStation.name);
+                    Linking.openURL(`youtube://results?search_query=${query}`).catch(() => {
+                      Linking.openURL(`https://www.youtube.com/results?search_query=${query}`);
+                    });
+                  }}
+                  data-testid="youtube-deep-link-btn"
+                >
+                  <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            ) : (
               <TouchableOpacity 
-                style={[styles.socialButton, styles.youtubeButton]}
-                onPress={() => {
-                  const songInfo = getCurrentSongInfo();
-                  const query = encodeURIComponent(songInfo || currentStation.name);
-                  Linking.openURL(`youtube://results?search_query=${query}`).catch(() => {
-                    // Fallback to web if app not installed
-                    Linking.openURL(`https://www.youtube.com/results?search_query=${query}`);
-                  });
-                }}
+                style={styles.lockedSocialRow} 
+                onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
+                data-testid="locked-social-links"
               >
-                <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
+                <View style={[styles.socialButton, styles.lockedSocialButton]}>
+                  <Ionicons name="musical-notes" size={16} color="rgba(255,255,255,0.3)" />
+                </View>
+                <View style={[styles.socialButton, styles.lockedSocialButton]}>
+                  <Ionicons name="logo-youtube" size={16} color="rgba(255,255,255,0.3)" />
+                </View>
+                <Ionicons name="lock-closed" size={12} color="#FF4199" style={{ marginLeft: 4 }} />
               </TouchableOpacity>
-            </View>
+            )}
           </View>
 
           {/* Main Controls */}
@@ -784,6 +828,24 @@ export default function PlayerScreen() {
             </View>
           </View>
 
+          {/* Go Premium Banner - only for free users */}
+          {!isPremium && (
+            <TouchableOpacity 
+              style={styles.premiumBanner}
+              onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
+              data-testid="go-premium-banner"
+            >
+              <View style={styles.premiumBannerLeft}>
+                <Ionicons name="diamond" size={20} color="#FFD700" />
+                <View>
+                  <Text style={styles.premiumBannerTitle}>{t('go_premium', 'Go Premium')}</Text>
+                  <Text style={styles.premiumBannerSubtitle}>{t('unlock_song_info', 'Unlock song info, HD & more')}</Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.5)" />
+            </TouchableOpacity>
+          )}
+
           {/* Recently Played Section */}
           {recentStations.length > 0 && (
           <View style={styles.section}>
@@ -880,6 +942,13 @@ export default function PlayerScreen() {
         visible={showOptionsSheet}
         onClose={() => setShowOptionsSheet(false)}
         station={currentStation}
+      />
+
+      {/* Premium Paywall */}
+      <PremiumPaywall
+        visible={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        mode={paywallMode}
       />
     </Animated.View>
   );
@@ -1022,6 +1091,81 @@ const styles = StyleSheet.create({
     color: '#888888',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  // Premium-gated song info
+  lockedSongInfo: {
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingVertical: 4,
+  },
+  blurredTextRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  blurredText: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.15)',
+    fontFamily: 'Ubuntu-Medium',
+    letterSpacing: 2,
+  },
+  premiumUnlockBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(255,65,153,0.12)',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,65,153,0.25)',
+  },
+  premiumUnlockText: {
+    fontSize: 10,
+    fontFamily: 'Ubuntu-Bold',
+    color: '#FF4199',
+  },
+  // Locked social buttons
+  lockedSocialRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  lockedSocialButton: {
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  // Go Premium Banner
+  premiumBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 16,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,65,153,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,65,153,0.2)',
+  },
+  premiumBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  premiumBannerTitle: {
+    fontSize: 15,
+    fontFamily: 'Ubuntu-Bold',
+    color: '#FFD700',
+  },
+  premiumBannerSubtitle: {
+    fontSize: 12,
+    fontFamily: 'Ubuntu-Regular',
+    color: 'rgba(255,255,255,0.5)',
+    marginTop: 1,
   },
   socialIcons: {
     flexDirection: 'row',

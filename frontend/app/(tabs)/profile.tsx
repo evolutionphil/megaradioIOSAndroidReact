@@ -552,6 +552,49 @@ export default function ProfileScreen() {
           {/* Ad-Free Section */}
           <View style={s.section}>
             <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
+            
+            {/* Go Premium Button */}
+            {!isPremium && (
+              <TouchableOpacity
+                style={[s.row, { backgroundColor: 'rgba(255,215,0,0.06)' }]}
+                onPress={() => setShowPremiumPaywall(true)}
+                data-testid="guest-go-premium-btn"
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
+                  <Ionicons name="diamond" size={20} color="#FFD700" />
+                  <View>
+                    <Text style={[s.rowTitle, { color: '#FFD700' }]}>{t('go_premium', 'Go Premium')}</Text>
+                    <Text style={{ fontSize: 12, color: '#999', fontFamily: 'Ubuntu-Regular' }}>
+                      {t('unlock_features', 'Unlock all features')}
+                    </Text>
+                  </View>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#FFD700" />
+              </TouchableOpacity>
+            )}
+            <View style={s.divider} />
+            
+            {/* Remove Ads */}
+            {!isRemoveAds && (
+              <>
+                <TouchableOpacity
+                  style={s.row}
+                  onPress={() => setShowRemoveAdsPaywall(true)}
+                  data-testid="guest-remove-ads-btn"
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
+                    <Ionicons name="ban-outline" size={20} color="#FF4199" />
+                    <Text style={s.rowTitle}>{t('remove_ads', 'Remove Ads')}</Text>
+                  </View>
+                  <Text style={{ fontSize: 13, color: '#888', fontFamily: 'Ubuntu-Regular', marginRight: 8 }}>
+                    {t('from_price', '€5.99/yr')}
+                  </Text>
+                  <Ionicons name="chevron-forward" size={20} color="#666" />
+                </TouchableOpacity>
+                <View style={s.divider} />
+              </>
+            )}
+            
             <RewardedAdButton />
           </View>
 
@@ -647,6 +690,20 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
         </ScrollView>
+        
+        {/* Premium Paywall (guest) */}
+        <PremiumPaywall
+          visible={showPremiumPaywall}
+          onClose={() => setShowPremiumPaywall(false)}
+          mode="premium"
+        />
+        
+        {/* Remove Ads Paywall (guest) */}
+        <PremiumPaywall
+          visible={showRemoveAdsPaywall}
+          onClose={() => setShowRemoveAdsPaywall(false)}
+          mode="remove_ads"
+        />
       </SafeAreaView>
     );
   }

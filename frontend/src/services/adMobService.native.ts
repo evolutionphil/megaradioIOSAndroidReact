@@ -37,9 +37,9 @@ class AdMobService {
   private isInterstitialLoaded = false;
   private isRewardedLoaded = false;
   private isAppOpenLoaded = false;
-  private isInitialized = false;
+  isInitialized = false;
   private stationChangeCount = 0;
-  private firstStationAdShown = false; // Per-session flag for first station rewarded ad
+  firstStationAdShown = false; // Per-session flag for first station rewarded ad
   private isManualRewardedAd = false; // CRITICAL: Only true when user clicks "Watch Ad" button
 
   // Get the correct ad unit ID based on platform and environment
@@ -420,6 +420,20 @@ class AdMobService {
     if (await this.isAdFree()) {
       console.log('[AdMob] User is ad-free, skipping interstitial');
       return false;
+    }
+
+    // Sync counter from AsyncStorage (picks up lock-screen next/prev increments from service.js)
+    try {
+      const storedCount = await AsyncStorage.getItem(STATION_CHANGE_COUNT_KEY);
+      if (storedCount) {
+        const parsed = parseInt(storedCount, 10);
+        if (parsed > this.stationChangeCount) {
+          console.log('[AdMob] Synced counter from background:', parsed, '(was', this.stationChangeCount, ')');
+          this.stationChangeCount = parsed;
+        }
+      }
+    } catch (e) {
+      // Non-blocking
     }
 
     this.stationChangeCount++;

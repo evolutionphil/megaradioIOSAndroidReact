@@ -21,6 +21,7 @@ const RECENTLY_PLAYED_KEY = '@megaradio_recently_played';
 const SIMILAR_STATIONS_KEY = '@megaradio_similar_stations';
 const PLAYBACK_HISTORY_KEY = '@megaradio_playback_history'; // For previous button
 const SIMILAR_INDEX_KEY = '@megaradio_similar_index'; // Track position in similar stations
+const STATION_CHANGE_COUNT_KEY = '@megaradio_station_change_count'; // AdMob counter sync
 
 // Helper to get station logo URL
 const getStationLogoUrl = (station) => {
@@ -149,6 +150,20 @@ const addToPlaybackHistory = async (station) => {
   }
 };
 
+// Increment AdMob station change counter (syncs with adMobService via AsyncStorage)
+// This ensures lock screen next/prev also counts towards interstitial ad frequency
+const incrementAdCounter = async () => {
+  try {
+    const countStr = await AsyncStorage.getItem(STATION_CHANGE_COUNT_KEY);
+    const current = countStr ? parseInt(countStr, 10) : 0;
+    const next = current + 1;
+    await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, String(next));
+    console.log('[Service] AdMob counter incremented to:', next);
+  } catch (error) {
+    console.error('[Service] Error incrementing ad counter:', error);
+  }
+};
+
 // Get next station from similar stations (sequential)
 const getNextStation = async () => {
   try {
@@ -267,6 +282,7 @@ module.exports = async function() {
       if (nextStation) {
         console.log('[TrackPlayer Service] Playing next station:', nextStation.name);
         await playStation(nextStation);
+        await incrementAdCounter();
       } else {
         console.log('[TrackPlayer Service] No next station available, restarting current stream');
         await TrackPlayer.seekTo(0);
@@ -285,6 +301,7 @@ module.exports = async function() {
       if (previousStation) {
         console.log('[TrackPlayer Service] Playing previous station:', previousStation.name);
         await playStation(previousStation);
+        await incrementAdCounter();
       } else {
         console.log('[TrackPlayer Service] No previous station available, restarting current stream');
         await TrackPlayer.seekTo(0);
@@ -304,6 +321,7 @@ module.exports = async function() {
       if (nextStation) {
         console.log('[TrackPlayer Service] Playing next station:', nextStation.name);
         await playStation(nextStation);
+        await incrementAdCounter();
       } else {
         console.log('[TrackPlayer Service] No next station available');
       }
@@ -321,6 +339,7 @@ module.exports = async function() {
       if (previousStation) {
         console.log('[TrackPlayer Service] Playing previous station:', previousStation.name);
         await playStation(previousStation);
+        await incrementAdCounter();
       } else {
         console.log('[TrackPlayer Service] No previous station available');
       }

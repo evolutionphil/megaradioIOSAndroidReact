@@ -422,6 +422,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // 
   // HTTP streams: Native'de direkt çalışır (usesCleartextTraffic=true)
   // Proxy sadece Web için gerekli (mixed content)
+  //
+  // HD STREAM GATING:
+  // Premium users get urlResolved (typically higher bitrate) or urlHigh
+  // Free users get url (standard quality) when available
   
   // Helper to check if URL is a playlist
   const isPlaylistUrl = useCallback((url: string | undefined): boolean => {
@@ -457,8 +461,25 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     currentCandidateIndexRef.current = 0;
     failoverRetryCountRef.current = 0;
     
-    // Determine which URL to use as base
-    let streamUrl = (urlResolved && urlResolved.trim() !== '') ? urlResolved : originalUrl;
+    // Determine which URL to use based on premium status (HD gating)
+    // Premium users get highest quality (urlResolved), free users get standard (url)
+    let streamUrl: string;
+    const premiumStore = require('../store/premiumStore').usePremiumStore;
+    const hasHD = premiumStore.getState().hasFeature('hd_stream');
+    
+    // Check for explicit high/low quality URLs
+    const urlHigh = (station as any).urlHigh || (station as any).url_high;
+    const urlLow = (station as any).urlLow || (station as any).url_low;
+    
+    if (hasHD) {
+      // Premium: prefer highest quality → urlHigh > urlResolved > originalUrl
+      streamUrl = urlHigh || ((urlResolved && urlResolved.trim() !== '') ? urlResolved : originalUrl);
+      console.log('[AudioProvider] HD Stream: Premium user, using high quality URL');
+    } else {
+      // Free: prefer standard quality → urlLow > originalUrl > urlResolved
+      streamUrl = urlLow || originalUrl || urlResolved;
+      console.log('[AudioProvider] Standard Stream: Free user, using standard URL');
+    }
     
     if (!streamUrl) {
       console.error('[AudioProvider] No valid URL found for station:', station.name);
