@@ -40,10 +40,12 @@ Production-ready mobile radio streaming app called "MegaRadio" using React Nativ
 - [x] **onStationChange grantAdFreeTime removal**: Removed `grantAdFreeTime(30)` from the automatic rewarded fallback in `onStationChange()`.
 
 ## AdMob Flow (Correct Behavior)
-1. **First launch**: App Open ad → if no-fill, rewarded fallback shown → NO 30-min grant
-2. **Every 3 station changes** (including next/previous): Interstitial → if no-fill, rewarded fallback → NO 30-min grant
+1. **First launch**: App Open ad → if no-fill, rewarded fallback shown → NO 30-min grant → Station change counter NOT incremented
+2. **Every 3 station changes** (after first play): Interstitial → if no-fill, rewarded fallback → NO 30-min grant
 3. **Manual "Watch Ad" button (Profile page)**: Rewarded ad → if completed → 30 min ad-free granted
 4. **During ad-free time**: No ads shown at all
+5. **Session counter**: Counter resets to 0 at each app launch (not persisted across sessions)
+6. **First station play**: Only app open ad, station counter not incremented (avoids double-ad on first 3 stations)
 
 ## Upcoming Tasks (P2)
 - ShazamKit integration (song recognition)

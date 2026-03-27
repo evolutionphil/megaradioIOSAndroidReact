@@ -744,7 +744,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // FIRST STATION PLAY: Show app-open ad on very first station play per session
     // Wait briefly for AdMob to initialize if needed
-    if (!adMobService.firstStationAdShown) {
+    const isFirstPlay = !adMobService.firstStationAdShown;
+    if (isFirstPlay) {
       adMobService.firstStationAdShown = true;
       // Small delay to allow AdMob to finish loading ads
       setTimeout(() => {
@@ -760,7 +761,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Track station change for ads (only for different stations)
     // Shows interstitial ad every 3 station changes (with rewarded fallback)
-    if (adMobService.isInitialized) {
+    // SKIP counting on first play - app open ad already shown/attempted
+    if (adMobService.isInitialized && !isFirstPlay) {
       adMobService.onStationChange().then((adShown) => {
         if (adShown) {
           console.log('[AudioProvider] Ad shown on station change');
@@ -768,6 +770,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }).catch((error) => {
         console.log('[AudioProvider] Ad error (non-blocking):', error);
       });
+    } else if (isFirstPlay) {
+      console.log('[AudioProvider] First play - skipping station change counter (app open ad handles this)');
     }
 
     // NEW STATION - increment play ID for race condition prevention

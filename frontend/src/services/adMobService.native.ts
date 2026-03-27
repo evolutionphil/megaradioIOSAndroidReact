@@ -131,9 +131,11 @@ class AdMobService {
       ]);
       console.log('[AdMob] Initial ads loading started');
       
-      // Load station change count from storage
-      const countStr = await AsyncStorage.getItem(STATION_CHANGE_COUNT_KEY);
-      this.stationChangeCount = countStr ? parseInt(countStr, 10) : 0;
+      // Reset station change count for each session (don't persist across sessions)
+      // This ensures users always get 3 full station changes before seeing the next ad
+      this.stationChangeCount = 0;
+      await AsyncStorage.setItem(STATION_CHANGE_COUNT_KEY, '0');
+      console.log('[AdMob] Station change counter reset for new session');
       
       return true;
     } catch (error) {
