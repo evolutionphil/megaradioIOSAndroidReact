@@ -752,6 +752,18 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] Ad error (non-blocking):', error);
     });
 
+    // FIRST STATION PLAY: Show app-open interstitial on very first station play per session
+    if (!adMobService.firstStationAdShown) {
+      adMobService.firstStationAdShown = true;
+      adMobService.showAppOpenAd().then((shown) => {
+        if (shown) {
+          console.log('[AudioProvider] First launch ad shown');
+        }
+      }).catch((e) => {
+        console.log('[AudioProvider] First launch ad error (non-blocking):', e);
+      });
+    }
+
     // NEW STATION - increment play ID for race condition prevention
     const myPlayId = ++globalPlayId;
     console.log('[AudioProvider] New PlayID:', myPlayId);
