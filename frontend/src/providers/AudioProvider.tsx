@@ -743,7 +743,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
 
     // Track station change for ads (only for different stations)
-    // This will show interstitial ad every 4 station changes
+    // Shows interstitial ad every 3 station changes
     adMobService.onStationChange().then((adShown) => {
       if (adShown) {
         console.log('[AudioProvider] Interstitial ad shown on station change');
@@ -751,21 +751,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }).catch((error) => {
       console.log('[AudioProvider] Ad error (non-blocking):', error);
     });
-
-    // FIRST STATION CLICK: Show rewarded ad on very first station play per session
-    if (adMobService.shouldShowFirstStationAd()) {
-      console.log('[AudioProvider] First station click - showing rewarded ad');
-      adMobService.markFirstStationAdShown();
-      try {
-        const result = await adMobService.showRewardedAd();
-        console.log('[AudioProvider] First station rewarded ad result:', result);
-      } catch (e) {
-        console.log('[AudioProvider] First station rewarded ad error (non-blocking):', e);
-      }
-    } else {
-      // Just mark as shown if ad wasn't ready
-      adMobService.markFirstStationAdShown();
-    }
 
     // NEW STATION - increment play ID for race condition prevention
     const myPlayId = ++globalPlayId;
