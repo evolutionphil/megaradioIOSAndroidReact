@@ -32,7 +32,8 @@ Production-ready mobile radio streaming app called "MegaRadio" using React Nativ
 - **iOS**: Not tested in this session
 
 ## Pending / In Progress
-- IAP Integration (StoreKit 2 + Google Play Billing) - Paywall UI ready, purchase logic needs react-native-iap
+- User must create IAP products in App Store Connect & Google Play Console (see IAP_SETUP_GUIDE.md)
+- Physical device testing for IAP flow
 
 ## Completed Recently (Feb 2026)
 - [x] **AdMob Reward-Free Fallback Fix**: Fixed critical bug where automatic rewarded ad fallbacks were granting 30 min ad-free time. Added `isManualRewardedAd` flag. Only manual "Watch Ad" button grants ad-free time.

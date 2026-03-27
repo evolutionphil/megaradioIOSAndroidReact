@@ -23,6 +23,7 @@ import { useLanguageStore } from '../src/store/languageStore';
 import { useFavoritesStore } from '../src/store/favoritesStore';
 import { useAuthStore } from '../src/store/authStore';
 import { adMobService } from '../src/services/adMobService';
+import { usePremiumStore } from '../src/store/premiumStore';
 sendLog('LAYOUT_IMPORTS_2');
 
 import { AudioProvider } from '../src/providers/AudioProvider';
@@ -159,6 +160,30 @@ export default function RootLayout() {
       }
     };
     loadAuth();
+  }, []);
+
+  // Load premium status on app startup
+  useEffect(() => {
+    const loadPremium = async () => {
+      try {
+        await usePremiumStore.getState().loadPremiumStatus();
+        console.log('[Layout] Premium status loaded:', usePremiumStore.getState().plan);
+        
+        // Initialize IAP on native (non-blocking)
+        if (Platform.OS !== 'web') {
+          try {
+            const { iapService } = require('../src/services/iapService');
+            await iapService.initialize();
+            console.log('[Layout] IAP initialized');
+          } catch (iapError) {
+            console.log('[Layout] IAP init error (expected on simulator):', iapError);
+          }
+        }
+      } catch (error) {
+        console.log('[Layout] Premium load error:', error);
+      }
+    };
+    loadPremium();
   }, []);
 
   // Load stored country selection on app startup - WAIT FOR IT
