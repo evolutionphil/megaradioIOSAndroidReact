@@ -77,6 +77,9 @@ target 'MegaRadio' do
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+        # Fix: Allow non-modular includes in framework modules
+        # Required for RN 0.81 prebuilt + static frameworks + Xcode 16.4
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
       end
     end
   end
