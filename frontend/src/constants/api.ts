@@ -83,6 +83,7 @@ export const API_ENDPOINTS = {
     pushToken: '/api/user/push-token',
     deletePushToken: '/api/user/push-token',
     avatar: '/api/user/avatar',
+    deleteAccount: '/api/user/delete-account',
   },
   
   // Profile endpoints

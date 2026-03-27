@@ -113,6 +113,11 @@ export default function ProfileScreen() {
   // Logout modal
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+  // Delete Account
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   // Premium
   const [showPremiumPaywall, setShowPremiumPaywall] = useState(false);
   const [showRemoveAdsPaywall, setShowRemoveAdsPaywall] = useState(false);
@@ -257,6 +262,24 @@ export default function ProfileScreen() {
     await logout();
     
     router.replace('/(tabs)');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText.toLowerCase() !== 'delete') return;
+    
+    setDeleteLoading(true);
+    try {
+      await api.delete(API_ENDPOINTS.user.deleteAccount);
+      setShowDeleteModal(false);
+      setDeleteConfirmText('');
+      await logout();
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || t('delete_account_error', 'Could not delete account. Please try again.');
+      Alert.alert(t('error', 'Error'), msg);
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
   const handleEmailSend = () => {
@@ -929,6 +952,16 @@ export default function ProfileScreen() {
         <TouchableOpacity style={s.logoutBtn} onPress={() => setShowLogoutModal(true)} data-testid="profile-logout-btn">
           <Text style={s.logoutText}>{t('log_out', 'Log Out')}</Text>
         </TouchableOpacity>
+
+        {/* Delete Account */}
+        <TouchableOpacity 
+          style={s.deleteAccountBtn} 
+          onPress={() => setShowDeleteModal(true)} 
+          data-testid="delete-account-btn"
+        >
+          <Ionicons name="trash-outline" size={16} color="#FF3B30" />
+          <Text style={s.deleteAccountText}>{t('delete_account', 'Delete Account')}</Text>
+        </TouchableOpacity>
       </ScrollView>
       
       {/* Logout Modal */}
@@ -937,6 +970,52 @@ export default function ProfileScreen() {
         onCancel={() => setShowLogoutModal(false)}
         onConfirm={handleLogout}
       />
+
+      {/* Delete Account Modal */}
+      <Modal visible={showDeleteModal} transparent animationType="fade">
+        <View style={s.deleteOverlay}>
+          <View style={s.deleteContainer}>
+            <Ionicons name="warning" size={40} color="#FF3B30" style={{ alignSelf: 'center', marginBottom: 12 }} />
+            <Text style={s.deleteTitle}>{t('delete_account_title', 'Delete Account')}</Text>
+            <Text style={s.deleteDesc}>
+              {t('delete_account_warning', 'This action is permanent and cannot be undone. All your data, favorites, listening history, and active subscriptions will be lost.')}
+            </Text>
+            <Text style={s.deleteConfirmLabel}>
+              {t('type_delete_confirm', 'Type "delete" to confirm:')}
+            </Text>
+            <TextInput
+              style={s.deleteInput}
+              placeholder="delete"
+              placeholderTextColor="#555"
+              value={deleteConfirmText}
+              onChangeText={setDeleteConfirmText}
+              autoCapitalize="none"
+              data-testid="delete-confirm-input"
+            />
+            <View style={s.deleteButtonRow}>
+              <TouchableOpacity 
+                style={s.deleteCancelBtn} 
+                onPress={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}
+                data-testid="delete-cancel-btn"
+              >
+                <Text style={s.deleteCancelText}>{t('cancel', 'Cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[s.deleteConfirmBtn, deleteConfirmText.toLowerCase() !== 'delete' && { opacity: 0.4 }]}
+                onPress={handleDeleteAccount}
+                disabled={deleteConfirmText.toLowerCase() !== 'delete' || deleteLoading}
+                data-testid="delete-confirm-btn"
+              >
+                {deleteLoading ? (
+                  <ActivityIndicator size="small" color="#FFF" />
+                ) : (
+                  <Text style={s.deleteConfirmText}>{t('delete_permanently', 'Delete Permanently')}</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Premium Paywall */}
       <PremiumPaywall
@@ -1031,4 +1110,18 @@ const s = StyleSheet.create({
   loginBtnText: { fontSize: 17, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
   skipBtn: { width: '100%', height: 56, borderRadius: 28, borderWidth: 1, borderColor: '#3A3A3D', justifyContent: 'center', alignItems: 'center' },
   skipBtnText: { fontSize: 17, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
+  // Delete Account
+  deleteAccountBtn: { flexDirection: 'row', alignSelf: 'center', alignItems: 'center', gap: 6, marginTop: 20, marginBottom: 20, paddingHorizontal: 20, paddingVertical: 10 },
+  deleteAccountText: { fontSize: 14, fontFamily: 'Ubuntu-Regular', color: '#FF3B30' },
+  deleteOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 },
+  deleteContainer: { width: '100%', backgroundColor: '#1B1C1E', borderRadius: 16, padding: 24 },
+  deleteTitle: { fontSize: 20, fontFamily: 'Ubuntu-Bold', color: '#FF3B30', textAlign: 'center', marginBottom: 8 },
+  deleteDesc: { fontSize: 14, fontFamily: 'Ubuntu-Regular', color: '#AAA', textAlign: 'center', lineHeight: 20, marginBottom: 20 },
+  deleteConfirmLabel: { fontSize: 14, fontFamily: 'Ubuntu-Medium', color: '#FFF', marginBottom: 8 },
+  deleteInput: { backgroundColor: '#2A2A2A', borderRadius: 10, paddingHorizontal: 16, height: 44, fontSize: 16, fontFamily: 'Ubuntu-Regular', color: '#FFF', marginBottom: 20 },
+  deleteButtonRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
+  deleteCancelBtn: { flex: 1, paddingVertical: 12, borderRadius: 10, backgroundColor: '#333', alignItems: 'center' },
+  deleteCancelText: { fontSize: 15, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
+  deleteConfirmBtn: { flex: 1, paddingVertical: 12, borderRadius: 10, backgroundColor: '#FF3B30', alignItems: 'center' },
+  deleteConfirmText: { fontSize: 15, fontFamily: 'Ubuntu-Bold', color: '#FFF' },
 });

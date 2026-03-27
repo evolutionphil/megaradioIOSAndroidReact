@@ -20,15 +20,16 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - Spotify/YouTube deep links
 - HD Streaming (320kbps)
 - Song History
+- **7-Day Free Trial** on Monthly plan (configured via App Store Connect / Google Play Console)
 
 ## Completed Features
 
-### AdMob Fixes (Previous Session)
+### AdMob Fixes
 - [x] Automatic fallback ads no longer grant 30-min ad-free rewards
 - [x] Fixed double-ad issue on initial app launch
 - [x] Changed interstitial frequency from 3 to 5 station changes
 
-### IAP Infrastructure (Previous Session)
+### IAP Infrastructure
 - [x] Created premiumStore.ts and songHistoryStore.ts
 - [x] Created PremiumPaywall.tsx (premium + remove_ads modes)
 - [x] Created song-history.tsx screen
@@ -40,26 +41,34 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - [x] Created IAP_SETUP_GUIDE.md
 - [x] Generated 55-char App Store metadata for 4 IAP tiers
 
-### Premium Feature Gating (Current Session - 2026-03-27)
+### Premium Feature Gating (2026-03-27)
 - [x] P0: Player Premium Gating UI (player.tsx)
   - Song info blurred/hidden for free users with lock icon
   - "Premium" badge on locked song info
   - Spotify/YouTube deep link buttons locked for free users
-  - Spotify/YouTube deep link buttons functional for premium users
   - HD badge only shown for premium users
-  - "Go Premium" banner for free users in player
+  - "Go Premium" banner in player for free users
   - PremiumPaywall modal integrated in player
 - [x] P1: Lock Screen Next/Prev AdMob Counter (service.js)
-  - service.js increments STATION_CHANGE_COUNT_KEY in AsyncStorage on RemoteNext/Prev/JumpForward/JumpBackward
-  - adMobService.onStationChange() syncs from AsyncStorage before incrementing
-  - Prevents bypassing ad counter via lock screen controls
+  - AsyncStorage counter sync on RemoteNext/Prev/JumpForward/JumpBackward
+  - adMobService syncs from AsyncStorage before incrementing
 - [x] P2: HD Stream Quality Gating (AudioProvider.tsx)
-  - Premium users get highest quality stream (urlHigh > urlResolved > url)
-  - Free users get standard quality (urlLow > url > urlResolved)
-  - Ready for backend to provide urlHigh/urlLow fields
+  - Premium users get highest quality stream URL
+  - Free users get standard quality URL
 - [x] Guest Profile Premium Buttons
-  - Go Premium and Remove Ads buttons added to guest profile view
-  - PremiumPaywall modals added to guest view
+  - Go Premium and Remove Ads added to guest profile view
+
+### Apple Policy Compliance (2026-03-28)
+- [x] 7-Day Free Trial badge + "Start Free Trial" CTA on Monthly plan
+- [x] Trial info text: "7 days free, then auto-renews at €3.99/month. Cancel anytime."
+- [x] Delete Account button + confirmation modal (profile.tsx)
+  - "Type 'delete' to confirm" safety mechanism
+  - API endpoint added: DELETE /api/user/delete-account
+  - **REQUIRES BACKEND IMPLEMENTATION** (see BACKEND_DELETE_ACCOUNT_API.md)
+- [x] Terms & Conditions links fixed in PremiumPaywall (both paywall modes)
+  - Now navigates to /static-page?type=terms
+- [x] Test account credentials created (review@themegaradio.com)
+- [x] App Privacy Labels guide created (APP_PRIVACY_LABELS_GUIDE.md)
 
 ## Key Files
 - `frontend/src/services/iapService.ts` - Core IAP logic
@@ -70,9 +79,15 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - `frontend/app/player.tsx` - Player with premium UI gating
 - `frontend/service.js` - Background task + AdMob counter sync
 - `frontend/src/services/adMobService.native.ts` - AdMob with counter sync
-- `frontend/app/(tabs)/profile.tsx` - Profile with premium navigation
+- `frontend/app/(tabs)/profile.tsx` - Profile with premium nav + delete account
+- `frontend/src/constants/api.ts` - API endpoints (including deleteAccount)
 
-## Backlog (Upcoming)
+## Documentation Created
+- `frontend/IAP_SETUP_GUIDE.md` - App Store Connect / Play Console IAP setup
+- `frontend/BACKEND_DELETE_ACCOUNT_API.md` - Backend developer instructions for delete account API
+- `frontend/APP_PRIVACY_LABELS_GUIDE.md` - Step-by-step App Privacy Labels guide (Almanca arayüz)
+
+## Backlog
 - P2: ShazamKit integration (song recognition)
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth metadata (AVRCP) enhancement
@@ -80,11 +95,12 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - P3: tvOS and Android TV apps
 - P3: Premium feature images (1024x1024) for App Store/Play Console
 
-## Tech Stack
-- React Native (Expo Bare Workflow)
-- Expo Router (file-based routing)
-- Zustand (state management)
-- react-native-track-player
-- react-native-iap@14.7.19
-- Google AdMob
-- patch-package for react-native-carplay fixes
+## Backend Developer Action Required
+- **DELETE /api/user/delete-account** endpoint must be implemented on themegaradio.com
+- See `BACKEND_DELETE_ACCOUNT_API.md` for full specification
+- Without this endpoint, Apple will REJECT the app
+
+## Test Account for Apple Review
+- Email: review@themegaradio.com
+- Password: MegaReview2026!
+- Must be created on production backend

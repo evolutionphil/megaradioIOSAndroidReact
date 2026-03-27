@@ -14,6 +14,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { usePremiumStore } from '../store/premiumStore';
 import { useTranslation } from 'react-i18next';
 
@@ -58,6 +59,7 @@ type PricingOption = 'monthly' | 'yearly' | 'lifetime';
 
 export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose, mode = 'premium' }) => {
   const { t } = useTranslation();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const [selectedPlan, setSelectedPlan] = useState<PricingOption>('yearly');
   const [isLoading, setIsLoading] = useState(false);
@@ -226,7 +228,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
               <TouchableOpacity onPress={handleRestore}>
                 <Text style={styles.footerLink}>{t('already_paid', 'Already paid?')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { onClose(); router.push('/static-page?type=terms'); }}>
                 <Text style={styles.footerLink}>{t('terms_conditions', 'Terms & Conditions')}</Text>
               </TouchableOpacity>
             </View>
@@ -362,7 +364,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
             <TouchableOpacity onPress={handleRestore}>
               <Text style={styles.footerLink}>{t('already_paid', 'Already paid?')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { onClose(); router.push('/static-page?type=terms'); }}>
               <Text style={styles.footerLink}>{t('terms_conditions', 'Terms & Conditions')}</Text>
             </TouchableOpacity>
           </View>
