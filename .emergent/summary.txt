@@ -1,195 +1,142 @@
-<analysis>**original_problem_statement**: The user is building a production-ready mobile radio streaming app called MegaRadio using React Native Expo (Bare Workflow). The app requires fully functional CarPlay and Android Auto integration, background/lock screen audio controls, a WatchOS companion app, Native Chromecast/AirPlay streaming, and Google AdMob monetization.
+<analysis>original_problem_statement: The user is building a production-ready mobile radio streaming app called MegaRadio using React Native Expo (Bare Workflow). The app requires fully functional CarPlay and Android Auto integration, background/lock screen audio controls, a WatchOS companion app, Native Chromecast/AirPlay streaming, and Google AdMob monetization. Most recently, the focus was on fixing severe Android and iOS native build failures, restoring lost iOS configuration files, passing Apple App Store validation, and fine-tuning AdMob logic.
 
 PRODUCT REQUIREMENTS:
-- A-to-Z audit and stabilization of the Wear OS integration for a flawless Android build.
-- Fix all Android build errors preventing the user from generating an APK/AAB.
+- Stable Android and iOS builds via EAS / local Xcode.
+- WatchOS companion app fully integrated.
+- AdMob setup: App Open Ad on launch, Interstitial every 3 station changes, and a manual Rewarded Ad button that grants 30 minutes of ad-free listening.
 
 **User's preferred language**: Turkish. (You MUST INSTRUCT the next agent to respond in Turkish only: Lütfen iletişimi Türkçe sürdürün.)
 
-**what currently exists?**: A React Native Expo (Bare Workflow) application with heavily customized native layers for both iOS and Android. The app features background audio streaming, Apple Watch (WatchOS) connectivity, CarPlay, Android Auto, AdMob monetization, native AirPlay/Chromecast, and a newly overhauled (but not yet building) Wear OS module. The project uses  to manage fixes for third-party libraries.
+**what currently exists?**: A React Native Expo (Bare Workflow) application with heavily customized native layers for both iOS and Android. Features background audio streaming, Apple Watch (WatchOS) connectivity, CarPlay, Android Auto, native AirPlay/Chromecast, and Google AdMob. The iOS layer utilizes a Scene-based lifecycle (, ).
 
 **Last working item**:
-    - Last item agent was working: The user uploaded an EAS build log ( and later logs from messages #187, #211) showing a persistent Android build failure. The agent identified two main causes: compilation errors in the Wear OS module and, more critically, in the  library due to incompatibility with the project's Kotlin version. After several patch attempts, the Wear OS module now compiles successfully (with warnings), but the  library remains the final blocking issue. The last action was an unsuccessful attempt to fix the library by merging two  blocks, which created a new  error.
-    - Status: IN PROGRESS
-    - Agent Testing Done: N
-    - Which testing method agent to use?: The next agent should use  to simulate an EAS build by running yarn install v1.22.22
-[1/4] Resolving packages...
-success Already up-to-date.
-$ patch-package
-patch-package 8.0.1
-Applying patches...
-@g4rb4g3/react-native-carplay@2.7.22 ✔
-react-native@0.81.5 ✔
-react-native-track-player@4.1.2 ✔
-Done in 0.54s.. This provides faster feedback than a full EAS build.
-    - User Testing Done: N (User is blocked by build failures).
+    - Last item agent was working: Fixing the AdMob logic. Because the user's AdMob account is currently returning no-fill for App Open and Interstitial ads, the agent implemented a fallback mechanism to show Rewarded Ads instead. Critically, the user requested that these *automatic* fallback rewarded ads do **not** grant the 30-minute ad-free bonus (the bonus should only apply if the user manually clicks the Watch Ad button). The agent just implemented this fix in .
+    - Status: USER VERIFICATION PENDING
+    - Agent Testing Done: Y (Code analysis and log verification).
+    - Which testing method agent to use?: NA (User needs to run the app on a physical device/TestFlight to verify AdMob behavior).
+    - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  Issue 1:  Android Build Failure in  (P0)
+  Issue 1: Verify AdMob Fallback Logic (P0)
   
   Issues Detail:
   - Issue 1: 
-     - **Description**: The EAS build is failing during the  task. The user is completely blocked from building the Android app. The latest error log (message #211) shows  and  errors, even after the agent attempted a fix.
-     - **Attempted fixes**: 
-        - The agent correctly identified that there were two  blocks in  and attempted to merge them.
-        - This merge was faulty, as it removed the definition for the  constant, leading to the  error.
-     - **Next debug checklist**:
-        1. View the patch file: .
-        2. View the source file to be patched: .
-        3. Identify the faulty merge of the .
-        4. Correct the code by ensuring there is only **one**  and that it contains all necessary properties from both original blocks, especially .
-        5. Re-run patch-package 8.0.1
-• Creating temporary folder
-• Installing @g4rb4g3/react-native-carplay@2.7.22 with yarn
-• Diffing your files with clean files
-✔ Created file patches/@g4rb4g3+react-native-carplay+2.7.22.patch
-
-💡 @g4rb4g3/react-native-carplay is on GitHub! To draft an issue based on your patch run
-
-    yarn patch-package @g4rb4g3/react-native-carplay --create-issue to create an updated, correct patch file.
-        6. After patching, verify the fix by attempting to build.
-     - **Why fix this issue and what will be achieved with the fix?**: This is a critical blocker. Fixing it will allow the user to successfully build the Android application with all its features, including Wear OS and Android Auto.
-     - Status:  IN PROGRESS
-     - Is recurring issue? Y
-     - Should Test frontend/backend/both after fix?: backend (Android Native Build)
+     - Attempted fixes: Modified  and  in  to fall back to  if interstitial/app-open fails. Updated the callback so that  is only called if explicitly requested, not during automatic fallbacks.
+     - Next debug checklist: Await user feedback. If ads still do not show or if the 30-minute ad-free timer is still being triggered automatically, check the   parameters and  ad hooks.
+     - Why fix this issue and what will be achieved with the fix?: Ensures the user can monetize the app even when standard interstitials have no fill-rate, without accidentally giving away ad-free premium time for free.
+     - Status: USER VERIFICATION PENDING
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix?: frontend
      - Blocked on other issue: None
 
 **In progress Task List**:
-  - Task 1: Complete the Wear OS A-Z Audit.
-     - **Where to resume**: The code implementation is complete, and the Wear OS module itself () now compiles successfully. The task is blocked by the  build error. Once that is fixed, this task can be considered complete, pending user verification.
-     - **What will be achieved with this?**: A fully integrated and buildable Wear OS companion app.
-     - **Status**: BLOCKED
-     - **Blocked on something**: Issue 1: Android Build Failure in .
+  None. All requested immediate tasks and build fixes were completed.
 
 **Upcoming and Future Tasks**
-  Future Tasks:
-  - P2: Investigate and implement ShazamKit for song recognition.
-  - P2: Add an Equalizer (EQ) with presets.
-  - P2: Enhance Bluetooth metadata support (AVRCP).
-  - P3: Implement a station alarm feature.
-  - P3: Build and integrate apps for tvOS and Android TV.
+    Future Tasks:
+    - P2: Investigate and implement ShazamKit for song recognition.
+    - P2: Add an Equalizer (EQ) with presets.
+    - P2: Enhance Bluetooth metadata support (AVRCP).
+    - P3: Implement a station alarm feature.
+    - P3: Build and integrate apps for tvOS and Android TV.
 
 **Completed work in this session**
-- **CarPlay CPNowPlayingTemplate Enhancement**: Successfully implemented Add to Favorites and Up Next buttons on the CarPlay Now Playing screen by modifying  and .
-- **Full Wear OS Integration Overhaul**: Architected and implemented a complete, production-ready Wear OS integration from scratch. This involved creating 17 new/modified native Kotlin files for both the watch and phone to establish a robust Data Layer communication channel, and integrating it into the main RN .
-- **Android Build System Hardening**:
-  - Fixed  to ensure Expo autolinking works alongside the new  module.
-  - Updated the root  and the  module's  to use the correct Kotlin Compose Compiler plugin, making it compatible with EAS build environments (Kotlin 2.0+).
-  - Created a patch for  to resolve multiple Kotlin compatibility issues (though the final version of the patch is still buggy).
+- Android Build Fix: Fixed  mismatch for the WearOS module ( -> ) resolving the  fatal error (DONE).
+- iOS  Patch: Rewrote the  patch to support iOS static frameworks () and fixed Android Kotlin companion object duplication (DONE).
+- Massive iOS File Recovery: Discovered a previous agent had completely wiped out custom iOS files (, , , etc.). Successfully restored the March 21st baseline, recovering 10+ Swift files, a 257-line , and proper Scene-based lifecycle configurations (DONE).
+- iOS Build Fix: Fixed  for React Native 0.81.5 by injecting  into the Podfile (DONE).
+- App Store Validation Fix: Removed  from  (via plugins and Info.plist) to pass Apple review without MFi certification (DONE).
+- TestFlight Crash Fix: Resolved a startup crash caused by missing  in  (DONE).
+- Splash Screen UI Fix: Restored the missing logo image view and dark background color to  (DONE).
+- AdMob Logic Refactor: Implemented App Open ads on launch, Interstitials every 3 station changes, and added Rewarded Ad fallbacks for no-fill scenarios (DONE).
 
 **Earlier issues found/mentioned but not fixed**
-   - Issue 1: The build log for Wear OS ( task) shows multiple warnings for  in . While not fatal, this indicates potential runtime data parsing issues between the phone and watch.
-   - Issue 2: Deprecated icon usage ( should be used) warnings in  for Wear OS. These should be cleaned up.
+   - Issue 1: Apple Validation Warnings about missing dSYM files for , , and .
+   - Debug checklist: N/A
+   - Why to solve this issue and what will be achieved with this?: These are prebuilt frameworks; missing dSYMs simply means stack traces for these specific internal frameworks will be obfuscated. It does not block App Store submission or app execution. User was advised to ignore.
+   - Should Test frontend/backend/both after fix: NA
+   - Is recurring issue? Y
 
 **Known issue recurrence from previous fork**
-  - **Issue recurrence in this fork**: Android Native Build Failure.
-  - **Recurrence count**: 5+ attempts (local and EAS) with evolving error messages.
-  - **Status**: IN PROGRESS.
+  - Issue recurrence in previous fork: Destruction of custom iOS native files (, ).
+  - Recurrence count: 1 (Discovered during this session).
+  - Status: RESOLVED
+  - Note: A previous AI agent overwrote the  and shrunk the  from 257 lines to 50 lines, breaking AdMob, CarPlay, and bridging. **Do NOT use automated file overwrites or Expo prebuild commands on the  directory.** Treat the iOS native code as a highly fragile, custom environment.
 
 **Code Architecture**
 - Frontend: React Native (Expo Bare Workflow)
 - State Management: Zustand (, , )
-- **iOS Native**: Custom Swift modules (, , )
-- **Android Native**: 
-    - Custom Kotlin modules for Android Auto, now supplemented with a full Wear OS data layer (, ).
-    - A dedicated Wear OS app module at .
-- **WatchOS**: Native Swift App communicating via .
-- **Background Audio**:  ().
-- **Build Patching**:  is used to apply fixes to  on yarn install v1.22.22
-[1/4] Resolving packages...
-success Already up-to-date.
-$ patch-package
-patch-package 8.0.1
-Applying patches...
-@g4rb4g3/react-native-carplay@2.7.22 ✔
-react-native@0.81.5 ✔
-react-native-track-player@4.1.2 ✔
-Done in 0.55s..
+- iOS Native: Custom Swift modules utilizing a Scene-based lifecycle (, , , , )
+- Android Native: Custom Kotlin modules (), and a dedicated Wear OS app module at .
+- WatchOS: Native Swift App communicating via  (Requires manual Xcode setup by the user).
 
 **Key Technical Concepts**
-- Native Google Cast integration () & AirPlay ().
-- Android Auto  and .
-- WatchOS  message handling.
-- **Wear OS Data Layer API**: Using  and  for phone-watch communication.
-- **Gradle Multi-Module Builds**:  configured to  and the  uses  to embed the watch app.
-- ****: Used to apply custom fixes to third-party dependencies like .
+- Native Google Cast & AirPlay.
+- Scene-based iOS application lifecycle (React Native is booted in , NOT ).
+- Android multi-module ().
+-  used heavily to fix .
 
 **key DB schema**
-  - Handled via backend API endpoints. Entities include , , .
+  - N/A (Handled via backend API).
 
 **changes in tech stack**
-- No new libraries added, but significant modifications to the native Android build configuration (Gradle files) to support a multi-module Wear OS project and Kotlin 2.0+.
+  - Configured  combined with  in the Podfile to support RN 0.81.5 with static frameworks.
 
 **All files of reference**
-- **Build Failure/Patching**:
-  -  (NEEDS FIXING)
-  -  (File to be patched)
-- **Gradle Configuration**:
-  - 
-  - 
-  - 
-  - 
-- **Wear OS Implementation (Key files)**:
-  - 
-  - 
-  - 
-  - 
-  - 
+-  (Core AdMob logic, contains the newly implemented fallback mechanisms).
+-  (Handles triggering ads on station change and app launch).
+-  (Contains the modular header build fix).
+-  (Critically restored file containing all permissions, SKAdNetworks, and AdMob IDs).
+-  (Bridging setup for CarPlay and React).
 
 **Areas that need refactoring**:
-- The reliance on  for  is fragile. The user's request to check it with the architect suggests they are losing patience with repeated build failures. A more stable, long-term solution should be considered after the immediate fix, such as forking the library.
-- The warnings in  should be addressed to prevent potential runtime errors with data synchronization.
+- AdMob Fallback Strategy: Relying on Rewarded Ads as a fallback for standard interstitials is a temporary workaround for AdMob's no-fill errors on new apps. Once the app scales and AdMob provides fill inventory, this fallback logic should be reviewed to ensure UX isn't degraded by forcing video ads.
 
 **key api endpoints**
-- 
 - 
 - 
 
 **Critical Info for New Agent**
 - **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN.** (Always reply to the user in Turkish).
-- **CRITICAL BLOCKER**: The Android build is failing. Your top priority is to fix the patch for . Do not proceed with any other task until the user can successfully build the app on EAS.
-- **GIT CLONE MEMORY**: If the user asks git clone nasıldı, you MUST output the exact command block from the previous handoff.
-- The user is now using **EAS Build**. Focus on fixes that work in that environment. Local build issues (, gradle cache) were part of the debugging journey but are not the current problem.
-- The user's tone (check it with the architect) implies a need for a confident, definitive solution, not more trial and error. Explain the root cause (faulty patch) and the fix clearly.
+- **iOS NATIVE FILES ARE FRAGILE**: If making any changes to iOS, use . Do NOT completely rewrite , , or . 
+- **WatchOS Target**: The WatchOS target is NOT tracked fully in  because the user manually creates the target in Xcode and drops the files in. Do not attempt to fix  missing WatchOS references.
 
 **documents and test reports created in this job**
--  (CarPlay NowPlayingTemplate Static Analysis)
--  (Wear OS A-to-Z Static Analysis)
--  (Created and updated multiple times, still buggy)
+-  (iOS Native Audit)
+-  (Production Readiness Audit)
+-  (iOS 21st March Baseline Sync Audit)
+- 
 
 **Last 10 User Messages and any pending HUMAN messages** 
-- User requested an A-Z check of Wear OS for an upcoming Android build.
-- User reported a local build failure ().
-- Agent provided instructions to create .
-- User reported another local build failure ( tag mismatch).
-- Agent suggested cleaning the Gradle cache.
-- User asked if EAS build would work for CarPlay and Wear OS.
-- Agent confirmed EAS would work but identified and fixed a Kotlin Compose Compiler incompatibility.
-- User initiated an EAS build, which failed due to errors in  and  modules.
-- Agent fixed Wear OS icon imports and created a patch for .
-- User initiated another EAS build; the  module compiled, but  failed again with a new error ().
-- User asked for their git clone token command again.
-- **Pending**: User uploaded a build log () and asked the agent to check it with the architect, expressing frustration with the recurring build issues.
+- User reported  error.
+- Agent fixed it via Podfile.
+- User reported a white splash screen and that Ads were showing incorrectly.
+- Agent fixed .
+- User uploaded logs showing AdMob  errors for App Open and Interstitial ads.
+- Agent implemented a fallback to Rewarded Ads.
+- User asked if closing an interstitial early drops revenue.
+- Agent explained AdMob revenue mechanics and suggested the rewarded fallback.
+- User agreed but explicitly requested: Do not give the 30-minute ad-free bonus when the ad shows automatically. Only give it if the user clicks the button.
+- **Pending**: Agent implemented this final request. Awaiting user verification that the ads work as intended without giving away free time.
 
 **Project Health Check:**
-- **Broken**: Android build is failing. This is a critical blocker.
-- **Mocked**: None.
+- Broken: None.
+- Mocked: None.
 
 **3rd Party Integrations**
-- Google AdMob (Ads)
+- Google AdMob (Ads) - User Key
 - React Native Track Player
 - React Native CarPlay ()
 - React Native Google Cast
-- React AirPlay
 
 **Testing status**
-  - Testing agent used after significant changes: YES (For static analysis of CarPlay and Wear OS features)
+  - Testing agent used after significant changes: YES (Iterations 39, 40, 41 used for deep iOS codebase audits).
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: None
-  - Known regressions: The Android build, which was working in a previous session, is now failing due to library incompatibilities introduced by new features and version updates.
+  - Known regressions: None currently. A massive iOS regression from a prior session was resolved here.
 
 **Credentials to test flow:**
 N/A
 
 **What agent forgot to execute**
-The agent's last attempt to patch  was flawed. It correctly identified the presence of two  blocks but, in merging them, it failed to retain the  constant, causing the subsequent build to fail with an Unresolved reference error. The fix was incomplete.</analysis>
+Nothing. The agent accurately followed the final prompt to strip the automatic ad-free reward from the fallback ads.</analysis>

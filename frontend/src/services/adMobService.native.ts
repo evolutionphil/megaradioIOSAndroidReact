@@ -276,8 +276,8 @@ class AdMobService {
         await this.rewardedAd.show();
         console.log('[AdMob] Rewarded ad shown as fallback for app open');
         this.isRewardedLoaded = false;
-        // Grant ad-free time as reward
-        await this.grantAdFreeTime(30);
+        // Do NOT grant ad-free time for auto-shown ads
+        // Only manual "watch ad" button grants ad-free time
         this.loadRewardedAd();
         return true;
       } catch (error) {

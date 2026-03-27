@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 # Backend URLs
 MEGARADIO_API = "https://themegaradio.com"
-LOCAL_BACKEND = os.environ.get('EXPO_PUBLIC_BACKEND_URL', 'https://carplay-android-1.preview.emergentagent.com').rstrip('/')
+LOCAL_BACKEND = os.environ.get('EXPO_PUBLIC_BACKEND_URL', 'https://radio-ads-test.preview.emergentagent.com').rstrip('/')
 
 # Test stations
 ENERGY_NRJ_WIEN = {
