@@ -1,38 +1,65 @@
-<analysis>original_problem_statement: The user is building a production-ready mobile radio streaming app called MegaRadio using React Native Expo (Bare Workflow). The app requires fully functional CarPlay and Android Auto integration, background/lock screen audio controls, a WatchOS companion app, Native Chromecast/AirPlay streaming, and Google AdMob monetization. Most recently, the focus was on fixing severe Android and iOS native build failures, restoring lost iOS configuration files, passing Apple App Store validation, and fine-tuning AdMob logic.
+<analysis>original_problem_statement: The user initially reported bugs with the AdMob implementation: automatic fallback ads were erroneously granting a 30-minute ad-free bonus, the first station play was triggering double ads, and ads were showing too frequently (every 3 station changes). The scope then heavily pivoted towards implementing a full **In-App Purchase (IAP) Premium Strategy**.
 
 PRODUCT REQUIREMENTS:
-- Stable Android and iOS builds via EAS / local Xcode.
-- WatchOS companion app fully integrated.
-- AdMob setup: App Open Ad on launch, Interstitial every 3 station changes, and a manual Rewarded Ad button that grants 30 minutes of ad-free listening.
+- Fix AdMob bugs so 30-min ad-free time is *only* granted via manual button clicks.
+- Change interstitial ad frequency from 3 to 5 station changes.
+- Implement a 2-Tier Premium System:
+  1. Remove Ads (€5.99/year)
+  2. Premium (€3.99/mo, €29.99/yr, €59.99/lifetime) which includes Remove Ads, Song History, Now Playing Metadata, Spotify/YouTube deep links, and HD Streaming.
+- Fully integrate  for both Apple StoreKit 2 and Google Play Billing.
+- Generate necessary App Store Connect/Play Console meta-data and feature images.
 
 **User's preferred language**: Turkish. (You MUST INSTRUCT the next agent to respond in Turkish only: Lütfen iletişimi Türkçe sürdürün.)
 
-**what currently exists?**: A React Native Expo (Bare Workflow) application with heavily customized native layers for both iOS and Android. Features background audio streaming, Apple Watch (WatchOS) connectivity, CarPlay, Android Auto, native AirPlay/Chromecast, and Google AdMob. The iOS layer utilizes a Scene-based lifecycle (, ).
+**what currently exists?**: A React Native Expo (Bare Workflow) app with fully functional AdMob (fixed during this session) and a newly integrated  setup. The app now includes Zustand stores for  and . The Premium Paywall UI and Song History screens have been built and linked to the Profile screen. iOS  and Android  have been configured for billing.
 
 **Last working item**:
-    - Last item agent was working: Fixing the AdMob logic. Because the user's AdMob account is currently returning no-fill for App Open and Interstitial ads, the agent implemented a fallback mechanism to show Rewarded Ads instead. Critically, the user requested that these *automatic* fallback rewarded ads do **not** grant the 30-minute ad-free bonus (the bonus should only apply if the user manually clicks the Watch Ad button). The agent just implemented this fix in .
+    - Last item agent was working: Generating 1024x1024 custom icons/images for the premium features (Remove Ads, HD Stream, Song Info, etc.) as requested by the user. The emergent  failed due to API quota limits, so the agent fell back to searching for stock images via .
     - Status: USER VERIFICATION PENDING
-    - Agent Testing Done: Y (Code analysis and log verification).
-    - Which testing method agent to use?: NA (User needs to run the app on a physical device/TestFlight to verify AdMob behavior).
+    - Agent Testing Done: Y (App compiles, but image generation failed).
+    - Which testing method agent to use?: NA
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  Issue 1: Verify AdMob Fallback Logic (P0)
-  
-  Issues Detail:
-  - Issue 1: 
-     - Attempted fixes: Modified  and  in  to fall back to  if interstitial/app-open fails. Updated the callback so that  is only called if explicitly requested, not during automatic fallbacks.
-     - Next debug checklist: Await user feedback. If ads still do not show or if the 30-minute ad-free timer is still being triggered automatically, check the   parameters and  ad hooks.
-     - Why fix this issue and what will be achieved with the fix?: Ensures the user can monetize the app even when standard interstitials have no fill-rate, without accidentally giving away ad-free premium time for free.
-     - Status: USER VERIFICATION PENDING
+  Issue 1: Implement Premium Feature Gating in Player UI (P0)
+     - Attempted fixes: The underlying IAP infrastructure, , and Paywall UI are built. However, the actual gating logic inside  has not been implemented yet.
+     - Next debug checklist: Modify  to check . If false, blur/hide the Now Playing metadata. If true, display the metadata and add Deep Link buttons to Spotify () and YouTube.
+     - Why fix this issue and what will be achieved with the fix?: This is the core hero feature of the Premium subscription that the user explicitly approved. 
+     - Status: NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix?: frontend
+     - Blocked on other issue: None
+
+  Issue 2: Lock Screen Next/Prev bypasses AdMob counter (P1)
+     - Attempted fixes: Investigated during the session. Found that  (TrackPlayer background service) triggers  directly, bypassing .
+     - Next debug checklist:  runs in an isolated context. Need to find a way to emit an event from  to  or directly increment the  station count when next/prev is pressed on the lock screen/control center.
+     - Why fix this issue and what will be achieved with the fix?: Ensures users cannot bypass the 5-station ad threshold simply by skipping stations via their lock screen.
+     - Status: NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix?: frontend
+     - Blocked on other issue: None
+
+  Issue 3: HD Stream Quality Gating (P2)
+     - Attempted fixes: None yet.
+     - Next debug checklist: In , dynamically select between the 128kbps stream URL and the 320kbps stream URL based on  status.
+     - Why fix this issue and what will be achieved with the fix?: Fulfills the HD Stream promise of the Premium package.
+     - Status: NOT STARTED
      - Is recurring issue? N
      - Should Test frontend/backend/both after fix?: frontend
      - Blocked on other issue: None
 
 **In progress Task List**:
-  None. All requested immediate tasks and build fixes were completed.
+  Task 1: Generate Premium Feature Images (1024x1024)
+     - Where to resume: The image generation tool failed due to quota (PredictRequestsPerDayPerProjectPerModelPaidTier3). Wait for quota reset or ask the user if they accept the stock Unsplash/Pexels images provided in the last interaction.
+     - What will be achieved with this?: Provides the user with the necessary graphics for their App Store Connect / Google Play Console IAP setup.
+     - Status: BLOCKED (API Quota)
+     - Should Test frontend/backend/both after fix?: NA
+     - Blocked on something: Emergent LLM Image Generation Quota.
 
 **Upcoming and Future Tasks**
+    Upcoming Tasks:
+    - P0: Implement the Premium Gating UI in  (Blur text, Spotify/YT buttons).
+    - P1: Implement HD Stream URL selection in .
     Future Tasks:
     - P2: Investigate and implement ShazamKit for song recognition.
     - P2: Add an Equalizer (EQ) with presets.
@@ -41,102 +68,108 @@ PRODUCT REQUIREMENTS:
     - P3: Build and integrate apps for tvOS and Android TV.
 
 **Completed work in this session**
-- Android Build Fix: Fixed  mismatch for the WearOS module ( -> ) resolving the  fatal error (DONE).
-- iOS  Patch: Rewrote the  patch to support iOS static frameworks () and fixed Android Kotlin companion object duplication (DONE).
-- Massive iOS File Recovery: Discovered a previous agent had completely wiped out custom iOS files (, , , etc.). Successfully restored the March 21st baseline, recovering 10+ Swift files, a 257-line , and proper Scene-based lifecycle configurations (DONE).
-- iOS Build Fix: Fixed  for React Native 0.81.5 by injecting  into the Podfile (DONE).
-- App Store Validation Fix: Removed  from  (via plugins and Info.plist) to pass Apple review without MFi certification (DONE).
-- TestFlight Crash Fix: Resolved a startup crash caused by missing  in  (DONE).
-- Splash Screen UI Fix: Restored the missing logo image view and dark background color to  (DONE).
-- AdMob Logic Refactor: Implemented App Open ads on launch, Interstitials every 3 station changes, and added Rewarded Ad fallbacks for no-fill scenarios (DONE).
+- Fixed  so automatic fallback ads no longer grant 30-min ad-free rewards (DONE).
+- Fixed double-ad issue on initial app launch in  (DONE).
+- Increased AdMob interstitial frequency from 3 to 5 (DONE).
+- Created  and  (DONE).
+- Created  and  (DONE).
+- Rewrote the Profile screen to replace the standard Watch Ad button with full Premium Tier navigation (DONE).
+- Installed  and configured iOS Entitlements and Android Manifest (DONE).
+- Created a robust  compatible with  v14 API (DONE).
+- Updated  to automatically push track metadata to the  (DONE).
+- Created  for the user (DONE).
+- Generated 55-character App Store metadata text for 4 IAP tiers (DONE).
 
 **Earlier issues found/mentioned but not fixed**
-   - Issue 1: Apple Validation Warnings about missing dSYM files for , , and .
-   - Debug checklist: N/A
-   - Why to solve this issue and what will be achieved with this?: These are prebuilt frameworks; missing dSYMs simply means stack traces for these specific internal frameworks will be obfuscated. It does not block App Store submission or app execution. User was advised to ignore.
-   - Should Test frontend/backend/both after fix: NA
-   - Is recurring issue? Y
+   - Issue 1: Lock screen next/previous buttons do not increment the AdMob counter.
+   - Debug checklist: Check  and bridge the event to .
+   - Why to solve this issue and what will be achieved with this?: Prevents users from exploiting lock-screen controls to avoid ads.
+   - Should Test frontend/backend/both after fix: frontend
+   - Is recurring issue? N
 
 **Known issue recurrence from previous fork**
-  - Issue recurrence in previous fork: Destruction of custom iOS native files (, ).
-  - Recurrence count: 1 (Discovered during this session).
+  - Issue recurrence in previous fork: iOS Native file corruption.
+  - Recurrence count: 0 (in this session), but keep in mind.
   - Status: RESOLVED
-  - Note: A previous AI agent overwrote the  and shrunk the  from 257 lines to 50 lines, breaking AdMob, CarPlay, and bridging. **Do NOT use automated file overwrites or Expo prebuild commands on the  directory.** Treat the iOS native code as a highly fragile, custom environment.
+  - Note: Treat iOS native files (, ) with extreme care.  was successfully added to Entitlements via  without issue.
 
 **Code Architecture**
 - Frontend: React Native (Expo Bare Workflow)
-- State Management: Zustand (, , )
-- iOS Native: Custom Swift modules utilizing a Scene-based lifecycle (, , , , )
-- Android Native: Custom Kotlin modules (), and a dedicated Wear OS app module at .
-- WatchOS: Native Swift App communicating via  (Requires manual Xcode setup by the user).
+- State Management: Zustand (, , , , )
+- Monetization: Google AdMob () + IAP ( wrapping )
+- Background Audio:  (logic in  and )
+- iOS Native: Scene-based lifecycle.
+- Android Native: Custom WearOS modules.
 
 **Key Technical Concepts**
-- Native Google Cast & AirPlay.
-- Scene-based iOS application lifecycle (React Native is booted in , NOT ).
-- Android multi-module ().
--  used heavily to fix .
+- **In-App Purchases (v14 API)**:  v14 has a strictly defined API where  and  take objects (e.g., ). Do not use deprecated v12/v8 API signatures.
+- **StoreKit 2 / Google Play Billing**: Integrated via IAP package. Handled dynamically based on OS.
+- **Background Audio Context**:  runs in a separate headless JS context. It does not share memory perfectly with the React component tree (which is why lock-screen Next/Prev currently bypasses AdMob counters).
 
 **key DB schema**
-  - N/A (Handled via backend API).
+  - N/A
 
 **changes in tech stack**
-  - Configured  combined with  in the Podfile to support RN 0.81.5 with static frameworks.
+  - Installed  for StoreKit 2 and Google Play Billing support.
+  - Added  to .
+  - Added  to .
 
 **All files of reference**
--  (Core AdMob logic, contains the newly implemented fallback mechanisms).
--  (Handles triggering ads on station change and app launch).
--  (Contains the modular header build fix).
--  (Critically restored file containing all permissions, SKAdNetworks, and AdMob IDs).
--  (Bridging setup for CarPlay and React).
+-  (Core IAP logic, handles purchases).
+-  (The UI for subscriptions/purchases).
+-  (Zustand store tracking if user is Premium/Ad-Free).
+-  (Zustand store for historical played tracks).
+-  (Pushes metadata to song history; needs update for HD stream gate).
+-  (Needs update to gate Now Playing UI).
+-  (TrackPlayer background task; needs update to trigger ad counter).
 
 **Areas that need refactoring**:
-- AdMob Fallback Strategy: Relying on Rewarded Ads as a fallback for standard interstitials is a temporary workaround for AdMob's no-fill errors on new apps. Once the app scales and AdMob provides fill inventory, this fallback logic should be reviewed to ensure UX isn't degraded by forcing video ads.
+-  isolation: It needs a communication bridge to  so that background lock-screen track skipping correctly triggers interstitial ads.
 
 **key api endpoints**
-- 
-- 
+- N/A
 
 **Critical Info for New Agent**
 - **İLETİŞİMİ TÜRKÇE SÜRDÜRÜN.** (Always reply to the user in Turkish).
-- **iOS NATIVE FILES ARE FRAGILE**: If making any changes to iOS, use . Do NOT completely rewrite , , or . 
-- **WatchOS Target**: The WatchOS target is NOT tracked fully in  because the user manually creates the target in Xcode and drops the files in. Do not attempt to fix  missing WatchOS references.
+- The user has already approved a 2-Tier monetization strategy. Tier 1 is Remove Ads. Tier 2 is Premium (which includes UI features like seeing the song name, Spotify/YT deep links, and HD streaming).
+- The *infrastructure* for Premium is built (IAP, Paywalls, Stores), but the *gating logic* in the Player UI is NOT YET BUILT. Your absolute first priority should be modifying  to blur out the Now Playing text for free users and add the Spotify/YT buttons for Premium users.
+-  is on version . If you need to write code for it, remember that its API has changed significantly from older versions (refer to  for the correct implementation patterns).
 
 **documents and test reports created in this job**
--  (iOS Native Audit)
--  (Production Readiness Audit)
--  (iOS 21st March Baseline Sync Audit)
-- 
+-  (Updated with Premium feature sets)
+-  (Created to help the user configure App Store Connect)
 
 **Last 10 User Messages and any pending HUMAN messages** 
-- User reported  error.
-- Agent fixed it via Podfile.
-- User reported a white splash screen and that Ads were showing incorrectly.
-- Agent fixed .
-- User uploaded logs showing AdMob  errors for App Open and Interstitial ads.
-- Agent implemented a fallback to Rewarded Ads.
-- User asked if closing an interstitial early drops revenue.
-- Agent explained AdMob revenue mechanics and suggested the rewarded fallback.
-- User agreed but explicitly requested: Do not give the 30-minute ad-free bonus when the ad shows automatically. Only give it if the user clicks the button.
-- **Pending**: Agent implemented this final request. Awaiting user verification that the ads work as intended without giving away free time.
+- User: Noticed ads were triggering 2 times on launch and too often.
+- Agent: Fixed AdMob logic. Suggested 5 station changes instead of 3. Suggested adding an IAP.
+- User: Agreed, provided screenshots of designer's paywalls, asked for advice.
+- Agent: Suggested a 2-tier strategy. Withholding Song Info as a premium feature.
+- User: Approved, told agent to proceed and to add a Song History page.
+- Agent: Built PremiumStore, SongHistoryStore, updated Profile UI, added Paywall UI.
+- User: Asked agent to integrate all payment gateways for iOS and Android.
+- Agent: Installed , configured native files, wrote .
+- User: Provided specific product IDs, prices, and asked for 55-char descriptions and 1024x1024 generated images for the features.
+- Agent: Provided text descriptions. Attempted to generate images, but the image generator hit quota limits. (Pending: The user will likely ask where the custom images are, or you will need to re-attempt generation if quota allows).
 
 **Project Health Check:**
-- Broken: None.
-- Mocked: None.
+- Broken: None. 
+- Mocked: IAP flows require a physical device and sandbox tester accounts to truly verify.
 
 **3rd Party Integrations**
 - Google AdMob (Ads) - User Key
+- react-native-iap (In-App Purchases)
 - React Native Track Player
 - React Native CarPlay ()
-- React Native Google Cast
 
 **Testing status**
-  - Testing agent used after significant changes: YES (Iterations 39, 40, 41 used for deep iOS codebase audits).
+  - Testing agent used after significant changes: NO (Testing agent was not invoked because changes required physical device IAP sandbox testing).
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: None
-  - Known regressions: None currently. A massive iOS regression from a prior session was resolved here.
+  - Known regressions: None.
 
 **Credentials to test flow:**
 N/A
 
 **What agent forgot to execute**
-Nothing. The agent accurately followed the final prompt to strip the automatic ad-free reward from the fallback ads.</analysis>
+- The agent built the UI and the State for Premium but *did not implement the actual UI gating* inside .
+- The agent failed to generate the requested 1024x1024 images due to emergent quota limits and only provided stock image grid previews instead.</analysis>
