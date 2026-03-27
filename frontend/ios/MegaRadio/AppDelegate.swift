@@ -1,6 +1,16 @@
 import Expo
+// Google Cast DISABLED - causes Fabric crash on RN 0.81.5
+// @generated begin react-native-google-cast-import - expo prebuild (DO NOT MODIFY) sync-4cd300bca26a1d1fcc83f4baf37b0e62afcc1867
+// #if canImport(GoogleCast) && os(iOS)
+// import GoogleCast
+// #endif
+// @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
+import CarPlay
+#if os(iOS)
+import WatchConnectivity
+#endif
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -8,24 +18,31 @@ public class AppDelegate: ExpoAppDelegate {
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
-  private var isRNReady = false
-
-  /// Check if React Native bridge is initialized and ready
-  @objc func isReactNativeReady() -> Bool {
-    return isRNReady
-  }
-
-  /// Initialize React Native from a scene (used for CarPlay cold-start)
-  @objc func initAppFromScene(connectionOptions: UIScene.ConnectionOptions?) {
-    guard !isRNReady else { return }
-    // React Native will be initialized via didFinishLaunchingWithOptions
-    // This is a no-op if already initialized
-  }
+  
+  // Flag to track if React Native has been initialized
+  private var isReactNativeInitialized = false
+  
+  #if os(iOS)
+  // WatchConnectivity session manager for Apple Watch companion app
+  private var wcSessionDelegate: WCSessionDelegateHandler?
+  #endif
 
   public override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+// @generated begin react-native-google-cast-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-878430aae4b1b32ad54e4b64ed01ca473a2a80a6
+// Google Cast DISABLED - causes Fabric crash on RN 0.81.5
+// This code block is intentionally commented out
+/*
+#if canImport(GoogleCast) && os(iOS)
+    let receiverAppID = kGCKDefaultMediaReceiverApplicationID
+    let criteria = GCKDiscoveryCriteria(applicationID: receiverAppID)
+    let options = GCKCastOptions(discoveryCriteria: criteria)
+    GCKCastContext.setSharedInstanceWith(options)
+#endif
+*/
+// @generated end react-native-google-cast-didFinishLaunchingWithOptions
     let delegate = ReactNativeDelegate()
     let factory = ExpoReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
@@ -34,16 +51,179 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-#if os(iOS) || os(tvOS)
-    window = UIWindow(frame: UIScreen.main.bounds)
+    // NOTE: Do NOT call startReactNative() here!
+    // With scene-based lifecycle (iOS 13+), the window and RN root view
+    // must be created by the scene delegate (PhoneSceneDelegate).
+    // Creating it here AND in the scene delegate causes:
+    // "Manually adding the rootViewController's view to the view hierarchy is no longer supported"
+    // CarPlay cold-start is handled by initAppFromScene() when CarPlay connects first.
+    
+    #if os(iOS) || os(tvOS)
+    // BACKGROUND REFRESH: Register background tasks BEFORE app finishes launching
+    print("[AppDelegate] Registering background tasks...")
+    BackgroundRefreshManager.shared.registerBackgroundTasks()
+    
+    // SILENT PUSH: Register for remote notifications (no user permission needed for silent)
+    print("[AppDelegate] Registering for remote notifications...")
+    SilentPushHandler.registerForRemoteNotifications()
+    #endif
+    
+    #if os(iOS)
+    // WATCHOS: Activate WatchConnectivity session
+    // This is REQUIRED for the Apple Watch companion app to detect the iPhone app
+    // Without this, Watch shows "Companion app is not installed" error
+    if WCSession.isSupported() {
+      print("[AppDelegate] WCSession is supported - activating...")
+      let session = WCSession.default
+      wcSessionDelegate = WCSessionDelegateHandler()
+      session.delegate = wcSessionDelegate
+      session.activate()
+      print("[AppDelegate] WCSession activated successfully")
+    } else {
+      print("[AppDelegate] WCSession is NOT supported on this device")
+    }
+    #endif
+
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+  
+  // MARK: - Background App Refresh
+  
+  /// Called when app enters background - schedule next refresh
+  public override func applicationDidEnterBackground(_ application: UIApplication) {
+    print("[AppDelegate] App entered background - scheduling background refresh")
+    BackgroundRefreshManager.shared.scheduleAppRefresh()
+    BackgroundRefreshManager.shared.scheduleProcessingTask()
+    super.applicationDidEnterBackground(application)
+  }
+  
+  /// Legacy background fetch handler (for iOS < 13 compatibility)
+  public override func application(
+    _ application: UIApplication,
+    performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+  ) {
+    print("[AppDelegate] Legacy background fetch triggered")
+    // Note: simulateBackgroundRefresh is only available in DEBUG builds
+    // In production, we schedule regular background tasks instead
+    #if DEBUG
+    BackgroundRefreshManager.shared.simulateBackgroundRefresh(completion: completionHandler)
+    #else
+    // In production, just schedule the next refresh and return
+    BackgroundRefreshManager.shared.scheduleAppRefresh()
+    completionHandler(.newData)
+    #endif
+  }
+  
+  // MARK: - Silent Push Notification Handler
+  
+  /// Handle silent push notifications (content-available: 1)
+  /// This is called when a silent push arrives to trigger background cache updates
+  public override func application(
+    _ application: UIApplication,
+    didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+  ) {
+    print("[AppDelegate] Remote notification received")
+    SilentPushHandler.shared.handleSilentPush(userInfo: userInfo, completion: completionHandler)
+  }
+  
+  /// Device token registration success
+  public override func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    SilentPushHandler.didRegisterForRemoteNotifications(deviceToken: deviceToken)
+  }
+  
+  /// Device token registration failure
+  public override func application(
+    _ application: UIApplication,
+    didFailToRegisterForRemoteNotificationsWithError error: Error
+  ) {
+    SilentPushHandler.didFailToRegisterForRemoteNotifications(error: error)
+  }
+  
+  // MARK: - React Native Bridge Initialization for Scene Lifecycle
+  
+  /// Initialize React Native bridge from any scene (Phone or CarPlay)
+  /// This ensures the JS runtime is available even when CarPlay connects first
+  @objc public func initAppFromScene(connectionOptions: UIScene.ConnectionOptions?) {
+    guard !isReactNativeInitialized else {
+      print("[AppDelegate] React Native already initialized, skipping")
+      return
+    }
+    
+    print("[AppDelegate] Initializing React Native from scene...")
+    
+    guard let factory = reactNativeFactory else {
+      print("[AppDelegate] ERROR: reactNativeFactory is nil")
+      return
+    }
+    
+    // Create a temporary window for React Native initialization
+    // This is needed because React Native needs a window to start
+    if window == nil {
+      window = UIWindow(frame: UIScreen.main.bounds)
+    }
+    
+    // Start React Native with the module name
     factory.startReactNative(
       withModuleName: "main",
       in: window,
-      launchOptions: launchOptions)
-#endif
-
-    isRNReady = true
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+      launchOptions: nil
+    )
+    
+    isReactNativeInitialized = true
+    print("[AppDelegate] React Native initialized successfully from scene")
+  }
+  
+  /// Check if React Native is initialized
+  @objc public func isReactNativeReady() -> Bool {
+    return isReactNativeInitialized
+  }
+  
+  /// Mark React Native as initialized (called by PhoneSceneDelegate after startReactNative)
+  @objc public func markReactNativeInitialized() {
+    isReactNativeInitialized = true
+  }
+  
+  // MARK: - Scene Configuration (iOS 13+)
+  
+  /// Returns the scene configuration for connecting scene sessions
+  /// This is called when a new scene session is created (phone or CarPlay)
+  public func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    
+    // Check if this is a CarPlay session
+    if connectingSceneSession.role == .carTemplateApplication {
+      print("[AppDelegate] Configuring CarPlay scene")
+      let config = UISceneConfiguration(
+        name: "CarPlay",
+        sessionRole: connectingSceneSession.role
+      )
+      config.delegateClass = CarPlaySceneDelegate.self
+      return config
+    }
+    
+    // Default: Phone/iPad scene
+    print("[AppDelegate] Configuring Phone scene")
+    let config = UISceneConfiguration(
+      name: "Default Configuration",
+      sessionRole: connectingSceneSession.role
+    )
+    config.delegateClass = PhoneSceneDelegate.self
+    return config
+  }
+  
+  /// Called when a scene session is being discarded
+  public func application(
+    _ application: UIApplication,
+    didDiscardSceneSessions sceneSessions: Set<UISceneSession>
+  ) {
+    // Called when the user discards a scene session.
   }
 
   // Linking API
@@ -82,3 +262,53 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 #endif
   }
 }
+
+// MARK: - WatchConnectivity Session Delegate
+// Required for Apple Watch companion app to detect the iPhone app
+#if os(iOS)
+class WCSessionDelegateHandler: NSObject, WCSessionDelegate {
+  
+  func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    if let error = error {
+      print("[WCSession] Activation failed: \(error.localizedDescription)")
+    } else {
+      print("[WCSession] Activation completed. State: \(activationState.rawValue), isPaired: \(session.isPaired), isWatchAppInstalled: \(session.isWatchAppInstalled)")
+    }
+  }
+  
+  func sessionDidBecomeInactive(_ session: WCSession) {
+    print("[WCSession] Session became inactive")
+  }
+  
+  func sessionDidDeactivate(_ session: WCSession) {
+    print("[WCSession] Session deactivated - reactivating...")
+    // Re-activate for switching between Apple Watches
+    session.activate()
+  }
+  
+  // Handle messages from Watch app
+  func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+    print("[WCSession] Received message from Watch: \(message)")
+  }
+  
+  // Handle messages with reply handler
+  func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
+    print("[WCSession] Received message with reply from Watch: \(message)")
+    
+    // Handle common watch requests
+    if let action = message["action"] as? String {
+      switch action {
+      case "ping":
+        replyHandler(["status": "ok", "appName": "MegaRadio"])
+      case "getNowPlaying":
+        // TODO: Return current playing station info
+        replyHandler(["status": "ok", "playing": false])
+      default:
+        replyHandler(["status": "unknown_action"])
+      }
+    } else {
+      replyHandler(["status": "ok"])
+    }
+  }
+}
+#endif

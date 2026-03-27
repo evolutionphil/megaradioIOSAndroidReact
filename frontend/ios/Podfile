@@ -13,6 +13,15 @@ def ccache_enabled?(podfile_properties)
 end
 
 ENV['RCT_NEW_ARCH_ENABLED'] ||= '0' if podfile_properties['newArchEnabled'] == 'false'
+
+# ============================================================================
+# FIX FOR REACT NATIVE 0.81.5 CODEGEN BUG
+# Bug: RCTThirdPartyFabricComponentsProvider is generated even when newArchEnabled=false
+# This causes crash: "attempt to insert nil object from objects[0]"
+# Fix: Force disable via ENV variable (the $RCTFabricEnabled was INVALID)
+# ============================================================================
+ENV['RCT_NEW_ARCH_ENABLED'] = '0'  # Force disable (not ||=)
+
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] ||= podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 ENV['RCT_USE_RN_DEP'] ||= '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
 ENV['RCT_USE_PREBUILT_RNCORE'] ||= '1' if podfile_properties['ios.buildReactNativeFromSource'] != 'true' && podfile_properties['newArchEnabled'] != 'false'
@@ -50,6 +59,9 @@ target 'MegaRadio' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
+    # CRITICAL: Explicitly disable Fabric/New Architecture to prevent codegen crash
+    :fabric_enabled => false,
+    :new_arch_enabled => false,
   )
 
   post_install do |installer|
@@ -59,5 +71,13 @@ target 'MegaRadio' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
+
+    # Fix: Force all pods to use iOS 15.1 minimum deployment target
+    # Prevents "only available in iOS 13.4 or newer" errors in react-native-carplay
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+      end
+    end
   end
 end

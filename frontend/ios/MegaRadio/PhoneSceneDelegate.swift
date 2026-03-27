@@ -4,6 +4,8 @@ import React
 
 /// PhoneSceneDelegate handles the main app window lifecycle.
 /// Required when UIApplicationSceneManifest is present in Info.plist.
+/// IMPORTANT: React Native bridge is initialized ONCE in AppDelegate.
+/// This delegate only transfers the existing root view to the scene window.
 @objc(PhoneSceneDelegate)
 @MainActor
 class PhoneSceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -16,19 +18,31 @@ class PhoneSceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let windowScene = scene as? UIWindowScene else { return }
         
-        // Get the root view from ExpoAppDelegate
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         
-        // Create window for this scene
+        // Create window for this scene (must use windowScene for iOS 13+ scene lifecycle)
         let window = UIWindow(windowScene: windowScene)
         
-        // Use the existing React Native factory to create the root view
-        if let factory = appDelegate?.reactNativeFactory {
-            factory.startReactNative(
-                withModuleName: "main",
-                in: window,
-                launchOptions: nil
-            )
+        // CRITICAL FIX: Do NOT call factory.startReactNative() if RN is already running.
+        // But if RN is NOT yet initialized (normal phone launch), start it here with the scene window.
+        if appDelegate?.isReactNativeReady() == true,
+           let existingRootVC = appDelegate?.window?.rootViewController {
+            // CarPlay cold-start scenario: RN was started by CarPlay before phone scene connected.
+            // Transfer the existing root view controller to this scene's window.
+            print("[PhoneSceneDelegate] Reusing existing React Native root view controller")
+            window.rootViewController = existingRootVC
+        } else {
+            // Normal launch: Phone scene is first. Start React Native with this scene's window.
+            print("[PhoneSceneDelegate] Starting React Native with scene window...")
+            if let factory = appDelegate?.reactNativeFactory {
+                factory.startReactNative(
+                    withModuleName: "main",
+                    in: window,
+                    launchOptions: nil
+                )
+            }
+            appDelegate?.markReactNativeInitialized()
+            print("[PhoneSceneDelegate] React Native started successfully")
         }
         
         window.makeKeyAndVisible()
