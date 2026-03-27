@@ -324,8 +324,13 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
                 {selectedPlan === 'monthly' && <View style={styles.radioInner} />}
               </View>
               <View style={styles.priceInfo}>
-                <Text style={styles.priceLabel}>{t('monthly', 'Monthly')}</Text>
-                <Text style={styles.priceSub}>{t('cancel_anytime', 'cancel anytime')}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Text style={styles.priceLabel}>{t('monthly', 'Monthly')}</Text>
+                  <View style={styles.trialBadge}>
+                    <Text style={styles.trialBadgeText}>{t('free_trial_badge', '7 Days Free')}</Text>
+                  </View>
+                </View>
+                <Text style={styles.priceSub}>{t('trial_then_price', '7 days free, then €3.99/mo')}</Text>
               </View>
               <Text style={styles.priceAmount}>{prices.monthly || '€3.99'}</Text>
             </TouchableOpacity>
@@ -333,8 +338,24 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
 
           {/* CTA */}
           <TouchableOpacity style={styles.ctaButton} onPress={handleSubscribe} disabled={isLoading} data-testid="premium-subscribe-btn">
-            {isLoading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.ctaText}>{t('subscribe_now', 'Subscribe Now')}</Text>}
+            {isLoading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <Text style={styles.ctaText}>
+                {selectedPlan === 'monthly' 
+                  ? t('start_free_trial', 'Start Free Trial')
+                  : t('subscribe_now', 'Subscribe Now')
+                }
+              </Text>
+            )}
           </TouchableOpacity>
+
+          {/* Trial Info Text */}
+          {selectedPlan === 'monthly' && (
+            <Text style={styles.trialInfoText}>
+              {t('trial_info', '7 days free, then auto-renews at €3.99/month. Cancel anytime.')}
+            </Text>
+          )}
 
           {/* Footer */}
           <View style={styles.footerLinks}>
@@ -398,6 +419,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8, paddingVertical: 2,
   },
   recommendedText: { fontSize: 10 * S, fontFamily: 'Ubuntu-Bold', color: '#FFF' },
+  trialBadge: {
+    backgroundColor: '#4CAF50', borderRadius: 6,
+    paddingHorizontal: 8, paddingVertical: 2,
+  },
+  trialBadgeText: { fontSize: 10 * S, fontFamily: 'Ubuntu-Bold', color: '#FFF' },
+  trialInfoText: {
+    fontSize: 12 * S, fontFamily: 'Ubuntu-Regular',
+    color: 'rgba(255,255,255,0.4)', textAlign: 'center',
+    marginTop: -12, marginBottom: 16, paddingHorizontal: 16,
+  },
   ctaButton: {
     height: 56, borderRadius: 28, backgroundColor: '#FF4199',
     justifyContent: 'center', alignItems: 'center', marginBottom: 20,
