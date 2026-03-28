@@ -417,8 +417,8 @@ export default function HomeScreen() {
             >
               <LinearGradient
                 colors={['#5C27F4', '#9F3FFF']}
-                start={{ x: 1, y: 0.5 }}
-                end={{ x: 0, y: 0.5 }}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
                 style={{
                   flex: 1,
                   flexDirection: 'row',

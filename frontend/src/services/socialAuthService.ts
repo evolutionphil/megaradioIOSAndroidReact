@@ -124,45 +124,107 @@ export const socialAuthService = {
             );
 
             const idToken = tokenResponse.idToken;
+            const accessToken = tokenResponse.accessToken;
             
-            if (idToken) {
-              console.log('[SocialAuth] Got ID token, sending to backend...');
-              
-              // Optionally fetch user info for additional context
-              let userInfo: { email?: string; name?: string; googleId?: string } = {};
-              if (tokenResponse.accessToken) {
-                try {
-                  const userInfoResponse = await fetch(GOOGLE_DISCOVERY.userInfoEndpoint, {
-                    headers: { Authorization: `Bearer ${tokenResponse.accessToken}` },
-                  });
-                  const userData = await userInfoResponse.json();
-                  userInfo = {
-                    email: userData.email,
-                    name: userData.name,
-                    googleId: userData.sub,
-                  };
-                } catch (e) {
-                  console.log('[SocialAuth] Could not fetch user info, continuing with idToken only');
-                }
-              }
-              
-              // Send to backend - POST /api/auth/google
-              const backendResponse = await authService.googleSignIn(idToken, userInfo);
-              
-              if (backendResponse.token && backendResponse.user) {
-                return {
-                  success: true,
-                  token: backendResponse.token,
-                  user: {
-                    id: backendResponse.user._id,
-                    email: backendResponse.user.email,
-                    name: backendResponse.user.fullName,
-                    avatar: backendResponse.user.avatar,
-                  },
+            console.log('[SocialAuth] idToken present:', !!idToken);
+            console.log('[SocialAuth] accessToken present:', !!accessToken);
+            
+            // Always fetch user info from Google's userinfo endpoint (using accessToken)
+            let userInfo: { email?: string; name?: string; googleId?: string; avatar?: string } = {};
+            if (accessToken) {
+              try {
+                const userInfoResponse = await fetch(GOOGLE_DISCOVERY.userInfoEndpoint, {
+                  headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                const userData = await userInfoResponse.json();
+                userInfo = {
+                  email: userData.email,
+                  name: userData.name,
+                  googleId: userData.sub,
+                  avatar: userData.picture,
                 };
+                console.log('[SocialAuth] Got user info from Google:', userInfo.email);
+              } catch (e) {
+                console.log('[SocialAuth] Could not fetch user info from Google');
               }
+            }
+            
+            // Fallback: decode idToken locally for user info
+            if (!userInfo.email && idToken) {
+              try {
+                const parts = idToken.split('.');
+                if (parts.length === 3) {
+                  const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+                  const payload = JSON.parse(
+                    typeof atob !== 'undefined'
+                      ? atob(base64)
+                      : Buffer.from(base64, 'base64').toString('utf-8')
+                  );
+                  userInfo = {
+                    email: payload.email,
+                    name: payload.name,
+                    googleId: payload.sub,
+                  };
+                }
+              } catch (decodeErr) {
+                console.log('[SocialAuth] Could not decode idToken payload');
+              }
+            }
+            
+            // Send to backend - POST /api/auth/google
+            // Send idToken if available, otherwise send accessToken as the token
+            const tokenToSend = idToken || accessToken;
+            
+            if (tokenToSend) {
+              console.log('[SocialAuth] Sending token to backend /api/auth/google...');
+              
+              try {
+                const backendResponse = await authService.googleSignIn(tokenToSend, userInfo);
+                
+                if (backendResponse.token && backendResponse.user) {
+                  return {
+                    success: true,
+                    token: backendResponse.token,
+                    user: {
+                      id: backendResponse.user._id,
+                      email: backendResponse.user.email,
+                      name: backendResponse.user.fullName || backendResponse.user.name,
+                      avatar: backendResponse.user.avatar,
+                    },
+                  };
+                }
+              } catch (firstErr: any) {
+                console.log('[SocialAuth] First token attempt failed:', firstErr.message);
+                
+                // If idToken failed and we have accessToken, retry with accessToken
+                if (tokenToSend === idToken && accessToken && accessToken !== idToken) {
+                  console.log('[SocialAuth] Retrying with accessToken...');
+                  try {
+                    const retryResponse = await authService.googleSignIn(accessToken, userInfo);
+                    
+                    if (retryResponse.token && retryResponse.user) {
+                      return {
+                        success: true,
+                        token: retryResponse.token,
+                        user: {
+                          id: retryResponse.user._id,
+                          email: retryResponse.user.email,
+                          name: retryResponse.user.fullName || retryResponse.user.name,
+                          avatar: retryResponse.user.avatar,
+                        },
+                      };
+                    }
+                  } catch (retryErr: any) {
+                    console.log('[SocialAuth] Retry with accessToken also failed:', retryErr.message);
+                  }
+                }
+                
+                return { success: false, error: firstErr.message || 'Google authentication failed' };
+              }
+              
+              return { success: false, error: 'Google authentication failed - unexpected response' };
             } else {
-              return { success: false, error: 'No ID token received from Google' };
+              return { success: false, error: 'No token received from Google' };
             }
           } catch (tokenError: any) {
             console.error('[SocialAuth] Token exchange error:', tokenError);

@@ -160,18 +160,17 @@ export default function DiscoverScreen() {
                 }}
               >
                 <View style={{
-                  width: 30, height: 30, borderRadius: 6,
+                  width: 30, height: 30, borderRadius: 5.77,
                   backgroundColor: '#FFF',
                   justifyContent: 'center', alignItems: 'center',
-                  marginRight: 12,
+                  marginRight: 10,
                 }}>
-                  <Ionicons name="diamond" size={16} color="#7B3FE4" />
+                  <Ionicons name="radio" size={16} color="#7B3FE4" />
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.2 }}>MegaRadio Premium</Text>
-                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginTop: 1 }}>{t('unlock_amazing_features', 'Unlock amazing features')}</Text>
+                <View>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.2 }}>MegaRadio Premium</Text>
+                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', marginTop: 1 }}>{t('unlock_amazing_features', 'Unlock amazing features')}</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.6)" />
               </LinearGradient>
             </TouchableOpacity>
           )}
