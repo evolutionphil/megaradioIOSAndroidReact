@@ -618,7 +618,7 @@ export default function ProfileScreen() {
               </>
             )}
             
-            <RewardedAdButton />
+            {!isPremium && !isRemoveAds && <RewardedAdButton />}
           </View>
 
           {/* Settings Section */}
@@ -846,9 +846,13 @@ export default function ProfileScreen() {
             </>
           )}
 
-          {/* Rewarded Ad - Watch Ad for 30 min free */}
-          <RewardedAdButton />
-          <View style={s.divider} />
+          {/* Rewarded Ad - Watch Ad for 30 min free (hidden for premium/ad-free users) */}
+          {!isPremium && !isRemoveAds && (
+            <>
+              <RewardedAdButton />
+              <View style={s.divider} />
+            </>
+          )}
 
           {/* Song History */}
           <TouchableOpacity

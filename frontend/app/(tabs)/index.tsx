@@ -405,39 +405,41 @@ export default function HomeScreen() {
             <TouchableOpacity 
               style={{
                 marginBottom: 16,
-                borderRadius: 16,
+                borderRadius: 5,
                 overflow: 'hidden',
+                alignSelf: 'center',
+                width: 345,
+                height: 54,
               }} 
               onPress={() => setShowPaywall(true)}
               activeOpacity={0.85}
               data-testid="home-premium-banner"
             >
               <LinearGradient
-                colors={['#6C2BD9', '#FF4199']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+                colors={['#5C27F4', '#9F3FFF']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
                 style={{
-                  borderRadius: 16,
-                  paddingHorizontal: 18,
-                  paddingVertical: 16,
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 12,
+                  borderRadius: 5,
                 }}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, flex: 1 }}>
-                    <View style={{
-                      width: 44, height: 44, borderRadius: 22,
-                      backgroundColor: 'rgba(255,255,255,0.15)',
-                      justifyContent: 'center', alignItems: 'center',
-                    }}>
-                      <Ionicons name="diamond" size={22} color="#FFD700" />
-                    </View>
-                    <View>
-                      <Text style={{ fontSize: 17, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.3 }}>MegaRadio Premium</Text>
-                      <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>{t('unlock_amazing_features', 'Unlock Amazing Features')}</Text>
-                    </View>
-                  </View>
-                  <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.7)" />
+                <View style={{
+                  width: 30, height: 30, borderRadius: 6,
+                  backgroundColor: '#FFF',
+                  justifyContent: 'center', alignItems: 'center',
+                  marginRight: 12,
+                }}>
+                  <Ionicons name="diamond" size={16} color="#7B3FE4" />
                 </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.2 }}>MegaRadio Premium</Text>
+                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginTop: 1 }}>{t('unlock_amazing_features', 'Unlock amazing features')}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.6)" />
               </LinearGradient>
             </TouchableOpacity>
           )}

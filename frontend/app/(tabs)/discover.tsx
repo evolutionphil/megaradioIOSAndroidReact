@@ -148,23 +148,30 @@ export default function DiscoverScreen() {
               data-testid="discover-premium-banner"
             >
               <LinearGradient
-                colors={['#6C2BD9', '#FF4199']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.premiumBannerGradient}
+                colors={['#5C27F4', '#9F3FFF']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 12,
+                  borderRadius: 5,
+                }}
               >
-                <View style={styles.premiumBannerContent}>
-                  <View style={styles.premiumBannerLeft}>
-                    <View style={styles.premiumIconCircle}>
-                      <Ionicons name="diamond" size={22} color="#FFD700" />
-                    </View>
-                    <View>
-                      <Text style={styles.premiumBannerTitle}>MegaRadio Premium</Text>
-                      <Text style={styles.premiumBannerSubtitle}>{t('unlock_amazing_features', 'Unlock Amazing Features')}</Text>
-                    </View>
-                  </View>
-                  <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.7)" />
+                <View style={{
+                  width: 30, height: 30, borderRadius: 6,
+                  backgroundColor: '#FFF',
+                  justifyContent: 'center', alignItems: 'center',
+                  marginRight: 12,
+                }}>
+                  <Ionicons name="diamond" size={16} color="#7B3FE4" />
                 </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.2 }}>MegaRadio Premium</Text>
+                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginTop: 1 }}>{t('unlock_amazing_features', 'Unlock amazing features')}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.6)" />
               </LinearGradient>
             </TouchableOpacity>
           )}
@@ -375,8 +382,11 @@ const styles = StyleSheet.create({
   premiumBanner: {
     marginHorizontal: spacing.md,
     marginBottom: spacing.lg,
-    borderRadius: 16,
+    borderRadius: 5,
     overflow: 'hidden',
+    height: 54,
+    alignSelf: 'center',
+    width: 345,
   },
   premiumBannerGradient: {
     borderRadius: 16,
