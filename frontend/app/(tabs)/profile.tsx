@@ -273,7 +273,7 @@ export default function ProfileScreen() {
       setShowDeleteModal(false);
       setDeleteConfirmText('');
       await logout();
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/discover');
     } catch (error: any) {
       const msg = error?.response?.data?.message || t('delete_account_error', 'Could not delete account. Please try again.');
       Alert.alert(t('error', 'Error'), msg);
