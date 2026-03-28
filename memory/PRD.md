@@ -20,7 +20,13 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - Spotify/YouTube deep links
 - HD Streaming (320kbps)
 - Song History
-- **7-Day Free Trial** on Monthly plan (configured via App Store Connect / Google Play Console)
+- **7-Day Free Trial** on Monthly plan
+
+## IAP Product IDs (App Store Connect)
+- `megaradio_remove_ads_yearly1` — Remove Ads Yearly
+- `megaradio_premium_monthly1` — Premium Monthly (with 7-day trial)
+- `megaradio_premium_yearly` — Premium Yearly
+- `megaradio_premium_lifetime` — Premium Lifetime
 
 ## Completed Features
 
@@ -38,54 +44,35 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - [x] Created iapService.ts (StoreKit 2 + Google Play Billing)
 - [x] Updated AudioProvider.tsx for song history metadata push
 - [x] Rewrote Profile screen with premium navigation
-- [x] Created IAP_SETUP_GUIDE.md
-- [x] Generated 55-char App Store metadata for 4 IAP tiers
 
 ### Premium Feature Gating (2026-03-27)
-- [x] P0: Player Premium Gating UI (player.tsx)
-  - Song info blurred/hidden for free users with lock icon
-  - "Premium" badge on locked song info
-  - Spotify/YouTube deep link buttons locked for free users
-  - HD badge only shown for premium users
-  - "Go Premium" banner in player for free users
-  - PremiumPaywall modal integrated in player
-- [x] P1: Lock Screen Next/Prev AdMob Counter (service.js)
-  - AsyncStorage counter sync on RemoteNext/Prev/JumpForward/JumpBackward
-  - adMobService syncs from AsyncStorage before incrementing
-- [x] P2: HD Stream Quality Gating (AudioProvider.tsx)
-  - Premium users get highest quality stream URL
-  - Free users get standard quality URL
+- [x] Player Premium Gating UI (player.tsx) — song info blurred, Spotify/YT locked, HD badge conditional
+- [x] Lock Screen Next/Prev AdMob Counter (service.js + adMobService sync)
+- [x] HD Stream Quality Gating (AudioProvider.tsx)
 - [x] Guest Profile Premium Buttons
-  - Go Premium and Remove Ads added to guest profile view
 
 ### Apple Policy Compliance (2026-03-28)
-- [x] 7-Day Free Trial badge + "Start Free Trial" CTA on Monthly plan
-- [x] Trial info text: "7 days free, then auto-renews at €3.99/month. Cancel anytime."
-- [x] Delete Account button + confirmation modal (profile.tsx)
-  - "Type 'delete' to confirm" safety mechanism
-  - API endpoint added: DELETE /api/user/delete-account
-  - **REQUIRES BACKEND IMPLEMENTATION** (see BACKEND_DELETE_ACCOUNT_API.md)
-- [x] Terms & Conditions links fixed in PremiumPaywall (both paywall modes)
-  - Now navigates to /static-page?type=terms
-- [x] Test account credentials created (review@themegaradio.com)
-- [x] App Privacy Labels guide created (APP_PRIVACY_LABELS_GUIDE.md)
+- [x] 7-Day Free Trial badge + "Start Free Trial" CTA
+- [x] Delete Account button + modal + backend API integration (E2E tested)
+- [x] Terms & Conditions links fixed in PremiumPaywall
+- [x] App Privacy Labels guide created
+
+### Bug Fixes (2026-03-28)
+- [x] **IAP SKU fix**: `megaradio_remove_ads_yearly` → `megaradio_remove_ads_yearly1`, `megaradio_premium_monthly` → `megaradio_premium_monthly1`
+- [x] **Signup fix**: `name` → `fullName` + auto-generated `username` from email
+- [x] **Profile layout**: Premium section moved to top (above Settings)
+- [x] **Delete Account redirect**: Now goes to Discover page after account deletion
 
 ## Key Files
-- `frontend/src/services/iapService.ts` - Core IAP logic
+- `frontend/src/services/iapService.ts` - Core IAP logic + Product IDs
 - `frontend/src/components/PremiumPaywall.tsx` - Subscription/purchase UI
 - `frontend/src/store/premiumStore.ts` - Premium state
-- `frontend/src/store/songHistoryStore.ts` - Song history state
 - `frontend/src/providers/AudioProvider.tsx` - Audio + HD gating
 - `frontend/app/player.tsx` - Player with premium UI gating
 - `frontend/service.js` - Background task + AdMob counter sync
 - `frontend/src/services/adMobService.native.ts` - AdMob with counter sync
-- `frontend/app/(tabs)/profile.tsx` - Profile with premium nav + delete account
-- `frontend/src/constants/api.ts` - API endpoints (including deleteAccount)
-
-## Documentation Created
-- `frontend/IAP_SETUP_GUIDE.md` - App Store Connect / Play Console IAP setup
-- `frontend/BACKEND_DELETE_ACCOUNT_API.md` - Backend developer instructions for delete account API
-- `frontend/APP_PRIVACY_LABELS_GUIDE.md` - Step-by-step App Privacy Labels guide (Almanca arayüz)
+- `frontend/app/(tabs)/profile.tsx` - Profile with premium on top
+- `frontend/src/services/authService.ts` - Auth with fixed signup fields
 
 ## Backlog
 - P2: ShazamKit integration (song recognition)
@@ -93,14 +80,3 @@ Radio streaming app with full monetization: AdMob (interstitial, rewarded) + In-
 - P2: Bluetooth metadata (AVRCP) enhancement
 - P3: Station alarm feature
 - P3: tvOS and Android TV apps
-- P3: Premium feature images (1024x1024) for App Store/Play Console
-
-## Backend Developer Action Required
-- **DELETE /api/user/delete-account** endpoint must be implemented on themegaradio.com
-- See `BACKEND_DELETE_ACCOUNT_API.md` for full specification
-- Without this endpoint, Apple will REJECT the app
-
-## Test Account for Apple Review
-- Email: review@themegaradio.com
-- Password: MegaReview2026!
-- Must be created on production backend

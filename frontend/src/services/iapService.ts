@@ -3,8 +3,8 @@ import { usePremiumStore, PremiumPlan } from '../store/premiumStore';
 
 // Product IDs - must match App Store Connect & Google Play Console
 export const PRODUCT_IDS = {
-  REMOVE_ADS_YEARLY: 'megaradio_remove_ads_yearly',
-  PREMIUM_MONTHLY: 'megaradio_premium_monthly',
+  REMOVE_ADS_YEARLY: 'megaradio_remove_ads_yearly1',
+  PREMIUM_MONTHLY: 'megaradio_premium_monthly1',
   PREMIUM_YEARLY: 'megaradio_premium_yearly',
   PREMIUM_LIFETIME: 'megaradio_premium_lifetime',
 };

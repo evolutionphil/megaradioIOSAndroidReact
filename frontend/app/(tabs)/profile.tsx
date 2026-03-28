@@ -791,51 +791,7 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Settings */}
-        <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
-        {[
-          { 
-            title: t('play_at_login', 'Play at Login'), 
-            sub: playAtLoginSetting === 'last_played' ? t('last_played', 'Last Played') 
-               : playAtLoginSetting === 'random' ? t('random', 'Random')
-               : playAtLoginSetting === 'favorite' ? t('favorite', 'Favorite')
-               : t('off', 'Off'),
-            onPress: () => router.push('/play-at-login') 
-          },
-          { title: t('country', 'Country'), sub: country || t('not_set', 'Not set'), onPress: () => setCurrentPage('country') },
-          { title: t('language', 'Language'), sub: LANGUAGE_NAMES[currentLanguage] || currentLanguage, onPress: () => router.push('/languages' as any) },
-          { title: t('statistics', 'Statistics'), onPress: () => router.push('/statistics') },
-          { title: t('account', 'Account'), onPress: () => setCurrentPage('account') },
-        ].map((item, i) => (
-          <React.Fragment key={i}>
-            <TouchableOpacity style={s.row} onPress={item.onPress}>
-              <View>
-                <Text style={s.rowTitle}>{item.title}</Text>
-                {item.sub && <Text style={s.rowSub}>{item.sub}</Text>}
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="#666" />
-            </TouchableOpacity>
-            <View style={s.divider} />
-          </React.Fragment>
-        ))}
-
-        <View style={s.row}>
-          <Text style={s.rowTitle}>{t('notifications_setting', 'Notifications')}</Text>
-          <Switch value={notifications} onValueChange={setNotifications} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
-        </View>
-        <View style={s.divider} />
-        <View style={s.row}>
-          <Text style={s.rowTitle}>{t('private_profile', 'Private Profile')}</Text>
-          <Switch 
-            value={privateProfile} 
-            onValueChange={handlePrivateProfileToggle} 
-            trackColor={{ false: '#333', true: '#FF4199' }} 
-            thumbColor="#FFF"
-            disabled={privateProfileLoading}
-          />
-        </View>
-
-        {/* Premium Section */}
+        {/* Premium Section - EN ÜSTTE */}
         <View style={s.section}>
           <Text style={s.sectionLabel}>{t('premium', 'Premium')}</Text>
           
@@ -911,6 +867,50 @@ export default function ProfileScreen() {
             )}
             <Ionicons name="chevron-forward" size={20} color="#666" />
           </TouchableOpacity>
+        </View>
+
+        {/* Settings */}
+        <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
+        {[
+          { 
+            title: t('play_at_login', 'Play at Login'), 
+            sub: playAtLoginSetting === 'last_played' ? t('last_played', 'Last Played') 
+               : playAtLoginSetting === 'random' ? t('random', 'Random')
+               : playAtLoginSetting === 'favorite' ? t('favorite', 'Favorite')
+               : t('off', 'Off'),
+            onPress: () => router.push('/play-at-login') 
+          },
+          { title: t('country', 'Country'), sub: country || t('not_set', 'Not set'), onPress: () => setCurrentPage('country') },
+          { title: t('language', 'Language'), sub: LANGUAGE_NAMES[currentLanguage] || currentLanguage, onPress: () => router.push('/languages' as any) },
+          { title: t('statistics', 'Statistics'), onPress: () => router.push('/statistics') },
+          { title: t('account', 'Account'), onPress: () => setCurrentPage('account') },
+        ].map((item, i) => (
+          <React.Fragment key={i}>
+            <TouchableOpacity style={s.row} onPress={item.onPress}>
+              <View>
+                <Text style={s.rowTitle}>{item.title}</Text>
+                {item.sub && <Text style={s.rowSub}>{item.sub}</Text>}
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+            <View style={s.divider} />
+          </React.Fragment>
+        ))}
+
+        <View style={s.row}>
+          <Text style={s.rowTitle}>{t('notifications_setting', 'Notifications')}</Text>
+          <Switch value={notifications} onValueChange={setNotifications} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
+        </View>
+        <View style={s.divider} />
+        <View style={s.row}>
+          <Text style={s.rowTitle}>{t('private_profile', 'Private Profile')}</Text>
+          <Switch 
+            value={privateProfile} 
+            onValueChange={handlePrivateProfileToggle} 
+            trackColor={{ false: '#333', true: '#FF4199' }} 
+            thumbColor="#FFF"
+            disabled={privateProfileLoading}
+          />
         </View>
 
         {/* About */}
