@@ -25,10 +25,12 @@ export const authService = {
 
   // Sign up new user
   async signup(email: string, password: string, name: string): Promise<AuthResponse> {
+    const username = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
     const response = await api.post(API_ENDPOINTS.auth.signup, {
       email,
       password,
-      name,
+      fullName: name,
+      username,
     });
     return response.data;
   },
@@ -217,10 +219,13 @@ export const authService = {
     const { deviceInfo } = useAuthStore.getState();
     
     // First, register using web signup endpoint
+    // Generate username from email (before @)
+    const username = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
     await api.post(`${API_BASE}/api/auth/signup`, {
       email,
       password,
-      name: fullName,
+      fullName,
+      username,
     });
     
     // Then login via mobile endpoint to get token
