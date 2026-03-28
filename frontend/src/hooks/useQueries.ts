@@ -121,6 +121,8 @@ export const usePrecomputedStations = (
       return result;
     },
     initialData: () => diskCache.get(dKey, CACHE_TTL.STATIONS_BY_COUNTRY),
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
     ...LONG_CACHE,
   });
 };
@@ -195,6 +197,8 @@ export const usePrecomputedGenres = (country?: string) => {
       return result;
     },
     initialData: () => diskCache.get(dKey, CACHE_TTL.PRECOMPUTED_GENRES),
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
     ...LONG_CACHE,
   });
 };
@@ -236,6 +240,8 @@ export const useDiscoverableGenres = () => {
       return data;
     },
     initialData: () => diskCache.get(dKey, CACHE_TTL.GENRES),
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
     ...LONG_CACHE,
   });
 };

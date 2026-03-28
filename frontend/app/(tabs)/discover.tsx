@@ -24,6 +24,8 @@ import { useAudioPlayer } from '../../src/hooks/useAudioPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useLocationStore } from '../../src/store/locationStore';
 import { useAuthStore } from '../../src/store/authStore';
+import { usePremiumStore } from '../../src/store/premiumStore';
+import { PremiumPaywall } from '../../src/components/PremiumPaywall';
 import { useResponsive } from '../../src/hooks/useResponsive';
 import type { Station, Genre } from '../../src/types';
 
@@ -33,6 +35,8 @@ export default function DiscoverScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { countryCode } = useLocationStore();
   const { isAuthenticated } = useAuthStore();
+  const { isPremium } = usePremiumStore();
+  const [showPaywall, setShowPaywall] = useState(false);
   
   // Responsive layout
   const responsive = useResponsive();
@@ -135,6 +139,36 @@ export default function DiscoverScreen() {
           }
           showsVerticalScrollIndicator={false}
         >
+          {/* Premium Banner */}
+          {!isPremium && (
+            <TouchableOpacity 
+              style={styles.premiumBanner} 
+              onPress={() => setShowPaywall(true)}
+              activeOpacity={0.85}
+              data-testid="discover-premium-banner"
+            >
+              <LinearGradient
+                colors={['#6C2BD9', '#FF4199']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.premiumBannerGradient}
+              >
+                <View style={styles.premiumBannerContent}>
+                  <View style={styles.premiumBannerLeft}>
+                    <View style={styles.premiumIconCircle}>
+                      <Ionicons name="diamond" size={22} color="#FFD700" />
+                    </View>
+                    <View>
+                      <Text style={styles.premiumBannerTitle}>MegaRadio Premium</Text>
+                      <Text style={styles.premiumBannerSubtitle}>{t('unlock_amazing_features', 'Unlock Amazing Features')}</Text>
+                    </View>
+                  </View>
+                  <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.7)" />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
           {/* Genre Filter Chips - Now navigate to genre-detail */}
           <View style={styles.genreSection}>
             {genresLoading ? (
@@ -267,6 +301,13 @@ export default function DiscoverScreen() {
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
+
+    {/* Premium Paywall Modal */}
+    <PremiumPaywall
+      visible={showPaywall}
+      onClose={() => setShowPaywall(false)}
+      mode="premium"
+    />
     </View>
   );
 }
@@ -328,6 +369,49 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 180,
+  },
+
+  // Premium Banner
+  premiumBanner: {
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.lg,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  premiumBannerGradient: {
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+  },
+  premiumBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  premiumBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    flex: 1,
+  },
+  premiumIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  premiumBannerTitle: {
+    fontSize: 17,
+    fontWeight: '700' as const,
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
+  },
+  premiumBannerSubtitle: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 2,
   },
   
   // Genre Chips

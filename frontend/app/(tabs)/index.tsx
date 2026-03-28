@@ -49,6 +49,8 @@ import { usePlayerStore } from '../../src/store/playerStore';
 import { useAuthStore } from '../../src/store/authStore';
 import { useLocationStore } from '../../src/store/locationStore';
 import { useRecentlyPlayedStore } from '../../src/store/recentlyPlayedStore';
+import { usePremiumStore } from '../../src/store/premiumStore';
+import { PremiumPaywall } from '../../src/components/PremiumPaywall';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Station, Genre } from '../../src/types';
 
@@ -65,6 +67,8 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const preloadStarted = useRef(false);
   const { user, isAuthenticated } = useAuthStore();
+  const { isPremium } = usePremiumStore();
+  const [showPaywall, setShowPaywall] = useState(false);
   const { width: windowWidth } = useWindowDimensions();
   const { countryCode, country, countryEnglish, latitude, longitude, fetchLocation, isLoaded } = useLocationStore();
   const insets = useSafeAreaInsets();
@@ -396,6 +400,48 @@ export default function HomeScreen() {
             </View>
           </View>
 
+          {/* Premium Banner - Genres'den önce */}
+          {!isPremium && (
+            <TouchableOpacity 
+              style={{
+                marginBottom: 16,
+                borderRadius: 16,
+                overflow: 'hidden',
+              }} 
+              onPress={() => setShowPaywall(true)}
+              activeOpacity={0.85}
+              data-testid="home-premium-banner"
+            >
+              <LinearGradient
+                colors={['#6C2BD9', '#FF4199']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  borderRadius: 16,
+                  paddingHorizontal: 18,
+                  paddingVertical: 16,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, flex: 1 }}>
+                    <View style={{
+                      width: 44, height: 44, borderRadius: 22,
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      justifyContent: 'center', alignItems: 'center',
+                    }}>
+                      <Ionicons name="diamond" size={22} color="#FFD700" />
+                    </View>
+                    <View>
+                      <Text style={{ fontSize: 17, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.3 }}>MegaRadio Premium</Text>
+                      <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>{t('unlock_amazing_features', 'Unlock Amazing Features')}</Text>
+                    </View>
+                  </View>
+                  <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.7)" />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
           {/* Genres Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -627,6 +673,13 @@ export default function HomeScreen() {
 
         </ScrollView>
       </SafeAreaView>
+      
+      {/* Premium Paywall Modal */}
+      <PremiumPaywall
+        visible={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        mode="premium"
+      />
     </View>
   );
 }
@@ -648,6 +701,47 @@ const styles = StyleSheet.create({
   scrollContent: {
     // paddingBottom is now dynamically calculated based on MiniPlayer visibility
     paddingHorizontal: SIDE_PADDING,
+  },
+  // Premium Banner
+  premiumBanner: {
+    marginBottom: spacing.lg,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  premiumBannerGradient: {
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+  },
+  premiumBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  premiumBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    flex: 1,
+  },
+  premiumIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  premiumBannerTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
+  },
+  premiumBannerSubtitle: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 2,
   },
 
   // Header - Full width
