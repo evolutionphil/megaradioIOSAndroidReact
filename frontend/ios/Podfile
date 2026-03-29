@@ -30,6 +30,8 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
 prepare_react_native_project!
 
 target 'MegaRadio' do
+  pod 'fmt', '~> 12.1.0'
+
   use_expo_modules!
 
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
@@ -80,6 +82,14 @@ target 'MegaRadio' do
         # Fix: Allow non-modular includes in framework modules
         # Required for RN 0.81 prebuilt + static frameworks + Xcode 16.4
         config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+
+      # Fix: Xcode 16.4 consteval error in fmt library
+      if target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FMT_CONSTEVAL='
+        end
       end
     end
   end
