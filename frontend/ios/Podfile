@@ -32,6 +32,7 @@ prepare_react_native_project!
 # ============================================================================
 # FIX FOR XCODE 16.4+ fmt consteval ERROR
 # Patch React Native's bundled fmt podspec from 11.0.2 to 12.1.0
+# Also patch RCT-Folly's fmt dependency to match
 # This runs before pod resolution, so no duplicate dependency conflicts
 # ============================================================================
 fmt_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'fmt.podspec')
@@ -40,7 +41,17 @@ if File.exist?(fmt_podspec_path)
   if content.include?('11.0.2')
     content.gsub!('11.0.2', '12.1.0')
     File.write(fmt_podspec_path, content)
-    puts "[FMT FIX] Patched fmt.podspec from 11.0.2 -> 12.1.0 for Xcode 16.4+ compatibility"
+    puts "[FMT FIX] Patched fmt.podspec: 11.0.2 -> 12.1.0"
+  end
+end
+
+folly_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'RCT-Folly.podspec')
+if File.exist?(folly_podspec_path)
+  content = File.read(folly_podspec_path)
+  if content.include?('"fmt", "11.0.2"')
+    content.gsub!('"fmt", "11.0.2"', '"fmt", "12.1.0"')
+    File.write(folly_podspec_path, content)
+    puts "[FMT FIX] Patched RCT-Folly.podspec: fmt 11.0.2 -> 12.1.0"
   end
 end
 
