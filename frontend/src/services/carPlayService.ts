@@ -373,48 +373,12 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const recentStations = await Promise.race([getRecentlyPlayedCallback(), timeoutPromise]);
     CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
     
-    // Use GridTemplate for Recently Played if available (better visual layout)
-    if (GridTemplate && recentStations.length > 0) {
-      console.log('[CarPlay] Using GridTemplate for Recently Played (Zuletzt gespielt)');
-      
-      const gridButtons = recentStations.slice(0, 24).map((station, index) => {
-        const imgUrl = getArtworkUrl(station);
-        return {
-          id: `recent_${index}`,
-          titleVariants: [station.name],
-          image: LOCAL_FALLBACK_LOGO,
-          imgUrl: imgUrl,
-        };
-      });
-      
-      const template = new GridTemplate({
-        title: t('carplay_recently_played', 'Zuletzt gespielt'),
-        buttons: gridButtons,
-        onButtonPressed: async (button: { id: string }) => {
-          const index = parseInt(button.id.replace('recent_', ''), 10);
-          const station = recentStations[index];
-          if (station && playStationCallback) {
-            CarPlayLogger.stationSelected(station.name, station._id);
-            console.log('[CarPlay] Playing recent from grid:', station.name);
-            try {
-              await playStationCallback(station);
-              CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
-              showNowPlayingTemplate(station);
-            } catch (e: any) {
-              CarPlayLogger.playbackError(e, station.name);
-            }
-          }
-        },
-      });
-      
-      CarPlayLogger.templateCreated('RecentlyPlayed (Grid)', { itemCount: recentStations.length });
-      return template;
-    }
+    // Use ListTemplate for Recently Played - supports imgUrl for remote logos
+    // (GridTemplate does NOT support imgUrl, only local images)
+    console.log('[CarPlay] Using ListTemplate for Recently Played (Zuletzt gespielt)');
     
-    // Fallback to ListTemplate if GridTemplate not available or no stations
-    console.log('[CarPlay] Using ListTemplate for Recently Played (fallback)');
-    
-    const items = recentStations.map(station => {
+    const stationsSlice = recentStations.slice(0, 24);
+    const items = stationsSlice.map(station => {
       const imgUrl = getArtworkUrl(station);
       return {
         text: station.name,
@@ -427,11 +391,11 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     const template = new ListTemplate({
       title: t('carplay_recently_played', 'Zuletzt gespielt'),
       sections: [{
-        header: `${t('carplay_recent_stations', 'Recent Stations')} (${recentStations.length})`,
+        header: `${t('carplay_recent_stations', 'Recent Stations')} (${stationsSlice.length})`,
         items,
       }],
       onItemSelect: async ({ index }: { index: number }) => {
-        const station = recentStations[index];
+        const station = stationsSlice[index];
         if (station && playStationCallback) {
           CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing recent:', station.name);
@@ -446,7 +410,7 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
       },
     });
     
-    CarPlayLogger.templateCreated('RecentlyPlayed', { itemCount: recentStations.length });
+    CarPlayLogger.templateCreated('RecentlyPlayed', { itemCount: stationsSlice.length });
     return template;
   } catch (error: any) {
     CarPlayLogger.templateError('RecentlyPlayed', error);
@@ -543,7 +507,8 @@ const createGenresTemplate = async (): Promise<any> => {
           
           return {
             text: genre.name,
-            detailText: `${genre.count || genre.stationCount || 0} ${t('carplay_stations', 'stations')}`,
+            // Don't show global count - it's misleading since genre detail shows filtered/local count
+            detailText: t('carplay_stations', 'Sender'),
             // Use genre-specific LOCAL icon - works offline, no backend dependency
             image: genreIcon,
           };
