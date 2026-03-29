@@ -1,7 +1,7 @@
 # MegaRadio - Product Requirements Document
 
 ## Original Problem Statement
-Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) for MegaRadio mobile app. Includes UI gating, Apple compliance, Premium banner, and Google Login fix.
+Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) for MegaRadio mobile app. Includes UI gating, Apple compliance, Premium banner, Google Login fix, CarPlay fixes, and App Store Review compliance.
 
 ## Tech Stack
 - Frontend: React Native (Expo Bare Workflow)
@@ -25,26 +25,40 @@ Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) 
 - [x] Signup payload fix (fullName, dynamic username)
 - [x] Premium Banner on Home & Discover (SVG-matched design) - Feb 2026
 - [x] Google Login fix - Backend updated to accept iOS/Android audience + Frontend retry logic - Feb 2026
+- [x] Xcode 16.4 fmt consteval fix - Podfile pre-install patch for fmt 12.1.0 - Mar 2026
+- [x] CarPlay Zuletzt gespielt: GridTemplate → ListTemplate for logo support - Mar 2026
+- [x] CarPlay Genres: Removed misleading global count - Mar 2026
+- [x] Apple Guideline 3.1.2(c) fix: Privacy Policy link in Paywall + fallback Terms/Privacy content - Mar 2026
 
 ## Key Files
 - frontend/app/(tabs)/index.tsx - Home page + Premium Banner
 - frontend/app/(tabs)/discover.tsx - Discover page + Premium Banner
 - frontend/app/(tabs)/profile.tsx - Account deletion, Premium section
 - frontend/app/player.tsx - Premium UI gating
-- frontend/src/components/PremiumPaywall.tsx - Paywall with trial UI
+- frontend/app/static-page.tsx - Terms & Privacy pages with fallback content
+- frontend/src/components/PremiumPaywall.tsx - Paywall with trial UI, Terms & Privacy links
 - frontend/src/services/authService.ts - Auth methods
-- frontend/src/services/socialAuthService.ts - Google/Apple Sign-In
+- frontend/src/services/socialAuthService.ts - Google/Apple Sign-In (retry logic)
 - frontend/src/services/iapService.ts - IAP Product IDs
+- frontend/src/services/carPlayService.ts - CarPlay templates (ListTemplate for recent)
 - frontend/src/hooks/useQueries.ts - Data fetching with retry
 - frontend/service.js - Background lock screen logic
+- frontend/ios/Podfile - fmt 12.1.0 patch for Xcode 16.4+
 
 ## Key API Endpoints (External - themegaradio.com)
-- POST /api/auth/google - Google Sign-In (idToken verification)
+- POST /api/auth/google - Google Sign-In (idToken verification, now accepts iOS/Android audience)
 - POST /api/auth/mobile/login - Email login
 - POST /api/auth/signup - Registration
 - DELETE /api/user/delete-account - Apple-compliant account deletion
+- GET /api/app/pages - Static pages (terms, privacy, about)
+
+## App Store Connect Requirements (User Action)
+- Privacy Policy URL: https://themegaradio.com/privacy
+- EULA/Terms: https://themegaradio.com/terms or Apple standard EULA
+- App Review Notes: mention Terms/Privacy link locations in app
 
 ## Backlog / Future Tasks
+- P1: watchOS companion app (Now Playing, Favorites, Recent)
 - P2: ShazamKit song recognition
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth metadata (AVRCP) enhancement

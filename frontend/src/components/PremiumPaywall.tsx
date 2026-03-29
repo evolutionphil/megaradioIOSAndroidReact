@@ -234,6 +234,12 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
               }}>
                 <Text style={styles.footerLink}>{t('terms_conditions', 'Terms & Conditions')}</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => { 
+                onClose(); 
+                setTimeout(() => router.push('/static-page?type=privacy'), 400);
+              }}>
+                <Text style={styles.footerLink}>{t('privacy_policy', 'Privacy Policy')}</Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
@@ -372,6 +378,12 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
               setTimeout(() => router.push('/static-page?type=terms'), 400);
             }}>
               <Text style={styles.footerLink}>{t('terms_conditions', 'Terms & Conditions')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { 
+              onClose(); 
+              setTimeout(() => router.push('/static-page?type=privacy'), 400);
+            }}>
+              <Text style={styles.footerLink}>{t('privacy_policy', 'Privacy Policy')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
