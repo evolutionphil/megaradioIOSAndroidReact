@@ -32,101 +32,145 @@ const PAGE_TITLES: Record<PageType, string> = {
 
 // Fallback content when API returns empty - required for Apple App Store Review (Guideline 3.1.2c)
 const FALLBACK_CONTENT: Record<string, string> = {
-  terms: `Terms of Use (EULA)
-
-Last updated: March 2026
+  terms: `Terms and Conditions
+Last updated: 2026-03-28
 
 1. Acceptance of Terms
-By downloading, installing, or using MegaRadio ("the App"), you agree to be bound by these Terms of Use. If you do not agree, do not use the App.
+By accessing and using Mega Radio's services, you accept and agree to be bound by the terms and provision of this agreement. These Terms of Service govern your use of our radio streaming platform.
 
 2. Description of Service
-MegaRadio provides access to internet radio stations worldwide. The App offers both free and premium subscription tiers.
+Mega Radio provides access to a collection of internet radio stations and streaming audio content. Our service allows users to discover, listen to, and enjoy radio stations from around the world.
 
-3. Subscriptions & Auto-Renewal
+3. User Accounts
+- You must provide accurate and complete information when creating an account
+- You are responsible for maintaining the confidentiality of your account credentials
+- You must notify us immediately of any unauthorized use of your account
+- One person or legal entity may not maintain more than one account
+
+4. Acceptable Use
+You agree not to:
+- Use the service for any unlawful purposes or activities
+- Attempt to gain unauthorized access to our systems or other users' accounts
+- Interfere with or disrupt the service or servers connected to the service
+- Reproduce, distribute, or create derivative works from our content without permission
+- Use automated systems to access the service without our written consent
+- Upload or transmit viruses, malware, or other harmful code
+
+5. Intellectual Property
+The service and its original content are and will remain the exclusive property of Mega Radio and its licensors. The service is protected by copyright, trademark, and other laws. Our trademarks may not be used without our prior written consent.
+
+6. Content and Radio Stations
+We aggregate and provide access to radio stations and content from various sources. We do not own or control the content of these radio stations. Station availability and content quality may vary and are subject to the policies of individual broadcasters.
+
+7. Privacy
+Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service, to understand our practices.
+
+8. Disclaimers
+The service is provided "as is" without any representations or warranties, express or implied. We make no representations or warranties in relation to this service or the information and materials provided on this service.
+
+9. Limitation of Liability
+In no event shall Mega Radio, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of the service.
+
+10. Termination
+We may terminate or suspend your account and bar access to the service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.
+
+11. Changes to Terms
+We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days notice prior to any new terms taking effect.
+
+12. Subscriptions & Auto-Renewal
+
 MegaRadio offers the following auto-renewable subscriptions:
 
-- MegaRadio Premium (Monthly): Provides ad-free listening, HD audio quality, and premium features. Includes a 7-day free trial for first-time subscribers. After the trial period, the subscription auto-renews at €3.99/month.
-- Remove Ads (Yearly): Removes all advertisements. Auto-renews at €5.99/year.
+MegaRadio Premium (Monthly)
+- Price: €3.99/month
+- Includes: Ad-free listening, HD audio quality, Spotify/YouTube integration, and all premium features
+- Free Trial: 7-day free trial for first-time subscribers
+- After the trial period ends, the subscription automatically renews at €3.99/month
+- Any unused portion of the free trial period will be forfeited when purchasing a subscription
 
-Payment will be charged to your Apple ID account at the confirmation of purchase. Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period. You can manage and cancel your subscriptions by going to your App Store account settings after purchase.
+Remove Ads (Yearly)
+- Price: €5.99/year
+- Includes: Removes all advertisements from the app
+- Auto-renews at €5.99/year
 
-Any unused portion of a free trial period will be forfeited when you purchase a subscription.
+Payment & Cancellation
+- Payment will be charged to your Apple ID / Google Play account at the confirmation of purchase
+- Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period
+- Your account will be charged for renewal within 24 hours prior to the end of the current period
+- You can manage and cancel your subscriptions by going to your device's account settings:
+  - iOS: Settings > Apple ID > Subscriptions
+  - Android: Google Play Store > Subscriptions
+- No cancellation of the current subscription is allowed during the active subscription period
 
-4. Content
-Radio station streams are provided by third-party broadcasters. MegaRadio does not control the content of these streams.
+13. Contact Information
+If you have any questions about these Terms and Conditions, please contact us at legal@themegaradio.com
 
-5. User Conduct
-You agree not to misuse the App, interfere with its operation, or attempt to access it through unauthorized means.
-
-6. Intellectual Property
-All App content, design, and trademarks are owned by MegaRadio / VisionGo. You may not copy, modify, or distribute any part of the App.
-
-7. Disclaimer of Warranties
-The App is provided "as is" without warranties of any kind. We do not guarantee uninterrupted or error-free service.
-
-8. Limitation of Liability
-MegaRadio shall not be liable for any indirect, incidental, or consequential damages arising from your use of the App.
-
-9. Changes to Terms
-We reserve the right to modify these Terms at any time. Continued use of the App constitutes acceptance of updated Terms.
-
-10. Contact
-For questions about these Terms, contact us at: support@themegaradio.com`,
+Links
+- Privacy Policy: https://themegaradio.com/en/pages/privacy-policy
+- Terms and Conditions: https://themegaradio.com/en/pages/terms-and-conditions`,
 
   privacy: `Privacy Policy
-
-Last updated: March 2026
+Last updated: 2026-03-28
 
 1. Introduction
-MegaRadio ("we", "our", "us") respects your privacy. This Privacy Policy explains how we collect, use, and protect your information when you use our App.
+At Mega Radio ("we," "our," or "us"), we respect your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you use our radio streaming service.
 
 2. Information We Collect
 
-Account Information: When you create an account, we collect your email address, display name, and profile information.
-Usage Data: We collect information about your listening habits, favorite stations, and app usage to improve your experience.
-Device Information: We collect device type, operating system version, and unique device identifiers for analytics and push notifications.
-Location Data: With your permission, we may collect your approximate location to suggest nearby radio stations.
+Personal Information
+When you create an account or contact us, we may collect:
+- Name and email address
+- Username and password
+- Profile information and preferences
+- Communication history with our support team
+
+Usage Information
+We automatically collect information about how you use our service:
+- Listening history and preferences
+- Device information and IP address
+- Browser type and operating system
+- Time and duration of your sessions
 
 3. How We Use Your Information
+- To provide and improve our radio streaming service
+- To personalize your listening experience
+- To communicate with you about service updates
+- To provide customer support
+- To analyze usage patterns and improve our platform
+- To comply with legal obligations
 
-- To provide and maintain the App's functionality
-- To personalize your experience and recommend stations
-- To process subscriptions and payments (handled by Apple)
-- To send push notifications (with your consent)
-- To improve our services through analytics
-- To display relevant advertisements (free tier only)
+4. Information Sharing
+We do not sell, trade, or rent your personal information. We may share your information only in these circumstances:
+- With your explicit consent
+- To comply with legal requirements
+- To protect our rights and property
+- With trusted service providers who assist in our operations
+- In connection with a business transfer or merger
 
-4. Third-Party Services
+5. Data Security
+We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.
 
-We use the following third-party services:
-- Apple StoreKit for subscription management
-- Google AdMob for advertisements (free tier)
-- Analytics services to improve the App
-
-5. Data Sharing
-We do not sell your personal data. We may share anonymized, aggregated data with partners for analytics purposes.
-
-6. Data Retention
-We retain your data for as long as your account is active. You may request account deletion at any time through the App's settings (Profile > Delete Account).
-
-7. Your Rights
+6. Your Rights
 You have the right to:
 - Access your personal data
-- Request correction of inaccurate data
-- Request deletion of your account and data
-- Opt out of marketing communications
+- Correct inaccurate information
+- Delete your account and all associated data (available in app under Profile > Delete Account)
+- Export your data
+- Opt out of certain communications
+- Restrict processing of your data
+- Upon account deletion, all personal data is removed within 30 days in compliance with GDPR
 
-8. Children's Privacy
-The App is not intended for children under 13. We do not knowingly collect data from children.
+7. Cookies and Tracking
+We use cookies and similar technologies to enhance your experience, analyze usage, and provide personalized content. You can control cookie settings through your browser preferences.
 
-9. Security
-We implement appropriate security measures to protect your information. However, no method of transmission over the internet is 100% secure.
+8. Third-Party Links
+Our service may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies.
 
-10. Changes to This Policy
-We may update this Privacy Policy from time to time. We will notify you of significant changes through the App.
+9. Changes to This Policy
+We may update this privacy policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "last updated" date.
 
-11. Contact Us
-For privacy-related questions, contact us at: support@themegaradio.com`
+10. Contact Us
+If you have any questions about this privacy policy or our data practices, please contact us at privacy@themegaradio.com`
 };
 
 export default function StaticPageScreen() {
