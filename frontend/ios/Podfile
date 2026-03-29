@@ -29,6 +29,21 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
 
 prepare_react_native_project!
 
+# ============================================================================
+# FIX FOR XCODE 16.4+ fmt consteval ERROR
+# Patch React Native's bundled fmt podspec from 11.0.2 to 12.1.0
+# This runs before pod resolution, so no duplicate dependency conflicts
+# ============================================================================
+fmt_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'fmt.podspec')
+if File.exist?(fmt_podspec_path)
+  content = File.read(fmt_podspec_path)
+  if content.include?('11.0.2')
+    content.gsub!('11.0.2', '12.1.0')
+    File.write(fmt_podspec_path, content)
+    puts "[FMT FIX] Patched fmt.podspec from 11.0.2 -> 12.1.0 for Xcode 16.4+ compatibility"
+  end
+end
+
 target 'MegaRadio' do
   use_expo_modules!
 
@@ -80,14 +95,6 @@ target 'MegaRadio' do
         # Fix: Allow non-modular includes in framework modules
         # Required for RN 0.81 prebuilt + static frameworks + Xcode 16.4
         config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
-      end
-
-      # Fix: Xcode 16.4 consteval error in fmt library
-      if target.name == 'fmt'
-        target.build_configurations.each do |config|
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FMT_CONSTEVAL='
-        end
       end
     end
   end
