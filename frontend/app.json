@@ -171,6 +171,8 @@
       ],
       "./plugins/withAdMobFix.js",
       "./plugins/withTrackPlayerServiceFix.js",
+      "./plugins/withTrackPlayerNewArchFix.js",
+      "./plugins/withCarPlayNativeFix.js",
       "@react-native-firebase/app"
     ],
     "experiments": {
