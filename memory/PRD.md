@@ -1,78 +1,91 @@
 # MegaRadio - Product Requirements Document
 
 ## Original Problem Statement
-Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) for MegaRadio mobile app. Includes UI gating, Apple compliance, Premium banner, Google Login fix, CarPlay fixes, and App Store Review compliance.
+Implement In-App Purchase (IAP) Premium Strategy for MegaRadio app. The app has heavily evolved to include UI gating for Premium features, Apple App Store compliance, CarPlay/Android Auto integration, Firebase Analytics/Crashlytics, and deep debugging of Android build/runtime crashes and iOS build issues.
 
 ## Tech Stack
-- Frontend: React Native (Expo Bare Workflow)
-- Routing: Expo Router (file-based)
-- State: Zustand (authStore, premiumStore, songHistoryStore)
-- Data: React Query (useQueries.ts)
-- API: Axios → themegaradio.com (external backend)
-- Monetization: Google AdMob + react-native-iap (v14)
-- Auth: Email/password + Google Sign-In (expo-auth-session) + Apple Sign-In
+- **Frontend**: React Native (Expo Bare Workflow, SDK 54, RN 0.81.5)
+- **Routing**: Expo Router
+- **State Management**: Zustand
+- **Backend**: FastAPI + MongoDB
+- **Native Fixes**: Custom Expo Config Plugins + patch-package
 
-## Completed Features
-- [x] Premium Gating UI in player.tsx (blur text, lock Spotify/YT, HD badge)
-- [x] AdMob lock-screen bypass fix (track skips in service.js)
-- [x] HD Stream URL selection based on Premium status
-- [x] 7-Day Free Trial UI in PremiumPaywall.tsx
-- [x] Apple-compliant Account Deletion in profile.tsx
-- [x] T&C links fix in Paywall (setTimeout before route)
-- [x] IAP Product ID alignment (megaradio_premium_monthly1, etc.)
-- [x] "Watch Ad" button hidden for Premium users
-- [x] React Query retry logic for genres/stations
-- [x] Signup payload fix (fullName, dynamic username)
-- [x] Premium Banner on Home & Discover (SVG-matched design) - Feb 2026
-- [x] Google Login fix - Backend updated to accept iOS/Android audience + Frontend retry logic - Feb 2026
-- [x] Xcode 16.4 fmt consteval fix - Podfile pre-install patch for fmt 12.1.0 - Mar 2026
-- [x] CarPlay Zuletzt gespielt: GridTemplate → ListTemplate for logo support - Mar 2026
-- [x] CarPlay Genres: Removed misleading global count - Mar 2026
-- [x] Apple Guideline 3.1.2(c) fix: Privacy Policy link in Paywall + fallback Terms/Privacy content - Mar 2026
-- [x] Android Auto carContext cold-start crash fix - Native CarPlayModule.kt patch + JS guards - Mar 2026
-- [x] Android 15 ForegroundServiceStartNotAllowedException fix - MusicService.kt try-catch + mediaPlayback type - Mar 2026
-- [x] AdMob config plugin (withAdMobFix.js) - Hardcoded ID, runs after google-mobile-ads plugin - Mar 2026
-- [x] TrackPlayer foregroundServiceType config plugin (withTrackPlayerServiceFix.js) - Mar 2026
-- [x] withAndroidAutoFull.js package name fix - com.visiongo.megaradio → com.megaradio - Mar 2026
-- [x] app.json Android package fix - com.visiongo.megaradio → com.megaradio (Play Store ile tutarlı) - Mar 2026
-- [x] GA4 (Firebase Analytics) entegrasyonu - @react-native-firebase/app + analytics - Mar 2026
-  - google-services.json (Android, com.megaradio) ve GoogleService-Info.plist (iOS, com.visiongo.megaradio) eklendi
-  - Google Services Gradle plugin kuruldu (root + app build.gradle)
-  - analyticsService.ts oluşturuldu (8 custom event + screen tracking + user properties)
-  - _layout.tsx'e analytics init + app_open + userId entegrasyonu yapıldı
+## What's Been Implemented
 
-## Key Files
-- frontend/app/(tabs)/index.tsx - Home page + Premium Banner
-- frontend/app/(tabs)/discover.tsx - Discover page + Premium Banner
-- frontend/app/(tabs)/profile.tsx - Account deletion, Premium section
-- frontend/app/player.tsx - Premium UI gating
-- frontend/app/static-page.tsx - Terms & Privacy pages with fallback content
-- frontend/src/components/PremiumPaywall.tsx - Paywall with trial UI, Terms & Privacy links
-- frontend/src/services/authService.ts - Auth methods
-- frontend/src/services/socialAuthService.ts - Google/Apple Sign-In (retry logic)
-- frontend/src/services/iapService.ts - IAP Product IDs
-- frontend/src/services/carPlayService.ts - CarPlay templates (ListTemplate for recent)
-- frontend/src/hooks/useQueries.ts - Data fetching with retry
-- frontend/service.js - Background lock screen logic
-- frontend/ios/Podfile - fmt 12.1.0 patch for Xcode 16.4+
+### Core Features (DONE)
+- Premium UI gating in Player
+- Apple App Store compliance (Account Deletion, T&C, Auto-Renewal terms)
+- CarPlay/Android Auto native support
+- Firebase GA4 and Crashlytics integration
+- Google AdMob (App Open, Interstitial, Rewarded, Banner ads)
+- IAP (In-App Purchases) with StoreKit / Play Billing
+- Google Sign-In authentication
+- Package name alignment (com.megaradio for Android)
+- versionCode 76
 
-## Key API Endpoints (External - themegaradio.com)
-- POST /api/auth/google - Google Sign-In (idToken verification, now accepts iOS/Android audience)
-- POST /api/auth/mobile/login - Email login
-- POST /api/auth/signup - Registration
-- DELETE /api/user/delete-account - Apple-compliant account deletion
-- GET /api/app/pages - Static pages (terms, privacy, about)
+### Android Crash Fixes (Feb 2026)
+1. **TrackPlayer TurboModule Fix** (`plugins/withTrackPlayerNewArchFix.js`)
+   - Fixed MusicModule.kt: 37 methods changed from `= scope.launch {}` (returns `Job`) to `{ scope.launch {} }` (returns `Unit`)
+   - Fixed MusicService.kt: `startForeground` wrapped in try-catch + `FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` for Android 15+
+   - Fixed null check for `originalItem` in getTrack/getActiveTrack
 
-## App Store Connect Requirements (User Action)
-- Privacy Policy URL: https://themegaradio.com/privacy
-- EULA/Terms: https://themegaradio.com/terms or Apple standard EULA
-- App Review Notes: mention Terms/Privacy link locations in app
+2. **CarPlay/Android Auto Fix** (`plugins/withCarPlayNativeFix.js`)
+   - Added `isCarContextReady()` guard to ALL methods including `createScreen` (line 469 crash)
+   - Fixed CarPlaySession ReactRootViewTagGenerator (TurboModule compatibility)
+   - Fixed Parser.kt and RCTTemplate.kt null-safety issues
 
-## Backlog / Future Tasks
-- P1: watchOS companion app (Now Playing, Favorites, Recent)
+3. **AdMob Fix** (`plugins/withAdMobFix.js` - enhanced)
+   - Removes duplicate meta-data entries before adding correct one
+   - Double verification: withAndroidManifest + withDangerousMod fallback
+   - AppOpenAd cleanup on CLOSED event to prevent overlay touch-blocking
+
+4. **Safe Area / Bottom Padding Fixes**
+   - PremiumPaywall: `paddingBottom: 40 + insets.bottom` (both paywall modes)
+   - IAP purchase error handling: Shows error alert instead of silently closing
+
+5. **Async Blocking Prevention**
+   - IAP initialization: 10s timeout
+   - GPS detection: 8s timeout
+   - AdMob initialization: 20s timeout
+   - Track Player setup: 10s timeout
+   - FlowAlive analytics: 5s timeout
+   - Purchase requests: 30s timeout
+   - AudioErrorBoundary wrapping AudioProvider (prevents white screen from TrackPlayer crash)
+
+### Config Plugin Architecture
+```
+app.json plugins (execution order):
+1. expo-router → Routing
+2. expo-build-properties → Build config (newArchEnabled=false)
+3-12. Various Expo plugins
+13. react-native-google-mobile-ads → Base AdMob config
+14. ./plugins/withAdMobFix.js → AdMob ID guarantee + duplicate removal
+15. ./plugins/withTrackPlayerServiceFix.js → Manifest: MusicService + foreground permission
+16. ./plugins/withTrackPlayerNewArchFix.js → Source: MusicModule.kt TurboModule fix + MusicService try-catch
+17. ./plugins/withCarPlayNativeFix.js → Source: CarPlayModule.kt carContext guards
+18. @react-native-firebase/app → Firebase
+```
+
+## Known Issues
+- Patch-package may silently fail in EAS builds → Config plugins provide fallback
+- TurboModule interop active even with newArchEnabled=false in RN 0.81/Expo SDK 54
+
+## Pending Tasks
+- P0: User verification of Android crashes after new build
+- P1: watchOS Companion App (waiting for user requirements)
+
+## Future/Backlog
+- P1: tvOS and Android TV standalone apps
 - P2: ShazamKit song recognition
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth metadata (AVRCP) enhancement
 - P3: Station alarm feature
-- P3: tvOS and Android TV apps
-- P3: App Store promotional images (1024x1024)
+- P3: App Store promotional images
+
+## 3rd Party Integrations
+- Google AdMob (Ads) - User Key
+- react-native-iap (In-App Purchases) - StoreKit / Play Billing
+- Firebase Analytics & Crashlytics
+- Google Sign-In (Authentication)
+- @g4rb4g3/react-native-carplay (CarPlay/Android Auto)
+- react-native-track-player (Audio playback)

@@ -234,8 +234,17 @@ class AdMobService {
       });
 
       this.appOpenAd.addAdEventListener(AdEventType.CLOSED, () => {
-        console.log('[AdMob] App Open ad closed');
+        console.log('[AdMob] App Open ad closed - cleaning up');
         this.isAppOpenLoaded = false;
+        // CRITICAL: Clean up the ad reference to ensure no overlay lingers
+        try {
+          if (this.appOpenAd) {
+            this.appOpenAd.removeAllListeners();
+          }
+        } catch (e) {
+          console.log('[AdMob] App Open cleanup error (non-fatal):', e);
+        }
+        this.appOpenAd = null;
       });
 
       this.appOpenAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
