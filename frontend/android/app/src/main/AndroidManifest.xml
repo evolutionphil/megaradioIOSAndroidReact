@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="com.android.vending.BILLING"/>
@@ -20,6 +21,17 @@
   </queries>
 
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme" android:supportsRtl="true">
+
+    <!-- Android 15: Disable expo-audio BOOT_COMPLETED foreground service start -->
+    <service
+        android:name="expo.modules.audio.service.AudioRecordingService"
+        android:enabled="false"
+        tools:replace="android:enabled" />
+    <service
+        android:name="expo.modules.audio.service.AudioControlsService"
+        android:enabled="false"
+        tools:replace="android:enabled" />
+
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
