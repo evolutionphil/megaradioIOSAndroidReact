@@ -1,155 +1,142 @@
 <analysis>Here is the comprehensive handover summary based on the LLM message history:
 
-**original_problem_statement**: The user originally wanted to implement an In-App Purchase (IAP) Premium Strategy. The app has heavily evolved to include UI gating for Premium features, Apple App Store compliance, CarPlay/Android Auto integration, and deep debugging of Android build/runtime crashes and iOS build issues.
+**original_problem_statement**: Implement In-App Purchase (IAP) Premium Strategy. The app has heavily evolved to include UI gating for Premium features, Apple App Store compliance, CarPlay/Android Auto integration, Firebase Analytics/Crashlytics, and deep debugging of Android build/runtime crashes and iOS build issues.
 
 **PRODUCT REQUIREMENTS**:
 - Implement Premium UI gating in the Player.
-- Ensure strict Apple App Store compliance (Account Deletion functionality, Terms & Conditions linking, Subscriptions Auto-Renewal terms).
-- Fix CarPlay/Android Auto template rendering and image loading issues.
-- Resolve Android app startup crashes (AdMob missing ID, TrackPlayer TurboModule incompatibility).
-- Fix Android 15 BOOT_COMPLETED foreground service restrictions.
-- Prepare guidelines and foundation for tvOS, Android TV, and watchOS platforms.
-- Integrate Google Analytics (GA4).
+- Ensure strict Apple App Store compliance (Account Deletion, T&C, Subscriptions Auto-Renewal terms).
+- Support CarPlay/Android Auto natively.
+- Fix Android app startup crashes (AdMob, TrackPlayer, CarPlay  issues).
+- Fix Android 15 Foreground service restrictions.
+- Integrate Firebase GA4 and Crashlytics.
+- Ensure UI elements (like Buy buttons) do not overlap with Android system navigation bars.
 
 **User's preferred language**: Turkish. (You MUST INSTRUCT the next agent to respond in Turkish only: Lütfen iletişimi Türkçe sürdürün.)
 
-**what currently exists?**: A React Native Expo application with fully integrated IAP logic, Premium Paywall with Free Trial UI, Apple-compliant flows, CarPlay/Android Auto functionality, and a heavily patched Android/iOS build configuration to ensure stability across newer OS versions (Xcode 16.4 iOS builds, Android 15 SDK 35). 
+**what currently exists?** 
+A React Native Expo (Bare Workflow) application with IAP, CarPlay/Android Auto, AdMob, and Firebase. The app heavily utilizes  to fix 3rd-party library native code (CarPlay, TrackPlayer) for Android 15/TurboModule compatibility. Custom Expo Config Plugins manage manifest injection.
 
 **Last working item**:
-    - Last item agent was working: Fixing an Android Auto startup crash (). The agent was investigating  and  to add a guard preventing early template creation before Android Auto's  is fully initialized.
+    - Last item agent was working: Fixing Android UI overlaps. The user reported that the Buy button and other elements are hidden behind the Android system navigation buttons. The agent was investigating  and  from  across the app.
     - Status: IN PROGRESS
     - Agent Testing Done: N
-    - Which testing method agent to use?: Frontend testing agent / manual log verification via .
+    - Which testing method agent to use?: Frontend testing agent / Screenshot tool (to verify UI padding at the bottom of the screen).
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  Issue 1: Android Auto  Initialization Crash (P0)
-     - Attempted fixes: The agent just identified the root cause in the logs ( failing because  is uninitialized on cold start). Looked at  for cold-start guards.
-     - Next debug checklist: Check  line 1268+ (). Ensure that React Native  API calls (like ) are strictly guarded behind a check that verifies the connection is fully established and context is ready, or pass the issue down to the  library.
-     - Why fix this issue and what will be achieved with the fix?: Prevents the app from crashing instantly when connected to Android Auto.
+  Issue 1: UI elements hidden behind Android System Navigation (P0)
+     - Attempted fixes: Agent just started ping for  and  across  and payment screens.
+     - Next debug checklist: Check  (or where the Buy button is), , and all main tab screens. Ensure that  is applied to scroll views or absolute positioned buttons at the bottom of the screen.
+     - Why fix this issue and what will be achieved with the fix?: The app is unclickable at the bottom on Android devices with gesture/navigation bars.
      - Status: IN PROGRESS
      - Is recurring issue? N
      - Should Test frontend/backend/both after fix?: frontend
+     - Blocked on other issue: None.
 
-  Issue 2: Google Analytics (GA4) Integration Blocked (P2)
-     - Attempted fixes: Agent requested the iOS  and event tracking preferences from the user.
-     - Next debug checklist: Wait for user to provide the Firebase iOS config file. Install  and .
-     - Why fix this issue and what will be achieved with the fix?: Enables app telemetry and user behavior tracking.
-     - Status: BLOCKED
-     - Is recurring issue? N
+  Issue 2: App freezes / white screen on launch (P1)
+     - Attempted fixes: The agent previously patched  and  to prevent background crash loops causing the white screen. The user uploaded an *old* crash log (from March 31st) claiming the issue persists.
+     - Next debug checklist: Explain to the user that the patches are only applied when a *new* EAS build is generated (An Expo user account is required to proceed.
+Either log in with eas login or set the EXPO_TOKEN environment variable if you're using EAS CLI on CI (Learn more: https://docs.expo.dev/accounts/programmatic-access/)). Ensure the user builds the app with the new code.
+     - Why fix this issue and what will be achieved with the fix?: Ensures the app actually launches.
+     - Status: USER VERIFICATION PENDING
+     - Is recurring issue? Y (User re-uploaded the exact same old log).
      - Should Test frontend/backend/both after fix?: frontend
-     - Blocked on other issue: Waiting for User file upload ().
 
 **In progress Task List**:
   Task 1: watchOS Companion App Setup
-     - Where to resume: User has generated the  target in Xcode. Wait for the user's decision on features (Now Playing, Favorites, etc.) before writing the Swift code and WatchConnectivity logic.
-     - What will be achieved with this?: Extends the app's ecosystem to Apple Watch.
-     - Status: BLOCKED (Waiting on user feature requirements)
+     - Where to resume: Waiting for user requirements (Now Playing, Favorites, etc.).
+     - What will be achieved with this?: watchOS ecosystem support.
+     - Status: BLOCKED
      - Should Test frontend/backend/both after fix?: frontend
 
 **Upcoming and Future Tasks**
     Future Tasks:
-    - P1: Build and integrate standalone apps for tvOS and Android TV (Agent has researched and provided a plan using  fork).
-    - P2: Investigate and implement ShazamKit for song recognition.
-    - P2: Add an Equalizer (EQ) with presets.
-    - P2: Enhance Bluetooth metadata support (AVRCP).
-    - P3: Implement a station alarm feature.
+    - P1: Build standalone apps for tvOS and Android TV.
+    - P2: ShazamKit song recognition.
+    - P2: Equalizer (EQ) with presets.
+    - P2: Bluetooth metadata (AVRCP) enhancement.
+    - P3: Station alarm feature.
 
 **Completed work in this session**
-- Fixed P0 Google Login invalid or expired google token error (Coordinated with backend developer to support Mobile Client IDs) (DONE).
-- Fixed P1 Premium Banner SVG Design to match exact dimensions and gradients (DONE).
-- Fixed iOS Xcode 16.4 build error ( consteval issue) by overriding  podspec to version 12.1.0 in  (DONE).
-- Fixed CarPlay Zuletzt gespielt (Recently Played) logos by switching from  to  which supports remote  (DONE).
-- Fixed CarPlay genre count mismatch (DONE).
-- Resolved Apple App Store Rejection (Guideline 3.1.2c) by adding Privacy Policy links to the paywall and injecting subscription auto-renewal terms into the fallback  (DONE).
-- Resolved Android Startup Crash () by explicitly injecting the AdMob App ID into  via  (DONE).
-- Resolved Android TrackPlayer Crash () by disabling React Native's New Architecture ( in ) (DONE).
-- Suppressed Android 15  background service warnings by overriding  and  intent filters in  (DONE).
-- Verified Backend caching optimizations for  endpoint (TTFB reduced from 16s to 0.5s) (DONE).
+- Patched  to add 12  guards, fixing Android Auto cold-start crashes () (DONE).
+- Patched  to wrap  in try-catch and add Android 15 , fixing background execution crashes (DONE).
+- Created custom Expo Config Plugins (, ) to strictly enforce manifest rules and prevent AdMob ID missing crashes (DONE).
+- Fixed a critical Android Package Name mismatch (Aligned  Android package and  to  to match the Play Store, leaving iOS as ) (DONE).
+- Integrated  and  for GA4, including web fallback () (DONE).
+- Integrated  (DONE).
+- Updated app versionCode to 76 (DONE).
 
 **Earlier issues found/mentioned but not fixed**
    - None
 
 **Known issue recurrence from previous fork**
-  - Issue recurrence in previous fork: None
-  - Recurrence count: 0
-  - Status: RESOLVED
+  - Issue recurrence in previous fork: Android App Crashing on Startup / White Screen.
+  - Recurrence count: 2
+  - Status: RESOLVED (Code fixed, but user tested an old build without the fixes. User needs to trigger a new --platform is required when building in non-interactive mode).
 
 **Code Architecture**
 - Frontend: React Native (Expo Bare Workflow)
-- Routing: Expo Router (file-based)
-- State Management: Zustand (, )
-- Data Fetching: React Query ()
-- App ecosystem integrations: , Google AdMob, React Native IAP.
+- Routing: Expo Router
+- State Management: Zustand
+- Native Fixes: Heavily utilizing  in the  directory to override Java/Kotlin code in  prior to EAS build.
 
 **Key Technical Concepts**
-- **Android Architecture Downgrade**: The app is actively forced to use the Old Architecture () because  crashes under TurboModules. DO NOT re-enable New Architecture.
-- **Manifest Overrides**: Android Manifest relies heavily on  and  to fix 3rd party plugin misbehaviors (AdMob, expo-audio).
-- **Apple Subscription Compliance**: Strict Apple review requirements dictate that all paywalls display auto-renewal terms, pricing, trial periods, and functional links to Terms/Privacy pages.
+- **Edge-to-Edge Display**: The app is drawing under the system navigation bars on Android.  must be utilized properly () to push content up.
+- **Firebase in Bare Workflow**: Uses  packages instead of Expo's wrapper, requiring manual placement of  and  files and  modifications.
 
 **key DB schema**
   - N/A
 
 **changes in tech stack**
-  - Disabled React Native New Architecture ().
-  - Overridden  podspec in iOS.
+  - Added , , and .
 
 **All files of reference**
--  (Current debugging target for Android Auto cold-start crash)
--  &  (New architecture configs)
--  (fmt podspec patch)
--  (AdMob configurations)
--  (Apple compliance links)
--  (Fallback terms content)
+-  and  (Need Safe Area padding fixes)
+-  (Contains crucial native crash fixes)
+-  (Custom Android Auto integration)
+-  &  (Firebase config)
 
 **Areas that need refactoring**:
--  dependency is blocking New Architecture. Monitor for library updates that support TurboModules to eventually re-enable .
+- **Safe Area Management**:  and  seem to be inconsistently applied across screens, leading to the reported UI overlaps.
 
 **key api endpoints**
--  
--  (Now accepts iOS/Android Client IDs)
--  (Returns dynamically fetched terms and privacy content)
--  &  (Aggressively cached server-side)
+- N/A
 
 **Critical Info for New Agent**
 - **Lütfen iletişimi Türkçe sürdürün.**
-- The immediate blocker is an Android Auto startup crash reported by the user (). You must analyze  and potentially  lifecycle handling to prevent early execution of template creation.
-- DO NOT attempt to enable  for Android. It will instantly crash the app via .
-- The user is waiting on instructions/implementation for the watchOS companion app and GA4 integration (you need the  from them).
+- The user submitted a crash log () at the very end of the session, claiming the app still shows a white screen. **WARNING:** This log is from an older build (March 31, prior to the  fixes). Do not waste time debugging the crash log; instead, inform the user that they *must* generate a new EAS build (An Expo user account is required to proceed.
+Either log in with eas login or set the EXPO_TOKEN environment variable if you're using EAS CLI on CI (Learn more: https://docs.expo.dev/accounts/programmatic-access/)) for the native patches to take effect.
+- Your immediate priority is the UI bug: The Buy button and other bottom elements are hidden behind Android system navigation buttons. Find where the Buy button is rendered and add  using .
 
 **documents and test reports created in this job**
-  - /app/memory/test_credentials.md
   - /app/memory/PRD.md
-  - /app/frontend/ios/LocalPodspecs/fmt.podspec
 
 **Last 10 User Messages and any pending HUMAN messages** 
-- User: Submitted Android startup crash log (AdMob).
-- Agent: Fixed AdMob missing ID issue.
-- User: Submitted another crash log ().
-- Agent: Disabled New Architecture () to fix  compatibility.
-- User: Repeated Android 15  Play Console warnings and asked about Google Analytics integration.
-- Agent: Fixed the manifest intent filters to suppress  warnings and asked user for  for GA4.
-- User: Submitted a new Android crash log ( in Android Auto module).
-- Agent: Identified the CarPlay/Android Auto cold-start crash but was interrupted before applying the fix.
+- User: Asked if Crashlytics will cause build errors.
+- Agent: Confirmed it won't.
+- User: Asked how to setup .
+- Agent: Explained it must be hosted on their website root domain.
+- User: *Pending task:* Complained that the Buy button is hidden behind Android system navigation buttons. Asked to check all pages. Also complained about the white screen/crash still happening, uploading .
+- Agent: Started investigating  files before context ended.
 
 **Project Health Check:**
-Broken: Android Auto integration on cold start.
+Broken: UI overlapping with Android System Navigation.
 Mocked: N/A
 
 **3rd Party Integrations**
 - Google AdMob (Ads) - User Key
 - react-native-iap (In-App Purchases) - StoreKit / Play Billing
+- Firebase Analytics & Crashlytics (Telemetry)
 - Google Sign-In (Authentication)
-- Firebase Analytics (Pending setup)
 
 **Testing status**
-  - Testing agent used after significant changes: NO (Tested via bash scripts, fast API checks, and manual user crash logs).
+  - Testing agent used after significant changes: NO (Tested via bash scripts, fast API checks).
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: None
-  - Known regressions: Android Auto startup crashes when  is null.
+  - Known regressions: Android UI overlaps with system gestures.
 
 **Credentials to test flow:**
-Available in  (Contains standard email/password test user:  / ).
+Available in 
 
 **What agent forgot to execute**
-- The agent was in the middle of analyzing the Android Auto  crash log and looking at  but ran out of context/tokens to implement the fix. Start there immediately.</analysis>
+- The agent was in the middle of analyzing how  was implemented to fix the UI overlapping bug on the Android version, but ran out of context. Start by fixing the bottom padding on the screens with bottom buttons (like the Paywall/Buy buttons).</analysis>
