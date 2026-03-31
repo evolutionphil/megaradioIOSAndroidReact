@@ -29,6 +29,7 @@ Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) 
 - [x] CarPlay Zuletzt gespielt: GridTemplate → ListTemplate for logo support - Mar 2026
 - [x] CarPlay Genres: Removed misleading global count - Mar 2026
 - [x] Apple Guideline 3.1.2(c) fix: Privacy Policy link in Paywall + fallback Terms/Privacy content - Mar 2026
+- [x] Android Auto carContext cold-start crash fix - Native CarPlayModule.kt patch + JS guards - Mar 2026
 
 ## Key Files
 - frontend/app/(tabs)/index.tsx - Home page + Premium Banner

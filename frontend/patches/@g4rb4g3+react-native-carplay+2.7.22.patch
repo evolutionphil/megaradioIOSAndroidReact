@@ -1,3 +1,147 @@
+diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlayModule.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlayModule.kt
+index 578dbfa..afa5016 100644
+--- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlayModule.kt
++++ b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlayModule.kt
+@@ -106,6 +106,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+     eventEmitter.didConnect()
+   }
+ 
++  private fun isCarContextReady(): Boolean {
++    return ::carContext.isInitialized
++  }
++
+   private fun parseTemplate(
+     config: ReadableMap,
+     carScreenContext: CarScreenContext
+@@ -124,6 +128,14 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+     handler.post {
+       Log.d(TAG, "Creating template $templateId")
+ 
++      if (!isCarContextReady()) {
++        Log.w(TAG, "createTemplate: carContext not initialized yet, skipping template '$templateId'")
++        val args = Arguments.createMap()
++        args.putString("error", "carContext not initialized yet")
++        callback?.invoke(args)
++        return@post
++      }
++
+       try {
+         createScreen(templateId, config)
+         callback?.invoke()
+@@ -138,6 +150,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+   @ReactMethod
+   fun updateTemplate(templateId: String, config: ReadableMap) {
+     handler.post {
++      if (!isCarContextReady()) {
++        Log.w(TAG, "updateTemplate: carContext not initialized yet, skipping template '$templateId'")
++        return@post
++      }
+       carScreens[templateId]?.let { screen ->
+         carScreenContexts[screen]?.let { carScreenContext ->
+           val template = parseTemplate(config, carScreenContext)
+@@ -163,6 +179,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+   fun setRootTemplate(templateId: String, animated: Boolean?) {
+     Log.d(TAG, "set Root Template for $templateId")
+     handler.post {
++      if (!isCarContextReady()) {
++        Log.w(TAG, "setRootTemplate: carContext not initialized yet, skipping")
++        return@post
++      }
+       screenManager?.let {
+         val screen = getScreen(templateId)
+         if (screen != null) {
+@@ -205,6 +225,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+   @ReactMethod
+   fun pushTemplate(templateId: String, animated: Boolean?) {
+     handler.post {
++      if (!isCarContextReady()) {
++        Log.w(TAG, "pushTemplate: carContext not initialized yet, skipping template '$templateId'")
++        return@post
++      }
+       val screen = getScreen(templateId)
+       if (screen != null) {
+         screenManager?.push(screen)
+@@ -247,6 +271,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+ 
+   @ReactMethod
+   fun toast(text: String, isLongDurationToast: Boolean) {
++    if (!isCarContextReady()) {
++      Log.w(TAG, "toast: carContext not initialized yet, skipping")
++      return
++    }
+     val duration = if (isLongDurationToast) CarToast.LENGTH_LONG else CarToast.LENGTH_SHORT
+     CarToast.makeText(carContext, text, duration).show()
+   }
+@@ -254,6 +282,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+   @ReactMethod
+   fun alert(props: ReadableMap) {
+     handler.post {
++      if (!isCarContextReady()) {
++        Log.w(TAG, "alert: carContext not initialized yet, skipping")
++        return@post
++      }
+       val id = props.getInt("id")
+       val title = Parser.parseCarText(props.getString("title")!!, props)
+       val duration = props.getInt("duration").toLong()
+@@ -296,6 +328,10 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+ 
+   @ReactMethod
+   fun dismissAlert(alertId: Int) {
++    if (!isCarContextReady()) {
++      Log.w(TAG, "dismissAlert: carContext not initialized yet, skipping")
++      return
++    }
+     carContext.getCarService(AppManager::class.java).dismissAlert(alertId)
+   }
+ 
+@@ -320,6 +356,11 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+ 
+   @ReactMethod
+   fun getHostInfo(promise: Promise) {
++    if (!isCarContextReady()) {
++      Log.w(TAG, "getHostInfo: carContext not initialized yet")
++      promise.resolve(Arguments.createMap())
++      return
++    }
+     return promise.resolve(Arguments.createMap().apply {
+       carContext.hostInfo?.packageName?.let { putString("packageName", it) }
+       carContext.hostInfo?.uid?.let { putInt("uid", it) }
+@@ -415,6 +456,11 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+ 
+   @ReactMethod
+   fun startTelemetryObserver(promise: Promise) {
++    if (!isCarContextReady()) {
++      Log.w(TAG, "startTelemetryObserver: carContext not initialized yet")
++      promise.reject("E_NOT_READY", "carContext not initialized yet")
++      return
++    }
+     CarPlayTelemetryObserver.startTelemetryObserver(carContext, eventEmitter, promise)
+   }
+ 
+@@ -430,6 +476,11 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+ 
+   @ReactMethod
+   fun requestPermissions(permissions: ReadableArray, message: String, primaryAction: ReadableMap, headerAction: ReadableMap, promise: Promise) {
++    if (!isCarContextReady()) {
++      Log.w(TAG, "requestPermissions: carContext not initialized yet")
++      promise.reject("E_NOT_READY", "carContext not initialized yet")
++      return
++    }
+     val list = mutableListOf<String>()
+     for (i in 0 until permissions.size()) {
+       permissions.getString(i)?.let { list.add(it) }
+@@ -441,6 +492,11 @@ class CarPlayModule internal constructor(private val reactContext: ReactApplicat
+ 
+   @ReactMethod
+   fun getPlayServicesAvailable(promise: Promise) {
++    if (!isCarContextReady()) {
++      Log.w(TAG, "getPlayServicesAvailable: carContext not initialized yet")
++      promise.resolve(false)
++      return
++    }
+     promise.resolve(PlayService.isPlayServiceAvailable(carContext))
+   }
+ 
 diff --git a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt b/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt
 index 034323b..5f3d532 100644
 --- a/node_modules/@g4rb4g3/react-native-carplay/android/src/main/java/org/birkir/carplay/CarPlaySession.kt

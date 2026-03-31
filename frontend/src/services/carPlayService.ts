@@ -705,6 +705,12 @@ const createBrowseTemplate = async (): Promise<any> => {
 const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName?: string): void => {
   if (!NowPlayingTemplate || !CarPlay) return;
   
+  // ANDROID AUTO GUARD: Skip if carContext may not be ready
+  if (Platform.OS === 'android' && !isCarPlayConnected) {
+    console.log('[CarPlay] Android: skipping NowPlaying - not connected');
+    return;
+  }
+  
   // Track the current station for button callbacks
   currentNowPlayingStation = station;
   
@@ -905,6 +911,23 @@ const openSearchScreen = async (): Promise<void> => {
 
 // Create Root Tab Bar Template
 const createRootTemplate = async (): Promise<void> => {
+  // ANDROID AUTO GUARD: On Android, the native carContext may not be initialized yet
+  // during cold start. The native patch now returns errors gracefully instead of crashing,
+  // but we add a JS-side guard to avoid unnecessary error cycles.
+  if (Platform.OS === 'android' && CarPlay) {
+    try {
+      // checkForConnection is safe to call even without carContext
+      // If it doesn't throw, the native module is at least loaded
+      if (CarPlay?.bridge?.checkForConnection) {
+        CarPlay.bridge.checkForConnection();
+      }
+    } catch (e) {
+      console.log('[CarPlay] Android: Native module not ready yet, deferring template creation');
+      CarPlayLogger.info('[RN] Android: carContext may not be ready, deferring', { error: String(e) });
+      return;
+    }
+  }
+
   // CRASH FIX: Prevent concurrent template creation which can cause
   // REASwizzledUIManager race condition with RCTUIManager
   if (isCreatingTemplate) {
@@ -1205,15 +1228,28 @@ const CarPlayService: CarPlayServiceType = {
       pendingConnection = false;
       
       // Create and show root template
-      CarPlayLogger.info('[RN] About to call createRootTemplate()');
-      createRootTemplate().then(() => {
-        CarPlayLogger.info('[RN] createRootTemplate() completed');
-      }).catch((err) => {
-        CarPlayLogger.error('[RN] createRootTemplate() FAILED', {
-          error: String(err),
-          stack: err?.stack?.substring(0, 500)
+      // ANDROID AUTO FIX: Add a small delay on Android to allow carContext to fully initialize
+      // The onConnect event can fire before carContext is set in CarPlayModule.setCarContext()
+      const templateDelay = Platform.OS === 'android' ? 500 : 0;
+      
+      CarPlayLogger.info('[RN] About to call createRootTemplate()', { delayMs: templateDelay });
+      
+      const doCreateTemplate = () => {
+        createRootTemplate().then(() => {
+          CarPlayLogger.info('[RN] createRootTemplate() completed');
+        }).catch((err) => {
+          CarPlayLogger.error('[RN] createRootTemplate() FAILED', {
+            error: String(err),
+            stack: err?.stack?.substring(0, 500)
+          });
         });
-      });
+      };
+      
+      if (templateDelay > 0) {
+        setTimeout(doCreateTemplate, templateDelay);
+      } else {
+        doCreateTemplate();
+      }
     });
     
     // Register CarPlay disconnection handler
@@ -1251,14 +1287,25 @@ const CarPlayService: CarPlayServiceType = {
       CarPlayService.isConnected = true;
       pendingConnection = false;
       
-      createRootTemplate().then(() => {
-        CarPlayLogger.info('[RN] createRootTemplate() completed (already connected case)');
-      }).catch((err) => {
-        CarPlayLogger.error('[RN] createRootTemplate() FAILED (already connected case)', {
-          error: String(err),
-          stack: err?.stack?.substring(0, 500)
+      // ANDROID AUTO FIX: Delay template creation on Android to allow carContext initialization
+      const templateDelay = Platform.OS === 'android' ? 800 : 0;
+      
+      const doCreate = () => {
+        createRootTemplate().then(() => {
+          CarPlayLogger.info('[RN] createRootTemplate() completed (already connected case)');
+        }).catch((err) => {
+          CarPlayLogger.error('[RN] createRootTemplate() FAILED (already connected case)', {
+            error: String(err),
+            stack: err?.stack?.substring(0, 500)
+          });
         });
-      });
+      };
+      
+      if (templateDelay > 0) {
+        setTimeout(doCreate, templateDelay);
+      } else {
+        doCreate();
+      }
     }
     
     CarPlayLogger.serviceInitialized();
