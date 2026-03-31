@@ -156,8 +156,6 @@
       "./plugins/withAndroidAutoFull.js",
       "./plugins/withCleartextTraffic.js",
       "./plugins/withSwift5Mode.js",
-      "./plugins/withAdMobFix.js",
-      "./plugins/withTrackPlayerServiceFix.js",
       "react-native-google-cast",
       [
         "react-native-google-mobile-ads",
@@ -166,7 +164,9 @@
           "iosAppId": "ca-app-pub-8771434485570434~4044224468",
           "userTrackingPermission": "MegaRadio, size daha iyi ve kişiselleştirilmiş bir reklam deneyimi sunmak için cihaz bilgilerinizi kullanmak istiyor."
         }
-      ]
+      ],
+      "./plugins/withAdMobFix.js",
+      "./plugins/withTrackPlayerServiceFix.js"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,9 +1,12 @@
 // Expo Config Plugin: Ensures AdMob Application ID is correctly injected
 // into AndroidManifest.xml with tools:replace to prevent startup crashes.
-// This fixes the "Invalid application ID" crash that occurs when
-// MobileAdsInitProvider can't find a valid AdMob App ID.
+// This runs AFTER react-native-google-mobile-ads plugin to guarantee
+// the tools:replace attribute is present on the meta-data.
 
 const { withAndroidManifest } = require('@expo/config-plugins');
+
+// Hardcoded AdMob App ID - must match app.json react-native-google-mobile-ads config
+const ADMOB_ANDROID_APP_ID = 'ca-app-pub-8771434485570434~7427742767';
 
 module.exports = function withAdMobFix(config) {
   return withAndroidManifest(config, async (config) => {
@@ -14,26 +17,20 @@ module.exports = function withAdMobFix(config) {
       application['meta-data'] = [];
     }
 
-    // Get AdMob App ID from app.json plugins config
-    const admobPlugin = config.plugins?.find(
-      (p) => Array.isArray(p) && p[0] === 'react-native-google-mobile-ads'
-    );
-    const admobAppId = admobPlugin?.[1]?.androidAppId;
-
-    if (!admobAppId) {
-      console.warn('[withAdMobFix] No androidAppId found in react-native-google-mobile-ads plugin config');
-      return config;
+    // Ensure tools namespace is declared
+    if (!manifest.manifest.$['xmlns:tools']) {
+      manifest.manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
     }
 
-    // Find existing AdMob meta-data or create new one
+    // Find existing AdMob meta-data
     const existingIndex = application['meta-data'].findIndex(
-      (m) => m.$?.['android:name'] === 'com.google.android.gms.ads.APPLICATION_ID'
+      (m) => m.$ && m.$['android:name'] === 'com.google.android.gms.ads.APPLICATION_ID'
     );
 
     const admobMetaData = {
       $: {
         'android:name': 'com.google.android.gms.ads.APPLICATION_ID',
-        'android:value': admobAppId,
+        'android:value': ADMOB_ANDROID_APP_ID,
         'tools:replace': 'android:value',
       },
     };
@@ -41,16 +38,13 @@ module.exports = function withAdMobFix(config) {
     if (existingIndex >= 0) {
       // Override existing entry to ensure tools:replace is present
       application['meta-data'][existingIndex] = admobMetaData;
+      console.log(`[withAdMobFix] Updated existing AdMob meta-data with tools:replace`);
     } else {
       application['meta-data'].push(admobMetaData);
+      console.log(`[withAdMobFix] Added new AdMob meta-data entry`);
     }
 
-    // Ensure tools namespace is declared
-    if (!manifest.manifest.$['xmlns:tools']) {
-      manifest.manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
-    }
-
-    console.log(`[withAdMobFix] AdMob App ID injected: ${admobAppId}`);
+    console.log(`[withAdMobFix] AdMob App ID: ${ADMOB_ANDROID_APP_ID}`);
     return config;
   });
 };

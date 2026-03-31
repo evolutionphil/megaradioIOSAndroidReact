@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Kotlin MediaBrowserService code
-const MEDIA_BROWSER_SERVICE_KOTLIN = `package com.visiongo.megaradio
+const MEDIA_BROWSER_SERVICE_KOTLIN = `package com.megaradio
 
 import android.content.Context
 import android.content.Intent
@@ -395,7 +395,6 @@ const withAndroidAutoNativeFiles = (config) => {
         'main', 
         'java', 
         'com', 
-        'visiongo', 
         'megaradio'
       );
       
