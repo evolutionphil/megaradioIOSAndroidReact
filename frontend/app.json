@@ -77,7 +77,7 @@
         "backgroundColor": "#FF4199"
       },
       "package": "com.visiongo.megaradio",
-      "versionCode": 65,
+      "versionCode": 72,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
