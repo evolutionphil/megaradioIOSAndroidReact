@@ -136,14 +136,35 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
 
       console.log('[Paywall] Purchasing:', productId);
       
-      // Lifetime is a one-time purchase, others are subscriptions
-      if (selectedPlan === 'lifetime' && mode !== 'remove_ads') {
-        await iap.purchaseProduct(productId);
-      } else {
-        await iap.purchaseSubscription(productId);
+      // Check if IAP is actually connected before attempting purchase
+      if (!iap.isAvailable()) {
+        Alert.alert(
+          t('not_available', 'Not Available'),
+          t('iap_not_connected', 'Store connection is not ready. Please try again in a moment.'),
+          [{ text: 'OK' }]
+        );
+        return;
       }
-      // purchaseUpdatedListener in iapService handles success
-      onClose();
+      
+      // Lifetime is a one-time purchase, others are subscriptions
+      let result: boolean;
+      if (selectedPlan === 'lifetime' && mode !== 'remove_ads') {
+        result = await iap.purchaseProduct(productId);
+      } else {
+        result = await iap.purchaseSubscription(productId);
+      }
+      
+      // If purchase was initiated successfully, close paywall
+      // purchaseUpdatedListener in iapService handles the actual success
+      if (result) {
+        onClose();
+      } else {
+        Alert.alert(
+          t('purchase_error', 'Purchase Error'),
+          t('purchase_not_initiated', 'Could not initiate purchase. Please check your store connection and try again.'),
+          [{ text: 'OK' }]
+        );
+      }
     } catch (error: any) {
       if (error.code !== 'E_USER_CANCELLED') {
         Alert.alert(
@@ -199,7 +220,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
             </View>
           </TouchableOpacity>
 
-          <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 60 }]} showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 60, paddingBottom: 40 + insets.bottom }]} showsVerticalScrollIndicator={false}>
             <View style={styles.heroSection}>
               <View style={styles.heroImagePlaceholder}>
                 <Ionicons name="headset" size={80 * S} color="#FF4199" />
@@ -259,7 +280,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
           </View>
         </TouchableOpacity>
 
-        <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20, paddingBottom: 40 + insets.bottom }]} showsVerticalScrollIndicator={false}>
           {/* Crown + Title */}
           <View style={styles.crownSection}>
             <View style={styles.crownBox}>
@@ -394,7 +415,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0D0D0F' },
-  scrollContent: { paddingHorizontal: 24, paddingBottom: 40 },
+  scrollContent: { paddingHorizontal: 24, paddingBottom: 40 }, // paddingBottom dynamically overridden with insets.bottom
   closeBtn: { position: 'absolute', right: 20, zIndex: 100 },
   closeBtnCircle: {
     width: 36, height: 36, borderRadius: 18,

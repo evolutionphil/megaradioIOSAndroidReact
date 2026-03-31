@@ -135,28 +135,37 @@ if (Platform.OS !== 'web') {
     // CRITICAL: Register handlers IMMEDIATELY when module loads
     // This ensures we catch connection events even if they fire before initialize()
     if (CarPlay && !handlersRegistered) {
-      CarPlayLogger.info('[RN] EARLY REGISTRATION - Registering connection handlers at module load');
-      
-      CarPlay.registerOnConnect(() => {
-        CarPlayLogger.info('[RN] EARLY onConnect callback FIRED (before initialize)', {
-          timestamp: new Date().toISOString(),
-          hasCallbacks: !!playStationCallback,
+      try {
+        CarPlayLogger.info('[RN] EARLY REGISTRATION - Registering connection handlers at module load');
+        
+        CarPlay.registerOnConnect(() => {
+          CarPlayLogger.info('[RN] EARLY onConnect callback FIRED (before initialize)', {
+            timestamp: new Date().toISOString(),
+            hasCallbacks: !!playStationCallback,
+          });
+          pendingConnection = true;
         });
-        pendingConnection = true;
-      });
-      
-      CarPlay.registerOnDisconnect(() => {
-        CarPlayLogger.info('[RN] EARLY onDisconnect callback FIRED');
-        pendingConnection = false;
-      });
-      
-      // Check if already connected at module load time
-      if (CarPlay.connected) {
-        CarPlayLogger.info('[RN] CarPlay ALREADY CONNECTED at module load time!');
-        pendingConnection = true;
+        
+        CarPlay.registerOnDisconnect(() => {
+          CarPlayLogger.info('[RN] EARLY onDisconnect callback FIRED');
+          pendingConnection = false;
+        });
+        
+        // Check if already connected at module load time
+        try {
+          if (CarPlay.connected) {
+            CarPlayLogger.info('[RN] CarPlay ALREADY CONNECTED at module load time!');
+            pendingConnection = true;
+          }
+        } catch (connErr) {
+          console.log('[CarPlayService] Error checking CarPlay.connected:', connErr);
+        }
+        
+        handlersRegistered = true;
+      } catch (handlerErr: any) {
+        console.log('[CarPlayService] Error registering CarPlay handlers:', handlerErr);
+        CarPlayLogger.info('[RN] Handler registration failed', { error: String(handlerErr) });
       }
-      
-      handlersRegistered = true;
     }
   } catch (e: any) {
     console.log('[CarPlayService] CarPlay module not available:', e);

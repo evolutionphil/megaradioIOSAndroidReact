@@ -54,18 +54,45 @@ class IAPService {
 
     try {
       console.log('[IAP] Initializing...');
-      await iap.initConnection();
+      
+      // Add timeout to prevent hanging indefinitely
+      const CONNECTION_TIMEOUT = 10000; // 10 seconds
+      const connectionPromise = iap.initConnection();
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('IAP connection timed out after 10s')), CONNECTION_TIMEOUT)
+      );
+      
+      await Promise.race([connectionPromise, timeoutPromise]);
       this.isConnected = true;
       this.initialized = true;
 
       this.setupListeners(iap);
-      await this.loadProducts(iap);
-      await this.restorePurchases(iap);
+      
+      // Load products with timeout
+      try {
+        const productsTimeout = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Products load timed out')), 8000)
+        );
+        await Promise.race([this.loadProducts(iap), productsTimeout]);
+      } catch (e: any) {
+        console.warn('[IAP] Products load timed out or failed:', e.message);
+      }
+      
+      // Restore purchases with timeout (non-blocking)
+      try {
+        const restoreTimeout = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Restore timed out')), 8000)
+        );
+        await Promise.race([this.restorePurchases(iap), restoreTimeout]);
+      } catch (e: any) {
+        console.warn('[IAP] Restore timed out or failed:', e.message);
+      }
 
       console.log('[IAP] Ready');
       return true;
     } catch (error: any) {
       console.error('[IAP] Init error:', error.message);
+      this.initialized = true; // Mark as initialized even on failure to prevent re-init loops
       return false;
     }
   }
@@ -112,7 +139,17 @@ class IAPService {
 
     try {
       console.log('[IAP] Fetching products:', ALL_SKUS);
-      const products = await iap.fetchProducts({ skus: ALL_SKUS });
+      
+      // Add timeout to prevent hanging
+      const fetchPromise = iap.fetchProducts({ skus: ALL_SKUS });
+      const timeoutPromise = new Promise<any[]>((resolve) =>
+        setTimeout(() => {
+          console.warn('[IAP] fetchProducts timed out after 10s');
+          resolve([]);
+        }, 10000)
+      );
+      
+      const products = await Promise.race([fetchPromise, timeoutPromise]);
       console.log('[IAP] Fetched', products.length, 'products');
 
       this.products = products.map((p: any) => ({
@@ -150,16 +187,23 @@ class IAPService {
       }
 
       // v14 API: requestPurchase with type 'subs'
-      await iap.requestPurchase({
+      // Add timeout to prevent hanging
+      const purchasePromise = iap.requestPurchase({
         request: Platform.OS === 'ios'
           ? { apple: { sku: productId } }
           : { google: { skus: [productId] } },
         type: 'subs',
       });
+      
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject({ code: 'E_TIMEOUT', message: 'Purchase request timed out after 30s' }), 30000)
+      );
+      
+      await Promise.race([purchasePromise, timeoutPromise]);
 
       return true;
     } catch (error: any) {
-      if (error.code === 'user-cancelled') {
+      if (error.code === 'user-cancelled' || error.code === 'E_USER_CANCELLED') {
         console.log('[IAP] Cancelled by user');
         return false;
       }
@@ -180,16 +224,22 @@ class IAPService {
         try { await iap.clearTransactionIOS(); } catch (e) { /* ignore */ }
       }
 
-      await iap.requestPurchase({
+      const purchasePromise = iap.requestPurchase({
         request: Platform.OS === 'ios'
           ? { apple: { sku: productId } }
           : { google: { skus: [productId] } },
         type: 'in-app',
       });
+      
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject({ code: 'E_TIMEOUT', message: 'Purchase request timed out after 30s' }), 30000)
+      );
+      
+      await Promise.race([purchasePromise, timeoutPromise]);
 
       return true;
     } catch (error: any) {
-      if (error.code === 'user-cancelled') return false;
+      if (error.code === 'user-cancelled' || error.code === 'E_USER_CANCELLED') return false;
       throw error;
     }
   }

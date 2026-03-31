@@ -27,6 +27,31 @@ import { usePremiumStore } from '../src/store/premiumStore';
 sendLog('LAYOUT_IMPORTS_2');
 
 import { AudioProvider } from '../src/providers/AudioProvider';
+
+// Error boundary to prevent native module crashes from causing white screen
+class AudioErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('[AudioErrorBoundary] Caught error:', error.message, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      // Render children without AudioProvider - app works but no audio
+      console.warn('[AudioErrorBoundary] AudioProvider crashed, rendering without audio');
+      return this.props.children;
+    }
+    return <AudioProvider>{this.props.children}</AudioProvider>;
+  }
+}
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
@@ -128,7 +153,8 @@ export default function RootLayout() {
   useEffect(() => {
     const initFlowalive = async () => {
       try {
-        await flowaliveService.initDevice();
+        const timeout = new Promise<void>((resolve) => setTimeout(resolve, 5000));
+        await Promise.race([flowaliveService.initDevice(), timeout]);
         console.log('[Layout] FlowAlive Analytics initialized');
       } catch (error) {
         console.error('[Layout] FlowAlive initialization error:', error);
@@ -189,12 +215,19 @@ export default function RootLayout() {
         await usePremiumStore.getState().loadPremiumStatus();
         console.log('[Layout] Premium status loaded:', usePremiumStore.getState().plan);
         
-        // Initialize IAP on native (non-blocking)
+        // Initialize IAP on native (non-blocking, with timeout)
         if (Platform.OS !== 'web') {
           try {
             const { iapService } = require('../src/services/iapService');
-            await iapService.initialize();
-            console.log('[Layout] IAP initialized');
+            // Timeout wrapper to prevent IAP from blocking app startup
+            const iapTimeout = new Promise<boolean>((resolve) =>
+              setTimeout(() => {
+                console.warn('[Layout] IAP init timed out after 15s');
+                resolve(false);
+              }, 15000)
+            );
+            const result = await Promise.race([iapService.initialize(), iapTimeout]);
+            console.log('[Layout] IAP initialized:', result);
           } catch (iapError) {
             console.log('[Layout] IAP init error (expected on simulator):', iapError);
           }
@@ -221,7 +254,14 @@ export default function RootLayout() {
         // GPS-detected countries stored previously will be refreshed
         if (!state.isManuallySet) {
           console.log('[Layout] Country not manually set, attempting GPS detection...');
-          await useLocationStore.getState().fetchLocation();
+          // Timeout GPS detection to prevent blocking app startup
+          const gpsTimeout = new Promise<void>((resolve) => {
+            setTimeout(() => {
+              console.warn('[Layout] GPS detection timed out after 8s');
+              resolve();
+            }, 8000);
+          });
+          await Promise.race([useLocationStore.getState().fetchLocation(), gpsTimeout]);
           const newState = useLocationStore.getState();
           console.log('[Layout] GPS detection result:', newState.country, newState.countryCode);
         } else {
@@ -303,7 +343,15 @@ export default function RootLayout() {
       
       try {
         console.log('[Layout] Initializing AdMob (AppState:', AppState.currentState, ')');
-        const success = await adMobService.initialize();
+        
+        // Add timeout to prevent AdMob from blocking
+        const adMobTimeout = new Promise<boolean>((resolve) =>
+          setTimeout(() => {
+            console.warn('[Layout] AdMob init timed out after 20s');
+            resolve(false);
+          }, 20000)
+        );
+        const success = await Promise.race([adMobService.initialize(), adMobTimeout]);
         console.log('[Layout] AdMob initialized:', success);
         
         if (success && !cancelled) {
@@ -503,7 +551,7 @@ export default function RootLayout() {
       {/* FlowAlive DISABLED - NPM package has bug */}
       <I18nextProvider i18n={i18n}>
           <QueryClientProvider client={queryClient}>
-            <AudioProvider>
+            <AudioErrorBoundary>
               <PlayAtLoginHandler />
               <NotificationHandler />
               {/* CarPlay - Re-enabled after native delegate fixes */}
@@ -548,7 +596,7 @@ export default function RootLayout() {
                 <GlobalMiniPlayer />
                 <RadioErrorModal />
               </View>
-            </AudioProvider>
+            </AudioErrorBoundary>
           </QueryClientProvider>
         </I18nextProvider>
       {/* End FlowAlive wrapper (disabled) */}

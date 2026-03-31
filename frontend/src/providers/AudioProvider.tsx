@@ -406,12 +406,26 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
     
-    setupTrackPlayer().then((success) => {
-      if (success) {
-        console.log('[AudioProvider] Ready to play!');
+    // Track Player setup with timeout to prevent hanging
+    const setupWithTimeout = async () => {
+      try {
+        const setupPromise = setupTrackPlayer();
+        const timeoutPromise = new Promise<boolean>((resolve) =>
+          setTimeout(() => {
+            console.warn('[AudioProvider] Track Player setup timed out after 10s');
+            resolve(false);
+          }, 10000)
+        );
+        const success = await Promise.race([setupPromise, timeoutPromise]);
+        if (success) {
+          console.log('[AudioProvider] Ready to play!');
+        }
+      } catch (e) {
+        console.error('[AudioProvider] Track Player setup error:', e);
       }
       setIsReady(true);
-    });
+    };
+    setupWithTimeout();
   }, []);
 
   // Resolve stream URL helper - returns { url, candidates } for fallback support
