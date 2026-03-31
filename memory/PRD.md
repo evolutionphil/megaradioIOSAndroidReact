@@ -34,6 +34,12 @@ Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) 
 - [x] AdMob config plugin (withAdMobFix.js) - Hardcoded ID, runs after google-mobile-ads plugin - Mar 2026
 - [x] TrackPlayer foregroundServiceType config plugin (withTrackPlayerServiceFix.js) - Mar 2026
 - [x] withAndroidAutoFull.js package name fix - com.visiongo.megaradio → com.megaradio - Mar 2026
+- [x] app.json Android package fix - com.visiongo.megaradio → com.megaradio (Play Store ile tutarlı) - Mar 2026
+- [x] GA4 (Firebase Analytics) entegrasyonu - @react-native-firebase/app + analytics - Mar 2026
+  - google-services.json (Android, com.megaradio) ve GoogleService-Info.plist (iOS, com.visiongo.megaradio) eklendi
+  - Google Services Gradle plugin kuruldu (root + app build.gradle)
+  - analyticsService.ts oluşturuldu (8 custom event + screen tracking + user properties)
+  - _layout.tsx'e analytics init + app_open + userId entegrasyonu yapıldı
 
 ## Key Files
 - frontend/app/(tabs)/index.tsx - Home page + Premium Banner

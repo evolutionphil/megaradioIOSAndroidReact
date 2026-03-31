@@ -5,13 +5,17 @@
     "version": "1.0.65",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": ["megaradio", "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"],
+    "scheme": [
+      "megaradio",
+      "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
+    ],
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
       "buildNumber": "65",
       "usesAppleSignIn": true,
+      "googleServicesFile": "./ios/GoogleService-Info.plist",
       "infoPlist": {
         "UIBackgroundModes": [
           "audio",
@@ -166,7 +170,8 @@
         }
       ],
       "./plugins/withAdMobFix.js",
-      "./plugins/withTrackPlayerServiceFix.js"
+      "./plugins/withTrackPlayerServiceFix.js",
+      "@react-native-firebase/app"
     ],
     "experiments": {
       "typedRoutes": true

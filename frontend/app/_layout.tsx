@@ -35,6 +35,7 @@ import TrackPlayer from 'react-native-track-player';
 // FlowAlive DISABLED - NPM package has bug (yalc reference in dependencies)
 // import { FlowAliveProvider } from 'flowalive-analytics/expo';
 import { flowaliveService } from '../src/services/flowaliveService';
+import analyticsService from '../src/services/analyticsService';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
 // CarPlay - Re-enabled after fixing native delegate issues
@@ -136,6 +137,20 @@ export default function RootLayout() {
     initFlowalive();
   }, []);
 
+  // Initialize Firebase Analytics (GA4)
+  useEffect(() => {
+    const initAnalytics = async () => {
+      try {
+        await analyticsService.initialize();
+        await analyticsService.logAppOpen();
+        console.log('[Layout] Firebase Analytics initialized');
+      } catch (error) {
+        console.warn('[Layout] Firebase Analytics init error:', error);
+      }
+    };
+    initAnalytics();
+  }, []);
+
   // Load stored authentication on app startup
   useEffect(() => {
     const loadAuth = async () => {
@@ -148,6 +163,11 @@ export default function RootLayout() {
         // If authenticated, immediately load favorites from server to avoid "no favorites" flash
         if (isAuthenticated) {
           console.log('[Layout] User authenticated, loading favorites immediately...');
+          // Set analytics user properties
+          const authState = useAuthStore.getState();
+          if (authState.user?.id) {
+            analyticsService.setUserId(authState.user.id);
+          }
           try {
             await useFavoritesStore.getState().loadFavorites();
             console.log('[Layout] Favorites loaded:', useFavoritesStore.getState().favorites.length);

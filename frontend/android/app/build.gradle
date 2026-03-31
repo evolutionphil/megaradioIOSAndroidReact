@@ -186,3 +186,6 @@ dependencies {
     // Wear OS companion app module
     wearApp project(':wear')
 }
+
+
+apply plugin: 'com.google.gms.google-services'
