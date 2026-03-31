@@ -76,7 +76,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FF4199"
       },
-      "package": "com.visiongo.megaradio",
+      "package": "com.megaradio",
       "versionCode": 72,
       "googleServicesFile": "./google-services.json",
       "permissions": [
