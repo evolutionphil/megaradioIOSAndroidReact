@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "328998984032",
-    "project_id": "mega-bb8c0",
-    "storage_bucket": "mega-bb8c0.firebasestorage.app"
+    "project_number": "957628580421",
+    "project_id": "megaradio-276c6",
+    "storage_bucket": "megaradio-276c6.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:328998984032:android:79559fce83a309e89da605",
+        "mobilesdk_app_id": "1:957628580421:android:d62c56ecdf7239cc6c192c",
         "android_client_info": {
-          "package_name": "com.visiongo.megaradio"
+          "package_name": "com.megaradio"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyArmcEpre80fOr6oBU0q9jazplaA0IfUAs"
+          "current_key": "AIzaSyBudgEDwr5stSFz10G_Bm00W8jE1Eycc80"
         }
       ],
       "services": {
