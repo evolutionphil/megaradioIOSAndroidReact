@@ -1,72 +1,71 @@
-<analysis>**original_problem_statement**: The user initially wanted to implement an In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium). Over the course of the session, the app was heavily updated to include UI gating for Premium features, Apple App Store compliance (Account Deletion, 7-day free trial UI, correct terms linking), and exact UI placements for a new Premium promotional banner on the Home and Discover tabs.
+<analysis>Here is the comprehensive handover summary based on the LLM message history:
+
+**original_problem_statement**: The user originally wanted to implement an In-App Purchase (IAP) Premium Strategy. The app has heavily evolved to include UI gating for Premium features, Apple App Store compliance, CarPlay/Android Auto integration, and deep debugging of Android build/runtime crashes and iOS build issues.
 
 **PRODUCT REQUIREMENTS**:
-- Implement Premium UI gating in the Player (blur song text, lock Spotify/YT buttons, hide HD badge for free users).
-- Fix AdMob lock-screen bypass by tracking track skips in .
-- Add 7-Day Free Trial UI to the Paywall.
-- Ensure strict Apple App Store compliance (Account Deletion functionality, Terms & Conditions linking).
-- Match IAP Product IDs strictly to App Store Connect (, etc.).
-- Add a specific SVG-based MegaRadio Premium banner to the Home and Discover tabs.
-- Ensure Watch Ad button is hidden for Premium users.
-- Fix Google Login invalid or expired google token error.
+- Implement Premium UI gating in the Player.
+- Ensure strict Apple App Store compliance (Account Deletion functionality, Terms & Conditions linking, Subscriptions Auto-Renewal terms).
+- Fix CarPlay/Android Auto template rendering and image loading issues.
+- Resolve Android app startup crashes (AdMob missing ID, TrackPlayer TurboModule incompatibility).
+- Fix Android 15 BOOT_COMPLETED foreground service restrictions.
+- Prepare guidelines and foundation for tvOS, Android TV, and watchOS platforms.
+- Integrate Google Analytics (GA4).
 
 **User's preferred language**: Turkish. (You MUST INSTRUCT the next agent to respond in Turkish only: Lütfen iletişimi Türkçe sürdürün.)
 
-**what currently exists?**: A React Native Expo application with fully integrated IAP logic, Premium Paywall with Free Trial UI, Apple-compliant Account Deletion flow, and Premium UI gating on the Player page. The app includes a newly designed Premium banner on the Home/Discover pages. 
+**what currently exists?**: A React Native Expo application with fully integrated IAP logic, Premium Paywall with Free Trial UI, Apple-compliant flows, CarPlay/Android Auto functionality, and a heavily patched Android/iOS build configuration to ensure stability across newer OS versions (Xcode 16.4 iOS builds, Android 15 SDK 35). 
 
 **Last working item**:
-    - Last item agent was working: Applying the exact SVG design specifications to the Premium Banner on the Home and Discover pages, and investigating a newly reported Google Login bug.
+    - Last item agent was working: Fixing an Android Auto startup crash (). The agent was investigating  and  to add a guard preventing early template creation before Android Auto's  is fully initialized.
     - Status: IN PROGRESS
-    - Agent Testing Done: N (The agent applied the code changes for the banner but did not take a screenshot yet, and did not start debugging the Google Login issue).
-    - Which testing method agent to use?: Frontend testing agent / manual testing via screenshot for the banner, and manual curl/backend log verification for the Google Login error.
+    - Agent Testing Done: N
+    - Which testing method agent to use?: Frontend testing agent / manual log verification via .
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  Issue 1: Google Login returns invalid or expired google token (P0)
-     - Attempted fixes: None yet. The user just reported this at the very end of the session.
-     - Next debug checklist: Check  for the Google Login flow ( or similar). Verify if the token generation/validation from the frontend to the backend ( or similar) is formatting the payload correctly. Check backend logs to see why the token is being rejected.
-     - Why fix this issue and what will be achieved with the fix?: Unblocks users from logging in via Google, which is a core authentication feature.
-     - Status: NOT STARTED
+  Issue 1: Android Auto  Initialization Crash (P0)
+     - Attempted fixes: The agent just identified the root cause in the logs ( failing because  is uninitialized on cold start). Looked at  for cold-start guards.
+     - Next debug checklist: Check  line 1268+ (). Ensure that React Native  API calls (like ) are strictly guarded behind a check that verifies the connection is fully established and context is ready, or pass the issue down to the  library.
+     - Why fix this issue and what will be achieved with the fix?: Prevents the app from crashing instantly when connected to Android Auto.
+     - Status: IN PROGRESS
      - Is recurring issue? N
-     - Should Test frontend/backend/both after fix?: both
-     - Blocked on other issue: None
-
-  Issue 2: Premium Banner SVG Design Verification (P1)
-     - Attempted fixes: The agent updated  and  with the exact SVG properties provided by the user (white square logo, no chevron,  to  linear gradient, 345x54 dims, 5px border-radius).
-     - Next debug checklist: Take a screenshot of the Home tab () to verify the banner perfectly matches the user's requirements.
-     - Why fix this issue and what will be achieved with the fix?: Fulfills the user's strict UI requirements provided via the SVG artifact.
-     - Status: TESTING PENDING
-     - Is recurring issue? Y (User rejected previous iterations for not matching the design)
      - Should Test frontend/backend/both after fix?: frontend
-     - Blocked on other issue: None
+
+  Issue 2: Google Analytics (GA4) Integration Blocked (P2)
+     - Attempted fixes: Agent requested the iOS  and event tracking preferences from the user.
+     - Next debug checklist: Wait for user to provide the Firebase iOS config file. Install  and .
+     - Why fix this issue and what will be achieved with the fix?: Enables app telemetry and user behavior tracking.
+     - Status: BLOCKED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix?: frontend
+     - Blocked on other issue: Waiting for User file upload ().
 
 **In progress Task List**:
-  Task 1: Generate Premium Feature Images (1024x1024)
-     - Where to resume: Attempt to generate 1024x1024 promotional images for the App Store (if emergent quota allows) or finalize the fallback stock images.
-     - What will be achieved with this?: Provides App Store Connect marketing assets.
-     - Status: BLOCKED (Emergent API Quota from previous fork)
-     - Should Test frontend/backend/both after fix?: NA
-     - Blocked on something: API Quota
+  Task 1: watchOS Companion App Setup
+     - Where to resume: User has generated the  target in Xcode. Wait for the user's decision on features (Now Playing, Favorites, etc.) before writing the Swift code and WatchConnectivity logic.
+     - What will be achieved with this?: Extends the app's ecosystem to Apple Watch.
+     - Status: BLOCKED (Waiting on user feature requirements)
+     - Should Test frontend/backend/both after fix?: frontend
 
 **Upcoming and Future Tasks**
     Future Tasks:
+    - P1: Build and integrate standalone apps for tvOS and Android TV (Agent has researched and provided a plan using  fork).
     - P2: Investigate and implement ShazamKit for song recognition.
     - P2: Add an Equalizer (EQ) with presets.
     - P2: Enhance Bluetooth metadata support (AVRCP).
     - P3: Implement a station alarm feature.
-    - P3: Build and integrate apps for tvOS and Android TV.
 
 **Completed work in this session**
-- Implemented Premium Gating UI in  (Blurred text, Spotify/YT locked, HD badge gated) (DONE).
-- Updated  and  to increment Ad counter on lock-screen next/prev (DONE).
-- Implemented HD Stream URL selection in  based on Premium status (DONE).
-- Added 7 Days Free badge and dynamic CTA to Monthly tier in  (DONE).
-- Fixed  signup payload to send  and dynamically generate  (DONE).
-- Implemented Apple-compliant Account Deletion flow in  linked to  (DONE).
-- Fixed T&C links in Paywall to open  and added  so the modal closes before routing (DONE).
-- Fixed App Store Connect SKU mismatches in  (, ) (DONE).
-- Hid the Watch Ad button in  for Premium/Remove Ads users (DONE).
-- Added retry logic to global queries (, ) in  to fix loading failures (DONE).
+- Fixed P0 Google Login invalid or expired google token error (Coordinated with backend developer to support Mobile Client IDs) (DONE).
+- Fixed P1 Premium Banner SVG Design to match exact dimensions and gradients (DONE).
+- Fixed iOS Xcode 16.4 build error ( consteval issue) by overriding  podspec to version 12.1.0 in  (DONE).
+- Fixed CarPlay Zuletzt gespielt (Recently Played) logos by switching from  to  which supports remote  (DONE).
+- Fixed CarPlay genre count mismatch (DONE).
+- Resolved Apple App Store Rejection (Guideline 3.1.2c) by adding Privacy Policy links to the paywall and injecting subscription auto-renewal terms into the fallback  (DONE).
+- Resolved Android Startup Crash () by explicitly injecting the AdMob App ID into  via  (DONE).
+- Resolved Android TrackPlayer Crash () by disabling React Native's New Architecture ( in ) (DONE).
+- Suppressed Android 15  background service warnings by overriding  and  intent filters in  (DONE).
+- Verified Backend caching optimizations for  endpoint (TTFB reduced from 16s to 0.5s) (DONE).
 
 **Earlier issues found/mentioned but not fixed**
    - None
@@ -79,81 +78,78 @@
 **Code Architecture**
 - Frontend: React Native (Expo Bare Workflow)
 - Routing: Expo Router (file-based)
-- State Management: Zustand (, , )
+- State Management: Zustand (, )
 - Data Fetching: React Query ()
-- API Client: Axios ( instance in  pointing to )
-- Monetization: Google AdMob +  (v14)
+- App ecosystem integrations: , Google AdMob, React Native IAP.
 
 **Key Technical Concepts**
-- **Apple Review Compliance**: Strict adherence to Account Deletion (Guideline 5.1.1), accurate Terms of Service linking, and Restore Purchases availability.
-- **Background Contexts**:  runs headlessly. Edits to  are required to sync states like AdMob counters back to the main UI thread.
+- **Android Architecture Downgrade**: The app is actively forced to use the Old Architecture () because  crashes under TurboModules. DO NOT re-enable New Architecture.
+- **Manifest Overrides**: Android Manifest relies heavily on  and  to fix 3rd party plugin misbehaviors (AdMob, expo-audio).
+- **Apple Subscription Compliance**: Strict Apple review requirements dictate that all paywalls display auto-renewal terms, pricing, trial periods, and functional links to Terms/Privacy pages.
 
 **key DB schema**
   - N/A
 
 **changes in tech stack**
-  - None this session.
+  - Disabled React Native New Architecture ().
+  - Overridden  podspec in iOS.
 
 **All files of reference**
--  (Home page, contains new Premium Banner)
--  (Discover page, contains new Premium Banner)
--  (Account deletion, top-positioned Premium section, gated Ad button)
--  (Premium UI gating)
--  (7-day trial UI, T&C navigation fix)
--  (Signup fix, Google Login logic which currently has a bug)
--  (Product IDs updated)
--  (Retry logic added for genres)
--  (Lock screen ad increment logic)
+-  (Current debugging target for Android Auto cold-start crash)
+-  &  (New architecture configs)
+-  (fmt podspec patch)
+-  (AdMob configurations)
+-  (Apple compliance links)
+-  (Fallback terms content)
 
 **Areas that need refactoring**:
-- N/A
+-  dependency is blocking New Architecture. Monitor for library updates that support TurboModules to eventually re-enable .
 
 **key api endpoints**
--  (Successfully tested E2E).
--  (Payload now properly requires , , , ).
--  (Or equivalent endpoint handling Google Login - Currently throwing invalid or expired google token error).
+-  
+-  (Now accepts iOS/Android Client IDs)
+-  (Returns dynamically fetched terms and privacy content)
+-  &  (Aggressively cached server-side)
 
 **Critical Info for New Agent**
 - **Lütfen iletişimi Türkçe sürdürün.**
-- A severe bug was reported in the user's very last message: google ile login olmak istediğimde girişte hatası invalid or expired google token hatası cikiyor. You MUST investigate the Google Authentication flow first.
-- The user provided exact design specs for a Premium Banner (345x54, border-radius 5, linear-gradient 267.36deg #9F3FFF to #5C27F4). The code was applied in  and  in the last step, but needs visual confirmation to ensure it matches perfectly.
-- Ensure that you use the provided test credentials in  if you need to test authenticated flows.
+- The immediate blocker is an Android Auto startup crash reported by the user (). You must analyze  and potentially  lifecycle handling to prevent early execution of template creation.
+- DO NOT attempt to enable  for Android. It will instantly crash the app via .
+- The user is waiting on instructions/implementation for the watchOS companion app and GA4 integration (you need the  from them).
 
 **documents and test reports created in this job**
-  - /app/frontend/BACKEND_DELETE_ACCOUNT_API.md
-  - /app/frontend/APP_PRIVACY_LABELS_GUIDE.md
   - /app/memory/test_credentials.md
   - /app/memory/PRD.md
+  - /app/frontend/ios/LocalPodspecs/fmt.podspec
 
 **Last 10 User Messages and any pending HUMAN messages** 
-- User: Asked what else is needed before publishing.
-- Agent: Listed final App Store Connect steps (Privacy Labels, Review account, IAP readiness) and stated the app is ready for build.
-- User: Reported that IAP product IDs (, etc.) are throwing , provided correct App Store Connect IDs, and asked to move the Premium section in the Profile to the very top.
-- Agent: Fixed the SKUs (added 1 to the end of monthly and remove-ads), moved the Premium section to the top of .
-- User: Asked to add a MegaRadio Premium banner to the Discover page (with screenshot) and complained about popular genres loading slowly/failing.
-- Agent: Added banner to  (Home) and . Added React Query retry logic for genres.
-- User: Reported that the T&C button on the Paywall stays behind the modal, the Banner dimensions/colors need to match an exact SVG, and Premium users still see the Watch Ad button.
-- Agent: Fixed the T&C button with a setTimeout, hid the Ad button for Premium users, updated the Banner styles.
-- User: google ile login olmak istediğimde girişte hatası invalid or expired google token hatası cikiyor? ve banner tasarimi halen firma da olduug gibi degil.. (Pending: Google Login is broken, Banner needed one final design tweak).
-- Agent: Applied the banner SVG code fixes but DID NOT yet fix the Google login issue or test the banner visually.
+- User: Submitted Android startup crash log (AdMob).
+- Agent: Fixed AdMob missing ID issue.
+- User: Submitted another crash log ().
+- Agent: Disabled New Architecture () to fix  compatibility.
+- User: Repeated Android 15  Play Console warnings and asked about Google Analytics integration.
+- Agent: Fixed the manifest intent filters to suppress  warnings and asked user for  for GA4.
+- User: Submitted a new Android crash log ( in Android Auto module).
+- Agent: Identified the CarPlay/Android Auto cold-start crash but was interrupted before applying the fix.
 
 **Project Health Check:**
-Broken: Google Login flow.
-Mocked: IAP flows require a physical device and sandbox tester accounts to truly verify (but SKUs are now aligned).
+Broken: Android Auto integration on cold start.
+Mocked: N/A
 
 **3rd Party Integrations**
 - Google AdMob (Ads) - User Key
 - react-native-iap (In-App Purchases) - StoreKit / Play Billing
-- Google Sign-In (Authentication) - *Currently Broken*
+- Google Sign-In (Authentication)
+- Firebase Analytics (Pending setup)
 
 **Testing status**
-  - Testing agent used after significant changes: NO (Tested manually via bash curls for the delete-account API and via screenshots for UI).
+  - Testing agent used after significant changes: NO (Tested via bash scripts, fast API checks, and manual user crash logs).
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: None
-  - Known regressions: Google Login is currently failing with a token validation error.
+  - Known regressions: Android Auto startup crashes when  is null.
 
 **Credentials to test flow:**
-Available in  (Contains standard email/password test user).
+Available in  (Contains standard email/password test user:  / ).
 
 **What agent forgot to execute**
-- The agent read the user's report about the invalid or expired google token error but did not investigate or fix it before finishing the step. This is your immediate priority.</analysis>
+- The agent was in the middle of analyzing the Android Auto  crash log and looking at  but ran out of context/tokens to implement the fix. Start there immediately.</analysis>
