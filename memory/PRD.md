@@ -30,6 +30,9 @@ Implement In-App Purchase (IAP) Premium Strategy (2-tier: Remove Ads & Premium) 
 - [x] CarPlay Genres: Removed misleading global count - Mar 2026
 - [x] Apple Guideline 3.1.2(c) fix: Privacy Policy link in Paywall + fallback Terms/Privacy content - Mar 2026
 - [x] Android Auto carContext cold-start crash fix - Native CarPlayModule.kt patch + JS guards - Mar 2026
+- [x] Android 15 ForegroundServiceStartNotAllowedException fix - MusicService.kt patch with try-catch - Mar 2026
+- [x] AdMob meta-data Expo config plugin (withAdMobFix.js) - Survives prebuild - Mar 2026
+- [x] TrackPlayer foregroundServiceType config plugin (withTrackPlayerServiceFix.js) - Mar 2026
 
 ## Key Files
 - frontend/app/(tabs)/index.tsx - Home page + Premium Banner

@@ -39,3 +39,59 @@ index b2409a0..611b5e7 100644
      }
  
      @ReactMethod
+diff --git a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
+index afa6b0f..9a9c1a4 100644
+--- a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
++++ b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
+@@ -105,24 +105,35 @@ class MusicService : HeadlessJsTaskService() {
+      * information see https://github.com/doublesymmetry/react-native-track-player/issues/1666
+      */
+     private fun startAndStopEmptyNotificationToAvoidANR() {
+-        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+-            notificationManager.createNotificationChannel(
+-                NotificationChannel(getString(TrackPlayerR.string.rntp_temporary_channel_id), getString(TrackPlayerR.string.rntp_temporary_channel_name), NotificationManager.IMPORTANCE_LOW)
+-            )
+-        }
++        try {
++            val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
++            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
++                notificationManager.createNotificationChannel(
++                    NotificationChannel(getString(TrackPlayerR.string.rntp_temporary_channel_id), getString(TrackPlayerR.string.rntp_temporary_channel_name), NotificationManager.IMPORTANCE_LOW)
++                )
++            }
+ 
+-        val notificationBuilder = NotificationCompat.Builder(this, getString(TrackPlayerR.string.rntp_temporary_channel_id))
+-            .setPriority(PRIORITY_LOW)
+-            .setCategory(Notification.CATEGORY_SERVICE)
+-            .setSmallIcon(ExoPlayerR.drawable.exo_notification_small_icon)
+-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+-            notificationBuilder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
++            val notificationBuilder = NotificationCompat.Builder(this, getString(TrackPlayerR.string.rntp_temporary_channel_id))
++                .setPriority(PRIORITY_LOW)
++                .setCategory(Notification.CATEGORY_SERVICE)
++                .setSmallIcon(ExoPlayerR.drawable.exo_notification_small_icon)
++            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
++                notificationBuilder.foregroundServiceBehavior = NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
++            }
++            val notification = notificationBuilder.build()
++
++            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
++                startForeground(EMPTY_NOTIFICATION_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
++            } else {
++                startForeground(EMPTY_NOTIFICATION_ID, notification)
++            }
++            @Suppress("DEPRECATION")
++            stopForeground(true)
++        } catch (e: Exception) {
++            // On Android 15+, startForeground() may throw ForegroundServiceStartNotAllowedException
++            // when the app is in the background. Silently handle to prevent crash.
++            android.util.Log.w("MusicService", "startForeground failed (likely background restriction on Android 15+): ${e.message}")
+         }
+-        val notification = notificationBuilder.build()
+-        startForeground(EMPTY_NOTIFICATION_ID, notification)
+-        @Suppress("DEPRECATION")
+-        stopForeground(true)
+     }
+ 
+     @MainThread

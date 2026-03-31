@@ -156,6 +156,8 @@
       "./plugins/withAndroidAutoFull.js",
       "./plugins/withCleartextTraffic.js",
       "./plugins/withSwift5Mode.js",
+      "./plugins/withAdMobFix.js",
+      "./plugins/withTrackPlayerServiceFix.js",
       "react-native-google-cast",
       [
         "react-native-google-mobile-ads",
