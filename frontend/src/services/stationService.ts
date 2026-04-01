@@ -19,9 +19,7 @@ export const stationService = {
   // Get single station by identifier (slug or id)
   async getStation(identifier: string): Promise<Station | null> {
     try {
-      const response = await api.get(API_ENDPOINTS.stations.single(identifier), {
-        params: { tv: 1 },
-      });
+      const response = await api.get(API_ENDPOINTS.stations.single(identifier));
       return response.data;
     } catch (error) {
       console.error('[stationService] getStation error:', error);
@@ -33,7 +31,7 @@ export const stationService = {
   async getStations(params: StationQueryParams = {}): Promise<{ stations: Station[]; totalCount: number }> {
     try {
       console.log('[stationService] getStations - params:', params);
-      const response = await api.get(API_ENDPOINTS.stations.list, { params: { ...params, tv: 1 } });
+      const response = await api.get(API_ENDPOINTS.stations.list, { params });
       return response.data;
     } catch (error) {
       console.error('[stationService] getStations error:', error);
@@ -46,7 +44,7 @@ export const stationService = {
     try {
       console.log('[stationService] getPopularStations - country:', country, 'limit:', limit);
       const response = await api.get(API_ENDPOINTS.stations.popular, {
-        params: { country, limit, excludeBroken: true, tv: 1 },
+        params: { country, limit, excludeBroken: true },
       });
       
       const data = response.data;
@@ -73,7 +71,7 @@ export const stationService = {
     try {
       console.log('[stationService] getPrecomputedStations - country:', country);
       const response = await api.get(API_ENDPOINTS.stations.precomputed, {
-        params: { country, page, limit, tv: 1 },
+        params: { country, page, limit },
       });
       return response.data;
     } catch (error) {
@@ -87,7 +85,7 @@ export const stationService = {
     try {
       console.log('[stationService] getNearbyStations - lat:', lat, 'lng:', lng);
       const response = await api.get(API_ENDPOINTS.stations.nearby, {
-        params: { lat, lng, radius, limit, tv: 1 },
+        params: { lat, lng, radius, limit },
       });
       return response.data;
     } catch (error) {
@@ -100,7 +98,7 @@ export const stationService = {
   async getSimilarStations(stationId: string, limit: number = 12) {
     try {
       const response = await api.get(API_ENDPOINTS.stations.similar(stationId), {
-        params: { limit, tv: 1 },
+        params: { limit },
       });
       return response.data;
     } catch (error) {
@@ -118,7 +116,7 @@ export const stationService = {
       
       console.log('[stationService] searchStations - query:', query);
       const response = await api.get(API_ENDPOINTS.stations.list, {
-        params: { search: query, limit, tv: 1 },
+        params: { search: query, limit },
       });
       
       const data = response.data;
@@ -142,7 +140,7 @@ export const stationService = {
     try {
       console.log('[stationService] getTop100 - country:', country);
       const response = await api.get(API_ENDPOINTS.discover.top100, {
-        params: { country, tv: 1 },
+        params: { country },
       });
       
       const data = response.data;
@@ -165,7 +163,7 @@ export const stationService = {
   async getCommunityFavorites(limit: number = 20): Promise<any[]> {
     try {
       const response = await api.get(API_ENDPOINTS.communityFavorites, {
-        params: { limit, tv: 1 },
+        params: { limit },
       });
       return response.data || [];
     } catch (error) {

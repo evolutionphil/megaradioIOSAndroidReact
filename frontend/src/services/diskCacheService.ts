@@ -1,16 +1,83 @@
 // Disk Cache Service using MMKV (Native only)
 // Ultra-fast key-value storage (30x faster than AsyncStorage)
 // Used for persisting API data between app launches
-// Falls back to in-memory Map when MMKV is not available (e.g., Expo Go)
+// Falls back to AsyncStorage when MMKV is not available (still persistent!)
+// Only uses in-memory Map on web (Expo Go)
+
+import { Platform } from 'react-native';
 
 let cacheStorage: any;
+let cacheBackend: 'mmkv' | 'asyncstorage' | 'memory' = 'memory';
 
-try {
-  const { MMKV } = require('react-native-mmkv');
-  cacheStorage = new MMKV({ id: 'megaradio-cache' });
-} catch {
-  // Fallback for Expo Go or environments without native MMKV
-  console.warn('[DiskCache] MMKV not available, using in-memory fallback');
+// Initialize cache storage with proper fallback chain:
+// MMKV (fastest) -> AsyncStorage (persistent) -> In-memory Map (last resort)
+function initCacheStorage() {
+  // Try MMKV first (native only)
+  try {
+    const { MMKV } = require('react-native-mmkv');
+    cacheStorage = new MMKV({ id: 'megaradio-cache' });
+    cacheBackend = 'mmkv';
+    console.log('[DiskCache] Using MMKV (native, fastest)');
+    return;
+  } catch (e) {
+    console.warn('[DiskCache] MMKV not available:', (e as Error).message);
+  }
+
+  // Try AsyncStorage (persistent, slower but reliable)
+  if (Platform.OS !== 'web') {
+    try {
+      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+      // Wrap AsyncStorage to match MMKV sync API with async internals
+      const memoryLayer = new Map<string, string>();
+      let loaded = false;
+
+      // Load all cached data into memory on init
+      const loadFromDisk = async () => {
+        try {
+          const keys = await AsyncStorage.getAllKeys();
+          const cacheKeys = keys.filter((k: string) => k.startsWith('dc:'));
+          if (cacheKeys.length > 0) {
+            const pairs = await AsyncStorage.multiGet(cacheKeys);
+            for (const [key, value] of pairs) {
+              if (value) memoryLayer.set(key.replace('dc:', ''), value);
+            }
+          }
+          loaded = true;
+          console.log('[DiskCache] AsyncStorage loaded', memoryLayer.size, 'entries');
+        } catch (err) {
+          console.warn('[DiskCache] AsyncStorage load error:', err);
+        }
+      };
+
+      loadFromDisk();
+
+      cacheStorage = {
+        set: (key: string, value: string) => {
+          memoryLayer.set(key, value);
+          AsyncStorage.setItem('dc:' + key, value).catch(() => {});
+        },
+        getString: (key: string) => memoryLayer.get(key) ?? null,
+        delete: (key: string) => {
+          memoryLayer.delete(key);
+          AsyncStorage.removeItem('dc:' + key).catch(() => {});
+        },
+        getAllKeys: () => Array.from(memoryLayer.keys()),
+        clearAll: () => {
+          const keys = Array.from(memoryLayer.keys()).map(k => 'dc:' + k);
+          memoryLayer.clear();
+          AsyncStorage.multiRemove(keys).catch(() => {});
+        },
+      };
+      cacheBackend = 'asyncstorage';
+      console.log('[DiskCache] Using AsyncStorage fallback (persistent)');
+      return;
+    } catch (e) {
+      console.warn('[DiskCache] AsyncStorage not available:', (e as Error).message);
+    }
+  }
+
+  // Last resort: In-memory Map (not persistent, web only)
+  console.warn('[DiskCache] Using in-memory fallback (NOT persistent - data lost on restart!)');
   const memStore = new Map<string, string>();
   cacheStorage = {
     set: (key: string, value: string) => memStore.set(key, value),
@@ -19,7 +86,10 @@ try {
     getAllKeys: () => Array.from(memStore.keys()),
     clearAll: () => memStore.clear(),
   };
+  cacheBackend = 'memory';
 }
+
+initCacheStorage();
 
 // Cache TTL Constants
 export const CACHE_TTL = {
@@ -42,6 +112,10 @@ interface CacheEntry<T> {
 const CACHE_VERSION = 1;
 
 export const diskCache = {
+  getBackend(): string {
+    return cacheBackend;
+  },
+
   set<T>(key: string, data: T): void {
     try {
       const entry: CacheEntry<T> = {
@@ -132,7 +206,7 @@ export const diskCache = {
     }
   },
 
-  getStats(): { totalKeys: number; sizeEstimate: string } {
+  getStats(): { totalKeys: number; sizeEstimate: string; backend: string } {
     try {
       const allKeys = cacheStorage.getAllKeys();
       let totalSize = 0;
@@ -143,9 +217,10 @@ export const diskCache = {
       return {
         totalKeys: allKeys.length,
         sizeEstimate: `${(totalSize / 1024).toFixed(1)}KB`,
+        backend: cacheBackend,
       };
     } catch {
-      return { totalKeys: 0, sizeEstimate: '0KB' };
+      return { totalKeys: 0, sizeEstimate: '0KB', backend: cacheBackend };
     }
   },
 };
