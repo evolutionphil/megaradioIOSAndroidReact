@@ -173,7 +173,8 @@
       "./plugins/withTrackPlayerServiceFix.js",
       "./plugins/withTrackPlayerNewArchFix.js",
       "./plugins/withCarPlayNativeFix.js",
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      "./plugins/withGoogleServicesFix.js"
     ],
     "experiments": {
       "typedRoutes": true
