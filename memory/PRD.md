@@ -97,10 +97,17 @@ app.json plugins (execution order):
 ### GÖREV 4 — Renewal Listener (DONE)
 - `purchaseUpdatedListener` already calls `handlePurchaseSuccess()` which now includes `reportToBackend()`
 
-### Files Modified
-- `/app/frontend/src/services/iapService.ts` (reportToBackend, syncSubscriptionFromBackend, handlePurchaseSuccess, restorePurchases)
-- `/app/frontend/app/_layout.tsx` (backend sync after IAP init)
-- `/app/frontend/src/store/authStore.ts` (backend sync after login)
+### Favorites & Recently Played Backend Integration Audit (Feb 2026)
+- **All 6 endpoints tested and verified working:**
+  - `POST /api/user/favorites` ✅ (add)
+  - `DELETE /api/user/favorites/:stationId` ✅ (remove)
+  - `GET /api/user/favorites` ✅ (list — returns array with favoritedAt)
+  - `GET /api/user/favorites/check/:stationId` ✅ (returns `isFavorited: boolean`)
+  - `POST /api/recently-played` ✅ (record)
+  - `GET /api/recently-played` ✅ (list — returns array with playedAt)
+- **Bug fixed:** `checkFavorite` response key mismatch (`isFavorite` → `isFavorited`)
+- **Improved:** `addFavorite` now silently handles "Station already in favorites" 400 instead of queueing unnecessary retries
+- **Files modified:** `userService.ts`
 
 ## Future/Backlog
 - P1: tvOS and Android TV standalone apps

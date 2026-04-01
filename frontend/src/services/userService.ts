@@ -12,9 +12,17 @@ export const userService = {
   },
 
   // Add station to favorites
-  async addFavorite(stationId: string): Promise<{ message: string; favorites: string[] }> {
-    const response = await api.post(API_ENDPOINTS.user.favorites, { stationId });
-    return response.data;
+  async addFavorite(stationId: string): Promise<{ success?: boolean; message?: string; alreadyExists?: boolean }> {
+    try {
+      const response = await api.post(API_ENDPOINTS.user.favorites, { stationId });
+      return response.data;
+    } catch (error: any) {
+      // "Station already in favorites" is not a real error — treat as success
+      if (error?.response?.status === 400 && error?.response?.data?.error === 'Station already in favorites') {
+        return { success: true, alreadyExists: true };
+      }
+      throw error;
+    }
   },
 
   // Remove station from favorites
@@ -24,7 +32,7 @@ export const userService = {
   },
 
   // Check if station is favorited
-  async checkFavorite(stationId: string): Promise<{ isFavorite: boolean }> {
+  async checkFavorite(stationId: string): Promise<{ isFavorited: boolean }> {
     const response = await api.get(API_ENDPOINTS.user.checkFavorite(stationId));
     return response.data;
   },
