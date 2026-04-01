@@ -73,10 +73,34 @@ app.json plugins (execution order):
 
 ## Pending Tasks
 - P0: ~~Backend Developer IAP Specification~~ (DONE - Feb 2026)
+- P0: ~~Backend IAP Integration (4 Görev)~~ (DONE - Feb 2026)
 - P0: User verification of versionCode 81 build
 - P1: Android Auto UI/UX verification
-- P1: Backend API integration for subscription validation (after backend developer implements)
 - P1: watchOS Companion App (waiting for user requirements)
+
+## Backend IAP Integration (Implemented Feb 2026)
+### GÖREV 1 — Purchase → Backend POST (DONE)
+- `reportToBackend(purchase)` added to `iapService.ts`
+- Called in `handlePurchaseSuccess()` after local AsyncStorage save
+- Sends: platform, productId, transactionId, originalTransactionId, receipt (iOS), purchaseToken (Android)
+- Non-blocking: failure never prevents local purchase activation
+
+### GÖREV 2 — App Startup Sync from Backend (DONE)
+- `syncSubscriptionFromBackend()` added to `iapService.ts`
+- Called in `_layout.tsx` after IAP init (if authenticated)
+- Called in `authStore.ts` after successful login
+- Logic: if backend plan rank > local plan rank → update local; else keep local
+
+### GÖREV 3 — Restore Purchases → Backend POST (DONE)
+- `restorePurchases()` updated to call `reportToBackend(bestPurchase)` after local save
+
+### GÖREV 4 — Renewal Listener (DONE)
+- `purchaseUpdatedListener` already calls `handlePurchaseSuccess()` which now includes `reportToBackend()`
+
+### Files Modified
+- `/app/frontend/src/services/iapService.ts` (reportToBackend, syncSubscriptionFromBackend, handlePurchaseSuccess, restorePurchases)
+- `/app/frontend/app/_layout.tsx` (backend sync after IAP init)
+- `/app/frontend/src/store/authStore.ts` (backend sync after login)
 
 ## Future/Backlog
 - P1: tvOS and Android TV standalone apps

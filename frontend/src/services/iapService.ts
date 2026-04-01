@@ -1,6 +1,9 @@
 import { Platform } from 'react-native';
 import { usePremiumStore, PremiumPlan } from '../store/premiumStore';
+import { useAuthStore } from '../store/authStore';
 import crashlyticsService from './crashlyticsService';
+
+const API_BASE = 'https://themegaradio.com';
 
 // Product IDs - must match App Store Connect & Google Play Console
 export const PRODUCT_IDS = {
@@ -250,6 +253,91 @@ class IAPService {
     }
   }
 
+  // GÖREV 1 & 4: Report purchase to backend (non-blocking)
+  private async reportToBackend(purchase: any): Promise<void> {
+    try {
+      const { token } = useAuthStore.getState();
+      if (!token) {
+        console.log('[IAP] User not logged in, skipping backend notification');
+        return;
+      }
+
+      const productId = purchase.productId || purchase.id;
+      const body: Record<string, any> = {
+        platform: Platform.OS,
+        productId,
+        transactionId: purchase.transactionId,
+        originalTransactionId: Platform.OS === 'ios'
+          ? (purchase.originalTransactionIdIOS || purchase.transactionId)
+          : purchase.transactionId,
+        isTrial: false,
+      };
+
+      // Platform-specific fields
+      if (Platform.OS === 'ios' && purchase.transactionReceipt) {
+        body.receipt = purchase.transactionReceipt;
+      }
+      if (Platform.OS === 'android' && purchase.purchaseToken) {
+        body.purchaseToken = purchase.purchaseToken;
+      }
+
+      const response = await fetch(`${API_BASE}/api/user/subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      console.log('[IAP] Backend subscription response:', data);
+    } catch (error: any) {
+      // Backend failure NEVER blocks the purchase — local record is already saved
+      console.warn('[IAP] Backend notification failed (local record valid):', error.message);
+    }
+  }
+
+  // GÖREV 2: Sync subscription status from backend on app startup
+  async syncSubscriptionFromBackend(): Promise<void> {
+    try {
+      const { token } = useAuthStore.getState();
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE}/api/user/subscription`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const backendPlan: PremiumPlan = data.plan || 'none';
+      const backendActive: boolean = data.isActive === true;
+
+      const localPlan = usePremiumStore.getState().plan;
+
+      const PLAN_RANK: Record<string, number> = {
+        none: 0, remove_ads: 1, premium_monthly: 2, premium_yearly: 3, premium_lifetime: 4,
+      };
+
+      const backendRank = PLAN_RANK[backendPlan] || 0;
+      const localRank = PLAN_RANK[localPlan] || 0;
+
+      if (backendActive && backendRank > localRank) {
+        // Backend has a better plan (purchased on another device)
+        const expiryDate = data.expiryDate || null;
+        await usePremiumStore.getState().setPremiumStatus(backendPlan, expiryDate);
+        console.log('[IAP] Plan synced from backend:', backendPlan);
+      } else if (!backendActive && localRank > 0) {
+        // Backend inactive but local plan exists — keep local (may be Store-restored)
+        console.log('[IAP] Backend inactive, keeping local plan:', localPlan);
+      }
+    } catch (error: any) {
+      console.warn('[IAP] Backend subscription sync failed:', error.message);
+      // On error, local plan stays valid
+    }
+  }
+
   private async handlePurchaseSuccess(purchase: any): Promise<void> {
     const productId = purchase.productId || purchase.id;
     const plan = PRODUCT_TO_PLAN[productId];
@@ -278,8 +366,12 @@ class IAPService {
         break;
     }
 
+    // Step 1: Save locally (AsyncStorage) — UNCHANGED
     await usePremiumStore.getState().setPremiumStatus(plan, expiryDate);
     console.log('[IAP] Activated:', plan, expiryDate || 'LIFETIME');
+
+    // Step 2: Report to backend (non-blocking) — NEW
+    await this.reportToBackend(purchase);
   }
 
   async restorePurchases(iapModule?: any): Promise<boolean> {
@@ -295,6 +387,7 @@ class IAPService {
 
       let bestPlan: PremiumPlan = 'none';
       let bestExpiry: string | null = null;
+      let bestPurchase: any = null;
       const ranks: Record<string, number> = {
         none: 0, remove_ads: 1, premium_monthly: 2, premium_yearly: 3, premium_lifetime: 4,
       };
@@ -306,6 +399,7 @@ class IAPService {
 
         if ((ranks[plan] || 0) > (ranks[bestPlan] || 0)) {
           bestPlan = plan;
+          bestPurchase = p;
           if (plan === 'premium_lifetime') {
             bestExpiry = null;
           } else {
@@ -319,8 +413,15 @@ class IAPService {
       }
 
       if (bestPlan !== 'none') {
+        // Step 1: Save locally — UNCHANGED
         await usePremiumStore.getState().setPremiumStatus(bestPlan, bestExpiry);
         console.log('[IAP] Restored:', bestPlan);
+
+        // Step 2: Report best purchase to backend — NEW (GÖREV 3)
+        if (bestPurchase) {
+          await this.reportToBackend(bestPurchase);
+        }
+
         return true;
       }
 

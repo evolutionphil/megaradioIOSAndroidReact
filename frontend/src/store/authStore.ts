@@ -207,6 +207,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       } catch (error) {
         console.error('[AuthStore] Failed to load favorites:', error);
       }
+
+      // GÖREV 2: Sync subscription from backend after login
+      if (Platform.OS !== 'web') {
+        try {
+          const { iapService } = await import('../services/iapService');
+          await iapService.syncSubscriptionFromBackend();
+          console.log('[AuthStore] Backend subscription synced after login');
+        } catch (syncError) {
+          console.warn('[AuthStore] Subscription sync after login failed:', syncError);
+        }
+      }
     } catch (error) {
       console.error('Error saving auth:', error);
     }

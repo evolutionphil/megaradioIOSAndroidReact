@@ -252,6 +252,18 @@ export default function RootLayout() {
             console.log('[Layout] IAP init error (expected on simulator):', iapError);
           }
         }
+
+        // GÖREV 2: Sync subscription from backend (if user is logged in)
+        try {
+          const { isAuthenticated } = useAuthStore.getState();
+          if (isAuthenticated && Platform.OS !== 'web') {
+            const { iapService } = require('../src/services/iapService');
+            await iapService.syncSubscriptionFromBackend();
+            console.log('[Layout] Backend subscription sync complete');
+          }
+        } catch (syncError) {
+          console.warn('[Layout] Backend subscription sync error:', syncError);
+        }
       } catch (error) {
         console.log('[Layout] Premium load error:', error);
       }
