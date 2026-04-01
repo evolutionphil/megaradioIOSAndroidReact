@@ -1,10 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
   <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="com.android.vending.BILLING"/>
-  <!-- Remove BOOT_COMPLETED permission to fix Android 15 foreground service restriction -->
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" tools:node="remove" />
   <!-- OPTIONAL PERMISSIONS, REMOVE WHATEVER YOU DO NOT NEED -->
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
@@ -23,52 +19,11 @@
   </queries>
 
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme" android:supportsRtl="true">
-
-    <!-- AdMob App ID - Required for Google Mobile Ads SDK -->
-    <meta-data
-        android:name="com.google.android.gms.ads.APPLICATION_ID"
-        android:value="ca-app-pub-8771434485570434~7427742767"
-        tools:replace="android:value" />
-
-    <!-- Override expo-notifications receiver: remove BOOT_COMPLETED to fix Android 15 -->
-    <receiver
-        android:name="expo.modules.notifications.service.NotificationsService"
-        android:enabled="true"
-        android:exported="false"
-        tools:replace="android:exported">
-      <intent-filter android:priority="-1" tools:node="replace">
-        <action android:name="expo.modules.notifications.NOTIFICATION_EVENT" />
-        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-      </intent-filter>
-    </receiver>
-
-    <!-- Override expo-audio foreground service types for Android 15 compatibility -->
-    <service
-        android:name="expo.modules.audio.service.AudioRecordingService"
-        android:exported="false"
-        android:foregroundServiceType="mediaPlayback"
-        tools:replace="android:foregroundServiceType" />
-
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-
-    <!-- Wear OS Data Layer Listener Service (receives commands from watch) -->
-    <service
-        android:name=".WearDataLayerListenerService"
-        android:exported="true"
-        android:permission="com.google.android.gms.permission.BIND_LISTENER">
-      <intent-filter>
-        <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-        <data
-            android:host="*"
-            android:pathPrefix="/megaradio"
-            android:scheme="wear" />
-      </intent-filter>
-    </service>
-
   </application>
 </manifest>

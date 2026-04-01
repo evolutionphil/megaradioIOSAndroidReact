@@ -179,14 +179,4 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
-    // Google Play Services - Wearable Data Layer (phone <-> Wear OS)
-    implementation("com.google.android.gms:play-services-wearable:18.1.0")
-
-    // Wear OS companion app module
-    wearApp project(':wear')
 }
-
-
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'

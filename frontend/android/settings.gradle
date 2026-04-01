@@ -37,7 +37,3 @@ expoAutolinking.useExpoVersionCatalog()
 
 include ':app'
 includeBuild(expoAutolinking.reactNativeGradlePlugin)
-
-// Wear OS companion app module (separate from Expo autolinking)
-include ':wear'
-project(':wear').projectDir = file('../watch/android/wear')

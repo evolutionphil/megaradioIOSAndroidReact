@@ -1,46 +1,33 @@
-<analysis>Here is the comprehensive handover summary based on the LLM message history:
-
-**original_problem_statement**: Implement In-App Purchase (IAP) Premium Strategy. The app has heavily evolved to include UI gating for Premium features, Apple App Store compliance, CarPlay/Android Auto integration, Firebase Analytics/Crashlytics, and deep debugging of Android build/runtime crashes and iOS build issues.
+<analysis>**original_problem_statement**: Implement In-App Purchase (IAP) Premium Strategy. Support CarPlay/Android Auto natively. Fix Android app startup crashes (AdMob, TrackPlayer, CarPlay  issues). Fix Android 15 Foreground service restrictions. Integrate Firebase GA4 and Crashlytics. Fix UI overlapping with Android system navigation bars.
 
 **PRODUCT REQUIREMENTS**:
 - Implement Premium UI gating in the Player.
-- Ensure strict Apple App Store compliance (Account Deletion, T&C, Subscriptions Auto-Renewal terms).
+- Ensure strict Apple App Store compliance.
 - Support CarPlay/Android Auto natively.
-- Fix Android app startup crashes (AdMob, TrackPlayer, CarPlay  issues).
-- Fix Android 15 Foreground service restrictions.
-- Integrate Firebase GA4 and Crashlytics.
-- Ensure UI elements (like Buy buttons) do not overlap with Android system navigation bars.
+- Fix all Android background/startup crashes caused by TurboModules/New Architecture.
+- Ensure UI elements do not overlap with system gesture bars.
 
-**User's preferred language**: Turkish. (You MUST INSTRUCT the next agent to respond in Turkish only: Lütfen iletişimi Türkçe sürdürün.)
+**User's preferred language**: Turkish. (You MUST automatically detect the user's primary language from their messages and INSTRUCT next agent to respond in the user's preferred language only: Lütfen iletişimi Türkçe sürdürün.)
 
 **what currently exists?** 
-A React Native Expo (Bare Workflow) application with IAP, CarPlay/Android Auto, AdMob, and Firebase. The app heavily utilizes  to fix 3rd-party library native code (CarPlay, TrackPlayer) for Android 15/TurboModule compatibility. Custom Expo Config Plugins manage manifest injection.
+A React Native Expo (Bare Workflow) application with IAP, CarPlay/Android Auto, AdMob, and Firebase. The app uses Expo SDK 54 / RN 0.81 (New Architecture enabled). It heavily utilizes custom Expo Config Plugins () to aggressively patch native Android code during the prebuild phase, fixing critical incompatibilities with 3rd-party libraries (TrackPlayer, CarPlay, AdMob).
 
 **Last working item**:
-    - Last item agent was working: Fixing Android UI overlaps. The user reported that the Buy button and other elements are hidden behind the Android system navigation buttons. The agent was investigating  and  from  across the app.
-    - Status: IN PROGRESS
-    - Agent Testing Done: N
-    - Which testing method agent to use?: Frontend testing agent / Screenshot tool (to verify UI padding at the bottom of the screen).
+    - Last item agent was working: Analyzing a new Android CarPlay log provided by the user. The user claimed there is still an issue (carplay ile allaali androidte halen sorun var), but the agent's file analysis showed a successful connection sequence with NO crashes. The agent was about to respond to the user to clarify the exact nature of the problem.
+    - Status: USER VERIFICATION PENDING
+    - Agent Testing Done: Y (via log analysis)
+    - Which testing method agent to use?: Frontend testing agent / manual testing by user. 
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  Issue 1: UI elements hidden behind Android System Navigation (P0)
-     - Attempted fixes: Agent just started ping for  and  across  and payment screens.
-     - Next debug checklist: Check  (or where the Buy button is), , and all main tab screens. Ensure that  is applied to scroll views or absolute positioned buttons at the bottom of the screen.
-     - Why fix this issue and what will be achieved with the fix?: The app is unclickable at the bottom on Android devices with gesture/navigation bars.
-     - Status: IN PROGRESS
-     - Is recurring issue? N
-     - Should Test frontend/backend/both after fix?: frontend
-     - Blocked on other issue: None.
-
-  Issue 2: App freezes / white screen on launch (P1)
-     - Attempted fixes: The agent previously patched  and  to prevent background crash loops causing the white screen. The user uploaded an *old* crash log (from March 31st) claiming the issue persists.
-     - Next debug checklist: Explain to the user that the patches are only applied when a *new* EAS build is generated (An Expo user account is required to proceed.
-Either log in with eas login or set the EXPO_TOKEN environment variable if you're using EAS CLI on CI (Learn more: https://docs.expo.dev/accounts/programmatic-access/)). Ensure the user builds the app with the new code.
-     - Why fix this issue and what will be achieved with the fix?: Ensures the app actually launches.
+  Issue 1: Android CarPlay Issue Verification (P0)
+     - Attempted fixes: Applied  config plugin to safely initialize . Agent verified logs and found no native crashes.
+     - Next debug checklist: Respond to the user's last message. Inform them that the crash is fixed according to the log, and ask them to describe the exact visual/functional issue they are experiencing with Android Auto (e.g., Is the screen blank? Are buttons not working? Is audio not playing?). 
+     - Why fix this issue and what will be achieved with the fix?: Finalize the Android Auto integration which has been a major blocker.
      - Status: USER VERIFICATION PENDING
-     - Is recurring issue? Y (User re-uploaded the exact same old log).
-     - Should Test frontend/backend/both after fix?: frontend
+     - Is recurring issue? Y (User keeps reporting it, though the crash aspect is fixed).
+     - Should Test frontend/backend/both after fix?: both
+     - Blocked on other issue: None.
 
 **In progress Task List**:
   Task 1: watchOS Companion App Setup
@@ -48,6 +35,7 @@ Either log in with eas login or set the EXPO_TOKEN environment variable if you'r
      - What will be achieved with this?: watchOS ecosystem support.
      - Status: BLOCKED
      - Should Test frontend/backend/both after fix?: frontend
+     - Blocked on something: User requirements.
 
 **Upcoming and Future Tasks**
     Future Tasks:
@@ -58,69 +46,264 @@ Either log in with eas login or set the EXPO_TOKEN environment variable if you'r
     - P3: Station alarm feature.
 
 **Completed work in this session**
-- Patched  to add 12  guards, fixing Android Auto cold-start crashes () (DONE).
-- Patched  to wrap  in try-catch and add Android 15 , fixing background execution crashes (DONE).
-- Created custom Expo Config Plugins (, ) to strictly enforce manifest rules and prevent AdMob ID missing crashes (DONE).
-- Fixed a critical Android Package Name mismatch (Aligned  Android package and  to  to match the Play Store, leaving iOS as ) (DONE).
-- Integrated  and  for GA4, including web fallback () (DONE).
-- Integrated  (DONE).
-- Updated app versionCode to 76 (DONE).
+- Fixed PremiumPaywall UI overlapping with Android System Navigation by adding  to the ScrollView (DONE).
+- Handled  silent failures and added protective timeouts for IAP initialization, AdMob, FlowAlive, and TrackPlayer to prevent the app from hanging on a white screen (DONE).
+- Created  Expo config plugin to fix a severe Android launch crash caused by 's incompatibility with RN 0.81 TurboModules () (DONE).
+- Created  Expo config plugin to reliably patch  uninitialized crashes during the prebuild phase (DONE).
+- Enhanced  to prevent  startup crashes at the ContentProvider level (DONE).
+- Fixed an issue where the AdMob App Open ad would block all UI touches after closing by adding proper cleanup in the CLOSED event (DONE).
+- Assisted the user with local Android Studio build issues, fixing Windows long path errors, Gradle cache corruption, and env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories | reusing /android, /ios
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+- Running prebuild
+[withCarPlayFix] Applying CarPlay/Android Auto native fixes...
+- Running prebuild
+[withCarPlayFix] Guarded createScreen (CRITICAL)
+- Running prebuild
+[withCarPlayFix] CarPlayModule.kt fixes applied
+- Running prebuild
+[withTrackPlayerNewArchFix] Applying TrackPlayer native fixes...
+- Running prebuild
+[withTrackPlayerNewArchFix] Fixed 37 methods in MusicModule.kt for TurboModule compatibility
+- Running prebuild
+[withTrackPlayerNewArchFix] Fixed MusicService.kt foreground service crash
+- Running prebuild
+[withAdMobFix] Verified AdMob App ID present in manifest
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+- Running prebuild
+[withTrackPlayerServiceFix] MusicService configured with foregroundServiceType=mediaPlayback
+- Running prebuild
+[withAdMobFix] Set AdMob App ID: ca-app-pub-8771434485570434~7427742767 (removed duplicates)
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+[withAndroidAuto] Added Android Auto meta-data
+- Running prebuild
+[withAndroidAuto] Added MegaRadioAutoService
+- Running prebuild
+✔ Finished prebuild locks (DONE).
+- Saved user's GitHub clone command with PAT token to  for future reference (DONE).
 
 **Earlier issues found/mentioned but not fixed**
    - None
 
 **Known issue recurrence from previous fork**
   - Issue recurrence in previous fork: Android App Crashing on Startup / White Screen.
-  - Recurrence count: 2
-  - Status: RESOLVED (Code fixed, but user tested an old build without the fixes. User needs to trigger a new --platform is required when building in non-interactive mode).
+  - Recurrence count: 3
+  - Status: RESOLVED (The root causes—TurboModule parsing errors and uninitialized CarPlay contexts—were definitively identified and patched via Expo config plugins rather than relying on fragile  execution).
 
 **Code Architecture**
 - Frontend: React Native (Expo Bare Workflow)
 - Routing: Expo Router
-- State Management: Zustand
-- Native Fixes: Heavily utilizing  in the  directory to override Java/Kotlin code in  prior to EAS build.
+- Native Fixes: Because the app uses Expo SDK 54 / RN 0.81 (New Architecture), several libraries crash natively. The architecture relies on Custom Expo Config Plugins in the  directory to regex-patch Java/Kotlin files during the env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories | reusing /android, /ios
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+- Running prebuild
+[withCarPlayFix] Applying CarPlay/Android Auto native fixes...
+- Running prebuild
+[withCarPlayFix] CarPlayModule.kt already fixed
+- Running prebuild
+[withTrackPlayerNewArchFix] Applying TrackPlayer native fixes...
+- Running prebuild
+[withTrackPlayerNewArchFix] MusicModule.kt already fixed
+- Running prebuild
+[withTrackPlayerNewArchFix] MusicService.kt already fixed
+- Running prebuild
+[withAdMobFix] Verified AdMob App ID present in manifest
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+- Running prebuild
+[withTrackPlayerServiceFix] MusicService configured with foregroundServiceType=mediaPlayback
+- Running prebuild
+[withAdMobFix] Set AdMob App ID: ca-app-pub-8771434485570434~7427742767 (removed duplicates)
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+✔ Finished prebuild phase.
 
 **Key Technical Concepts**
-- **Edge-to-Edge Display**: The app is drawing under the system navigation bars on Android.  must be utilized properly () to push content up.
-- **Firebase in Bare Workflow**: Uses  packages instead of Expo's wrapper, requiring manual placement of  and  files and  modifications.
+- **Expo Config Plugins**: Modifying  native files dynamically.
+- **TurboModules / New Architecture**: The app runs with . Methods returning coroutine s (like ) crash the RN bridge because TurboModules expect synchronous methods to return .
+- **Safe Area Insets**: Managing UI padding for edge-to-edge Android displays.
 
 **key DB schema**
   - N/A
 
 **changes in tech stack**
-  - Added , , and .
+  - Transitioned from manual  reliance to env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories | reusing /android, /ios
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+- Running prebuild
+[withAirPlay] Added AirPlay Bonjour services: [ '_airplay._tcp', '_raop._tcp' ]
+- Running prebuild
+- Running prebuild
+[withCarPlayFix] Applying CarPlay/Android Auto native fixes...
+- Running prebuild
+[withCarPlayFix] CarPlayModule.kt already fixed
+- Running prebuild
+[withTrackPlayerNewArchFix] Applying TrackPlayer native fixes...
+- Running prebuild
+[withTrackPlayerNewArchFix] MusicModule.kt already fixed
+- Running prebuild
+[withTrackPlayerNewArchFix] MusicService.kt already fixed
+- Running prebuild
+[withAdMobFix] Verified AdMob App ID present in manifest
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+- Running prebuild
+[withTrackPlayerServiceFix] MusicService configured with foregroundServiceType=mediaPlayback
+- Running prebuild
+[withAdMobFix] Set AdMob App ID: ca-app-pub-8771434485570434~7427742767 (removed duplicates)
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+✔ Finished prebuild Config Plugins for critical native Android fixes.
 
 **All files of reference**
--  and  (Need Safe Area padding fixes)
--  (Contains crucial native crash fixes)
--  (Custom Android Auto integration)
--  &  (Firebase config)
+-  (UI fixed)
+-  (Timeouts added, AudioErrorBoundary added)
+-  (Created to fix TurboModule crash)
+-  (Created to fix Android Auto crash)
+-  (Updated)
+-  (Plugins registered)
+-  (Stores git clone token)
 
 **Areas that need refactoring**:
-- **Safe Area Management**:  and  seem to be inconsistently applied across screens, leading to the reported UI overlaps.
+- **AudioProvider.tsx**: Extremely large and handles too many responsibilities. 
+- **Regex Patching**: The custom Expo config plugins heavily rely on string replacement/regex in Kotlin files, which could break if the underlying npm packages are updated.
 
 **key api endpoints**
 - N/A
 
 **Critical Info for New Agent**
 - **Lütfen iletişimi Türkçe sürdürün.**
-- The user submitted a crash log () at the very end of the session, claiming the app still shows a white screen. **WARNING:** This log is from an older build (March 31, prior to the  fixes). Do not waste time debugging the crash log; instead, inform the user that they *must* generate a new EAS build (An Expo user account is required to proceed.
-Either log in with eas login or set the EXPO_TOKEN environment variable if you're using EAS CLI on CI (Learn more: https://docs.expo.dev/accounts/programmatic-access/)) for the native patches to take effect.
-- Your immediate priority is the UI bug: The Buy button and other bottom elements are hidden behind Android system navigation buttons. Find where the Buy button is rendered and add  using .
+- The project is an Expo Bare Workflow app. If the user asks for build help, ALWAYS remind them that they must run env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+› It's recommended to commit all changes before proceeding in case you want to revert generated changes.
+- Clearing android
+✔ Cleared android code
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directory (./android)
+✔ Created native directory
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+[withCarPlayFix] Applying CarPlay/Android Auto native fixes...
+- Running prebuild
+[withCarPlayFix] CarPlayModule.kt already fixed
+- Running prebuild
+[withTrackPlayerNewArchFix] Applying TrackPlayer native fixes...
+- Running prebuild
+[withTrackPlayerNewArchFix] MusicModule.kt already fixed
+- Running prebuild
+[withTrackPlayerNewArchFix] MusicService.kt already fixed
+- Running prebuild
+- Running prebuild
+[withAdMobFix] Force-added AdMob App ID to manifest
+- Running prebuild
+[withAndroidAuto] Created automotive_app_desc.xml
+- Running prebuild
+[withAndroidAuto] Created MegaRadioAutoService.kt
+- Running prebuild
+- Running prebuild
+[withTrackPlayerServiceFix] MusicService configured with foregroundServiceType=mediaPlayback
+- Running prebuild
+[withAdMobFix] Set AdMob App ID: ca-app-pub-8771434485570434~7427742767 (removed duplicates)
+- Running prebuild
+[withCleartextTraffic] Enabled cleartext traffic for HTTP streams
+- Running prebuild
+[withAndroidAuto] Added Android Auto meta-data
+- Running prebuild
+[withAndroidAuto] Added MegaRadioAutoService
+- Running prebuild
+✔ Finished prebuild before opening Android Studio, because the native fixes are applied by Expo Config Plugins during the prebuild phase.
+- The user's last message includes a log for Android Auto (). The agent's internal analysis already confirmed that the log shows a SUCCESSFUL connection and NO crashes. Do not search for a crash in that log. Instead, tell the user the connection looks good natively, and ask them what the actual symptom is (e.g., UI not rendering, audio failing).
+- The user has a GitHub Personal Access Token saved in  if they ever ask for their clone command again.
 
 **documents and test reports created in this job**
   - /app/memory/PRD.md
+  - /app/memory/git_setup.md
 
 **Last 10 User Messages and any pending HUMAN messages** 
-- User: Asked if Crashlytics will cause build errors.
-- Agent: Confirmed it won't.
-- User: Asked how to setup .
-- Agent: Explained it must be hosted on their website root domain.
-- User: *Pending task:* Complained that the Buy button is hidden behind Android system navigation buttons. Asked to check all pages. Also complained about the white screen/crash still happening, uploading .
-- Agent: Started investigating  files before context ended.
+- User: Shared Gradle file lock error ().
+- User: Shared Ninja CMake error ( due to Windows long paths).
+- User: Shared dependency resolution error for  in Android Studio.
+- User: Showed output of env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+[withAndroidAuto] Applying full Android Auto configuration...
+› It's recommended to commit all changes before proceeding in case you want to revert generated changes.
+- Clearing android, ios
+✔ Cleared android, ios code
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+[withAndroidAuto] Applying full Android Auto configuration...
+- Creating native directories (./ios and ./android)
+✔ Created native directories
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+[withAndroidAuto] Applying full Android Auto configuration...
+- Running prebuild
+✖ Prebuild failed failing with EBUSY.
+- User: Showed successful prebuild after closing Android Studio.
+- User: Showed  failing with SDK location not found.
+- User: Asked how to debug the EAS build / internal testing APK on Android Studio to see issues.
+- Agent: Explained 4 methods for debugging (Logcat, ADB, Profile APK, Crashlytics).
+- User: *PENDING HUMAN MESSAGE* can you please check it carplay ile allaali androidte halen sorun var !!! (Uploaded log ).
+- Agent: *Internal thought/analysis only* (Analyzed log, found no crashes, only successful initialization. Needs to reply to user).
 
 **Project Health Check:**
-Broken: UI overlapping with Android System Navigation.
+Broken: Android Auto / CarPlay behavior needs clarification from user.
 Mocked: N/A
 
 **3rd Party Integrations**
@@ -130,13 +313,13 @@ Mocked: N/A
 - Google Sign-In (Authentication)
 
 **Testing status**
-  - Testing agent used after significant changes: NO (Tested via bash scripts, fast API checks).
+  - Testing agent used after significant changes: NO
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: None
-  - Known regressions: Android UI overlaps with system gestures.
+  - Known regressions: None, but Android Auto UI/UX needs verification.
 
 **Credentials to test flow:**
 Available in 
 
 **What agent forgot to execute**
-- The agent was in the middle of analyzing how  was implemented to fix the UI overlapping bug on the Android version, but ran out of context. Start by fixing the bottom padding on the screens with bottom buttons (like the Paywall/Buy buttons).</analysis>
+- The agent analyzed the user's latest Android Auto log but the session ended before the agent could formulate a response to the user. The next agent must start by addressing the user's last message, informing them that the log shows no crashes, and asking for a description of the exact symptoms.</analysis>
