@@ -41,6 +41,8 @@ class AudioErrorBoundary extends React.Component<{ children: React.ReactNode }, 
   
   componentDidCatch(error: Error, errorInfo: any) {
     console.error('[AudioErrorBoundary] Caught error:', error.message, errorInfo);
+    // Report to Firebase Crashlytics
+    crashlyticsService.recordError(error, 'AudioErrorBoundary');
   }
   
   render() {
@@ -61,6 +63,7 @@ import TrackPlayer from 'react-native-track-player';
 // import { FlowAliveProvider } from 'flowalive-analytics/expo';
 import { flowaliveService } from '../src/services/flowaliveService';
 import analyticsService from '../src/services/analyticsService';
+import crashlyticsService from '../src/services/crashlyticsService';
 sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
 // CarPlay - Re-enabled after fixing native delegate issues
@@ -177,6 +180,22 @@ export default function RootLayout() {
     initAnalytics();
   }, []);
 
+  // Initialize Firebase Crashlytics
+  useEffect(() => {
+    const initCrashlytics = async () => {
+      try {
+        await crashlyticsService.initialize();
+        crashlyticsService.setupGlobalErrorHandler();
+        crashlyticsService.log('App started');
+        crashlyticsService.setAttribute('app_version_code', '79');
+        console.log('[Layout] Firebase Crashlytics initialized');
+      } catch (error) {
+        console.warn('[Layout] Firebase Crashlytics init error:', error);
+      }
+    };
+    initCrashlytics();
+  }, []);
+
   // Load stored authentication on app startup
   useEffect(() => {
     const loadAuth = async () => {
@@ -189,10 +208,11 @@ export default function RootLayout() {
         // If authenticated, immediately load favorites from server to avoid "no favorites" flash
         if (isAuthenticated) {
           console.log('[Layout] User authenticated, loading favorites immediately...');
-          // Set analytics user properties
+          // Set analytics & crashlytics user properties
           const authState = useAuthStore.getState();
           if (authState.user?.id) {
             analyticsService.setUserId(authState.user.id);
+            crashlyticsService.setUserId(authState.user.id);
           }
           try {
             await useFavoritesStore.getState().loadFavorites();

@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { usePremiumStore, PremiumPlan } from '../store/premiumStore';
+import crashlyticsService from './crashlyticsService';
 
 // Product IDs - must match App Store Connect & Google Play Console
 export const PRODUCT_IDS = {
@@ -92,6 +93,7 @@ class IAPService {
       return true;
     } catch (error: any) {
       console.error('[IAP] Init error:', error.message);
+      crashlyticsService.recordError(error instanceof Error ? error : new Error(error.message || 'IAP init failed'), 'IAPService.initialize');
       this.initialized = true; // Mark as initialized even on failure to prevent re-init loops
       return false;
     }
@@ -118,6 +120,10 @@ class IAPService {
         console.log('[IAP] User cancelled');
       } else {
         console.error('[IAP] Purchase error:', error.code, error.message);
+        crashlyticsService.recordError(
+          new Error(`IAP Purchase Error: ${error.code} - ${error.message}`),
+          'IAPService.purchaseError'
+        );
       }
     });
   }
