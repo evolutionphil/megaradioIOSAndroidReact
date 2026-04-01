@@ -81,7 +81,7 @@
         "backgroundColor": "#FF4199"
       },
       "package": "com.megaradio",
-      "versionCode": 76,
+      "versionCode": 78,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
