@@ -72,8 +72,10 @@ app.json plugins (execution order):
 - `libpenguin.so` not found (non-critical)
 
 ## Pending Tasks
+- P0: ~~Backend Developer IAP Specification~~ (DONE - Feb 2026)
 - P0: User verification of versionCode 81 build
 - P1: Android Auto UI/UX verification
+- P1: Backend API integration for subscription validation (after backend developer implements)
 - P1: watchOS Companion App (waiting for user requirements)
 
 ## Future/Backlog
@@ -82,6 +84,13 @@ app.json plugins (execution order):
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth metadata (AVRCP)
 - P3: Station alarm feature
+
+## IAP Technical Specification (Delivered Feb 2026)
+- Product IDs: `megaradio_remove_ads_yearly1`, `megaradio_premium_monthly1`, `megaradio_premium_yearly`, `megaradio_premium_lifetime`
+- Plans: `none`, `remove_ads`, `premium_monthly`, `premium_yearly`, `premium_lifetime`
+- Features: `remove_ads`, `song_info`, `spotify_link`, `youtube_link`, `hd_stream`, `song_history`, `stream_record`
+- Current flow: Fully local (AsyncStorage), no server-side receipt validation
+- Backend endpoints proposed: `POST /api/user/subscription` (validate & store), `GET /api/user/subscription` (query status)
 
 ## Build Instructions
 ```bash
