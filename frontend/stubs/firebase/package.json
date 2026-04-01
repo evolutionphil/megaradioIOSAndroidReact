@@ -1,0 +1,6 @@
+{
+  "name": "firebase",
+  "version": "12.10.0",
+  "description": "Stub package - @react-native-firebase uses native SDKs, not this web SDK",
+  "main": "index.js"
+}
