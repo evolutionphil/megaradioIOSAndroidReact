@@ -85,7 +85,7 @@
         "backgroundColor": "#FF4199"
       },
       "package": "com.megaradio",
-      "versionCode": 80,
+      "versionCode": 81,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
@@ -175,7 +175,6 @@
       ],
       "./plugins/withAdMobFix.js",
       "./plugins/withTrackPlayerServiceFix.js",
-      "./plugins/withTrackPlayerNewArchFix.js",
       "./plugins/withCarPlayNativeFix.js",
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
