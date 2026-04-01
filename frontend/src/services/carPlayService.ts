@@ -99,16 +99,28 @@ let handlersRegistered = false;
 // Queue for pending operations when CarPlay connects before service is initialized
 let pendingConnection = false;
 
-// Cold-start retry mechanism - more aggressive polling for race condition fix
+// Cold-start retry mechanism
 let coldStartRetryCount = 0;
-const MAX_COLD_START_RETRIES = 30; // Increased to 30 attempts
-const COLD_START_RETRY_INTERVAL = 500; // Reduced to 500ms for faster response
+const MAX_COLD_START_RETRIES = 10; // Reduced - less aggressive
+const COLD_START_RETRY_INTERVAL = 2000; // 2 seconds - less aggressive
 let coldStartRetryTimer: ReturnType<typeof setInterval> | null = null;
 
 // Mutex to prevent concurrent template creation (crash fix)
 let isCreatingTemplate = false;
 // Flag to indicate callbacks were updated while template was being created
 let pendingCallbackRefresh = false;
+
+// INFINITE LOOP FIX: Debounce onConnect events
+// Native Android Auto can fire didConnect many times in rapid succession
+let lastConnectHandledAt = 0;
+const CONNECT_DEBOUNCE_MS = 3000; // Ignore duplicate connects within 3 seconds
+let connectionFullyHandled = false; // True after first successful template creation
+
+// Store references to registered callbacks so we can unregister them
+let registeredOnConnectCallback: ((window?: any) => void) | null = null;
+let registeredOnDisconnectCallback: (() => void) | null = null;
+let earlyOnConnectCallback: ((window?: any) => void) | null = null;
+let earlyOnDisconnectCallback: (() => void) | null = null;
 
 if (Platform.OS !== 'web') {
   try {
@@ -138,20 +150,34 @@ if (Platform.OS !== 'web') {
       try {
         CarPlayLogger.info('[RN] EARLY REGISTRATION - Registering connection handlers at module load');
         
-        CarPlay.registerOnConnect(() => {
+        // INFINITE LOOP FIX: Store callback references for later cleanup
+        earlyOnConnectCallback = () => {
+          // DEBOUNCE: Ignore rapid-fire didConnect events
+          const now = Date.now();
+          if (now - lastConnectHandledAt < CONNECT_DEBOUNCE_MS) {
+            return; // Skip duplicate connect within debounce window
+          }
+          lastConnectHandledAt = now;
+          
           CarPlayLogger.info('[RN] EARLY onConnect callback FIRED (before initialize)', {
             timestamp: new Date().toISOString(),
             hasCallbacks: !!playStationCallback,
           });
           pendingConnection = true;
-        });
+        };
         
-        CarPlay.registerOnDisconnect(() => {
+        earlyOnDisconnectCallback = () => {
           CarPlayLogger.info('[RN] EARLY onDisconnect callback FIRED');
           pendingConnection = false;
-        });
+          connectionFullyHandled = false;
+          lastConnectHandledAt = 0; // Reset debounce on disconnect
+        };
+        
+        CarPlay.registerOnConnect(earlyOnConnectCallback);
+        CarPlay.registerOnDisconnect(earlyOnDisconnectCallback);
         
         // Check if already connected at module load time
+        // NOTE: Only check the property, do NOT call checkForConnection() on Android
         try {
           if (CarPlay.connected) {
             CarPlayLogger.info('[RN] CarPlay ALREADY CONNECTED at module load time!');
@@ -1107,17 +1133,17 @@ const createRootTemplate = async (): Promise<void> => {
     // Release mutex after template creation (success or setRootTemplate failure)
     isCreatingTemplate = false;
     
-    // COLD START FIX: If callbacks were updated while we were creating,
+    // If callbacks were updated while we were creating,
     // rebuild templates with the new callbacks (e.g., real playStation)
+    // INFINITE LOOP FIX: Only retry once, with longer delay
     if (pendingCallbackRefresh) {
-      CarPlayLogger.info('[RN] Pending callback refresh detected - rebuilding templates');
+      CarPlayLogger.info('[RN] Pending callback refresh detected - rebuilding templates (once)');
       pendingCallbackRefresh = false;
-      // Small delay to avoid rapid successive template changes
       setTimeout(() => {
         createRootTemplate().catch((err) => {
           CarPlayLogger.error('[RN] Pending refresh createRootTemplate FAILED', { error: String(err) });
         });
-      }, 500);
+      }, 2000); // Increased delay to prevent rapid cycling
     }
     
   } catch (error: any) {
@@ -1130,13 +1156,13 @@ const createRootTemplate = async (): Promise<void> => {
     // Release mutex on error as well
     isCreatingTemplate = false;
     
-    // Even on error, retry if callbacks were updated
+    // On error, retry ONCE if callbacks were updated
     if (pendingCallbackRefresh) {
-      CarPlayLogger.info('[RN] Pending callback refresh after error - retrying');
+      CarPlayLogger.info('[RN] Pending callback refresh after error - retrying once');
       pendingCallbackRefresh = false;
       setTimeout(() => {
         createRootTemplate().catch(() => {});
-      }, 1000);
+      }, 3000); // Even longer delay on error
     }
   }
 };
@@ -1221,11 +1247,42 @@ const CarPlayService: CarPlayServiceType = {
       getPreviousStation: !!getPreviousStation,
     });
     
-    // Re-register handlers with full callbacks now that we have them
-    console.log('[CarPlayService] Re-registering onConnect handler with callbacks...');
-    CarPlayLogger.info('[RN] Re-registering onConnect handler (with callbacks)');
+    // INFINITE LOOP FIX: Unregister old handlers before registering new ones
+    // This prevents callback accumulation in the Set<OnConnectCallback>
+    // Each registerOnConnect() adds a NEW function to the Set, causing duplicates
+    console.log('[CarPlayService] Cleaning up old handlers and re-registering...');
+    CarPlayLogger.info('[RN] Cleaning up old handlers before re-registration');
     
-    CarPlay.registerOnConnect(() => {
+    // Unregister the EARLY handlers (they served their purpose)
+    if (earlyOnConnectCallback) {
+      CarPlay.unregisterOnConnect(earlyOnConnectCallback);
+      earlyOnConnectCallback = null;
+    }
+    if (earlyOnDisconnectCallback) {
+      CarPlay.unregisterOnDisconnect(earlyOnDisconnectCallback);
+      earlyOnDisconnectCallback = null;
+    }
+    
+    // Unregister previous initialize handlers
+    if (registeredOnConnectCallback) {
+      CarPlay.unregisterOnConnect(registeredOnConnectCallback);
+      registeredOnConnectCallback = null;
+    }
+    if (registeredOnDisconnectCallback) {
+      CarPlay.unregisterOnDisconnect(registeredOnDisconnectCallback);
+      registeredOnDisconnectCallback = null;
+    }
+    
+    // Create NEW handler with debounce protection
+    registeredOnConnectCallback = () => {
+      // INFINITE LOOP FIX: Debounce rapid-fire didConnect events from native module
+      const now = Date.now();
+      if (now - lastConnectHandledAt < CONNECT_DEBOUNCE_MS) {
+        console.log('[CarPlay] onConnect DEBOUNCED - ignoring duplicate event');
+        return;
+      }
+      lastConnectHandledAt = now;
+      
       console.log('[CarPlay] ========== CONNECTED (React Native callback) ==========');
       CarPlayLogger.connected({ 
         timestamp: new Date().toISOString(),
@@ -1238,7 +1295,6 @@ const CarPlayService: CarPlayServiceType = {
       
       // Create and show root template
       // ANDROID AUTO FIX: Add a small delay on Android to allow carContext to fully initialize
-      // The onConnect event can fire before carContext is set in CarPlayModule.setCarContext()
       const templateDelay = Platform.OS === 'android' ? 500 : 0;
       
       CarPlayLogger.info('[RN] About to call createRootTemplate()', { delayMs: templateDelay });
@@ -1246,6 +1302,13 @@ const CarPlayService: CarPlayServiceType = {
       const doCreateTemplate = () => {
         createRootTemplate().then(() => {
           CarPlayLogger.info('[RN] createRootTemplate() completed');
+          connectionFullyHandled = true;
+          // Stop cold-start timer once template is successfully created
+          if (coldStartRetryTimer) {
+            clearInterval(coldStartRetryTimer);
+            coldStartRetryTimer = null;
+            CarPlayLogger.info('[RN] Cold-start timer stopped (template created successfully)');
+          }
         }).catch((err) => {
           CarPlayLogger.error('[RN] createRootTemplate() FAILED', {
             error: String(err),
@@ -1259,13 +1322,15 @@ const CarPlayService: CarPlayServiceType = {
       } else {
         doCreateTemplate();
       }
-    });
+    };
+    
+    CarPlay.registerOnConnect(registeredOnConnectCallback);
     
     // Register CarPlay disconnection handler
     console.log('[CarPlayService] Registering onDisconnect handler...');
     CarPlayLogger.info('[RN] Registering onDisconnect handler');
     
-    CarPlay.registerOnDisconnect(() => {
+    registeredOnDisconnectCallback = () => {
       console.log('[CarPlay] ========== DISCONNECTED (React Native callback) ==========');
       CarPlayLogger.disconnected({ 
         timestamp: new Date().toISOString(),
@@ -1274,7 +1339,11 @@ const CarPlayService: CarPlayServiceType = {
       isCarPlayConnected = false;
       CarPlayService.isConnected = false;
       pendingConnection = false;
-    });
+      connectionFullyHandled = false;
+      lastConnectHandledAt = 0; // Reset debounce on disconnect
+    };
+    
+    CarPlay.registerOnDisconnect(registeredOnDisconnectCallback);
     
     CarPlayLogger.info('[RN] Connection handlers registered successfully');
     
@@ -1295,6 +1364,7 @@ const CarPlayService: CarPlayServiceType = {
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       pendingConnection = false;
+      lastConnectHandledAt = Date.now(); // Mark as handled to debounce future events
       
       // ANDROID AUTO FIX: Delay template creation on Android to allow carContext initialization
       const templateDelay = Platform.OS === 'android' ? 800 : 0;
@@ -1302,6 +1372,12 @@ const CarPlayService: CarPlayServiceType = {
       const doCreate = () => {
         createRootTemplate().then(() => {
           CarPlayLogger.info('[RN] createRootTemplate() completed (already connected case)');
+          connectionFullyHandled = true;
+          // Stop cold-start timer
+          if (coldStartRetryTimer) {
+            clearInterval(coldStartRetryTimer);
+            coldStartRetryTimer = null;
+          }
         }).catch((err) => {
           CarPlayLogger.error('[RN] createRootTemplate() FAILED (already connected case)', {
             error: String(err),
@@ -1321,45 +1397,53 @@ const CarPlayService: CarPlayServiceType = {
     CarPlayLogger.info('[RN] CarPlay service INITIALIZED - waiting for connection');
     console.log('[CarPlayService] Initialized and waiting for connection');
     
-    // COLD-START FIX: Start periodic check for CarPlay connection AND template health
-    // Handles TWO scenarios:
-    // 1. CarPlay connects before React Native is ready (original cold-start fix)
-    // 2. createRootTemplate() fails after connection (NEW: watchdog retry)
-    if (!coldStartRetryTimer) {
-      CarPlayLogger.info('[RN] Starting cold-start retry timer with checkForConnection polling + watchdog');
+    // COLD-START FIX: Start periodic check for CarPlay connection
+    // INFINITE LOOP FIX: Removed checkForConnection() on Android (causes event flooding)
+    // Reduced retry count and increased interval
+    if (coldStartRetryTimer) {
+      clearInterval(coldStartRetryTimer);
+      coldStartRetryTimer = null;
+    }
+    coldStartRetryCount = 0;
+    
+    if (!connectionFullyHandled) {
+      CarPlayLogger.info('[RN] Starting cold-start retry timer (safe mode)');
       coldStartRetryTimer = setInterval(() => {
         coldStartRetryCount++;
         
-        // CRITICAL: Call checkForConnection() again - this may now succeed
-        try {
-          if (CarPlay?.bridge?.checkForConnection) {
-            CarPlay.bridge.checkForConnection();
+        // INFINITE LOOP FIX: Do NOT call checkForConnection() on Android
+        // It causes native module to fire didConnect events in a tight loop
+        if (Platform.OS === 'ios') {
+          try {
+            if (CarPlay?.bridge?.checkForConnection) {
+              CarPlay.bridge.checkForConnection();
+            }
+          } catch (e) {
+            // Ignore errors
           }
-        } catch (e) {
-          // Ignore errors
         }
         
-        // Check if CarPlay is now connected
-        const nowConnected = CarPlay?.connected || pendingConnection;
+        // Check if CarPlay is now connected (via the connected property, not events)
+        const nowConnected = CarPlay?.connected || false;
         
         CarPlayLogger.info('[RN] Cold-start check', {
           attempt: coldStartRetryCount,
           maxAttempts: MAX_COLD_START_RETRIES,
           isConnected: isCarPlayConnected,
           carPlayConnected: nowConnected,
-          hasCallbacks: !!playStationCallback,
-          isCreatingTemplate,
+          connectionFullyHandled,
         });
         
-        // SCENARIO 1: Connected but not yet initialized
-        if (nowConnected && !isCarPlayConnected && playStationCallback) {
-          CarPlayLogger.info('[RN] Cold-start: CarPlay connected but not initialized, creating template...');
+        // If connected but not yet handled, create template
+        if (nowConnected && !connectionFullyHandled && !isCreatingTemplate && playStationCallback) {
+          CarPlayLogger.info('[RN] Cold-start: Creating template (attempt ' + coldStartRetryCount + ')');
           isCarPlayConnected = true;
           CarPlayService.isConnected = true;
-          pendingConnection = false;
+          lastConnectHandledAt = Date.now();
           
           createRootTemplate().then(() => {
             CarPlayLogger.info('[RN] Cold-start: createRootTemplate() completed');
+            connectionFullyHandled = true;
             if (coldStartRetryTimer) {
               clearInterval(coldStartRetryTimer);
               coldStartRetryTimer = null;
@@ -1369,29 +1453,11 @@ const CarPlayService: CarPlayServiceType = {
           });
         }
         
-        // SCENARIO 2 (NEW): Already connected + initialized but template may have failed
-        // This is a WATCHDOG: if CarPlay is connected but still showing loading/empty,
-        // retry template creation. This fixes the "blank screen" issue.
-        if (isCarPlayConnected && playStationCallback && !isCreatingTemplate) {
-          // Only retry on specific intervals (every 3 seconds: attempts 6, 12, 18, 24, 30)
-          if (coldStartRetryCount % 6 === 0) {
-            CarPlayLogger.info('[RN] Watchdog: Re-creating root template (attempt ' + coldStartRetryCount + ')');
-            createRootTemplate().then(() => {
-              CarPlayLogger.info('[RN] Watchdog: createRootTemplate() completed');
-              // Stop retry after successful watchdog
-              if (coldStartRetryTimer) {
-                clearInterval(coldStartRetryTimer);
-                coldStartRetryTimer = null;
-              }
-            }).catch((err) => {
-              CarPlayLogger.error('[RN] Watchdog: createRootTemplate() FAILED', { error: String(err) });
-            });
-          }
-        }
-        
-        // Stop after max retries
-        if (coldStartRetryCount >= MAX_COLD_START_RETRIES) {
-          CarPlayLogger.info('[RN] Cold-start: Max retries reached, stopping timer');
+        // Stop after max retries or if connection is handled
+        if (coldStartRetryCount >= MAX_COLD_START_RETRIES || connectionFullyHandled) {
+          CarPlayLogger.info('[RN] Cold-start: Stopping timer', { 
+            reason: connectionFullyHandled ? 'connected' : 'max retries' 
+          });
           if (coldStartRetryTimer) {
             clearInterval(coldStartRetryTimer);
             coldStartRetryTimer = null;
@@ -1440,6 +1506,27 @@ const CarPlayService: CarPlayServiceType = {
     }
     coldStartRetryCount = 0;
     
+    // INFINITE LOOP FIX: Unregister all callbacks to prevent accumulation
+    if (CarPlay) {
+      if (registeredOnConnectCallback) {
+        CarPlay.unregisterOnConnect(registeredOnConnectCallback);
+        registeredOnConnectCallback = null;
+      }
+      if (registeredOnDisconnectCallback) {
+        CarPlay.unregisterOnDisconnect(registeredOnDisconnectCallback);
+        registeredOnDisconnectCallback = null;
+      }
+      if (earlyOnConnectCallback) {
+        CarPlay.unregisterOnConnect(earlyOnConnectCallback);
+        earlyOnConnectCallback = null;
+      }
+      if (earlyOnDisconnectCallback) {
+        CarPlay.unregisterOnDisconnect(earlyOnDisconnectCallback);
+        earlyOnDisconnectCallback = null;
+      }
+    }
+    handlersRegistered = false;
+    
     // Unsubscribe from language changes
     if (languageListenerUnsubscribe) {
       languageListenerUnsubscribe();
@@ -1462,6 +1549,8 @@ const CarPlayService: CarPlayServiceType = {
     CarPlayService.isConnected = false;
     pendingConnection = false;
     needsTemplateRefresh = false;
+    connectionFullyHandled = false;
+    lastConnectHandledAt = 0;
   },
   
   // Open Search Screen - can be triggered by Siri voice command

@@ -52,26 +52,44 @@ Implement In-App Purchase (IAP) Premium Strategy for MegaRadio app. The app has 
    - Purchase requests: 30s timeout
    - AudioErrorBoundary wrapping AudioProvider (prevents white screen from TrackPlayer crash)
 
+### Android Auto Infinite Loop Fix (Feb 2026 - NEW)
+**Problem**: Native `didConnect` event from `@g4rb4g3/react-native-carplay` fires HUNDREDS of times in 3ms on Android Auto connection, flooding the JS thread and causing white screen + app freeze.
+
+**Root Causes Identified**:
+1. `registerOnConnect()` adds to a `Set<callback>` - each `initialize()` call adds a NEW arrow function, accumulating callbacks
+2. `checkForConnection()` was called on Android (designed for iOS only), potentially triggering event floods
+3. Cold-start timer was too aggressive (500ms x 30 = 15s of polling)
+4. No debounce on `didConnect` events at any level
+
+**Fixes Applied**:
+- **carPlayService.ts**: Added `unregisterOnConnect/unregisterOnDisconnect` before re-registering (prevents callback accumulation)
+- **carPlayService.ts**: Added `CONNECT_DEBOUNCE_MS = 3000` debounce on onConnect handler
+- **carPlayService.ts**: Removed `checkForConnection()` on Android from cold-start timer
+- **carPlayService.ts**: Reduced cold-start timer to 2s interval, 10 max retries
+- **carPlayService.ts**: Added `connectionFullyHandled` flag to stop timer after success
+- **patch-package**: Added 2s debounce to `didConnect`/`didDisconnect` events in library constructor (`lib/CarPlay.js`, `lib/src/CarPlay.js`)
+- **patch-package**: Removed `console.log('we are connected yes!')` spam
+
 ### Config Plugin Architecture
 ```
 app.json plugins (execution order):
-1. expo-router → Routing
-2. expo-build-properties → Build config (newArchEnabled=false)
+1. expo-router -> Routing
+2. expo-build-properties -> Build config (newArchEnabled=false)
 3-12. Various Expo plugins
-13. react-native-google-mobile-ads → Base AdMob config
-14. ./plugins/withAdMobFix.js → AdMob ID guarantee + duplicate removal
-15. ./plugins/withTrackPlayerServiceFix.js → Manifest: MusicService + foreground permission
-16. ./plugins/withTrackPlayerNewArchFix.js → Source: MusicModule.kt TurboModule fix + MusicService try-catch
-17. ./plugins/withCarPlayNativeFix.js → Source: CarPlayModule.kt carContext guards
-18. @react-native-firebase/app → Firebase
+13. react-native-google-mobile-ads -> Base AdMob config
+14. ./plugins/withAdMobFix.js -> AdMob ID guarantee + duplicate removal
+15. ./plugins/withTrackPlayerServiceFix.js -> Manifest: MusicService + foreground permission
+16. ./plugins/withTrackPlayerNewArchFix.js -> Source: MusicModule.kt TurboModule fix + MusicService try-catch
+17. ./plugins/withCarPlayNativeFix.js -> Source: CarPlayModule.kt carContext guards
+18. @react-native-firebase/app -> Firebase
 ```
 
 ## Known Issues
-- Patch-package may silently fail in EAS builds → Config plugins provide fallback
+- Patch-package may silently fail in EAS builds -> Config plugins provide fallback
 - TurboModule interop active even with newArchEnabled=false in RN 0.81/Expo SDK 54
 
 ## Pending Tasks
-- P0: User verification of Android crashes after new build
+- P0: User verification of Android Auto infinite loop fix (NEW BUILD REQUIRED)
 - P1: watchOS Companion App (waiting for user requirements)
 
 ## Future/Backlog
