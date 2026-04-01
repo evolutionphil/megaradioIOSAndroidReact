@@ -160,6 +160,7 @@
           }
         }
       ],
+      "./plugins/withAndroidBuildFix.js",
       "./plugins/withAirPlay.js",
       "./plugins/withAndroidAutoFull.js",
       "./plugins/withCleartextTraffic.js",
