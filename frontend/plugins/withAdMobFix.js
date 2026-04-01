@@ -115,18 +115,18 @@ function withAdMobGradleFix(config) {
     let content = fs.readFileSync(buildGradlePath, 'utf-8');
     if (content.includes('MEGARADIO_ADMOB_FIX')) return config;
 
+    // Build the Gradle fix with properly escaped Groovy strings
+    // Groovy 4.0+ (Gradle 8.14+) rejects unknown escape sequences in single-quoted strings
+    // Use Java-style double-quoted strings for regex patterns
+    const admobId = ADMOB_ANDROID_APP_ID;
     const gradleFix = `
 // ============================================================
 // MEGARADIO_ADMOB_FIX: Remove MobileAdsInitProvider post-merge
 // ============================================================
-// This Gradle script patches the FINAL merged AndroidManifest.xml
-// AFTER the manifest merger runs. This is guaranteed to work regardless
-// of how libraries declare their ContentProviders.
 
 tasks.whenTaskAdded { task ->
     if (task.name.contains("process") && task.name.contains("Manifest") && !task.name.contains("Test")) {
         task.doLast {
-            // Search for all merged manifests in build intermediates
             def intermediatesDir = new File(project.buildDir, "intermediates")
             if (intermediatesDir.exists()) {
                 intermediatesDir.eachFileRecurse { file ->
@@ -135,7 +135,6 @@ tasks.whenTaskAdded { task ->
                     }
                 }
             }
-            // Also check packaged_manifests and bundle_manifest
             ["packaged_manifests", "bundle_manifest"].each { dirName ->
                 def dir = new File(intermediatesDir, dirName)
                 if (dir.exists()) {
@@ -146,7 +145,6 @@ tasks.whenTaskAdded { task ->
                     }
                 }
             }
-            // Check task outputs directly
             task.outputs.files.each { outputFile ->
                 if (outputFile.isDirectory()) {
                     outputFile.eachFileRecurse { file ->
@@ -167,15 +165,16 @@ def patchManifest(File manifestFile) {
     def content = manifestFile.text
     def original = content
     
-    // Remove MobileAdsInitProvider (both self-closing and paired tags)
-    content = content.replaceAll('(?s)<provider[^>]*MobileAdsInitProvider[^/]*\\/>', '')
-    content = content.replaceAll('(?s)<provider[^>]*MobileAdsInitProvider[^>]*>[\\\\s\\\\S]*?</provider>', '')
+    // Remove MobileAdsInitProvider - self-closing tags
+    content = content.replaceAll("(?s)<provider[^>]*MobileAdsInitProvider[^/]*/>" , "")
+    // Remove MobileAdsInitProvider - paired open/close tags
+    content = content.replaceAll("(?s)<provider[^>]*MobileAdsInitProvider[^>]*>.*?</provider>", "")
     
-    // Ensure AdMob App ID meta-data exists with correct value
-    if (!content.contains('${ADMOB_ANDROID_APP_ID}')) {
+    // Ensure AdMob App ID meta-data exists
+    if (!content.contains("${admobId}")) {
         content = content.replace(
-            '</application>',
-            '    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="${ADMOB_ANDROID_APP_ID}" />\\n    </application>'
+            "</application>",
+            "    <meta-data android:name=\\"com.google.android.gms.ads.APPLICATION_ID\\" android:value=\\"${admobId}\\" />\\n    </application>"
         )
     }
     
