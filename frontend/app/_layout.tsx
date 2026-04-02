@@ -150,6 +150,16 @@ export default function RootLayout() {
   // Log on first render
   useEffect(() => {
     sendLog('ROOT_LAYOUT_MOUNTED');
+
+    // Configure Google Sign-In native SDK (call once at app start)
+    if (Platform.OS !== 'web') {
+      try {
+        const { socialAuthService } = require('../src/services/socialAuthService');
+        socialAuthService.configureGoogle();
+      } catch (e) {
+        console.warn('[Layout] Google Sign-In configure error:', e);
+      }
+    }
   }, []);
 
   // Initialize FlowAlive Analytics

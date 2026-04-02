@@ -1,15 +1,11 @@
 // Social Authentication Service for MegaRadio
-// Uses expo-auth-session for Google and expo-apple-authentication for Apple
+// Uses @react-native-google-signin/google-signin for Google (native SDK)
+// Uses expo-apple-authentication for Apple
 
-import * as WebBrowser from 'expo-web-browser';
-import * as AuthSession from 'expo-auth-session';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 import authService from './authService';
-
-// Complete auth session for web browser (required for Expo)
-WebBrowser.maybeCompleteAuthSession();
 
 // OAuth provider types
 export type SocialProvider = 'google' | 'apple' | 'facebook';
@@ -27,23 +23,26 @@ interface SocialAuthResponse {
   error?: string;
 }
 
-// Google OAuth Client IDs
+// Google OAuth Web Client ID (from megaradio-276c6 Firebase project)
+// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+const GOOGLE_WEB_CLIENT_ID = '957628580421-1gj9mmbq20o9jva6olb28t2un6vb6jqh.apps.googleusercontent.com';
 const GOOGLE_IOS_CLIENT_ID = '246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com';
-const GOOGLE_ANDROID_CLIENT_ID = '246210957471-4dmnb95bcduaocr8toiphv3guq9a8htl.apps.googleusercontent.com';
 
-// Get the correct client ID based on platform
-const getGoogleClientId = () => {
-  if (Platform.OS === 'android') {
-    return GOOGLE_ANDROID_CLIENT_ID;
+// Lazy-load GoogleSignin to avoid crash on web
+let GoogleSignin: any = null;
+let statusCodes: any = null;
+
+const getGoogleSignin = () => {
+  if (!GoogleSignin && Platform.OS !== 'web') {
+    try {
+      const mod = require('@react-native-google-signin/google-signin');
+      GoogleSignin = mod.GoogleSignin;
+      statusCodes = mod.statusCodes;
+    } catch (e) {
+      console.warn('[SocialAuth] @react-native-google-signin/google-signin not available');
+    }
   }
-  return GOOGLE_IOS_CLIENT_ID;
-};
-
-// Google OAuth discovery document
-const GOOGLE_DISCOVERY = {
-  authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-  tokenEndpoint: 'https://oauth2.googleapis.com/token',
-  userInfoEndpoint: 'https://openidconnect.googleapis.com/v1/userinfo',
+  return GoogleSignin;
 };
 
 /**
@@ -52,207 +51,124 @@ const GOOGLE_DISCOVERY = {
  */
 export const socialAuthService = {
   /**
-   * Get the correct redirect URI for Expo
-   * For iOS, use reversed client ID format
-   * For Android, use custom scheme
+   * Configure Google Sign-In (call once at app start)
    */
-  getRedirectUri(): string {
-    if (Platform.OS === 'ios') {
-      // iOS uses reversed client ID as scheme
-      // Client ID: 246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com
-      // Reversed: com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk
-      const redirectUri = 'com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk:/oauth2redirect/google';
-      console.log('[SocialAuth] iOS redirect URI:', redirectUri);
-      return redirectUri;
-    } else {
-      // Android uses custom scheme
-      const redirectUri = AuthSession.makeRedirectUri({
-        scheme: 'megaradio',
-        path: 'oauth',
+  configureGoogle(): void {
+    const gs = getGoogleSignin();
+    if (!gs) return;
+
+    try {
+      gs.configure({
+        webClientId: GOOGLE_WEB_CLIENT_ID,
+        iosClientId: Platform.OS === 'ios' ? GOOGLE_IOS_CLIENT_ID : undefined,
+        offlineAccess: false,
       });
-      console.log('[SocialAuth] Android redirect URI:', redirectUri);
-      return redirectUri;
+      console.log('[SocialAuth] Google Sign-In configured (native SDK)');
+    } catch (e: any) {
+      console.warn('[SocialAuth] Google Sign-In configure error:', e.message);
     }
   },
 
   /**
-   * Google Sign-In using expo-auth-session
-   * Uses PKCE code flow → exchange for tokens → send idToken to backend
-   * Backend POST /api/auth/google verifies idToken with Google
+   * Google Sign-In using native SDK (@react-native-google-signin/google-signin)
+   * Returns idToken → send to backend POST /api/auth/google for verification
    */
   async signInWithGoogle(): Promise<SocialAuthResponse> {
     try {
-      console.log('[SocialAuth] Starting Google Sign-In...');
-      
-      const redirectUri = this.getRedirectUri();
-      console.log('[SocialAuth] Redirect URI:', redirectUri);
+      console.log('[SocialAuth] Starting native Google Sign-In...');
 
-      // Create auth request with CODE flow (iOS doesn't support id_token directly)
-      const request = new AuthSession.AuthRequest({
-        clientId: getGoogleClientId(),
-        scopes: ['openid', 'profile', 'email'],
-        redirectUri,
-        responseType: AuthSession.ResponseType.Code,
-        usePKCE: true,
-      });
-
-      // Prompt user to sign in
-      const result = await request.promptAsync(GOOGLE_DISCOVERY, {
-        showInRecents: true,
-      });
-
-      console.log('[SocialAuth] Auth result type:', result.type);
-
-      if (result.type === 'success') {
-        const code = result.params?.code;
-        
-        if (code) {
-          console.log('[SocialAuth] Got authorization code, exchanging for tokens...');
-          
-          try {
-            // Exchange code for tokens
-            const tokenResponse = await AuthSession.exchangeCodeAsync(
-              {
-                clientId: getGoogleClientId(),
-                code,
-                redirectUri,
-                extraParams: {
-                  code_verifier: request.codeVerifier || '',
-                },
-              },
-              GOOGLE_DISCOVERY
-            );
-
-            const idToken = tokenResponse.idToken;
-            const accessToken = tokenResponse.accessToken;
-            
-            console.log('[SocialAuth] idToken present:', !!idToken);
-            console.log('[SocialAuth] accessToken present:', !!accessToken);
-            
-            // Always fetch user info from Google's userinfo endpoint (using accessToken)
-            let userInfo: { email?: string; name?: string; googleId?: string; avatar?: string } = {};
-            if (accessToken) {
-              try {
-                const userInfoResponse = await fetch(GOOGLE_DISCOVERY.userInfoEndpoint, {
-                  headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                const userData = await userInfoResponse.json();
-                userInfo = {
-                  email: userData.email,
-                  name: userData.name,
-                  googleId: userData.sub,
-                  avatar: userData.picture,
-                };
-                console.log('[SocialAuth] Got user info from Google:', userInfo.email);
-              } catch (e) {
-                console.log('[SocialAuth] Could not fetch user info from Google');
-              }
-            }
-            
-            // Fallback: decode idToken locally for user info
-            if (!userInfo.email && idToken) {
-              try {
-                const parts = idToken.split('.');
-                if (parts.length === 3) {
-                  const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-                  const payload = JSON.parse(
-                    typeof atob !== 'undefined'
-                      ? atob(base64)
-                      : Buffer.from(base64, 'base64').toString('utf-8')
-                  );
-                  userInfo = {
-                    email: payload.email,
-                    name: payload.name,
-                    googleId: payload.sub,
-                  };
-                }
-              } catch (decodeErr) {
-                console.log('[SocialAuth] Could not decode idToken payload');
-              }
-            }
-            
-            // Send to backend - POST /api/auth/google
-            // Send idToken if available, otherwise send accessToken as the token
-            const tokenToSend = idToken || accessToken;
-            
-            if (tokenToSend) {
-              console.log('[SocialAuth] Sending token to backend /api/auth/google...');
-              
-              try {
-                const backendResponse = await authService.googleSignIn(tokenToSend, userInfo);
-                
-                if (backendResponse.token && backendResponse.user) {
-                  return {
-                    success: true,
-                    token: backendResponse.token,
-                    user: {
-                      id: backendResponse.user._id,
-                      email: backendResponse.user.email,
-                      name: backendResponse.user.fullName || backendResponse.user.name,
-                      avatar: backendResponse.user.avatar,
-                    },
-                  };
-                }
-              } catch (firstErr: any) {
-                console.log('[SocialAuth] First token attempt failed:', firstErr.message);
-                
-                // If idToken failed and we have accessToken, retry with accessToken
-                if (tokenToSend === idToken && accessToken && accessToken !== idToken) {
-                  console.log('[SocialAuth] Retrying with accessToken...');
-                  try {
-                    const retryResponse = await authService.googleSignIn(accessToken, userInfo);
-                    
-                    if (retryResponse.token && retryResponse.user) {
-                      return {
-                        success: true,
-                        token: retryResponse.token,
-                        user: {
-                          id: retryResponse.user._id,
-                          email: retryResponse.user.email,
-                          name: retryResponse.user.fullName || retryResponse.user.name,
-                          avatar: retryResponse.user.avatar,
-                        },
-                      };
-                    }
-                  } catch (retryErr: any) {
-                    console.log('[SocialAuth] Retry with accessToken also failed:', retryErr.message);
-                  }
-                }
-                
-                return { success: false, error: firstErr.message || 'Google authentication failed' };
-              }
-              
-              return { success: false, error: 'Google authentication failed - unexpected response' };
-            } else {
-              return { success: false, error: 'No token received from Google' };
-            }
-          } catch (tokenError: any) {
-            console.error('[SocialAuth] Token exchange error:', tokenError);
-            return {
-              success: false,
-              error: tokenError.message || 'Failed to exchange authorization code',
-            };
-          }
-        }
-        
-        return { success: false, error: 'No authorization code received from Google' };
-      } else if (result.type === 'cancel' || result.type === 'dismiss') {
-        return { success: false, error: 'Authentication cancelled' };
-      } else if (result.type === 'error') {
-        console.error('[SocialAuth] Auth error:', result.error);
-        return { 
-          success: false, 
-          error: result.error?.message || 'Google Sign-In failed' 
-        };
+      const gs = getGoogleSignin();
+      if (!gs) {
+        return { success: false, error: 'Google Sign-In not available on this platform' };
       }
-      
-      return { success: false, error: 'Google Sign-In failed' };
+
+      // Check Play Services (Android)
+      await gs.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+      // Perform native sign-in
+      const signInResult = await gs.signIn();
+      console.log('[SocialAuth] Native sign-in result type:', signInResult?.type);
+
+      // Handle different result formats (v12+ returns { type, data })
+      let idToken: string | null = null;
+      let userInfo: any = null;
+
+      if (signInResult?.data) {
+        // v12+ format
+        idToken = signInResult.data.idToken;
+        userInfo = signInResult.data.user;
+      } else if (signInResult?.idToken) {
+        // Legacy format
+        idToken = signInResult.idToken;
+        userInfo = signInResult.user;
+      }
+
+      if (!idToken) {
+        // Try getting tokens separately
+        try {
+          const tokens = await gs.getTokens();
+          idToken = tokens.idToken;
+        } catch (e) {
+          console.warn('[SocialAuth] getTokens failed:', e);
+        }
+      }
+
+      console.log('[SocialAuth] idToken present:', !!idToken);
+      console.log('[SocialAuth] User:', userInfo?.email);
+
+      if (!idToken) {
+        return { success: false, error: 'No ID token received from Google' };
+      }
+
+      // Build user info for backend
+      const googleUserInfo = {
+        email: userInfo?.email,
+        name: userInfo?.name || userInfo?.givenName,
+        googleId: userInfo?.id,
+        avatar: userInfo?.photo,
+      };
+
+      // Send idToken to backend POST /api/auth/google
+      console.log('[SocialAuth] Sending idToken to backend /api/auth/google...');
+
+      try {
+        const backendResponse = await authService.googleSignIn(idToken, googleUserInfo);
+
+        if (backendResponse.token && backendResponse.user) {
+          return {
+            success: true,
+            token: backendResponse.token,
+            user: {
+              id: backendResponse.user._id,
+              email: backendResponse.user.email,
+              name: backendResponse.user.fullName || backendResponse.user.name,
+              avatar: backendResponse.user.avatar,
+            },
+          };
+        }
+
+        return { success: false, error: 'Unexpected backend response' };
+      } catch (backendErr: any) {
+        console.error('[SocialAuth] Backend auth error:', backendErr.message);
+        return { success: false, error: backendErr.message || 'Backend authentication failed' };
+      }
     } catch (error: any) {
       console.error('[SocialAuth] Google Sign-In error:', error);
-      return {
-        success: false,
-        error: error.message || 'Google Sign-In failed',
-      };
+
+      // Handle specific error codes
+      if (statusCodes) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          return { success: false, error: 'Authentication cancelled' };
+        }
+        if (error.code === statusCodes.IN_PROGRESS) {
+          return { success: false, error: 'Sign-in already in progress' };
+        }
+        if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          return { success: false, error: 'Google Play Services not available. Please update.' };
+        }
+      }
+
+      return { success: false, error: error.message || 'Google Sign-In failed' };
     }
   },
 
