@@ -19,7 +19,7 @@ const AD_UNITS = {
   },
   android: {
     interstitial: 'ca-app-pub-8771434485570434/7220363780',
-    appOpenInterstitial: 'ca-app-pub-8771434485570434/7220363780', // Same as regular for now
+    appOpenInterstitial: '', // No dedicated App Open ad unit for Android yet
     rewarded: 'ca-app-pub-8771434485570434/8745886806',
   },
 };
@@ -211,6 +211,12 @@ class AdMobService {
   async loadAppOpenAd(): Promise<void> {
     if (Platform.OS === 'web' || !this.isInitialized) return;
 
+    const adUnitId = this.getAdUnitId('appOpenInterstitial');
+    if (!adUnitId) {
+      console.log('[AdMob] No App Open ad unit configured for this platform, skipping');
+      return;
+    }
+
     try {
       const { AppOpenAd, AdEventType } = require('react-native-google-mobile-ads');
       
@@ -258,7 +264,7 @@ class AdMobService {
     }
   }
 
-  // Show App Open Ad (with rewarded fallback if no-fill)
+  // Show App Open Ad (with interstitial fallback, then rewarded fallback)
   async showAppOpenAd(): Promise<boolean> {
     if (Platform.OS === 'web') return false;
     
@@ -268,7 +274,7 @@ class AdMobService {
       return false;
     }
 
-    // Try App Open ad first
+    // Try App Open ad first (iOS only - Android has no dedicated App Open unit)
     if (this.isAppOpenLoaded && this.appOpenAd) {
       try {
         await this.appOpenAd.show();
@@ -280,8 +286,22 @@ class AdMobService {
       }
     }
     
-    // Fallback: Try rewarded ad if app open not available
-    console.log('[AdMob] App Open ad not loaded, trying rewarded fallback...');
+    // Fallback 1: Try Interstitial (especially important on Android where no App Open unit exists)
+    console.log('[AdMob] App Open not loaded, trying interstitial fallback...');
+    if (this.isInterstitialLoaded && this.interstitialAd) {
+      try {
+        await this.interstitialAd.show();
+        console.log('[AdMob] Interstitial shown as app-open fallback');
+        this.isInterstitialLoaded = false;
+        this.loadInterstitialAd();
+        return true;
+      } catch (error) {
+        console.error('[AdMob] Interstitial fallback error:', error);
+      }
+    }
+
+    // Fallback 2: Try rewarded ad as last resort
+    console.log('[AdMob] Interstitial not loaded either, trying rewarded fallback...');
     if (this.isRewardedLoaded && this.rewardedAd) {
       try {
         // CRITICAL: Mark as automatic (NOT manual) so reward callback won't grant ad-free time
