@@ -19,7 +19,7 @@ const AD_UNITS = {
   },
   android: {
     interstitial: 'ca-app-pub-8771434485570434/7220363780',
-    appOpenInterstitial: '', // No dedicated App Open ad unit for Android yet
+    appOpenInterstitial: 'ca-app-pub-8771434485570434/5958578925',
     rewarded: 'ca-app-pub-8771434485570434/8745886806',
   },
 };
