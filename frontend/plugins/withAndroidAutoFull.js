@@ -390,7 +390,8 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
                     id = obj.optString("id", ""),
                     name = obj.optString("name", "Unknown"),
                     subtitle = obj.optString("country", ""),
-                    streamUrl = obj.optString("streamUrl", "")
+                    streamUrl = obj.optString("streamUrl", ""),
+                    favicon = obj.optString("favicon", "")
                 ))
             }
         } catch (e: Exception) {
@@ -426,27 +427,27 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
 
         when (parentId) {
             MEDIA_ROOT_ID -> {
-                items.add(browsable(MEDIA_FAVORITES, "Favoriler", "Favori radyolariniz"))
-                items.add(browsable(MEDIA_RECENT, "Son Calinanlar", "Son dinlediginiz"))
-                items.add(browsable(MEDIA_POPULAR, "Populer", "En populer radyolar"))
-                items.add(browsable(MEDIA_GENRES, "Turler", "Ture gore radyolar"))
+                items.add(browsable(MEDIA_FAVORITES, "Favoriler", "Favori radyolariniz", "ic_heart"))
+                items.add(browsable(MEDIA_RECENT, "Son Calinanlar", "Son dinlediginiz", "ic_clock"))
+                items.add(browsable(MEDIA_POPULAR, "Populer", "En populer radyolar", "ic_star"))
+                items.add(browsable(MEDIA_GENRES, "Turler", "Ture gore radyolar", "ic_music"))
             }
             MEDIA_GENRES -> {
-                items.add(browsable(GENRE_POP, "Pop", "Pop muzik radyolari"))
-                items.add(browsable(GENRE_ROCK, "Rock", "Rock muzik radyolari"))
-                items.add(browsable(GENRE_JAZZ, "Jazz", "Jazz muzik radyolari"))
-                items.add(browsable(GENRE_CLASSICAL, "Klasik", "Klasik muzik radyolari"))
-                items.add(browsable(GENRE_ELECTRONIC, "Elektronik", "Elektronik muzik"))
-                items.add(browsable(GENRE_HIPHOP, "Hip-Hop", "Hip-Hop radyolari"))
-                items.add(browsable(GENRE_TURKISH, "Turkce", "Turkce muzik radyolari"))
-                items.add(browsable(GENRE_NEWS, "Haber", "Haber radyolari"))
+                items.add(browsable(GENRE_POP, "Pop", "Pop muzik radyolari", "ic_music"))
+                items.add(browsable(GENRE_ROCK, "Rock", "Rock muzik radyolari", "ic_music"))
+                items.add(browsable(GENRE_JAZZ, "Jazz", "Jazz muzik radyolari", "ic_music"))
+                items.add(browsable(GENRE_CLASSICAL, "Klasik", "Klasik muzik radyolari", "ic_music"))
+                items.add(browsable(GENRE_ELECTRONIC, "Elektronik", "Elektronik muzik", "ic_music"))
+                items.add(browsable(GENRE_HIPHOP, "Hip-Hop", "Hip-Hop radyolari", "ic_music"))
+                items.add(browsable(GENRE_TURKISH, "Turkce", "Turkce muzik radyolari", "ic_music"))
+                items.add(browsable(GENRE_NEWS, "Haber", "Haber radyolari", "ic_music"))
             }
             MEDIA_FAVORITES -> {
                 val favs = loadFavorites()
                 if (favs.isEmpty()) {
                     items.add(playable("no_fav", "Henuz favori yok", "Uygulamadan ekleyin", ""))
                 } else {
-                    favs.forEach { items.add(playable(it.id, it.name, it.subtitle, it.streamUrl)) }
+                    favs.forEach { items.add(playable(it.id, it.name, it.subtitle, it.streamUrl, it.favicon)) }
                 }
             }
             MEDIA_RECENT -> {
@@ -454,13 +455,13 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
             }
             MEDIA_POPULAR -> {
                 categoryStationsMap[MEDIA_POPULAR]?.forEach {
-                    items.add(playable(it.id, it.name, it.subtitle, it.streamUrl))
+                    items.add(playable(it.id, it.name, it.subtitle, it.streamUrl, it.favicon))
                 }
             }
             GENRE_POP, GENRE_ROCK, GENRE_JAZZ, GENRE_CLASSICAL,
             GENRE_ELECTRONIC, GENRE_HIPHOP, GENRE_TURKISH, GENRE_NEWS -> {
                 categoryStationsMap[parentId]?.forEach {
-                    items.add(playable(it.id, it.name, it.subtitle, it.streamUrl))
+                    items.add(playable(it.id, it.name, it.subtitle, it.streamUrl, it.favicon))
                 }
             }
             else -> Log.w(TAG, "Unknown parentId: \$parentId")
@@ -471,25 +472,29 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
 
     // ── MediaItem Builders ──────────────────────────────────
 
-    private fun browsable(id: String, title: String, sub: String): MediaBrowserCompat.MediaItem {
-        val desc = MediaDescriptionCompat.Builder()
+    private fun browsable(id: String, title: String, sub: String, iconRes: String = ""): MediaBrowserCompat.MediaItem {
+        val descBuilder = MediaDescriptionCompat.Builder()
             .setMediaId(id)
             .setTitle(title)
             .setSubtitle(sub)
-            .build()
-        return MediaBrowserCompat.MediaItem(desc, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+        if (iconRes.isNotEmpty()) {
+            descBuilder.setIconUri(Uri.parse("android.resource://com.megaradio/drawable/\$iconRes"))
+        }
+        return MediaBrowserCompat.MediaItem(descBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
     }
 
-    private fun playable(id: String, title: String, sub: String, url: String): MediaBrowserCompat.MediaItem {
+    private fun playable(id: String, title: String, sub: String, url: String, icon: String = ""): MediaBrowserCompat.MediaItem {
         val extras = Bundle().apply { putString("stream_url", url) }
-        val desc = MediaDescriptionCompat.Builder()
+        val descBuilder = MediaDescriptionCompat.Builder()
             .setMediaId(id)
             .setTitle(title)
             .setSubtitle(sub)
             .setMediaUri(Uri.parse(url))
             .setExtras(extras)
-            .build()
-        return MediaBrowserCompat.MediaItem(desc, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+        if (icon.isNotEmpty()) {
+            descBuilder.setIconUri(Uri.parse(icon))
+        }
+        return MediaBrowserCompat.MediaItem(descBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }
 
     // ── Data Class ──────────────────────────────────────────
@@ -498,7 +503,8 @@ class MegaRadioAutoService : MediaBrowserServiceCompat() {
         val id: String,
         val name: String,
         val subtitle: String,
-        val streamUrl: String
+        val streamUrl: String,
+        val favicon: String = ""
     )
 }
 `;
@@ -517,6 +523,55 @@ const IC_AUTO_ICON_XML = `<?xml version="1.0" encoding="utf-8"?>
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M12,3C7.03,3 3,7.03 3,12v7c0,1.1 0.9,2 2,2h2v-9H5v-2c0,-3.87 3.13,-7 7,-7s7,3.13 7,7v2h-2v9h2c1.1,0 2,-0.9 2,-2v-7C21,7.03 16.97,3 12,3z" />
+</vector>
+`;
+
+// Category icons (Material Design, monochrome)
+const IC_HEART_XML = `<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,21.35l-1.45,-1.32C5.4,15.36 2,12.28 2,8.5 2,5.42 4.42,3 7.5,3c1.74,0 3.41,0.81 4.5,2.09C13.09,3.81 14.76,3 16.5,3 19.58,3 22,5.42 22,8.5c0,3.78 -3.4,6.86 -8.55,11.54L12,21.35z" />
+</vector>
+`;
+
+const IC_CLOCK_XML = `<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11.99,2C6.47,2 2,6.48 2,12s4.47,10 9.99,10C17.52,22 22,17.52 22,12S17.52,2 11.99,2zM12,20c-4.42,0 -8,-3.58 -8,-8s3.58,-8 8,-8 8,3.58 8,8 -3.58,8 -8,8zM12.5,7H11v6l5.25,3.15 0.75,-1.23 -4.5,-2.67z" />
+</vector>
+`;
+
+const IC_STAR_XML = `<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,17.27L18.18,21l-1.64,-7.03L22,9.24l-7.19,-0.61L12,2 9.19,8.63 2,9.24l5.46,4.73L5.82,21z" />
+</vector>
+`;
+
+const IC_MUSIC_XML = `<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,3v10.55c-0.59,-0.34 -1.27,-0.55 -2,-0.55C7.79,13 6,14.79 6,17s1.79,4 4,4 4,-1.79 4,-4V7h4V3h-6z" />
 </vector>
 `;
 
@@ -710,11 +765,15 @@ const withAndroidAutoNativeFiles = (config) => {
       fs.writeFileSync(path.join(xmlDir, 'automotive_app_desc.xml'), AUTOMOTIVE_APP_DESC_XML);
       console.log('[withAndroidAuto] Created automotive_app_desc.xml');
 
-      // 2. res/drawable/ic_auto_icon.xml (Attribution Icon)
+      // 2. res/drawable/ icons (Attribution + Category)
       const drawableDir = path.join(androidMain, 'res', 'drawable');
       fs.mkdirSync(drawableDir, { recursive: true });
       fs.writeFileSync(path.join(drawableDir, 'ic_auto_icon.xml'), IC_AUTO_ICON_XML);
-      console.log('[withAndroidAuto] Created ic_auto_icon.xml');
+      fs.writeFileSync(path.join(drawableDir, 'ic_heart.xml'), IC_HEART_XML);
+      fs.writeFileSync(path.join(drawableDir, 'ic_clock.xml'), IC_CLOCK_XML);
+      fs.writeFileSync(path.join(drawableDir, 'ic_star.xml'), IC_STAR_XML);
+      fs.writeFileSync(path.join(drawableDir, 'ic_music.xml'), IC_MUSIC_XML);
+      console.log('[withAndroidAuto] Created drawable icons (auto, heart, clock, star, music)');
 
       // 3. res/values/auto_theme.xml (Accent Color)
       const valuesDir = path.join(androidMain, 'res', 'values');

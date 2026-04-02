@@ -42,11 +42,14 @@ Complete rewrite of `withAndroidAutoFull.js` config plugin:
 - Content Style Hints: browsable=GRID, playable=LIST
 - Favorites loaded from React Native AsyncStorage (`SharedPreferences`)
 - Category-aware skip next/previous tracking
+- Station artwork/favicon support via `setIconUri()` for playable items
+- Category icons (heart, clock, star, music) via vector drawables for browsable items
 
 **Manifest & Resources:**
 - `androidx.car.app.TintableAttributionIcon` — monochrome headphone icon
 - `com.google.android.gms.car.application.theme` — accent color #FF4199
 - `automotive_app_desc.xml` — declares `<uses name="media" />`
+- Vector drawable icons: `ic_auto_icon`, `ic_heart`, `ic_clock`, `ic_star`, `ic_music`
 - Navigation permissions aggressively stripped (`NAVIGATION_TEMPLATES`, `MAP_TEMPLATES`, `ACCESS_SURFACE`)
 - `react-native-carplay` services blocked via `tools:node="remove"`
 - `MegaRadioAutoService` is the **sole** `MediaBrowserService`
