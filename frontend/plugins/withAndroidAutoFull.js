@@ -318,6 +318,11 @@ const withAndroidAutoManifest = (config) => {
     const manifest = config.modResults;
     const application = manifest.manifest.application[0];
     
+    // Ensure tools namespace
+    if (!manifest.manifest.$['xmlns:tools']) {
+      manifest.manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
+    }
+
     // Ensure arrays exist
     if (!application['meta-data']) {
       application['meta-data'] = [];
@@ -343,7 +348,42 @@ const withAndroidAutoManifest = (config) => {
       console.log('[withAndroidAuto] Added Android Auto meta-data');
     }
 
-    // Add MegaRadioAutoService
+    // Fix: Remove MediaBrowserService intent-filter from TrackPlayer's MusicService
+    // (our MegaRadioAutoService will be the sole MediaBrowserService)
+    application.service = application.service.map((s) => {
+      if (s.$ && s.$['android:name'] === 'com.doublesymmetry.trackplayer.service.MusicService') {
+        // Remove intent-filter with MediaBrowserService action
+        if (s['intent-filter']) {
+          s['intent-filter'] = s['intent-filter'].filter((f) => {
+            const actions = f.action || [];
+            return !actions.some((a) => a.$ && a.$['android:name'] === 'android.media.browse.MediaBrowserService');
+          });
+          if (s['intent-filter'].length === 0) {
+            delete s['intent-filter'];
+          }
+        }
+        console.log('[withAndroidAuto] Removed MediaBrowserService intent from TrackPlayer MusicService');
+      }
+      return s;
+    });
+
+    // Fix: Remove react-native-carplay's CarPlayService (conflicts with MediaBrowserService)
+    application.service = application.service.filter((s) => {
+      if (s.$ && s.$['android:name'] && s.$['android:name'].includes('CarPlayService')) {
+        console.log('[withAndroidAuto] Removed conflicting CarPlayService');
+        return false;
+      }
+      return true;
+    });
+    // Also add a tools:node="remove" entry for CarPlayService to prevent AAR merge adding it back
+    application.service.push({
+      $: {
+        'android:name': 'org.birkir.carplay.CarPlayService',
+        'tools:node': 'remove',
+      },
+    });
+
+    // Add MegaRadioAutoService (sole MediaBrowserService)
     const autoService = {
       $: {
         'android:name': '.MegaRadioAutoService',
