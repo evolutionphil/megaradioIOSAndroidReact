@@ -97,7 +97,10 @@ app.json plugins (execution order):
 ### GÖREV 4 — Renewal Listener (DONE)
 - `purchaseUpdatedListener` already calls `handlePurchaseSuccess()` which now includes `reportToBackend()`
 
-### Favorites & Recently Played Backend Integration Audit (Feb 2026)
+### Android Icon & AdMob Crash Fix (Feb 2026)
+- **Icon Fix:** All PNG icons (`icon.png`, `adaptive-icon.png`, `favicon.png`, `notification-icon.png`) converted from palette mode (P) to RGBA. Expo silently skips P-mode images during adaptive icon generation, resulting in default Android robot icon.
+- **AdMob Fix v2:** Rewrote `withAdMobFix.js` — changed strategy from `tools:node="remove"` (which silently failed) to `tools:node="replace"` + `android:enabled="false"`. Provider is now DISABLED instead of removed. Gradle Layer 3 also removes the provider from ALL merged manifests and ensures `APPLICATION_ID` meta-data with correct value (`ca-app-pub-8771434485570434~7427742767`).
+- **Files modified:** `assets/images/*.png`, `plugins/withAdMobFix.js`
 - **All 6 endpoints tested and verified working:**
   - `POST /api/user/favorites` ✅ (add)
   - `DELETE /api/user/favorites/:stationId` ✅ (remove)

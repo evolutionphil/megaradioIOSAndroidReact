@@ -1,12 +1,16 @@
-// Expo Config Plugin: NUCLEAR FIX for AdMob MobileAdsInitProvider crash
-// 
-// Problem: MobileAdsInitProvider ContentProvider from play-services-ads runs
-// before React Native loads and crashes with "Invalid Application ID".
+// Expo Config Plugin: Bulletproof fix for AdMob MobileAdsInitProvider crash
 //
-// THREE-LAYER approach:
-// Layer 1: withAndroidManifest - Add correct meta-data + tools:node="remove"
-// Layer 2: withDangerousMod - Raw XML patching of AndroidManifest.xml  
+// Problem: MobileAdsInitProvider ContentProvider runs BEFORE React Native
+// and crashes with "Invalid Application ID" if meta-data is missing.
+//
+// Strategy (v2 - Feb 2026):
+// Layer 1: withAndroidManifest - Add correct meta-data + DISABLE provider (not remove)
+// Layer 2: withDangerousMod - Raw XML backup patching
 // Layer 3: withDangerousMod - Gradle task to patch ALL merged manifests post-merge
+//
+// Key change: Using tools:node="replace" + android:enabled="false" instead of
+// tools:node="remove". "remove" silently fails when attributes don't match.
+// "replace" + "enabled=false" is more reliable.
 
 const { withAndroidManifest, withDangerousMod } = require('@expo/config-plugins');
 const fs = require('fs');
@@ -25,7 +29,7 @@ function withAdMobManifestAPI(config) {
       manifest.manifest.$['xmlns:tools'] = 'http://schemas.android.com/tools';
     }
 
-    // Remove ALL existing AdMob entries to prevent duplicates
+    // Remove ALL existing AdMob APPLICATION_ID entries to prevent duplicates
     application['meta-data'] = application['meta-data'].filter(
       (m) => !(m.$ && m.$['android:name'] === 'com.google.android.gms.ads.APPLICATION_ID')
     );
@@ -39,7 +43,7 @@ function withAdMobManifestAPI(config) {
       },
     });
 
-    // Add provider removal directive
+    // DISABLE provider instead of removing it (more reliable)
     if (!application['provider']) application['provider'] = [];
     application['provider'] = application['provider'].filter(
       (p) => !(p.$ && p.$['android:name'] && p.$['android:name'].includes('MobileAdsInitProvider'))
@@ -47,24 +51,26 @@ function withAdMobManifestAPI(config) {
     application['provider'].push({
       $: {
         'android:name': 'com.google.android.gms.ads.MobileAdsInitProvider',
-        'android:authorities': '${applicationId}.mobileadsinitprovider',
-        'tools:node': 'remove',
+        'android:authorities': 'com.megaradio.mobileadsinitprovider',
+        'android:enabled': 'false',
+        'android:exported': 'false',
+        'tools:node': 'replace',
       },
     });
 
-    console.log('[withAdMobFix] Layer 1: Manifest API done');
+    console.log('[withAdMobFix] Layer 1: Manifest API done (provider DISABLED)');
     return config;
   });
 }
 
-// Layer 2: Raw XML patching
+// Layer 2: Raw XML patching as backup
 function withAdMobRawXML(config) {
   return withDangerousMod(config, ['android', async (config) => {
     const manifestPath = path.join(
       config.modRequest.projectRoot,
       'android/app/src/main/AndroidManifest.xml'
     );
-    
+
     if (fs.existsSync(manifestPath)) {
       let content = fs.readFileSync(manifestPath, 'utf-8');
       let modified = false;
@@ -84,14 +90,24 @@ function withAdMobRawXML(config) {
         modified = true;
       }
 
-      // Add provider removal if missing
+      // Ensure provider is DISABLED (not removed)
+      // First remove any existing MobileAdsInitProvider entries
+      content = content.replace(
+        /<provider[^>]*MobileAdsInitProvider[^/]*\/>/g,
+        ''
+      );
+      content = content.replace(
+        /<provider[^>]*MobileAdsInitProvider[^>]*>[\s\S]*?<\/provider>/g,
+        ''
+      );
+      // Add disabled provider
       if (!content.includes('MobileAdsInitProvider')) {
         content = content.replace(
           '</application>',
-          `    <provider android:name="com.google.android.gms.ads.MobileAdsInitProvider" android:authorities="\${applicationId}.mobileadsinitprovider" tools:node="remove" />\n    </application>`
+          `    <provider android:name="com.google.android.gms.ads.MobileAdsInitProvider" android:authorities="com.megaradio.mobileadsinitprovider" android:enabled="false" android:exported="false" tools:node="replace" />\n    </application>`
         );
-        modified = true;
       }
+      modified = true;
 
       if (modified) {
         fs.writeFileSync(manifestPath, content);
@@ -109,85 +125,88 @@ function withAdMobGradleFix(config) {
       config.modRequest.projectRoot,
       'android/app/build.gradle'
     );
-    
-    if (!fs.existsSync(buildGradlePath)) return config;
-    
-    let content = fs.readFileSync(buildGradlePath, 'utf-8');
-    if (content.includes('MEGARADIO_ADMOB_FIX')) return config;
 
-    // Build the Gradle fix with properly escaped Groovy strings
-    // Groovy 4.0+ (Gradle 8.14+) rejects unknown escape sequences in single-quoted strings
-    // Use Java-style double-quoted strings for regex patterns
+    if (!fs.existsSync(buildGradlePath)) return config;
+
+    let content = fs.readFileSync(buildGradlePath, 'utf-8');
+    if (content.includes('MEGARADIO_ADMOB_FIX_V2')) return config;
+
+    // Remove old v1 fix if present
+    content = content.replace(/\/\/ =+\n\/\/ MEGARADIO_ADMOB_FIX:[\s\S]*?^}$/m, '');
+
     const admobId = ADMOB_ANDROID_APP_ID;
     const gradleFix = `
 // ============================================================
-// MEGARADIO_ADMOB_FIX: Remove MobileAdsInitProvider post-merge
+// MEGARADIO_ADMOB_FIX_V2: Ensure AdMob APP ID + Disable provider
 // ============================================================
 
 tasks.whenTaskAdded { task ->
     if (task.name.contains("process") && task.name.contains("Manifest") && !task.name.contains("Test")) {
         task.doLast {
             def intermediatesDir = new File(project.buildDir, "intermediates")
-            if (intermediatesDir.exists()) {
-                intermediatesDir.eachFileRecurse { file ->
-                    if (file.name == "AndroidManifest.xml" && file.path.contains("merged_manifest")) {
-                        patchManifest(file)
-                    }
-                }
-            }
-            ["packaged_manifests", "bundle_manifest"].each { dirName ->
+            if (!intermediatesDir.exists()) return
+
+            // Search ALL possible manifest locations
+            def manifestDirs = ["merged_manifest", "merged_manifests", "packaged_manifests", "bundle_manifest"]
+            manifestDirs.each { dirName ->
                 def dir = new File(intermediatesDir, dirName)
                 if (dir.exists()) {
                     dir.eachFileRecurse { file ->
                         if (file.name == "AndroidManifest.xml") {
-                            patchManifest(file)
+                            patchManifestV2(file)
                         }
                     }
                 }
             }
+
+            // Also check task outputs
             task.outputs.files.each { outputFile ->
                 if (outputFile.isDirectory()) {
                     outputFile.eachFileRecurse { file ->
                         if (file.name == "AndroidManifest.xml") {
-                            patchManifest(file)
+                            patchManifestV2(file)
                         }
                     }
                 } else if (outputFile.name == "AndroidManifest.xml") {
-                    patchManifest(outputFile)
+                    patchManifestV2(outputFile)
                 }
             }
         }
     }
 }
 
-def patchManifest(File manifestFile) {
+def patchManifestV2(File manifestFile) {
     if (!manifestFile.exists()) return
     def content = manifestFile.text
     def original = content
-    
-    // Remove MobileAdsInitProvider - self-closing tags
+
+    // Step 1: Remove MobileAdsInitProvider completely from merged manifest
+    // Self-closing tags
     content = content.replaceAll("(?s)<provider[^>]*MobileAdsInitProvider[^/]*/>" , "")
-    // Remove MobileAdsInitProvider - paired open/close tags
+    // Paired open/close tags
     content = content.replaceAll("(?s)<provider[^>]*MobileAdsInitProvider[^>]*>.*?</provider>", "")
-    
-    // Ensure AdMob App ID meta-data exists
-    if (!content.contains("${admobId}")) {
-        content = content.replace(
-            "</application>",
-            "    <meta-data android:name=\\"com.google.android.gms.ads.APPLICATION_ID\\" android:value=\\"${admobId}\\" />\\n    </application>"
-        )
-    }
-    
+
+    // Step 2: Ensure APPLICATION_ID meta-data exists with correct value
+    // First remove any existing (possibly wrong) entries
+    content = content.replaceAll("(?s)<meta-data[^>]*com\\\\.google\\\\.android\\\\.gms\\\\.ads\\\\.APPLICATION_ID[^/]*/>" , "")
+    content = content.replaceAll("(?s)<meta-data[^>]*com\\\\.google\\\\.android\\\\.gms\\\\.ads\\\\.APPLICATION_ID[^>]*>.*?</meta-data>", "")
+
+    // Add correct meta-data
+    content = content.replace(
+        "</application>",
+        "    <meta-data android:name=\\"com.google.android.gms.ads.APPLICATION_ID\\" android:value=\\"${admobId}\\" />\\n    </application>"
+    )
+
     if (content != original) {
         manifestFile.text = content
-        println "[MEGARADIO_ADMOB_FIX] Patched: " + manifestFile.path
+        println "[MEGARADIO_ADMOB_FIX_V2] Patched: " + manifestFile.path
     }
 }
 `;
 
     content += gradleFix;
     fs.writeFileSync(buildGradlePath, content);
-    console.log('[withAdMobFix] Layer 3: Gradle fix added');
+    console.log('[withAdMobFix] Layer 3: Gradle fix V2 added');
     return config;
   }]);
 }
