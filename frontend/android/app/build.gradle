@@ -1,4 +1,9 @@
 apply plugin: "com.android.application"
+// @generated begin safeExtGet - expo prebuild (DO NOT MODIFY) sync-be4acad6508a6820102c74ab393bd7ab1093e6c0
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+// @generated end safeExtGet
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -87,13 +92,23 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.megaradio"
+    namespace 'com.megaradio'
     defaultConfig {
-        applicationId "com.megaradio"
+
+        // MEGARADIO_ADMOB_PLACEHOLDERS: Resolve library manifest placeholders
+        manifestPlaceholders += [
+            appJSONGoogleMobileAdsAppID: "ca-app-pub-8771434485570434~7427742767",
+            appJSONGoogleMobileAdsDelayAppMeasurementInit: "false",
+            appJSONGoogleMobileAdsOptimizeInitialization: "true",
+            appJSONGoogleMobileAdsOptimizeAdLoading: "true"
+        ]
+        applicationId 'com.megaradio'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 81
+        versionName "1.0.65"
+
+        multiDexEnabled true
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
@@ -104,6 +119,10 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+    }
+    dexOptions {
+        preDexLibraries true
+        javaMaxHeapSize "4g"
     }
     buildTypes {
         debug {
@@ -153,6 +172,9 @@ android {
 }
 
 dependencies {
+// @generated begin react-native-google-cast-dependencies - expo prebuild (DO NOT MODIFY) sync-3822a3c86222e7aca74039b551612aab7e75365d
+    implementation "com.google.android.gms:play-services-cast-framework:${safeExtGet('castFrameworkVersion', '+')}"
+// @generated end react-native-google-cast-dependencies
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -180,3 +202,7 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'com.google.firebase.crashlytics'
