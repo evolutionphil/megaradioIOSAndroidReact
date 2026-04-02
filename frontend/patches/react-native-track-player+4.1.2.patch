@@ -418,7 +418,7 @@ index b2409a0..83cbeb3 100644
 +    }
  }
 diff --git a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
-index afa6b0f..9a9c1a4 100644
+index afa6b0f..eb691a6 100644
 --- a/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
 +++ b/node_modules/react-native-track-player/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt
 @@ -105,24 +105,35 @@ class MusicService : HeadlessJsTaskService() {
@@ -473,3 +473,16 @@ index afa6b0f..9a9c1a4 100644
      }
  
      @MainThread
+@@ -225,9 +236,9 @@ class MusicService : HeadlessJsTaskService() {
+ 
+         val openAppIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+-            // Add the Uri data so apps can identify that it was a notification click
+-            data = Uri.parse("trackplayer://notification.click")
+-            action = Intent.ACTION_VIEW
++            // Notification tap: just bring app to foreground (no deep link)
++            // data URI removed to prevent Expo Router "unmatched route" error
++            // action = Intent.ACTION_VIEW  // removed - no deep link needed
+         }
+ 
+         val accentColor = BundleUtils.getIntOrNull(options, "color")
