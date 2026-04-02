@@ -19,98 +19,103 @@ Implement In-App Purchase (IAP) Premium Strategy for MegaRadio app. The app has 
 - Firebase GA4 and Crashlytics integration
 - Google AdMob (App Open, Interstitial, Rewarded, Banner ads)
 - IAP (In-App Purchases) with StoreKit / Play Billing
-- Google Sign-In authentication
+- Google Sign-In authentication (Native SDK on Android)
 - Package name alignment (com.megaradio for Android)
+
+### Backend Sync (DONE - Feb 2026)
+- IAP sync: `reportToBackend(purchase)`, `syncSubscriptionFromBackend()`
+- Favorites sync: `POST/DELETE/GET /api/user/favorites`
+- Recently played: `POST/GET /api/recently-played`
+
+### Android Auto A-Z Media App Compliance (DONE - Feb 2026)
+Complete rewrite of `withAndroidAutoFull.js` config plugin:
+
+**Kotlin Service (`MegaRadioAutoService.kt`):**
+- Full `MediaBrowserServiceCompat` with browse tree (Favoriler, Son Calinanlar, Populer, Turler)
+- `MediaSessionCompat` with complete `Callback` implementation
+- `onPlayFromMediaId` — tapping a station starts native playback
+- `onPlay/onPause/onStop/onSkipToNext/onSkipToPrevious` — all transport controls
+- Native `android.media.MediaPlayer` for streaming radio (independent of TrackPlayer)
+- `AudioFocus` management (gain/loss/transient handling)
+- `PlaybackStateCompat` properly updated through all states (NONE→BUFFERING→PLAYING→PAUSED→STOPPED→ERROR)
+- `MediaMetadataCompat` set with station name/artist/album for Now Playing screen
+- Content Style Hints: browsable=GRID, playable=LIST
+- Favorites loaded from React Native AsyncStorage (`SharedPreferences`)
+- Category-aware skip next/previous tracking
+
+**Manifest & Resources:**
+- `androidx.car.app.TintableAttributionIcon` — monochrome headphone icon
+- `com.google.android.gms.car.application.theme` — accent color #FF4199
+- `automotive_app_desc.xml` — declares `<uses name="media" />`
+- Navigation permissions aggressively stripped (`NAVIGATION_TEMPLATES`, `MAP_TEMPLATES`, `ACCESS_SURFACE`)
+- `react-native-carplay` services blocked via `tools:node="remove"`
+- `MegaRadioAutoService` is the **sole** `MediaBrowserService`
+- `ACTION_PLAY_FROM_MEDIA_ID` included in supported actions
+
+**TrackPlayer Service Fix:**
+- `withTrackPlayerServiceFix.js` updated: MediaBrowserService intent-filter REMOVED from MusicService
+- MusicService exported=false (only internal phone playback)
+- foregroundServiceType=mediaPlayback preserved for Android 15+
 
 ### Android Crash Fixes (Feb-Apr 2026)
 
-1. **TrackPlayer TurboModule Fix** (via `patch-package` ONLY)
+1. **TrackPlayer TurboModule Fix** (via `patch-package`)
    - Fixed MusicModule.kt: 36 methods changed from `= scope.launch {}` to `{ scope.launch {} }`
-   - Fixed MusicService.kt: `startForeground` wrapped in try-catch + `FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK`
-   - Fixed null check for `originalItem` in getTrack/getActiveTrack
-   - **`withTrackPlayerNewArchFix.js` REMOVED from app.json** (was conflicting with patch-package)
+   - Fixed MusicService.kt: `startForeground` wrapped in try-catch
+   - Fixed null check for `originalItem`
 
 2. **CarPlay/Android Auto Fix** (`plugins/withCarPlayNativeFix.js`)
    - Added `isCarContextReady()` guard to ALL methods
-   - Fixed event flooding with debounce
 
 3. **AdMob Fix** (`plugins/withAdMobFix.js`)
-   - 3-layer approach: ManifestAPI + Raw XML + Nuclear Gradle task
+   - 3-layer approach: ManifestAPI + manifestPlaceholders + Raw XML
 
-4. **Firebase Google Services Fix** (`plugins/withGoogleServicesFix.js` - IMPROVED)
-   - Bulletproof 4-step setup with buildscript-specific regex
+4. **Firebase Google Services Fix** (`plugins/withGoogleServicesFix.js`)
+   - Bulletproof 4-step setup
 
-5. **Android Build Fix** (`plugins/withAndroidBuildFix.js` - NEW Apr 2026)
-   - Forces `newArchEnabled=false` in gradle.properties (was conflicting as `true`)
-   - Enables MultiDex explicitly
-   - Adds comprehensive ProGuard keep rules for all native libraries
-   - Configures DEX compiler with 4GB heap
-   - Fixes `classes.dex not found` crash
+5. **Android Build Fix** (`plugins/withAndroidBuildFix.js`)
+   - Forces `newArchEnabled=false`, MultiDex, ProGuard, DEX
+
+### Google Login Migration (Feb 2026)
+- Migrated from `expo-auth-session` to `@react-native-google-signin/google-signin`
+- Native SDK handles SHA-1 verification via `google-services.json`
+- Backend `/api/auth/google` unchanged (accepts idToken)
+
+### UI Fixes (Feb 2026)
+- PremiumPaywall buttons: padding fix for gesture-navigation devices
+- Splash screen: configured in app.json
+- TrackPlayer: `StopPlaybackAndRemoveNotification` on app kill
+- App icons: RGBA conversion (P mode fix)
 
 ### Config Plugin Architecture (Current - versionCode 81)
 ```
 app.json plugins (execution order):
-1-7. Expo core plugins
-8.  ./plugins/withAndroidBuildFix.js -> NEW: MultiDex + newArch + ProGuard + DEX
-9.  ./plugins/withAirPlay.js
-10. ./plugins/withAndroidAutoFull.js
+1-7.  Expo core plugins
+8.    ./plugins/withAndroidBuildFix.js
+9.    ./plugins/withAirPlay.js
+10.   ./plugins/withAndroidAutoFull.js     ← MEDIA APP: Service + Manifest + Resources
 11-12. Other plugins
-13. react-native-google-mobile-ads
-14. ./plugins/withAdMobFix.js
-15. ./plugins/withTrackPlayerServiceFix.js
-16. ./plugins/withCarPlayNativeFix.js
+13.   react-native-google-mobile-ads
+14.   ./plugins/withAdMobFix.js
+15.   ./plugins/withTrackPlayerServiceFix.js  ← NO MediaBrowserService intent
+16.   ./plugins/withCarPlayNativeFix.js
 17-18. Firebase plugins
-19. ./plugins/withGoogleServicesFix.js
+19.   ./plugins/withGoogleServicesFix.js
+20.   @react-native-google-signin/google-signin
 ```
 
 ### Native Fix Strategy
-- **patch-package**: `react-native-track-player` (TurboModule+foreground+null), `@g4rb4g3/react-native-carplay` (debounce), `react-native` (core)
-- **Config Plugins**: withAndroidBuildFix, withAdMobFix, withTrackPlayerServiceFix, withCarPlayNativeFix, withGoogleServicesFix
+- **patch-package**: `react-native-track-player`, `@g4rb4g3/react-native-carplay`, `react-native`
+- **Config Plugins**: withAndroidBuildFix, withAdMobFix, withAndroidAutoFull, withTrackPlayerServiceFix, withCarPlayNativeFix, withGoogleServicesFix
 
 ## Known Issues
 - react-native-reanimated `mIsFinished` warning (non-critical, v3.19.5)
 - `libpenguin.so` not found (non-critical)
 
-## Pending Tasks
-- P0: ~~Backend Developer IAP Specification~~ (DONE - Feb 2026)
-- P0: ~~Backend IAP Integration (4 Görev)~~ (DONE - Feb 2026)
-- P0: User verification of versionCode 81 build
-- P1: Android Auto UI/UX verification
+## Pending Verification
+- P0: User needs to build APK and test Android Auto on DHU / real car
+- P1: Google Login, background playback fix, splash screen, paywall UI — need user testing
 - P1: watchOS Companion App (waiting for user requirements)
-
-## Backend IAP Integration (Implemented Feb 2026)
-### GÖREV 1 — Purchase → Backend POST (DONE)
-- `reportToBackend(purchase)` added to `iapService.ts`
-- Called in `handlePurchaseSuccess()` after local AsyncStorage save
-- Sends: platform, productId, transactionId, originalTransactionId, receipt (iOS), purchaseToken (Android)
-- Non-blocking: failure never prevents local purchase activation
-
-### GÖREV 2 — App Startup Sync from Backend (DONE)
-- `syncSubscriptionFromBackend()` added to `iapService.ts`
-- Called in `_layout.tsx` after IAP init (if authenticated)
-- Called in `authStore.ts` after successful login
-- Logic: if backend plan rank > local plan rank → update local; else keep local
-
-### GÖREV 3 — Restore Purchases → Backend POST (DONE)
-- `restorePurchases()` updated to call `reportToBackend(bestPurchase)` after local save
-
-### GÖREV 4 — Renewal Listener (DONE)
-- `purchaseUpdatedListener` already calls `handlePurchaseSuccess()` which now includes `reportToBackend()`
-
-### Android Icon & AdMob Crash Fix (Feb 2026)
-- **Icon Fix:** All PNG icons (`icon.png`, `adaptive-icon.png`, `favicon.png`, `notification-icon.png`) converted from palette mode (P) to RGBA. Expo silently skips P-mode images during adaptive icon generation, resulting in default Android robot icon.
-- **AdMob Fix v2:** Rewrote `withAdMobFix.js` — changed strategy from `tools:node="remove"` (which silently failed) to `tools:node="replace"` + `android:enabled="false"`. Provider is now DISABLED instead of removed. Gradle Layer 3 also removes the provider from ALL merged manifests and ensures `APPLICATION_ID` meta-data with correct value (`ca-app-pub-8771434485570434~7427742767`).
-- **Files modified:** `assets/images/*.png`, `plugins/withAdMobFix.js`
-- **All 6 endpoints tested and verified working:**
-  - `POST /api/user/favorites` ✅ (add)
-  - `DELETE /api/user/favorites/:stationId` ✅ (remove)
-  - `GET /api/user/favorites` ✅ (list — returns array with favoritedAt)
-  - `GET /api/user/favorites/check/:stationId` ✅ (returns `isFavorited: boolean`)
-  - `POST /api/recently-played` ✅ (record)
-  - `GET /api/recently-played` ✅ (list — returns array with playedAt)
-- **Bug fixed:** `checkFavorite` response key mismatch (`isFavorite` → `isFavorited`)
-- **Improved:** `addFavorite` now silently handles "Station already in favorites" 400 instead of queueing unnecessary retries
-- **Files modified:** `userService.ts`
 
 ## Future/Backlog
 - P1: tvOS and Android TV standalone apps
@@ -119,13 +124,6 @@ app.json plugins (execution order):
 - P2: Bluetooth metadata (AVRCP)
 - P3: Station alarm feature
 
-## IAP Technical Specification (Delivered Feb 2026)
-- Product IDs: `megaradio_remove_ads_yearly1`, `megaradio_premium_monthly1`, `megaradio_premium_yearly`, `megaradio_premium_lifetime`
-- Plans: `none`, `remove_ads`, `premium_monthly`, `premium_yearly`, `premium_lifetime`
-- Features: `remove_ads`, `song_info`, `spotify_link`, `youtube_link`, `hd_stream`, `song_history`, `stream_record`
-- Current flow: Fully local (AsyncStorage), no server-side receipt validation
-- Backend endpoints proposed: `POST /api/user/subscription` (validate & store), `GET /api/user/subscription` (query status)
-
 ## Build Instructions
 ```bash
 cd frontend
@@ -133,3 +131,12 @@ yarn install
 npx expo prebuild --platform android --clean
 eas build --platform android --profile preview
 ```
+
+## API Endpoints
+- `POST /api/user/subscription` — IAP sync
+- `GET /api/user/subscription` — query status
+- `POST/DELETE/GET /api/user/favorites` — favorites CRUD
+- `GET /api/user/favorites/check/:stationId` — check if favorited
+- `POST/GET /api/recently-played` — recently played
+- `POST /api/auth/google` — Google idToken verification
+- `POST /api/auth/mobile/login` — email/password login

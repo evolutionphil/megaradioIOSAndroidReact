@@ -38,20 +38,16 @@ module.exports = function withTrackPlayerServiceFix(config) {
       (s) => s.$?.['android:name'] === 'com.doublesymmetry.trackplayer.service.MusicService'
     );
 
+    // NOTE: MediaBrowserService intent-filter is intentionally REMOVED from MusicService.
+    // MegaRadioAutoService (in withAndroidAutoFull.js) is the sole MediaBrowserService
+    // for Android Auto. TrackPlayer's MusicService handles phone playback only.
     const musicServiceConfig = {
       $: {
         'android:name': 'com.doublesymmetry.trackplayer.service.MusicService',
-        'android:exported': 'true',
+        'android:exported': 'false',
         'android:foregroundServiceType': 'mediaPlayback',
         'tools:replace': 'android:exported,android:foregroundServiceType',
       },
-      'intent-filter': [
-        {
-          action: [
-            { $: { 'android:name': 'android.media.browse.MediaBrowserService' } },
-          ],
-        },
-      ],
     };
 
     if (existingService) {
