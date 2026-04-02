@@ -331,28 +331,103 @@ const withAndroidAutoManifest = (config) => {
       application.service = [];
     }
 
+    // ============================================================
+    // CLEANUP: Remove ALL react-native-carplay navigation artifacts
+    // MegaRadio is a MEDIA app, not a NAVIGATION app
+    // ============================================================
+
+    // Remove navigation-only permissions from react-native-carplay
+    const NAV_PERMISSIONS_TO_REMOVE = [
+      'androidx.car.app.NAVIGATION_TEMPLATES',
+      'androidx.car.app.MAP_TEMPLATES',
+      'androidx.car.app.ACCESS_SURFACE',
+    ];
+
+    if (!manifest.manifest['uses-permission']) {
+      manifest.manifest['uses-permission'] = [];
+    }
+
+    // Filter out navigation permissions
+    manifest.manifest['uses-permission'] = manifest.manifest['uses-permission'].filter((p) => {
+      const name = p.$ && p.$['android:name'];
+      if (NAV_PERMISSIONS_TO_REMOVE.includes(name)) {
+        console.log(`[withAndroidAuto] Removed nav permission: ${name}`);
+        return false;
+      }
+      return true;
+    });
+
+    // Add tools:node="remove" for each nav permission to block AAR merge
+    NAV_PERMISSIONS_TO_REMOVE.forEach((perm) => {
+      manifest.manifest['uses-permission'].push({
+        $: {
+          'android:name': perm,
+          'tools:node': 'remove',
+        },
+      });
+    });
+
+    // Remove carplay services and activities
+    application.service = application.service.filter((s) => {
+      const name = s.$ && s.$['android:name'];
+      if (name && (name.includes('CarPlayService') || name.includes('CarPlayHeadlessTaskService'))) {
+        console.log(`[withAndroidAuto] Removed carplay service: ${name}`);
+        return false;
+      }
+      return true;
+    });
+
+    // Remove carplay activities
+    if (application.activity) {
+      application.activity = application.activity.filter((a) => {
+        const name = a.$ && a.$['android:name'];
+        if (name && name.includes('SignInWithGoogleActivity') && name.includes('carplay')) {
+          console.log(`[withAndroidAuto] Removed carplay activity: ${name}`);
+          return false;
+        }
+        return true;
+      });
+    }
+
+    // Remove carplay minCarApiLevel meta-data
+    application['meta-data'] = application['meta-data'].filter((m) => {
+      const name = m.$ && m.$['android:name'];
+      if (name === 'androidx.car.app.minCarApiLevel') {
+        console.log('[withAndroidAuto] Removed carplay minCarApiLevel meta-data');
+        return false;
+      }
+      return true;
+    });
+
+    // Add tools:node="remove" entries for carplay services to block AAR merge
+    application.service.push({
+      $: { 'android:name': 'org.birkir.carplay.CarPlayService', 'tools:node': 'remove' },
+    });
+    application.service.push({
+      $: { 'android:name': 'org.birkir.carplay.CarPlayHeadlessTaskService', 'tools:node': 'remove' },
+    });
+
+    // ============================================================
+    // ADD: Proper Android Auto media app configuration
+    // ============================================================
+
     // Add Android Auto meta-data
-    const autoMetaData = {
-      $: {
-        'android:name': 'com.google.android.gms.car.application',
-        'android:resource': '@xml/automotive_app_desc',
-      },
-    };
-    
-    const existingMeta = application['meta-data'].find(
+    const existingCarMeta = application['meta-data'].find(
       (m) => m.$['android:name'] === 'com.google.android.gms.car.application'
     );
-    
-    if (!existingMeta) {
-      application['meta-data'].push(autoMetaData);
+    if (!existingCarMeta) {
+      application['meta-data'].push({
+        $: {
+          'android:name': 'com.google.android.gms.car.application',
+          'android:resource': '@xml/automotive_app_desc',
+        },
+      });
       console.log('[withAndroidAuto] Added Android Auto meta-data');
     }
 
     // Fix: Remove MediaBrowserService intent-filter from TrackPlayer's MusicService
-    // (our MegaRadioAutoService will be the sole MediaBrowserService)
     application.service = application.service.map((s) => {
       if (s.$ && s.$['android:name'] === 'com.doublesymmetry.trackplayer.service.MusicService') {
-        // Remove intent-filter with MediaBrowserService action
         if (s['intent-filter']) {
           s['intent-filter'] = s['intent-filter'].filter((f) => {
             const actions = f.action || [];
@@ -367,43 +442,24 @@ const withAndroidAutoManifest = (config) => {
       return s;
     });
 
-    // Fix: Remove react-native-carplay's CarPlayService (conflicts with MediaBrowserService)
-    application.service = application.service.filter((s) => {
-      if (s.$ && s.$['android:name'] && s.$['android:name'].includes('CarPlayService')) {
-        console.log('[withAndroidAuto] Removed conflicting CarPlayService');
-        return false;
-      }
-      return true;
-    });
-    // Also add a tools:node="remove" entry for CarPlayService to prevent AAR merge adding it back
-    application.service.push({
-      $: {
-        'android:name': 'org.birkir.carplay.CarPlayService',
-        'tools:node': 'remove',
-      },
-    });
-
     // Add MegaRadioAutoService (sole MediaBrowserService)
-    const autoService = {
-      $: {
-        'android:name': '.MegaRadioAutoService',
-        'android:exported': 'true',
-      },
-      'intent-filter': [
-        {
-          action: [
-            { $: { 'android:name': 'android.media.browse.MediaBrowserService' } },
-          ],
-        },
-      ],
-    };
-
     const existingService = application.service.find(
       (s) => s.$['android:name'] === '.MegaRadioAutoService'
     );
-
     if (!existingService) {
-      application.service.push(autoService);
+      application.service.push({
+        $: {
+          'android:name': '.MegaRadioAutoService',
+          'android:exported': 'true',
+        },
+        'intent-filter': [
+          {
+            action: [
+              { $: { 'android:name': 'android.media.browse.MediaBrowserService' } },
+            ],
+          },
+        ],
+      });
       console.log('[withAndroidAuto] Added MegaRadioAutoService');
     }
     
