@@ -133,7 +133,7 @@ async function setupTrackPlayer(): Promise<boolean> {
     await TrackPlayer.updateOptions({
       // Android specific
       android: {
-        appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
+        appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
       },
       // What buttons to show in notification/control center
       // IMPORTANT: Only SkipToNext/Previous for radio app (previous/next station)

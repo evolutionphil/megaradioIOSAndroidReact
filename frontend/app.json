@@ -14,6 +14,11 @@
       "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
     ],
     "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D0D0F"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
@@ -83,6 +88,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FF4199"
+      },
+      "splash": {
+        "image": "./assets/images/icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#0D0D0F"
       },
       "package": "com.megaradio",
       "versionCode": 81,

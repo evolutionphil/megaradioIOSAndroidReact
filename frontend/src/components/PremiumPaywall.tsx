@@ -212,7 +212,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
     return (
       <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
         <View style={styles.container}>
-          <LinearGradient colors={['#1a0a2e', '#16082a', '#0D0D0F']} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={['#1a0a2e', '#16082a', '#0D0D0F']} style={StyleSheet.absoluteFill} pointerEvents="none" />
           
           <TouchableOpacity style={[styles.closeBtn, { top: insets.top + 10 }]} onPress={onClose} data-testid="remove-ads-close-btn">
             <View style={styles.closeBtnCircle}>
@@ -220,7 +220,13 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
             </View>
           </TouchableOpacity>
 
-          <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 60, paddingBottom: 40 + insets.bottom }]} showsVerticalScrollIndicator={false}>
+          <ScrollView 
+            contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 60, paddingBottom: Math.max(80, 40 + insets.bottom) }]} 
+            showsVerticalScrollIndicator={false}
+            bounces={true}
+            nestedScrollEnabled={true}
+            overScrollMode="always"
+          >
             <View style={styles.heroSection}>
               <View style={styles.heroImagePlaceholder}>
                 <Ionicons name="headset" size={80 * S} color="#FF4199" />
@@ -272,7 +278,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
       <View style={styles.container}>
-        <LinearGradient colors={['#1a0a2e', '#16082a', '#0D0D0F']} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={['#1a0a2e', '#16082a', '#0D0D0F']} style={StyleSheet.absoluteFill} pointerEvents="none" />
         
         <TouchableOpacity style={[styles.closeBtn, { top: insets.top + 10 }]} onPress={onClose} data-testid="premium-close-btn">
           <View style={styles.closeBtnCircle}>
@@ -280,7 +286,13 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
           </View>
         </TouchableOpacity>
 
-        <ScrollView contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20, paddingBottom: 40 + insets.bottom }]} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20, paddingBottom: Math.max(80, 40 + insets.bottom) }]} 
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+          nestedScrollEnabled={true}
+          overScrollMode="always"
+        >
           {/* Crown + Title */}
           <View style={styles.crownSection}>
             <View style={styles.crownBox}>
