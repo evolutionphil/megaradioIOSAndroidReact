@@ -226,7 +226,6 @@ class AdMobService {
       }
       this.isAppOpenLoaded = false;
       
-      const adUnitId = this.getAdUnitId('appOpenInterstitial');
       console.log('[AdMob] Loading App Open ad with adUnitId:', adUnitId);
       
       // Use AppOpenAd (NOT InterstitialAd) for App Open ad units
@@ -264,7 +263,8 @@ class AdMobService {
     }
   }
 
-  // Show App Open Ad (with interstitial fallback, then rewarded fallback)
+  // Show App Open Ad ONLY (no interstitial/rewarded fallback)
+  // Interstitial is reserved for onStationChange(), Rewarded for manual button
   async showAppOpenAd(): Promise<boolean> {
     if (Platform.OS === 'web') return false;
     
@@ -274,7 +274,7 @@ class AdMobService {
       return false;
     }
 
-    // Try App Open ad first (iOS only - Android has no dedicated App Open unit)
+    // Try App Open ad ONLY - don't consume Interstitial or Rewarded
     if (this.isAppOpenLoaded && this.appOpenAd) {
       try {
         await this.appOpenAd.show();
@@ -286,37 +286,7 @@ class AdMobService {
       }
     }
     
-    // Fallback 1: Try Interstitial (especially important on Android where no App Open unit exists)
-    console.log('[AdMob] App Open not loaded, trying interstitial fallback...');
-    if (this.isInterstitialLoaded && this.interstitialAd) {
-      try {
-        await this.interstitialAd.show();
-        console.log('[AdMob] Interstitial shown as app-open fallback');
-        this.isInterstitialLoaded = false;
-        this.loadInterstitialAd();
-        return true;
-      } catch (error) {
-        console.error('[AdMob] Interstitial fallback error:', error);
-      }
-    }
-
-    // Fallback 2: Try rewarded ad as last resort
-    console.log('[AdMob] Interstitial not loaded either, trying rewarded fallback...');
-    if (this.isRewardedLoaded && this.rewardedAd) {
-      try {
-        // CRITICAL: Mark as automatic (NOT manual) so reward callback won't grant ad-free time
-        this.isManualRewardedAd = false;
-        await this.rewardedAd.show();
-        console.log('[AdMob] Rewarded ad shown as fallback for app open (NO ad-free grant)');
-        this.isRewardedLoaded = false;
-        this.loadRewardedAd();
-        return true;
-      } catch (error) {
-        console.error('[AdMob] Rewarded fallback error:', error);
-      }
-    }
-
-    console.log('[AdMob] No ad available for app open');
+    console.log('[AdMob] App Open ad not available, skipping (Interstitial/Rewarded preserved for later)');
     return false;
   }
 

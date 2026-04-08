@@ -397,16 +397,10 @@ export default function RootLayout() {
         console.log('[Layout] AdMob initialized:', success);
         
         if (success && !cancelled) {
-          // Show App Open Ad after a brief delay
-          setTimeout(async () => {
-            if (cancelled) return;
-            try {
-              const shown = await adMobService.showAppOpenAd();
-              console.log('[Layout] App Open Ad shown:', shown);
-            } catch (e) {
-              console.log('[Layout] App Open Ad not ready yet');
-            }
-          }, 5000);
+          // App Open ad will be triggered by AudioProvider on first station play
+          // Do NOT show ad here - it would consume Interstitial/Rewarded fallbacks
+          // before the user even interacts with the app
+          console.log('[Layout] AdMob ready, ads will show on user interaction');
         } else if (!cancelled) {
           // Retry once after 10s if first attempt failed
           console.log('[Layout] AdMob init failed, retrying in 10s...');
