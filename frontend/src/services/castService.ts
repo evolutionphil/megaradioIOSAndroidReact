@@ -1,7 +1,7 @@
 // Cast Service - Simple polling-based TV Cast
 // No pairing code needed - same account = automatic cast
 
-const API_BASE = 'https://themegaradio.com';
+const API_BASE = 'https://api.themegaradio.com';
 
 export const castService = {
   // TV'ye istasyon gönder

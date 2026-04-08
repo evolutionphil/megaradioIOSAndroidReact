@@ -3,7 +3,7 @@ import { API_ENDPOINTS } from '../constants/api';
 import { useAuthStore } from '../store/authStore';
 import type { User, AuthResponse, AuthCheckResponse } from '../types';
 
-const API_BASE = 'https://themegaradio.com';
+const API_BASE = 'https://api.themegaradio.com';
 
 // Extended response types for mobile
 interface MobileLoginResponse {

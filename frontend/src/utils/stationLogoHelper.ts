@@ -50,7 +50,7 @@ const sanitizeFaviconUrl = (rawUrl: string): string | null => {
   // CRITICAL: HTTP URLs must go through proxy (iOS ATS + mixed content)
   if (url.startsWith('http://')) {
     const encoded = encodeForProxy(url);
-    return `https://themegaradio.com/api/image/${encoded}`;
+    return `https://api.themegaradio.com/api/image/${encoded}`;
   }
 
   return url;

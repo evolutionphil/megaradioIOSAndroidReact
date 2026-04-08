@@ -3,7 +3,7 @@ import { usePremiumStore, PremiumPlan } from '../store/premiumStore';
 import { useAuthStore } from '../store/authStore';
 import crashlyticsService from './crashlyticsService';
 
-const API_BASE = 'https://themegaradio.com';
+const API_BASE = 'https://api.themegaradio.com';
 
 // Product IDs - must match App Store Connect & Google Play Console
 export const PRODUCT_IDS = {

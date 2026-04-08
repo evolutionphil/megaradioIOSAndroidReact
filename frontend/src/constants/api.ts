@@ -1,5 +1,5 @@
 // MegaRadio API Configuration
-export const API_BASE_URL = 'https://themegaradio.com';
+export const API_BASE_URL = 'https://api.themegaradio.com';
 
 export const API_ENDPOINTS = {
   // Auth endpoints

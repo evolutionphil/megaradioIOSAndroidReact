@@ -7,7 +7,7 @@ import * as Device from 'expo-device';
 import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 
-const LOG_ENDPOINT = 'https://themegaradio.com/api/logs/remote';
+const LOG_ENDPOINT = 'https://api.themegaradio.com/api/logs/remote';
 const API_KEY = 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw';
 
 // Log entry format per API documentation
