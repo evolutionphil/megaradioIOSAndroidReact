@@ -123,13 +123,24 @@ class AdMobService {
       
       this.isInitialized = true;
       
-      // Load initial ads IN PARALLEL (not sequential)
-      await Promise.allSettled([
-        this.loadInterstitialAd(),
-        this.loadRewardedAd(),
-        this.loadAppOpenAd(),
-      ]);
-      console.log('[AdMob] Initial ads loading started');
+      // Load ads with staggered timing to avoid SDK conflicts
+      // Interstitial loads FIRST (most important for revenue)
+      console.log('[AdMob] Loading Interstitial first...');
+      await this.loadInterstitialAd();
+      
+      // Rewarded loads SECOND (200ms delay)
+      setTimeout(() => {
+        console.log('[AdMob] Loading Rewarded...');
+        this.loadRewardedAd();
+      }, 200);
+      
+      // App Open loads LAST (1s delay - new ad units need more time)
+      setTimeout(() => {
+        console.log('[AdMob] Loading App Open...');
+        this.loadAppOpenAd();
+      }, 1000);
+      
+      console.log('[AdMob] Staggered ad loading initiated');
       
       // Reset station change count for each session (don't persist across sessions)
       // This ensures users always get 3 full station changes before seeing the next ad
@@ -255,6 +266,11 @@ class AdMobService {
       this.appOpenAd.addAdEventListener(AdEventType.ERROR, (error: any) => {
         console.error('[AdMob] App Open ad ERROR:', error?.message || error);
         this.isAppOpenLoaded = false;
+        // Retry App Open after 30s (new ad units may take time to activate)
+        setTimeout(() => {
+          console.log('[AdMob] Retrying App Open ad load...');
+          this.loadAppOpenAd();
+        }, 30000);
       });
 
       this.appOpenAd.load();
@@ -417,7 +433,8 @@ class AdMobService {
     
     // Check if user is ad-free
     if (await this.isAdFree()) {
-      console.log('[AdMob] User is ad-free, skipping interstitial');
+      const mins = await this.getAdFreeMinutesRemaining();
+      console.log('[AdMob] User is ad-free (' + mins + ' min remaining), skipping interstitial');
       return false;
     }
 
@@ -483,18 +500,15 @@ class AdMobService {
   async showInterstitialAd(): Promise<boolean> {
     if (Platform.OS === 'web') return false;
     
-    // Check if user is ad-free
-    if (await this.isAdFree()) {
-      console.log('[AdMob] User is ad-free, skipping interstitial');
-      return false;
-    }
+    // isAdFree() already checked by onStationChange() caller - no double check needed
 
     if (!this.isInterstitialLoaded || !this.interstitialAd) {
-      console.log('[AdMob] Interstitial not ready');
+      console.log('[AdMob] Interstitial not ready - loaded:', this.isInterstitialLoaded, 'instance:', !!this.interstitialAd);
       return false;
     }
 
     try {
+      console.log('[AdMob] Showing interstitial NOW...');
       await this.interstitialAd.show();
       return true;
     } catch (error) {
