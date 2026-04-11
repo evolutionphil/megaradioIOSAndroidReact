@@ -28,104 +28,75 @@ Implement In-App Purchase (IAP) Premium Strategy for MegaRadio app. The app has 
 - Recently played: `POST/GET /api/recently-played`
 
 ### Android Auto A-Z Media App Compliance (DONE - Feb 2026)
-Complete rewrite of `withAndroidAutoFull.js` config plugin:
-
-**Kotlin Service (`MegaRadioAutoService.kt`):**
-- Full `MediaBrowserServiceCompat` with browse tree (Favoriler, Son Calinanlar, Populer, Turler)
+- Full `MediaBrowserServiceCompat` with browse tree
 - `MediaSessionCompat` with complete `Callback` implementation
-- `onPlayFromMediaId` — tapping a station starts native playback
-- `onPlay/onPause/onStop/onSkipToNext/onSkipToPrevious` — all transport controls
-- Native `android.media.MediaPlayer` for streaming radio (independent of TrackPlayer)
-- `AudioFocus` management (gain/loss/transient handling)
-- `PlaybackStateCompat` properly updated through all states (NONE→BUFFERING→PLAYING→PAUSED→STOPPED→ERROR)
-- `MediaMetadataCompat` set with station name/artist/album for Now Playing screen
-- Content Style Hints: browsable=GRID, playable=LIST
-- Favorites loaded from React Native AsyncStorage (`SharedPreferences`)
-- Category-aware skip next/previous tracking
-- Station artwork/favicon support via `setIconUri()` for playable items
-- Category icons (heart, clock, star, music) via vector drawables for browsable items
+- Station artwork/favicon support via `setIconUri()`
+- Navigation permissions stripped, sole `MediaBrowserService`
 
-**Manifest & Resources:**
-- `androidx.car.app.TintableAttributionIcon` — monochrome headphone icon
-- `com.google.android.gms.car.application.theme` — accent color #FF4199
-- `automotive_app_desc.xml` — declares `<uses name="media" />`
-- Vector drawable icons: `ic_auto_icon`, `ic_heart`, `ic_clock`, `ic_star`, `ic_music`
-- Navigation permissions aggressively stripped (`NAVIGATION_TEMPLATES`, `MAP_TEMPLATES`, `ACCESS_SURFACE`)
-- `react-native-carplay` services blocked via `tools:node="remove"`
-- `MegaRadioAutoService` is the **sole** `MediaBrowserService`
-- `ACTION_PLAY_FROM_MEDIA_ID` included in supported actions
+### ICY Client-Side Metadata (DONE - Feb 2026)
+- `Icy-MetaData: 1` header added to ALL TrackPlayer.add() calls (AudioProvider, service.js, trackPlayerService)
+- `Event.PlaybackMetadataReceived` / `Event.MetadataCommonReceived` handler with:
+  - Advertisement detection (AdCreativeId, adw_ad, adswizz, etc.)
+  - "Artist - Title" parsing from ICY stream
+  - Song change detection for `incrementMusicPlayed()` stats
+  - Lock screen metadata update
+  - Song History auto-population
+- ICY-first strategy: No server polling if ICY active
+- Fallback: REST API polling at 60s interval only if no ICY metadata after 20s
+- Zero additional server load for metadata
 
-**TrackPlayer Service Fix:**
-- `withTrackPlayerServiceFix.js` updated: MediaBrowserService intent-filter REMOVED from MusicService
-- MusicService exported=false (only internal phone playback)
-- foregroundServiceType=mediaPlayback preserved for Android 15+
+### Xcode Dependency Cycle Fix (DONE - Feb 2026)
+- Created `withWatchOSBuildFix.js` config plugin
+- Adds `post_integrate` hook to Podfile
+- Sets `always_out_of_date = "1"` on all CocoaPods `[CP-User]` script phases
+- Prevents dependency cycle between Watch App embed, Firebase/AdMob scripts, and ProcessInfoPlistFile
 
-### Android Crash Fixes (Feb-Apr 2026)
-
-1. **TrackPlayer TurboModule Fix** (via `patch-package`)
-   - Fixed MusicModule.kt: 36 methods changed from `= scope.launch {}` to `{ scope.launch {} }`
-   - Fixed MusicService.kt: `startForeground` wrapped in try-catch
-   - Fixed null check for `originalItem`
-
-2. **CarPlay/Android Auto Fix** (`plugins/withCarPlayNativeFix.js`)
-   - Added `isCarContextReady()` guard to ALL methods
-
-3. **AdMob Fix** (`plugins/withAdMobFix.js`)
-   - 3-layer approach: ManifestAPI + manifestPlaceholders + Raw XML
-
-4. **Firebase Google Services Fix** (`plugins/withGoogleServicesFix.js`)
-   - Bulletproof 4-step setup
-
-5. **Android Build Fix** (`plugins/withAndroidBuildFix.js`)
-   - Forces `newArchEnabled=false`, MultiDex, ProGuard, DEX
-
-### Google Login Migration (Feb 2026)
-- Migrated from `expo-auth-session` to `@react-native-google-signin/google-signin`
-- Native SDK handles SHA-1 verification via `google-services.json`
-- Backend `/api/auth/google` unchanged (accepts idToken)
-
-### UI Fixes (Feb 2026)
-- PremiumPaywall buttons: padding fix for gesture-navigation devices
-- Splash screen: configured in app.json
-- TrackPlayer: `StopPlaybackAndRemoveNotification` on app kill
-- App icons: RGBA conversion (P mode fix)
-
-### Config Plugin Architecture (Current - versionCode 81)
+### Config Plugin Architecture (Current - versionCode 86)
 ```
 app.json plugins (execution order):
 1-7.  Expo core plugins
 8.    ./plugins/withAndroidBuildFix.js
 9.    ./plugins/withAirPlay.js
-10.   ./plugins/withAndroidAutoFull.js     ← MEDIA APP: Service + Manifest + Resources
+10.   ./plugins/withAndroidAutoFull.js
 11-12. Other plugins
 13.   react-native-google-mobile-ads
 14.   ./plugins/withAdMobFix.js
-15.   ./plugins/withTrackPlayerServiceFix.js  ← NO MediaBrowserService intent
+15.   ./plugins/withTrackPlayerServiceFix.js
 16.   ./plugins/withCarPlayNativeFix.js
 17-18. Firebase plugins
 19.   ./plugins/withGoogleServicesFix.js
 20.   @react-native-google-signin/google-signin
+21.   ./plugins/withFmtFix.js
+22.   ./plugins/withWatchOSBuildFix.js    <-- NEW: Must be LAST
 ```
 
 ### Native Fix Strategy
 - **patch-package**: `react-native-track-player`, `@g4rb4g3/react-native-carplay`, `react-native`
-- **Config Plugins**: withAndroidBuildFix, withAdMobFix, withAndroidAutoFull, withTrackPlayerServiceFix, withCarPlayNativeFix, withGoogleServicesFix
+- **Config Plugins**: withAndroidBuildFix, withAdMobFix, withAndroidAutoFull, withTrackPlayerServiceFix, withCarPlayNativeFix, withGoogleServicesFix, withFmtFix, withWatchOSBuildFix
 
 ## Known Issues
 - react-native-reanimated `mIsFinished` warning (non-critical, v3.19.5)
 - `libpenguin.so` not found (non-critical)
 
 ## Pending Verification
-- P0: User needs to build APK and test Android Auto on DHU / real car
-- P1: Google Login, background playback fix, splash screen, paywall UI — need user testing
-- P1: watchOS Companion App (waiting for user requirements)
+- P0: Xcode Dependency Cycle fix — user needs to run `cd frontend && npx expo prebuild --platform ios --clean` and build in Xcode
+- P0: ICY metadata — user needs to test on physical device with live radio stream
+- P2: AdMob ads on physical Android device (new Ad Unit ID propagation 24-72h)
+
+## Backend Developer Communication
+- App uses **REST API polling (Yontem A)** for metadata: `GET /api/now-playing/{stationId}`
+- Now enhanced with ICY client-side metadata as primary source
+- Logo proxy already updated to `stream.themegaradio.com`
+- Stream connection: HTTPS direct, HTTP via proxy
 
 ## Future/Backlog
+- P1: watchOS Companion App (blocked on Xcode cycle fix verification)
 - P1: tvOS and Android TV standalone apps
 - P2: ShazamKit song recognition
 - P2: Equalizer (EQ) with presets
 - P2: Bluetooth metadata (AVRCP)
 - P3: Station alarm feature
+- P3: Web Preview CORS fix
 
 ## Build Instructions
 ```bash
@@ -133,6 +104,11 @@ cd frontend
 yarn install
 npx expo prebuild --platform android --clean
 eas build --platform android --profile preview
+
+# iOS
+npx expo prebuild --platform ios --clean
+cd ios && pod install && cd ..
+# Then open in Xcode and build
 ```
 
 ## API Endpoints
@@ -143,3 +119,5 @@ eas build --platform android --profile preview
 - `POST/GET /api/recently-played` — recently played
 - `POST /api/auth/google` — Google idToken verification
 - `POST /api/auth/mobile/login` — email/password login
+- `GET /api/now-playing/:stationId` — metadata (fallback only, ICY preferred)
+- `https://stream.themegaradio.com/api/image/{encoded}` — logo proxy

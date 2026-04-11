@@ -65,6 +65,9 @@ const playStation = async (station) => {
     const artwork = getStationLogoUrl(station);
     const fakeDuration = 86400; // 24 hours in seconds
     
+    // ICY metadata headers — tells stream server to send song info inline
+    const icyHeaders = { 'Icy-MetaData': '1', 'User-Agent': 'MegaRadio/1.0' };
+    
     // Add "previous" placeholder
     await TrackPlayer.add({
       id: 'placeholder_previous',
@@ -73,6 +76,7 @@ const playStation = async (station) => {
       artist: 'MegaRadio',
       artwork: artwork,
       duration: fakeDuration,
+      headers: icyHeaders,
     });
     
     // Add actual station
@@ -83,6 +87,7 @@ const playStation = async (station) => {
       artist: station.country || 'Radio',
       artwork: artwork,
       duration: fakeDuration,
+      headers: icyHeaders,
     });
     
     // Add "next" placeholder
@@ -93,6 +98,7 @@ const playStation = async (station) => {
       artist: 'MegaRadio',
       artwork: artwork,
       duration: fakeDuration,
+      headers: icyHeaders,
     });
     
     // Skip to the actual track (index 1)

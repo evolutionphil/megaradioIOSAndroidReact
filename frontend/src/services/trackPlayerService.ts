@@ -123,6 +123,10 @@ export async function addRadioStation(
       artwork: artwork || 'https://themegaradio.com/logo.png',
       isLiveStream: true,
       duration: 0, // Live stream has no duration
+      headers: {
+        'Icy-MetaData': '1',
+        'User-Agent': 'MegaRadio/1.0',
+      },
     });
     
     console.log('[TrackPlayer] Added station:', title);

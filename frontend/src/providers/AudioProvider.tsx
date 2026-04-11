@@ -171,6 +171,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [isReady, setIsReady] = useState(false);
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const nowPlayingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const icyMetadataActiveRef = useRef<boolean>(false);
   
   // Use Track Player hooks for state
   const playbackState = usePlaybackState();
@@ -245,6 +246,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               album: getStationGenre(currentStation) || 'MegaRadio',
               artwork: getArtworkUrl(currentStation) || 'https://themegaradio.com/logo.png',
               duration: 86400, // Fake duration for skip buttons
+              headers: { 'Icy-MetaData': '1', 'User-Agent': 'MegaRadio/1.0' },
             });
             await TrackPlayer.play();
             
@@ -265,99 +267,112 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setPlaybackState('error');
     }
     
-    // Handle ICY metadata from stream (live song info)
+    // Handle ICY metadata from stream (live song info — zero server load)
     if (event.type === Event.PlaybackMetadataReceived || event.type === Event.MetadataCommonReceived) {
-      console.log('[AudioProvider] 🎵 Stream metadata received:', event);
+      console.log('[AudioProvider] ICY metadata received:', event);
       const station = usePlayerStore.getState().currentStation;
-      if (station) {
-        // Extract metadata from event
-        const metadata = (event as any).metadata || event;
-        const title = metadata.title || metadata.commonMetadata?.title;
-        const artist = metadata.artist || metadata.commonMetadata?.artist;
-        
-        if (title || artist) {
-          console.log('[AudioProvider] 🎵 ICY Metadata:', { title, artist });
-          
-          // Parse "Artist - Title" format if title contains both
-          let songTitle = title || '';
-          let artistName = artist || '';
-          
-          if (songTitle && songTitle.includes(' - ') && !artistName) {
-            const parts = songTitle.split(' - ');
-            artistName = parts[0].trim();
-            songTitle = parts.slice(1).join(' - ').trim();
-          }
-          
-          // Update UI state
-          setNowPlaying({
-            title: songTitle || station.name,
+      if (!station) return;
+      
+      // Extract metadata from event
+      const metadata = (event as any).metadata || event;
+      const rawTitle = metadata.title || metadata.commonMetadata?.title || '';
+      const rawArtist = metadata.artist || metadata.commonMetadata?.artist || '';
+      
+      // Skip advertisements (common in radio streams)
+      const adKeywords = ['AdCreativeId', 'adw_ad', 'adId=', 'insertionType=', 'adswizz'];
+      const combinedRaw = `${rawTitle} ${rawArtist}`;
+      if (adKeywords.some(kw => combinedRaw.toLowerCase().includes(kw.toLowerCase()))) {
+        console.log('[AudioProvider] ICY: Skipping advertisement metadata');
+        return;
+      }
+      
+      if (!rawTitle && !rawArtist) return;
+      
+      // Parse "Artist - Title" format
+      let songTitle = rawTitle;
+      let artistName = rawArtist;
+      
+      if (songTitle && songTitle.includes(' - ') && !artistName) {
+        const parts = songTitle.split(' - ');
+        artistName = parts[0].trim();
+        songTitle = parts.slice(1).join(' - ').trim();
+      }
+      
+      // Skip empty or station-name-only metadata
+      if (!songTitle || songTitle === station.name) {
+        if (!artistName) return;
+      }
+      
+      console.log('[AudioProvider] ICY parsed:', { title: songTitle, artist: artistName });
+      
+      // Mark that we received ICY metadata (disables fallback polling)
+      icyMetadataActiveRef.current = true;
+      
+      // Track song changes for stats
+      const metadataKey = `${songTitle}-${artistName}`;
+      if (metadataKey !== lastMetadataTitle && lastMetadataTitle !== null) {
+        console.log('[AudioProvider] ICY: New song detected');
+        statsService.incrementMusicPlayed().catch(console.error);
+      }
+      lastMetadataTitle = metadataKey;
+      
+      // Update UI state
+      setNowPlaying({
+        title: songTitle || station.name,
+        artist: artistName,
+        song: songTitle,
+        station: station.name,
+        timestamp: Date.now(),
+      });
+      
+      // Add to Song History
+      if (artistName && songTitle && songTitle !== 'Live Stream' && songTitle !== station.name) {
+        try {
+          const { useSongHistoryStore } = require('../store/songHistoryStore');
+          useSongHistoryStore.getState().addEntry({
+            title: songTitle,
             artist: artistName,
-            song: songTitle,
-            station: station.name,
-            timestamp: Date.now(),
+            stationName: station.name,
+            stationId: station._id || '',
+            stationFavicon: station.favicon || station.logo,
           });
-          
-          // Add to Song History from ICY metadata
-          if (artistName && songTitle && songTitle !== 'Live Stream' && songTitle !== station.name) {
-            try {
-              const { useSongHistoryStore } = require('../store/songHistoryStore');
-              useSongHistoryStore.getState().addEntry({
-                title: songTitle,
-                artist: artistName,
-                stationName: station.name,
-                stationId: station._id || '',
-                stationFavicon: station.favicon || station.logo,
-              });
-            } catch (e) {
-              // Non-blocking
-            }
+        } catch (e) {
+          // Non-blocking
+        }
+      }
+      
+      // Update lock screen via helper (DRY)
+      if (Platform.OS !== 'web') {
+        try {
+          // Inline artwork + genre resolution (helper defined after this hook)
+          let artworkUrl = 'https://themegaradio.com/logo.png';
+          if (station.favicon && station.favicon.length > 0) {
+            artworkUrl = station.favicon;
+          } else if (station.logo && station.logo.length > 0) {
+            artworkUrl = station.logo;
+          }
+          if (artworkUrl.startsWith('http://')) {
+            artworkUrl = artworkUrl.replace('http://', 'https://');
           }
           
-          // Update lock screen using existing helper functions (DRY principle)
-          if (Platform.OS !== 'web') {
-            // Use existing getArtworkUrl helper - ensure HTTPS
-            let artworkUrl = 'https://themegaradio.com/logo.png';
-            if (station.favicon && station.favicon.length > 0) {
-              artworkUrl = station.favicon;
-            } else if (station.logo && station.logo.length > 0) {
-              artworkUrl = station.logo;
-            }
-            if (artworkUrl.startsWith('http://')) {
-              artworkUrl = artworkUrl.replace('http://', 'https://');
-            }
-            
-            // Use getStationGenre helper for album (DRY - function defined below)
-            // Note: Can't call getStationGenre here as it's defined after this hook
-            // Using inline fallback that matches getStationGenre logic
-            let albumName = 'MegaRadio';
-            if (station.tags && typeof station.tags === 'string' && station.tags.length > 0) {
-              const firstTag = station.tags.split(',')[0].trim();
-              if (firstTag && firstTag.length > 0) {
-                albumName = firstTag.charAt(0).toUpperCase() + firstTag.slice(1);
-              }
-            } else if (station.genres && Array.isArray(station.genres) && station.genres.length > 0 && station.genres[0]) {
-              albumName = station.genres[0];
-            } else if (station.country && typeof station.country === 'string' && station.country.length > 0) {
-              albumName = station.country;
-            }
-            
-            // Build metadata object with guaranteed non-null values
-            const metadataUpdate = {
-              title: (songTitle && songTitle.length > 0) ? songTitle : (station.name || 'MegaRadio'),
-              artist: (artistName && artistName.length > 0) ? artistName : 'MegaRadio',
-              album: albumName,
-              artwork: artworkUrl,
-            };
-            
-            console.log('[AudioProvider] 🎵 Updating lock screen with:', metadataUpdate);
-            
-            try {
-              await TrackPlayer.updateNowPlayingMetadata(metadataUpdate);
-              console.log('[AudioProvider] 🎵 Lock screen updated from ICY metadata');
-            } catch (e) {
-              console.log('[AudioProvider] Could not update lock screen:', e);
-            }
+          let albumName = 'MegaRadio';
+          if (station.tags && typeof station.tags === 'string' && station.tags.length > 0) {
+            const firstTag = station.tags.split(',')[0].trim();
+            if (firstTag) albumName = firstTag.charAt(0).toUpperCase() + firstTag.slice(1);
+          } else if (station.genres && Array.isArray(station.genres) && station.genres.length > 0 && station.genres[0]) {
+            albumName = station.genres[0];
+          } else if (station.country && typeof station.country === 'string') {
+            albumName = station.country;
           }
+          
+          await TrackPlayer.updateNowPlayingMetadata({
+            title: songTitle || station.name || 'MegaRadio',
+            artist: artistName || 'MegaRadio',
+            album: albumName,
+            artwork: artworkUrl,
+          });
+        } catch (e) {
+          console.log('[AudioProvider] Could not update lock screen:', e);
         }
       }
     }
@@ -916,6 +931,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const safeTitle = station.name || 'MegaRadio';
       const safeId = station._id || `station_${Date.now()}`;
       
+      // ICY metadata headers — tells stream server to send song info inline
+      const icyHeaders = {
+        'Icy-MetaData': '1',
+        'User-Agent': 'MegaRadio/1.0',
+      };
+      
       // Add a "previous" placeholder (will be replaced when user presses Previous)
       await TrackPlayer.add({
         id: 'placeholder_previous',
@@ -925,6 +946,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         album: safeAlbum,
         artwork: safeArtwork,
         duration: fakeDuration,
+        headers: icyHeaders,
       });
       
       // Add the actual current station
@@ -936,6 +958,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         album: safeAlbum,
         artwork: safeArtwork,
         duration: fakeDuration,
+        headers: icyHeaders,
       });
       
       // Add a "next" placeholder (will be replaced when user presses Next)
@@ -947,6 +970,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         album: safeAlbum,
         artwork: safeArtwork,
         duration: fakeDuration,
+        headers: icyHeaders,
       });
       
       // Skip to the actual track (index 1)
@@ -992,16 +1016,30 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         console.log('[AudioProvider] Failed to start stats session:', e);
       }
 
-      // STEP 8: Start now playing polling (every 15 seconds as per API docs)
-      console.log('[AudioProvider] STEP 8: Starting now playing polling (15s interval)...');
+      // STEP 8: ICY-first metadata strategy
+      // ICY metadata comes directly from the stream (zero server load)
+      // Fallback: REST API polling only if ICY not available after 20 seconds
+      console.log('[AudioProvider] STEP 8: ICY metadata active, API fallback in 20s...');
+      icyMetadataActiveRef.current = false; // Reset — will be set true by ICY event handler
       if (nowPlayingIntervalRef.current) {
         clearInterval(nowPlayingIntervalRef.current);
       }
-      nowPlayingIntervalRef.current = setInterval(() => {
-        if (currentPlayingStationId) {
-          fetchNowPlaying(currentPlayingStationId);
+      // Initial metadata fetch via API (fast first-display)
+      fetchNowPlaying(station._id);
+      // Start fallback polling after 20s delay — only if ICY hasn't kicked in
+      const stationIdForPolling = station._id;
+      setTimeout(() => {
+        if (!icyMetadataActiveRef.current && currentPlayingStationId === stationIdForPolling) {
+          console.log('[AudioProvider] No ICY metadata after 20s, activating API fallback polling (60s)');
+          nowPlayingIntervalRef.current = setInterval(() => {
+            if (currentPlayingStationId && !icyMetadataActiveRef.current) {
+              fetchNowPlaying(currentPlayingStationId);
+            }
+          }, 60000); // 60s fallback (was 15s) — only for streams without ICY
+        } else {
+          console.log('[AudioProvider] ICY metadata active, no API polling needed');
         }
-      }, 15000); // 15 seconds as recommended by API docs
+      }, 20000);
 
       // STEP 9: Save current station and fetch similar stations for background service
       // This enables Next/Previous controls in lock screen and Control Center
@@ -1053,6 +1091,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             album: getStationGenre(station) || 'MegaRadio',
             artwork: getArtworkUrl(station) || 'https://themegaradio.com/logo.png',
             isLiveStream: true,
+            headers: { 'Icy-MetaData': '1', 'User-Agent': 'MegaRadio/1.0' },
           });
           await TrackPlayer.play();
           console.log('[AudioProvider] Fallback playback started successfully');
