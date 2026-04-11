@@ -3,6 +3,7 @@
 // Use this helper in ALL components that display station logos
 
 import type { Station } from '../types';
+import { STREAM_PROXY_URL } from '../constants/api';
 
 // MegaRadio pink logo - LOCAL asset for fallback (no network required)
 export const DEFAULT_STATION_LOGO_SOURCE = require('../../assets/images/default-station-logo.png');
@@ -50,7 +51,7 @@ const sanitizeFaviconUrl = (rawUrl: string): string | null => {
   // CRITICAL: HTTP URLs must go through proxy (iOS ATS + mixed content)
   if (url.startsWith('http://')) {
     const encoded = encodeForProxy(url);
-    return `https://api.themegaradio.com/api/image/${encoded}`;
+    return `${STREAM_PROXY_URL}/api/image/${encoded}`;
   }
 
   return url;

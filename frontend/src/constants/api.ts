@@ -1,5 +1,6 @@
 // MegaRadio API Configuration
 export const API_BASE_URL = 'https://api.themegaradio.com';
+export const STREAM_PROXY_URL = 'https://stream.themegaradio.com';
 
 export const API_ENDPOINTS = {
   // Auth endpoints
