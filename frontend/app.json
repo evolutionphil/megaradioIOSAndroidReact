@@ -106,12 +106,14 @@
         "FOREGROUND_SERVICE",
         "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "WAKE_LOCK",
-        "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "CAMERA",
         "RECORD_AUDIO"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED"
       ]
     },
     "web": {

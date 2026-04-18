@@ -188,9 +188,55 @@ function withProguardRules(config) {
   }]);
 }
 
+// Step 4: Fix Android 15 BOOT_COMPLETED + Foreground Service restriction
+// Google Play rejects apps where BOOT_COMPLETED receivers start restricted
+// foreground service types (expo-audio's AudioRecordingService & AudioControlsService).
+// Fix: Remove BOOT_COMPLETED receiver from expo-notifications AND strip the permission.
+function withAndroid15BootFix(config) {
+  return withDangerousMod(config, ['android', async (config) => {
+    const projectRoot = config.modRequest.projectRoot;
+    const manifestPath = path.join(projectRoot, 'android/app/src/main/AndroidManifest.xml');
+
+    if (!fs.existsSync(manifestPath)) return config;
+
+    let manifest = fs.readFileSync(manifestPath, 'utf-8');
+    let modified = false;
+
+    // 1. Remove RECEIVE_BOOT_COMPLETED permission
+    if (manifest.includes('RECEIVE_BOOT_COMPLETED')) {
+      manifest = manifest.replace(
+        /\s*<uses-permission android:name="android\.permission\.RECEIVE_BOOT_COMPLETED"[^/]*\/>/g,
+        ''
+      );
+      modified = true;
+      console.log('[withAndroidBuildFix] Removed RECEIVE_BOOT_COMPLETED permission');
+    }
+
+    // 2. Remove any BOOT_COMPLETED intent-filter receivers
+    // This regex matches <receiver> blocks containing BOOT_COMPLETED
+    manifest = manifest.replace(
+      /\s*<receiver[^>]*>[\s\S]*?BOOT_COMPLETED[\s\S]*?<\/receiver>/g,
+      (match) => {
+        modified = true;
+        console.log('[withAndroidBuildFix] Removed BOOT_COMPLETED receiver');
+        return '';
+      }
+    );
+
+    if (modified) {
+      fs.writeFileSync(manifestPath, manifest);
+      console.log('[withAndroidBuildFix] Android 15 foreground service boot fix applied');
+    }
+
+    return config;
+  }]);
+}
+
+
 module.exports = function withAndroidBuildFix(config) {
   config = withGradlePropertiesFix(config);
   config = withMultiDexAndDexOptions(config);
   config = withProguardRules(config);
+  config = withAndroid15BootFix(config);
   return config;
 };

@@ -78,6 +78,12 @@ app.json plugins (execution order):
 - react-native-reanimated `mIsFinished` warning (non-critical, v3.19.5)
 - `libpenguin.so` not found (non-critical)
 
+### Android 15 BOOT_COMPLETED Fix (DONE - Feb 2026)
+- Removed `RECEIVE_BOOT_COMPLETED` permission from `app.json` + added to `blockedPermissions`
+- `withAndroidBuildFix.js` Step 4: strips permission and BOOT_COMPLETED receivers from manifest
+- Fixes Google Play rejection: "BOOT_COMPLETED receivers cannot start restricted foreground services"
+- Affected services: `expo.modules.audio.service.AudioRecordingService`, `AudioControlsService`
+
 ## Pending Verification
 - P0: Xcode Dependency Cycle fix — user needs to run `cd frontend && npx expo prebuild --platform ios --clean` and build in Xcode
 - P0: ICY metadata — user needs to test on physical device with live radio stream
