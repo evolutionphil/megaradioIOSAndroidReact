@@ -11,7 +11,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": [
       "megaradio",
-      "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
+      "com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"
     ],
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -38,7 +38,7 @@
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
-              "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
+              "com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"
             ]
           }
         ],
@@ -195,7 +195,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"
+          "iosUrlScheme": "com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"
         }
       ],
       "./plugins/withFmtFix.js",

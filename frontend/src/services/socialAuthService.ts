@@ -25,8 +25,9 @@ interface SocialAuthResponse {
 
 // Google OAuth Web Client ID (from megaradio-276c6 Firebase project)
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-const GOOGLE_WEB_CLIENT_ID = '957628580421-1gj9mmbq20o9jva6olb28t2un6vb6jqh.apps.googleusercontent.com';
-const GOOGLE_IOS_CLIENT_ID = '246210957471-18662dh38h9tmlk7nppdk15ucbha4emk.apps.googleusercontent.com';
+// Firebase auto-generated Web Client when Google Sign-In was enabled
+const GOOGLE_WEB_CLIENT_ID = '957628580421-ob14qeft7j83apkdjqfn48o3961qk7ti.apps.googleusercontent.com';
+const GOOGLE_IOS_CLIENT_ID = '957628580421-664s6dft9n8kp91futrnpsugd4fcsonn.apps.googleusercontent.com';
 
 // Lazy-load GoogleSignin to avoid crash on web
 let GoogleSignin: any = null;

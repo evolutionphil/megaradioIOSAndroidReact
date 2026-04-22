@@ -22,7 +22,7 @@
           }
         },
         {
-          "client_id": "957628580421-1gj9mmbq20o9jva6olb28t2un6vb6jqh.apps.googleusercontent.com",
+          "client_id": "957628580421-ob14qeft7j83apkdjqfn48o3961qk7ti.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -37,6 +37,13 @@
             {
               "client_id": "957628580421-1gj9mmbq20o9jva6olb28t2un6vb6jqh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "957628580421-664s6dft9n8kp91futrnpsugd4fcsonn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.visiongo.megaradio"
+              }
             }
           ]
         }
