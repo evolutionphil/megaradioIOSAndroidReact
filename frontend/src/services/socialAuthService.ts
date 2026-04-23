@@ -24,9 +24,9 @@ interface SocialAuthResponse {
 }
 
 // Google OAuth Web Client ID (from megaradio-276c6 Firebase project)
-// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-// Firebase auto-generated Web Client when Google Sign-In was enabled
-const GOOGLE_WEB_CLIENT_ID = '957628580421-ob14qeft7j83apkdjqfn48o3961qk7ti.apps.googleusercontent.com';
+// IMPORTANT: Must use the Web Client ID from "other_platform_oauth_client" in google-services.json
+// NOT the one from "oauth_client" — that causes DEVELOPER_ERROR on Android
+const GOOGLE_WEB_CLIENT_ID = '957628580421-1gj9mmbq20o9jva6olb28t2un6vb6jqh.apps.googleusercontent.com';
 const GOOGLE_IOS_CLIENT_ID = '957628580421-664s6dft9n8kp91futrnpsugd4fcsonn.apps.googleusercontent.com';
 
 // Lazy-load GoogleSignin to avoid crash on web
