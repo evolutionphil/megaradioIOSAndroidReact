@@ -6,7 +6,7 @@
   "expo": {
     "name": "MegaRadio",
     "slug": "megaradio",
-    "version": "1.0.68",
+    "version": "1.0.69",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": [
@@ -22,7 +22,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
-      "buildNumber": "68",
+      "buildNumber": "69",
       "usesAppleSignIn": true,
       "splash": {
         "image": "./assets/images/splash.png",
