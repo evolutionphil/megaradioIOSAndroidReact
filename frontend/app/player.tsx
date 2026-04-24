@@ -654,73 +654,38 @@ export default function PlayerScreen() {
             {isPlaying && <EqualizerBars />}
             <Text style={styles.stationName}>{currentStation.name}</Text>
             
-            {/* Song Info - Premium Gated */}
-            {hasFeature('song_info') ? (
-              <Text style={styles.artistName} data-testid="now-playing-song-info">{getCurrentSongInfo()}</Text>
-            ) : (
-              <TouchableOpacity 
-                style={styles.lockedSongInfo} 
-                onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
-                data-testid="locked-song-info"
-              >
-                <View style={styles.blurredTextRow}>
-                  <Ionicons name="lock-closed" size={14} color="#FF4199" />
-                  <Text style={styles.blurredText}>
-                    {'\u2022\u2022\u2022\u2022\u2022 - \u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
-                  </Text>
-                </View>
-                <View style={styles.premiumUnlockBadge}>
-                  <Ionicons name="diamond" size={10} color="#FFD700" />
-                  <Text style={styles.premiumUnlockText}>{t('premium_unlock', 'Premium')}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+            {/* Song Info - Visible to ALL users */}
+            <Text style={styles.artistName} data-testid="now-playing-song-info">{getCurrentSongInfo()}</Text>
             
-            {/* Spotify & YouTube icons - Premium Gated */}
-            {hasFeature('spotify_link') ? (
-              <View style={styles.socialIcons}>
-                <TouchableOpacity 
-                  style={[styles.socialButton, styles.spotifyButton]}
-                  onPress={() => {
-                    const songInfo = getCurrentSongInfo();
-                    const query = encodeURIComponent(songInfo || currentStation.name);
-                    Linking.openURL(`spotify://search/${query}`).catch(() => {
-                      Linking.openURL(`https://open.spotify.com/search/${query}`);
-                    });
-                  }}
-                  data-testid="spotify-deep-link-btn"
-                >
-                  <Ionicons name="musical-notes" size={18} color="#FFFFFF" />
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={[styles.socialButton, styles.youtubeButton]}
-                  onPress={() => {
-                    const songInfo = getCurrentSongInfo();
-                    const query = encodeURIComponent(songInfo || currentStation.name);
-                    Linking.openURL(`youtube://results?search_query=${query}`).catch(() => {
-                      Linking.openURL(`https://www.youtube.com/results?search_query=${query}`);
-                    });
-                  }}
-                  data-testid="youtube-deep-link-btn"
-                >
-                  <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
-                </TouchableOpacity>
-              </View>
-            ) : (
+            {/* Spotify & YouTube icons - Accessible to ALL users */}
+            <View style={styles.socialIcons}>
               <TouchableOpacity 
-                style={styles.lockedSocialRow} 
-                onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
-                data-testid="locked-social-links"
+                style={[styles.socialButton, styles.spotifyButton]}
+                onPress={() => {
+                  const songInfo = getCurrentSongInfo();
+                  const query = encodeURIComponent(songInfo || currentStation.name);
+                  Linking.openURL(`spotify://search/${query}`).catch(() => {
+                    Linking.openURL(`https://open.spotify.com/search/${query}`);
+                  });
+                }}
+                data-testid="spotify-deep-link-btn"
               >
-                <View style={[styles.socialButton, styles.lockedSocialButton]}>
-                  <Ionicons name="musical-notes" size={16} color="rgba(255,255,255,0.3)" />
-                </View>
-                <View style={[styles.socialButton, styles.lockedSocialButton]}>
-                  <Ionicons name="logo-youtube" size={16} color="rgba(255,255,255,0.3)" />
-                </View>
-                <Ionicons name="lock-closed" size={12} color="#FF4199" style={{ marginLeft: 4 }} />
+                <Ionicons name="musical-notes" size={18} color="#FFFFFF" />
               </TouchableOpacity>
-            )}
+              <TouchableOpacity 
+                style={[styles.socialButton, styles.youtubeButton]}
+                onPress={() => {
+                  const songInfo = getCurrentSongInfo();
+                  const query = encodeURIComponent(songInfo || currentStation.name);
+                  Linking.openURL(`youtube://results?search_query=${query}`).catch(() => {
+                    Linking.openURL(`https://www.youtube.com/results?search_query=${query}`);
+                  });
+                }}
+                data-testid="youtube-deep-link-btn"
+              >
+                <Ionicons name="logo-youtube" size={18} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Main Controls */}
@@ -827,24 +792,6 @@ export default function PlayerScreen() {
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* Go Premium Banner - only for free users */}
-          {!isPremium && (
-            <TouchableOpacity 
-              style={styles.premiumBanner}
-              onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
-              data-testid="go-premium-banner"
-            >
-              <View style={styles.premiumBannerLeft}>
-                <Ionicons name="diamond" size={20} color="#FFD700" />
-                <View>
-                  <Text style={styles.premiumBannerTitle}>{t('go_premium', 'Go Premium')}</Text>
-                  <Text style={styles.premiumBannerSubtitle}>{t('unlock_song_info', 'Unlock song info, HD & more')}</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.5)" />
-            </TouchableOpacity>
-          )}
 
           {/* Recently Played Section */}
           {recentStations.length > 0 && (

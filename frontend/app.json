@@ -181,6 +181,7 @@
           "iosUrlScheme": "com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"
         }
       ],
+      "./plugins/withSplashScreenFix.js",
       "./plugins/withFmtFix.js",
       "./plugins/withWatchOSBuildFix.js"
     ],
