@@ -16,6 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ADMOB_ANDROID_APP_ID = 'ca-app-pub-8771434485570434~7427742767';
+const ADMOB_IOS_APP_ID = 'ca-app-pub-8771434485570434~4044224468';
 
 // Layer 1: Ensure meta-data in source manifest (backup)
 function withAdMobManifestAPI(config) {
@@ -134,9 +135,45 @@ function withAdMobRawXML(config) {
   }]);
 }
 
+// Layer 4: iOS Info.plist — Add GADApplicationIdentifier
+// Without this, the Google Mobile Ads SDK crashes on launch with:
+// 'GADInvalidInitializationException': The Google Mobile Ads SDK was initialized without an application ID.
+function withAdMobIOSInfoPlist(config) {
+  return withDangerousMod(config, ['ios', async (config) => {
+    const infoPlistPath = path.join(
+      config.modRequest.projectRoot,
+      'ios/MegaRadio/Info.plist'
+    );
+
+    if (!fs.existsSync(infoPlistPath)) return config;
+
+    let content = fs.readFileSync(infoPlistPath, 'utf-8');
+
+    if (content.includes('GADApplicationIdentifier')) {
+      console.log('[withAdMobFix] Layer 4: iOS GADApplicationIdentifier already present');
+      return config;
+    }
+
+    // Insert GADApplicationIdentifier before closing </dict>
+    const gadEntry = `\t<key>GADApplicationIdentifier</key>\n\t<string>${ADMOB_IOS_APP_ID}</string>\n\t<key>GADIsAdManagerApp</key>\n\t<false/>\n\t<key>SKAdNetworkItems</key>\n\t<array>\n\t\t<dict>\n\t\t\t<key>SKAdNetworkIdentifier</key>\n\t\t\t<string>cstr6suwn9.skadnetwork</string>\n\t\t</dict>\n\t</array>`;
+
+    // Find the last </dict> in the plist (closing the root dict)
+    const lastDictIndex = content.lastIndexOf('</dict>');
+    if (lastDictIndex !== -1) {
+      content = content.slice(0, lastDictIndex) + gadEntry + '\n' + content.slice(lastDictIndex);
+      fs.writeFileSync(infoPlistPath, content);
+      console.log('[withAdMobFix] Layer 4: Added GADApplicationIdentifier to iOS Info.plist');
+    }
+
+    return config;
+  }]);
+}
+
+
 module.exports = function withAdMobFix(config) {
   config = withAdMobManifestAPI(config);       // Layer 1: Expo manifest API
   config = withAdMobManifestPlaceholders(config); // Layer 2: THE FIX - manifestPlaceholders
   config = withAdMobRawXML(config);            // Layer 3: Raw XML backup
+  config = withAdMobIOSInfoPlist(config);      // Layer 4: iOS Info.plist GADApplicationIdentifier
   return config;
 };
