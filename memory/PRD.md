@@ -85,9 +85,10 @@ app.json plugins (execution order):
 - Affected services: `expo.modules.audio.service.AudioRecordingService`, `AudioControlsService`
 
 ## Pending Verification
-- P0: Xcode Dependency Cycle fix — user needs to run `cd frontend && npx expo prebuild --platform ios --clean` and build in Xcode
-- P0: ICY metadata — user needs to test on physical device with live radio stream
-- P2: AdMob ads on physical Android device (new Ad Unit ID propagation 24-72h)
+- P0: iOS splash screen + siyah ekran fix — user needs Release build test
+- P0: Google Login with updated credentials — both platforms
+- P1: ICY metadata on physical device test
+- P2: AdMob ads on physical Android device
 
 ## Backend Developer Communication
 - App uses **REST API polling (Yontem A)** for metadata: `GET /api/now-playing/{stationId}`

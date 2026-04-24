@@ -75,17 +75,17 @@ const SongHistoryItem: React.FC<{
 }> = ({ item, isPremium, onUpgrade }) => {
   return (
     <View style={styles.historyItem} data-testid={`song-history-item-${item.id}`}>
-      {/* Song info */}
+      {/* Song info — visible to ALL users */}
       <View style={styles.songInfo}>
         <View style={styles.songIcon}>
           <Ionicons name="musical-notes" size={20} color="#FF4199" />
         </View>
         <View style={styles.songDetails}>
           <Text style={styles.songTitle} numberOfLines={1}>
-            {isPremium ? item.title : '****'}
+            {item.title}
           </Text>
           <Text style={styles.songArtist} numberOfLines={1}>
-            {isPremium ? item.artist : '****'}
+            {item.artist}
           </Text>
           <View style={styles.stationRow}>
             <Ionicons name="radio-outline" size={12} color="#666" />
@@ -95,33 +95,23 @@ const SongHistoryItem: React.FC<{
         </View>
       </View>
 
-      {/* Action buttons */}
-      {isPremium ? (
-        <View style={styles.actionBtns}>
-          <TouchableOpacity
-            style={styles.actionBtn}
-            onPress={() => openInSpotify(item.title, item.artist)}
-            data-testid={`spotify-btn-${item.id}`}
-          >
-            <Ionicons name="logo-apple" size={18} color="#1DB954" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionBtn}
-            onPress={() => openInYouTube(item.title, item.artist)}
-            data-testid={`youtube-btn-${item.id}`}
-          >
-            <Ionicons name="logo-youtube" size={18} color="#FF0000" />
-          </TouchableOpacity>
-        </View>
-      ) : (
+      {/* Action buttons — YouTube & Spotify accessible to ALL users */}
+      <View style={styles.actionBtns}>
         <TouchableOpacity
-          style={styles.lockBtn}
-          onPress={onUpgrade}
-          data-testid="song-history-lock-btn"
+          style={styles.actionBtn}
+          onPress={() => openInSpotify(item.title, item.artist)}
+          data-testid={`spotify-btn-${item.id}`}
         >
-          <Ionicons name="lock-closed" size={16} color="#FFD700" />
+          <Ionicons name="logo-apple" size={18} color="#1DB954" />
         </TouchableOpacity>
-      )}
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => openInYouTube(item.title, item.artist)}
+          data-testid={`youtube-btn-${item.id}`}
+        >
+          <Ionicons name="logo-youtube" size={18} color="#FF0000" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -188,21 +178,6 @@ export default function SongHistoryScreen() {
           <View style={{ width: 28 }} />
         )}
       </View>
-
-      {/* Premium banner for non-premium users */}
-      {!hasSongHistoryAccess && entries.length > 0 && (
-        <TouchableOpacity
-          style={styles.premiumBanner}
-          onPress={() => setShowPaywall(true)}
-          data-testid="song-history-premium-banner"
-        >
-          <Ionicons name="diamond" size={18} color="#FFD700" />
-          <Text style={styles.premiumBannerText}>
-            {t('premium_unlock_songs', 'Upgrade to Premium to see song names & open in Spotify/YouTube')}
-          </Text>
-          <Ionicons name="chevron-forward" size={18} color="#FFD700" />
-        </TouchableOpacity>
-      )}
 
       {/* Song list */}
       <FlatList

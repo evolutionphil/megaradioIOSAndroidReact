@@ -15,9 +15,9 @@
     ],
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0D0D0F"
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
@@ -73,9 +73,9 @@
         "backgroundColor": "#FF4199"
       },
       "splash": {
-        "image": "./assets/images/icon.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#0D0D0F"
+        "image": "./assets/images/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#000000"
       },
       "package": "com.megaradio",
       "versionCode": 89,
