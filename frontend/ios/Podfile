@@ -23,16 +23,6 @@ prepare_react_native_project!
 target 'MegaRadio' do
   use_expo_modules!
 
-  # Firebase Swift pods require modular headers for these dependencies
-  pod 'GoogleUtilities', :modular_headers => true
-  pod 'GoogleDataTransport', :modular_headers => true
-  pod 'nanopb', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'FirebaseCoreExtension', :modular_headers => true
-  pod 'FirebaseCoreInternal', :modular_headers => true
-  pod 'FirebaseInstallations', :modular_headers => true
-  pod 'GoogleAppMeasurement', :modular_headers => true
-
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
   else
@@ -69,7 +59,8 @@ target 'MegaRadio' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
-    # Fix: fmt consteval error with Xcode 16.4+ Clang C++20
+
+    # Fix: fmt consteval error with Xcode 16.4+
     installer.pods_project.targets.each do |target|
       if target.name == 'fmt'
         target.build_configurations.each do |bc|
