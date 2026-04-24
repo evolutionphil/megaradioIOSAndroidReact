@@ -793,6 +793,24 @@ export default function PlayerScreen() {
             </View>
           </View>
 
+          {/* Go Premium Banner - only for free users */}
+          {!isPremium && (
+            <TouchableOpacity 
+              style={styles.premiumBanner}
+              onPress={() => { setPaywallMode('premium'); setShowPaywall(true); }}
+              data-testid="go-premium-banner"
+            >
+              <View style={styles.premiumBannerLeft}>
+                <Ionicons name="diamond" size={20} color="#FFD700" />
+                <View>
+                  <Text style={styles.premiumBannerTitle}>{t('go_premium', 'Go Premium')}</Text>
+                  <Text style={styles.premiumBannerSubtitle}>{t('unlock_hd_no_ads', 'HD quality, no ads & more')}</Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.5)" />
+            </TouchableOpacity>
+          )}
+
           {/* Recently Played Section */}
           {recentStations.length > 0 && (
           <View style={styles.section}>
