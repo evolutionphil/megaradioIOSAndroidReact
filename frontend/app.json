@@ -61,24 +61,7 @@
           "INPlayMediaIntent",
           "com.visiongo.megaradio.playMedia"
         ],
-        "NSSiriUsageDescription": "MegaRadio uses Siri to play radio stations with voice commands.",
-        "UIApplicationSceneManifest": {
-          "UIApplicationSupportsMultipleScenes": true,
-          "UISceneConfigurations": {
-            "UIWindowSceneSessionRoleApplication": [
-              {
-                "UISceneConfigurationName": "Default Configuration",
-                "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).PhoneSceneDelegate"
-              }
-            ],
-            "CPTemplateApplicationSceneSessionRoleApplication": [
-              {
-                "UISceneConfigurationName": "CarPlay",
-                "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate"
-              }
-            ]
-          }
-        }
+        "NSSiriUsageDescription": "MegaRadio uses Siri to play radio stations with voice commands."
       },
       "entitlements": {
         "com.apple.developer.carplay-audio": true

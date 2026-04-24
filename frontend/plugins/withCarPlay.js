@@ -11,7 +11,9 @@ const withCarPlayEntitlement = (config) => {
     return config;
   });
   
-  // Step 2: Configure background modes and scene manifest
+  // Step 2: Configure background modes (Scene manifest removed — causes black screen
+  // when PhoneSceneDelegate class doesn't exist. CarPlay works without it via
+  // react-native-carplay's own native module.)
   config = withInfoPlist(config, (config) => {
     const backgroundModes = config.modResults.UIBackgroundModes || [];
     
@@ -24,33 +26,12 @@ const withCarPlayEntitlement = (config) => {
     }
     config.modResults.UIBackgroundModes = backgroundModes;
     
-    // Ensure UIApplicationSceneManifest is properly configured for CarPlay
-    // This is REQUIRED for CarPlay to work without crashing
-    const manifest = config.modResults.UIApplicationSceneManifest || {};
-    manifest.UIApplicationSupportsMultipleScenes = true;
-    
-    const sceneConfigs = manifest.UISceneConfigurations || {};
-    
-    // Ensure Phone scene configuration exists
-    if (!sceneConfigs.UIWindowSceneSessionRoleApplication) {
-      sceneConfigs.UIWindowSceneSessionRoleApplication = [{
-        UISceneConfigurationName: 'Default Configuration',
-        UISceneDelegateClassName: '$(PRODUCT_MODULE_NAME).PhoneSceneDelegate'
-      }];
+    // Remove UIApplicationSceneManifest if it exists (causes black screen)
+    if (config.modResults.UIApplicationSceneManifest) {
+      delete config.modResults.UIApplicationSceneManifest;
+      console.log('[withCarPlay] Removed UIApplicationSceneManifest (prevents black screen)');
     }
     
-    // Ensure CarPlay scene configuration exists
-    if (!sceneConfigs.CPTemplateApplicationSceneSessionRoleApplication) {
-      sceneConfigs.CPTemplateApplicationSceneSessionRoleApplication = [{
-        UISceneConfigurationName: 'CarPlay',
-        UISceneDelegateClassName: '$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate'
-      }];
-    }
-    
-    manifest.UISceneConfigurations = sceneConfigs;
-    config.modResults.UIApplicationSceneManifest = manifest;
-    
-    console.log('[withCarPlay] Configured CarPlay scene manifest');
     console.log('[withCarPlay] Configured background modes:', backgroundModes);
     return config;
   });
