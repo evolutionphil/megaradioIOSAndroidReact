@@ -273,10 +273,54 @@ export default function NearbyStationsScreen() {
               key={viewMode === 'grid' ? `grid-${GRID_COLUMNS}` : 'list'}
               contentContainerStyle={[
                 styles.listContent,
-                viewMode === 'grid' && styles.gridContent,
+                viewMode === 'grid' && { paddingHorizontal: gridMetrics.sidePadding },
+                viewMode === 'list' && { paddingHorizontal: responsive.sidePadding },
               ]}
-              renderItem={({ item }) => 
-                viewMode === 'grid' ? renderGridItem(item) : renderListItem(item)
+              columnWrapperStyle={viewMode === 'grid' ? { marginBottom: 12 } : undefined}
+              renderItem={({ item, index }) => 
+                viewMode === 'grid' ? (
+                  <TouchableOpacity
+                    key={item._id}
+                    style={[styles.gridItem, { 
+                      width: GRID_ITEM_WIDTH, 
+                      marginRight: (index % GRID_COLUMNS) < GRID_COLUMNS - 1 ? gridMetrics.gap : 0,
+                      paddingHorizontal: 0,
+                    }]}
+                    onPress={() => handleStationPress(item)}
+                    activeOpacity={0.7}
+                    data-testid={`grid-station-${item._id}`}
+                  >
+                    <View style={[styles.gridLogoContainer, isStationPlaying(item) && styles.gridLogoContainerActive]}>
+                      {getLogoUrl(item) ? (
+                        <Image
+                          source={{ uri: getLogoUrl(item) }}
+                          style={styles.gridLogo}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View style={styles.gridPlaceholder}>
+                          <Ionicons name="radio" size={32} color={colors.textMuted} />
+                        </View>
+                      )}
+                      {isStationLoading(item) && (
+                        <View style={styles.loadingOverlay}>
+                          <ActivityIndicator size="small" color={colors.text} />
+                        </View>
+                      )}
+                      {isStationPlaying(item) && !isStationLoading(item) && (
+                        <View style={styles.playingIndicator}>
+                          <Ionicons name="volume-high" size={16} color={colors.accentPink} />
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.gridName} numberOfLines={1}>{item.name}</Text>
+                    {(item as any).distance && (
+                      <Text style={styles.gridDistance} numberOfLines={1}>
+                        <Ionicons name="location" size={10} color={colors.textMuted} /> {formatDistance((item as any).distance)}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                ) : renderListItem(item)
               }
               refreshControl={
                 <RefreshControl
@@ -374,7 +418,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   listContent: {
-    padding: spacing.md,
+    paddingVertical: spacing.md,
   },
   gridContent: {
     paddingHorizontal: spacing.sm,
