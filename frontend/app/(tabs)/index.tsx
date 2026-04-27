@@ -310,11 +310,11 @@ export default function HomeScreen() {
     return Array.from({ length: rows }).map((_, rowIndex) => {
       const rowStations = displayStations.slice(rowIndex * gridColumns, (rowIndex + 1) * gridColumns);
       return (
-        <View key={`grid-row-${rowIndex}`} style={[styles.gridRow, { gap: gridGap }]}>
-          {rowStations.map((station: Station) => (
+        <View key={`grid-row-${rowIndex}`} style={styles.gridRow}>
+          {rowStations.map((station: Station, idx: number) => (
             <TouchableOpacity
               key={station._id}
-              style={[styles.gridItem, { width: gridItemWidth }]}
+              style={[styles.gridItem, { width: gridItemWidth, marginRight: idx < gridColumns - 1 ? gridGap : 0 }]}
               onPress={() => handleStationPress(station)}
             >
               <View style={[styles.gridImageContainer, { width: gridItemWidth, height: gridItemWidth }]}>
@@ -334,7 +334,7 @@ export default function HomeScreen() {
           {/* Fill empty slots */}
           {rowStations.length < gridColumns && 
             Array.from({ length: gridColumns - rowStations.length }).map((_, i) => (
-              <View key={`empty-${rowIndex}-${i}`} style={[styles.gridItem, { width: gridItemWidth }]} />
+              <View key={`empty-${rowIndex}-${i}`} style={[styles.gridItem, { width: gridItemWidth, marginRight: (rowStations.length + i) < gridColumns - 1 ? gridGap : 0 }]} />
             ))
           }
         </View>
@@ -952,14 +952,13 @@ const styles = StyleSheet.create({
   // New Grid styles for larger cards and smaller gaps
   gridRow: {
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     width: '100%',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   gridItem: {
-    // Fixed width calculation: (screenWidth - padding - gaps) / 3
-    // Don't use flex: 1 to avoid single item stretching
-    width: '31%', // Approximately 1/3 with gaps
-    maxWidth: 130, // Maximum size to prevent oversized items
+    // Width set dynamically via inline style from gridItemWidth
+    // DO NOT set width/maxWidth here — it overrides the responsive calculation
   },
   gridItemMargin: {
     marginRight: '3.5%',
