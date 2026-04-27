@@ -185,9 +185,17 @@ export default function GenresTabScreen() {
     });
   };
 
+  // Calculate item width based on columns
+  const { width: screenWidth } = useWindowDimensions();
+  const genreItemWidth = useMemo(() => {
+    const availableWidth = screenWidth - (responsive.sidePadding * 2);
+    const totalGaps = 12 * (numColumns - 1); // 12px gap between columns
+    return Math.floor((availableWidth - totalGaps) / numColumns);
+  }, [screenWidth, responsive.sidePadding, numColumns]);
+
   const renderGenreItem = ({ item }: { item: Genre }) => (
     <TouchableOpacity
-      style={[styles.genreRow, numColumns > 1 && { flex: 1 / numColumns, marginBottom: 12 }]}
+      style={[styles.genreRow, numColumns > 1 && { width: genreItemWidth, flex: undefined, marginBottom: 12 }]}
       onPress={() => handleGenrePress(item)}
       activeOpacity={0.7}
       data-testid={`genre-item-${item.slug}`}
