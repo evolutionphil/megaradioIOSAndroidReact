@@ -561,7 +561,7 @@ export default function HomeScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: HORIZONTAL_PADDING, gap: 12, marginBottom: spacing.lg }}
+              contentContainerStyle={{ paddingHorizontal: responsive.sidePadding, gap: 12, marginBottom: spacing.lg }}
             >
               {discoverableGenresList.map((genre: any, index: number) => {
                 // Use discoverableImage from API or fallback
