@@ -9,9 +9,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, StyleSheet, Platform, AppState, AppStateStatus, Text } from 'react-native';
 import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18nextProvider } from 'react-i18next';
 sendLog('LAYOUT_IMPORTS_1');
+
+// Prevent splash screen from auto-hiding (we control when it hides)
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 import i18n, { initI18n } from '../src/services/i18nService';
 import { colors } from '../src/constants/theme';
@@ -563,11 +567,25 @@ export default function RootLayout() {
     checkAndRoute();
   }, [isNavigationReady, hasCheckedOnboarding, segments]);
 
+  // Safety timeout: Force hide splash after 15 seconds no matter what
+  // This prevents blank screen on iPad if country/font loading takes too long
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!splashHidden) {
+        console.log('[Layout] SAFETY: Force hiding splash after 15s timeout');
+        SplashScreen.hideAsync().catch(() => {});
+        setSplashHidden(true);
+      }
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Mark splash as hidden once fonts are loaded and app data is ready
   // This triggers AdMob/ATT initialization (must happen AFTER splash hides on iOS)
   useEffect(() => {
     if ((fontsLoaded || fontError) && countryLoaded && !splashHidden) {
-      console.log('[Layout] App ready - marking splash as hidden (triggers AdMob init)');
+      console.log('[Layout] App ready - hiding splash screen');
+      SplashScreen.hideAsync().catch((e) => console.log('[Layout] SplashScreen.hide error:', e));
       setSplashHidden(true);
     }
   }, [fontsLoaded, fontError, countryLoaded, splashHidden]);
