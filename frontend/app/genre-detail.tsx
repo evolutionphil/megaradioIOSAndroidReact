@@ -302,7 +302,7 @@ export default function GenreDetailScreen() {
           </View>
 
           {/* Search Bar */}
-          <View style={styles.searchContainer}>
+          <View style={[styles.searchContainer, { paddingHorizontal: responsive.sidePadding }]}>
             <View style={styles.searchBar}>
               <Ionicons name="search" size={18} color={colors.textMuted} />
               <TextInput
