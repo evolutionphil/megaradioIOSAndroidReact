@@ -407,8 +407,8 @@ export default function HomeScreen() {
                 marginBottom: 16,
                 borderRadius: 5,
                 overflow: 'hidden',
-                alignSelf: 'center',
-                width: 345,
+                alignSelf: 'stretch',
+                width: '100%',
                 height: 54,
               }} 
               onPress={() => setShowPaywall(true)}
@@ -616,13 +616,16 @@ export default function HomeScreen() {
                 <Text style={styles.seeAllText}>{t('homepage_see_all')}</Text>
               </TouchableOpacity>
             </View>
-            <View style={[styles.usersList, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap', gap: gridGap }]}>
+            <View style={[styles.usersList, responsive.isTablet && { flexDirection: 'row', flexWrap: 'wrap' }]}>
               {(publicProfiles && publicProfiles.length > 0 ? publicProfiles : []).slice(0, responsive.isTablet ? 8 : 6).map((profileUser: any, index: number) => (
                 <TouchableOpacity 
                   key={profileUser._id || index} 
                   style={[
                     styles.userItem, 
-                    responsive.isTablet && { width: `${100 / 2 - 2}%` }
+                    responsive.isTablet && { 
+                      width: `${49}%`,
+                      marginRight: index % 2 === 0 ? '2%' : 0,
+                    }
                   ]}
                   onPress={() => router.push({
                     pathname: '/user-profile',
