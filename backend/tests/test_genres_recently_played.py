@@ -8,8 +8,8 @@ import os
 
 BASE_URL = "https://themegaradio.com"
 API_KEY = os.environ.get("MEGARADIO_API_KEY", "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw")
-TEST_EMAIL = "gey14853@outlook.com"
-TEST_PASSWORD = "Muhammed5858"
+TEST_EMAIL = os.environ.get("TEST_EMAIL", "test@example.com")
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "testpass123")
 
 
 class TestGenresAPI:

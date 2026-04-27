@@ -15,8 +15,8 @@ import os
 BASE_URL = "https://themegaradio.com"
 
 # Test credentials
-TEST_EMAIL = "gey14853@outlook.com"
-TEST_PASSWORD = "Muhammed5858"
+TEST_EMAIL = os.environ.get("TEST_EMAIL", "test@example.com")
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "testpass123")
 API_KEY = "mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw"
 
 
