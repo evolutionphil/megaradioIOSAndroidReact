@@ -558,11 +558,12 @@ export default function HomeScreen() {
 
           {/* Discoverable Genres Swiper - Horizontal Carousel (3 discoverable genres) */}
           {discoverableGenresList.length > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: responsive.sidePadding, gap: 12, marginBottom: spacing.lg }}
-            >
+            <View style={{ marginHorizontal: -sidePadding, marginBottom: spacing.lg }}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: sidePadding, gap: 12 }}
+              >
               {discoverableGenresList.map((genre: any, index: number) => {
                 // Use discoverableImage from API or fallback
                 const apiImageUrl = getDiscoverableGenreImage(genre) || getGenreBannerImage(genre);
@@ -605,7 +606,8 @@ export default function HomeScreen() {
                   </TouchableOpacity>
                 );
               })}
-            </ScrollView>
+              </ScrollView>
+            </View>
           )}
 
           {/* Favorites From Users - Real API data with specified dimensions */}
