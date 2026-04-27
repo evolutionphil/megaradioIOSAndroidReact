@@ -32,6 +32,42 @@ sendLog('LAYOUT_IMPORTS_2');
 
 import { AudioProvider } from '../src/providers/AudioProvider';
 
+// Root Error Boundary — catches ANY crash and shows fallback UI instead of blank screen
+// Critical for iPad where initialization can fail silently
+class RootErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: string }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: '' };
+  }
+  
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error: error.message };
+  }
+  
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('[RootErrorBoundary] App crash caught:', error.message);
+    sendLog('ROOT_ERROR_BOUNDARY', { error: error.message, stack: errorInfo?.componentStack?.substring(0, 500) });
+    try { crashlyticsService.recordError(error, 'RootErrorBoundary'); } catch (e) {}
+    // Force hide splash so user sees something
+    try { SplashScreen.hideAsync(); } catch (e) {}
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ flex: 1, backgroundColor: '#0D0D0F', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+          <Text style={{ color: '#FFF', fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>MegaRadio</Text>
+          <Text style={{ color: '#999', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>
+            Something went wrong. Please restart the app.
+          </Text>
+          <Text style={{ color: '#666', fontSize: 11 }}>{this.state.error}</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // Error boundary to prevent native module crashes from causing white screen
 class AudioErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   constructor(props: { children: React.ReactNode }) {
@@ -300,12 +336,12 @@ export default function RootLayout() {
         // GPS-detected countries stored previously will be refreshed
         if (!state.isManuallySet) {
           console.log('[Layout] Country not manually set, attempting GPS detection...');
-          // Timeout GPS detection to prevent blocking app startup
+          // Timeout GPS detection — reduced to 5s for iPad compatibility
           const gpsTimeout = new Promise<void>((resolve) => {
             setTimeout(() => {
-              console.warn('[Layout] GPS detection timed out after 8s');
+              console.warn('[Layout] GPS detection timed out after 5s');
               resolve();
-            }, 8000);
+            }, 5000);
           });
           await Promise.race([useLocationStore.getState().fetchLocation(), gpsTimeout]);
           const newState = useLocationStore.getState();
@@ -601,8 +637,8 @@ export default function RootLayout() {
   sendLog('ROOT_LAYOUT_RENDER_START');
 
   return (
+    <RootErrorBoundary>
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
-      {/* FlowAlive DISABLED - NPM package has bug */}
       <I18nextProvider i18n={i18n}>
           <QueryClientProvider client={queryClient}>
             <AudioErrorBoundary>
@@ -653,8 +689,8 @@ export default function RootLayout() {
             </AudioErrorBoundary>
           </QueryClientProvider>
         </I18nextProvider>
-      {/* End FlowAlive wrapper (disabled) */}
     </GestureHandlerRootView>
+    </RootErrorBoundary>
   );
 }
 
