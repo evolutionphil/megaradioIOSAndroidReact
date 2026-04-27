@@ -93,11 +93,11 @@ export function useResponsive(): ResponsiveMetrics {
     let gap: number;
     
     if (isLargeTablet) {
-      columns = 5;
+      columns = 6;
       gap = 16;
     } else if (isTablet) {
-      columns = 4;
-      gap = 12;
+      columns = 5;
+      gap = 14;
     } else {
       columns = 3;
       gap = 8;
