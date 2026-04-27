@@ -76,8 +76,11 @@ export function useResponsive(): ResponsiveMetrics {
   const genreCardHeight = isLargeTablet ? 60 : isTablet ? 52 : 45;
   
   // Banner dimensions for discoverable genres
-  const bannerWidth = isLargeTablet ? 480 : isTablet ? 400 : 300;
-  const bannerHeight = isLargeTablet ? 200 : isTablet ? 180 : 160;
+  // Banner width: fill available width minus sidePadding, accounting for gap between 2 banners
+  const bannerGap = 12;
+  const availableBannerWidth = width - (sidePadding * 2);
+  const bannerWidth = isTablet ? Math.floor((availableBannerWidth - bannerGap) / 2) : 300;
+  const bannerHeight = isLargeTablet ? 180 : isTablet ? 160 : 150;
   
   // Heading scale for larger screens
   const headingScale = isLargeTablet ? 1.3 : isTablet ? 1.2 : 1;
