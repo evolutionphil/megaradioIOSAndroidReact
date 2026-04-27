@@ -832,11 +832,12 @@ const styles = StyleSheet.create({
   // Genres - Fixed width
   genresContainer: {
     width: '100%',
-    height: 45,
-    overflow: 'hidden',
+    height: 50,
+    overflow: 'visible',
   },
   genresScroll: {
     gap: 10,
+    alignItems: 'center',
   },
   genreCard: {
     width: 130,
