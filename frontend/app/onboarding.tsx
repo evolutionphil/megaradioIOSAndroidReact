@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
@@ -108,16 +109,26 @@ export default function OnboardingScreen() {
   // Check if onboarding is already complete - redirect if so
   useEffect(() => {
     const checkStatus = async () => {
-      const complete = await checkOnboardingComplete();
-      console.log('[Onboarding] Checking status:', complete);
-      if (complete) {
-        console.log('[Onboarding] Already complete, redirecting to home');
-        router.replace('/(tabs)');
-      } else {
+      try {
+        const complete = await checkOnboardingComplete();
+        console.log('[Onboarding] Checking status:', complete);
+        if (complete) {
+          console.log('[Onboarding] Already complete, redirecting to home');
+          router.replace('/(tabs)');
+        } else {
+          setIsChecking(false);
+        }
+      } catch (e) {
+        console.error('[Onboarding] Check failed, showing onboarding:', e);
         setIsChecking(false);
       }
     };
     checkStatus();
+    // Safety: if check takes too long, show onboarding anyway
+    const timeout = setTimeout(() => {
+      setIsChecking(false);
+    }, 3000);
+    return () => clearTimeout(timeout);
   }, []);
   
   // Glow animation for next button
@@ -170,6 +181,7 @@ export default function OnboardingScreen() {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
         <StatusBar style="light" />
+        <ActivityIndicator size="large" color="#FF4199" />
       </View>
     );
   }
