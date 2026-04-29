@@ -825,11 +825,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
 
     // FIRST STATION PLAY: Show app-open ad on very first station play per session
-    // Wait briefly for AdMob to initialize if needed
+    // showAppOpenAd() internally polls up to 5s for App Open, then falls back to Interstitial
     const isFirstPlay = !adMobService.firstStationAdShown;
     if (isFirstPlay) {
       adMobService.firstStationAdShown = true;
-      // Small delay to allow AdMob to finish loading ads
+      // Small delay so the station starts playing first (better UX)
       setTimeout(() => {
         adMobService.showAppOpenAd().then((shown) => {
           if (shown) {
@@ -838,7 +838,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         }).catch((e) => {
           console.log('[AudioProvider] First launch ad error (non-blocking):', e);
         });
-      }, 2000);
+      }, 500);
     }
 
     // Track station change for ads (only for different stations)

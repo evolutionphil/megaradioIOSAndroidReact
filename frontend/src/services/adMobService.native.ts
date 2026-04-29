@@ -124,23 +124,23 @@ class AdMobService {
       this.isInitialized = true;
       
       // Load ads with staggered timing to avoid SDK conflicts
-      // Interstitial loads FIRST (most important for revenue)
-      console.log('[AdMob] Loading Interstitial first...');
-      await this.loadInterstitialAd();
-      
-      // Rewarded loads SECOND (200ms delay)
+      // App Open loads FIRST (needed for first-launch ad - timing critical)
+      console.log('[AdMob] Loading App Open first (for first-launch ad)...');
+      this.loadAppOpenAd();
+
+      // Interstitial loads SECOND (200ms delay) - also feeds first-launch fallback
+      setTimeout(() => {
+        console.log('[AdMob] Loading Interstitial...');
+        this.loadInterstitialAd();
+      }, 200);
+
+      // Rewarded loads LAST (500ms delay)
       setTimeout(() => {
         console.log('[AdMob] Loading Rewarded...');
         this.loadRewardedAd();
-      }, 200);
-      
-      // App Open loads LAST (1s delay - new ad units need more time)
-      setTimeout(() => {
-        console.log('[AdMob] Loading App Open...');
-        this.loadAppOpenAd();
-      }, 1000);
-      
-      console.log('[AdMob] Staggered ad loading initiated');
+      }, 500);
+
+      console.log('[AdMob] Staggered ad loading initiated (App Open prioritized)');
       
       // Reset station change count for each session (don't persist across sessions)
       // This ensures users always get 3 full station changes before seeing the next ad
@@ -279,30 +279,53 @@ class AdMobService {
     }
   }
 
-  // Show App Open Ad ONLY (no interstitial/rewarded fallback)
-  // Interstitial is reserved for onStationChange(), Rewarded for manual button
+  // Show App Open Ad with retry + Interstitial fallback
+  // Waits up to 5s for App Open ad to load. Falls back to Interstitial if still unavailable.
   async showAppOpenAd(): Promise<boolean> {
     if (Platform.OS === 'web') return false;
-    
+
     // Check ad-free time
     if (await this.isAdFree()) {
       console.log('[AdMob] User has ad-free time, skipping app-open ad');
       return false;
     }
 
-    // Try App Open ad ONLY - don't consume Interstitial or Rewarded
-    if (this.isAppOpenLoaded && this.appOpenAd) {
+    // Retry loop: wait up to 5s (10 x 500ms) for App Open ad to load
+    const maxWaitMs = 5000;
+    const pollIntervalMs = 500;
+    const maxAttempts = Math.ceil(maxWaitMs / pollIntervalMs);
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (this.isAppOpenLoaded && this.appOpenAd) {
+        try {
+          await this.appOpenAd.show();
+          console.log(`[AdMob] App Open ad shown (attempt ${attempt + 1})`);
+          this.isAppOpenLoaded = false;
+          return true;
+        } catch (error) {
+          console.error('[AdMob] Error showing App Open ad:', error);
+          break;
+        }
+      }
+      if (attempt === 0) {
+        console.log('[AdMob] App Open ad not yet loaded, polling...');
+      }
+      await new Promise((r) => setTimeout(r, pollIntervalMs));
+    }
+
+    // Fallback: show Interstitial if available (covers first-launch ad gap)
+    console.log('[AdMob] App Open ad unavailable after polling — trying Interstitial fallback...');
+    if (this.isInterstitialLoaded && this.interstitialAd) {
       try {
-        await this.appOpenAd.show();
-        console.log('[AdMob] App Open ad shown');
-        this.isAppOpenLoaded = false;
+        await this.interstitialAd.show();
+        console.log('[AdMob] Interstitial ad shown as first-launch fallback');
         return true;
       } catch (error) {
-        console.error('[AdMob] Error showing App Open ad:', error);
+        console.error('[AdMob] Interstitial fallback error:', error);
       }
     }
-    
-    console.log('[AdMob] App Open ad not available, skipping (Interstitial/Rewarded preserved for later)');
+
+    console.log('[AdMob] No ads available for first launch — will retry later');
     return false;
   }
 
