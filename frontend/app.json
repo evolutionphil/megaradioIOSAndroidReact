@@ -22,7 +22,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
-      "buildNumber": "1",
+      "buildNumber": "3",
       "usesAppleSignIn": true,
       "splash": {
         "image": "./assets/images/splash.png",
