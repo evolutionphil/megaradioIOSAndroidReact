@@ -12,7 +12,20 @@
           "package_name": "com.megaradio"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "957628580421-7ljbcgt6m27jvpjkeog28vtbvdc4s7d8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.megaradio",
+            "certificate_hash": "5a5988e0554a4ec14ddb07344481332ca2042ec3"
+          }
+        },
+        {
+          "client_id": "957628580421-ob14qeft7j83apkdjqfn48o3961qk7ti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBudgEDwr5stSFz10G_Bm00W8jE1Eycc80"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957628580421-1gj9mmbq20o9jva6olb28t2un6vb6jqh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "957628580421-664s6dft9n8kp91futrnpsugd4fcsonn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.visiongo.megaradio"
+              }
+            }
+          ]
         }
       }
     }
