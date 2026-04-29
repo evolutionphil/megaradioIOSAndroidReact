@@ -237,7 +237,9 @@ export default function RootLayout() {
         await crashlyticsService.initialize();
         crashlyticsService.setupGlobalErrorHandler();
         crashlyticsService.log('App started');
-        crashlyticsService.setAttribute('app_version_code', '81');
+        crashlyticsService.setAttribute('app_version_code', '90');
+        // Send a test non-fatal to verify Crashlytics is working
+        crashlyticsService.recordError(new Error('Crashlytics verification ping'), 'AppStartup');
         console.log('[Layout] Firebase Crashlytics initialized');
       } catch (error) {
         console.warn('[Layout] Firebase Crashlytics init error:', error);
