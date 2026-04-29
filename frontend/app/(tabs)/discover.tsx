@@ -26,6 +26,7 @@ import { useLocationStore } from '../../src/store/locationStore';
 import { useAuthStore } from '../../src/store/authStore';
 import { usePremiumStore } from '../../src/store/premiumStore';
 import { PremiumPaywall } from '../../src/components/PremiumPaywall';
+import { CountrySelectorModal, countryCodeToFlag } from '../../src/components/CountrySelectorModal';
 import { useResponsive } from '../../src/hooks/useResponsive';
 import type { Station, Genre } from '../../src/types';
 
@@ -37,6 +38,7 @@ export default function DiscoverScreen() {
   const { isAuthenticated } = useAuthStore();
   const { isPremium } = usePremiumStore();
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showCountryModal, setShowCountryModal] = useState(false);
   
   // Responsive layout
   const responsive = useResponsive();
@@ -112,6 +114,14 @@ export default function DiscoverScreen() {
               <Text style={styles.subtitle}>{t('discover_subtitle')}</Text>
             </View>
             <View style={styles.headerButtons}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => setShowCountryModal(true)}
+                data-testid="discover-country-selector-btn"
+                accessibilityLabel="Select country"
+              >
+                <Text style={styles.flagEmoji}>{countryCodeToFlag(countryCode)}</Text>
+              </TouchableOpacity>
               {isAuthenticated && (
                 <TouchableOpacity 
                   style={styles.iconButton} 
@@ -313,6 +323,12 @@ export default function DiscoverScreen() {
       visible={showPaywall}
       onClose={() => setShowPaywall(false)}
       mode="premium"
+    />
+
+    {/* Country Selector Modal */}
+    <CountrySelectorModal
+      visible={showCountryModal}
+      onClose={() => setShowCountryModal(false)}
     />
     </View>
   );
