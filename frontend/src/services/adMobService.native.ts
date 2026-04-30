@@ -38,6 +38,7 @@ class AdMobService {
   private isRewardedLoaded = false;
   private isAppOpenLoaded = false;
   isInitialized = false;
+  private umpFormShown = false;
   private stationChangeCount = 0;
   firstStationAdShown = false; // Per-session flag for first station rewarded ad
   private isManualRewardedAd = false; // CRITICAL: Only true when user clicks "Watch Ad" button
@@ -108,10 +109,14 @@ class AdMobService {
           console.log('[AdMob] UMP Consent info:', consentInfo.status);
           
           if (consentInfo.isConsentFormAvailable && 
+              !this.umpFormShown &&
               (consentInfo.status === AdsConsentStatus.REQUIRED || 
                consentInfo.status === AdsConsentStatus.UNKNOWN)) {
             console.log('[AdMob] Showing UMP consent form...');
+            this.umpFormShown = true;
             await AdsConsent.showForm();
+          } else if (this.umpFormShown) {
+            console.log('[AdMob] UMP form already shown this session, skipping');
           }
         } catch (consentError) {
           console.log('[AdMob] UMP consent request error (non-fatal):', consentError);
