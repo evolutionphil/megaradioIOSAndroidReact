@@ -8,6 +8,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { useHelp } from "@/contexts/HelpContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCast } from "@/contexts/CastContext";
+import { usePaywall } from "@/contexts/PaywallContext";
 import { assetPath } from "@/lib/assetPath";
 
 type PlayAtStartMode = "last-played" | "random" | "favorite" | "none";
@@ -170,6 +171,7 @@ export const Settings = (): JSX.Element => {
   const { highContrast, largeText, setHighContrast, setLargeText } = useAccessibility();
   const { isAuthenticated, user, logout } = useAuth();
   const { isConnected } = useCast();
+  const { showPaywall, isPremium } = usePaywall();
 
   const { openHelp, closeHelp, helpOpen } = useHelp();
   const [helpFocused, setHelpFocused] = useState(false);
@@ -850,6 +852,42 @@ export const Settings = (): JSX.Element => {
           </div>
 
           <div style={{ marginTop: '40px', paddingLeft: '24px', paddingRight: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            {!isPremium && (
+              <button
+                onClick={() => showPaywall('premium')}
+                data-testid="settings-go-premium-btn"
+                style={{
+                  width: '100%',
+                  height: '64px',
+                  borderRadius: '32px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #FF4199 0%, #AD00FF 100%)',
+                  color: '#fff',
+                  fontFamily: "'Ubuntu', sans-serif",
+                  fontSize: '20px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  marginBottom: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  boxShadow: '0 8px 32px rgba(255,65,153,0.45)',
+                  transition: 'transform 0.18s ease, box-shadow 0.18s ease',
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.transform = 'scale(1.04)';
+                  (e.target as HTMLElement).style.boxShadow = '0 12px 40px rgba(255,65,153,0.7)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.transform = 'scale(1)';
+                  (e.target as HTMLElement).style.boxShadow = '0 8px 32px rgba(255,65,153,0.45)';
+                }}
+              >
+                <span style={{ fontSize: '22px' }}>⭐</span>
+                Go Premium
+              </button>
+            )}
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
               <img alt="" style={{ width: '36px', height: '36px' }} src={assetPath("images/path-8.svg")} />
               <div>

@@ -1,7 +1,7 @@
 // Paywall Context — exposes `showPaywall(variant)` anywhere in the app.
 // Handles native IAP bridge if running inside the tvOS/Android/Electron shell.
 
-import { createContext, useCallback, useContext, useState, ReactNode } from 'react';
+import { createContext, useCallback, useContext, useState, useEffect, ReactNode } from 'react';
 import { PremiumPaywall, PaywallVariant } from '@/components/PremiumPaywall';
 import { usePremium } from '@/hooks/usePremium';
 
@@ -27,6 +27,26 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
   }, [premium.isPremium, premium.adsRemoved]);
 
   const hidePaywall = useCallback(() => setOpen(false), []);
+
+  // Auto-show paywall after 45s on app launch (once per session, non-premium only).
+  // Skipped on splash, login, paywall, and onboarding screens to avoid awkward overlap.
+  useEffect(() => {
+    if (premium.isPremium) return;
+    const SHOWN_KEY = 'mr_auto_paywall_shown_session';
+    if (sessionStorage.getItem(SHOWN_KEY) === '1') return;
+
+    const timer = setTimeout(() => {
+      const path = (typeof window !== 'undefined' && window.location.hash) || '';
+      const blockedRoutes = ['#/', '#/login', '#/premium', '#/remove-ads', '#/guide-1', '#/guide-2', '#/guide-3', '#/guide-4'];
+      const isBlocked = blockedRoutes.some(r => path === r || path.startsWith(r + '?'));
+      if (isBlocked) return;
+      sessionStorage.setItem(SHOWN_KEY, '1');
+      setVariant('premium');
+      setOpen(true);
+    }, 45_000);
+
+    return () => clearTimeout(timer);
+  }, [premium.isPremium]);
 
   const onPurchase = useCallback((productId: string) => {
     if (productId === 'restore') {
