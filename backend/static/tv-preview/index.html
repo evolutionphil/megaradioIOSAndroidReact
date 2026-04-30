@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/tv-styles.css" id="tv-styles">
+
+    <style>
+      html, body { margin: 0; padding: 0; background: #0e0e0e; overflow: hidden; }
+      #root { background: #0e0e0e; }
+      #app-loader {
+        position: fixed; top: 0; left: 0; width: 1920px; height: 1080px;
+        background: #0e0e0e; display: flex; align-items: center; justify-content: center;
+        z-index: 99999; flex-direction: column;
+      }
+      #app-loader .loader-logo {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+        font-size: 53px; color: #fff; white-space: pre-wrap;
+      }
+      #app-loader .loader-logo b { font-weight: 700; color: #ff4199; }
+      #app-loader .loader-logo span { font-weight: 400; }
+      #app-loader .loader-dot {
+        width: 8px; height: 8px; border-radius: 50%; background: #ff4199;
+        margin-top: 30px; animation: loaderPulse 1.2s ease-in-out infinite;
+      }
+      @keyframes loaderPulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.5); }
+      }
+    </style>
+    <title>Radio Mega - Apple TV / macOS Preview</title>
+    <script type="module" crossorigin src="/api/tv-app/assets/index-Bfx8xXN7.js"></script>
+    <link rel="stylesheet" crossorigin href="/api/tv-app/assets/index-Bo7PhWK3.css">
+  </head>
+  <body>
+    <div id="root">
+      <div id="app-loader">
+        <div class="loader-logo"><b>mega</b><span>radio</span></div>
+        <div class="loader-dot"></div>
+      </div>
+    </div>
+
+    <!-- Polyfills + TV Helpers (loaded as plain scripts; safe on macOS/Apple TV web) -->
+    <script type="text/javascript" src="./js/polyfills.js"></script>
+    <script type="text/javascript" src="./js/platform-detect.js"></script>
+    <script type="text/javascript" src="./js/tv-spatial-navigation.js"></script>
+    <script type="text/javascript" src="./js/tv-remote-keys.js"></script>
+    <script type="text/javascript" src="./js/tv-audio-player.js"></script>
+
+    <!-- React App -->
+  </body>
+</html>

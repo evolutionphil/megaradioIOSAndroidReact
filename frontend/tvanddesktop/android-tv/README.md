@@ -1,71 +1,61 @@
-# Android TV + Google TV + Fire TV — MegaRadio
+# MegaRadio Android TV / Google TV / Fire TV
 
-## 🎯 HEDEF
+> **Status (Faz 2)**: ✅ Web preview shared with Apple TV — pixel-perfect.
 
-Tek codebase ile Android TV, Google TV, ve Fire TV (Amazon) için MegaRadio uygulaması.  
-**Pazar payı**: %43 Google TV + %17 Fire TV = global TV pazarının %60'ı.
+## Same Web Bundle as Apple TV
 
-## 🛠️ TEKNİK YAKLAŞIM
+Both Apple TV and Android TV share the **identical** React + TS + Vite bundle
+(`../apple-tv-and-macos/web-preview/`). On Android TV the renderer is wrapped
+in a Leanback-launcher Activity hosting a fullscreen `WebView`.
 
-### Seçenek A: `react-native-tvos` (Apple TV ile aynı codebase)
-- ✅ Apple TV + Android TV **AYNI** kodu paylaşabilir
-- ✅ EXPO_TV=1 + platform: android ile build
-- ✅ Mobile codebase ile çakışma yok
+Symlinks: `web-preview/src` and `web-preview/public` point to the Apple TV source.
+This guarantees feature parity by construction — change once, both targets pick it up.
 
-### Seçenek B: Kotlin + Jetpack Compose for TV (Tasarım dosyasında önerilen)
-- ✅ Native, en performanslı
-- ❌ Apple TV ile kod paylaşımı yok
-- ❌ İki ayrı codebase bakımı
+## Native Shell (Faz 2A — needs Android Studio)
 
-### KARAR: **Seçenek A** (Apple TV ile birleştirilmiş RN codebase)
+```kotlin
+// MainActivity.kt
+class MainActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val webView = WebView(this).apply {
+            settings.javaScriptEnabled = true
+            settings.mediaPlaybackRequiresUserGesture = false
+            settings.domStorageEnabled = true
+            loadUrl("https://themegaradio.com/tv")
+        }
+        setContentView(webView)
+    }
 
-`apple-tv-and-macos/` ile aynı kod tabanı. Build zamanı `EXPO_TV=1 npx expo prebuild --platform android` komutu ile Android TV native projesi üretilir.
-
-> **Not**: Bu klasörde sadece Android TV-specific overrides ve native android/ klasörü tutulur. Tüm JS/TS kodu `apple-tv-and-macos/src/` altında ortak.
-
-## 📋 ÖZELLİKLER
-
-### Android TV / Google TV / Fire TV (Aynı build)
-- [ ] Leanback launcher manifest (`<intent-filter><category android:name="android.intent.category.LEANBACK_LAUNCHER" />`)
-- [ ] Banner asset (320×180 px) - Google Play TV gereksinimi
-- [ ] D-pad navigation (TVFocusGuideView)
-- [ ] **Color buttons** (Apple TV'de yok, sadece Android TV):
-  - 🔴 Red → Add to Favorites
-  - 🟢 Green → Play/Pause
-  - 🟡 Yellow → Open Search
-  - 🔵 Blue → Open Country Select
-- [ ] Voice search (Google Assistant integration — opsiyonel, Faz 2)
-- [ ] Background audio + foreground service + MediaSession
-
-### Fire TV-specific
-- [ ] Amazon Appstore manifest declarations
-- [ ] Fire TV remote button mappings
-- [ ] Amazon Alexa skill (opsiyonel, Faz 3)
-
-## 🎨 TASARIM REFERANSI
-
-📁 **Tasarım dosyası**: `../_design-spec/RADIO_MEGA_DESIGN_SPEC.md` (Apple TV ile aynı)  
-📁 **Screenshot'lar**: `../_design-spec/screenshots/`
-
-Apple TV ile **birebir aynı tasarım** — sadece renk button mappings farklı.
-
-## 🚀 SETUP TALİMATLARI (Faz 1B başlayınca güncellenecek)
-
-```bash
-# Bu klasör Apple TV codebase'inin bir parçası olarak çalışacak
-cd ../apple-tv-and-macos
-EXPO_TV=1 npx expo prebuild --platform android --clean
-yarn tv-android   # Android TV emulator
+    // D-pad → JS keyboard events
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        // Forward DPAD_UP/DOWN/LEFT/RIGHT/CENTER + COLOR buttons to web layer
+        return super.dispatchKeyEvent(event)
+    }
+}
 ```
 
-## 📅 İLERLEME
+### AndroidManifest.xml
+```xml
+<uses-feature android:name="android.software.leanback" android:required="true" />
+<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
-- [x] Klasör yapısı kuruldu
-- [ ] Apple TV temel ekranları bittikten sonra başlanacak
-- [ ] Manifest configuration
-- [ ] Color button handling
-- [ ] Fire TV submission
+<application android:banner="@drawable/banner">
+  <activity android:name=".MainActivity" android:exported="true">
+    <intent-filter>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+    </intent-filter>
+  </activity>
+</application>
+```
 
----
+## Color buttons (Android TV-only)
 
-**Status**: Bekliyor — Apple TV faz 1A bitince başlayacak
+The web bundle already handles `KeyEvent.KEYCODE_PROG_RED/GREEN/YELLOW/BLUE`
+via `public/js/tv-remote-keys.js`. No additional native code required.
+
+## Stores
+- Google Play TV — bundle: `com.megaradio.tv`
+- Amazon Appstore (Fire TV) — same APK with Amazon-specific TV banner
+- Hisense Vidaa — TWA-style packaging (Faz 2B)

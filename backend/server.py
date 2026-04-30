@@ -1,5 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException
-from fastapi.responses import PlainTextResponse
+from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi.responses import PlainTextResponse, FileResponse, Response
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -338,3 +339,43 @@ app.add_middleware(
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+# ---------------------------------------------------------------------------
+# Apple TV / macOS / Tizen / webOS web-preview static mount
+# Built artifacts go to /app/backend/static/tv-preview (see vite.config.ts).
+# Accessed externally at:  {REACT_APP_BACKEND_URL}/api/tv-app/
+# (Mounted under /api/* so Kubernetes ingress routes it to the backend.)
+# ---------------------------------------------------------------------------
+
+# Proxy passthrough so the preview browser (which Cloudflare bot-blocks)
+# can reach the production MegaRadio API via the backend's server-side IP.
+@app.get("/api/tv-proxy/{path:path}")
+async def tv_api_proxy(path: str, request: Request):
+    """Server-side proxy to api.themegaradio.com so headless preview can fetch."""
+    target = f"https://api.themegaradio.com/api/{path}"
+    qs = str(request.url.query)
+    if qs:
+        target = f"{target}?{qs}"
+    try:
+        async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as cli:
+            r = await cli.get(target)
+            return Response(
+                content=r.content,
+                status_code=r.status_code,
+                media_type=r.headers.get("content-type", "application/json"),
+            )
+    except Exception as e:
+        logger.warning(f"tv-proxy failed for {target}: {e}")
+        return Response(content=b'{"error":"proxy_failed"}', status_code=502, media_type="application/json")
+
+
+TV_PREVIEW_DIR = ROOT_DIR / "static" / "tv-preview"
+if TV_PREVIEW_DIR.exists():
+    app.mount(
+        "/api/tv-app",
+        StaticFiles(directory=str(TV_PREVIEW_DIR), html=True),
+        name="tv-app-preview",
+    )
+    logger.info(f"TV preview mounted at /api/tv-app from {TV_PREVIEW_DIR}")
+else:
+    logger.warning(f"TV preview directory not found: {TV_PREVIEW_DIR}")

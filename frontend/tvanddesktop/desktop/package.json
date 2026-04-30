@@ -1,0 +1,46 @@
+{
+  "name": "megaradio-desktop",
+  "version": "1.0.0",
+  "description": "MegaRadio Desktop App (Windows / Linux / macOS) — Electron wrapper around the TV web build",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --enable-logging",
+    "build:linux": "electron-builder --linux AppImage deb",
+    "build:win": "electron-builder --win nsis portable",
+    "build:mac": "electron-builder --mac dmg",
+    "build:all": "electron-builder -mwl"
+  },
+  "devDependencies": {
+    "electron": "^31.4.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.visiongo.megaradio.desktop",
+    "productName": "MegaRadio",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "category": "AudioVideo",
+      "icon": "renderer/images/icon.png",
+      "target": ["AppImage", "deb"]
+    },
+    "win": {
+      "icon": "renderer/images/icon.png",
+      "target": ["nsis", "portable"]
+    },
+    "mac": {
+      "icon": "renderer/images/icon.png",
+      "category": "public.app-category.music",
+      "target": ["dmg"]
+    }
+  }
+}

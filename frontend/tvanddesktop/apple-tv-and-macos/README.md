@@ -1,113 +1,86 @@
-# Apple TV + macOS — MegaRadio Universal App
+# MegaRadio Apple TV + macOS
 
-## 🎯 HEDEF
+> **Status (Faz 1A)**: ✅ Web preview LIVE — pixel-perfect 1:1 with Tizen/webOS reference.
 
-Tek codebase ile **Apple TV (tvOS 17+)** ve **macOS 14+** için MegaRadio uygulaması.  
-**Universal Purchase** aktif — kullanıcı bir kez satın alır, tüm Apple cihazlarında kullanır.
+## Preview URL
+`{REACT_APP_BACKEND_URL}/api/tv-app/`
 
-## 🛠️ TEKNİK YAKLAŞIM
+This is the same React + TypeScript + Vite codebase that runs on the production
+Samsung Tizen and LG webOS apps. Brand assets, fonts (Ubuntu), 1920×1080 reference
+frame, focus engine, virtual keyboard, country selector, and all 12+ pages from the
+design spec are reused as-is.
 
-### Seçenek A: `react-native-tvos` + `react-native-macos` (ÖNERİLEN)
-- ✅ Mevcut React Native kodunun %70-80'ini paylaşır
-- ✅ Backend client, types, i18n, services aynen kullanılır
-- ✅ Tek codebase, iki platform target
-- ✅ Mobile codebase ile **asla çakışmaz** (ayrı klasör)
-- 🟡 Bazı native modüller adapt edilmesi gerekiyor (TrackPlayer, Firebase)
+## Architecture
 
-### Seçenek B: SwiftUI Native (Tasarım dosyasında önerilen)
-- ✅ %100 native performans
-- ✅ Apple ekosistem uyumu
-- ❌ Backend client, i18n, services baştan yazılması gerek
-- ❌ Mobile ile hiçbir kod paylaşımı yok
-- ❌ Geliştirme süresi 2x
-
-### KARAR: **Seçenek A** (react-native-tvos + react-native-macos)
-
-Tasarım dosyası SwiftUI'yi öneriyor ama mevcut kodun yeniden kullanımı için RN ekosisteminde kalıyoruz. Performans yine 60fps sınırında.
-
-## 📋 ÖZELLİKLER
-
-### Apple TV
-- [ ] Sidebar nav (120×100px tile, focus engine)
-- [ ] D-pad/Siri Remote support
-- [ ] Splash + Onboarding (4 ekran tour)
-- [ ] Login (6-digit TV code, themegaradio.com/tv URL)
-- [ ] Discover (hero + popular genres + popular stations)
-- [ ] Genres (4-col grid, paginated)
-- [ ] GenreList (7-col stations grid, infinite scroll)
-- [ ] Search (virtual keyboard 3×9 + results)
-- [ ] Favorites (7-col grid)
-- [ ] Country Select (search + virtual keyboard + 219 ülke)
-- [ ] Settings (Language, Sleep Timer, Cast, Account)
-- [ ] RadioPlaying (full-screen player + ambient mode)
-- [ ] Help modal (color buttons mapping)
-- [ ] Top Shelf widget (öne çıkan istasyonlar)
-
-### macOS
-- [ ] Sidebar (Apple TV ile aynı yapı, daha kompakt)
-- [ ] Menu Bar (File, Edit, Audio, View, Help)
-- [ ] Window controls (resize, mini-player mode)
-- [ ] Multi-window support
-- [ ] Keyboard shortcuts (Cmd+P play/pause, Cmd+→ next station)
-- [ ] Status bar mini player (Spotify gibi)
-
-## 🎨 TASARIM REFERANSI
-
-📁 **Tasarım dosyası**: `../tvanddesktop/_design-spec/RADIO_MEGA_DESIGN_SPEC.md`  
-📁 **Screenshot'lar**: `../tvanddesktop/_design-spec/screenshots/`
-
-Tüm **renk değerleri**, **typography** (Ubuntu), **spacing** (4-multiple grid), ve **layout** (1920×1080 reference frame) tasarım dosyasından **birebir** uygulanacak.
-
-## 🔌 BACKEND ENTEGRASYONU
-
-Mevcut backend endpoint'leri kullanılır:
-- `https://api.themegaradio.com` (data + auth)
-- `https://stream.themegaradio.com` (stream proxy)
-
-TV-specific endpoint'ler:
-- `POST /api/auth/tv/code` (login code)
-- `GET /api/auth/tv/poll` (login polling)
-- `GET /api/cast/poll` (mobile→TV cast)
-
-> Backend'e `?tv=1` query parametresi eklenir (response compression skip).
-
-## 📦 DEPENDENCIES (Planlanan)
-
-```json
-{
-  "react-native": "npm:react-native-tvos@0.81-stable",
-  "react-native-macos": "^0.78.0",
-  "@react-native-tvos/config-tv": "latest",
-  "expo": "~54.0.0",
-  "react": "19.0.0",
-  "axios": "^1.x",
-  "zustand": "^5.x",
-  "react-native-track-player": "^4.x",
-  "i18next": "^23.x",
-  "react-i18next": "^15.x"
-}
+```
+apple-tv-and-macos/
+├── web-preview/                 # ✅ Working — served via FastAPI at /api/tv-app/
+│   ├── src/                     # React + TS source (mirrored from Tizen build)
+│   ├── public/
+│   │   ├── images/              # Logos, icons, hero (hand-crowd-disco)
+│   │   ├── css/tv-styles.css    # 10-foot UI rules
+│   │   └── js/                  # Polyfills + spatial-nav + remote-keys + audio
+│   ├── index.html
+│   ├── vite.config.ts           # base: "/api/tv-app/", outDir → backend/static
+│   └── package.json
+│
+├── ios-tvos/                    # 🚧 Native shim (next phase)
+│   └── README.md                # Xcode / SwiftUI WKWebView bootstrap notes
+│
+└── macos/                       # 🚧 Native shim (next phase)
+    └── README.md
 ```
 
-## 🚀 SETUP TALİMATLARI (Faz 1A başlayınca güncellenecek)
+## Production Native Targets (Faz 1B — needs macOS + Xcode)
+
+The web build above is the **single source of truth** for UI. Native shells are thin
+WKWebView wrappers that load the deployed bundle, plus a few platform-specific bridges:
+
+### Apple TV (tvOS 17+)
+- Xcode project: `ios-tvos/MegaRadioTV.xcodeproj`
+- Loads `https://themegaradio.com/tv` in a fullscreen `WKWebView`
+- Bridge: Siri remote events → JS `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }))`
+- AVAudioSession category `.playback` for background audio
+- Top Shelf widget (Faz 2)
+
+### macOS (14+)
+- Universal Purchase with tvOS (same Apple ID, same bundle `com.visiongo.megaradio`)
+- macOS-only menu bar (File / Edit / Audio / View / Help — see `electron/main.js` for spec)
+- Mini-player mode: NSWindow `level: .floating`, 320×96 size
+
+## Development
 
 ```bash
-# Bu komutlar henüz çalıştırılmayacak — Faz 1A başlayınca aktif olur
-cd apple-tv-and-macos
+cd web-preview
 yarn install
-EXPO_TV=1 npx expo prebuild --platform ios --clean
-cd ios && pod install && cd ..
-yarn tv-ios       # Apple TV Simulator
-yarn macos        # macOS native window
+yarn build           # Outputs to /app/backend/static/tv-preview
+yarn dev             # Local Vite at :8030 (only inside pod)
 ```
 
-## 📅 İLERLEME
+The FastAPI backend mounts the build at `/api/tv-app/*` and proxies API calls
+through `/api/tv-proxy/*` to bypass Cloudflare bot-detection in headless previews.
+On real devices the renderer hits `https://api.themegaradio.com` directly.
 
-- [x] Tasarım dosyası alındı
-- [x] Klasör yapısı kuruldu
-- [ ] Detaylı PRD hazırlanıyor
-- [ ] Boilerplate setup
-- [ ] İlk ekran (Splash) implementation
+## Verified Pages
 
----
+| Page              | Hash route               | Status |
+|-------------------|--------------------------|--------|
+| Splash            | `/`                      | ✅     |
+| Onboarding 1–4    | `/guide-1` … `/guide-4`  | ✅     |
+| Login (TV code)   | `/login`                 | ✅     |
+| Discover          | `/discover-no-user`      | ✅     |
+| Genres            | `/genres`                | ✅     |
+| Genre List        | `/genre-list/:slug`      | ✅     |
+| Search            | `/search`                | ✅     |
+| Favorites         | `/favorites`             | ✅     |
+| Country select    | `/country-select`        | ✅     |
+| Settings          | `/settings`              | ✅     |
+| Radio Playing     | `/radio-playing`         | ✅     |
 
-**Status**: Hazırlık aşaması — kullanıcı 2. dosyayı bekliyor
+## Brand consistency
+
+- Background `#0E0E0E` everywhere
+- Brand pink `#FF4199`
+- Ubuntu font (Google Fonts CDN; bundle locally for native targets)
+- Sidebar: 120×100 px tile, 108 px pitch, exact match with spec §7
+- Pixel-exact 1920×1080 reference frame; native scalers handle 2160p

@@ -1,81 +1,36 @@
-# Desktop — Windows + Linux + (Optional macOS Fallback)
+# MegaRadio Desktop (Windows / Linux / macOS)
 
-## 🎯 HEDEF
+> **Status (Faz 3)**: ✅ Electron wrapper scaffolded — points at the deployed TV web build.
 
-MegaRadio desktop uygulaması — Windows + Linux için Electron tabanlı, macOS için ise opsiyonel olarak Apple TV/macOS native build varsa onu kullanır.
+## Architecture
 
-## 🛠️ TEKNİK YAKLAŞIM
+Electron main process (`electron/main.js`) opens a 1280×800 window that loads the
+same web TV build deployed at `https://themegaradio.com/tv` (or the preview URL
+during development). All UI, audio, focus engine, and data fetching is reused.
 
-### Electron + Web Bundle
-- ✅ Mevcut React web bundle'ı reuse eder
-- ✅ Tek codebase, 3 platform (Win/Linux/macOS)
-- ✅ Auto-update (electron-updater)
-- ✅ System tray + global hotkeys
-- ✅ 1-2 günlük work ile MVP çıkar
+### Native bridges (Faz 3A)
+- `globalShortcut`: MediaPlayPause / MediaNextTrack / MediaPreviousTrack
+- Menu bar: Audio menu (Cmd+P play/pause, Cmd+→ next, Cmd+← prev)
+- Window controls: Hidden inset on macOS, default on Win/Linux
 
-> **Not**: Apple kullanıcıları için **macOS native build** (apple-tv-and-macos klasöründen) tercih edilir. Electron sadece Windows/Linux fallback.
-
-## 📋 ÖZELLİKLER
-
-### Windows + Linux Electron App
-- [ ] Tek pencere uygulaması (resize edilebilir)
-- [ ] System tray icon (sağ tıklayınca menü)
-- [ ] Global media keys (Play/Pause/Next/Previous)
-- [ ] Auto-launch on startup (opsiyonel ayar)
-- [ ] Mini player mode (always-on-top küçük pencere)
-- [ ] Native notifications (yeni şarkı bilgisi)
-- [ ] Auto-update (electron-updater)
-
-### Windows-specific
-- [ ] Windows installer (.msi via electron-builder)
-- [ ] Microsoft Store submission
-
-### Linux-specific
-- [ ] AppImage paketi
-- [ ] Snap package
-- [ ] Flatpak paketi (opsiyonel)
-- [ ] .deb / .rpm packages
-
-## 📦 DEPENDENCIES (Planlanan)
-
-```json
-{
-  "electron": "^32.x",
-  "electron-builder": "^25.x",
-  "electron-updater": "^6.x",
-  "react": "19.0.0",
-  "react-dom": "19.0.0"
-}
-```
-
-## 🎨 TASARIM REFERANSI
-
-📁 **Tasarım dosyası**: `../_design-spec/RADIO_MEGA_DESIGN_SPEC.md`
-
-> Desktop için tasarım uyarlaması:
-> - Sidebar TV ile aynı yapıda ama biraz daha kompakt
-> - Window controls (close/minimize/maximize)
-> - Mouse hover states (TV'de yok)
-> - Sağ tık menüleri
-
-## 🚀 SETUP TALİMATLARI (Faz 2'de güncellenecek)
+## Build
 
 ```bash
-cd desktop
+cd /app/frontend/tvanddesktop/desktop
 yarn install
-yarn dev          # Geliştirme modu
-yarn build:win    # Windows installer
-yarn build:linux  # AppImage + .deb + .rpm
+yarn build:linux         # AppImage + .deb
+yarn build:win           # NSIS installer + portable exe
+yarn build:mac           # DMG (signing requires Apple Developer ID)
+yarn build:all           # All three at once
 ```
 
-## 📅 İLERLEME
+Outputs land in `dist/`. Auto-update via `electron-updater` is wired up in Faz 3B.
 
-- [x] Klasör yapısı kuruldu
-- [ ] Apple TV/macOS bittikten sonra başlanacak
-- [ ] Electron + RN web bundle entegrasyonu
-- [ ] Auto-update sistemi
-- [ ] Windows/Linux installer'lar
+## Bundle ID
+`com.visiongo.megaradio.desktop`
 
----
-
-**Status**: Beklemede — Apple TV/macOS bittikten sonra (Faz 2-3)
+## Stores
+- Microsoft Store (Windows)
+- Snapcraft + AppImage hub (Linux)
+- Mac App Store (macOS — separate from the native macOS target which uses the
+  same Apple ID + Universal Purchase as tvOS)

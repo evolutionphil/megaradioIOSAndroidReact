@@ -1806,3 +1806,4 @@ credentials.json
 *.pem
 *.key
 .credentials
+frontend/tvanddesktop/desktop/node_modules/electron/dist/electron
