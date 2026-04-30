@@ -391,9 +391,15 @@ export default function HomeScreen() {
                 accessibilityLabel="Select country"
                 hitSlop={8}
               >
-                <Text style={styles.flagEmoji} allowFontScaling={false}>
-                  {countryCodeToFlag(countryCode)}
-                </Text>
+                {countryCode ? (
+                  <Image
+                    source={{ uri: `https://flagcdn.com/w80/${countryCode.toLowerCase()}.png` }}
+                    style={styles.flagImageHeader}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Ionicons name="globe-outline" size={22} color={colors.text} />
+                )}
               </Pressable>
               <Pressable 
                 style={styles.headerIcon} 
@@ -817,10 +823,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flagEmoji: {
-    fontSize: 26,
-    lineHeight: 32,
-    textAlign: 'center',
-    includeFontPadding: false,
+    fontSize: 24,
+  },
+  flagImageHeader: {
+    width: 28,
+    height: 20,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.06)',
   },
   notificationDot: {
     position: 'absolute',

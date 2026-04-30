@@ -433,7 +433,15 @@ export default function ProfileScreen() {
                   style={[s.countryRow, isSelected && s.countryRowActive]}
                   onPress={() => handleCountrySelect(item)}
                 >
-                  <Text style={s.flagEmoji}>{item.flag}</Text>
+                  {item.flagUrl ? (
+                    <Image
+                      source={{ uri: item.flagUrl }}
+                      style={s.flagImage}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <Text style={s.flagEmoji}>{item.flag}</Text>
+                  )}
                   <View style={{ flex: 1 }}>
                     <Text style={s.countryName}>{item.name}</Text>
                     {item.nativeName !== item.name && (
@@ -1085,6 +1093,7 @@ const s = StyleSheet.create({
   countryRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#1A1A1C', marginHorizontal: 12, marginBottom: 6, borderRadius: 12, gap: 12 },
   countryRowActive: { borderWidth: 1, borderColor: '#FF4199' },
   flagEmoji: { fontSize: 28, width: 40, textAlign: 'center' },
+  flagImage: { width: 36, height: 24, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.06)' },
   countryName: { fontSize: 16, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
   countryNative: { fontSize: 13, fontFamily: 'Ubuntu-Regular', color: '#888', marginTop: 2 },
   stationCount: { fontSize: 13, fontFamily: 'Ubuntu-Regular', color: '#888', marginRight: 12 },

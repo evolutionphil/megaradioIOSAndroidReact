@@ -9,6 +9,7 @@ import {
   FlatList,
   ActivityIndicator,
   Pressable,
+  Image,
   Platform,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -156,15 +157,22 @@ export const CountrySelectorModal: React.FC<Props> = ({ visible, onClose }) => {
               renderItem={({ item }) => {
                 const isSelected =
                   item.name === country || item.nativeName === country;
-                // Fallback: if API doesn't return flag, generate from code
-                const flag = item.flag || countryCodeToFlag(item.code);
                 return (
                   <TouchableOpacity
                     style={[styles.row, isSelected && styles.rowActive]}
                     onPress={() => handleSelect(item)}
                     data-testid={`country-row-${item.code}`}
                   >
-                    <Text style={styles.flag}>{flag}</Text>
+                    {/* PNG flag from CDN — guaranteed to render on all iOS regions */}
+                    {item.flagUrl ? (
+                      <Image
+                        source={{ uri: item.flagUrl }}
+                        style={styles.flagImage}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Text style={styles.flag}>{item.flag || countryCodeToFlag(item.code)}</Text>
+                    )}
                     <View style={{ flex: 1 }}>
                       <Text style={styles.countryName}>{item.name}</Text>
                       {item.nativeName !== item.name && (
@@ -273,10 +281,14 @@ const styles = StyleSheet.create({
   },
   flag: {
     fontSize: 28,
-    lineHeight: 34,
-    width: 44,
+    width: 40,
     textAlign: 'center',
-    includeFontPadding: false,
+  },
+  flagImage: {
+    width: 36,
+    height: 24,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.06)',
   },
   countryName: {
     color: colors.text,
