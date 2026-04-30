@@ -856,6 +856,14 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.log('[AudioProvider] First play - skipping station change counter (app open ad handles this)');
     }
 
+    // RateUs: track station play (triggers prompt after 3 plays)
+    try {
+      const { rateUsService } = require('../services/rateUsService');
+      rateUsService.trackStationPlay().catch(() => {});
+    } catch (e) {
+      // non-blocking
+    }
+
     // NEW STATION - increment play ID for race condition prevention
     const myPlayId = ++globalPlayId;
     console.log('[AudioProvider] New PlayID:', myPlayId);

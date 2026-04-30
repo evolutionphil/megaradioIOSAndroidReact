@@ -28,6 +28,8 @@ import { useFavoritesStore } from '../src/store/favoritesStore';
 import { useAuthStore } from '../src/store/authStore';
 import { adMobService } from '../src/services/adMobService';
 import { usePremiumStore } from '../src/store/premiumStore';
+import { rateUsService } from '../src/services/rateUsService';
+import { RateUsModal } from '../src/components/RateUsModal';
 sendLog('LAYOUT_IMPORTS_2');
 
 import { AudioProvider } from '../src/providers/AudioProvider';
@@ -183,6 +185,7 @@ export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
   const preloadStarted = useRef(false);
   const [splashHidden, setSplashHidden] = useState(false);
+  const [showRateUs, setShowRateUs] = useState(false);
   
   const segments = useSegments();
   const navigationState = useRootNavigationState();
@@ -200,6 +203,14 @@ export default function RootLayout() {
         console.warn('[Layout] Google Sign-In configure error:', e);
       }
     }
+
+    // RateUs: track app launch + subscribe to triggers
+    rateUsService.trackAppLaunch().catch(() => {});
+    const unsubscribe = rateUsService.onShouldShow(() => {
+      // Small delay so it doesn't conflict with onboarding/splash
+      setTimeout(() => setShowRateUs(true), 1500);
+    });
+    return () => unsubscribe();
   }, []);
 
   // Initialize FlowAlive Analytics
@@ -687,6 +698,17 @@ export default function RootLayout() {
                 {/* Global MiniPlayer - shown on all screens except player */}
                 <GlobalMiniPlayer />
                 <RadioErrorModal />
+                {/* Rate Us Modal — triggers after 3+ station plays or 3+ app launches */}
+                <RateUsModal
+                  visible={showRateUs}
+                  onClose={() => {
+                    setShowRateUs(false);
+                    rateUsService.markDismissed().catch(() => {});
+                  }}
+                  onRated={() => {
+                    rateUsService.markRated().catch(() => {});
+                  }}
+                />
               </View>
             </AudioErrorBoundary>
           </QueryClientProvider>
