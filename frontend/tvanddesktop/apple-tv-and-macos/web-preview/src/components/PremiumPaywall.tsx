@@ -1,8 +1,6 @@
-// MegaRadio TV — Premium Paywall (matches design screenshots 1:1)
-// Premium variant : Frame 571.png  — large hero, 6 benefits, 3 tier rows
-// Remove Ads      : Frame 570.png  — yellow hero takes top half, ✕ close, single tier
-//
-// Both cards are ~620px wide, ~880px tall, perfectly centered on screen.
+// MegaRadio TV — Premium Paywall (matches Frame 570/571 design references 1:1)
+// Premium variant : photo of Asian woman on the right, content/checks overlay left
+// Remove Ads      : full-width yellow photo top half, content below
 
 import { useState, useEffect } from 'react';
 import { assetPath } from '@/lib/assetPath';
@@ -89,75 +87,65 @@ export function PremiumPaywall({ open, variant = 'premium', onClose, onPurchase 
           borderRadius: 32,
           overflow: 'hidden',
           position: 'relative',
-          boxShadow: '0 30px 100px rgba(0,0,0,0.9), 0 0 80px rgba(255,65,153,0.18)',
-          display: 'flex', flexDirection: 'column',
+          boxShadow: '0 30px 100px rgba(0,0,0,0.9), 0 0 80px rgba(255,65,153,0.15)',
         }}
       >
-        {isRemoveAds ? <RemoveAdsBody focusIdx={focusIdx} closeIdx={closeIdx} ctaIdx={ctaIdx} onClose={onClose} onPurchase={onPurchase} /> : <PremiumBody focusIdx={focusIdx} ctaIdx={ctaIdx} selected={selected} setSelected={setSelected} setFocusIdx={setFocusIdx} onPurchase={onPurchase} selectedTier={selected} />}
+        {isRemoveAds
+          ? <RemoveAdsBody focusIdx={focusIdx} closeIdx={closeIdx} ctaIdx={ctaIdx} onClose={onClose} onPurchase={onPurchase} />
+          : <PremiumBody focusIdx={focusIdx} ctaIdx={ctaIdx} selected={selected} setSelected={setSelected} setFocusIdx={setFocusIdx} onPurchase={onPurchase} />}
       </div>
     </div>
   );
 }
 
 /* ─────────────────── PREMIUM VARIANT ─────────────────── */
+/* Layout: photo of woman occupies the RIGHT half of the card,
+   content (logo + 6 checks + 3 tiers) sits on the LEFT and overlaps
+   the photo. A horizontal gradient fades the photo into the dark
+   background where the text needs to be readable. */
 
 function PremiumBody({
-  focusIdx, ctaIdx, selected, setSelected, setFocusIdx, onPurchase, selectedTier,
+  focusIdx, ctaIdx, selected, setSelected, setFocusIdx, onPurchase,
 }: {
   focusIdx: number; ctaIdx: number; selected: 'yearly' | 'lifetime' | 'monthly';
   setSelected: (v: 'yearly' | 'lifetime' | 'monthly') => void;
   setFocusIdx: (n: number) => void;
   onPurchase?: (productId: string) => void;
-  selectedTier: 'yearly' | 'lifetime' | 'monthly';
 }) {
   return (
-    <>
-      {/* Hero — gradient + brand mark (clean, no embedded UI) */}
+    <div style={{ position: 'relative' }}>
+      {/* Hero photo — top-right portion, fades to black on the left and bottom */}
       <div style={{
-        position: 'relative', width: '100%', height: 280, flexShrink: 0,
+        position: 'absolute', top: 0, right: 0,
+        width: '70%', height: 360,
+        backgroundImage: `url(${assetPath('images/paywall-premium-photo.png')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center top',
+        zIndex: 1,
+      }} />
+      {/* Gradient: fade to dark on left + bottom so text is readable */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: 360,
         background: `
-          radial-gradient(ellipse at 70% 30%, rgba(173, 0, 255, 0.55) 0%, transparent 60%),
-          radial-gradient(ellipse at 30% 70%, rgba(255, 65, 153, 0.45) 0%, transparent 65%),
-          linear-gradient(135deg, #1a0830 0%, #2E1065 50%, #0E0E0E 100%)
+          linear-gradient(90deg, #0E0E0E 0%, #0E0E0E 30%, rgba(14,14,14,0.4) 55%, rgba(14,14,14,0) 100%),
+          linear-gradient(180deg, rgba(14,14,14,0) 60%, rgba(14,14,14,0.85) 92%, #0E0E0E 100%)
         `,
-        overflow: 'hidden',
-      }}>
-        {/* Decorative musical note motif */}
-        <div style={{
-          position: 'absolute', top: '50%', right: '-40px', transform: 'translateY(-50%)',
-          width: 280, height: 280, opacity: 0.18,
-          background: `url(${assetPath('images/path-8.svg')}) center/contain no-repeat`,
-          filter: 'brightness(0) invert(1)',
-        }} />
-        {/* Subtle equalizer bars across the bottom */}
-        <div style={{
-          position: 'absolute', bottom: 70, left: 0, right: 0, height: 40,
-          display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', gap: 6,
-          opacity: 0.4,
-        }}>
-          {[12, 28, 18, 36, 22, 32, 16, 30, 24, 38, 14, 26, 20, 34].map((h, i) => (
-            <div key={i} style={{ width: 3, height: h, background: '#FF4199', borderRadius: 2 }} />
-          ))}
-        </div>
-        {/* Bottom fade into card body */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(180deg, rgba(14,14,14,0) 50%, rgba(14,14,14,0.85) 92%, #0E0E0E 100%)',
-        }} />
-        {/* Logo + brand text */}
-        <div style={{ position: 'absolute', left: 32, bottom: 16, display: 'flex', gap: 16, alignItems: 'flex-end', zIndex: 2 }}>
+        zIndex: 2, pointerEvents: 'none',
+      }} />
+
+      {/* Content layer */}
+      <div style={{ position: 'relative', zIndex: 3, padding: '32px 32px 24px' }}>
+        {/* Logo + brand */}
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
           <BrandLogoTile />
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: 4 }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: '#fff', lineHeight: 1.1 }}>MegaRadio</div>
             <div style={{ fontFamily: FONT, fontSize: 24, fontWeight: 700, color: '#FFC700', lineHeight: 1.1 }}>Premium</div>
           </div>
         </div>
-      </div>
 
-      {/* Body */}
-      <div style={{ padding: '20px 32px 0', flex: 1, overflowY: 'auto' }}>
         {/* Benefits list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 22 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 13, marginBottom: 22 }}>
           {[
             'Remove Ads',
             'Spotify And Youtube Music Support',
@@ -167,8 +155,14 @@ function PremiumBody({
             'And more',
           ].map(item => (
             <div key={item} style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-              <span style={{ color: '#fff', fontSize: 22, width: 26, textAlign: 'center', fontWeight: 300 }}>✓</span>
-              <span style={{ color: '#fff', fontFamily: FONT, fontSize: 19, fontWeight: 500 }}>{item}</span>
+              <span style={{
+                color: '#fff', fontSize: 20, width: 24, textAlign: 'center', fontWeight: 300,
+                textShadow: '0 1px 4px rgba(0,0,0,0.9)',
+              }}>✓</span>
+              <span style={{
+                color: '#fff', fontFamily: FONT, fontSize: 19, fontWeight: 600,
+                textShadow: '0 1px 8px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.7)',
+              }}>{item}</span>
             </div>
           ))}
         </div>
@@ -179,10 +173,8 @@ function PremiumBody({
           <TierRow selected={selected === 'lifetime'} focused={focusIdx === 1} label="€ 59.99/lifetime" sub="cancel anytime" onClick={() => { setSelected('lifetime'); setFocusIdx(1); }} />
           <TierRow selected={selected === 'monthly'} focused={focusIdx === 2} label="€ 3.99/montly" sub="cancel anytime" onClick={() => { setSelected('monthly'); setFocusIdx(2); }} />
         </div>
-      </div>
 
-      {/* CTA + footer */}
-      <div style={{ padding: '8px 32px 24px', flexShrink: 0 }}>
+        {/* CTA */}
         <CtaButton
           label="Subscribe Now"
           focused={focusIdx === ctaIdx}
@@ -192,17 +184,19 @@ function PremiumBody({
               lifetime: IAP_PRODUCTS.premium_lifetime,
               monthly: IAP_PRODUCTS.premium_monthly,
             };
-            onPurchase?.(map[selectedTier]);
+            onPurchase?.(map[selected]);
           }}
           testId="paywall-subscribe-cta"
         />
         <Footer onPurchase={onPurchase} />
       </div>
-    </>
+    </div>
   );
 }
 
 /* ─────────────────── REMOVE ADS VARIANT ─────────────────── */
+/* Layout: full-width yellow photo takes the top half (~360px),
+   gradient fade to dark, then logo + title + 1 tier + CTA below. */
 
 function RemoveAdsBody({
   focusIdx, closeIdx, ctaIdx, onClose, onPurchase,
@@ -213,37 +207,18 @@ function RemoveAdsBody({
 }) {
   return (
     <>
-      {/* Hero — yellow gradient + brand mark (clean, no embedded UI) */}
+      {/* Hero — full-width photo */}
       <div style={{
-        position: 'relative', width: '100%', height: 280, flexShrink: 0,
-        background: `
-          radial-gradient(ellipse at 70% 35%, rgba(255, 199, 0, 0.85) 0%, transparent 55%),
-          radial-gradient(ellipse at 25% 65%, rgba(232, 184, 0, 0.5) 0%, transparent 60%),
-          linear-gradient(135deg, #6b4a00 0%, #B8860B 45%, #1a1100 100%)
-        `,
-        overflow: 'hidden',
+        position: 'relative', width: '100%', height: 360, flexShrink: 0,
+        backgroundImage: `url(${assetPath('images/paywall-removeads-photo.png')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 25%',
       }}>
-        {/* Decorative musical note motif */}
-        <div style={{
-          position: 'absolute', top: '50%', right: '-40px', transform: 'translateY(-50%)',
-          width: 280, height: 280, opacity: 0.18,
-          background: `url(${assetPath('images/path-8.svg')}) center/contain no-repeat`,
-          filter: 'brightness(0) invert(0.1)',
-        }} />
-        {/* Equalizer bars */}
-        <div style={{
-          position: 'absolute', bottom: 60, left: 0, right: 0, height: 40,
-          display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', gap: 6,
-          opacity: 0.45,
-        }}>
-          {[16, 32, 22, 38, 26, 34, 18, 30, 28, 36, 14, 24, 20, 32].map((h, i) => (
-            <div key={i} style={{ width: 3, height: h, background: '#1a1100', borderRadius: 2 }} />
-          ))}
-        </div>
-        {/* Bottom fade into card body */}
+        {/* Bottom fade so the photo blends into the dark body */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(180deg, rgba(14,14,14,0) 50%, rgba(14,14,14,0.85) 92%, #0E0E0E 100%)',
+          background: 'linear-gradient(180deg, rgba(14,14,14,0) 55%, rgba(14,14,14,0.85) 92%, #0E0E0E 100%)',
+          pointerEvents: 'none',
         }} />
         <button
           onClick={onClose}
@@ -251,17 +226,17 @@ function RemoveAdsBody({
           style={{
             position: 'absolute', top: 22, right: 22,
             width: 56, height: 56, borderRadius: '50%',
-            background: 'rgba(0,0,0,0.45)', border: 'none', backdropFilter: 'blur(6px)',
-            color: '#fff', fontSize: 22, cursor: 'pointer',
+            background: 'rgba(255,255,255,0.85)', border: 'none',
+            color: '#0E0E0E', fontSize: 22, fontWeight: 700, cursor: 'pointer',
             outline: focusIdx === closeIdx ? '3px solid #fff' : 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 3,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
           }}
         >✕</button>
       </div>
 
       {/* Body */}
-      <div style={{ padding: '20px 32px 0', flex: 1 }}>
+      <div style={{ padding: '4px 32px 0' }}>
         {/* Logo + brand */}
         <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 22 }}>
           <BrandLogoTile />
@@ -284,7 +259,7 @@ function RemoveAdsBody({
       </div>
 
       {/* CTA + footer */}
-      <div style={{ padding: '20px 32px 24px', flexShrink: 0 }}>
+      <div style={{ padding: '20px 32px 24px' }}>
         <CtaButton
           label="Remove Ads"
           focused={focusIdx === ctaIdx}
@@ -328,7 +303,6 @@ function TierRow({ selected, focused, label, sub, onClick }: {
         transition: 'border 0.15s, box-shadow 0.15s',
       }}
     >
-      {/* Outline-style radio: pink outline always, filled center only when selected */}
       <span style={{
         width: 24, height: 24, borderRadius: '50%',
         border: '2.5px solid #FF4199',
