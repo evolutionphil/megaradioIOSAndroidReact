@@ -10,22 +10,23 @@ client keeps working unchanged. Please add the items below at your convenience.
 
 ---
 
-## 1. ✅ Cross-platform IAP Receipt Validation Endpoint
+## 1. ✅ Cross-platform IAP Receipt Validation Endpoint  (P1 — REQUIRED)
 
 The TV / Desktop apps reuse the **same product IDs** as the iOS / Android mobile apps:
 
-| Product                          | Product ID (iOS + Android + tvOS + macOS) | Type            | Price     |
-|----------------------------------|-------------------------------------------|-----------------|-----------|
-| Premium — monthly                | `megaradio_premium_monthly1`              | Auto-renew sub  | €3.99/mo  |
-| Premium — yearly                 | `megaradio_premium_yearly`                | Auto-renew sub  | €29.99/yr |
-| Premium — lifetime               | `megaradio_premium_lifetime`              | Non-consumable  | €59.99    |
-| Remove Ads — yearly              | `megaradio_remove_ads_yearly1`            | Auto-renew sub  | €29.99/yr |
+| Product                 | Product ID (iOS + Android + tvOS + macOS) | Type            | Price     |
+|-------------------------|-------------------------------------------|-----------------|-----------|
+| Premium — monthly       | `megaradio_premium_monthly1`              | Auto-renew sub  | €3.99/mo  |
+| Premium — yearly        | `megaradio_premium_yearly`                | Auto-renew sub  | €29.99/yr |
+| Premium — lifetime      | `megaradio_premium_lifetime`              | Non-consumable  | €59.99    |
+| Remove Ads — yearly     | `megaradio_remove_ads_yearly1`            | Auto-renew sub  | €29.99/yr |
 
-### What we need
+### Endpoint spec
 
 ```http
 POST /api/iap/validate
 Content-Type: application/json
+Authorization: Bearer <user_jwt>   (optional)
 
 {
   "platform": "ios" | "android" | "tvos" | "macos",
@@ -35,83 +36,86 @@ Content-Type: application/json
 }
 ```
 
-Returns:
+### Response
+
 ```json
 {
   "valid": true,
   "expiresAt": 1735689600000,
-  "originalTransactionId": "...",
-  "isLifetime": false
+  "originalTransactionId": "1000000847362819",
+  "isLifetime": false,
+  "productId": "megaradio_premium_yearly"
 }
 ```
 
-The TV WebView shells will POST the receipt here right after a purchase; we use
-the response to drive the `premium_state_v1` localStorage that flips Remove-Ads
-flags throughout the UI.
+### Implementation hints
+
+- **iOS / tvOS / macOS** → forward receipt to:
+  - Production: `https://buy.itunes.apple.com/verifyReceipt`
+  - Sandbox: `https://sandbox.itunes.apple.com/verifyReceipt`
+  - Need: App-Specific Shared Secret (App Store Connect → MegaRadio → App Information)
+- **Android** → use Google Play Developer API (`purchases.subscriptions.get` /
+  `purchases.products.get`); needs a service-account JSON from Play Console.
 
 **Why this matters**: Apple **requires** server-side receipt validation for
-auto-renewing subs. If we skip it, App Review will reject the binary.
+auto-renewing subs. Without this endpoint, App Review will reject the binary.
 
 ---
 
-## 2. ✅ StackPath CDN 404 — Pal Station logo
+## 2. 🟢 Pal Station logo 404 (P3 — cosmetic, one-line fix)
 
 URL `https://j5k7p3y4.stackpathcdn.com/.../pal-station.png` returns 404 in our logs.
-Please update the `favicon` field for that station document in MongoDB to a
-valid URL (re-host on your Cloudflare bucket, or proxy through your CDN).
+Just rewrite the `favicon` field for that station document:
 
 ```js
 db.stations.updateOne(
-  { name: /Pal/i },
+  { name: /Pal Station/i },
   { $set: { favicon: "https://api.themegaradio.com/cdn/pal-station.png" } }
 )
 ```
 
----
-
-## 3. ⚠️ Missing `/api/stations/:id/metadata` endpoint
-
-We're seeing repeated 404s on `GET /api/stations/68a8c45fbd66579311aad585/metadata`.
-The TV app polls this every 30s for "Now playing" track names (artist + title).
-
-If the endpoint isn't implemented yet, please add:
-```http
-GET /api/stations/:id/metadata
-→ {"title": "Track Title", "artist": "Artist Name", "artwork": "<url>"}
-```
-
-If you can't extract metadata server-side, just return `{"title": null}` (HTTP 200)
-so we don't keep retrying.
+(Or re-upload the logo to your existing CDN bucket.)
 
 ---
 
-## 4. ✅ CORS — already correct ✨
+## ✅ Things you DON'T need to do
 
-We tested and `Access-Control-Allow-Origin: *` is set on every endpoint. No action
-needed; just don't accidentally remove this when refactoring.
+### ❌ ~~Now Playing metadata endpoint~~ — **NOT NEEDED**
+
+Earlier draft asked for `GET /api/stations/:id/metadata`. **Cancel this.**
+
+The TV / Desktop apps will read **ICY metadata directly from the audio stream**,
+exactly like the iOS / Android mobile app already does via
+`react-native-track-player`. The native shells (AVPlayer on tvOS/macOS,
+ExoPlayer on Android TV, Node `http` module in Electron) extract `StreamTitle`
+from the ICY frames and forward it to the WebView UI via a JS bridge.
+
+So please **ignore** the now-playing 404s in the logs — those are stale calls
+from the old code path. The new builds won't make these requests.
+
+### ✅ CORS — already correct
+
+`Access-Control-Allow-Origin: *` is set on every endpoint. No action needed —
+just don't accidentally remove it during refactors.
+
+### ✅ TV login flow — already working
+
+Existing `/api/auth/tv/code` and `/api/auth/tv/poll` endpoints work perfectly.
+
+### ✅ Hero / paywall images — bundled in client
+
+No backend hosting needed.
 
 ---
 
-## 5. ℹ️ TV-specific: Background image hosting
+## TL;DR
 
-The TV/Desktop hero/discover images are served from the **client bundle** —
-no backend hosting required. You don't need to do anything.
+You only need to do **two things**:
 
----
+1. **Add `POST /api/iap/validate`** (P1 — blocks App Store submission)
+2. **Update Pal Station `favicon`** in MongoDB (P3 — one update query)
 
-## 6. ℹ️ TV-specific: Auth token endpoint reuse
+Everything else is handled client-side or already works.
 
-The TV login flow uses your existing `/api/auth/tv/code` and `/api/auth/tv/poll`
-endpoints. Working perfectly — no changes needed.
-
----
-
-## TL;DR for backend dev
-
-1. Add `POST /api/iap/validate` (P1 — required for App Store submission)
-2. Fix Pal Station logo URL in MongoDB (P3 — cosmetic)
-3. Implement or stub `/api/stations/:id/metadata` (P2 — improves UX)
-
-Everything else just works.
-
+Thanks! 🙏
 — Frontend team, Apr 2026
