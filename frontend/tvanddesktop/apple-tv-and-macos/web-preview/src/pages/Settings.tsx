@@ -180,7 +180,7 @@ export const Settings = (): JSX.Element => {
   helpFocusedRef.current = helpFocused;
   helpOpenRef.current = helpOpen;
   const setHF = (v: boolean) => { helpFocusedRef.current = v; setHelpFocused(v); };
-  const [focusSection, setFocusSection] = useState<'sidebar' | 'categories' | 'options'>('categories');
+  const [focusSection, setFocusSection] = useState<'sidebar' | 'categories' | 'options' | 'premium'>('categories');
   const [sidebarIndex, setSidebarIndex] = useState(5);
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [optionIndex, setOptionIndex] = useState(0);
@@ -367,9 +367,24 @@ export const Settings = (): JSX.Element => {
 
     if (focusSection === 'categories') {
       if (isUp) { e.preventDefault(); setCategoryIndex(prev => Math.max(0, prev - 1)); }
-      else if (isDown) { e.preventDefault(); setCategoryIndex(prev => Math.min(categories.length - 1, prev + 1)); }
+      else if (isDown) {
+        e.preventDefault();
+        if (categoryIndex < categories.length - 1) {
+          setCategoryIndex(prev => prev + 1);
+        } else if (!isPremium) {
+          // Past the last category — jump to Go Premium button
+          setFocusSection('premium');
+        }
+      }
       else if (isLeft) { e.preventDefault(); setFocusSection('sidebar'); }
       else if (isRight || isEnter) { e.preventDefault(); setFocusSection('options'); setOptionIndex(0); }
+      return;
+    }
+
+    if (focusSection === 'premium') {
+      if (isUp) { e.preventDefault(); setFocusSection('categories'); setCategoryIndex(categories.length - 1); }
+      else if (isLeft) { e.preventDefault(); setFocusSection('sidebar'); }
+      else if (isEnter) { e.preventDefault(); showPaywall('premium'); }
       return;
     }
 
@@ -855,12 +870,13 @@ export const Settings = (): JSX.Element => {
             {!isPremium && (
               <button
                 onClick={() => showPaywall('premium')}
+                onMouseEnter={() => setFocusSection('premium')}
                 data-testid="settings-go-premium-btn"
                 style={{
                   width: '100%',
                   height: '64px',
                   borderRadius: '32px',
-                  border: 'none',
+                  border: focusSection === 'premium' ? '3px solid #fff' : 'none',
                   background: 'linear-gradient(135deg, #FF4199 0%, #AD00FF 100%)',
                   color: '#fff',
                   fontFamily: "'Ubuntu', sans-serif",
@@ -872,16 +888,11 @@ export const Settings = (): JSX.Element => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '10px',
-                  boxShadow: '0 8px 32px rgba(255,65,153,0.45)',
-                  transition: 'transform 0.18s ease, box-shadow 0.18s ease',
-                }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLElement).style.transform = 'scale(1.04)';
-                  (e.target as HTMLElement).style.boxShadow = '0 12px 40px rgba(255,65,153,0.7)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLElement).style.transform = 'scale(1)';
-                  (e.target as HTMLElement).style.boxShadow = '0 8px 32px rgba(255,65,153,0.45)';
+                  boxShadow: focusSection === 'premium'
+                    ? '0 12px 40px rgba(255,65,153,0.85)'
+                    : '0 8px 32px rgba(255,65,153,0.45)',
+                  transform: focusSection === 'premium' ? 'scale(1.04)' : 'scale(1)',
+                  transition: 'transform 0.18s ease, box-shadow 0.18s ease, border 0.15s',
                 }}
               >
                 <span style={{ fontSize: '22px' }}>⭐</span>
