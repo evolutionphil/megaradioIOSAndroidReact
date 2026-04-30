@@ -39,6 +39,19 @@ import { usePremiumStore } from '../../src/store/premiumStore';
 import { PremiumPaywall } from '../../src/components/PremiumPaywall';
 import { RateUsModal } from '../../src/components/RateUsModal';
 import { rateUsService } from '../../src/services/rateUsService';
+
+/**
+ * Social proof counter — slowly grows over time so the number
+ * feels alive without requiring a backend endpoint.
+ * Base: 4,800 on 2026-01-01, +6 per day.
+ */
+const getLovedByCount = (): string => {
+  const base = 4800;
+  const startDate = new Date(2026, 0, 1).getTime();
+  const daysSince = Math.max(0, Math.floor((Date.now() - startDate) / (1000 * 60 * 60 * 24)));
+  const count = base + daysSince * 6;
+  return count.toLocaleString('en-US');
+};
 import { useSongHistoryStore } from '../../src/store/songHistoryStore';
 import appService, { AppInfo } from '../../src/services/appService';
 
@@ -700,7 +713,10 @@ export default function ProfileScreen() {
               data-testid="profile-rate-us-btn"
             >
               <Ionicons name="star-outline" size={22} color="#FFF" style={s.rowIcon} />
-              <Text style={s.rowText}>{t('rate_us', 'Rate Us')}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={s.rowText}>{t('rate_us', 'Rate Us')}</Text>
+                <Text style={s.rowSubtext}>{t('rate_us_sub', 'Loved by {{count}}+ users', { count: getLovedByCount() })}</Text>
+              </View>
               <Ionicons name="chevron-forward" size={20} color="#666" />
             </TouchableOpacity>
 
@@ -957,7 +973,10 @@ export default function ProfileScreen() {
           onPress={() => setShowRateUs(true)}
           data-testid="profile-rate-us-btn-guest"
         >
-          <Text style={s.rowTitle}>{t('rate_us', 'Rate Us')}</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={s.rowTitle}>{t('rate_us', 'Rate Us')}</Text>
+            <Text style={s.rowSubtext}>{t('rate_us_sub', 'Loved by {{count}}+ users', { count: getLovedByCount() })}</Text>
+          </View>
           <Ionicons name="chevron-forward" size={20} color="#666" />
         </TouchableOpacity>
         <View style={s.divider} />
@@ -1115,6 +1134,7 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#1A1A1C', marginHorizontal: 16, marginBottom: 8, borderRadius: 12 },
   rowIcon: { marginRight: 12 },
   rowText: { flex: 1, fontSize: 16, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
+  rowSubtext: { fontSize: 12, fontFamily: 'Ubuntu-Regular', color: '#FF4199', marginTop: 2 },
   rowRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   rowVal: { fontSize: 14, fontFamily: 'Ubuntu-Regular', color: '#888' },
   rowTitle: { fontSize: 16, fontFamily: 'Ubuntu-Medium', color: '#FFF' },
