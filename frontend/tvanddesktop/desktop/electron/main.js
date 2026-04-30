@@ -24,8 +24,8 @@ function createWindow() {
 
   // The TV UI is authored at a fixed 1920×1080 canvas. Open the window at
   // full HD when the display can fit it, otherwise fall back to a size that
-  // preserves the 16:9 aspect ratio. The auto-scale script below adapts the
-  // body so the whole UI always fits the window without scrollbars.
+  // preserves the 16:9 aspect ratio. The zoom factor below keeps the UI
+  // filling the window without scrollbars as the user resizes.
   const canFitFullHd = sw >= 1920 && sh >= 1080;
   const initialWidth  = canFitFullHd ? 1920 : Math.min(1600, sw - 40);
   const initialHeight = canFitFullHd ? 1080 : Math.round(initialWidth * 9 / 16);
@@ -45,10 +45,15 @@ function createWindow() {
       nodeIntegration: false,
       sandbox: true,
       preload: path.join(__dirname, 'preload.js'),
-      // Force a 16:9 viewport so the UI scales evenly regardless of window chrome
       devTools: true,
     },
   });
+
+  // Lock aspect ratio at 16:9 — the TV UI is designed only for 1920×1080
+  // so any other ratio would cause letterboxing or blank areas.
+  if (mainWindow.setAspectRatio) {
+    mainWindow.setAspectRatio(16 / 9);
+  }
 
   // Start maximised on Windows/Linux for the best full-HD experience
   if (process.platform !== 'darwin') {
@@ -59,42 +64,42 @@ function createWindow() {
   const url = process.env.MR_LOCAL === '1' ? APP_URL_LOCAL : APP_URL_PROD;
   mainWindow.loadURL(url);
 
-  // Inject auto-scale CSS so the fixed 1920×1080 UI always fits the window,
-  // centred, with a dark letterbox. This runs after the page loads.
+  // ────────────────────────────────────────────────────────────────────
+  //  AUTO-ZOOM  —  keeps the 1920×1080 UI always filling the window
+  // ────────────────────────────────────────────────────────────────────
+  // Chromium's setZoomFactor scales the ENTIRE page (including position:fixed
+  // children), unlike a CSS transform on a single element. This is exactly
+  // what we need because the TV UI uses fixed-positioned layers that would
+  // otherwise escape a CSS-scaled container.
+  const applyZoom = () => {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+    const [cw, ch] = mainWindow.getContentSize();
+    // Base canvas is 1920×1080. Pick the smaller axis so the whole UI fits.
+    const zx = cw / 1920;
+    const zy = ch / 1080;
+    const z  = Math.min(zx, zy);
+    try { mainWindow.webContents.setZoomFactor(z); } catch (_) {}
+  };
+
   mainWindow.webContents.on('did-finish-load', () => {
+    applyZoom();
+    // A tiny CSS overlay: lock scrolling and set the page background so the
+    // edges (if any) blend with the UI.
     mainWindow.webContents.insertCSS(`
       html, body {
         background: #0E0E0E !important;
         overflow: hidden !important;
-        width: 100vw !important;
-        height: 100vh !important;
         margin: 0 !important;
         padding: 0 !important;
       }
-      #root {
-        position: fixed !important;
-        top: 50%; left: 50%;
-        width: 1920px;
-        height: 1080px;
-        transform-origin: center center;
-        transform: translate(-50%, -50%) scale(var(--mr-scale, 1));
-        background: #0E0E0E;
-      }
-    `).catch(() => {});
-
-    mainWindow.webContents.executeJavaScript(`
-      (function() {
-        function updateScale() {
-          var sx = window.innerWidth  / 1920;
-          var sy = window.innerHeight / 1080;
-          var s = Math.min(sx, sy);
-          document.documentElement.style.setProperty('--mr-scale', s);
-        }
-        updateScale();
-        window.addEventListener('resize', updateScale);
-      })();
     `).catch(() => {});
   });
+
+  mainWindow.on('resize', applyZoom);
+  mainWindow.on('maximize', applyZoom);
+  mainWindow.on('unmaximize', applyZoom);
+  mainWindow.on('enter-full-screen', applyZoom);
+  mainWindow.on('leave-full-screen', applyZoom);
 
   // Open external links in default browser, not inside the app
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {

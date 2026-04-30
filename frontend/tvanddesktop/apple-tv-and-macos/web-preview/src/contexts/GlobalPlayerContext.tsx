@@ -204,37 +204,19 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Fetch metadata for current station
+  // NOTE: Disabled because the backend /api/stations/:id/metadata endpoint
+  // is not implemented. We rely on ICY metadata parsed directly from the
+  // audio stream (see playerInstance.onMetadata) — same approach as the
+  // iOS / Android mobile apps. Re-enable this polling only if/when the
+  // backend exposes a real metadata endpoint.
   useEffect(() => {
-    const fetchMetadata = async () => {
-      if (!currentStation?._id || !isPlaying) return;
-
-      try {
-        const result = await megaRadioApi.getStationMetadata(currentStation._id);
-        if (result?.metadata?.title) {
-          setNowPlayingMetadata(result.metadata.title);
-        }
-      } catch (error) {
-        // Metadata fetch failed (non-critical)
-      }
-    };
-
-    // Clear previous interval
-    if (metadataIntervalRef.current) {
-      clearInterval(metadataIntervalRef.current);
-    }
-
-    // Fetch immediately and then every 30 seconds
-    if (currentStation && isPlaying) {
-      fetchMetadata();
-      metadataIntervalRef.current = setInterval(fetchMetadata, 30000);
-    } else {
+    if (!currentStation || !isPlaying) {
       setNowPlayingMetadata(null);
     }
-
-    // Cleanup on unmount or station change
     return () => {
       if (metadataIntervalRef.current) {
         clearInterval(metadataIntervalRef.current);
+        metadataIntervalRef.current = null;
       }
     };
   }, [currentStation, isPlaying]);

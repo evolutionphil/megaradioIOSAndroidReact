@@ -369,6 +369,58 @@ async def tv_api_proxy(path: str, request: Request):
         return Response(content=b'{"error":"proxy_failed"}', status_code=502, media_type="application/json")
 
 
+# Stream proxy — lets HTTPS pages (including Electron desktop) play HTTP-only
+# radio streams without running into mixed-content blocks. Streams bytes through
+# without buffering so there's no added latency. Also strips ICY headers so the
+# audio element treats it as a normal stream (ICY is parsed by the native shell).
+@app.get("/api/stream-proxy")
+async def stream_proxy(url: str):
+    """Proxy an upstream radio stream so HTTPS clients can play HTTP sources."""
+    import urllib.parse
+    from fastapi.responses import StreamingResponse
+    decoded = urllib.parse.unquote(url)
+    # Safety: only allow http/https upstream
+    if not (decoded.startswith("http://") or decoded.startswith("https://")):
+        return Response(content=b'bad upstream', status_code=400)
+
+    async def body_iter():
+        async with httpx.AsyncClient(timeout=None, follow_redirects=True, headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
+            async with cli.stream("GET", decoded) as upstream:
+                async for chunk in upstream.aiter_bytes(chunk_size=16 * 1024):
+                    yield chunk
+
+    # Probe content-type via a HEAD-like request (first chunk)
+    media_type = "audio/mpeg"
+    try:
+        async with httpx.AsyncClient(timeout=6.0, follow_redirects=True, headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
+            async with cli.stream("GET", decoded) as probe:
+                media_type = probe.headers.get("content-type", "audio/mpeg").split(";")[0].strip() or "audio/mpeg"
+                if media_type.startswith("application/ogg"):
+                    media_type = "audio/ogg"
+    except Exception:
+        pass
+
+    return StreamingResponse(body_iter(), media_type=media_type)
+
+
+# Stream resolve — returns the final redirected URL + content-type without
+# downloading the audio. Used by the TV app to decide which upstream host
+# serves the actual audio (many playlists 302 through CDNs).
+@app.get("/api/stream-resolve")
+async def stream_resolve(url: str):
+    import urllib.parse
+    decoded = urllib.parse.unquote(url)
+    if not (decoded.startswith("http://") or decoded.startswith("https://")):
+        return {"ok": False, "error": "bad upstream"}
+    try:
+        async with httpx.AsyncClient(timeout=10.0, follow_redirects=True, headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
+            async with cli.stream("GET", decoded) as r:
+                ct = r.headers.get("content-type", "").split(";")[0].strip() or "audio/mpeg"
+                return {"ok": True, "final_url": str(r.url), "content_type": ct}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
 TV_PREVIEW_DIR = ROOT_DIR / "static" / "tv-preview"
 if TV_PREVIEW_DIR.exists():
     app.mount(
