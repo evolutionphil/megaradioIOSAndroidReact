@@ -37,6 +37,8 @@ import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
 import { usePremiumStore } from '../../src/store/premiumStore';
 import { PremiumPaywall } from '../../src/components/PremiumPaywall';
+import { RateUsModal } from '../../src/components/RateUsModal';
+import { rateUsService } from '../../src/services/rateUsService';
 import { useSongHistoryStore } from '../../src/store/songHistoryStore';
 import appService, { AppInfo } from '../../src/services/appService';
 
@@ -95,6 +97,7 @@ export default function ProfileScreen() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [showPasswordChanged, setShowPasswordChanged] = useState(false);
+  const [showRateUs, setShowRateUs] = useState(false);
 
   const [nameValue, setNameValue] = useState(user?.name || 'Guest');
   const [emailValue, setEmailValue] = useState(user?.email || '');
@@ -691,6 +694,16 @@ export default function ProfileScreen() {
           <View style={s.section}>
             <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
 
+            <TouchableOpacity
+              style={s.row}
+              onPress={() => setShowRateUs(true)}
+              data-testid="profile-rate-us-btn"
+            >
+              <Ionicons name="star-outline" size={22} color="#FFF" style={s.rowIcon} />
+              <Text style={s.rowText}>{t('rate_us', 'Rate Us')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+
             <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'about' } } as any)}>
               <Ionicons name="information-circle-outline" size={22} color="#FFF" style={s.rowIcon} />
               <Text style={s.rowText}>{t('about_us', 'About Us')}</Text>
@@ -734,6 +747,18 @@ export default function ProfileScreen() {
           visible={showRemoveAdsPaywall}
           onClose={() => setShowRemoveAdsPaywall(false)}
           mode="remove_ads"
+        />
+
+        {/* Rate Us Modal (guest) */}
+        <RateUsModal
+          visible={showRateUs}
+          onClose={() => {
+            setShowRateUs(false);
+            rateUsService.markDismissed().catch(() => {});
+          }}
+          onRated={() => {
+            rateUsService.markRated().catch(() => {});
+          }}
         />
       </SafeAreaView>
     );
@@ -927,6 +952,15 @@ export default function ProfileScreen() {
 
         {/* About */}
         <Text style={s.sectionLabel}>{t('about', 'About')}</Text>
+        <TouchableOpacity
+          style={s.row}
+          onPress={() => setShowRateUs(true)}
+          data-testid="profile-rate-us-btn-guest"
+        >
+          <Text style={s.rowTitle}>{t('rate_us', 'Rate Us')}</Text>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+        <View style={s.divider} />
         <TouchableOpacity style={s.row} onPress={() => router.push({ pathname: '/static-page', params: { type: 'about' } } as any)}>
           <Text style={s.rowTitle}>{t('about_us', 'About Us')}</Text>
           <Ionicons name="chevron-forward" size={20} color="#666" />
@@ -1041,6 +1075,18 @@ export default function ProfileScreen() {
         visible={showRemoveAdsPaywall}
         onClose={() => setShowRemoveAdsPaywall(false)}
         mode="remove_ads"
+      />
+
+      {/* Rate Us Modal */}
+      <RateUsModal
+        visible={showRateUs}
+        onClose={() => {
+          setShowRateUs(false);
+          rateUsService.markDismissed().catch(() => {});
+        }}
+        onRated={() => {
+          rateUsService.markRated().catch(() => {});
+        }}
       />
     </SafeAreaView>
   );
