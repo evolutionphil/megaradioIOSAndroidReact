@@ -179,6 +179,30 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
     }
   }, [searchQuery]);
 
+  // Physical keyboard support (Desktop / Electron). Lets the user type
+  // letters / space / backspace on a Mac / Windows keyboard. Works alongside
+  // D-pad navigation for the on-screen tiles.
+  useEffect(() => {
+    if (!isOpen || keyboardDisabled) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (dropdownOpen) return;
+      const k = e.key;
+      // Allow a wide set of printable characters so non-Latin layouts work too
+      if (k.length === 1 && k !== 'Tab' && /[^\u0000-\u001F]/.test(k) && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        setSearchQuery(prev => prev + k);
+      } else if (k === 'Backspace') {
+        e.preventDefault();
+        setSearchQuery(prev => prev.slice(0, -1));
+      } else if (k === 'Escape') {
+        e.preventDefault();
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, keyboardDisabled, dropdownOpen, onClose]);
+
   useEffect(() => {
     if (focusZone !== 'list' || !scrollContainerRef.current || filteredCountries.length === 0) return;
     const container = scrollContainerRef.current;
@@ -543,7 +567,13 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
                   return (
                     <button
                       key={`${activeLayout.id}-${keyChar}-${colIndex}`}
-                      className={`h-[68px] ${widthClass} rounded-[12px] font-['Ubuntu',Helvetica] font-medium text-white flex items-center justify-center transition-all duration-150 select-none ${
+                      onClick={() => {
+                        setFocusZone('keyboard');
+                        setKeyboardRow(rowIndex);
+                        setKeyboardCol(colIndex);
+                        handleKeyPress(keyChar);
+                      }}
+                      className={`h-[68px] ${widthClass} rounded-[12px] font-['Ubuntu',Helvetica] font-medium text-white flex items-center justify-center transition-all duration-150 select-none cursor-pointer ${
                         isKeyFocused
                           ? 'bg-[#ff4199] scale-105 text-[24px]'
                           : isAction

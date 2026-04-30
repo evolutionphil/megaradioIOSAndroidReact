@@ -246,6 +246,32 @@ export const Search = (): JSX.Element => {
     }
   }, []);
 
+  // Physical keyboard support (Desktop / Electron). Lets the user simply
+  // type letters / space / backspace on a Mac / Windows keyboard instead of
+  // clicking every on-screen tile. D-pad navigation remains unchanged.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      // Ignore if any modal / help overlay is open
+      if (helpOpenRef.current || dropdownOpen) return;
+      // Ignore while the language-dropdown has focus (D-pad only)
+      if (focusZone === 'langDropdown') return;
+      // Skip when arrows/enter — those are already handled by the D-pad engine
+      const k = e.key;
+      if (k.length === 1 && /^[a-zA-Z0-9]$/.test(k)) {
+        e.preventDefault();
+        setSearchQuery(prev => prev + k.toLowerCase());
+      } else if (k === ' ') {
+        e.preventDefault();
+        setSearchQuery(prev => prev + ' ');
+      } else if (k === 'Backspace') {
+        e.preventDefault();
+        setSearchQuery(prev => prev.slice(0, -1));
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [focusZone, dropdownOpen]);
+
   useEffect(() => {
     if (visibleSearchResults.length > 0 && listFocusIndex >= visibleSearchResults.length) {
       setListFocusIndex(0);
@@ -665,7 +691,13 @@ export const Search = (): JSX.Element => {
                 return (
                   <button
                     key={`${activeLayout.id}-${keyChar}-${colIndex}`}
-                    className={`h-[68px] ${widthClass} rounded-[12px] font-['Ubuntu',Helvetica] font-medium text-white flex items-center justify-center transition-all duration-150 select-none ${
+                    onClick={() => {
+                      setFocusZone('keyboard');
+                      setKeyboardRow(rowIndex);
+                      setKeyboardCol(colIndex);
+                      handleKeyPress(keyChar);
+                    }}
+                    className={`h-[68px] ${widthClass} rounded-[12px] font-['Ubuntu',Helvetica] font-medium text-white flex items-center justify-center transition-all duration-150 select-none cursor-pointer ${
                       isKeyFocused
                         ? 'bg-[#ff4199] scale-105 text-[24px]'
                         : isAction

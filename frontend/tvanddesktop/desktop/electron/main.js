@@ -148,6 +148,42 @@ function buildMenu() {
       ],
     },
     {
+      label: 'Dev',
+      submenu: [
+        {
+          label: 'Reset Premium State',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+            if (!mainWindow) return;
+            mainWindow.webContents.executeJavaScript(`
+              localStorage.removeItem('premium_state_v1');
+              sessionStorage.removeItem('mr_auto_paywall_shown_session');
+              console.log('[MegaRadio] Premium state cleared.');
+              location.reload();
+            `).catch(() => {});
+          },
+        },
+        {
+          label: 'Clear All Local Storage',
+          click: () => {
+            if (!mainWindow) return;
+            mainWindow.webContents.executeJavaScript(`
+              localStorage.clear();
+              sessionStorage.clear();
+              console.log('[MegaRadio] All storage cleared.');
+              location.reload();
+            `).catch(() => {});
+          },
+        },
+        { type: 'separator' },
+        {
+          label: 'Toggle DevTools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Cmd+I' : 'Ctrl+Shift+I',
+          click: () => mainWindow?.webContents.toggleDevTools(),
+        },
+      ],
+    },
+    {
       label: 'Audio',
       submenu: [
         {

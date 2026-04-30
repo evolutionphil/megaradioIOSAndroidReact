@@ -43,7 +43,7 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
       sessionStorage.setItem(SHOWN_KEY, '1');
       setVariant('premium');
       setOpen(true);
-    }, 15_000);
+    }, 45_000);
 
     return () => clearTimeout(timer);
   }, [premium.isPremium]);
