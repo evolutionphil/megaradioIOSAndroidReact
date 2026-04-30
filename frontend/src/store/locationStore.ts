@@ -143,7 +143,10 @@ interface LocationState {
   isLoaded: boolean; // Track if initial country data has been loaded (from storage or detection)
   loadStoredCountry: () => Promise<void>;
   fetchLocation: () => Promise<void>;
-  setCountryManual: (country: string) => Promise<void>;
+  setCountryManual: (
+    country: string,
+    overrides?: { code?: string | null; englishName?: string; nativeName?: string }
+  ) => Promise<void>;
   getCountryForApi: (apiType: 'popular' | 'stations') => string | undefined;
 }
 
@@ -257,22 +260,37 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     }
   },
 
-  setCountryManual: async (countryName: string) => {
-    // Check if the input is native or English and determine both
-    const englishName = COUNTRY_ENGLISH_MAP[countryName] || countryName;
-    const nativeName = COUNTRY_NATIVE_MAP[countryName] || COUNTRY_NATIVE_MAP[englishName] || countryName;
-    
-    // Get country code from mapping
-    const countryCode = COUNTRY_CODE_MAP[countryName] || COUNTRY_CODE_MAP[englishName] || COUNTRY_CODE_MAP[nativeName] || null;
-    
+  setCountryManual: async (
+    countryName: string,
+    overrides?: { code?: string | null; englishName?: string; nativeName?: string }
+  ) => {
+    // Prefer overrides (e.g. API returns full code) over local maps for 215+ countries
+    const englishName =
+      overrides?.englishName ||
+      COUNTRY_ENGLISH_MAP[countryName] ||
+      countryName;
+    const nativeName =
+      overrides?.nativeName ||
+      COUNTRY_NATIVE_MAP[countryName] ||
+      COUNTRY_NATIVE_MAP[englishName] ||
+      countryName;
+
+    // Get country code from override first, fallback to local map
+    const countryCode =
+      (overrides?.code ?? null) ||
+      COUNTRY_CODE_MAP[countryName] ||
+      COUNTRY_CODE_MAP[englishName] ||
+      COUNTRY_CODE_MAP[nativeName] ||
+      null;
+
     console.log('[LocationStore] setCountryManual:', { countryName, englishName, nativeName, countryCode });
-    
+
     // Update state
-    set({ 
-      country: nativeName, 
+    set({
+      country: nativeName,
       countryEnglish: englishName,
-      countryCode: countryCode, 
-      loading: false, 
+      countryCode: countryCode,
+      loading: false,
       error: null,
       isManuallySet: true,
     });

@@ -65,7 +65,12 @@ export const CountrySelectorModal: React.FC<Props> = ({ visible, onClose }) => {
   }, [search, countries]);
 
   const handleSelect = async (c: CountryData) => {
-    await setCountryManual(c.name);
+    // Pass full API data so countryCode is reliable for 215+ countries
+    await setCountryManual(c.name, {
+      code: c.code,
+      englishName: c.name,
+      nativeName: c.nativeName,
+    });
     setSearch('');
     onClose();
   };
@@ -151,13 +156,15 @@ export const CountrySelectorModal: React.FC<Props> = ({ visible, onClose }) => {
               renderItem={({ item }) => {
                 const isSelected =
                   item.name === country || item.nativeName === country;
+                // Fallback: if API doesn't return flag, generate from code
+                const flag = item.flag || countryCodeToFlag(item.code);
                 return (
                   <TouchableOpacity
                     style={[styles.row, isSelected && styles.rowActive]}
                     onPress={() => handleSelect(item)}
                     data-testid={`country-row-${item.code}`}
                   >
-                    <Text style={styles.flag}>{item.flag}</Text>
+                    <Text style={styles.flag}>{flag}</Text>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.countryName}>{item.name}</Text>
                       {item.nativeName !== item.name && (
@@ -266,8 +273,10 @@ const styles = StyleSheet.create({
   },
   flag: {
     fontSize: 28,
-    width: 40,
+    lineHeight: 34,
+    width: 44,
     textAlign: 'center',
+    includeFontPadding: false,
   },
   countryName: {
     color: colors.text,

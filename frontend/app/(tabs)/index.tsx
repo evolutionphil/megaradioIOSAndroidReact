@@ -389,8 +389,9 @@ export default function HomeScreen() {
                 onPress={() => setShowCountryModal(true)}
                 data-testid="country-selector-btn"
                 accessibilityLabel="Select country"
+                hitSlop={8}
               >
-                <Text style={styles.flagEmoji}>
+                <Text style={styles.flagEmoji} allowFontScaling={false}>
                   {countryCodeToFlag(countryCode)}
                 </Text>
               </Pressable>
@@ -816,8 +817,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flagEmoji: {
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 26,
+    lineHeight: 32,
+    textAlign: 'center',
+    includeFontPadding: false,
   },
   notificationDot: {
     position: 'absolute',
