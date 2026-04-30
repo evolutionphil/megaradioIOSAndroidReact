@@ -37,6 +37,20 @@ import { Favorites } from "@/pages/Favorites";
 import { Settings } from "@/pages/Settings";
 import { ScreensaverTest } from "@/pages/ScreensaverTest";
 import { CountrySelectPage } from "@/pages/CountrySelectPage";
+import { Equalizer } from "@/pages/Equalizer";
+import { PaywallProvider, usePaywall } from "@/contexts/PaywallContext";
+import { useEffect } from "react";
+
+function PremiumRoute() {
+  const { showPaywall, hidePaywall } = usePaywall();
+  useEffect(() => { showPaywall('premium'); return () => hidePaywall(); }, [showPaywall, hidePaywall]);
+  return null;
+}
+function RemoveAdsRoute() {
+  const { showPaywall, hidePaywall } = usePaywall();
+  useEffect(() => { showPaywall('remove_ads'); return () => hidePaywall(); }, [showPaywall, hidePaywall]);
+  return null;
+}
 
 function NetworkDisconnectModal() {
   const { isNetworkModalOpen, closeNetworkModal } = useNetworkStatus();
@@ -169,6 +183,9 @@ function Router() {
       <Route path="/favorites" component={Favorites} />
       <Route path="/settings" component={Settings} />
       <Route path="/country-select" component={CountrySelectPage} />
+      <Route path="/equalizer" component={Equalizer} />
+      <Route path="/premium" component={PremiumRoute} />
+      <Route path="/remove-ads" component={RemoveAdsRoute} />
       <Route path="/screensaver-test" component={ScreensaverTest} />
       
       {/* Fallback to 404 */}
@@ -201,8 +218,10 @@ function App() {
                       <AppLifecycleProvider>
                         <FocusRouterProvider>
                           <TooltipProvider>
-                            <Toaster />
-                            <Router />
+                            <PaywallProvider>
+                              <Toaster />
+                              <Router />
+                            </PaywallProvider>
                           </TooltipProvider>
                         </FocusRouterProvider>
                       </AppLifecycleProvider>

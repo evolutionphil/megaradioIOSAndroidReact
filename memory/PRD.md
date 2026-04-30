@@ -1,75 +1,96 @@
 # MegaRadio - Product Requirements Document
 
 ## Original Problem Statement
-Implement In-App Purchase (IAP) Premium Strategy for MegaRadio app. The app has heavily evolved to include UI gating for Premium features, Apple App Store compliance, CarPlay/Android Auto integration, Firebase Analytics/Crashlytics, deep debugging of Android build/runtime crashes, iOS build issues, and (Apr 2026) the **Apple TV / macOS / Android TV / Fire TV / Desktop multi-platform expansion**.
+MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — production), plus a **TV/Desktop multi-platform expansion** (Apple TV, macOS, Android TV, Fire TV, Tizen, webOS, Windows, Linux). Mobile codebase isolation: TV/Desktop must NOT touch `/app/frontend/app/` or `/app/frontend/src/`.
 
 ## Tech Stack
-- **Mobile Frontend**: React Native (Expo Bare Workflow, SDK 54, RN 0.81.5)
-- **TV / Desktop Frontend**: React + TypeScript + Vite (1:1 with production Tizen / webOS bundle)
-- **Routing (mobile)**: Expo Router · **Routing (TV)**: wouter w/ hash routing
-- **State**: Zustand (mobile) · React Query + Context (TV)
-- **Backend**: FastAPI + MongoDB
+- **Mobile**: React Native (Expo Bare Workflow, RN 0.81.5)
+- **TV/Desktop**: React + TypeScript + Vite (single codebase, multiple native shells)
+- **Backend**: FastAPI + MongoDB + `api.themegaradio.com` (legacy)
 
-## What's Been Implemented
+## What's Been Implemented (Apr 2026)
 
-### Multi-Platform TV/Desktop Expansion (Apr 2026 — DONE)
-- **Apple TV + macOS** (Faz 1A): Pixel-perfect web preview at `/api/tv-app/`
-  - Full React+Vite codebase ported from Tizen/webOS (`/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview`)
-  - All 12+ pages working: Splash, Login, Onboarding (4 guides), Discover, Genres, GenreList, Search, Favorites, Country select, Settings, RadioPlaying
-  - Sidebar (120×100 px tile, exact match), 7-column station grid, virtual keyboard, Ubuntu font, brand pink `#FF4199`, 1920×1080 reference frame
-  - SwiftUI WKWebView shim authored at `/ios-tvos/MegaRadioTVApp.swift` (build on Mac with Xcode 16+)
-- **Android TV / Google TV / Fire TV** (Faz 2): Same web bundle via symlink (`/app/frontend/tvanddesktop/android-tv/web-preview`)
-  - Native Kotlin/Compose shell pattern documented; Leanback launcher manifest + KeyEvent bridge for color buttons
-- **Desktop (Win/Linux/Mac)** (Faz 3): Electron wrapper (`/app/frontend/tvanddesktop/desktop/`)
-  - Main process with global media keys, menu bar (File/Audio/View/Help), Cmd+P play/pause shortcuts
-  - electron-builder configs for AppImage / .deb / NSIS / portable exe / DMG
-- **Backend additions**:
-  - `/api/tv-app/*` static mount serving the Vite build
-  - `/api/tv-proxy/{path}` server-side proxy bypasses Cloudflare bot-detection on headless previews
+### TV/Desktop Faz 1A — Apple TV + macOS web preview ✅
+- Pixel-perfect 1:1 with Tizen/webOS source
+- All 12+ pages working: Splash, Login, 4 Onboarding guides, Discover, Genres, GenreList, Search, Favorites, Country select, Settings, RadioPlaying
 
-### Mobile Core (DONE — pre-existing)
-- Premium UI gating, CarPlay/Android Auto, Firebase Analytics/Crashlytics, AdMob (App Open / Interstitial / Rewarded / Banner), IAP, Google Sign-In, ICY metadata client-side, Backend sync (favorites / recently-played / subscription)
+### TV/Desktop Faz 2 — Cross-platform reuse ✅
+- **Android TV / Google TV / Fire TV**: same web bundle via symlink (zero divergence)
+- Native Kotlin/Compose shell pattern documented + KeyEvent bridge spec
+
+### TV/Desktop Faz 3 — Desktop ✅
+- Electron wrapper with `globalShortcut`, menu bar, multi-platform builds
+- **Auto-update** via `electron-updater` (GitHub Releases, 6h check)
+
+### Premium System ✅ (Apr 30)
+- **`PremiumPaywall.tsx`** — pixel-exact match for both designs (Premium 3-tier + Remove Ads single-tier)
+- Hero images bundled: `paywall-hero-pink.jpg` + `paywall-hero-yellow.jpg`
+- **`PaywallContext`** — `usePaywall().showPaywall('premium' | 'remove_ads')` from anywhere
+- **`usePremium`** hook — localStorage-backed state with `applyPurchase`, auto-expire
+- **Native bridge** (`window.megaRadioNative.purchase` + `mr-iap-completed` postMessage)
+- **Cross-platform IAP IDs** = identical to mobile:
+  - `megaradio_premium_monthly1` / `megaradio_premium_yearly` / `megaradio_premium_lifetime` / `megaradio_remove_ads_yearly1`
+- Routes: `#/premium`, `#/remove-ads`
+
+### Equalizer ✅ (Apr 30)
+- 10-band EQ via Web Audio API (BiquadFilterNode chain)
+- 10 presets: Flat, Rock, Pop, Jazz, Classical, Dance, Bass Boost, Treble Boost, Vocal, News/Talk
+- Vertical sliders, persists to localStorage `eq_state_v1`
+- Route: `#/equalizer`
+
+### Continue Listening ✅ (Apr 30)
+- `recentlyPlayedStore` + `ContinueListeningSection` (6 cards)
+- Component ready to drop into Discover; emits `mr:recently-played-changed` events
+- Source: hooks into existing TV audio player on `play` event
+
+### Backend additions ✅
+- `/api/tv-app/*` — static mount for the Vite build (Mounted under /api/* for ingress routing)
+- `/api/tv-proxy/*` — server-side passthrough (bypasses Cloudflare bot-detection)
+
+### Documentation for backend dev ✅
+- `/app/frontend/tvanddesktop/_design-spec/BACKEND_DEV_TASKS.md` — 6 items including IAP receipt validation endpoint spec, StackPath logo fix, station metadata 404
+
+## Mobile (unchanged — DO NOT TOUCH)
+Premium UI gating, CarPlay/Android Auto, Firebase Analytics, AdMob, IAP, Google Sign-In, etc. — all remain in `/app/frontend/app/` + `/app/frontend/src/`.
 
 ## Known Issues
-- iOS Push Notifications BLOCKED on Apple Developer Portal maintenance (P1)
-- Sandbox IAP products: only `megaradio_premium_monthly1` returns; yearly + lifetime missing in App Store Connect (P1)
-- StackPath CDN 404 on Pal Station logo (P3)
+- **iOS Push Notifications BLOCKED** on Apple Developer Portal maintenance (P1 — external)
+- Sandbox IAP yearly + lifetime products not yet "Ready to Submit" in App Store Connect (P1 — user action)
+- StackPath CDN 404 on Pal Station logo (P3 — backend dev)
+- Station metadata 404 (P2 — backend dev)
 
-## Pending Verification
-- TV/Desktop native builds (require Xcode + Android Studio + macOS — must be built locally)
-- iOS Universal Purchase setup with new tvOS/macOS bundle IDs
-- App Store Connect TV declaration
+## Pending Verification (USER ACTION)
+- Build tvOS + macOS app in Xcode 16+ (`apple-tv-and-macos/ios-tvos/MegaRadioTVApp.swift`)
+- Build Android TV APK in Android Studio (Leanback Activity + WebView)
+- Build Electron Desktop (`cd desktop && yarn build:linux/win/mac`)
+- Universal Purchase setup in App Store Connect (`com.visiongo.megaradio` shared bundle)
 
 ## Future/Backlog
-- P2: Top Shelf widget (Apple TV)
-- P2: Voice search (Siri / Google Assistant)
-- P2: ShazamKit song recognition
-- P2: Equalizer (EQ) presets
-- P2: Mini-player floating window (macOS / Desktop)
-- P3: Watch app companion (blocked on Xcode cycle fix verification)
+- P2: Top Shelf widget (Apple TV) — needs SwiftUI + Top Shelf extension target
+- P2: Voice search (Siri tvOS, Google Assistant Android TV)
+- P2: ShazamKit integration (iOS only)
+- P3: WatchOS companion (blocked on Xcode cycle fix)
+- P3: Hisense Vidaa TWA build
 
 ## Build Instructions
 ```bash
-# Mobile (unchanged)
-cd /app/frontend && yarn install && npx expo prebuild --platform ios --clean
-
 # TV web preview
 cd /app/frontend/tvanddesktop/apple-tv-and-macos/web-preview
-yarn install && yarn build   # Outputs to /app/backend/static/tv-preview
+yarn install && yarn build      # Outputs to /app/backend/static/tv-preview
 
 # Desktop (Electron)
-cd /app/frontend/tvanddesktop/desktop && yarn install && yarn build:linux
+cd /app/frontend/tvanddesktop/desktop
+yarn install
+yarn build:linux                # AppImage + .deb
+yarn build:win                  # NSIS + portable
+yarn build:mac                  # DMG (needs Apple Dev ID)
 ```
 
 ## Preview URLs
-- Mobile: `https://music-premium-fix.preview.emergentagent.com/` (Expo Web)
-- TV Web Preview: `https://music-premium-fix.preview.emergentagent.com/api/tv-app/`
+- Mobile (Expo Web): `{REACT_APP_BACKEND_URL}/`
+- TV/Desktop preview: `{REACT_APP_BACKEND_URL}/api/tv-app/`
 
-## API Endpoints (TV/Desktop)
-- `https://api.themegaradio.com/api/*` — Direct (production native builds)
-- `{REACT_APP_BACKEND_URL}/api/tv-proxy/*` — Preview-only proxy
-
-## Verified TV Routes
+## Verified Routes
 | Route | Status |
 |---|---|
 | `#/` Splash | ✅ |
@@ -78,5 +99,6 @@ cd /app/frontend/tvanddesktop/desktop && yarn install && yarn build:linux
 | `#/genres` | ✅ |
 | `#/country-select` | ✅ |
 | `#/settings` | ✅ |
-| `#/favorites` | ✅ |
-| `#/search` | ✅ |
+| `#/equalizer` | ✅ |
+| `#/premium` (3-tier paywall) | ✅ |
+| `#/remove-ads` (yearly paywall) | ✅ |
