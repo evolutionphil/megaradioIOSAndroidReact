@@ -422,14 +422,15 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
     
     // Track Player setup with timeout to prevent hanging
+    // 20s gives Firebase + AdMob + IAP enough time to settle on cold start
     const setupWithTimeout = async () => {
       try {
         const setupPromise = setupTrackPlayer();
         const timeoutPromise = new Promise<boolean>((resolve) =>
           setTimeout(() => {
-            console.warn('[AudioProvider] Track Player setup timed out after 10s');
+            console.warn('[AudioProvider] Track Player setup timed out after 20s — will retry on first play');
             resolve(false);
-          }, 10000)
+          }, 20000)
         );
         const success = await Promise.race([setupPromise, timeoutPromise]);
         if (success) {

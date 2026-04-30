@@ -65,9 +65,27 @@ const pushNotificationService: PushNotificationService = {
     try {
       // Get project ID from Expo constants
       const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
-      
+
       console.log('[PushNotification] Project ID:', projectId);
-      
+
+      // Skip token fetch if no projectId configured (avoids spammy startup error)
+      // User can set this via `eas init` and adding "extra.eas.projectId" to app.json
+      if (!projectId) {
+        console.log('[PushNotification] No projectId configured — push notifications disabled. Run `eas init` to enable.');
+        // Still set up Android channels so local notifications work
+        if (Platform.OS === 'android') {
+          try {
+            await Notifications.setNotificationChannelAsync('default', {
+              name: 'Default',
+              importance: Notifications.AndroidImportance.MAX,
+              vibrationPattern: [0, 250, 250, 250],
+              lightColor: '#FF4199',
+            });
+          } catch {}
+        }
+        return null;
+      }
+
       // Get Expo Push Token
       const tokenData = await Notifications.getExpoPushTokenAsync({
         projectId: projectId,
