@@ -51,6 +51,7 @@ import { useLocationStore } from '../../src/store/locationStore';
 import { useRecentlyPlayedStore } from '../../src/store/recentlyPlayedStore';
 import { usePremiumStore } from '../../src/store/premiumStore';
 import { PremiumPaywall } from '../../src/components/PremiumPaywall';
+import { CountrySelectorModal, countryCodeToFlag } from '../../src/components/CountrySelectorModal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Station, Genre } from '../../src/types';
 
@@ -65,6 +66,7 @@ export default function HomeScreen() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
+  const [showCountryModal, setShowCountryModal] = useState(false);
   const preloadStarted = useRef(false);
   const { user, isAuthenticated } = useAuthStore();
   const { isPremium } = usePremiumStore();
@@ -382,6 +384,16 @@ export default function HomeScreen() {
               </View>
             </TouchableOpacity>
             <View style={styles.headerRight}>
+              <Pressable
+                style={styles.headerIcon}
+                onPress={() => setShowCountryModal(true)}
+                data-testid="country-selector-btn"
+                accessibilityLabel="Select country"
+              >
+                <Text style={styles.flagEmoji}>
+                  {countryCodeToFlag(countryCode)}
+                </Text>
+              </Pressable>
               <Pressable 
                 style={styles.headerIcon} 
                 onPress={handleNotificationPress}
@@ -685,6 +697,12 @@ export default function HomeScreen() {
         visible={showPaywall}
         onClose={() => setShowPaywall(false)}
         mode="premium"
+      />
+
+      {/* Country Selector Modal */}
+      <CountrySelectorModal
+        visible={showCountryModal}
+        onClose={() => setShowCountryModal(false)}
       />
     </View>
   );
