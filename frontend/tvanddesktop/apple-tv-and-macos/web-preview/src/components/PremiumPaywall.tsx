@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from 'react';
 import { assetPath } from '@/lib/assetPath';
+import { LegalModal, LegalPage } from '@/components/LegalModal';
 
 export const IAP_PRODUCTS = {
   premium_monthly: 'megaradio_premium_monthly1',
@@ -26,17 +27,24 @@ const FONT = "'Ubuntu', Helvetica, Arial, sans-serif";
 export function PremiumPaywall({ open, variant = 'premium', onClose, onPurchase }: PaywallProps) {
   const [selected, setSelected] = useState<'yearly' | 'lifetime' | 'monthly'>('yearly');
   const [focusIdx, setFocusIdx] = useState(0);
+  const [legalPage, setLegalPage] = useState<LegalPage | null>(null);
 
-  useEffect(() => { if (open) { setFocusIdx(0); setSelected('yearly'); } }, [open]);
+  useEffect(() => { if (open) { setFocusIdx(0); setSelected('yearly'); setLegalPage(null); } }, [open]);
 
   useEffect(() => {
     if (!open) return;
+    // Swallow key events while a legal modal is open (it has its own handler).
+    if (legalPage) return;
     const handler = (e: KeyboardEvent) => {
       const tiers: Array<'yearly' | 'lifetime' | 'monthly'> = ['yearly', 'lifetime', 'monthly'];
       const tierCount = variant === 'premium' ? 3 : 1;
       const ctaIdx = tierCount;
       const closeIdx = tierCount + 1;
       const max = closeIdx;
+      // While the paywall is open, stop ALL other keydown listeners
+      // (Settings/FocusRouter etc.) from processing the same event.
+      e.stopImmediatePropagation();
+      e.stopPropagation();
 
       if (e.key === 'ArrowDown') { e.preventDefault(); setFocusIdx(i => Math.min(i + 1, max)); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); setFocusIdx(i => Math.max(i - 1, 0)); }
@@ -58,9 +66,10 @@ export function PremiumPaywall({ open, variant = 'premium', onClose, onPurchase 
         } else if (focusIdx === closeIdx) onClose();
       }
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [open, focusIdx, selected, variant, onClose, onPurchase]);
+    // Use capture phase so we run before any other keydown listener
+    window.addEventListener('keydown', handler, true);
+    return () => window.removeEventListener('keydown', handler, true);
+  }, [open, focusIdx, selected, variant, onClose, onPurchase, legalPage]);
 
   if (!open) return null;
   const isRemoveAds = variant === 'remove_ads';
@@ -94,9 +103,10 @@ export function PremiumPaywall({ open, variant = 'premium', onClose, onPurchase 
         }}
       >
         {isRemoveAds
-          ? <RemoveAdsBody focusIdx={focusIdx} closeIdx={closeIdx} ctaIdx={ctaIdx} onClose={onClose} onPurchase={onPurchase} />
-          : <PremiumBody focusIdx={focusIdx} ctaIdx={ctaIdx} selected={selected} setSelected={setSelected} setFocusIdx={setFocusIdx} onPurchase={onPurchase} />}
+          ? <RemoveAdsBody focusIdx={focusIdx} closeIdx={closeIdx} ctaIdx={ctaIdx} onClose={onClose} onPurchase={onPurchase} onOpenLegal={setLegalPage} />
+          : <PremiumBody focusIdx={focusIdx} ctaIdx={ctaIdx} selected={selected} setSelected={setSelected} setFocusIdx={setFocusIdx} onPurchase={onPurchase} onOpenLegal={setLegalPage} />}
       </div>
+      <LegalModal open={!!legalPage} page={legalPage || 'terms'} onClose={() => setLegalPage(null)} />
     </div>
   );
 }
@@ -108,12 +118,13 @@ export function PremiumPaywall({ open, variant = 'premium', onClose, onPurchase 
    background where the text needs to be readable. */
 
 function PremiumBody({
-  focusIdx, ctaIdx, selected, setSelected, setFocusIdx, onPurchase,
+  focusIdx, ctaIdx, selected, setSelected, setFocusIdx, onPurchase, onOpenLegal,
 }: {
   focusIdx: number; ctaIdx: number; selected: 'yearly' | 'lifetime' | 'monthly';
   setSelected: (v: 'yearly' | 'lifetime' | 'monthly') => void;
   setFocusIdx: (n: number) => void;
   onPurchase?: (productId: string) => void;
+  onOpenLegal: (p: LegalPage) => void;
 }) {
   return (
     <div style={{ position: 'relative' }}>
@@ -191,7 +202,7 @@ function PremiumBody({
           }}
           testId="paywall-subscribe-cta"
         />
-        <Footer onPurchase={onPurchase} />
+        <Footer onPurchase={onPurchase} onOpenLegal={onOpenLegal} />
       </div>
     </div>
   );
@@ -202,11 +213,12 @@ function PremiumBody({
    gradient fade to dark, then logo + title + 1 tier + CTA below. */
 
 function RemoveAdsBody({
-  focusIdx, closeIdx, ctaIdx, onClose, onPurchase,
+  focusIdx, closeIdx, ctaIdx, onClose, onPurchase, onOpenLegal,
 }: {
   focusIdx: number; closeIdx: number; ctaIdx: number;
   onClose: () => void;
   onPurchase?: (productId: string) => void;
+  onOpenLegal: (p: LegalPage) => void;
 }) {
   return (
     <>
@@ -269,7 +281,7 @@ function RemoveAdsBody({
           onClick={() => onPurchase?.(IAP_PRODUCTS.remove_ads_yearly)}
           testId="paywall-remove-ads-cta"
         />
-        <Footer onPurchase={onPurchase} />
+        <Footer onPurchase={onPurchase} onOpenLegal={onOpenLegal} />
       </div>
     </>
   );
@@ -346,7 +358,10 @@ function CtaButton({ label, focused, onClick, testId }: {
   );
 }
 
-function Footer({ onPurchase }: { onPurchase?: (productId: string) => void }) {
+function Footer({ onPurchase, onOpenLegal }: {
+  onPurchase?: (productId: string) => void;
+  onOpenLegal: (p: LegalPage) => void;
+}) {
   return (
     <div style={{
       marginTop: 18, display: 'flex', justifyContent: 'space-between',
@@ -358,7 +373,7 @@ function Footer({ onPurchase }: { onPurchase?: (productId: string) => void }) {
         style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 15 }}
       >Already paid?</button>
       <button
-        onClick={() => window.open('https://themegaradio.com/terms', '_blank')}
+        onClick={() => onOpenLegal('terms')}
         data-testid="paywall-terms"
         style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 15 }}
       >Terms &amp; conditions</button>

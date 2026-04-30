@@ -673,4 +673,24 @@ export const megaRadioApi = {
       return {};
     }
   },
+
+  // Static content pages (About / Terms / Privacy / Contact) served by the backend.
+  // Matches mobile app's /api/app/pages endpoint.
+  getAppPages: async (): Promise<{ about?: AppPage; terms?: AppPage; privacy?: AppPage; contact?: AppPage }> => {
+    try {
+      const url = buildApiUrl('/app/pages');
+      const response = await fetchWithTimeout(url);
+      if (!response.ok) return {};
+      const result = await response.json();
+      return result.pages || {};
+    } catch (error) {
+      console.error('[getAppPages] Error:', error instanceof Error ? error.message : String(error));
+      return {};
+    }
+  },
 };
+
+export interface AppPage {
+  title: string;
+  content: string;
+}
