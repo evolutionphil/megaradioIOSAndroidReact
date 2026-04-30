@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -43,12 +43,26 @@ import { useEffect } from "react";
 
 function PremiumRoute() {
   const { showPaywall, hidePaywall } = usePaywall();
-  useEffect(() => { showPaywall('premium'); return () => hidePaywall(); }, [showPaywall, hidePaywall]);
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    // Navigate to Discover first so the paywall overlays real content,
+    // then open the paywall modal on top.
+    setLocation('/discover-no-user');
+    const t = setTimeout(() => showPaywall('premium'), 60);
+    return () => { clearTimeout(t); hidePaywall(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return null;
 }
 function RemoveAdsRoute() {
   const { showPaywall, hidePaywall } = usePaywall();
-  useEffect(() => { showPaywall('remove_ads'); return () => hidePaywall(); }, [showPaywall, hidePaywall]);
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation('/discover-no-user');
+    const t = setTimeout(() => showPaywall('remove_ads'), 60);
+    return () => { clearTimeout(t); hidePaywall(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return null;
 }
 

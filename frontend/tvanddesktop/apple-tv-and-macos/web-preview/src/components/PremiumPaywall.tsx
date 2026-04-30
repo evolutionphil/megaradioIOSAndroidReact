@@ -73,8 +73,11 @@ export function PremiumPaywall({ open, variant = 'premium', onClose, onPurchase 
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
-        backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
+        backgroundColor: 'rgba(0,0,0,0.55)',
+        backdropFilter: 'blur(16px) saturate(120%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(120%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        animation: 'mr-paywall-fade 0.25s ease-out',
       }}
     >
       <div
