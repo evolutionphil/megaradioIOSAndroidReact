@@ -182,8 +182,11 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
 
   // Physical keyboard support (Desktop / Electron). Delegated to the shared
   // useNativeKeyboard hook so the behaviour stays identical across pages.
+  // We listen in capture phase so we run before the internal D-pad handler
+  // (which unconditionally stopPropagation()s on every keydown).
   useNativeKeyboard({
     enabled: isOpen && !keyboardDisabled && !dropdownOpen,
+    capture: true,
     onChar: (c) => setSearchQuery(prev => prev + c),
     onBackspace: () => setSearchQuery(prev => prev.slice(0, -1)),
     onEscape: () => onClose?.(),

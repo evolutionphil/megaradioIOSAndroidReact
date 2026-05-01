@@ -23,6 +23,9 @@ interface Opts {
   enabled?: boolean;
   /** Only allow a-z0-9 when true (mimic mobile Search); default: all printable. */
   alphanumericOnly?: boolean;
+  /** Register in capture phase so we run before any bubbling D-pad listener
+      that calls stopPropagation() on every keydown. */
+  capture?: boolean;
 }
 
 export function useNativeKeyboard({
@@ -32,6 +35,7 @@ export function useNativeKeyboard({
   onEnter,
   enabled = true,
   alphanumericOnly = false,
+  capture = false,
 }: Opts) {
   useEffect(() => {
     if (!enabled) return;
@@ -82,7 +86,7 @@ export function useNativeKeyboard({
       }
     };
 
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [enabled, alphanumericOnly, onChar, onBackspace, onEscape, onEnter]);
+    window.addEventListener("keydown", handler, capture);
+    return () => window.removeEventListener("keydown", handler, capture);
+  }, [enabled, alphanumericOnly, capture, onChar, onBackspace, onEscape, onEnter]);
 }
