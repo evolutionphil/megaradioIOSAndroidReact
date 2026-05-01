@@ -61,6 +61,9 @@ class MainActivity : FragmentActivity() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean = false
             }
             webChromeClient = WebChromeClient()
+            // JS bridge: lets the web layer push "Continue Listening" updates
+            // to the native Recommendations Channel without polling.
+            addJavascriptInterface(MegaRadioBridge(this@MainActivity), "MegaRadioBridge")
             systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or

@@ -10,7 +10,34 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
-### TV/Desktop Faz 5 — Branded icons + system integrations ✅ (May 1)
+### TV/Desktop Faz 6 — JS native bridge (Continue Listening) ✅ (May 1)
+- **`src/lib/nativeBridge.ts`** — multi-target bridge that routes the
+  `nativeBridge.postContinueListening(list)` call to whichever host is
+  available: Android `MegaRadioBridge.onContinueListening(json)`, Apple
+  `webkit.messageHandlers.continueListening.postMessage(arr)`, or Electron
+  `window.megaRadioNative.postContinueListening(list)`. No-ops on plain
+  browsers (debug log only). Verified live: console fires
+  `[bridge] no native host detected (browser/web preview)` from the TV preview.
+- **`recentlyPlayedStore` integration** — every `add()` and `clear()` now
+  pipes the latest 10 items through the bridge automatically. Added a
+  `syncToNative()` boot helper that `App.tsx` calls once on mount so the
+  home-screen rails are populated even when a user reopens the app without
+  starting playback.
+- **Android `MegaRadioBridge.kt`** — JavaScript-interface receiver. Parses
+  the JSON list and hands it straight to `RecommendationsChannel.publish()`,
+  so the Google TV / Fire TV home rail updates in real time without polling.
+  Wired up via `addJavascriptInterface(MegaRadioBridge(this), "MegaRadioBridge")`
+  in `MainActivity.onCreate`.
+- **Apple TV `Coord` script handler** — `WebViewHost.makeUIView` registers
+  `WKUserContentController.add(self, name: "continueListening")`; the
+  `WKScriptMessageHandler` callback persists the list into
+  `UserDefaults(suiteName: "group.com.visiongo.megaradio")` under
+  `continue_listening_v1`, exactly the key the Top Shelf
+  `ServiceProvider.swift` reads on each appearance.
+- End-to-end flow confirmed on the TV preview: store mutation → bridge
+  detects host → host-specific dispatch → home-screen rail refreshes.
+
+
 - **Unified brand icon** — user supplied `app-icon.png` (1189×1189 brand mark
   matching iOS/Android) is now the single source. Auto-generated into every
   platform format:

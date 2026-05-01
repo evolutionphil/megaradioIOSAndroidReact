@@ -49,6 +49,8 @@ struct WebViewHost: UIViewRepresentable {
         cfg.allowsInlineMediaPlayback = true
         cfg.mediaTypesRequiringUserActionForPlayback = []
         cfg.defaultWebpagePreferences.allowsContentJavaScript = true
+        // JS bridge — `window.webkit.messageHandlers.continueListening.postMessage([...])`
+        cfg.userContentController.add(context.coordinator, name: "continueListening")
 
         let webView = WKWebView(frame: .zero, configuration: cfg)
         webView.scrollView.isScrollEnabled = false
@@ -81,7 +83,36 @@ struct WebViewHost: UIViewRepresentable {
     }
     func updateUIView(_ uiView: UIView, context: Context) {}
     func makeCoordinator() -> Coord { Coord() }
-    final class Coord { weak var webView: WKWebView? }
+
+    /// Holds the WebView reference + receives JS bridge messages. When the
+    /// web layer pushes its "Continue Listening" list we persist it into the
+    /// shared App Group so the Top Shelf extension can render it.
+    final class Coord: NSObject, WKScriptMessageHandler {
+        weak var webView: WKWebView?
+
+        func userContentController(_ controller: WKUserContentController,
+                                   didReceive message: WKScriptMessage) {
+            guard message.name == "continueListening",
+                  let arr = message.body as? [[String: Any]] else { return }
+            // Persist into the App Group used by TopShelfExtension/ServiceProvider.swift
+            guard let defaults = UserDefaults(suiteName: "group.com.visiongo.megaradio") else { return }
+            // Adapt JS field names → the Recent struct that the top-shelf reads.
+            let mapped: [[String: String]] = arr.compactMap { dict in
+                guard let id = dict["id"] as? String, !id.isEmpty,
+                      let name = dict["name"] as? String, !name.isEmpty else { return nil }
+                return [
+                    "id":        id,
+                    "name":      name,
+                    "genre":     (dict["genre"] as? String) ?? "",
+                    "streamUrl": (dict["streamUrl"] as? String) ?? "",
+                    "iconUrl":   (dict["iconUrl"] as? String) ?? "",
+                ]
+            }
+            if let data = try? JSONSerialization.data(withJSONObject: mapped) {
+                defaults.set(data, forKey: "continue_listening_v1")
+            }
+        }
+    }
 }
 
 /// Transparent focus target. `canBecomeFocused = true` lets us receive

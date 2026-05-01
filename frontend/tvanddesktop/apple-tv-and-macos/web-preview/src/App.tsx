@@ -40,6 +40,7 @@ import { CountrySelectPage } from "@/pages/CountrySelectPage";
 import { Equalizer } from "@/pages/Equalizer";
 import { PaywallProvider, usePaywall } from "@/contexts/PaywallContext";
 import { useEffect } from "react";
+import { recentlyPlayedStore } from "@/components/ContinueListeningSection";
 
 function PremiumRoute() {
   const { showPaywall, hidePaywall } = usePaywall();
@@ -216,6 +217,11 @@ function Router() {
 }
 
 function App() {
+  // On boot — push the current "Continue Listening" list to the surrounding
+  // native shell (Apple TV Top Shelf / Android TV Recommendations Channel).
+  // No-op on web preview where no native bridge exists.
+  useEffect(() => { recentlyPlayedStore.syncToNative(); }, []);
+
   return (
     <AccessibilityProvider>
       <HelpProvider>

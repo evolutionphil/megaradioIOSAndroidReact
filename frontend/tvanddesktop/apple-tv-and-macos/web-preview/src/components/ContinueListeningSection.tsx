@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { assetPath } from '@/lib/assetPath';
+import { nativeBridge, type BridgeStation } from '@/lib/nativeBridge';
 
 export interface RecentStation {
   _id: string;
@@ -11,11 +12,21 @@ export interface RecentStation {
   favicon?: string;
   country?: string;
   tags?: string[];
+  streamUrl?: string;
   playedAt: number;
 }
 
 const STORAGE_KEY = 'recently_played_v1';
 const MAX_ITEMS = 12;
+
+const toBridge = (list: RecentStation[]): BridgeStation[] => list.slice(0, 10).map(s => ({
+  id:          s._id,
+  name:        s.name,
+  genre:       s.tags?.[0],
+  streamUrl:   s.streamUrl ?? '',
+  iconUrl:     s.favicon ?? '',
+  description: s.country,
+}));
 
 export const recentlyPlayedStore = {
   add(station: Omit<RecentStation, 'playedAt'>) {
@@ -23,8 +34,11 @@ export const recentlyPlayedStore = {
       const list: RecentStation[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       const filtered = list.filter(s => s._id !== station._id);
       filtered.unshift({ ...station, playedAt: Date.now() });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered.slice(0, MAX_ITEMS)));
+      const next = filtered.slice(0, MAX_ITEMS);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       window.dispatchEvent(new CustomEvent('mr:recently-played-changed'));
+      // Push to native shells (Apple TV Top Shelf, Android TV Recommendations).
+      nativeBridge.postContinueListening(toBridge(next));
     } catch {}
   },
   getAll(): RecentStation[] {
@@ -34,6 +48,12 @@ export const recentlyPlayedStore = {
   clear() {
     localStorage.removeItem(STORAGE_KEY);
     window.dispatchEvent(new CustomEvent('mr:recently-played-changed'));
+    nativeBridge.postContinueListening([]);
+  },
+  /** Called once at app boot so the home-screen rails are populated even if
+   *  the user re-opens the app without playing anything new. */
+  syncToNative() {
+    try { nativeBridge.postContinueListening(toBridge(this.getAll())); } catch {}
   },
 };
 
