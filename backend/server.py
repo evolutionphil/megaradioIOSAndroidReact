@@ -369,6 +369,27 @@ async def tv_api_proxy(path: str, request: Request):
         return Response(content=b'{"error":"proxy_failed"}', status_code=502, media_type="application/json")
 
 
+@app.get("/api/tv-icon-proxy")
+async def tv_icon_proxy(url: str):
+    """HTTPS proxy for station favicons served over HTTP. Silences the
+    Mixed-Content warnings the TV/Electron shell logs for ~10 legacy icons.
+    Cached aggressively (24h) since station logos change maybe once a year."""
+    import urllib.parse
+    decoded = urllib.parse.unquote(url)
+    if not (decoded.startswith("http://") or decoded.startswith("https://")):
+        return Response(content=b'bad upstream', status_code=400)
+    try:
+        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True,
+                                    headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
+            r = await cli.get(decoded)
+            ct = r.headers.get("content-type", "image/png").split(";")[0].strip() or "image/png"
+            return Response(content=r.content, status_code=r.status_code,
+                            media_type=ct, headers={"Cache-Control": "public, max-age=86400"})
+    except Exception as e:
+        logger.debug(f"tv-icon-proxy failed for {decoded}: {e}")
+        return Response(content=b'', status_code=502)
+
+
 # Stream proxy — lets HTTPS pages (including Electron desktop) play HTTP-only
 # radio streams without running into mixed-content blocks. Streams bytes through
 # without buffering so there's no added latency. Also strips ICY headers so the

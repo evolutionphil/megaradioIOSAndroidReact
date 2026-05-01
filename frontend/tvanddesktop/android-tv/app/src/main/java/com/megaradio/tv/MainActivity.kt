@@ -1,8 +1,10 @@
 package com.megaradio.tv
 
 import android.annotation.SuppressLint
+import android.app.SearchManager
+import android.content.Intent
 import android.graphics.Color
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -65,10 +67,47 @@ class MainActivity : FragmentActivity() {
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_FULLSCREEN
-            loadUrl(BuildConfigExtras.TV_WEB_URL)
+            loadUrl(intentToUrl(intent) ?: BuildConfigExtras.TV_WEB_URL)
         }
 
         setContentView(webView)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Hot-route Assistant SEARCH / deep-links without recreating the WebView.
+        intentToUrl(intent)?.let { webView.loadUrl(it) }
+    }
+
+    /**
+     * Converts the incoming intent into a deep-link URL that the web layer's
+     * `window.__MR_HANDLE_DEEP_LINK__` helper already knows how to open.
+     *
+     *   SEARCH(jazz)                → https://…/tv#/search?q=jazz
+     *   VIEW megaradio://play?…     → https://…/tv#/play/<stationId>
+     *   VIEW megaradio://genre/jazz → https://…/tv#/genres/jazz
+     */
+    private fun intentToUrl(intent: Intent?): String? {
+        if (intent == null) return null
+        val base = BuildConfigExtras.TV_WEB_URL.removeSuffix("/")
+        return when (intent.action) {
+            Intent.ACTION_SEARCH -> {
+                val q = intent.getStringExtra(SearchManager.QUERY).orEmpty()
+                if (q.isBlank()) null else "$base#/search?q=${Uri.encode(q)}"
+            }
+            Intent.ACTION_VIEW -> {
+                val data = intent.data ?: return null
+                if (data.scheme != "megaradio") return null
+                when (data.host) {
+                    "play"   -> data.getQueryParameter("station")?.let { "$base#/play/$it" }
+                    "genre"  -> data.pathSegments.firstOrNull()?.let { "$base#/genres/$it" }
+                    "home"   -> base
+                    "search" -> data.getQueryParameter("q")?.let { "$base#/search?q=${Uri.encode(it)}" }
+                    else     -> null
+                }
+            }
+            else -> null
+        }
     }
 
     /**

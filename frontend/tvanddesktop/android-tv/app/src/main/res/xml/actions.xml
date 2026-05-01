@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    MegaRadio — Google Assistant / Android TV App Actions
+    Declares that MegaRadio can handle the PLAY_MEDIA built-in intent so the
+    user can say "Hey Google, play jazz on MegaRadio" / "...play Radio
+    Paradise on MegaRadio" anywhere on Android TV, Google TV, or a phone.
+
+    Referenced from AndroidManifest.xml:
+        <meta-data android:name="com.google.android.actions"
+                   android:resource="@xml/actions" />
+-->
+<actions>
+    <action intentName="actions.intent.PLAY_MEDIA">
+        <fulfillment urlTemplate="megaradio://search?q={name}">
+            <parameter-mapping intentParameter="mediaItem.name" urlParameter="name" />
+        </fulfillment>
+
+        <fulfillment urlTemplate="megaradio://genre/{genre}">
+            <parameter-mapping intentParameter="mediaItem.@type" required="true" values="MusicGroup|Playlist" />
+            <parameter-mapping intentParameter="mediaItem.genre" urlParameter="genre" required="true" />
+        </fulfillment>
+    </action>
+</actions>

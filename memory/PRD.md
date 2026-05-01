@@ -10,7 +10,40 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
-### TV/Desktop Faz 4 — Stream metadata, polish & native shells ✅ (May 1)
+### TV/Desktop Faz 5 — Branded icons + system integrations ✅ (May 1)
+- **Unified brand icon** — user supplied `app-icon.png` (1189×1189 brand mark
+  matching iOS/Android) is now the single source. Auto-generated into every
+  platform format:
+  - Desktop: `desktop/build/icon.png` (512×512), `icon.ico` (multi-size),
+    `icon-1024.png`
+  - Android TV: all `mipmap-*/ic_launcher[_round].png` densities +
+    `drawable-xhdpi/tv_banner.png` (320×180)
+  - Apple TV: `ios-tvos/Brand/AppIcon-Large-2400x1440.png`,
+    `AppIcon-Small-400x240.png`, `TopShelf-1920x720.png`,
+    `TopShelfWide-2320x720.png`
+  - TV web: `logo.png` refreshed so in-app splash matches
+- **`/api/tv-icon-proxy`** — HTTPS proxy for HTTP-only station favicons. 24h
+  cache header, falls back to 502 on upstream error. Killed the last batch of
+  Mixed-Content warnings in Electron.
+- **Apple TV — Top Shelf Extension** (`TopShelfExtension/ServiceProvider.swift`)
+  — reads the "Continue Listening" list from the shared App Group and
+  surfaces it as a sectioned top-shelf rail on the tvOS home screen.
+- **Apple TV — Siri INPlayMediaIntent** (`IntentsExtension/IntentHandler.swift`)
+  — "Hey Siri, play jazz on MegaRadio" resolves against the station catalog
+  and launches the main app via deep-link `megaradio://play?station=…`.
+- **Apple TV — ShazamKit** (`ShazamRecognizer.swift`) — samples the live
+  stream for up to 12s, posts match back to the web layer as
+  `window.__MR_SHAZAM_MATCH__({title, artist, artworkUrl})`.
+- **Android TV — Recommendations Channel** (`channels/RecommendationsChannel.kt`)
+  — publishes the "Continue Listening" preview programs under the home screen
+  channel. Auto-creates the channel on first launch + refreshes via JS bridge.
+- **Android TV — Google Assistant + deep-links** — `SEARCH` intent filter,
+  `megaradio://` `VIEW` scheme (`play`, `genre`, `search`, `home`), App
+  Actions `actions.xml` with `PLAY_MEDIA` fulfillments.  `MainActivity`
+  translates every intent into a TV-web hash route without recreating the
+  WebView. `searchable.xml` enables voice-search prompt.
+
+
 - **ICY metadata via SSE** — new `/api/stream-metadata?url=…` backend endpoint
   parses StreamTitle from the upstream radio stream and streams live updates to
   browser clients via Server-Sent Events. `GlobalPlayerContext.tsx` subscribes
