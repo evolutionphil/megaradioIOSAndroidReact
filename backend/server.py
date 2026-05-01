@@ -375,24 +375,59 @@ async def tv_api_proxy(path: str, request: Request):
 # audio element treats it as a normal stream (ICY is parsed by the native shell).
 @app.get("/api/stream-proxy")
 async def stream_proxy(url: str):
-    """Proxy an upstream radio stream so HTTPS clients can play HTTP sources."""
+    """Proxy an upstream radio stream so HTTPS clients can play HTTP sources.
+    Strips ICY metadata from the byte stream and serves pure audio so the
+    browser <audio> element can play it without confusion. Use the
+    /api/stream-metadata SSE endpoint in parallel to receive StreamTitle
+    updates as the upstream embeds them (same source, same upstream call)."""
     import urllib.parse
     from fastapi.responses import StreamingResponse
     decoded = urllib.parse.unquote(url)
-    # Safety: only allow http/https upstream
     if not (decoded.startswith("http://") or decoded.startswith("https://")):
         return Response(content=b'bad upstream', status_code=400)
 
     async def body_iter():
-        async with httpx.AsyncClient(timeout=None, follow_redirects=True, headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
+        # Ask upstream for ICY metadata so we can strip it.
+        async with httpx.AsyncClient(timeout=None, follow_redirects=True,
+                                    headers={"User-Agent": "MegaRadio-TV/1.0",
+                                             "Icy-MetaData": "1"}) as cli:
             async with cli.stream("GET", decoded) as upstream:
-                async for chunk in upstream.aiter_bytes(chunk_size=16 * 1024):
-                    yield chunk
+                metaint_header = upstream.headers.get("icy-metaint")
+                metaint = int(metaint_header) if metaint_header and metaint_header.isdigit() else 0
 
-    # Probe content-type via a HEAD-like request (first chunk)
+                if metaint == 0:
+                    # No ICY metadata — just pass audio through.
+                    async for chunk in upstream.aiter_bytes(chunk_size=16 * 1024):
+                        yield chunk
+                    return
+
+                # ICY present — strip metadata and yield only audio bytes.
+                buf = bytearray()
+                audio_since_meta = 0
+                async for chunk in upstream.aiter_bytes(chunk_size=4 * 1024):
+                    buf.extend(chunk)
+                    while buf:
+                        remaining = metaint - audio_since_meta
+                        if remaining > 0:
+                            take = min(remaining, len(buf))
+                            yield bytes(buf[:take])
+                            del buf[:take]
+                            audio_since_meta += take
+                            if audio_since_meta < metaint:
+                                break
+                        # At metadata boundary. First byte = length / 16.
+                        if len(buf) < 1:
+                            break
+                        meta_len = buf[0] * 16
+                        if len(buf) < 1 + meta_len:
+                            break  # need more bytes
+                        del buf[:1 + meta_len]   # discard meta
+                        audio_since_meta = 0
+
     media_type = "audio/mpeg"
     try:
-        async with httpx.AsyncClient(timeout=6.0, follow_redirects=True, headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
+        async with httpx.AsyncClient(timeout=6.0, follow_redirects=True,
+                                    headers={"User-Agent": "MegaRadio-TV/1.0"}) as cli:
             async with cli.stream("GET", decoded) as probe:
                 media_type = probe.headers.get("content-type", "audio/mpeg").split(";")[0].strip() or "audio/mpeg"
                 if media_type.startswith("application/ogg"):
@@ -401,6 +436,79 @@ async def stream_proxy(url: str):
         pass
 
     return StreamingResponse(body_iter(), media_type=media_type)
+
+
+@app.get("/api/stream-metadata")
+async def stream_metadata(url: str):
+    """Server-Sent Events endpoint that parses ICY metadata from the upstream
+    stream and emits StreamTitle updates as they arrive. Same approach the
+    iOS/Android apps use, but implemented server-side so browser clients
+    (TV / Desktop / Electron) get it without any extra API on the user's side."""
+    import urllib.parse
+    import re
+    from fastapi.responses import StreamingResponse
+    decoded = urllib.parse.unquote(url)
+    if not (decoded.startswith("http://") or decoded.startswith("https://")):
+        return Response(content=b'bad upstream', status_code=400)
+
+    async def events():
+        last_title = None
+        try:
+            async with httpx.AsyncClient(timeout=None, follow_redirects=True,
+                                        headers={"User-Agent": "MegaRadio-TV/1.0",
+                                                 "Icy-MetaData": "1"}) as cli:
+                async with cli.stream("GET", decoded) as upstream:
+                    metaint_header = upstream.headers.get("icy-metaint")
+                    metaint = int(metaint_header) if metaint_header and metaint_header.isdigit() else 0
+                    if metaint == 0:
+                        yield b"event: nometa\ndata: {}\n\n"
+                        return
+
+                    audio_since_meta = 0
+                    buf = bytearray()
+                    async for chunk in upstream.aiter_bytes(chunk_size=4 * 1024):
+                        buf.extend(chunk)
+                        while buf:
+                            remaining = metaint - audio_since_meta
+                            if remaining > 0:
+                                take = min(remaining, len(buf))
+                                del buf[:take]
+                                audio_since_meta += take
+                                if audio_since_meta < metaint:
+                                    break
+                            if len(buf) < 1:
+                                break
+                            meta_len = buf[0] * 16
+                            if len(buf) < 1 + meta_len:
+                                break
+                            meta_bytes = bytes(buf[1:1 + meta_len])
+                            del buf[:1 + meta_len]
+                            audio_since_meta = 0
+                            # Parse StreamTitle='Artist - Title';
+                            try:
+                                text = meta_bytes.decode("utf-8", errors="replace").rstrip("\x00 ")
+                            except Exception:
+                                text = ""
+                            m = re.search(r"StreamTitle='([^']*)'", text)
+                            if m:
+                                title = m.group(1).strip()
+                                if title and title != last_title:
+                                    last_title = title
+                                    # Simple "Artist - Title" split
+                                    if " - " in title:
+                                        artist, song = title.split(" - ", 1)
+                                    else:
+                                        artist, song = "", title
+                                    import json as _json
+                                    payload = _json.dumps({"title": song, "artist": artist, "raw": title})
+                                    yield f"data: {payload}\n\n".encode("utf-8")
+        except Exception as e:
+            logger.debug(f"stream-metadata ended for {decoded}: {e}")
+
+    return StreamingResponse(events(), media_type="text/event-stream", headers={
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+    })
 
 
 # Stream resolve — returns the final redirected URL + content-type without

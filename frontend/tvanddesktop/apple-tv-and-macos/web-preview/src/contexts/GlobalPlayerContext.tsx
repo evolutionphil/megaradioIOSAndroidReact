@@ -203,21 +203,42 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Fetch metadata for current station
-  // NOTE: Disabled because the backend /api/stations/:id/metadata endpoint
-  // is not implemented. We rely on ICY metadata parsed directly from the
-  // audio stream (see playerInstance.onMetadata) — same approach as the
-  // iOS / Android mobile apps. Re-enable this polling only if/when the
-  // backend exposes a real metadata endpoint.
+  // ICY metadata via SSE — server parses StreamTitle from the upstream
+  // and streams it to us. Same result as iOS/Android native ICY parsing,
+  // no custom API needed on themegaradio.com backend.
   useEffect(() => {
     if (!currentStation || !isPlaying) {
       setNowPlayingMetadata(null);
+      return;
     }
+    const rawUrl = currentStation.url || (currentStation as any).streamUrl;
+    if (!rawUrl) return;
+
+    const metaUrl = `/api/stream-metadata?url=${encodeURIComponent(rawUrl)}`;
+    let es: EventSource | null = null;
+    try {
+      es = new EventSource(metaUrl);
+      es.onmessage = (evt) => {
+        try {
+          const data = JSON.parse(evt.data);
+          // Prefer "Artist - Title" when both present, else whichever has content.
+          const disp = data.artist && data.title
+            ? `${data.artist} - ${data.title}`
+            : (data.title || data.artist || data.raw || '').trim();
+          if (disp) setNowPlayingMetadata(disp);
+        } catch (_) { /* non-JSON event (e.g. nometa) */ }
+      };
+      es.addEventListener('nometa', () => { /* upstream has no ICY */ });
+      es.onerror = () => {
+        // EventSource auto-reconnects; do nothing unless we want a fallback.
+      };
+    } catch (_) {
+      /* EventSource unsupported — unlikely on any modern Electron/Chromium */
+    }
+
     return () => {
-      if (metadataIntervalRef.current) {
-        clearInterval(metadataIntervalRef.current);
-        metadataIntervalRef.current = null;
-      }
+      if (es) es.close();
+      setNowPlayingMetadata(null);
     };
   }, [currentStation, isPlaying]);
 
