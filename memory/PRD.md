@@ -10,6 +10,37 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
+### TV/Desktop Faz 4 — Stream metadata, polish & native shells ✅ (May 1)
+- **ICY metadata via SSE** — new `/api/stream-metadata?url=…` backend endpoint
+  parses StreamTitle from the upstream radio stream and streams live updates to
+  browser clients via Server-Sent Events. `GlobalPlayerContext.tsx` subscribes
+  with `EventSource`; Now-Playing text updates identically to the mobile app,
+  no external API required. Verified live with `stream.radioparadise.com/mp3-192`.
+- **Discover page alignment** — first horizontal list ("Popular Genres") now
+  lines up vertically with the "Discover" sidebar icon at y≈200, as requested.
+- **Mouse drag-to-scroll** (Windows/Linux) — new `useDragScroll` pointer-based
+  hook on every horizontal list (recently played, for-you, genres). Drops
+  `setPointerCapture` in favour of window-level `pointermove/up` so Electron
+  + Chromium + Playwright all track drag distance correctly. Plain clicks on
+  station cards still work (6-px lift threshold + click swallow).
+- **Global native keyboard** — new `useNativeKeyboard` hook with optional
+  capture-phase registration. Applied to Search page (alphanumeric-only) and
+  CountrySelector modal (full printable range). Users can start typing
+  without clicking any field.
+- **Apple TV native shell** (`apple-tv-and-macos/ios-tvos/MegaRadioTVApp.swift`)
+  — SwiftUI + WKWebView + `RemoteFocusView` forwarding Siri-remote presses to
+  synthetic DOM `KeyboardEvent`s so the shared spatial-nav engine works
+  unchanged. Background-audio / AirPlay / PiP capabilities wired in `init()`.
+- **Android TV native shell** (`android-tv/app/`) — full Kotlin project:
+  `MainActivity` with leanback-launcher intent filter, fullscreen WebView,
+  `dispatchKeyEvent` passthrough for D-pad / Media / Color / Back / Channel
+  buttons. Builds AAB + APK via `./gradlew :app:bundleRelease`.
+- **Desktop EXE / DMG / AppImage** — Electron-builder config finalised in
+  `desktop/package.json`; window icon + installer icon + brand icon use the
+  MegaRadio logo (`logo.png` 1024×1024 → auto-generated `build/icon.ico`,
+  `build/icon.png`). `yarn build:win / :mac / :linux` produces shippable
+  distributables.
+
 ### TV/Desktop Faz 1A — Apple TV + macOS web preview ✅
 - Pixel-perfect 1:1 with Tizen/webOS source
 - All 12+ pages working: Splash, Login, 4 Onboarding guides, Discover, Genres, GenreList, Search, Favorites, Country select, Settings, RadioPlaying
