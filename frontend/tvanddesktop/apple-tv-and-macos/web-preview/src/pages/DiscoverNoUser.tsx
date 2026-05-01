@@ -19,6 +19,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 export const DiscoverNoUser = (): JSX.Element => {
   const { t } = useLocalization();
@@ -44,6 +45,12 @@ export const DiscoverNoUser = (): JSX.Element => {
   const genreScrollRef = useRef<HTMLDivElement>(null);
   const recentScrollRef = useRef<HTMLDivElement>(null);
   const forYouScrollRef = useRef<HTMLDivElement>(null);
+
+  // Mouse drag-to-scroll for horizontal lists (Windows / Linux where there are
+  // no scrollbars and no trackpad-swipe). Mac trackpad swipe still works.
+  useDragScroll(recentScrollRef);
+  useDragScroll(forYouScrollRef);
+  useDragScroll(genreScrollRef);
   const [recentStations, setRecentStations] = useState<Station[]>([]);
   const [forYouStations, setForYouStations] = useState<Station[]>([]);
   const lastScrollY = useRef(0);
@@ -1088,13 +1095,14 @@ export const DiscoverNoUser = (): JSX.Element => {
       {/* Fixed Left Sidebar */}
       <Sidebar activePage="discover" isFocused={helpFocused ? () => false : isFocused} getFocusClasses={getFocusClasses} isHelpFocused={helpFocused} />
 
-      {/* Scrollable Content Area - Moves to top when header hides */}
+      {/* Scrollable Content Area - Top aligned with sidebar "Discover" item (170px) so
+          the first horizontal list visually lines up with the first sidebar icon. */}
       <div 
         ref={scrollContainerRef}
         className="absolute left-[162px] w-[1758px] overflow-y-auto overflow-x-hidden z-1 scrollbar-hide transition-all duration-300 ease-in-out"
         style={{
-          top: showHeader ? '242px' : '64px',
-          height: showHeader ? '838px' : '1016px'
+          top: showHeader ? '170px' : '64px',
+          height: showHeader ? '910px' : '1016px'
         }}
       >
         <div 

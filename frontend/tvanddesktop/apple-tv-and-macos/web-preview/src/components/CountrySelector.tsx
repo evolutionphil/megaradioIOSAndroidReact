@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { megaRadioApi } from '@/services/megaRadioApi';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import { assetPath } from '@/lib/assetPath';
+import { useNativeKeyboard } from '@/hooks/useNativeKeyboard';
 
 interface Country {
   name: string;
@@ -179,29 +180,14 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
     }
   }, [searchQuery]);
 
-  // Physical keyboard support (Desktop / Electron). Lets the user type
-  // letters / space / backspace on a Mac / Windows keyboard. Works alongside
-  // D-pad navigation for the on-screen tiles.
-  useEffect(() => {
-    if (!isOpen || keyboardDisabled) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (dropdownOpen) return;
-      const k = e.key;
-      // Allow a wide set of printable characters so non-Latin layouts work too
-      if (k.length === 1 && k !== 'Tab' && /[^\u0000-\u001F]/.test(k) && !e.ctrlKey && !e.metaKey) {
-        e.preventDefault();
-        setSearchQuery(prev => prev + k);
-      } else if (k === 'Backspace') {
-        e.preventDefault();
-        setSearchQuery(prev => prev.slice(0, -1));
-      } else if (k === 'Escape') {
-        e.preventDefault();
-        onClose?.();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, keyboardDisabled, dropdownOpen, onClose]);
+  // Physical keyboard support (Desktop / Electron). Delegated to the shared
+  // useNativeKeyboard hook so the behaviour stays identical across pages.
+  useNativeKeyboard({
+    enabled: isOpen && !keyboardDisabled && !dropdownOpen,
+    onChar: (c) => setSearchQuery(prev => prev + c),
+    onBackspace: () => setSearchQuery(prev => prev.slice(0, -1)),
+    onEscape: () => onClose?.(),
+  });
 
   useEffect(() => {
     if (focusZone !== 'list' || !scrollContainerRef.current || filteredCountries.length === 0) return;

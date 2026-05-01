@@ -38,7 +38,7 @@ function createWindow() {
     useContentSize: true,
     backgroundColor: '#0E0E0E',
     title: 'MegaRadio',
-    icon: path.join(__dirname, '..', 'renderer', 'images', 'icon.png'),
+    icon: path.join(__dirname, '..', 'build', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     webPreferences: {
       contextIsolation: true,

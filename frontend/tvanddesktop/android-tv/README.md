@@ -1,61 +1,77 @@
 # MegaRadio Android TV / Google TV / Fire TV
 
-> **Status (Faz 2)**: ✅ Web preview shared with Apple TV — pixel-perfect.
+**Status**: ✅ Kotlin project scaffolded — open in Android Studio Flamingo+
+and run on an Android TV / Fire TV emulator or device.
 
-## Same Web Bundle as Apple TV
+The app is a thin Leanback-launcher shell that hosts a fullscreen `WebView`
+pointed at the same TV web bundle used by Apple TV, Samsung Tizen and webOS.
+Changing something in
+`../apple-tv-and-macos/web-preview/` updates every TV shell simultaneously.
 
-Both Apple TV and Android TV share the **identical** React + TS + Vite bundle
-(`../apple-tv-and-macos/web-preview/`). On Android TV the renderer is wrapped
-in a Leanback-launcher Activity hosting a fullscreen `WebView`.
+## Project layout
 
-Symlinks: `web-preview/src` and `web-preview/public` point to the Apple TV source.
-This guarantees feature parity by construction — change once, both targets pick it up.
-
-## Native Shell (Faz 2A — needs Android Studio)
-
-```kotlin
-// MainActivity.kt
-class MainActivity : FragmentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val webView = WebView(this).apply {
-            settings.javaScriptEnabled = true
-            settings.mediaPlaybackRequiresUserGesture = false
-            settings.domStorageEnabled = true
-            loadUrl("https://themegaradio.com/tv")
-        }
-        setContentView(webView)
-    }
-
-    // D-pad → JS keyboard events
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        // Forward DPAD_UP/DOWN/LEFT/RIGHT/CENTER + COLOR buttons to web layer
-        return super.dispatchKeyEvent(event)
-    }
-}
+```
+android-tv/
+├── build.gradle.kts           – root (plugin versions)
+├── settings.gradle.kts
+├── gradle.properties
+└── app/
+    ├── build.gradle.kts       – app module
+    └── src/main/
+        ├── AndroidManifest.xml          – Leanback launcher + TV feature flags
+        ├── java/com/megaradio/tv/
+        │   ├── MainActivity.kt          – WebView host, D-pad forwarding
+        │   └── BuildConfigExtras.kt     – TV_WEB_URL constant
+        └── res/
+            ├── values/strings.xml
+            ├── values/themes.xml
+            ├── values/colors.xml
+            ├── drawable/README_BANNER.md  – how to add TV banner + icons
+            └── mipmap-*/                  – add launcher icons here
 ```
 
-### AndroidManifest.xml
-```xml
-<uses-feature android:name="android.software.leanback" android:required="true" />
-<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+## Build an APK / AAB
 
-<application android:banner="@drawable/banner">
-  <activity android:name=".MainActivity" android:exported="true">
-    <intent-filter>
-      <action android:name="android.intent.action.MAIN" />
-      <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-    </intent-filter>
-  </activity>
-</application>
+```bash
+# First time
+cd /app/frontend/tvanddesktop/android-tv
+
+# Supply Gradle wrapper (one-time; Android Studio does this automatically)
+gradle wrapper --gradle-version 8.7 --distribution-type all
+
+# Debug APK for sideloading to a Fire TV / Shield / Mi Stick
+./gradlew :app:assembleDebug
+#   ⇒ app/build/outputs/apk/debug/app-debug.apk
+
+# Release AAB for Google Play (TV)
+./gradlew :app:bundleRelease
+#   ⇒ app/build/outputs/bundle/release/app-release.aab
 ```
 
-## Color buttons (Android TV-only)
+## MegaRadio brand icon & TV banner
 
-The web bundle already handles `KeyEvent.KEYCODE_PROG_RED/GREEN/YELLOW/BLUE`
-via `public/js/tv-remote-keys.js`. No additional native code required.
+See `app/src/main/res/drawable/README_BANNER.md` for exact pixel sizes.
+Shortcut via Android Studio:
+
+1. File → New → Image Asset → **Launcher Icons (Adaptive)**
+2. Foreground: `../../apple-tv-and-macos/web-preview/public/images/logo.png`
+3. Background: solid `#0E0E0E`
+4. Finish — Studio fills in every `mipmap-*` folder automatically.
+5. Repeat with "TV Banner" → writes `drawable-xhdpi/tv_banner.png`.
+
+## D-pad & media key forwarding
+
+`MainActivity.dispatchKeyEvent()` hands every remote keypress — D-pad, Enter,
+Back, media keys, Fire TV / Android TV color buttons (red/green/yellow/blue),
+channel up/down — directly to the WebView. The existing
+`public/js/tv-remote-keys.js` handler inside the shared web bundle already
+knows how to translate those into in-app focus moves, so we get spatial
+navigation out of the box with zero extra Kotlin work.
 
 ## Stores
-- Google Play TV — bundle: `com.megaradio.tv`
-- Amazon Appstore (Fire TV) — same APK with Amazon-specific TV banner
-- Hisense Vidaa — TWA-style packaging (Faz 2B)
+
+| Store              | Target              | Package                  |
+|--------------------|---------------------|--------------------------|
+| Google Play (TV)   | AAB, leanback       | `com.megaradio.tv`       |
+| Amazon Appstore    | Same APK, Fire TV   | `com.megaradio.tv`       |
+| Hisense Vidaa      | TWA wrapper (Faz 3) | `com.megaradio.tv.vidaa` |

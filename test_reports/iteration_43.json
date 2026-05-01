@@ -1,0 +1,58 @@
+{
+  "summary": "Tested TV/Desktop additions: backend SSE/proxy/resolve endpoints, /api/tv-app/ static mount, layout alignment of Discover sidebar vs Popular Genres row, native keyboard support on Search and CountrySelector, mouse drag-to-scroll on horizontal lists. Backend 7/7 tests pass. Frontend: layout + Search keyboard work; CountrySelector native keyboard does not filter; drag-to-scroll appears wired but yields only ~8 px movement under Playwright (verify manually).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "CountrySelector",
+        "issue": "Typing on physical keyboard while the country modal is open does NOT update the search query (placeholder 'Search countries' remained, count still 219). Search keyboard works on Search page, so isolated to CountrySelector. Likely cause: the modal's own window 'keydown' listener at lines 248-… calls e.stopPropagation() on every key; while stopPropagation alone shouldn't block sibling window listeners, the order of registration combined with React state batching may be silently dropping the onChar callback. Worth verifying that useNativeKeyboard's handler is actually firing inside the open modal, and consider switching the inner handler to capture phase or removing the unconditional stopPropagation for letter keys.",
+        "selector": "input placeholder='Search countries'",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Mouse drag-to-scroll on horizontal lists",
+        "issue": "useDragScroll hook is wired (scrollLeft of the Popular Genres row did move from 0 → 8 after a 285 px Playwright drag, indicating the pointerdown/pointermove path is reached), but the resulting scroll distance is far less than the dragged distance. Either Playwright's synthetic pointer events do not match real-mouse semantics, or the `setPointerCapture` call inside the hook is causing pointermove events to stop being delivered to the same element after capture. Manual verification on a real Windows/macOS desktop is recommended; if real-mouse drag also stalls, consider not calling setPointerCapture and instead listening at window level once `moved` is true.",
+        "affected_selectors": ["Popular Genres row, recently-played row, for-you row"]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Discover (TV)",
+        "issues": [
+          "Layout alignment between sidebar Discover icon and Popular Genres row is correct: Popular Genres header rect top=170 height=48 (bottom=218); Discover icon center sits ~y=200 — visually well-aligned in the 1920x1080 design as requested.",
+          "Many station logos are still HTTP — the page generates Mixed-Content warnings (auto-upgraded to HTTPS by Chrome) for ~10 favicons. Consider proxying through /api/tv-proxy/icon to silence these warnings on Electron/desktop."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_tv_desktop_endpoints.py",
+    "/app/test_reports/pytest/tv_desktop.xml"
+  ],
+  "action_items": [
+    "Fix CountrySelector native keyboard: typing does not update searchQuery while modal is open. Confirm useNativeKeyboard handler runs (add temporary console.log on onChar) and check whether the modal's own keydown listener is racing with it / removing the listener too eagerly.",
+    "Verify mouse drag-to-scroll on a real desktop browser (Playwright shows only ~8 px scroll for 285 px drag). If real-mouse drag also stalls, drop setPointerCapture() in useDragScroll and rely on window-level pointermove/up listeners after moved=true.",
+    "Optional: route HTTP station favicons through an HTTPS proxy to remove Mixed-Content warnings on the TV preview."
+  ],
+  "critical_code_review_comments": [
+    "/api/stream-metadata SSE endpoint correctly parses ICY metadata, dedupes via last_title, splits 'Artist - Title' on ' - '. Confirmed live with stream.radioparadise.com/mp3-192 (data event arrived in well under 30 s).",
+    "/api/stream-proxy strips ICY frames via metaint and returns 'audio/mpeg' content-type — works.",
+    "/api/stream-resolve returns ok/final_url/content_type as expected; bad-scheme path returns ok=false with 200.",
+    "useNativeKeyboard hook correctly skips when target is INPUT/TEXTAREA/contentEditable and respects modifier keys; alphanumericOnly path works on Search page.",
+    "useDragScroll uses pointer events with a 6 px lift threshold and swallows the post-drag click — design is correct, but the setPointerCapture call may cause issues on some browsers/synthetic pointer drivers.",
+    "CountrySelector contains a global window 'keydown' listener (line 251) that calls e.stopPropagation() unconditionally — this is the most plausible reason native typing fails inside the modal even though both listeners share the same phase."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_tv_desktop_endpoints.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "70%"},
+  "seed_data_creation": "None — used live RadioParadise ICY stream for SSE/proxy validation.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend additions for TV/Desktop are fully working (test file at /app/backend/tests/test_tv_desktop_endpoints.py, 7/7 pass). The TV preview is served at {BACKEND_URL}/api/tv-app/ — onboarding overlay needs Enter*5 then Escape to dismiss. After main agent fixes CountrySelector keyboard and drag-to-scroll, retest by: (1) opening /api/tv-app/, dismissing onboarding, (2) clicking the 'United States' chip top-right to open CountrySelector, (3) typing 'ger' on the keyboard — Germany should be filtered and the search input should show 'ger'. Also (4) on the Discover page, verify a slow mouse drag from right→left on the Popular Genres pill row scrolls the row by the dragged distance, and (5) a single click on a station card still navigates."
+}

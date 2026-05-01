@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MegaRadioTV" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/megaradio_bg</item>
+        <item name="android:statusBarColor">@color/megaradio_bg</item>
+        <item name="android:navigationBarColor">@color/megaradio_bg</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+</resources>

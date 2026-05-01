@@ -23,28 +23,55 @@
   "build": {
     "appId": "com.visiongo.megaradio.desktop",
     "productName": "MegaRadio",
+    "copyright": "© ${new Date().getFullYear()} MegaRadio",
     "asar": true,
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "files": [
       "electron/**/*",
       "renderer/**/*",
-      "package.json"
+      "package.json",
+      "!node_modules/**/*.md",
+      "!node_modules/**/test/**",
+      "!node_modules/**/*.map"
     ],
     "linux": {
       "category": "AudioVideo",
-      "icon": "renderer/images/icon.png",
-      "target": ["AppImage", "deb"]
+      "icon": "build/icon.png",
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb", "arch": ["x64"] }
+      ]
     },
     "win": {
-      "icon": "renderer/images/icon.png",
-      "target": ["nsis", "portable"]
+      "icon": "build/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MegaRadio",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
     },
     "mac": {
-      "icon": "renderer/images/icon.png",
+      "icon": "build/icon.png",
       "category": "public.app-category.music",
-      "target": ["dmg"]
+      "target": [
+        { "target": "dmg", "arch": ["universal"] }
+      ]
+    },
+    "dmg": {
+      "title": "MegaRadio",
+      "icon": "build/icon.png"
     }
   }
 }

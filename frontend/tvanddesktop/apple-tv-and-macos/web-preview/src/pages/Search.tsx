@@ -10,6 +10,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { Sidebar } from "@/components/Sidebar";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
+import { useNativeKeyboard } from "@/hooks/useNativeKeyboard";
 
 interface KeyboardLayout {
   id: string;
@@ -246,31 +247,15 @@ export const Search = (): JSX.Element => {
     }
   }, []);
 
-  // Physical keyboard support (Desktop / Electron). Lets the user simply
-  // type letters / space / backspace on a Mac / Windows keyboard instead of
-  // clicking every on-screen tile. D-pad navigation remains unchanged.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      // Ignore if any modal / help overlay is open
-      if (helpOpenRef.current || dropdownOpen) return;
-      // Ignore while the language-dropdown has focus (D-pad only)
-      if (focusZone === 'langDropdown') return;
-      // Skip when arrows/enter — those are already handled by the D-pad engine
-      const k = e.key;
-      if (k.length === 1 && /^[a-zA-Z0-9]$/.test(k)) {
-        e.preventDefault();
-        setSearchQuery(prev => prev + k.toLowerCase());
-      } else if (k === ' ') {
-        e.preventDefault();
-        setSearchQuery(prev => prev + ' ');
-      } else if (k === 'Backspace') {
-        e.preventDefault();
-        setSearchQuery(prev => prev.slice(0, -1));
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [focusZone, dropdownOpen]);
+  // Physical keyboard support (Desktop / Electron) — typing anywhere on the
+  // Search page updates the query without needing a mouse click first. Only
+  // alphanumerics so the D-pad engine keeps owning arrows / enter.
+  useNativeKeyboard({
+    enabled: !helpOpenRef.current && !dropdownOpen && focusZone !== 'langDropdown',
+    alphanumericOnly: true,
+    onChar: (c) => setSearchQuery(prev => prev + c),
+    onBackspace: () => setSearchQuery(prev => prev.slice(0, -1)),
+  });
 
   useEffect(() => {
     if (visibleSearchResults.length > 0 && listFocusIndex >= visibleSearchResults.length) {
