@@ -49,6 +49,18 @@ function createWindow() {
     },
   });
 
+  // Cloudflare and other CDNs often serve a JS challenge page (or a flat 403)
+  // when the User-Agent contains the string "Electron". Override with a stock
+  // Chrome UA so the deployed TV bundle loads identically to a real browser.
+  const chromeVersion = process.versions.chrome || '124.0.0.0';
+  const platformUA = process.platform === 'darwin'
+    ? 'Macintosh; Intel Mac OS X 10_15_7'
+    : process.platform === 'win32'
+      ? 'Windows NT 10.0; Win64; x64'
+      : 'X11; Linux x86_64';
+  const desktopUA = `Mozilla/5.0 (${platformUA}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36 MegaRadioDesktop/1.0`;
+  mainWindow.webContents.setUserAgent(desktopUA);
+
   // Lock aspect ratio at 16:9 — the TV UI is designed only for 1920×1080
   // so any other ratio would cause letterboxing or blank areas.
   if (mainWindow.setAspectRatio) {
@@ -62,7 +74,43 @@ function createWindow() {
 
   // Load the deployed TV preview by default; fall back to local bundle if offline.
   const url = process.env.MR_LOCAL === '1' ? APP_URL_LOCAL : APP_URL_PROD;
+  console.log('[MegaRadio] Loading', url, 'with UA:', desktopUA);
   mainWindow.loadURL(url);
+
+  // Surface load failures so the user sees something better than a black window.
+  mainWindow.webContents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
+    if (errorCode === -3) return; // ERR_ABORTED — happens during normal redirects
+    console.error('[MegaRadio] did-fail-load', errorCode, errorDescription, validatedURL);
+    const safeMsg = String(errorDescription || 'Unknown error').replace(/[<>&]/g, '');
+    const safeUrl = String(validatedURL || url).replace(/[<>&]/g, '');
+    mainWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(`
+      <html><head><meta charset="utf-8"><title>MegaRadio - Connection error</title>
+      <style>
+        html,body{height:100%;margin:0;background:#0E0E0E;color:#fff;font-family:-apple-system,Segoe UI,sans-serif}
+        .wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px;text-align:center}
+        h1{font-size:28px;margin:0;color:#FF4199}
+        p{color:#aaa;max-width:560px;line-height:1.5}
+        code{background:#1a1a1a;padding:2px 8px;border-radius:6px;color:#ffb;font-size:13px}
+        button{margin-top:14px;background:#FF4199;color:#fff;border:0;padding:12px 28px;border-radius:24px;font-size:16px;cursor:pointer}
+      </style></head><body><div class="wrap">
+        <h1>MegaRadio cannot reach the server</h1>
+        <p><b>${safeMsg}</b></p>
+        <p>URL: <code>${safeUrl}</code></p>
+        <p>Bu pencerenin DevTools'unu açmak için <code>Alt+Cmd+I</code> (macOS) /
+        <code>Ctrl+Shift+I</code> (Win/Linux) tuşlarına basın. İnternet bağlantınızı kontrol edin
+        ve uygulamayı yeniden başlatın.</p>
+        <button onclick="location.href=${JSON.stringify(url)}">Yeniden dene</button>
+      </div></body></html>
+    `));
+  });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('[MegaRadio] did-finish-load', mainWindow.webContents.getURL());
+  });
+
+  mainWindow.webContents.on('render-process-gone', (_e, details) => {
+    console.error('[MegaRadio] renderer crashed:', details.reason);
+  });
 
   // ────────────────────────────────────────────────────────────────────
   //  AUTO-ZOOM  —  keeps the 1920×1080 UI always filling the window
@@ -108,6 +156,15 @@ function createWindow() {
   });
 
   mainWindow.on('closed', () => { mainWindow = null; });
+
+  // Open DevTools automatically when launched without `electron-builder` (i.e.
+  // `yarn start`) so any black-screen failure shows its real cause in the
+  // Console tab. Suppress in production builds (asar packed).
+  if (!app.isPackaged) {
+    mainWindow.webContents.once('dom-ready', () => {
+      try { mainWindow.webContents.openDevTools({ mode: 'detach' }); } catch (_) {}
+    });
+  }
 }
 
 function buildMenu() {
