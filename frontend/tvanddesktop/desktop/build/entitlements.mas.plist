@@ -19,8 +19,8 @@
   <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
   <true/>
   <key>com.apple.application-identifier</key>
-  <string>YOUR_TEAM_ID.com.visiongo.megaradio</string>
+  <string>M6T85HP76P.com.visiongo.megaradio</string>
   <key>com.apple.developer.team-identifier</key>
-  <string>YOUR_TEAM_ID</string>
+  <string>M6T85HP76P</string>
 </dict>
 </plist>
