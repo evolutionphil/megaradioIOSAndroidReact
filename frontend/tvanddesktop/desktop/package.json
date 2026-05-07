@@ -4,6 +4,10 @@
   "description": "MegaRadio Desktop App (Windows / Linux / macOS) — Electron wrapper around the TV web build",
   "private": true,
   "main": "electron/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evolutionphil/megaradioIOSAndroidReact.git"
+  },
   "scripts": {
     "start": "electron .",
     "dev": "electron . --enable-logging",
