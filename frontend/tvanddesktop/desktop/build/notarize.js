@@ -18,6 +18,14 @@ exports.default = async function (context) {
   if (electronPlatformName !== 'darwin') return;
   if (packager.platformSpecificBuildOptions.target === 'mas') return;
 
+  // Honor the package.json `mac.notarize: false` flag — lets a developer
+  // skip notarization completely (e.g. when the Developer ID cert is not
+  // available yet, or when a quick unsigned build is wanted).
+  if (packager.platformSpecificBuildOptions.notarize === false) {
+    console.log('  ⊘ Notarization skipped — `mac.notarize: false` in package.json.');
+    return;
+  }
+
   const appleId = process.env.APPLE_ID;
   const appleIdPassword = process.env.APPLE_APP_SPECIFIC_PASSWORD;
   const teamId = process.env.APPLE_TEAM_ID;
