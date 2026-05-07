@@ -10,6 +10,22 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
+### GitHub Actions Auto-Build Pipeline ✅ (May 7)
+- `.github/workflows/desktop-release.yml` — `git tag v*` push'unda Windows
+  (NSIS + portable) ve Linux (AppImage + .deb) build'lerini paralel çalıştırır;
+  çıktıları `GITHUB_TOKEN` ile otomatik olarak GitHub Releases'e yükler.
+- macOS job CI'dan çıkarıldı (lokal Mac'te imzalı DMG + MAS .pkg üretiliyor —
+  sertifikalar Keychain'de duruyor).
+- Linux `.deb` paketleme için `desktop/package.json` içine
+  `author: { name, email }` + `homepage` eklendi (electron-builder zorunluluğu).
+
+### Mac App Store Submission ✅ (May 7)
+- `MegaRadio-1.0.0.pkg` Transporter ile App Store Connect'e yüklendi
+  (durum: Apple tarafında "Processing").
+- `entitlements.mas.plist` + `entitlements.mas.inherit.plist` + provisioning
+  profile (`build/embedded.provisionprofile`) ile App Sandbox uyumlu.
+
+
 ### TV/Desktop Faz 6 — JS native bridge (Continue Listening) ✅ (May 1)
 - **`src/lib/nativeBridge.ts`** — multi-target bridge that routes the
   `nativeBridge.postContinueListening(list)` call to whichever host is

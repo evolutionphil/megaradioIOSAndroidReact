@@ -1,7 +1,9 @@
-name: Desktop Release (Mac + Win + Linux)
+name: Desktop Release (Win + Linux)
 
-# git tag v1.0.0 atınca otomatik tetiklenir.
-# Üç platformu paralel build eder, çıktıları GitHub Releases'e atar.
+# git tag v1.0.x atınca otomatik tetiklenir.
+# Windows ve Linux build'leri paralel çalışır; çıktılar GitHub Releases'e atılır.
+# macOS build'i lokal Mac'te yapıldığı için CI'a dahil değildir
+# (DMG + Mac App Store .pkg user'ın makinesinde imzalanıp Transporter ile yüklenir).
 
 on:
   push:
@@ -17,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -44,24 +46,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn run electron-builder --linux AppImage deb --publish always
 
-      - name: Build (macOS — DMG only, MAS handled manually)
-        if: matrix.os == 'macos-latest'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          CSC_LINK: ${{ secrets.MAC_DEVELOPER_ID_P12 }}
-          CSC_KEY_PASSWORD: ${{ secrets.MAC_DEVELOPER_ID_P12_PASSWORD }}
-        run: yarn run electron-builder --mac dmg --universal --publish always
-
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-dist
           path: |
-            frontend/tvanddesktop/desktop/dist/*.dmg
             frontend/tvanddesktop/desktop/dist/*.exe
             frontend/tvanddesktop/desktop/dist/*.AppImage
             frontend/tvanddesktop/desktop/dist/*.deb

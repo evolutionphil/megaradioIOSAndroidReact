@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "MegaRadio Desktop App (Windows / Linux / macOS) — Electron wrapper around the TV web build",
   "private": true,
+  "author": {
+    "name": "Vision Go GmbH",
+    "email": "contact@visiongo.com"
+  },
+  "homepage": "https://megaradio.app",
   "main": "electron/main.js",
   "repository": {
     "type": "git",
