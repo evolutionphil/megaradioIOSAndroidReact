@@ -65,7 +65,7 @@
       "installerHeaderIcon": "build/icon.ico"
     },
     "mac": {
-      "icon": "build/icon.png",
+      "icon": "build/icon.icns",
       "category": "public.app-category.music",
       "identity": "Apple Distribution: Vision Go GmbH (M6T85HP76P)",
       "hardenedRuntime": true,
