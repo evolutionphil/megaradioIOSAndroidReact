@@ -92,7 +92,10 @@
       "provisioningProfile": "build/embedded.provisionprofile",
       "extendInfo": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "target": [
+        { "target": "mas", "arch": ["universal"] }
+      ]
     },
     "masDev": {
       "type": "development",
