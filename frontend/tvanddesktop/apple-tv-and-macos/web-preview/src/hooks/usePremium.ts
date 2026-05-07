@@ -77,23 +77,34 @@ export function usePremium() {
 
 // Native bridge (tvOS / Android TV / Electron) listener.
 // The native shell posts a message when an IAP completes on the device.
-// Format: { type: 'mr-iap-completed', productId: string }
+// Two transport mechanisms are supported:
+//   1. window.postMessage({ type: 'mr-iap-completed', productId })  ← tvOS / Android TV WKScriptMessageHandler
+//   2. CustomEvent('mr-iap-completed', { detail: { productId } })   ← Electron preload bridge
 if (typeof window !== 'undefined') {
-  window.addEventListener('message', (e) => {
-    const data = e.data;
-    if (data && data.type === 'mr-iap-completed' && data.productId) {
-      const now = Date.now();
-      const YEAR = 365 * 24 * 60 * 60 * 1000;
-      const MONTH = 30 * 24 * 60 * 60 * 1000;
-      let next: PremiumState | null = null;
-      if (data.productId === 'megaradio_premium_yearly') next = { isPremium: true, adsRemoved: true, productId: data.productId, purchasedAt: now, expiresAt: now + YEAR };
-      else if (data.productId === 'megaradio_premium_lifetime') next = { isPremium: true, adsRemoved: true, productId: data.productId, purchasedAt: now };
-      else if (data.productId === 'megaradio_premium_monthly1') next = { isPremium: true, adsRemoved: true, productId: data.productId, purchasedAt: now, expiresAt: now + MONTH };
-      else if (data.productId === 'megaradio_remove_ads_yearly1') next = { isPremium: false, adsRemoved: true, productId: data.productId, purchasedAt: now, expiresAt: now + YEAR };
-      if (next) {
-        localStorage.setItem(KEY, JSON.stringify(next));
-        window.dispatchEvent(new CustomEvent('mr:premium-changed'));
-      }
+  const applyFromBridge = (productId: string | undefined) => {
+    if (!productId) return;
+    const now = Date.now();
+    const YEAR = 365 * 24 * 60 * 60 * 1000;
+    const MONTH = 30 * 24 * 60 * 60 * 1000;
+    let next: PremiumState | null = null;
+    if (productId === 'megaradio_premium_yearly') next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + YEAR };
+    else if (productId === 'megaradio_premium_lifetime') next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now };
+    else if (productId === 'megaradio_premium_monthly1') next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + MONTH };
+    else if (productId === 'megaradio_remove_ads_yearly1') next = { isPremium: false, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + YEAR };
+    if (next) {
+      localStorage.setItem(KEY, JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent('mr:premium-changed'));
     }
+  };
+
+  window.addEventListener('message', (e) => {
+    const data = (e as MessageEvent).data;
+    if (data && data.type === 'mr-iap-completed' && data.productId) applyFromBridge(data.productId);
+  });
+
+  // Electron preload dispatches a CustomEvent — same payload shape, different channel.
+  window.addEventListener('mr-iap-completed', (e) => {
+    const detail = (e as CustomEvent).detail || {};
+    applyFromBridge(detail.productId);
   });
 }

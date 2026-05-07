@@ -5,6 +5,7 @@
 const { app, BrowserWindow, Menu, shell, globalShortcut, ipcMain } = require('electron');
 const path = require('path');
 const updater = require('./updater');
+const iap = require('./iap');
 
 // Disable hardware acceleration on Linux to avoid GPU sandbox issues in CI/headless
 if (process.platform === 'linux') {
@@ -312,6 +313,9 @@ app.whenReady().then(() => {
   if (mainWindow && !process.env.MR_DISABLE_UPDATER) {
     try { updater.init(mainWindow); } catch (e) { console.warn('Updater init failed:', e); }
   }
+
+  // In-App Purchase IPC bridge (StoreKit on Mac App Store, no-op elsewhere)
+  try { iap.registerIpc(ipcMain, () => mainWindow); } catch (e) { console.warn('IAP init failed:', e); }
 
   // Global media keys (best-effort; not all distros allow registration)
   try { globalShortcut.register('MediaPlayPause', () => mainWindow?.webContents.send('mr-shortcut', 'play-pause')); } catch (_) {}

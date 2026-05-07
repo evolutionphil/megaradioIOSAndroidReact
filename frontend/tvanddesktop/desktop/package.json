@@ -1,6 +1,6 @@
 {
   "name": "megaradio-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MegaRadio Desktop App (Windows / Linux / macOS) — Electron wrapper around the TV web build",
   "private": true,
   "author": {
