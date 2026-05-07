@@ -953,17 +953,20 @@ export const RadioPlaying = (): JSX.Element => {
 
       {/* Station Info Tags */}
       <div className="absolute left-[596px] top-[476px] flex gap-[11.3px] items-center">
-        {/* Country Flag */}
-        <div className="w-[34.783px] h-[34.783px] rounded-full overflow-hidden">
-          <img 
-            src={`https://flagcdn.com/w40/${countryCode && typeof countryCode === 'string' ? countryCode.toLowerCase() : 'xx'}.png`}
-            alt={station?.country || 'Unknown Country'}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-            }}
-          />
-        </div>
+        {/* Country Flag — hide entirely if country is unknown/XX (was showing brand icon as fallback) */}
+        {countryCode && typeof countryCode === 'string' && countryCode.toLowerCase() !== 'xx' && (
+          <div className="w-[34.783px] h-[34.783px] rounded-full overflow-hidden flex-shrink-0">
+            <img
+              src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
+              alt={station?.country || countryCode}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Hide flag if CDN fails — never replace with brand icon
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+          </div>
+        )}
 
         {/* Bitrate */}
         <div className="bg-[#242424] h-[40px] overflow-clip rounded-[5.217px] px-[20px] flex items-center justify-center">
