@@ -25,10 +25,14 @@ logger = logging.getLogger(__name__)
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# MongoDB connection — optional. Lets the same server.py be deployed as the
+# TV/Desktop static service (desktop.themegaradio.com) WITHOUT a MongoDB,
+# since none of the TV proxies / SSE / static-mount endpoints touch the DB.
+# The mobile-app backend (api.themegaradio.com) still passes MONGO_URL so
+# its CarPlay-log / status-check endpoints keep working unchanged.
+mongo_url = os.environ.get('MONGO_URL')
+client = AsyncIOMotorClient(mongo_url) if mongo_url else None
+db = client[os.environ['DB_NAME']] if (client and os.environ.get('DB_NAME')) else None
 
 # Create the main app without a prefix
 app = FastAPI()
