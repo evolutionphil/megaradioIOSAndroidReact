@@ -34,7 +34,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt ./backend/requirements.txt
-RUN pip install -r backend/requirements.txt
+# emergentintegrations lives on a custom index; everything else is on PyPI.
+RUN pip install -r backend/requirements.txt \
+    --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
 
 COPY backend/ ./backend/
 # Bring the freshly-built TV web bundle into the place server.py mounts it from
