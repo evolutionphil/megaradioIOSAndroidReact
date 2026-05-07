@@ -12,9 +12,41 @@ if (process.platform === 'linux') {
 }
 
 let mainWindow = null;
+let splashWindow = null;
 
-const APP_URL_PROD = 'https://music-premium-fix.preview.emergentagent.com/api/tv-app/';
+const APP_URL_PROD = 'https://desktop.themegaradio.com/api/tv-app/';
 const APP_URL_LOCAL = 'file://' + path.join(__dirname, '..', 'renderer', 'index.html');
+
+/**
+ * Splash window — small frameless brand window shown for the first ~2-3
+ * seconds while Chromium establishes the connection to desktop.themegaradio.com.
+ * Closed automatically once the main window finishes its first paint.
+ */
+function createSplash() {
+  splashWindow = new BrowserWindow({
+    width: 460,
+    height: 320,
+    frame: false,
+    transparent: false,
+    resizable: false,
+    movable: true,
+    alwaysOnTop: true,
+    show: true,
+    skipTaskbar: false,
+    backgroundColor: '#0E0E0E',
+    icon: path.join(__dirname, '..', 'build', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
+    webPreferences: { contextIsolation: true, nodeIntegration: false },
+  });
+  splashWindow.loadFile(path.join(__dirname, 'splash.html')).catch(() => {});
+  splashWindow.once('closed', () => { splashWindow = null; });
+}
+
+function closeSplash() {
+  if (splashWindow && !splashWindow.isDestroyed()) {
+    try { splashWindow.close(); } catch (_) {}
+  }
+  splashWindow = null;
+}
 
 function createWindow() {
   const { screen } = require('electron');
@@ -38,6 +70,7 @@ function createWindow() {
     useContentSize: true,
     backgroundColor: '#0E0E0E',
     title: 'MegaRadio',
+    show: false,                       // hidden until first paint, splash takes over
     icon: path.join(__dirname, '..', 'build', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     webPreferences: {
@@ -81,6 +114,8 @@ function createWindow() {
   mainWindow.webContents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
     if (errorCode === -3) return; // ERR_ABORTED — happens during normal redirects
     console.error('[MegaRadio] did-fail-load', errorCode, errorDescription, validatedURL);
+    closeSplash();
+    if (!mainWindow.isVisible()) mainWindow.show();
     const safeMsg = String(errorDescription || 'Unknown error').replace(/[<>&]/g, '');
     const safeUrl = String(validatedURL || url).replace(/[<>&]/g, '');
     mainWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(`
@@ -96,9 +131,7 @@ function createWindow() {
         <h1>MegaRadio cannot reach the server</h1>
         <p><b>${safeMsg}</b></p>
         <p>URL: <code>${safeUrl}</code></p>
-        <p>Bu pencerenin DevTools'unu açmak için <code>Alt+Cmd+I</code> (macOS) /
-        <code>Ctrl+Shift+I</code> (Win/Linux) tuşlarına basın. İnternet bağlantınızı kontrol edin
-        ve uygulamayı yeniden başlatın.</p>
+        <p>Internet bağlantınızı kontrol edin ve uygulamayı yeniden başlatın.</p>
         <button onclick="location.href=${JSON.stringify(url)}">Yeniden dene</button>
       </div></body></html>
     `));
@@ -106,10 +139,14 @@ function createWindow() {
 
   mainWindow.webContents.on('did-finish-load', () => {
     console.log('[MegaRadio] did-finish-load', mainWindow.webContents.getURL());
+    // Reveal the main window only after the page is painted, then drop the splash.
+    if (!mainWindow.isVisible()) mainWindow.show();
+    setTimeout(closeSplash, 200);   // tiny overlap for a smooth crossfade
   });
 
   mainWindow.webContents.on('render-process-gone', (_e, details) => {
     console.error('[MegaRadio] renderer crashed:', details.reason);
+    closeSplash();
   });
 
   // ────────────────────────────────────────────────────────────────────
@@ -269,7 +306,8 @@ function buildMenu() {
 
 app.whenReady().then(() => {
   buildMenu();
-  createWindow();
+  createSplash();    // show brand logo splash window first
+  createWindow();    // main window starts hidden, splash overlays until first paint
   // Auto-update from GitHub Releases (skips in dev)
   if (mainWindow && !process.env.MR_DISABLE_UPDATER) {
     try { updater.init(mainWindow); } catch (e) { console.warn('Updater init failed:', e); }

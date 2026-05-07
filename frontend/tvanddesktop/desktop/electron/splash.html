@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MegaRadio</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: radial-gradient(ellipse at center, #2a0a1a 0%, #0E0E0E 60%, #0E0E0E 100%);
+      overflow: hidden;
+      font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      -webkit-app-region: drag;        /* let user move the splash */
+      user-select: none;
+    }
+    .wrap {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+    .logo {
+      width: 160px;
+      height: 160px;
+      border-radius: 36px;
+      box-shadow: 0 24px 60px rgba(255, 65, 153, 0.35);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    .name {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.4px;
+    }
+    .name span { color: #FF4199; }
+    .bar {
+      width: 220px;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .bar::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -40%;
+      width: 40%; height: 100%;
+      background: linear-gradient(90deg, transparent, #FF4199, transparent);
+      animation: slide 1.2s linear infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);   opacity: 1;   }
+      50%      { transform: scale(1.05); opacity: 0.85; }
+    }
+    @keyframes slide {
+      from { left: -40%; }
+      to   { left: 110%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <img class="logo" id="brand" alt="MegaRadio" />
+    <div class="name">mega<span>radio</span></div>
+    <div class="bar"></div>
+  </div>
+
+  <script>
+    // Brand icon is bundled at ../build/icon.png. We load it dynamically so
+    // the same splash window works in dev and packaged ASAR builds.
+    const img = document.getElementById('brand');
+    img.onerror = () => { img.style.display = 'none'; };
+    img.src = '../build/icon.png';
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Nixpacks build config for the desktop.themegaradio.com Railway service.
+# Builds the TV web bundle into /app/backend/static/tv-preview/ and starts FastAPI.
+
+[phases.setup]
+nixPkgs = ["python311", "nodejs_20", "yarn"]
+
+[phases.install]
+cmds = [
+  "pip install --no-cache-dir -r backend/requirements.txt",
+  "cd frontend/tvanddesktop/apple-tv-and-macos/web-preview && yarn install --frozen-lockfile",
+]
+
+[phases.build]
+cmds = [
+  "cd frontend/tvanddesktop/apple-tv-and-macos/web-preview && yarn build",
+]
+
+[start]
+cmd = "cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT"
