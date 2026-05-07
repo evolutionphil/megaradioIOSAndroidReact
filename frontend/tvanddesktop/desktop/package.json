@@ -99,7 +99,7 @@
       "provisioningProfile": "build/embedded.provisionprofile"
     },
     "pkg": {
-      "identityName": "3rd Party Mac Developer Installer: Vision Go GmbH (M6T85HP76P)"
+      "identity": "3rd Party Mac Developer Installer: Vision Go GmbH (M6T85HP76P)"
     },
     "dmg": {
       "title": "MegaRadio",
