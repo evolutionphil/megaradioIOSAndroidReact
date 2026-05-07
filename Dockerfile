@@ -11,10 +11,11 @@
 
 FROM node:20-bookworm-slim AS web-build
 WORKDIR /build
-COPY frontend/tvanddesktop/apple-tv-and-macos/web-preview/package.json \
-     frontend/tvanddesktop/apple-tv-and-macos/web-preview/yarn.lock \
-     ./
-RUN yarn install --frozen-lockfile --network-timeout 600000
+# yarn.lock isn't tracked in this repo, so we install from package.json only.
+# Lockless installs are fine here because the desktop service is rebuilt on
+# every Railway deploy — there's no separate dev environment to drift from.
+COPY frontend/tvanddesktop/apple-tv-and-macos/web-preview/package.json ./
+RUN yarn install --network-timeout 600000
 COPY frontend/tvanddesktop/apple-tv-and-macos/web-preview/ ./
 RUN yarn build
 # Vite is configured to emit straight into ../../../../backend/static/tv-preview,
