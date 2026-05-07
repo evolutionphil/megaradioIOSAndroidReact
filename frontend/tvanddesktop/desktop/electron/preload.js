@@ -20,8 +20,11 @@ contextBridge.exposeInMainWorld('megaRadioDesktop', {
 contextBridge.exposeInMainWorld('megaRadioNative', {
   isNativeShell: true,
   platform: process.platform,
-  purchase: (productId) => ipcRenderer.invoke('mr-iap-purchase', productId),
-  restorePurchases: () => ipcRenderer.invoke('mr-iap-restore'),
+  // Mac App Store sürümünde StoreKit + backend doğrulama akışını çağırır.
+  // token = renderer'ın localStorage.tv_auth_token değeri (kullanıcının giriş JWT'si).
+  purchase: (productId, token) => ipcRenderer.invoke('mr-iap-purchase', { productId, token }),
+  restorePurchases: (token) => ipcRenderer.invoke('mr-iap-restore', { token }),
+  cancelSubscription: (token) => ipcRenderer.invoke('mr-iap-cancel', { token }),
   getProducts: (ids) => ipcRenderer.invoke('mr-iap-get-products', ids),
 });
 

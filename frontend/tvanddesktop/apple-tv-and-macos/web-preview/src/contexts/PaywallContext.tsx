@@ -53,7 +53,8 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
       // Native bridge: ask the shell to restore purchases
       const bridge = (window as any).megaRadioNative;
       if (bridge?.restorePurchases) {
-        bridge.restorePurchases();
+        const token = localStorage.getItem('tv_auth_token') || undefined;
+        bridge.restorePurchases(token);
       } else {
         alert('Restore Purchases will be handled by the native shell on tvOS / Android TV / Desktop.');
       }
@@ -63,13 +64,54 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
     // Ask the native shell to trigger StoreKit / BillingClient / Electron IAP.
     const bridge = (window as any).megaRadioNative;
     if (bridge?.purchase) {
-      bridge.purchase(productId);
+      // Pass auth token so the Mac App Store IAP receipt can be backend-verified.
+      const token = localStorage.getItem('tv_auth_token') || undefined;
+      if (!token) {
+        alert('Premium’u kalıcı olarak hesabınıza bağlamak için lütfen önce giriş yapın.');
+        return;
+      }
+      bridge.purchase(productId, token);
     } else {
       // Preview / dev fallback: simulate success
       premium.applyPurchase(productId);
       setOpen(false);
       alert(`✓ [Preview mode] Purchase ${productId} simulated. On device, native IAP will handle this.`);
     }
+  }, [premium]);
+
+  // Listen for native IAP events (Electron CustomEvents) and surface backend
+  // errors + success to the user.
+  useEffect(() => {
+    const onCompleted = (e: Event) => {
+      const detail = (e as CustomEvent).detail || {};
+      // Backend already verified — apply locally and close paywall
+      if (detail.productId) premium.applyPurchase(detail.productId);
+      setOpen(false);
+    };
+    const onFailed = (e: Event) => {
+      const detail = (e as CustomEvent).detail || {};
+      const msg = detail.message || detail.error || 'Satın alma tamamlanamadı.';
+      alert('⚠️ ' + msg);
+    };
+    const onRestored = (e: Event) => {
+      const detail = (e as CustomEvent).detail || {};
+      if (detail.server?.isActive) {
+        // Backend confirmed: refresh local state by re-reading from server next mount
+        window.dispatchEvent(new CustomEvent('mr:premium-changed'));
+        setOpen(false);
+        alert('✓ Önceki satın alımlarınız geri yüklendi.');
+      } else {
+        alert('Geri yüklenecek aktif bir satın alma bulunamadı.');
+      }
+    };
+    window.addEventListener('mr-iap-completed', onCompleted);
+    window.addEventListener('mr-iap-failed', onFailed);
+    window.addEventListener('mr-iap-restored', onRestored);
+    return () => {
+      window.removeEventListener('mr-iap-completed', onCompleted);
+      window.removeEventListener('mr-iap-failed', onFailed);
+      window.removeEventListener('mr-iap-restored', onRestored);
+    };
   }, [premium]);
 
   return (
