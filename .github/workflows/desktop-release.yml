@@ -1,0 +1,72 @@
+name: Desktop Release (Mac + Win + Linux)
+
+# git tag v1.0.0 atınca otomatik tetiklenir.
+# Üç platformu paralel build eder, çıktıları GitHub Releases'e atar.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch: {}   # manuel tetikleme de mümkün (Actions sekmesi)
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: frontend/tvanddesktop/desktop
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: frontend/tvanddesktop/desktop/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --network-timeout 600000
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn run electron-builder --win nsis portable --publish always
+
+      - name: Build (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn run electron-builder --linux AppImage deb --publish always
+
+      - name: Build (macOS — DMG only, MAS handled manually)
+        if: matrix.os == 'macos-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          CSC_LINK: ${{ secrets.MAC_DEVELOPER_ID_P12 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_DEVELOPER_ID_P12_PASSWORD }}
+        run: yarn run electron-builder --mac dmg --universal --publish always
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-dist
+          path: |
+            frontend/tvanddesktop/desktop/dist/*.dmg
+            frontend/tvanddesktop/desktop/dist/*.exe
+            frontend/tvanddesktop/desktop/dist/*.AppImage
+            frontend/tvanddesktop/desktop/dist/*.deb
+            frontend/tvanddesktop/desktop/dist/latest*.yml
+          if-no-files-found: ignore
+          retention-days: 30
