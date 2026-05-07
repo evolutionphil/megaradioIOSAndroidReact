@@ -67,8 +67,10 @@
     "mac": {
       "icon": "build/icon.png",
       "category": "public.app-category.music",
+      "identity": "Apple Distribution: Vision Go GmbH (M6T85HP76P)",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
+      "notarize": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "extendInfo": {
@@ -83,6 +85,7 @@
     "mas": {
       "category": "public.app-category.music",
       "type": "distribution",
+      "identity": "Apple Distribution: Vision Go GmbH (M6T85HP76P)",
       "hardenedRuntime": false,
       "entitlements": "build/entitlements.mas.plist",
       "entitlementsInherit": "build/entitlements.mas.inherit.plist",
