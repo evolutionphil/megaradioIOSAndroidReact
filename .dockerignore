@@ -1,0 +1,35 @@
+# Speed up Docker build by NOT shipping anything we don't need into the
+# container's build context. Cuts the build snapshot from ~4 GB to ~70 MB.
+.git
+.github
+.gitignore
+.gitconfig
+.emergent
+.metro-cache
+.metro-health-check*
+.expo
+node_modules
+**/node_modules
+**/.next
+**/dist
+**/build
+!frontend/tvanddesktop/desktop/build
+**/.cache
+test_reports
+tests
+designs
+figma_designs
+memory
+*.log
+.DS_Store
+
+# Mobile RN sources are not needed by the desktop service
+frontend/app
+frontend/src
+frontend/assets
+frontend/ios
+frontend/android
+frontend/tvanddesktop/desktop
+frontend/tvanddesktop/android-tv
+frontend/tvanddesktop/apple-tv-and-macos/ios-tvos
+frontend/tvanddesktop/_design-spec
