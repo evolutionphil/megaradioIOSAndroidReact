@@ -10,6 +10,7 @@
     "build:linux": "electron-builder --linux AppImage deb",
     "build:win": "electron-builder --win nsis portable",
     "build:mac": "electron-builder --mac dmg",
+    "build:mas": "electron-builder --mac mas mas-dev",
     "build:all": "electron-builder -mwl"
   },
   "devDependencies": {
@@ -21,7 +22,7 @@
     "electron-log": "^5.2.0"
   },
   "build": {
-    "appId": "com.visiongo.megaradio.desktop",
+    "appId": "com.visiongo.megaradio",
     "productName": "MegaRadio",
     "copyright": "© ${new Date().getFullYear()} MegaRadio",
     "asar": true,
@@ -66,13 +67,35 @@
     "mac": {
       "icon": "build/icon.png",
       "category": "public.app-category.music",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "MegaRadio does not use the microphone.",
+        "NSCameraUsageDescription": "MegaRadio does not use the camera.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
       "target": [
         { "target": "dmg", "arch": ["universal"] }
       ]
     },
+    "mas": {
+      "category": "public.app-category.music",
+      "type": "distribution",
+      "hardenedRuntime": false,
+      "entitlements": "build/entitlements.mas.plist",
+      "entitlementsInherit": "build/entitlements.mas.inherit.plist",
+      "provisioningProfile": "build/embedded.provisionprofile",
+      "extendInfo": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
     "dmg": {
       "title": "MegaRadio",
-      "icon": "build/icon.png"
-    }
+      "icon": "build/icon.png",
+      "sign": false
+    },
+    "afterSign": "build/notarize.js"
   }
 }
