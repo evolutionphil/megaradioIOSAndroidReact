@@ -256,13 +256,18 @@ export const RadioPlaying = (): JSX.Element => {
     return stations;
   }, [similarData]);
 
-  // Fetch popular stations from GLOBAL - stable queryKey (no stationId) for efficient caching
-  // CACHE: 24 hours
+  // Fetch popular stations - filtered by user's selected country.
+  // CRITICAL: backend `api.themegaradio.com/api/stations` returns an EMPTY
+  // list when no `country` parameter is supplied, so we MUST pass it. Falls
+  // back to global only if no country is selected yet (rare).
+  // CACHE: 24 hours per country.
   const { data: popularData } = useQuery({
-    queryKey: ['popular-global-stations'],
+    queryKey: ['popular-global-stations', selectedCountryCode || 'global'],
     queryFn: async () => {
       try {
-        const data = await megaRadioApi.getPopularStations({ limit: 50 });
+        const params: { limit: number; country?: string } = { limit: 50 };
+        if (selectedCountryCode) params.country = selectedCountryCode;
+        const data = await megaRadioApi.getPopularStations(params);
         return { stations: (data?.stations || []).filter(s => s && s._id) };
       } catch (error) {
         console.error('Failed to fetch popular stations:', error);
