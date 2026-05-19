@@ -250,8 +250,56 @@
             return bestElement;
         },
         
+        // FALLBACK: When the strict overlap-aware search fails (typically
+        // pressing UP from the topmost content row toward the header buttons —
+        // Country selector / Login — that sit far to the right), do a second
+        // pass that drops the horizontal-overlap requirement so the user can
+        // always reach header items by Euclidean distance. Only used for
+        // UP/DOWN since LEFT/RIGHT scoring is already overlap-free.
+        findFallbackMatch: function(direction) {
+            if (!this.focusedElement) return null;
+            if (direction !== 'UP' && direction !== 'DOWN') return null;
+
+            const current = this.getElementCenter(this.focusedElement);
+            const currentIsSidebar = this.isSidebarElement(this.focusedElement);
+            let bestElement = null;
+            let bestScore = Infinity;
+
+            this.focusableElements.forEach(el => {
+                if (el === this.focusedElement) return;
+                const candidate = this.getElementCenter(el);
+                const candidateIsSidebar = this.isSidebarElement(el);
+
+                // Preserve the sidebar/content zone barrier on UP/DOWN.
+                if (currentIsSidebar !== candidateIsSidebar) return;
+
+                let dy = 0;
+                if (direction === 'UP')   dy = current.y - candidate.y;
+                if (direction === 'DOWN') dy = candidate.y - current.y;
+                if (dy <= 10) return; // wrong side or same row
+
+                const dx = Math.abs(current.x - candidate.x);
+                // Weight vertical distance heavily so we still prefer the
+                // closest row, but allow any x position.
+                const score = dy + dx * 0.5;
+                if (score < bestScore) {
+                    bestScore = score;
+                    bestElement = el;
+                }
+            });
+            return bestElement;
+        },
+
         navigate: function(direction) {
-            const nextElement = this.findBestMatch(direction);
+            let nextElement = this.findBestMatch(direction);
+            if (!nextElement) {
+                // Try the relaxed fallback (UP/DOWN only).
+                const fallback = this.findFallbackMatch(direction);
+                if (fallback) {
+                    console.log('[TV Nav] Fallback', direction, 'to:', fallback.dataset.testid || fallback.tagName);
+                    nextElement = fallback;
+                }
+            }
             if (nextElement) {
                 console.log('[TV Nav] Moving', direction, 'to:', nextElement.dataset.testid || nextElement.tagName);
                 this.focus(nextElement);

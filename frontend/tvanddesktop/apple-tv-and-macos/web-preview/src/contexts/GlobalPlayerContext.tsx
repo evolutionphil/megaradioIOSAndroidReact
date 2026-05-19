@@ -1,9 +1,16 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react";
+import { createMetadataClient } from "@radiolise/metadata-client";
 import { Station, megaRadioApi } from "@/services/megaRadioApi";
 import { recentlyPlayedService } from "@/services/recentlyPlayedService";
 import { recommendationService } from "@/services/recommendationService";
 import { trackStationPlay, trackError } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
+
+// Radiolise public ICY metadata WebSocket gateway.
+// Override via VITE_METADATA_WS for self-hosted instance.
+const METADATA_WS_URL =
+  (import.meta as any).env?.VITE_METADATA_WS ||
+  "wss://backend.radiolise.com/api/data-service";
 
 interface GlobalPlayerContextType {
   currentStation: Station | null;
@@ -203,43 +210,62 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // ICY metadata via SSE — server parses StreamTitle from the upstream
-  // and streams it to us. Same result as iOS/Android native ICY parsing,
-  // no custom API needed on themegaradio.com backend.
-  useEffect(() => {
-    if (!currentStation || !isPlaying) {
-      setNowPlayingMetadata(null);
-      return;
-    }
-    const rawUrl = currentStation.url || (currentStation as any).streamUrl;
-    if (!rawUrl) return;
+  // ICY metadata via Radiolise WebSocket gateway (@radiolise/metadata-client).
+  // The backend `/api/stations/:id/metadata` and `/api/stream-metadata` endpoints
+  // are unreliable / 404 on `api.themegaradio.com`, so we fetch "Now Playing"
+  // strings directly from the public Radiolise data-service. Same result as the
+  // iOS/Android native ICY parsers, no themegaradio.com dependency.
+  //
+  // One client instance per provider mount; `trackStream(undefined)` releases
+  // the upstream socket between stations without tearing the WS down.
+  const metadataClientRef = useRef<ReturnType<typeof createMetadataClient> | null>(null);
 
-    const metaUrl = `/api/stream-metadata?url=${encodeURIComponent(rawUrl)}`;
-    let es: EventSource | null = null;
-    try {
-      es = new EventSource(metaUrl);
-      es.onmessage = (evt) => {
-        try {
-          const data = JSON.parse(evt.data);
-          // Prefer "Artist - Title" when both present, else whichever has content.
-          const disp = data.artist && data.title
-            ? `${data.artist} - ${data.title}`
-            : (data.title || data.artist || data.raw || '').trim();
-          if (disp) setNowPlayingMetadata(disp);
-        } catch (_) { /* non-JSON event (e.g. nometa) */ }
-      };
-      es.addEventListener('nometa', () => { /* upstream has no ICY */ });
-      es.onerror = () => {
-        // EventSource auto-reconnects; do nothing unless we want a fallback.
-      };
-    } catch (_) {
-      /* EventSource unsupported — unlikely on any modern Electron/Chromium */
-    }
+  useEffect(() => {
+    const client = createMetadataClient({
+      url: METADATA_WS_URL,
+      reconnect: true,
+      reconnectDelay: 3000,
+    });
+    metadataClientRef.current = client;
+
+    const sub = client.subscribe(({ title, error }) => {
+      if (error) {
+        // NON_ICY_RESOURCE / SERVER_HTTP_ERROR / etc → just clear, don't spam.
+        setNowPlayingMetadata(null);
+        return;
+      }
+      const clean = (title || '').trim();
+      setNowPlayingMetadata(clean.length > 0 ? clean : null);
+    });
 
     return () => {
-      if (es) es.close();
-      setNowPlayingMetadata(null);
+      try { sub.unsubscribe(); } catch (_) { /* noop */ }
+      try { client.terminate(); } catch (_) { /* noop */ }
+      metadataClientRef.current = null;
     };
+  }, []);
+
+  // Switch the tracked stream URL whenever the active station changes.
+  useEffect(() => {
+    const client = metadataClientRef.current;
+    if (!client) return;
+
+    if (!currentStation || !isPlaying) {
+      setNowPlayingMetadata(null);
+      client.trackStream(undefined).catch(() => { /* noop */ });
+      return;
+    }
+
+    const rawUrl = currentStation.url || (currentStation as any).streamUrl;
+    if (!rawUrl) {
+      client.trackStream(undefined).catch(() => { /* noop */ });
+      return;
+    }
+
+    client.trackStream(rawUrl).catch((err) => {
+      // Network blip or malformed URL — fail silent, UI just shows no metadata.
+      console.warn('[metadata] trackStream failed:', err?.message || err);
+    });
   }, [currentStation, isPlaying]);
 
   // Screensaver prevention - Samsung TV certification requirement
