@@ -60,6 +60,13 @@ console.log('▸ Copying Tizen manifest + icon');
 fs.copyFileSync(path.join(__dirname, 'config.xml'), path.join(OUT_DIR, 'config.xml'));
 fs.copyFileSync(path.join(__dirname, 'icon.png'),   path.join(OUT_DIR, 'icon.png'));
 
+// Tizen Studio'nun "Import Tizen Project" wizard'ı bir klasörü algılamak için
+// Eclipse-tarzı .project + .tproject meta dosyalarına ihtiyaç duyar. Bunlar
+// olmadan import wizard "Project list" alanını boş gösterir.
+console.log('▸ Adding Eclipse/Tizen meta files (.project, .tproject)');
+fs.copyFileSync(path.join(__dirname, '.project.template'),  path.join(OUT_DIR, '.project'));
+fs.copyFileSync(path.join(__dirname, '.tproject.template'), path.join(OUT_DIR, '.tproject'));
+
 // Rewrite absolute /api/tv-app/ asset paths to relative ./ paths so the
 // bundle works both when served by FastAPI (backend preview) AND when loaded
 // from local file:// inside Tizen/WebOS WebApp containers.
