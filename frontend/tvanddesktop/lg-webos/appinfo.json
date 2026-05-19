@@ -1,0 +1,28 @@
+{
+  "id": "com.themegaradio.app",
+  "version": "1.0.2",
+  "vendor": "Vision Go GmbH",
+  "type": "web",
+  "main": "index.html",
+  "title": "MegaRadio",
+  "appDescription": "Free radio streaming for LG WebOS TV — discover stations worldwide, save favorites and listen with HD quality.",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "splashBackground": "splash.png",
+  "iconColor": "#EB4F9F",
+  "bgColor": "#0E0E0E",
+  "bgImage": "splash.png",
+  "supportTouchMode": "none",
+  "handlesRelaunch": true,
+  "transparent": false,
+  "disableBackHistoryAPI": false,
+  "accessibility": {
+    "supportsAudioGuidance": false
+  },
+  "requiredPermissions": [
+    "time.query",
+    "audio.operation",
+    "networking",
+    "internal.audioPlayback"
+  ]
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://themegaradio.com/MegaRadioTV"
+        version="1.0.2"
+        viewmodes="maximized">
+    <tizen:application id="lJoKY533ah.MegaRadioTV" package="lJoKY533ah" required_version="2.3"/>
+    <content src="index.html"/>
+
+    <feature name="http://tizen.org/feature/screen.size.normal.1080.1920"/>
+    <icon src="icon.png"/>
+
+    <tizen:metadata key="http://samsung.com/tv/metadata/prelaunch.support" value="true"/>
+    <tizen:metadata key="http://tizen.org/metadata/app_ui_type/base_screen_resolution" value="extensive"/>
+
+    <tizen:content-security-policy>
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com;
+        connect-src 'self' https://themegaradio.com http://themegaradio.com wss://themegaradio.com ws://themegaradio.com
+                    https://api.themegaradio.com http://api.themegaradio.com wss://api.themegaradio.com ws://api.themegaradio.com
+                    https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com data:;
+        img-src 'self' https: http: data:;
+        media-src 'self' https: http:;
+    </tizen:content-security-policy>
+
+    <name>MegaRadio</name>
+
+    <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
+    <tizen:privilege name="http://developer.samsung.com/privilege/network.public"/>
+    <tizen:privilege name="http://tizen.org/privilege/power"/>
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+    <tizen:privilege name="http://developer.samsung.com/privilege/widgetdata"/>
+    <tizen:privilege name="http://tizen.org/privilege/system"/>
+    <tizen:privilege name="http://tizen.org/feature/network.ethernet"/>
+    <tizen:privilege name="http://tizen.org/privilege/filesystem.read"/>
+    <tizen:privilege name="http://tizen.org/privilege/filesystem.write"/>
+
+    <tizen:profile name="tv-samsung"/>
+    <tizen:setting screen-orientation="landscape"
+                   context-menu="enable"
+                   background-support="disable"
+                   encryption="disable"
+                   install-location="auto"
+                   hwkey-event="enable"/>
+</widget>
