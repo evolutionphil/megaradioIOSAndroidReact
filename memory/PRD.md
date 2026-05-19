@@ -10,6 +10,40 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
+### Premium Subscription — Account Linking via Stripe ✅ (May 19)
+- New page `/premium-upgrade` (`src/pages/PremiumUpgrade.tsx`): full-screen
+  TV layout with benefits list (left), white QR code + 6-digit pink PIN
+  digits + countdown (right), Cancel & Generate-new-code buttons (bottom).
+  5 visual states: loading / pending / activated / expired / error.
+- New hook `useSubscriptionLink.ts`: POST `/api/subscription/tv/code` →
+  3-second polling of `/code/:code/status` → fires `onActivated` callback
+  with `{ tier, plan, validUntil }`. Uses same `buildAuthUrl()` trick as
+  AuthContext: relative `/api/tv-proxy/*` in Emergent preview (CORS-free
+  server-side proxy), absolute `https://api.themegaradio.com/api/*` after
+  `prepare-tizen.js`/`prepare-webos.js` rewrite for .wgt/.ipk runtime.
+- Entry points: (a) Settings → bottom "Go Premium" gradient pill now
+  routes to `/premium-upgrade` instead of legacy `showPaywall`; (b) Settings
+  → Account tab → new "Upgrade to Premium" row (with `Ad-free · HQ` tagline);
+  (c) Discover header → pink PREMIUM badge appears between Country
+  selector and Login button ONLY when `user.subscription.tier === 'premium'`.
+- `User` interface in `AuthContext.tsx` extended with
+  `subscription?: { tier, plan, validUntil }`.
+- Backend developer brief: `/app/memory/BACKEND_BRIEF_PREMIUM_SUBSCRIPTION.md`
+  contains full API contract (3 endpoints + Stripe webhook), Mongo schema,
+  Stripe Checkout metadata pattern, web `/activate` page flow, compliance
+  notes for Tizen/LG store policy.
+- Tizen/WebOS payment policy compliant: TV shows ONLY QR + PIN, never a
+  payment field. Stripe Checkout happens in user's browser on the web
+  domain. 0% platform commission, ~3% Stripe.
+
+### TV Backend tv-proxy hardened for write methods ✅ (May 19)
+- `/api/tv-proxy/{path:path}` now accepts GET / POST / PUT / PATCH / DELETE
+  (was GET-only). Forwards request body, content-type, authorization.
+- Enables preview-browser to call any backend write endpoint without CORS
+  pain (e.g. login `auth/tv/code`, subscription `subscription/tv/code`).
+
+### Focus Debug Overlay ✅ (May 19)
+
 ### Client-side ICY Metadata via @radiolise/metadata-client ✅ (May 19)
 - Replaced the broken `/api/stations/:id/metadata?tv=1` + SSE
   `/api/stream-metadata?url=...` backend dependency with the official

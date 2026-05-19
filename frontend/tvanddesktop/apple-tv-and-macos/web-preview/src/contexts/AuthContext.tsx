@@ -88,11 +88,18 @@ function fixAvatarUrl(user: any): any {
   return user;
 }
 
+interface UserSubscription {
+  tier: 'free' | 'premium';
+  plan?: 'monthly' | 'annual';
+  validUntil?: string;
+}
+
 interface User {
   id: string;
   name: string;
   email?: string;
   avatar?: string;
+  subscription?: UserSubscription;
 }
 
 interface AuthContextType {

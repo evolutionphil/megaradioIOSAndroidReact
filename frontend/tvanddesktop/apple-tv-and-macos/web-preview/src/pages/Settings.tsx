@@ -679,6 +679,42 @@ export const Settings = (): JSX.Element => {
 
       case 'account': {
         var accountFocused = isFocusedOnOptions && optionIndex === 0;
+        var isPremium = user && user.subscription && user.subscription.tier === 'premium';
+        // Premium upsell / management row — appears for ALL users (signed in
+        // or not). Sits ABOVE the login/logout button so it's the first thing
+        // the user sees when opening the Account tab.
+        var premiumRow = (
+          <div
+            style={{
+              ...optionRowBase,
+              backgroundColor: 'rgba(255,65,153,0.08)',
+              boxShadow: 'none',
+              border: '1px solid rgba(255,65,153,0.35)',
+              marginBottom: '12px',
+              cursor: 'pointer',
+            }}
+            onClick={function() { setLocation('/premium-upgrade'); }}
+            data-testid="button-upgrade-premium"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2l2.5 7H22l-6 4.5 2.3 7L12 16.5 5.7 20.5 8 13.5 2 9h7.5z"
+                stroke="#ff4199" strokeWidth="1.5" strokeLinejoin="round" fill="rgba(255,65,153,0.25)" />
+            </svg>
+            <div style={{ flex: 1 }}>
+              <p className="font-['Ubuntu',Helvetica]" style={{ ...optionTextStyle, color: '#ff4199', fontWeight: 700 }}>
+                {isPremium
+                  ? (t('premium_active') || 'MegaRadio Premium · Active')
+                  : (t('upgrade_to_premium') || 'Upgrade to Premium')}
+              </p>
+              {!isPremium && (
+                <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '14px', color: 'rgba(255,255,255,0.55)', margin: '4px 0 0 0' }}>
+                  {t('premium_tagline') || 'Ad-free · High-quality streams'}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+
         if (isAuthenticated) {
           return (
             <div>
@@ -695,8 +731,14 @@ export const Settings = (): JSX.Element => {
                     <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 600, fontSize: '22px', color: '#ffffff', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</p>
                     {user.email && <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '16px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>{user.email}</p>}
                   </div>
+                  {isPremium && (
+                    <div data-testid="premium-badge-settings" style={{ flexShrink: 0, padding: '6px 12px', borderRadius: '20px', backgroundColor: '#ff4199', boxShadow: '0 0 16px rgba(255,65,153,0.5)' }}>
+                      <span style={{ color: '#fff', fontSize: '13px', fontWeight: 700, letterSpacing: 1 }}>PREMIUM</span>
+                    </div>
+                  )}
                 </div>
               )}
+              {premiumRow}
               <div
                 style={{ ...optionRowBase, backgroundColor: accountFocused ? 'rgba(239,68,68,0.2)' : 'transparent', boxShadow: accountFocused ? '0 0 24px rgba(239,68,68,0.2)' : 'none', border: '1px solid rgba(239,68,68,0.3)' }}
                 onClick={function() { logout(); }}
@@ -715,19 +757,22 @@ export const Settings = (): JSX.Element => {
           );
         } else {
           return (
-            <div
-              style={{ ...optionRowBase, backgroundColor: accountFocused ? '#ff4199' : 'transparent', boxShadow: accountFocused ? '0 0 24px rgba(255,65,153,0.3)' : 'none', border: '1px solid rgba(255,65,153,0.3)' }}
-              onClick={function() { setLocation('/login'); }}
-              data-testid="button-login"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <polyline points="10,17 15,12 10,7" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="15" y1="12" x2="3" y2="12" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <p className="font-['Ubuntu',Helvetica]" style={optionTextStyle}>
-                {t('login') || 'Log In'}
-              </p>
+            <div>
+              {premiumRow}
+              <div
+                style={{ ...optionRowBase, backgroundColor: accountFocused ? '#ff4199' : 'transparent', boxShadow: accountFocused ? '0 0 24px rgba(255,65,153,0.3)' : 'none', border: '1px solid rgba(255,65,153,0.3)' }}
+                onClick={function() { setLocation('/login'); }}
+                data-testid="button-login"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <polyline points="10,17 15,12 10,7" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="15" y1="12" x2="3" y2="12" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className="font-['Ubuntu',Helvetica]" style={optionTextStyle}>
+                  {t('login') || 'Log In'}
+                </p>
+              </div>
             </div>
           );
         }
@@ -869,7 +914,7 @@ export const Settings = (): JSX.Element => {
           <div style={{ marginTop: '40px', paddingLeft: '24px', paddingRight: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             {!isPremium && (
               <button
-                onClick={() => showPaywall('premium')}
+                onClick={() => setLocation('/premium-upgrade')}
                 onMouseEnter={() => setFocusSection('premium')}
                 data-testid="settings-go-premium-btn"
                 style={{

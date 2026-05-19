@@ -1087,6 +1087,30 @@ export const DiscoverNoUser = (): JSX.Element => {
           className="absolute left-[1453px] top-[67px] pointer-events-auto"
         />
 
+        {/* PREMIUM badge — informational, non-focusable. Only shown for users
+            whose backend `user.subscription.tier === 'premium'`. Sits between
+            CountryTrigger and the Login button. The Login button absolutely
+            positioned at left:1694 and country trigger ends around x≈1665, so
+            we place the badge at x=1640 above-right corner to avoid overlap. */}
+        {isAuthenticated && user && (user as any).subscription && (user as any).subscription.tier === 'premium' && (
+          <div
+            data-testid="premium-badge-header"
+            className="absolute top-[55px] flex items-center pointer-events-none"
+            style={{
+              left: '1640px',
+              padding: '4px 10px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #ff4199 0%, #ff79c6 100%)',
+              boxShadow: '0 0 14px rgba(255,65,153,0.45)',
+              zIndex: 60,
+            }}
+          >
+            <span style={{ color: '#fff', fontSize: '11px', fontWeight: 800, letterSpacing: 1, fontFamily: "'Ubuntu', Helvetica" }}>
+              PREMIUM
+            </span>
+          </div>
+        )}
+
         {/* Login/Profile Button - Right of Country Selector */}
         <div
           className={`absolute top-[67px] flex h-[51px] rounded-[30px] cursor-pointer transition-all pointer-events-auto flex-shrink-0 ${
