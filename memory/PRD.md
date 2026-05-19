@@ -10,6 +10,32 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
+### Client-side ICY Metadata via @radiolise/metadata-client ✅ (May 19)
+- Replaced the broken `/api/stations/:id/metadata?tv=1` + SSE
+  `/api/stream-metadata?url=...` backend dependency with the official
+  `@radiolise/metadata-client` (v1.0.1) WebSocket gateway
+  (`wss://backend.radiolise.com/api/data-service`).
+- `GlobalPlayerContext.tsx` now owns a single `createMetadataClient` instance
+  (lifetime = provider mount). When the active station changes, `trackStream()`
+  switches the upstream socket; passing `undefined` releases the stream
+  without tearing the WS down.
+- Override the gateway via `VITE_METADATA_WS` for self-hosted instances.
+- Verified by testing agent: bundle (`index-BrwWjfeD.js`) contains
+  `radiolise` + `backend.radiolise.com` refs and ZERO `stream-metadata`
+  references — old EventSource code path fully removed; no console errors.
+
+### TV Spatial-Nav Login Button Reachability Fix ✅ (May 19)
+- `tv-spatial-navigation.js`: added `findFallbackMatch(direction)` which
+  re-runs UP/DOWN search WITHOUT the strict horizontal-overlap requirement
+  when the primary `findBestMatch` returns null. This guarantees that
+  pressing UP from the topmost content row (where the source card's right
+  edge may not extend to x≈1394) still reaches `button-country-selector` or
+  `button-header-login` by Euclidean distance.
+- Sidebar/content zone barrier preserved; the existing sidebar→header RIGHT
+  block is untouched.
+- File parity: web-preview/public/js/* === backend/static/tv-preview/js/*
+  (verified via diff).
+
 ### GitHub Actions Auto-Build Pipeline ✅ (May 7)
 - `.github/workflows/desktop-release.yml` — `git tag v*` push'unda Windows
   (NSIS + portable) ve Linux (AppImage + .deb) build'lerini paralel çalıştırır;
