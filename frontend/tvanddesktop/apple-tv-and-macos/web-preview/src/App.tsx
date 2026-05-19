@@ -20,6 +20,7 @@ import { HelpProvider, useHelp } from "@/contexts/HelpContext";
 import { GlobalPlayer } from "@/components/GlobalPlayer";
 import { UpdateBanner } from "@/components/UpdateBanner";
 import { FocusDebugOverlay } from "@/components/FocusDebugOverlay";
+import { PremiumUpgrade } from "@/pages/PremiumUpgrade";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import NotFound from "@/pages/not-found";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -184,6 +185,7 @@ function Router() {
         {/* Splash & Onboarding */}
         <Route path="/" component={Splash} />
         <Route path="/login" component={Login} />
+        <Route path="/premium-upgrade" component={PremiumUpgrade} />
       
       {/* Onboarding Guide Pages */}
       <Route path="/guide-1" component={Guide1} />
