@@ -67,21 +67,23 @@ console.log('▸ Adding Eclipse/Tizen meta files (.project, .tproject)');
 fs.copyFileSync(path.join(__dirname, '.project.template'),  path.join(OUT_DIR, '.project'));
 fs.copyFileSync(path.join(__dirname, '.tproject.template'), path.join(OUT_DIR, '.tproject'));
 
-// Rewrite absolute /api/* paths so the bundle works inside file:// containers
-// (Tizen .wgt, WebOS .ipk). Three transformations, order-sensitive:
-//   1. /api/tv-app/  → ./        (asset prefix → relative to wgt/ipk root)
-//   2. /api/...      → https://api.themegaradio.com/api/...  (backend endpoints)
+// Rewrite absolute /api/* paths so the bundle works inside file:// containers.
+// IMPORTANT — must NOT double-prefix already-absolute backend URLs (regex
+// safety: placeholder-swap technique avoids that bug).
 console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
 const BACKEND_HOST = 'https://api.themegaradio.com';
+const PLACEHOLDER = '__MR_BACKEND_API__';
 
 function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
-  // 1) asset prefix
+  // 1) Park already-absolute backend URLs so step 3 won't double-prefix them
+  s = s.replace(/https?:\/\/(?:api\.)?themegaradio\.com\/api\//g, PLACEHOLDER);
+  // 2) Asset prefix → relative
   s = s.replace(/\/api\/tv-app\//g, './');
-  // 2) any remaining /api/ backend call → absolute URL (covers tv-icon-proxy,
-  //    stream-proxy, stream-metadata, auth, user, etc.) Skip ones that already
-  //    have a scheme prefix (already absolute).
-  s = s.replace(/(["'`(\s=>,])\/api\//g, '$1' + BACKEND_HOST + '/api/');
+  // 3) Remaining /api/... (relative backend calls) → absolute
+  s = s.replace(/\/api\//g, BACKEND_HOST + '/api/');
+  // 4) Unpark placeholders
+  s = s.replace(new RegExp(PLACEHOLDER, 'g'), BACKEND_HOST + '/api/');
   fs.writeFileSync(filePath, s);
 }
 

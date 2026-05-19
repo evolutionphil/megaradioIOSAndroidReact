@@ -64,13 +64,17 @@ fs.copyFileSync(path.join(__dirname, 'icon.png'),      path.join(OUT_DIR, 'icon.
 fs.copyFileSync(path.join(__dirname, 'largeIcon.png'), path.join(OUT_DIR, 'largeIcon.png'));
 fs.copyFileSync(path.join(__dirname, 'splash.png'),    path.join(OUT_DIR, 'splash.png'));
 
-// Rewrite absolute /api/* paths (see prepare-tizen.js for explanation)
+// Rewrite absolute /api/* paths (see prepare-tizen.js for full explanation
+// of the placeholder-swap technique that avoids double-prefix bug).
 console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
 const BACKEND_HOST = 'https://api.themegaradio.com';
+const PLACEHOLDER = '__MR_BACKEND_API__';
 function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
+  s = s.replace(/https?:\/\/(?:api\.)?themegaradio\.com\/api\//g, PLACEHOLDER);
   s = s.replace(/\/api\/tv-app\//g, './');
-  s = s.replace(/(["'`(\s=>,])\/api\//g, '$1' + BACKEND_HOST + '/api/');
+  s = s.replace(/\/api\//g, BACKEND_HOST + '/api/');
+  s = s.replace(new RegExp(PLACEHOLDER, 'g'), BACKEND_HOST + '/api/');
   fs.writeFileSync(filePath, s);
 }
 function walkAndRewrite(dir) {
