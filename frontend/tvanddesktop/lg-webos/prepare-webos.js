@@ -64,12 +64,23 @@ fs.copyFileSync(path.join(__dirname, 'icon.png'),      path.join(OUT_DIR, 'icon.
 fs.copyFileSync(path.join(__dirname, 'largeIcon.png'), path.join(OUT_DIR, 'largeIcon.png'));
 fs.copyFileSync(path.join(__dirname, 'splash.png'),    path.join(OUT_DIR, 'splash.png'));
 
-// Rewrite absolute /api/tv-app/ asset paths to relative ./ (see prepare-tizen.js)
-console.log('▸ Rewriting absolute asset paths to relative...');
-const htmlPath = path.join(OUT_DIR, 'index.html');
-let html = fs.readFileSync(htmlPath, 'utf8');
-html = html.replace(/(src|href)="\/api\/tv-app\//g, '$1="./');
-fs.writeFileSync(htmlPath, html);
+// Rewrite absolute /api/* paths (see prepare-tizen.js for explanation)
+console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
+const BACKEND_HOST = 'https://api.themegaradio.com';
+function rewriteFile(filePath) {
+  let s = fs.readFileSync(filePath, 'utf8');
+  s = s.replace(/\/api\/tv-app\//g, './');
+  s = s.replace(/(["'`(\s=>,])\/api\//g, '$1' + BACKEND_HOST + '/api/');
+  fs.writeFileSync(filePath, s);
+}
+function walkAndRewrite(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) walkAndRewrite(p);
+    else if (/\.(html|js|css|mjs|map)$/.test(entry.name)) rewriteFile(p);
+  }
+}
+walkAndRewrite(OUT_DIR);
 
 console.log('\n✅ WebOS project ready at:', OUT_DIR);
 console.log('   Package with:');

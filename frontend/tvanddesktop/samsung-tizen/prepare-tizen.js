@@ -67,14 +67,32 @@ console.log('▸ Adding Eclipse/Tizen meta files (.project, .tproject)');
 fs.copyFileSync(path.join(__dirname, '.project.template'),  path.join(OUT_DIR, '.project'));
 fs.copyFileSync(path.join(__dirname, '.tproject.template'), path.join(OUT_DIR, '.tproject'));
 
-// Rewrite absolute /api/tv-app/ asset paths to relative ./ paths so the
-// bundle works both when served by FastAPI (backend preview) AND when loaded
-// from local file:// inside Tizen/WebOS WebApp containers.
-console.log('▸ Rewriting absolute asset paths to relative...');
-const htmlPath = path.join(OUT_DIR, 'index.html');
-let html = fs.readFileSync(htmlPath, 'utf8');
-html = html.replace(/(src|href)="\/api\/tv-app\//g, '$1="./');
-fs.writeFileSync(htmlPath, html);
+// Rewrite absolute /api/* paths so the bundle works inside file:// containers
+// (Tizen .wgt, WebOS .ipk). Three transformations, order-sensitive:
+//   1. /api/tv-app/  → ./        (asset prefix → relative to wgt/ipk root)
+//   2. /api/...      → https://api.themegaradio.com/api/...  (backend endpoints)
+console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
+const BACKEND_HOST = 'https://api.themegaradio.com';
+
+function rewriteFile(filePath) {
+  let s = fs.readFileSync(filePath, 'utf8');
+  // 1) asset prefix
+  s = s.replace(/\/api\/tv-app\//g, './');
+  // 2) any remaining /api/ backend call → absolute URL (covers tv-icon-proxy,
+  //    stream-proxy, stream-metadata, auth, user, etc.) Skip ones that already
+  //    have a scheme prefix (already absolute).
+  s = s.replace(/(["'`(\s=>,])\/api\//g, '$1' + BACKEND_HOST + '/api/');
+  fs.writeFileSync(filePath, s);
+}
+
+function walkAndRewrite(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) walkAndRewrite(p);
+    else if (/\.(html|js|css|mjs|map)$/.test(entry.name)) rewriteFile(p);
+  }
+}
+walkAndRewrite(OUT_DIR);
 
 console.log('\n✅ Tizen project ready at:', OUT_DIR);
 console.log('   Import this folder into Tizen Studio:');
