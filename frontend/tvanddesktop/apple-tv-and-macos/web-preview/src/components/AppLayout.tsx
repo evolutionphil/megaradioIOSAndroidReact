@@ -12,9 +12,14 @@ interface AppLayoutProps {
   currentPage?: string;
   hideHeaderControls?: boolean; // For Search page - hides country selector and login
   scrollContainerRef?: RefObject<HTMLDivElement>; // For auto-hide header feature
+  // Optional focus state forwarded from the page-level useFocusManager.
+  // When provided, the sidebar shows the actual focus ring instead of being
+  // permanently un-focused. Pages that DO NOT pass this stay backwards
+  // compatible (no visual focus, OK still works via their own handlers).
+  isFocused?: (index: number) => boolean;
 }
 
-export const AppLayout = ({ children, currentPage, hideHeaderControls = false, scrollContainerRef }: AppLayoutProps) => {
+export const AppLayout = ({ children, currentPage, hideHeaderControls = false, scrollContainerRef, isFocused }: AppLayoutProps) => {
   const { selectedCountry, selectedCountryFlag, setCountry } = useCountry();
   const { isAuthenticated, user } = useAuth();
   const [, setLocation] = useLocation();
@@ -146,7 +151,7 @@ export const AppLayout = ({ children, currentPage, hideHeaderControls = false, s
       {/* Global Sidebar */}
       <Sidebar 
         activePage={(currentPage || 'discover') as 'discover' | 'genres' | 'search' | 'favorites' | 'settings' | 'country'}
-        isFocused={() => false}
+        isFocused={isFocused || (() => false)}
         getFocusClasses={getFocusClasses}
       />
 
