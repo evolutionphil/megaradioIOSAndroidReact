@@ -109,6 +109,14 @@
                    testId === 'button-settings';
         },
         
+        isHeaderElement: function(el) {
+            // Header zone = top bar (CountrySelector dropdown, Login button, etc.)
+            // We detect by Y position because header has no fixed testid pattern.
+            const rect = el.getBoundingClientRect();
+            // 10-foot UI canvas is 1080px tall; header occupies top ~180px in TV layout.
+            return rect.top < 180 && !this.isSidebarElement(el);
+        },
+        
         findBestMatch: function(direction) {
             if (!this.focusedElement) {
                 return this.focusableElements[0] || null;
@@ -138,6 +146,20 @@
                         '- current:', this.focusedElement.dataset.testid,
                         '- candidate:', el.dataset.testid);
                     return;
+                }
+
+                // CRITICAL RULE 2: RIGHT from a sidebar item MUST land on the
+                // main content area, NEVER on header buttons (Login, Country
+                // dropdown). Without this, Samsung TV's RIGHT key on Genres
+                // jumps to Login because Login may be geometrically closer.
+                //
+                // Symmetric LEFT rule: from header, LEFT does NOT jump into
+                // sidebar — it should move within the header row instead.
+                if (direction === 'RIGHT' && currentIsSidebar && this.isHeaderElement(el)) {
+                    return; // block sidebar → header on RIGHT
+                }
+                if (direction === 'LEFT' && this.isHeaderElement(this.focusedElement) && candidateIsSidebar) {
+                    return; // block header → sidebar on LEFT
                 }
                 
                 switch(direction) {
