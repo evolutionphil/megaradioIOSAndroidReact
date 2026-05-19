@@ -81,22 +81,33 @@ fs.copyFileSync(path.join(__dirname, '.project.template'),  path.join(OUT_DIR, '
 fs.copyFileSync(path.join(__dirname, '.tproject.template'), path.join(OUT_DIR, '.tproject'));
 
 // Rewrite absolute /api/* paths so the bundle works inside file:// containers.
-// IMPORTANT — must NOT double-prefix already-absolute backend URLs (regex
-// safety: placeholder-swap technique avoids that bug).
+// IMPORTANT — must NOT double-prefix already-absolute URLs of ANY origin
+// (themegaradio.com, backend.radiolise.com, third-party stream domains, etc.).
+// We park EVERY scheme://host/api/... match before doing the relative-/api/
+// rewrite, then restore them verbatim afterwards.
 console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
 const BACKEND_HOST = 'https://api.themegaradio.com';
-const PLACEHOLDER = '__MR_BACKEND_API__';
 
 function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
-  // 1) Park already-absolute backend URLs so step 3 won't double-prefix them
-  s = s.replace(/https?:\/\/(?:api\.)?themegaradio\.com\/api\//g, PLACEHOLDER);
-  // 2) Asset prefix → relative
+
+  // 1) Park ALL absolute URLs containing /api/ (any scheme: http, https, ws, wss).
+  const parked = [];
+  s = s.replace(/(https?|wss?):\/\/[^\s"'`<>()]+/g, (match) => {
+    const token = `__MR_URL_${parked.length}__`;
+    parked.push(match);
+    return token;
+  });
+
+  // 2) Asset prefix → relative (we're running from file:// inside Tizen).
   s = s.replace(/\/api\/tv-app\//g, './');
-  // 3) Remaining /api/... (relative backend calls) → absolute
+
+  // 3) Remaining /api/... (relative backend calls) → absolute backend host.
   s = s.replace(/\/api\//g, BACKEND_HOST + '/api/');
-  // 4) Unpark placeholders
-  s = s.replace(new RegExp(PLACEHOLDER, 'g'), BACKEND_HOST + '/api/');
+
+  // 4) Restore parked URLs verbatim.
+  s = s.replace(/__MR_URL_(\d+)__/g, (_, i) => parked[Number(i)]);
+
   fs.writeFileSync(filePath, s);
 }
 
