@@ -35,6 +35,9 @@ export const DiscoverNoUser = (): JSX.Element => {
   const [showHeader, setShowHeader] = useState(true);
   const [helpFocused, setHelpFocused] = useState(false);
   const [isCountryHeaderFocused, setIsCountryHeaderFocused] = useState(false);
+  // Header Login button focus mode — mirrors isCountryHeaderFocused.
+  // When true, focusIndex stays at 5 but visual focus is on the Login button.
+  const [isLoginHeaderFocused, setIsLoginHeaderFocused] = useState(false);
   const { openHelp, closeHelp, helpOpen } = useHelp();
   const helpFocusedRef = useRef(false);
   const helpOpenRef = useRef(false);
@@ -296,6 +299,25 @@ export const DiscoverNoUser = (): JSX.Element => {
       } else if (direction === 'LEFT') {
         setIsCountryHeaderFocused(false);
         setFocusIndex(0);
+      } else if (direction === 'RIGHT') {
+        // Move focus to the Login button (header-right). Keep focusIndex at 5
+        // so the sidebar doesn't visually highlight; just toggle the flag.
+        setIsCountryHeaderFocused(false);
+        setIsLoginHeaderFocused(true);
+      }
+      return;
+    }
+
+    // Header Login button focus mode (right of CountryTrigger)
+    if (isLoginHeaderFocused) {
+      if (direction === 'LEFT') {
+        setIsLoginHeaderFocused(false);
+        setIsCountryHeaderFocused(true);
+      } else if (direction === 'DOWN') {
+        setIsLoginHeaderFocused(false);
+        if (recentCount > 0) { setFocusIndex(recentStart); } else if (forYouCount > 0) { setFocusIndex(forYouStart); } else { setFocusIndex(genresStart); }
+      } else if (direction === 'UP') {
+        // already at top — keep focus on Login
       }
       return;
     }
@@ -303,10 +325,11 @@ export const DiscoverNoUser = (): JSX.Element => {
     // Sidebar section (0-5)
     if (current >= 0 && current <= 5) {
       if (direction === 'DOWN') {
-        if (current < 5) { setIsCountryHeaderFocused(false); newIndex = current + 1; }
+        if (current < 5) { setIsCountryHeaderFocused(false); setIsLoginHeaderFocused(false); newIndex = current + 1; }
         else { setHF(true); return; }
       } else if (direction === 'UP') {
         setIsCountryHeaderFocused(false);
+        setIsLoginHeaderFocused(false);
         newIndex = current > 0 ? current - 1 : current;
       } else if (direction === 'RIGHT') {
         if (current === 0 || current === 1) {
@@ -505,14 +528,21 @@ export const DiscoverNoUser = (): JSX.Element => {
     cols: 1,
     initialIndex: 0,
     onSelect: (index) => {
+      // Login button in header (right of CountryTrigger) — handled via flag,
+      // not by index, so check this first regardless of `index` value.
+      if (isLoginHeaderFocused) {
+        window.location.hash = '#/login';
+        return;
+      }
       // Sidebar navigation (0-5) - 6 items
       // index 4 = Country sidebar (opens modal), index 5 = Settings OR header CountryTrigger
       if (index >= 0 && index <= 5) {
         if (index === 4) {
           setIsCountrySelectorOpen(true);
         } else if (index === 5 && isCountryHeaderFocused) {
-          // User is on the header CountryTrigger button, navigate to country page
-          window.location.hash = '#/country-select';
+          // User is on the header CountryTrigger button, open country selector modal
+          // (matches the click handler on CountryTrigger itself).
+          setIsCountrySelectorOpen(true);
         } else {
           var route = sidebarRoutes[index];
           window.location.hash = '#' + route;
@@ -1057,7 +1087,9 @@ export const DiscoverNoUser = (): JSX.Element => {
 
         {/* Login/Profile Button - Right of Country Selector */}
         <div
-          className="absolute top-[67px] flex h-[51px] rounded-[30px] cursor-pointer transition-colors pointer-events-auto flex-shrink-0"
+          className={`absolute top-[67px] flex h-[51px] rounded-[30px] cursor-pointer transition-all pointer-events-auto flex-shrink-0 ${
+            isLoginHeaderFocused ? 'ring-4 ring-white scale-110 shadow-[0_0_30px_rgba(255,65,153,0.8)]' : ''
+          }`}
           style={{
             left: '1694px',
             backgroundColor: isAuthenticated ? 'rgba(255,255,255,0.1)' : '#ff4199',

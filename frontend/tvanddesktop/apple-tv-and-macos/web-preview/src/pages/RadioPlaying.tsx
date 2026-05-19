@@ -224,25 +224,9 @@ export const RadioPlaying = (): JSX.Element => {
     }
   }, [station, stationId, isPlaying, isBuffering]);
 
-  // Fetch station metadata
-  const { data: metadataData } = useQuery({
-    queryKey: ['metadata', stationId],
-    queryFn: async () => {
-      if (!stationId || stationId.trim().length === 0) {
-        throw new Error('Invalid station ID');
-      }
-      try {
-        return await megaRadioApi.getStationMetadata(stationId);
-      } catch (error) {
-        console.error('Failed to fetch station metadata:', error);
-        throw error;
-      }
-    },
-    enabled: !!stationId && stationId.trim().length > 0,
-    refetchInterval: 30000,
-  });
-
-  const metadata = metadataData?.metadata;
+  // Now Playing title comes from `nowPlayingMetadata` (ICY via @radiolise
+  // metadata-client WebSocket). The old `/api/stations/:id/metadata` backend
+  // endpoint 404s on themegaradio.com — do NOT re-introduce it.
 
   // Fetch similar stations
   // CACHE: 7 days
@@ -941,9 +925,12 @@ export const RadioPlaying = (): JSX.Element => {
         {station?.name || 'Unknown Station'}
       </p>
 
-      {/* Now Playing */}
+      {/* Now Playing — ICY metadata via Radiolise WebSocket (nowPlayingMetadata).
+          Falls back to the i18n placeholder ("Now Playing" / "Jetzt spielen")
+          when no metadata is available yet (server has no ICY, or socket still
+          connecting). */}
       <p className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[596px] not-italic text-[32px] text-white top-[356.71px] max-w-[700px] truncate">
-        {metadata?.title || t('now_playing') || 'Now Playing'}
+        {nowPlayingMetadata || t('now_playing') || 'Now Playing'}
       </p>
 
       {/* Station Info Label */}
