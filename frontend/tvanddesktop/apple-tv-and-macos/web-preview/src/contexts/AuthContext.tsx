@@ -1,6 +1,39 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 
-var API_BASE = 'https://api.themegaradio.com';
+// API_BASE strategy:
+//   - On the Emergent web preview (browser hits api.themegaradio.com → CORS blocked)
+//     we route through the local backend's tv-proxy at /api/tv-proxy/* by using
+//     a base of "" (relative URLs). prepare-tizen.js / prepare-webos.js will
+//     rewrite all /api/* to https://api.themegaradio.com/api/* at build time for
+//     the .wgt / .ipk packages where CORS doesn't apply (file:// origin).
+//   - On the .wgt / .ipk runtime, fetch hits the rewritten absolute URL directly.
+// Net effect: ONE source-of-truth URL, two transport mechanisms, zero CORS pain.
+function detectApiBase(): string {
+  try {
+    var host = window.location.hostname;
+    // Tizen / WebOS apps run from file:// so hostname is empty/blank.
+    // Also catch direct themegaradio.com hosting (if ever served from there).
+    if (!host || host === '' || host === 'localhost' || host.indexOf('themegaradio.com') !== -1) {
+      return 'https://api.themegaradio.com';
+    }
+  } catch (e) { /* ignore */ }
+  // Preview / dev / hosted via Emergent ingress → use relative paths so the
+  // /api/tv-proxy/* backend route handles CORS server-side.
+  return '';
+}
+
+// Preview hits go through /api/tv-proxy/<path>. The .wgt/.ipk hits go directly
+// to https://api.themegaradio.com/api/<path>. Same source code, different runtime.
+function buildAuthUrl(path: string): string {
+  var base = detectApiBase();
+  if (base === '') {
+    // Preview: insert /tv-proxy/ between /api/ and the rest.
+    return '/api/tv-proxy' + path.replace(/^\/api/, '');
+  }
+  return base + path;
+}
+
+var API_BASE = detectApiBase();
 
 function getAuthDeviceId(): string {
   try {
@@ -166,7 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCodeExpiresAt(null);
     setLoginError(false);
 
-    fetch(API_BASE + '/api/auth/tv/code', {
+    fetch(buildAuthUrl('/api/auth/tv/code'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -215,7 +248,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       var currentDeviceId = getAuthDeviceId();
-      var statusUrl = API_BASE + '/api/auth/tv/code/' + code + '/status?deviceId=' + encodeURIComponent(currentDeviceId);
+      var statusUrl = buildAuthUrl('/api/auth/tv/code/' + code + '/status') + '?deviceId=' + encodeURIComponent(currentDeviceId);
       fetch(statusUrl, {
         method: 'GET'
       })
@@ -270,7 +303,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     stopPolling();
 
     if (currentToken) {
-      fetch(API_BASE + '/api/auth/tv/logout', {
+      fetch(buildAuthUrl('/api/auth/tv/logout'), {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + currentToken }
       }).catch(function() {

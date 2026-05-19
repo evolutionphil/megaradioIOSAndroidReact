@@ -40,6 +40,20 @@ export function useFocusManager({
 }: UseFocusManagerOptions) {
   const [focusIndex, setFocusIndex] = useState(initialIndex);
 
+  // Debug overlay hook: every focus change is pushed to a global so
+  // FocusDebugOverlay can render it. Cheap, only writes when index changes.
+  useEffect(() => {
+    try {
+      const w = window as any;
+      w.__tvFocusDebug = {
+        ...(w.__tvFocusDebug || {}),
+        focusIndex,
+        totalItems,
+        cols,
+      };
+    } catch (e) { /* noop */ }
+  }, [focusIndex, totalItems, cols]);
+
   // Grid-aware clamp index - handles incomplete last row
   const clampIndex = useCallback((index: number, currentIndex: number, direction?: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {
     if (enableWrapping) {

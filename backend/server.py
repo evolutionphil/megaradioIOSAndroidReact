@@ -353,16 +353,28 @@ async def shutdown_db_client():
 
 # Proxy passthrough so the preview browser (which Cloudflare bot-blocks)
 # can reach the production MegaRadio API via the backend's server-side IP.
-@app.get("/api/tv-proxy/{path:path}")
+# Supports all HTTP verbs — the TV web preview hits this for Login/Auth POSTs.
+@app.api_route("/api/tv-proxy/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 async def tv_api_proxy(path: str, request: Request):
     """Server-side proxy to api.themegaradio.com so headless preview can fetch."""
     target = f"https://api.themegaradio.com/api/{path}"
     qs = str(request.url.query)
     if qs:
         target = f"{target}?{qs}"
+    # Forward request body and content-type for write methods.
+    body = await request.body()
+    fwd_headers = {}
+    ct = request.headers.get("content-type")
+    if ct:
+        fwd_headers["content-type"] = ct
+    auth = request.headers.get("authorization")
+    if auth:
+        fwd_headers["authorization"] = auth
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as cli:
-            r = await cli.get(target)
+            r = await cli.request(
+                request.method, target, content=body or None, headers=fwd_headers
+            )
             return Response(
                 content=r.content,
                 status_code=r.status_code,
