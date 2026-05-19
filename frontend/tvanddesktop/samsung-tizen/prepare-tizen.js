@@ -36,10 +36,23 @@ function copyDir(src, dst) {
 }
 
 console.log('▸ Building TV web bundle...');
+// Read version from config.xml so the embedded version + manifest are in sync,
+// and the UpdateBanner can compare against /api/tv/version.
+let tizenVersion = '1.0.2';
 try {
-  // Lokal Mac/Linux/Windows uyumlu shell seçimi
+  const cfg = fs.readFileSync(path.join(__dirname, 'config.xml'), 'utf8');
+  const m = cfg.match(/version="([\d.]+)"/);
+  if (m) tizenVersion = m[1];
+} catch (_) {}
+console.log('  embedded VITE_APP_VERSION =', tizenVersion);
+try {
   const shell = process.platform === 'win32' ? true : (fs.existsSync('/bin/bash') ? '/bin/bash' : true);
-  execSync('yarn build', { cwd: TV_SRC_DIR, stdio: 'inherit', shell });
+  execSync('yarn build', {
+    cwd: TV_SRC_DIR,
+    stdio: 'inherit',
+    shell,
+    env: { ...process.env, VITE_APP_VERSION: tizenVersion },
+  });
 } catch (e) {
   console.warn('⚠ yarn build başarısız oldu — TV_DIST mevcut ise devam edeceğim.');
   if (!fs.existsSync(TV_DIST)) {

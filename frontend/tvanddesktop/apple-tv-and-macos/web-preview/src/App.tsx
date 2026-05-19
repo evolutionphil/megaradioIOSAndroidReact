@@ -18,6 +18,7 @@ import { FocusRouterProvider } from "@/contexts/FocusRouterContext";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import { HelpProvider, useHelp } from "@/contexts/HelpContext";
 import { GlobalPlayer } from "@/components/GlobalPlayer";
+import { UpdateBanner } from "@/components/UpdateBanner";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import NotFound from "@/pages/not-found";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -208,6 +209,8 @@ function Router() {
     </Switch>
     {/* GlobalPlayer must be INSIDE Router to detect route changes */}
     <GlobalPlayer />
+    {/* Update banner — global, top z-index. Polls /api/tv/version once on mount. */}
+    <UpdateBanner />
     {/* Network Disconnect Modal - Global, highest z-index */}
     <NetworkDisconnectModal />
     {/* Help Modal - Global, rendered at root level to avoid overflow:hidden clipping */}
