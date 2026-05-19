@@ -317,12 +317,21 @@ export const GenreList = (): JSX.Element => {
     };
   }, []);
 
-  // Jump to first station when stations load OR restore focus when returning
+  // Jump to first station when stations load OR restore focus when returning.
+  // IMPORTANT: only run this auto-focus logic ONCE — after the first batch of
+  // stations arrives. Otherwise re-running on every length change steals focus
+  // back from the sidebar whenever the user moves LEFT to sidebar then more
+  // stations load in the background.
+  const initialFocusSetRef = useRef(false);
   useEffect(() => {
-    const navState = popNavigationState(); // Pop and clear in one atomic operation
+    if (initialFocusSetRef.current) return;
+    if (displayedStations.length === 0) return; // wait for first batch
+    initialFocusSetRef.current = true;
+
+    const navState = popNavigationState();
     if (navState && navState.returnFocusIndex !== null) {
       setFocusIndex(navState.returnFocusIndex);
-    } else if (displayedStations.length > 0 && focusIndex < stationsStart) {
+    } else if (focusIndex < stationsStart) {
       setFocusIndex(stationsStart);
     }
   }, [displayedStations.length]);

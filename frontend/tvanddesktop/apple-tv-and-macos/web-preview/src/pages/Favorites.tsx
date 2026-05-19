@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { resolveStationImageUrl } from "@/lib/imageUtils";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -9,11 +9,13 @@ import { useFocusManager, getFocusClasses } from "@/hooks/useFocusManager";
 import { Sidebar } from "@/components/Sidebar";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
+import { useNavigation } from "@/contexts/NavigationContext";
 
 export const Favorites = (): JSX.Element => {
   const { favorites } = useFavorites();
   const { t } = useLocalization();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { setNavigationState, popNavigationState } = useNavigation();
   
   // Define sidebar routes (6 items: 0-5)
   const sidebarRoutes = ['/discover-no-user', '/genres', '/search', '/favorites', '/country-select', '/settings'];
@@ -40,6 +42,7 @@ export const Favorites = (): JSX.Element => {
     onSelect: (index) => {
       // Sidebar navigation (0-5)
       if (index >= 0 && index <= 5) {
+        setNavigationState(location, index);
         window.location.hash = '#' + sidebarRoutes[index];
       }
       // Favorites section
@@ -61,6 +64,14 @@ export const Favorites = (): JSX.Element => {
     },
     onBack: () => setLocation('/discover-no-user')
   });
+
+  // Restore sidebar focus when returning from another sidebar page.
+  useEffect(() => {
+    const navState = popNavigationState();
+    if (navState && navState.returnFocusIndex !== null && navState.returnFocusIndex <= 5) {
+      setFocusIndex(navState.returnFocusIndex);
+    }
+  }, []); // run once on mount
 
   // Custom navigation logic
   const customHandleNavigation = (direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {

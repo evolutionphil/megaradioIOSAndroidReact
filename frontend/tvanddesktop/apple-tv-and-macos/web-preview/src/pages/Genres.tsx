@@ -13,12 +13,14 @@ import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { Sidebar } from "@/components/Sidebar";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
+import { useNavigation } from "@/contexts/NavigationContext";
 
 export const Genres = (): JSX.Element => {
   const { selectedCountry, selectedCountryCode, selectedCountryFlag, setCountry } = useCountry();
   const { isPlaying } = useGlobalPlayer();
   const { t } = useLocalization();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { setNavigationState, popNavigationState } = useNavigation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isCountrySelectorOpen, setIsCountrySelectorOpen] = useState(false);
   const [helpFocused, setHelpFocused] = useState(false);
@@ -204,6 +206,7 @@ export const Genres = (): JSX.Element => {
       if (index >= 0 && index <= 5) {
         const route = sidebarRoutes[index];
         if (route !== '#') {
+          setNavigationState(location, index);
           window.location.hash = '#' + route;
         }
       }
@@ -231,6 +234,14 @@ export const Genres = (): JSX.Element => {
       setLocation('/discover-no-user');
     }
   });
+
+  // Restore sidebar focus when returning from another sidebar page (Genres → Discover → Genres).
+  useEffect(() => {
+    const navState = popNavigationState();
+    if (navState && navState.returnFocusIndex !== null && navState.returnFocusIndex <= 5) {
+      setFocusIndex(navState.returnFocusIndex);
+    }
+  }, []); // run once on mount
 
   usePageKeyHandler('/genres', (e) => {
     if (isCountrySelectorOpen) {

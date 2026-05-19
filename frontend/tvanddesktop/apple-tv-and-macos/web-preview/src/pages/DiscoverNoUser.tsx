@@ -544,6 +544,8 @@ export const DiscoverNoUser = (): JSX.Element => {
           // (matches the click handler on CountryTrigger itself).
           setIsCountrySelectorOpen(true);
         } else {
+          // Save current sidebar focus so coming back restores it.
+          setNavigationState(location, index);
           var route = sidebarRoutes[index];
           window.location.hash = '#' + route;
         }
