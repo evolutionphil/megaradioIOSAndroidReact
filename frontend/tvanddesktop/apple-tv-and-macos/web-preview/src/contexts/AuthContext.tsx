@@ -108,6 +108,13 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   login: () => void;
+  /**
+   * Authenticate the TV using a server-issued bearer token (no credentials
+   * typed on the device). Used by the subscription Account-Linking flow:
+   * after the user pays in the browser, the backend returns the same JWT
+   * via `GET /api/subscription/tv/code/:code/status` → we feed it here.
+   */
+  loginWithToken: (token: string, user: User) => void;
   logout: () => void;
   deviceCode: string | null;
   codeExpiresAt: string | null;
@@ -305,6 +312,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, 3000);
   }
 
+  /**
+   * Programmatically sign the user in using a server-issued token+user blob
+   * (used by the subscription flow — after Stripe completes, the backend
+   * returns the same JWT shape our login flow uses).
+   */
+  function loginWithToken(newToken: string, newUser: User) {
+    try {
+      localStorage.setItem('tv_auth_token', newToken);
+      localStorage.setItem('tv_auth_user', JSON.stringify(newUser));
+    } catch (e) { /* localStorage error */ }
+    stopPolling();
+    setToken(newToken);
+    setUser(fixAvatarUrl(newUser));
+    setDeviceCode(null);
+    setCodeExpiresAt(null);
+    setLoginError(false);
+  }
+
   function logout() {
     var currentToken = token;
     stopPolling();
@@ -345,6 +370,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         token: token,
         isLoading: isLoading,
         login: login,
+        loginWithToken: loginWithToken,
         logout: logout,
         deviceCode: deviceCode,
         codeExpiresAt: codeExpiresAt,

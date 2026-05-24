@@ -25,10 +25,24 @@ export function PremiumUpgrade(): JSX.Element {
   const { status, code, activationUrl, countdownLabel, errorMessage, regenerate } =
     useSubscriptionLink({
       enabled: true,
-      onActivated: (sub) => {
-        console.log("[Premium] Activated:", sub);
-        // Refresh auth so any subscription-gated UI re-renders.
-        try { (auth as any).refresh && (auth as any).refresh(); } catch (_) { /* noop */ }
+      onActivated: (payload) => {
+        console.log("[Premium] Activated:", payload);
+        // Auto-login the TV using the backend-issued bearer token. No
+        // credentials are typed on the device — the user authenticated on
+        // their phone via Stripe/Paddle Checkout, the backend handed us a
+        // JWT, we trust it.
+        if (payload.user && payload.user.token) {
+          auth.loginWithToken(payload.user.token, {
+            id: payload.user.id,
+            name: payload.user.name || payload.user.email || "Premium User",
+            email: payload.user.email,
+            subscription: {
+              tier: (payload.subscription.tier as 'free' | 'premium') || 'premium',
+              plan: payload.subscription.plan as 'monthly' | 'annual',
+              validUntil: payload.subscription.validUntil,
+            },
+          });
+        }
       },
     });
 

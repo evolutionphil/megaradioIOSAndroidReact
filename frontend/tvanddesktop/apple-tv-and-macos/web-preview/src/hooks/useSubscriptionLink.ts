@@ -63,6 +63,11 @@ function getOrCreateDeviceId(): string {
 
 export type SubscriptionLinkStatus = "loading" | "pending" | "activated" | "expired" | "error";
 
+export interface ActivationPayload {
+  subscription: { tier: string; plan?: string; validUntil?: string };
+  user?: { id: string; email?: string; name?: string; token: string };
+}
+
 export interface UseSubscriptionLinkResult {
   status: SubscriptionLinkStatus;
   code: string | null;          // 6-digit human-readable PIN
@@ -75,7 +80,7 @@ export interface UseSubscriptionLinkResult {
 
 export function useSubscriptionLink(opts: {
   enabled?: boolean;
-  onActivated?: (subscription: { tier: string; validUntil?: string; plan?: string }) => void;
+  onActivated?: (payload: ActivationPayload) => void;
 }): UseSubscriptionLinkResult {
   const enabled = opts.enabled !== false;
   const onActivatedRef = useRef(opts.onActivated);
@@ -147,7 +152,10 @@ export function useSubscriptionLink(opts: {
           if (data.status === "activated") {
             setStatus("activated");
             if (onActivatedRef.current) {
-              onActivatedRef.current(data.subscription || { tier: "premium" });
+              onActivatedRef.current({
+                subscription: data.subscription || { tier: "premium" },
+                user: data.user, // contains `token` for auto-login on TV
+              });
             }
           } else if (data.status === "expired") {
             setStatus("expired");

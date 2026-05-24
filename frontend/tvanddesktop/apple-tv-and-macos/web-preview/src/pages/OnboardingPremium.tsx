@@ -31,12 +31,22 @@ export const OnboardingPremium = (): JSX.Element => {
   const [codeRevealed, setCodeRevealed] = useState(false);
 
   const { status, code, activationUrl, countdownLabel } = useSubscriptionLink({
-    enabled: codeRevealed, // only request the PIN when user picks "Upgrade"
-    onActivated: () => {
+    enabled: codeRevealed,
+    onActivated: (payload) => {
+      // Auto-login with backend-issued bearer token (see PremiumUpgrade.tsx)
+      if (payload.user && payload.user.token) {
+        auth.loginWithToken(payload.user.token, {
+          id: payload.user.id,
+          name: payload.user.name || payload.user.email || "Premium User",
+          email: payload.user.email,
+          subscription: {
+            tier: (payload.subscription.tier as 'free' | 'premium') || 'premium',
+            plan: payload.subscription.plan as 'monthly' | 'annual',
+            validUntil: payload.subscription.validUntil,
+          },
+        });
+      }
       try { localStorage.setItem('onboardingCompleted', 'true'); } catch (_) { /* noop */ }
-      try { (auth as any).refresh && (auth as any).refresh(); } catch (_) { /* noop */ }
-      // useSubscriptionLink fires onActivated, then UI shows success state
-      // briefly; we then route forward.
       setTimeout(() => setLocation('/discover-no-user'), 2000);
     },
   });
