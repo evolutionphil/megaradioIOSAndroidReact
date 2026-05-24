@@ -21,6 +21,7 @@ import { GlobalPlayer } from "@/components/GlobalPlayer";
 import { UpdateBanner } from "@/components/UpdateBanner";
 import { FocusDebugOverlay } from "@/components/FocusDebugOverlay";
 import { PremiumUpgrade } from "@/pages/PremiumUpgrade";
+import { OnboardingPremium } from "@/pages/OnboardingPremium";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import NotFound from "@/pages/not-found";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -192,6 +193,7 @@ function Router() {
       <Route path="/guide-2" component={Guide2} />
       <Route path="/guide-3" component={Guide3} />
       <Route path="/guide-4" component={Guide4} />
+      <Route path="/onboarding-premium" component={OnboardingPremium} />
       
       {/* Main Application Pages */}
       <Route path="/discover-no-user" component={DiscoverNoUser} />

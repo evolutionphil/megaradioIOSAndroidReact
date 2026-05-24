@@ -14,25 +14,14 @@ export const Guide4 = (): JSX.Element => {
     // OK/Enter key (13) on Samsung TV
     if (e.keyCode === 13 || e.keyCode === key?.ENTER) {
       e.preventDefault();
-      
-      try {
-        localStorage.setItem('onboardingCompleted', 'true');
-      } catch (error) {
-        // Could not save to localStorage
-      }
-      
-      setLocation('/discover-no-user');
+      // Route to Premium upsell first; that screen sets onboardingCompleted=true
+      // on either upgrade or skip, so users never see this walkthrough twice.
+      setLocation('/onboarding-premium');
     }
   });
 
   const handleClick = () => {
-    try {
-      localStorage.setItem('onboardingCompleted', 'true');
-    } catch (error) {
-      // Could not save to localStorage
-    }
-    
-    setLocation('/discover-no-user');
+    setLocation('/onboarding-premium');
   };
 
   return (
