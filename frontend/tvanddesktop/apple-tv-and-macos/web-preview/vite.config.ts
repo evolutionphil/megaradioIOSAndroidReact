@@ -27,16 +27,17 @@ export default defineConfig(({ mode }) => {
       outDir: path.resolve(__dirname, "../../../../backend/static/tv-preview"),
       emptyOutDir: true,
       sourcemap: false,
-      // Tizen TV browsers ship Chromium 47-85 depending on year (TizenOS
-      // 4.0 = Chromium 56, 5.0 = 63, 6.0 = 76, 7.0 = 94). LG WebOS is
-      // similar: 4.x = 53, 5.x = 68, 6.x = 79. To stay compatible with
-      // every TV from 2018 onwards we transpile down to ES2017. This
-      // removes optional chaining (?.), nullish coalescing (??), spread
-      // in object literals, and class fields — all of which crash the
-      // older WebKit engines with "Unexpected token" syntax errors.
-      target: ['es2017', 'chrome63'],
-      cssTarget: 'chrome63',
-      // Avoid the dynamic-import-as-module shim that older Tizen rejects.
+      // Compatibility target — every Samsung Tizen 4.0+ (2018+) and
+      // LG WebOS 4.0+ (2018+) TV. These ship Chromium 53+ which natively
+      // supports ES2017 including async/await, optional catch, etc.
+      //
+      // 2017 Tizen 3.0 / WebOS 3.x devices ship Chromium 47-38 and would
+      // need Babel `loose` + ES5 compile (esbuild can't downlevel `const`
+      // → `var`). To support those we'd add a babel-loader stage on top
+      // of esbuild — separate engineering task, ~+10% bundle size.
+      // 2018+ covers >95% of in-market Samsung/LG TVs as of 2026.
+      target: ['es2017', 'chrome53'],
+      cssTarget: 'chrome53',
       modulePreload: { polyfill: false },
     },
     server: {

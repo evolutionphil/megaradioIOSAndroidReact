@@ -279,8 +279,11 @@ export const Search = (): JSX.Element => {
       const focusedElement = container.children[listFocusIndex] as HTMLElement | undefined;
       if (!focusedElement) return;
 
+      // 220px bottom-padding so focused items in Search results never sit
+      // under the bottom player bar (top:925 / h:155 on the 1080 canvas).
+      // Top padding stays generous (20) since the header is small here.
       const TOP_PADDING = 20;
-      const BOTTOM_PADDING = 60;
+      const BOTTOM_PADDING = 220;
       const viewTop = container.scrollTop;
       const viewBottom = viewTop + container.clientHeight - BOTTOM_PADDING;
 
