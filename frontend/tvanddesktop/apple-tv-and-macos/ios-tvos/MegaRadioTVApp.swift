@@ -51,6 +51,15 @@ struct WebViewHost: UIViewRepresentable {
         cfg.defaultWebpagePreferences.allowsContentJavaScript = true
         // JS bridge — `window.webkit.messageHandlers.continueListening.postMessage([...])`
         cfg.userContentController.add(context.coordinator, name: "continueListening")
+        // JS bridge — `window.webkit.messageHandlers.megaradio.postMessage({id, fn, args})`
+        // Used by `src/lib/nativeIap.ts` for StoreKit 2 in-app purchases.
+        cfg.userContentController.add(context.coordinator, name: "megaradio")
+        // Tell the web layer "we're Apple TV — render PremiumUpgradeNative instead of the QR screen".
+        let platformScript = WKUserScript(
+            source: "window.MegaRadioPlatform = { platform: 'appletv' };",
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: true)
+        cfg.userContentController.addUserScript(platformScript)
 
         let webView = WKWebView(frame: .zero, configuration: cfg)
         webView.scrollView.isScrollEnabled = false
@@ -92,25 +101,85 @@ struct WebViewHost: UIViewRepresentable {
 
         func userContentController(_ controller: WKUserContentController,
                                    didReceive message: WKScriptMessage) {
-            guard message.name == "continueListening",
-                  let arr = message.body as? [[String: Any]] else { return }
-            // Persist into the App Group used by TopShelfExtension/ServiceProvider.swift
-            guard let defaults = UserDefaults(suiteName: "group.com.visiongo.megaradio") else { return }
-            // Adapt JS field names → the Recent struct that the top-shelf reads.
-            let mapped: [[String: String]] = arr.compactMap { dict in
-                guard let id = dict["id"] as? String, !id.isEmpty,
-                      let name = dict["name"] as? String, !name.isEmpty else { return nil }
-                return [
-                    "id":        id,
-                    "name":      name,
-                    "genre":     (dict["genre"] as? String) ?? "",
-                    "streamUrl": (dict["streamUrl"] as? String) ?? "",
-                    "iconUrl":   (dict["iconUrl"] as? String) ?? "",
-                ]
+            // ──────────────────────────────────────────────────────────────
+            // Channel 1: "continueListening" — Top Shelf data persistence.
+            // ──────────────────────────────────────────────────────────────
+            if message.name == "continueListening",
+               let arr = message.body as? [[String: Any]] {
+                guard let defaults = UserDefaults(suiteName: "group.com.visiongo.megaradio") else { return }
+                let mapped: [[String: String]] = arr.compactMap { dict in
+                    guard let id = dict["id"] as? String, !id.isEmpty,
+                          let name = dict["name"] as? String, !name.isEmpty else { return nil }
+                    return [
+                        "id":        id,
+                        "name":      name,
+                        "genre":     (dict["genre"] as? String) ?? "",
+                        "streamUrl": (dict["streamUrl"] as? String) ?? "",
+                        "iconUrl":   (dict["iconUrl"] as? String) ?? "",
+                    ]
+                }
+                if let data = try? JSONSerialization.data(withJSONObject: mapped) {
+                    defaults.set(data, forKey: "continue_listening_v1")
+                }
+                return
             }
-            if let data = try? JSONSerialization.data(withJSONObject: mapped) {
-                defaults.set(data, forKey: "continue_listening_v1")
+
+            // ──────────────────────────────────────────────────────────────
+            // Channel 2: "megaradio" — StoreKit 2 IAP RPC bridge.
+            // Body shape: { id: String, fn: String, args: [String:Any] }
+            // ──────────────────────────────────────────────────────────────
+            if message.name == "megaradio",
+               let body = message.body as? [String: Any],
+               let id = body["id"] as? String,
+               let fn = body["fn"] as? String {
+                let args = body["args"] as? [String: Any] ?? [:]
+                Task { @MainActor in
+                    do {
+                        // Pull the latest auth token from JS-set globals if available.
+                        if let token = args["__authToken"] as? String {
+                            StoreKitIapService.shared.authToken = token
+                        }
+                        let payload: Any
+                        switch fn {
+                        case "getProducts":
+                            payload = try await StoreKitIapService.shared.getProducts()
+                        case "purchaseProduct":
+                            let pid = (args["productId"] as? String) ?? ""
+                            payload = try await StoreKitIapService.shared.purchase(productId: pid)
+                        case "restorePurchases":
+                            payload = try await StoreKitIapService.shared.restore()
+                        case "manageSubscriptions":
+                            try await StoreKitIapService.shared.openManageSubscriptions()
+                            payload = ["ok": true]
+                        case "setAuthToken":
+                            StoreKitIapService.shared.authToken = (args["token"] as? String)
+                            payload = ["ok": true]
+                        default:
+                            payload = ["error": "Unknown fn: \(fn)"]
+                        }
+                        await self.resolveBridge(id: id, payload: payload)
+                    } catch {
+                        await self.resolveBridge(id: id, payload: ["error": error.localizedDescription])
+                    }
+                }
+                return
             }
+        }
+
+        @MainActor
+        private func resolveBridge(id: String, payload: Any) async {
+            guard let webView else { return }
+            let json: String
+            if let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
+               let str = String(data: data, encoding: .utf8) {
+                json = str
+            } else {
+                json = "null"
+            }
+            // Escape single quotes in the id (defensive; ids are server-generated).
+            let safeId = id.replacingOccurrences(of: "'", with: "\\'")
+            let js = "window.MegaRadioBridge && window.MegaRadioBridge.__resolveIap && window.MegaRadioBridge.__resolveIap('\(safeId)', \(json));"
+            webView.evaluateJavaScript(js, completionHandler: nil)
         }
     }
 }

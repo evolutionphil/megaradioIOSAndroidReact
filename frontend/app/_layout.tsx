@@ -210,7 +210,44 @@ export default function RootLayout() {
       // Small delay so it doesn't conflict with onboarding/splash
       setTimeout(() => setShowRateUs(true), 1500);
     });
-    return () => unsubscribe();
+
+    // Siri voice intent deep-link handler.
+    // AppDelegate's `application(_:continue:restorationHandler:)` converts
+    // INPlayMediaIntent → `megaradio://play?q=<station>` and dispatches it
+    // through the same Linking pipeline a regular tap on a deep link uses.
+    // We catch the URL here, extract the query, and forward to the search
+    // screen which already handles "play first matching station" behaviour.
+    let siriSub: { remove: () => void } | null = null;
+    try {
+      // Lazy-require so non-iOS platforms / tests don't crash.
+      const RN = require('react-native');
+      const handleSiriUrl = (url: string | { url: string } | null) => {
+        if (!url) return;
+        const raw = typeof url === 'string' ? url : url.url;
+        if (!raw || raw.indexOf('megaradio://play') !== 0) return;
+        try {
+          const q = decodeURIComponent((raw.split('?q=')[1] || '').split('&')[0] || '');
+          if (!q) return;
+          console.log('[Siri] play intent received:', q);
+          // Navigate to search with the query pre-filled and autoplay on.
+          router.push({
+            pathname: '/(tabs)/search' as any,
+            params: { q, autoplay: '1' },
+          } as any);
+        } catch (e) {
+          console.warn('[Siri] failed to parse intent URL:', e);
+        }
+      };
+      siriSub = RN.Linking.addEventListener('url', (ev: any) => handleSiriUrl(ev?.url));
+      RN.Linking.getInitialURL().then(handleSiriUrl).catch(() => {});
+    } catch (e) {
+      console.warn('[Siri] Linking listener setup failed (non-fatal):', e);
+    }
+
+    return () => {
+      unsubscribe();
+      if (siriSub && typeof siriSub.remove === 'function') siriSub.remove();
+    };
   }, []);
 
   // Initialize FlowAlive Analytics

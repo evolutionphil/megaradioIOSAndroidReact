@@ -63,12 +63,28 @@ FirebaseApp.configure()
     return super.application(app, open: url, options: options) || RCTLinkingManager.application(app, open: url, options: options)
   }
 
-  // Universal Links
+  // Universal Links + Siri voice intents (INPlayMediaIntent for CarPlay /
+  // "Hey Siri, play Rock Antenne on MegaRadio"). When iOS resolves a Siri
+  // media intent it hands us a userActivity of type `INPlayMediaIntent` (or
+  // `com.visiongo.megaradio.playMedia`). We unwrap the station name and
+  // synthesize a `megaradio://play?q=<name>` deep link — the React Native
+  // Linking handler (already wired up) opens the search/play flow exactly
+  // as if the user had tapped a deep link. This works in both the regular
+  // iOS UI and CarPlay (CarPlay session forwards continueUserActivity to
+  // the same AppDelegate method).
   public override func application(
     _ application: UIApplication,
     continue userActivity: NSUserActivity,
     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
   ) -> Bool {
+    if let mediaUrl = SiriPlayMediaHandler.deepLinkURL(for: userActivity) {
+      // Defer to the very next runloop so the JS bundle has a chance to
+      // mount its Linking listener before the URL fires.
+      DispatchQueue.main.async {
+        _ = RCTLinkingManager.application(application, open: mediaUrl, options: [:])
+      }
+      return true
+    }
     let result = RCTLinkingManager.application(application, continue: userActivity, restorationHandler: restorationHandler)
     return super.application(application, continue: userActivity, restorationHandler: restorationHandler) || result
   }

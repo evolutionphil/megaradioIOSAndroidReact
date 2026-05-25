@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentActivity
 class MainActivity : FragmentActivity() {
 
     private lateinit var webView: WebView
+    private val billingService by lazy { BillingService(this) }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,11 +60,26 @@ class MainActivity : FragmentActivity() {
             }
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean = false
+                override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    // Announce platform BEFORE any user JS runs so platform.ts
+                    // sees `window.MegaRadioPlatform.platform === 'androidtv'`
+                    // and the PremiumUpgrade page renders the native-IAP
+                    // variant instead of the QR-code screen.
+                    view?.evaluateJavascript(
+                        "window.MegaRadioPlatform = { platform: 'androidtv' };", null)
+                }
             }
             webChromeClient = WebChromeClient()
-            // JS bridge: lets the web layer push "Continue Listening" updates
-            // to the native Recommendations Channel without polling.
+            // Continue-Listening → home screen recommendations channel
             addJavascriptInterface(MegaRadioBridge(this@MainActivity), "MegaRadioBridge")
+            // Native IAP bridge (Google Play Billing v7). Same protocol as
+            // Apple TV — see /app/frontend/tvanddesktop/apple-tv-and-macos/
+            // web-preview/src/lib/nativeIap.ts.
+            addJavascriptInterface(
+                MegaRadioNativeBridge(this@MainActivity, this, billingService),
+                "MegaRadioNative"
+            )
             systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or

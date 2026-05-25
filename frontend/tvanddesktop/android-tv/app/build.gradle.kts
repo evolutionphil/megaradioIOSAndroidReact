@@ -36,4 +36,9 @@ dependencies {
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("androidx.webkit:webkit:1.11.0")
     implementation("androidx.media:media:1.7.0")
+    // Google Play Billing v7 — in-app purchases / subscriptions for the
+    // Premium plan (mirror of the mobile app's react-native-iap setup).
+    implementation("com.android.billingclient:billing-ktx:7.0.0")
+    // Coroutines used by BillingService for suspend-style purchase flows.
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 }
