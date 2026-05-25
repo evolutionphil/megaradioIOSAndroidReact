@@ -121,7 +121,7 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 //   "Application does not implement CarPlay template application
 //    lifecycle methods in its scene delegate."
 extension AppDelegate {
-  public override func application(
+  public func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
     options: UIScene.ConnectionOptions
