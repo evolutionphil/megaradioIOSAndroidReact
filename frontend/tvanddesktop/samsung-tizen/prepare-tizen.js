@@ -85,28 +85,33 @@ fs.copyFileSync(path.join(__dirname, '.tproject.template'), path.join(OUT_DIR, '
 // (themegaradio.com, backend.radiolise.com, third-party stream domains, etc.).
 // We park EVERY scheme://host/api/... match before doing the relative-/api/
 // rewrite, then restore them verbatim afterwards.
-console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
+console.log('▸ Rewriting absolute /api/* asset paths in HTML/CSS (NEVER touch JS)...');
 const BACKEND_HOST = 'https://api.themegaradio.com';
 
+/**
+ * Rewrite HTML / CSS only.
+ *
+ * CRITICAL: We must NEVER do text rewriting on the minified JS bundle.
+ * The JS bundle contains things that look like `/api/` paths but are not —
+ * regex literals (e.g. `/^\/api/`), comments, template strings, and
+ * concatenation operators. Naive find-and-replace corrupts these into
+ * invalid syntax (`/^\https://api.themegaradio.co...` — broken regex →
+ * "Unexpected token ','" crash on Tizen TV).
+ *
+ * The runtime code in AuthContext.tsx / useSubscriptionLink.ts /
+ * useSubscriptionStatus.ts already does platform detection at runtime via
+ * `detectApiBase()`, returning `https://api.themegaradio.com` when
+ * `window.location.hostname` is empty (which is always true under file://
+ * inside Tizen/WebOS), so JS doesn't need any rewrite at all. The only
+ * thing we must fix is asset paths in `index.html` and CSS `url(...)` refs
+ * that Vite emits with the absolute `/api/tv-app/` base — those become
+ * 404s under file://.
+ */
 function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
 
-  // 1) Park ALL absolute URLs containing /api/ (any scheme: http, https, ws, wss).
-  const parked = [];
-  s = s.replace(/(https?|wss?):\/\/[^\s"'`<>()]+/g, (match) => {
-    const token = `__MR_URL_${parked.length}__`;
-    parked.push(match);
-    return token;
-  });
-
-  // 2) Asset prefix → relative (we're running from file:// inside Tizen).
+  // Asset base prefix → relative path.
   s = s.replace(/\/api\/tv-app\//g, './');
-
-  // 3) Remaining /api/... (relative backend calls) → absolute backend host.
-  s = s.replace(/\/api\//g, BACKEND_HOST + '/api/');
-
-  // 4) Restore parked URLs verbatim.
-  s = s.replace(/__MR_URL_(\d+)__/g, (_, i) => parked[Number(i)]);
 
   fs.writeFileSync(filePath, s);
 }
@@ -115,7 +120,8 @@ function walkAndRewrite(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, entry.name);
     if (entry.isDirectory()) walkAndRewrite(p);
-    else if (/\.(html|js|css|mjs|map)$/.test(entry.name)) rewriteFile(p);
+    // HTML + CSS only. JS is OFF LIMITS (see comment in rewriteFile).
+    else if (/\.(html|css)$/.test(entry.name)) rewriteFile(p);
   }
 }
 walkAndRewrite(OUT_DIR);

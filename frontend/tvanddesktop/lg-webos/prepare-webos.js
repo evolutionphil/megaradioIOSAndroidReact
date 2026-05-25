@@ -64,29 +64,23 @@ fs.copyFileSync(path.join(__dirname, 'icon.png'),      path.join(OUT_DIR, 'icon.
 fs.copyFileSync(path.join(__dirname, 'largeIcon.png'), path.join(OUT_DIR, 'largeIcon.png'));
 fs.copyFileSync(path.join(__dirname, 'splash.png'),    path.join(OUT_DIR, 'splash.png'));
 
-// Rewrite absolute /api/* paths (see prepare-tizen.js for full explanation).
-// Park ALL absolute URLs (any origin, any scheme) before relative /api/ rewrite
-// to avoid double-prefix bug on third-party URLs like wss://backend.radiolise.com/api/...
-console.log('▸ Rewriting absolute /api/* paths in HTML + JS + CSS...');
-const BACKEND_HOST = 'https://api.themegaradio.com';
+// Rewrite HTML / CSS ONLY. JS is OFF LIMITS — see prepare-tizen.js for the
+// full explanation. Naive text rewrite on minified JS breaks regex literals
+// like `/^\/api/` (becomes invalid regex → "Unexpected token ','" on TV).
+// Runtime detectApiBase() in AuthContext + subscription hooks already
+// returns https://api.themegaradio.com under file://, so no JS rewrite
+// is needed; we only need to fix asset paths in HTML/CSS.
+console.log('▸ Rewriting absolute /api/* asset paths in HTML/CSS (NEVER touch JS)...');
 function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
-  const parked = [];
-  s = s.replace(/(https?|wss?):\/\/[^\s"'`<>()]+/g, (match) => {
-    const token = `__MR_URL_${parked.length}__`;
-    parked.push(match);
-    return token;
-  });
   s = s.replace(/\/api\/tv-app\//g, './');
-  s = s.replace(/\/api\//g, BACKEND_HOST + '/api/');
-  s = s.replace(/__MR_URL_(\d+)__/g, (_, i) => parked[Number(i)]);
   fs.writeFileSync(filePath, s);
 }
 function walkAndRewrite(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, entry.name);
     if (entry.isDirectory()) walkAndRewrite(p);
-    else if (/\.(html|js|css|mjs|map)$/.test(entry.name)) rewriteFile(p);
+    else if (/\.(html|css)$/.test(entry.name)) rewriteFile(p);
   }
 }
 walkAndRewrite(OUT_DIR);
