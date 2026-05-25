@@ -92,6 +92,35 @@
     </array>
     <key>RCTNewArchEnabled</key>
     <true/>
+    <!--
+      CarPlay scene manifest. Required because the app declares the
+      `com.apple.developer.carplay-audio` entitlement; without it iOS
+      crashes at launch with:
+        "Application does not implement CarPlay template application
+         lifecycle methods in its scene delegate."
+      The default phone scene is NOT listed (so React Native's existing
+      UIApplicationDelegate-based startup keeps working unchanged); we
+      only describe the CarPlay scene role here.
+    -->
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+      <key>UIApplicationSupportsMultipleScenes</key>
+      <true/>
+      <key>UISceneConfigurations</key>
+      <dict>
+        <key>CPTemplateApplicationSceneSessionRoleApplication</key>
+        <array>
+          <dict>
+            <key>UISceneClassName</key>
+            <string>CPTemplateApplicationScene</string>
+            <key>UISceneConfigurationName</key>
+            <string>MegaRadio-CarPlay</string>
+            <key>UISceneDelegateClassName</key>
+            <string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
+          </dict>
+        </array>
+      </dict>
+    </dict>
     <key>SKAdNetworkItems</key>
     <array>
       <dict>
