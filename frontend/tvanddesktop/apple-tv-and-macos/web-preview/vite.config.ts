@@ -27,6 +27,17 @@ export default defineConfig(({ mode }) => {
       outDir: path.resolve(__dirname, "../../../../backend/static/tv-preview"),
       emptyOutDir: true,
       sourcemap: false,
+      // Tizen TV browsers ship Chromium 47-85 depending on year (TizenOS
+      // 4.0 = Chromium 56, 5.0 = 63, 6.0 = 76, 7.0 = 94). LG WebOS is
+      // similar: 4.x = 53, 5.x = 68, 6.x = 79. To stay compatible with
+      // every TV from 2018 onwards we transpile down to ES2017. This
+      // removes optional chaining (?.), nullish coalescing (??), spread
+      // in object literals, and class fields — all of which crash the
+      // older WebKit engines with "Unexpected token" syntax errors.
+      target: ['es2017', 'chrome63'],
+      cssTarget: 'chrome63',
+      // Avoid the dynamic-import-as-module shim that older Tizen rejects.
+      modulePreload: { polyfill: false },
     },
     server: {
       host: "0.0.0.0",
