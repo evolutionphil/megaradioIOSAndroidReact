@@ -86,6 +86,21 @@ log('Found ' + swiftFiles.length + ' swift, ' + plistFiles.length + ' plist, ' +
 // ─────────────────────────────────────────────────────────────────────
 // 2. Open pbxproj
 // ─────────────────────────────────────────────────────────────────────
+
+// Defensive fix: xcode-npm's PEG parser crashes with
+//   "Expected [\\n\\r] but end of input found"
+// when the pbxproj file lacks a trailing newline. Xcode itself sometimes
+// writes the file without one (depends on the macOS version + last save
+// path). Ensure exactly one trailing newline before parsing.
+{
+  let raw = fs.readFileSync(PBX_PATH, 'utf8');
+  if (!raw.endsWith('\n')) {
+    raw = raw.replace(/\s*$/, '') + '\n';
+    fs.writeFileSync(PBX_PATH, raw);
+    log('Normalised pbxproj trailing newline');
+  }
+}
+
 const proj = xcode.project(PBX_PATH);
 proj.parseSync();
 
