@@ -327,6 +327,41 @@ if (existing) {
 
   log('(Watch source files were re-synced from watch/ios/MegaRadioWatch/ above.)');
 
+  // Sync DEVELOPMENT_TEAM from iOS target to watch target build configs
+  // (Release/Archive builds skip the watch target without it).
+  const repairTeamId = readIosDevelopmentTeam();
+  if (repairTeamId) {
+    const watchCfgListUuid = watchTgt.buildConfigurationList;
+    const cfgListSec = proj.hash.project.objects['XCConfigurationList'] || {};
+    const bcSec = proj.pbxXCBuildConfigurationSection();
+    const watchCfgList = cfgListSec[watchCfgListUuid];
+    if (watchCfgList && Array.isArray(watchCfgList.buildConfigurations)) {
+      let teamFixed = 0;
+      watchCfgList.buildConfigurations.forEach((ref) => {
+        const bc = bcSec[ref.value];
+        if (!bc || !bc.buildSettings) return;
+        if (bc.buildSettings.DEVELOPMENT_TEAM !== repairTeamId) {
+          bc.buildSettings.DEVELOPMENT_TEAM = repairTeamId;
+          teamFixed++;
+        }
+        // Make sure Release isn't left with SKIP_INSTALL=YES or
+        // ENABLE_USER_SCRIPT_SANDBOXING=YES (would block embed phase).
+        if (bc.buildSettings.SKIP_INSTALL === 'YES') bc.buildSettings.SKIP_INSTALL = 'NO';
+        if (bc.buildSettings.ENABLE_USER_SCRIPT_SANDBOXING === 'YES') bc.buildSettings.ENABLE_USER_SCRIPT_SANDBOXING = 'NO';
+      });
+      if (teamFixed > 0) {
+        log('  · propagated DEVELOPMENT_TEAM=' + repairTeamId + ' to ' + teamFixed + ' watch build config(s)');
+        fs.writeFileSync(PBX_PATH, proj.writeSync());
+      }
+    }
+  } else {
+    log('  ⚠️  iOS target has no DEVELOPMENT_TEAM — open Xcode → MegaRadio target → Signing & Capabilities and set your team');
+  }
+
+  // Patch the scheme so iOS Release/Archive builds the watch target.
+  log('Patching Xcode scheme so Release/Archive builds the watch target…');
+  patchScheme();
+
   // Always re-run cycle fix on repeat invocations — pod install can
   // regenerate broken inputPaths/outputPaths for [CP-User] phases.
   try {
@@ -345,6 +380,38 @@ if (existing) {
 //     SDKROOT = watchos)
 // ─────────────────────────────────────────────────────────────────────
 log('Adding target ' + TARGET_NAME + '…');
+
+// Read DEVELOPMENT_TEAM from the iOS app target so we can propagate it to
+// the watch target (Release/Archive builds fail to sign without it).
+function readIosDevelopmentTeam() {
+  const nt = proj.hash.project.objects['PBXNativeTarget'] || {};
+  const cfgListSection = proj.hash.project.objects['XCConfigurationList'] || {};
+  const bcSection = proj.pbxXCBuildConfigurationSection();
+  let iosCfgListUuid = null;
+  for (const k of Object.keys(nt)) {
+    if (k.endsWith('_comment')) continue;
+    const t = nt[k];
+    const n = (t && t.name || '').replace(/^"|"$/g, '');
+    if (n === 'MegaRadio') {
+      iosCfgListUuid = t.buildConfigurationList;
+      break;
+    }
+  }
+  if (!iosCfgListUuid) return null;
+  const cfgList = cfgListSection[iosCfgListUuid];
+  if (!cfgList || !cfgList.buildConfigurations) return null;
+  for (const ref of cfgList.buildConfigurations) {
+    const bc = bcSection[ref.value];
+    if (!bc || !bc.buildSettings) continue;
+    if (bc.buildSettings.DEVELOPMENT_TEAM) {
+      return String(bc.buildSettings.DEVELOPMENT_TEAM).replace(/^"|"$/g, '');
+    }
+  }
+  return null;
+}
+const iosTeamId = readIosDevelopmentTeam();
+if (iosTeamId) log('Inherited DEVELOPMENT_TEAM from iOS target: ' + iosTeamId);
+else log('⚠️  No DEVELOPMENT_TEAM on iOS target — open Xcode → Signing & Capabilities and set your Team manually');
 
 // Create a PBXGroup so files appear under a folder in the navigator.
 const groupKey = proj.pbxCreateGroup(TARGET_NAME, 'MegaRadioWatch');
@@ -388,7 +455,13 @@ buildConfigUuids.forEach((uuid) => {
   s.ENABLE_USER_SCRIPT_SANDBOXING = 'NO';
   s.IPHONEOS_DEPLOYMENT_TARGET = ''; // clear iOS-only setting
   delete s.IPHONEOS_DEPLOYMENT_TARGET;
-  // Signing inheritance — picked up from project-level DEVELOPMENT_TEAM.
+  // Signing inheritance — copy DEVELOPMENT_TEAM from the iOS target so
+  // Release/Archive code-signs against the same Apple Developer team.
+  // (Debug builds use lenient development signing and "work" even without
+  // an explicit team; Release/Archive does not.)
+  if (typeof iosTeamId === 'string' && iosTeamId.length > 0) {
+    s.DEVELOPMENT_TEAM = iosTeamId;
+  }
 });
 
 // ─────────────────────────────────────────────────────────────────────
@@ -573,7 +646,73 @@ proj.addTargetDependency(iosTargetUuidFinal, [target.uuid]);
 fs.writeFileSync(PBX_PATH, proj.writeSync());
 
 // ─────────────────────────────────────────────────────────────────────
-// 8. Run fix-xcode-cycle.js automatically
+// 8. Patch MegaRadio.xcscheme — add Watch target to BuildAction
+//
+// Xcode only builds targets listed in scheme.BuildAction. Without this,
+// Release-watchos/ never gets built, the iOS embed phase tries to copy
+// MegaRadioWatch.app from a non-existent path, and the user gets:
+//   "MegaRadioWatch.app couldn't be opened because there is no such file"
+// ─────────────────────────────────────────────────────────────────────
+function patchScheme() {
+  const schemePath = path.join(
+    IOS_DIR,
+    'MegaRadio.xcodeproj',
+    'xcshareddata',
+    'xcschemes',
+    'MegaRadio.xcscheme'
+  );
+  if (!fs.existsSync(schemePath)) {
+    log('  · scheme file not found, skipping (manual scheme edit required)');
+    return;
+  }
+  let xml = fs.readFileSync(schemePath, 'utf8');
+  if (xml.indexOf('BlueprintName = "MegaRadioWatch"') !== -1) {
+    log('  · scheme already includes MegaRadioWatch');
+    return;
+  }
+  // Look up the watch target UUID — the existing variable `target.uuid`
+  // works during fresh-add; during repair-mode we look it up.
+  let watchUuid = null;
+  const watchSearch = findTargetByName(TARGET_NAME);
+  if (watchSearch) watchUuid = watchSearch.uuid;
+  else if (typeof target !== 'undefined') watchUuid = target.uuid;
+  if (!watchUuid) {
+    log('  · watch target UUID not found — skipping scheme patch');
+    return;
+  }
+  const entry =
+    '         <BuildActionEntry\n' +
+    '            buildForTesting = "YES"\n' +
+    '            buildForRunning = "YES"\n' +
+    '            buildForProfiling = "YES"\n' +
+    '            buildForArchiving = "YES"\n' +
+    '            buildForAnalyzing = "YES">\n' +
+    '            <BuildableReference\n' +
+    '               BuildableIdentifier = "primary"\n' +
+    '               BlueprintIdentifier = "' + watchUuid + '"\n' +
+    '               BuildableName = "MegaRadioWatch.app"\n' +
+    '               BlueprintName = "MegaRadioWatch"\n' +
+    '               ReferencedContainer = "container:MegaRadio.xcodeproj">\n' +
+    '            </BuildableReference>\n' +
+    '         </BuildActionEntry>';
+  // Insert BEFORE </BuildActionEntries> so Watch is built FIRST (iOS embed
+  // copies the .app afterwards). Xcode build order respects scheme order.
+  const before = '      </BuildActionEntries>';
+  if (xml.indexOf(before) === -1) {
+    log('  · scheme missing </BuildActionEntries> — unexpected structure, skipping');
+    return;
+  }
+  xml = xml.replace(before, entry + '\n' + before);
+  fs.writeFileSync(schemePath, xml);
+  log('  · added MegaRadioWatch to MegaRadio.xcscheme BuildAction ✅');
+}
+
+log('');
+log('Patching Xcode scheme so Release/Archive builds the watch target…');
+patchScheme();
+
+// ─────────────────────────────────────────────────────────────────────
+// 9. Run fix-xcode-cycle.js automatically
 //
 // The RNGoogleMobileAds CocoaPods [CP-User] script phase declares
 // inputPaths/outputPaths that reference Info.plist, which creates a build
