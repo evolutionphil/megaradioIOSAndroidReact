@@ -22,6 +22,23 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
   const showPaywall = useCallback((v: PaywallVariant = 'premium') => {
     if (v === 'premium' && premium.isPremium) return;
     if (v === 'remove_ads' && premium.adsRemoved) return;
+
+    // CRITICAL ROUTING DECISION:
+    //   - On platforms WITH a native IAP bridge (tvOS / Android TV /
+    //     Mac App Store Electron), the in-app paywall stays — those stores
+    //     REQUIRE checkout to happen via their native dialog.
+    //   - On EVERY other surface (Samsung Tizen / LG WebOS / Windows or
+    //     Linux Electron / browser preview), in-app payment is BANNED by
+    //     the store policy AND a relative URL is cheaper to maintain.
+    //     Route those users to `/premium-upgrade` instead, where they see
+    //     a QR + 6-digit PIN that takes them to the website to pay.
+    const hasNativeBridge = !!(window as any).megaRadioNative?.purchase;
+    if (!hasNativeBridge) {
+      // Hash-based wouter router → use location.hash, not pushState.
+      try { window.location.hash = '#/premium-upgrade'; } catch (_) { /* noop */ }
+      return;
+    }
+
     setVariant(v);
     setOpen(true);
   }, [premium.isPremium, premium.adsRemoved]);
@@ -37,10 +54,19 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
 
     const timer = setTimeout(() => {
       const path = (typeof window !== 'undefined' && window.location.hash) || '';
-      const blockedRoutes = ['#/', '#/login', '#/premium', '#/remove-ads', '#/guide-1', '#/guide-2', '#/guide-3', '#/guide-4'];
+      // Don't auto-popup on these routes (already addressing premium / boot).
+      const blockedRoutes = ['#/', '#/login', '#/premium', '#/remove-ads', '#/guide-1', '#/guide-2', '#/guide-3', '#/guide-4', '#/premium-upgrade', '#/onboarding-premium', '#/manage-subscription'];
       const isBlocked = blockedRoutes.some(r => path === r || path.startsWith(r + '?'));
       if (isBlocked) return;
       sessionStorage.setItem(SHOWN_KEY, '1');
+
+      // Same routing rule as showPaywall — Tizen/WebOS/Desktop/Web go to
+      // the QR upgrade screen, native-IAP platforms see the in-app paywall.
+      const hasNativeBridge = !!(window as any).megaRadioNative?.purchase;
+      if (!hasNativeBridge) {
+        try { window.location.hash = '#/premium-upgrade'; } catch (_) { /* noop */ }
+        return;
+      }
       setVariant('premium');
       setOpen(true);
     }, 45_000);

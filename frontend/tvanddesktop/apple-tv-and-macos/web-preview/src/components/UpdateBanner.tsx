@@ -2,19 +2,60 @@
  * UpdateBanner — soft (kapatılabilir) + forced (kapatılamaz) update prompt.
  * 1920×1080 TV canvas üzerinde tasarlandı; D-pad ile odaklanabilir.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTvVersionCheck, dismissSoftUpdate } from '../hooks/useTvVersionCheck';
 
 export function UpdateBanner() {
   const state = useTvVersionCheck();
   const primaryBtnRef = useRef<HTMLButtonElement>(null);
+  // Soft banner D-pad focus index. 0 = "Mağazaya Git", 1 = "Sonra"
+  // (capture-phase keydown so it works even when /focusRouter handles
+  // page-level keys). Reset when banner appears/disappears.
+  const [softFocus, setSoftFocus] = useState<0 | 1>(0);
 
   // Force-update modal açılınca primary butona odaklan
   useEffect(() => {
     if (state.kind === 'forced' && primaryBtnRef.current) {
       primaryBtnRef.current.focus();
     }
+    if (state.kind === 'soft') setSoftFocus(0);
   }, [state.kind]);
+
+  // Soft banner D-pad handler — captures BEFORE the page-level FocusRouter
+  // so LEFT/RIGHT/ENTER work even when the user is on Discover with the
+  // spatial navigation active. Same pattern as PaywallContext does.
+  useEffect(() => {
+    if (state.kind !== 'soft') return;
+    const onKey = (e: KeyboardEvent) => {
+      const kc = e.keyCode || 0;
+      const key = e.key;
+      // Left/Right toggle between the two buttons.
+      if (kc === 37 || key === 'ArrowLeft')  { e.preventDefault(); e.stopImmediatePropagation(); setSoftFocus(0); return; }
+      if (kc === 39 || key === 'ArrowRight') { e.preventDefault(); e.stopImmediatePropagation(); setSoftFocus(1); return; }
+      // OK / Enter — trigger the focused button.
+      if (kc === 13 || key === 'Enter') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (softFocus === 0) {
+          if (state.storeUrl) window.open(state.storeUrl, '_blank');
+        } else {
+          dismissSoftUpdate();
+          window.location.reload();
+        }
+        return;
+      }
+      // Samsung BACK / WebOS BACK / Escape → treat as "Sonra".
+      if (kc === 10009 || kc === 461 || kc === 27 || key === 'Escape') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        dismissSoftUpdate();
+        window.location.reload();
+      }
+    };
+    // capture: true so we run before page-level listeners.
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [state.kind, state.storeUrl, softFocus]);
 
   if (state.kind === 'none') return null;
 
@@ -111,9 +152,13 @@ export function UpdateBanner() {
           data-testid="update-banner-soft-store-btn"
           onClick={() => state.storeUrl && window.open(state.storeUrl, '_blank')}
           style={{
-            flex: 1, padding: '10px 16px', borderRadius: 999, border: 'none',
+            flex: 1, padding: '10px 16px', borderRadius: 999,
+            border: softFocus === 0 ? '3px solid #fff' : 'none',
             background: '#EB4F9F', color: '#fff',
             fontSize: 14, fontWeight: 700, cursor: 'pointer', outline: 'none',
+            transform: softFocus === 0 ? 'scale(1.05)' : 'scale(1)',
+            boxShadow: softFocus === 0 ? '0 0 24px rgba(235,79,159,0.7)' : 'none',
+            transition: 'all 0.15s',
           }}
         >
           Mağazaya Git
@@ -123,9 +168,14 @@ export function UpdateBanner() {
           onClick={() => { dismissSoftUpdate(); window.location.reload(); }}
           style={{
             padding: '10px 16px', borderRadius: 999,
-            border: '1px solid rgba(255,255,255,0.16)', background: 'transparent',
+            border: softFocus === 1
+              ? '3px solid #EB4F9F'
+              : '1px solid rgba(255,255,255,0.16)',
+            background: softFocus === 1 ? 'rgba(235,79,159,0.18)' : 'transparent',
             color: 'rgba(255,255,255,0.85)', fontSize: 14, fontWeight: 600,
             cursor: 'pointer', outline: 'none',
+            transform: softFocus === 1 ? 'scale(1.05)' : 'scale(1)',
+            transition: 'all 0.15s',
           }}
         >
           Sonra
