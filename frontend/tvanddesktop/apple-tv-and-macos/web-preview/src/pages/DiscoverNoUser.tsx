@@ -203,8 +203,12 @@ export const DiscoverNoUser = (): JSX.Element => {
 
   const scrollRecentIntoView = (recentIndex: number) => {
     if (!recentScrollRef.current) return;
-    
-    const children = recentScrollRef.current.children;
+
+    // DOM yapısı: <div ref><div className="flex">{cards}</div></div>
+    // children[0] dış flex wrapper, asıl kartlar onun children'ında.
+    const inner = recentScrollRef.current.children[0] as HTMLElement | undefined;
+    if (!inner) return;
+    const children = inner.children;
     if (recentIndex < 0 || recentIndex >= children.length) return;
     
     const child = children[recentIndex] as HTMLElement;
@@ -228,8 +232,10 @@ export const DiscoverNoUser = (): JSX.Element => {
 
   const scrollForYouIntoView = (forYouIndex: number) => {
     if (!forYouScrollRef.current) return;
-    
-    const children = forYouScrollRef.current.children;
+
+    const inner = forYouScrollRef.current.children[0] as HTMLElement | undefined;
+    if (!inner) return;
+    const children = inner.children;
     if (forYouIndex < 0 || forYouIndex >= children.length) return;
     
     const child = children[forYouIndex] as HTMLElement;
@@ -253,8 +259,10 @@ export const DiscoverNoUser = (): JSX.Element => {
 
   const scrollGenreIntoView = (genreIndex: number) => {
     if (!genreScrollRef.current) return;
-    
-    const children = genreScrollRef.current.children;
+
+    const inner = genreScrollRef.current.children[0] as HTMLElement | undefined;
+    if (!inner) return;
+    const children = inner.children;
     if (genreIndex < 0 || genreIndex >= children.length) return;
     
     const child = children[genreIndex] as HTMLElement;
@@ -555,7 +563,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         const stationIndex = index - recentStart;
         const station = recentStations[stationIndex];
         if (station) {
-          setNavigationState(location, index);
+          setNavigationState(location, index, station._id, 'recent');
           playStation(station);
           setLocation(`/radio-playing?station=${station._id}`);
         }
@@ -565,7 +573,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         const stationIndex = index - forYouStart;
         const station = forYouStations[stationIndex];
         if (station) {
-          setNavigationState(location, index);
+          setNavigationState(location, index, station._id, 'forYou');
           playStation(station);
           setLocation(`/radio-playing?station=${station._id}`);
         }
@@ -576,7 +584,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         const station = popularStations[stationIndex];
         if (station) {
           // Save navigation state before navigating
-          setNavigationState(location, index);
+          setNavigationState(location, index, station._id, 'popular');
           playStation(station);
           setLocation(`/radio-playing?station=${station._id}`);
         }
@@ -595,7 +603,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         const station = displayedStations[stationIndex];
         if (station) {
           // Save navigation state before navigating
-          setNavigationState(location, index);
+          setNavigationState(location, index, station._id, 'country');
           playStation(station);
           setLocation(`/radio-playing?station=${station._id}`);
         }
@@ -798,17 +806,66 @@ export const DiscoverNoUser = (): JSX.Element => {
     loadRecommendations();
   }, []);
 
-  // Restore focus when returning from RadioPlaying
+  // Restore focus when returning from RadioPlaying.
+  // Pending nav-state is buffered here so we can re-resolve the saved
+  // stationId AFTER recently played + popular + country lists have loaded
+  // (each list grows/changes async, so the saved focusIndex alone is stale).
+  const pendingNavStateRef = useRef<ReturnType<typeof popNavigationState>>(null);
+  const hasResolvedNavStateRef = useRef(false);
   useEffect(() => {
     const navState = popNavigationState(); // Pop and clear in one atomic operation
     if (navState && navState.returnFocusIndex !== null) {
+      pendingNavStateRef.current = navState;
+      hasResolvedNavStateRef.current = false;
       // Refresh recently played when returning from RadioPlaying
       const stations = recentlyPlayedService.getStations();
       setRecentStations(stations);
-      // Restore focus when returning from RadioPlaying
+      // Fallback initial set in case re-resolution doesn't happen (e.g. no stationId saved).
       setFocusIndex(navState.returnFocusIndex);
     }
   }, []); // Only run once on mount
+
+  // Re-resolve saved nav-state once dynamic lists settle. We watch the lengths
+  // of all "shifty" sections (recent grows after returning; popular/country
+  // load async) and recompute the focus index from the saved stationId so
+  // the user always lands on the SAME card they pressed enter on.
+  useEffect(() => {
+    const navState = pendingNavStateRef.current;
+    if (!navState) return;
+    if (hasResolvedNavStateRef.current) return;
+    if (!navState.returnStationId || !navState.returnSection) return;
+
+    const sid = navState.returnStationId;
+    let target = -1;
+    if (navState.returnSection === 'recent') {
+      const idx = recentStations.findIndex(s => s._id === sid);
+      if (idx >= 0) target = recentStart + idx;
+    } else if (navState.returnSection === 'forYou') {
+      const idx = forYouStations.findIndex(s => s._id === sid);
+      if (idx >= 0) target = forYouStart + idx;
+    } else if (navState.returnSection === 'popular') {
+      const idx = popularStations.findIndex(s => s._id === sid);
+      if (idx >= 0) target = popularStationsStart + idx;
+    } else if (navState.returnSection === 'country') {
+      const idx = displayedStations.findIndex(s => s._id === sid);
+      if (idx >= 0) target = countryStationsStart + idx;
+    }
+
+    if (target >= 0) {
+      hasResolvedNavStateRef.current = true;
+      pendingNavStateRef.current = null;
+      setFocusIndex(target);
+    }
+  }, [
+    recentStations,
+    forYouStations,
+    popularStations,
+    displayedStations,
+    recentStart,
+    forYouStart,
+    popularStationsStart,
+    countryStationsStart,
+  ]);
 
   // Auto-play on app startup based on settings
   useEffect(() => {
@@ -1204,7 +1261,7 @@ export const DiscoverNoUser = (): JSX.Element => {
                       data-testid={`card-recent-station-${station._id}`}
                       data-focus-idx={focusIdx}
                       onClick={() => {
-                        setNavigationState(location, focusIdx);
+                        setNavigationState(location, focusIdx, station._id, 'recent');
                         playStation(station);
                         setLocation(`/radio-playing?station=${station._id}`);
                       }}
@@ -1255,7 +1312,7 @@ export const DiscoverNoUser = (): JSX.Element => {
                       data-testid={`card-foryou-station-${station._id}`}
                       data-focus-idx={focusIdx}
                       onClick={() => {
-                        setNavigationState(location, focusIdx);
+                        setNavigationState(location, focusIdx, station._id, 'forYou');
                         playStation(station);
                         setLocation(`/radio-playing?station=${station._id}`);
                       }}
@@ -1372,7 +1429,7 @@ export const DiscoverNoUser = (): JSX.Element => {
               key={station._id || index} 
               href={`/radio-playing?station=${station._id}`}
               onClick={() => {
-                setNavigationState(location, focusIdx);
+                setNavigationState(location, focusIdx, station._id, 'popular');
                 playStation(station);
               }}
             >
@@ -1413,7 +1470,7 @@ export const DiscoverNoUser = (): JSX.Element => {
               key={station._id || index} 
               href={`/radio-playing?station=${station._id}`}
               onClick={() => {
-                setNavigationState(location, focusIdx);
+                setNavigationState(location, focusIdx, station._id, 'popular');
                 playStation(station);
               }}
             >
@@ -1474,7 +1531,7 @@ export const DiscoverNoUser = (): JSX.Element => {
               key={station._id || index} 
               href={`/radio-playing?station=${station._id}`}
               onClick={() => {
-                setNavigationState(location, focusIdx);
+                setNavigationState(location, focusIdx, station._id, 'country');
                 playStation(station);
               }}
             >

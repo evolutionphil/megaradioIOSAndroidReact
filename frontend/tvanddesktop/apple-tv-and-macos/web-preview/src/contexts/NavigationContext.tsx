@@ -3,11 +3,25 @@ import { createContext, useContext, useState, ReactNode } from "react";
 interface NavigationState {
   previousPage: string;
   returnFocusIndex: number;
+  /**
+   * Optional: the station/item the user selected before navigating away.
+   * Used by Discover to *re-find* the correct focus index after dynamic
+   * lists (recently played, popular) reshuffle/grow. When provided the
+   * caller should prefer this over `returnFocusIndex`.
+   */
+  returnStationId?: string;
+  /** Which section the saved station belongs to. */
+  returnSection?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre';
 }
 
 interface NavigationContextType {
   navigationState: NavigationState | null;
-  setNavigationState: (page: string, focusIndex: number) => void;
+  setNavigationState: (
+    page: string,
+    focusIndex: number,
+    stationId?: string,
+    section?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre'
+  ) => void;
   clearNavigationState: () => void;
   getPreviousPage: () => string | null;
   getReturnFocusIndex: () => number | null;
@@ -19,8 +33,18 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 export function NavigationProvider({ children }: { children: ReactNode }) {
   const [navigationState, setNavigationStateInternal] = useState<NavigationState | null>(null);
 
-  const setNavigationState = (page: string, focusIndex: number) => {
-    setNavigationStateInternal({ previousPage: page, returnFocusIndex: focusIndex });
+  const setNavigationState = (
+    page: string,
+    focusIndex: number,
+    stationId?: string,
+    section?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre'
+  ) => {
+    setNavigationStateInternal({
+      previousPage: page,
+      returnFocusIndex: focusIndex,
+      returnStationId: stationId,
+      returnSection: section,
+    });
   };
 
   const clearNavigationState = () => {

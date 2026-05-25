@@ -32,7 +32,10 @@ export const GlobalPlayer = (): JSX.Element | null => {
     location.startsWith('/onboarding-premium') ||
     location.startsWith('/manage-subscription') ||
     location.startsWith('/login') ||
-    location.startsWith('/guide-');
+    location.startsWith('/guide-') ||
+    location.startsWith('/search') ||
+    location.startsWith('/settings') ||
+    location.startsWith('/country-select');
 
   if (isRadioPlayingPage || isFullScreenUiPage) {
     return null;

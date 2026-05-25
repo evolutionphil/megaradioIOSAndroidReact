@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
+import { QRCodeSVG } from "qrcode.react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
@@ -291,66 +292,44 @@ export function Login(): JSX.Element {
           <p
             style={{
               fontFamily: "'Ubuntu', Helvetica",
-              fontSize: '28px',
+              fontSize: '24px',
               color: 'rgba(255,255,255,0.7)',
               textAlign: 'center',
-              marginBottom: '30px',
+              marginBottom: '24px',
             }}
           >
-            {t('tv_login_enter_code') || 'and enter this code:'}
+            {t('tv_login_qr_or_code') || 'Scan the QR code with your phone, or enter this code manually:'}
           </p>
 
-          {/* Code display */}
+          {/* Code + QR side-by-side */}
           <div
             style={{
               display: 'flex',
-              gap: '16px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '60px',
               marginBottom: '30px',
             }}
-            data-testid="text-device-code"
           >
-            {codeChars.length > 0 ? (
-              codeChars.map(function(char, idx) {
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      width: '100px',
-                      height: '120px',
-                      borderRadius: '16px',
-                      border: '3px solid rgba(255,65,153,0.5)',
-                      backgroundColor: 'rgba(255,65,153,0.08)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: "'Ubuntu', Helvetica",
-                        fontSize: '96px',
-                        fontWeight: 'bold',
-                        color: '#ff4199',
-                        lineHeight: '1',
-                      }}
-                    >
-                      {char}
-                    </span>
-                  </div>
-                );
-              })
-            ) : (
-              <div style={{ display: 'flex', gap: '16px' }}>
-                {[0, 1, 2, 3, 4, 5].map(function(idx) {
+            {/* Code display */}
+            <div
+              style={{
+                display: 'flex',
+                gap: '14px',
+              }}
+              data-testid="text-device-code"
+            >
+              {codeChars.length > 0 ? (
+                codeChars.map(function(char, idx) {
                   return (
                     <div
                       key={idx}
                       style={{
-                        width: '100px',
-                        height: '120px',
-                        borderRadius: '16px',
-                        border: '3px solid rgba(255,255,255,0.15)',
-                        backgroundColor: 'rgba(255,255,255,0.03)',
+                        width: '88px',
+                        height: '108px',
+                        borderRadius: '14px',
+                        border: '3px solid rgba(255,65,153,0.5)',
+                        backgroundColor: 'rgba(255,65,153,0.08)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -359,17 +338,128 @@ export function Login(): JSX.Element {
                       <span
                         style={{
                           fontFamily: "'Ubuntu', Helvetica",
-                          fontSize: '96px',
+                          fontSize: '84px',
                           fontWeight: 'bold',
-                          color: 'rgba(255,255,255,0.15)',
+                          color: '#ff4199',
                           lineHeight: '1',
                         }}
                       >
-                        -
+                        {char}
                       </span>
                     </div>
                   );
-                })}
+                })
+              ) : (
+                <div style={{ display: 'flex', gap: '14px' }}>
+                  {[0, 1, 2, 3, 4, 5].map(function(idx) {
+                    return (
+                      <div
+                        key={idx}
+                        style={{
+                          width: '88px',
+                          height: '108px',
+                          borderRadius: '14px',
+                          border: '3px solid rgba(255,255,255,0.15)',
+                          backgroundColor: 'rgba(255,255,255,0.03)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "'Ubuntu', Helvetica",
+                            fontSize: '84px',
+                            fontWeight: 'bold',
+                            color: 'rgba(255,255,255,0.15)',
+                            lineHeight: '1',
+                          }}
+                        >
+                          -
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* "OR" Divider */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <div style={{ width: '2px', height: '40px', background: 'rgba(255,255,255,0.15)' }} />
+              <span
+                style={{
+                  fontFamily: "'Ubuntu', Helvetica",
+                  fontSize: '20px',
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.5)',
+                  letterSpacing: '2px',
+                }}
+              >
+                {t('or') || 'OR'}
+              </span>
+              <div style={{ width: '2px', height: '40px', background: 'rgba(255,255,255,0.15)' }} />
+            </div>
+
+            {/* QR Code (shown when a code is available) */}
+            {deviceCode ? (
+              <div
+                style={{
+                  background: '#ffffff',
+                  padding: '16px',
+                  borderRadius: '14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  boxShadow: '0 0 30px rgba(255,65,153,0.2)',
+                }}
+                data-testid="qrcode-tv-login"
+              >
+                <QRCodeSVG
+                  value={'https://www.themegaradio.com/tv?code=' + deviceCode}
+                  size={160}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="M"
+                  includeMargin={false}
+                />
+                <p
+                  style={{
+                    fontFamily: "'Ubuntu', Helvetica",
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#000000',
+                    margin: 0,
+                  }}
+                >
+                  {t('tv_login_scan_qr') || 'Scan with your phone'}
+                </p>
+              </div>
+            ) : (
+              <div
+                style={{
+                  width: '192px',
+                  height: '192px',
+                  border: '3px dashed rgba(255,255,255,0.15)',
+                  borderRadius: '14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <span style={{
+                  fontFamily: "'Ubuntu', Helvetica",
+                  fontSize: '16px',
+                  color: 'rgba(255,255,255,0.3)',
+                }}>QR</span>
               </div>
             )}
           </div>

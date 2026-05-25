@@ -10,6 +10,34 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Apr 2026)
 
+### TV UX polish: hidden player, scroll bugs, focus restore, login QR ✅ (Feb 25, 2026)
+- **GlobalPlayer.tsx**: Bottom audio bar is now also hidden on `/search`,
+  `/settings`, and `/country-select`. Audio keeps playing in background; the
+  bar simply doesn't overlap full-screen UX content. Previously only hidden
+  on `/premium-upgrade`, `/onboarding-premium`, `/manage-subscription`,
+  `/login`, `/guide-*`.
+- **DiscoverNoUser horizontal scroll fix**: `scrollForYouIntoView`,
+  `scrollGenreIntoView`, `scrollRecentIntoView` were reading
+  `ref.current.children[index]`, but DOM structure is
+  `<scroller><flex-wrapper>{cards}</flex-wrapper></scroller>`, so `children`
+  pointed at the flex wrapper not the cards. Fixed to use
+  `ref.current.children[0].children[index]`. Result: "For You" and
+  "Popular Genres" now scroll past the visible viewport — user can reach
+  card #12 with D-pad RIGHT instead of getting stuck at card #8.
+- **Focus restoration after back from /radio-playing**: `NavigationContext`
+  now stores `returnStationId` + `returnSection` in addition to
+  `returnFocusIndex`. After lazy-loaded lists (recently played grows, popular
+  loads, country stations paginate) settle, `DiscoverNoUser.tsx` re-resolves
+  the saved station's CURRENT index from the section's array. User pressing
+  Back from "Rock Antenne - Heavy Metal" now lands on Rock Antenne, not
+  Mangoradio.
+- **Login QR Code**: `Login.tsx` now renders a white QR code next to the
+  6-digit PIN (split layout with "OR" divider in the middle). QR encodes
+  `https://www.themegaradio.com/tv?code=<6DIGITS>`. Backend brief
+  `/app/memory/BACKEND_BRIEF_LOGIN_QR.md` documents the trivial web-side
+  change needed for one-tap login when the user is already signed in on
+  the website.
+
 ### Premium Subscription — Account Linking via Stripe ✅ (May 19)
 - New page `/premium-upgrade` (`src/pages/PremiumUpgrade.tsx`): full-screen
   TV layout with benefits list (left), white QR code + 6-digit pink PIN
