@@ -23,7 +23,18 @@ export const GlobalPlayer = (): JSX.Element | null => {
                              location.startsWith('/radio-playing') || 
                              location.includes('radio-playing');
   
-  if (isRadioPlayingPage) {
+  // ALSO hide on full-screen UX pages where the player bar would overlap
+  // critical content (Premium QR card, onboarding upsell, subscription
+  // management). On these pages audio keeps playing in the background but
+  // the UI is cleaner without the bottom bar covering the right-side panel.
+  const isFullScreenUiPage =
+    location.startsWith('/premium-upgrade') ||
+    location.startsWith('/onboarding-premium') ||
+    location.startsWith('/manage-subscription') ||
+    location.startsWith('/login') ||
+    location.startsWith('/guide-');
+
+  if (isRadioPlayingPage || isFullScreenUiPage) {
     return null;
   }
 

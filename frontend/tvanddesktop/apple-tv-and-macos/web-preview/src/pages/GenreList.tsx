@@ -451,7 +451,11 @@ export const GenreList = (): JSX.Element => {
         </div>
 
         {/* Gradient Overlay */}
-        <div className="absolute bg-gradient-to-b from-[18.333%] from-[rgba(14,14,14,0)] h-[1080px] left-0 to-[#0e0e0e] to-[15.185%] top-0 w-[1920px]" />
+        {/* Gradient overlay — match Discover's full-coverage dark fade
+            (was 18.33%→15.185% which left the hero image too visible and
+            broke visual continuity with Discover). Discover uses
+            0.88%→48.611% to dark, copying that here. */}
+        <div className="absolute bg-gradient-to-b from-[0.88%] from-[rgba(14,14,14,0)] h-[1080px] left-0 to-[#0e0e0e] to-[48.611%] top-0 w-[1920px] z-0" />
 
         {/* Genre Title */}
         <p className="absolute font-['Ubuntu',Helvetica] font-bold leading-normal left-[236px] not-italic text-[32px] text-white top-[242px]">

@@ -716,7 +716,11 @@ export const DiscoverNoUser = (): JSX.Element => {
     }
   });
 
-  // Reset loading state when country changes to prevent stale state
+  // Reset loading state when country changes to prevent stale state.
+  // IMPORTANT: skip the FIRST run because the restore-focus effect below
+  // also runs on mount; resetting focus to 0 here would race-condition
+  // stomp the restored index when the user returns from RadioPlaying.
+  const isFirstCountryEffect = useRef(true);
   useEffect(() => {
     isLoadingRef.current = false;
     currentOffsetRef.current = 0;
@@ -726,6 +730,10 @@ export const DiscoverNoUser = (): JSX.Element => {
     setHasMoreCountryStations(true);
     setCurrentOffset(0);
     setDisplayedStations([]);
+    if (isFirstCountryEffect.current) {
+      isFirstCountryEffect.current = false;
+      return; // first mount → let popNavigationState() set focus
+    }
     setFocusIndex(0);
   }, [selectedCountryCode]);
 
@@ -1001,17 +1009,24 @@ export const DiscoverNoUser = (): JSX.Element => {
       }
       
       if (!focusedElement) return;
-      
-      const PADDING = 100;
-      
+
+      // 200px bottom-padding: the global player bar lives at top:925 / h:155
+      // (bottom 22-177 of the 1080 canvas), and our scroll container ends at
+      // y≈903. Without enough padding the focused row at the bottom-most
+      // visible slot sits visually under the player bar. 200 keeps a 22px
+      // visual gap. Top padding stays at 100 (header area). Currently 100
+      // for both — caused "focus under player bar" reports.
+      const TOP_PADDING = 100;
+      const BOTTOM_PADDING = 220;
+
       const containerRect = scrollContainer.getBoundingClientRect();
       const elementRect = focusedElement.getBoundingClientRect();
-      
-      if (elementRect.top < containerRect.top + PADDING) {
-        const diff = containerRect.top + PADDING - elementRect.top;
+
+      if (elementRect.top < containerRect.top + TOP_PADDING) {
+        const diff = containerRect.top + TOP_PADDING - elementRect.top;
         scrollContainer.scrollTop = scrollContainer.scrollTop - diff;
-      } else if (elementRect.bottom > containerRect.bottom - PADDING) {
-        const diff = elementRect.bottom - (containerRect.bottom - PADDING);
+      } else if (elementRect.bottom > containerRect.bottom - BOTTOM_PADDING) {
+        const diff = elementRect.bottom - (containerRect.bottom - BOTTOM_PADDING);
         scrollContainer.scrollTop = scrollContainer.scrollTop + diff;
       }
     });
