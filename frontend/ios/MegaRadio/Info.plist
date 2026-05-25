@@ -92,16 +92,29 @@
     </array>
     <key>RCTNewArchEnabled</key>
     <true/>
+    <!--
+      Scene manifest. CarPlay scene REQUIRES this entry because the app
+      declares the `com.apple.developer.carplay-audio` entitlement.
+      
+      For UIApplicationSupportsMultipleScenes we MUST use `true` here — with
+      `false` iOS still creates the CarPlay scene but refuses to create the
+      default iPhone window via the AppDelegate, leaving the app stuck on a
+      black screen after the splash. With `true` iOS will:
+        • call `application(_:configurationForConnecting:options:)` for the
+          CarPlay scene → we hand it CarPlaySceneDelegate
+        • use the legacy UIApplicationDelegate `application(_:
+          didFinishLaunchingWithOptions:)` for iPhone since we explicitly
+          DON'T declare a UIWindowSceneSessionRoleApplication entry here.
+        • the AppDelegate window setup that Expo / RN already wires up is
+          honoured and the JS bundle renders normally.
+      
+      Source: https://developer.apple.com/documentation/uikit/app_and_environment/
+              scenes/specifying_the_scenes_your_app_supports
+    -->
     <key>UIApplicationSceneManifest</key>
     <dict>
-      <!--
-        IMPORTANT: keep this `false`. We only define a delegate for the
-        CarPlay scene role; iPhone keeps using the legacy UIApplicationDelegate-
-        based startup (set up in AppDelegate.swift). Flipping this to true
-        forces iOS into full scene-based lifecycle and breaks Expo / RN.
-      -->
       <key>UIApplicationSupportsMultipleScenes</key>
-      <false/>
+      <true/>
       <key>UISceneConfigurations</key>
       <dict>
         <key>CPTemplateApplicationSceneSessionRoleApplication</key>
