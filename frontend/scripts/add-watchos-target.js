@@ -148,8 +148,57 @@ if (scrubbed > 0) {
 
 const existing = findTargetByName(TARGET_NAME);
 if (existing) {
-  log('Target "' + TARGET_NAME + '" already exists in pbxproj — nothing else to do. ✅');
+  // ─────────────────────────────────────────────────────────────────────
+  // REPAIR MODE — pbxproj already has the watch target, but earlier
+  // versions of this script wrote a broken dstSubfolderSpec=1 for the
+  // Embed Watch Content phase, causing the
+  //   MegaRadio.app/MegaRadio.app/Watch/MegaRadioWatch.app
+  // doubled-path build cycle. Detect & fix it without removing the
+  // target (so the user doesn't lose any signing/team edits).
+  // ─────────────────────────────────────────────────────────────────────
+  log('Target "' + TARGET_NAME + '" already exists — entering repair mode…');
+  const copyPhases = proj.hash.project.objects['PBXCopyFilesBuildPhase'] || {};
+  let fixedSpec = 0;
+  Object.keys(copyPhases).forEach((k) => {
+    if (k.endsWith('_comment')) return;
+    const ph = copyPhases[k];
+    if (!ph) return;
+    const name = (ph.name || '').replace(/^"|"$/g, '');
+    if (name === 'Embed Watch Content') {
+      // dstSubfolderSpec values:  1=Wrapper, 10=Frameworks, 16=Products
+      // For watch app embed the canonical value is 16. Anything else
+      // (esp. 1) produces a doubled path and a cycle.
+      if (String(ph.dstSubfolderSpec) !== '16') {
+        log('  · fixing dstSubfolderSpec ' + ph.dstSubfolderSpec + ' → 16 (Products Directory)');
+        ph.dstSubfolderSpec = 16;
+        fixedSpec++;
+      }
+      // Make sure dstPath is the canonical value too.
+      if (ph.dstPath !== '"$(CONTENTS_FOLDER_PATH)/Watch"') {
+        log('  · fixing dstPath → $(CONTENTS_FOLDER_PATH)/Watch');
+        ph.dstPath = '"$(CONTENTS_FOLDER_PATH)/Watch"';
+        fixedSpec++;
+      }
+    }
+  });
+
+  if (fixedSpec > 0) {
+    fs.writeFileSync(PBX_PATH, proj.writeSync());
+    log('Repaired ' + fixedSpec + ' Embed Watch Content setting(s). ✅');
+  } else {
+    log('Embed Watch Content phase already healthy.');
+  }
   log('(Watch source files were re-synced from watch/ios/MegaRadioWatch/ above.)');
+
+  // Always re-run cycle fix on repeat invocations — pod install can
+  // regenerate broken inputPaths/outputPaths for [CP-User] phases.
+  try {
+    log('');
+    log('Running fix-xcode-cycle.js to scrub [CP-User] cycles…');
+    require('./fix-xcode-cycle.js');
+  } catch (e) {
+    log('  warning: fix-xcode-cycle.js failed: ' + (e && e.message ? e.message : String(e)));
+  }
   process.exit(0);
 }
 
@@ -348,7 +397,17 @@ proj.hash.project.objects['PBXCopyFilesBuildPhase'][embedPhaseUuid] = {
   isa: 'PBXCopyFilesBuildPhase',
   buildActionMask: 2147483647,
   dstPath: '"$(CONTENTS_FOLDER_PATH)/Watch"',
-  dstSubfolderSpec: 1, // 1 = Wrapper (resolves to wrapper root, ie MegaRadio.app)
+  // 16 = "Products Directory" — the canonical Xcode value for embedded
+  // companion apps (Watch, App Clip, App Extension hosts). Using 1 (Wrapper)
+  // causes the destination path to be RESOLVED as
+  //   $(BUILT_PRODUCTS_DIR)/$(WRAPPER_NAME)/$(CONTENTS_FOLDER_PATH)/Watch
+  // i.e. Release-iphoneos/MegaRadio.app/MegaRadio.app/Watch/ — note the
+  // doubled MegaRadio.app, which triggers an Xcode build cycle between
+  // ProcessInfoPlist (writes Info.plist into wrapper root) and our
+  // copy-files phase. dstSubfolderSpec=16 anchors the destination at
+  // $(BUILT_PRODUCTS_DIR), so the resolved path becomes
+  //   Release-iphoneos/MegaRadio.app/Watch/MegaRadioWatch.app — correct.
+  dstSubfolderSpec: 16,
   files: [
     { value: embedBuildFileUuid, comment: watchProductName + ' in Embed Watch Content' },
   ],
