@@ -1309,6 +1309,41 @@ const CarPlayService: CarPlayServiceType = {
             coldStartRetryTimer = null;
             CarPlayLogger.info('[RN] Cold-start timer stopped (template created successfully)');
           }
+
+          // CONTINUOUS LISTENING: if a station is already playing on the
+          // phone when the user plugs into CarPlay (eg. they were jogging
+          // and got into the car), automatically push NowPlayingTemplate
+          // on top of the root template so audio appears front-and-center
+          // — no extra taps needed. Mirrors Spotify / Apple Music UX.
+          try {
+            // Lazy-import to avoid a circular dep at module init time.
+            // playerStore is a zustand store with a sync getState().
+            const playerStoreMod = require('../store/playerStore');
+            const usePlayerStore = playerStoreMod?.usePlayerStore;
+            const currentStation = usePlayerStore?.getState?.()?.currentStation;
+            const nowPlaying = usePlayerStore?.getState?.()?.nowPlaying;
+            if (currentStation && NowPlayingTemplate && CarPlay) {
+              CarPlayLogger.info('[RN] Auto-pushing NowPlayingTemplate for active station', {
+                stationId: currentStation._id || currentStation.id,
+                stationName: currentStation.name,
+                hasMetadata: !!nowPlaying,
+              });
+              showNowPlayingTemplate(
+                currentStation,
+                nowPlaying?.songTitle,
+                nowPlaying?.artistName,
+              );
+            } else {
+              CarPlayLogger.info('[RN] No active station - skipping auto NowPlaying', {
+                hasStation: !!currentStation,
+                nowPlayingTemplateLoaded: !!NowPlayingTemplate,
+              });
+            }
+          } catch (autoErr) {
+            CarPlayLogger.warn('[RN] Auto NowPlaying push failed (non-fatal)', {
+              error: String(autoErr),
+            });
+          }
         }).catch((err) => {
           CarPlayLogger.error('[RN] createRootTemplate() FAILED', {
             error: String(err),

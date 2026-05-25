@@ -7,6 +7,7 @@ import GoogleCast
 // @generated end react-native-google-cast-import
 import React
 import ReactAppDependencyProvider
+import CarPlay
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -87,5 +88,41 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
+  }
+}
+
+// MARK: - CarPlay Scene Configuration
+//
+// iOS calls this whenever it spins up a new UIScene. For the CarPlay role we
+// hand it our `CarPlaySceneDelegate`; for the regular iPhone role we return
+// a no-op config so iOS falls back to the legacy UIApplicationDelegate-based
+// startup that Expo / React Native already wires up in
+// `application(_:didFinishLaunchingWithOptions:)`.
+//
+// This belt-and-suspenders setup means that even if Info.plist's
+// UIApplicationSceneManifest is missing or stripped, CarPlay will still
+// find its delegate at runtime — fixing the launch-time NSGenericException:
+//   "Application does not implement CarPlay template application
+//    lifecycle methods in its scene delegate."
+extension AppDelegate {
+  public override func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      let config = UISceneConfiguration(
+        name: "MegaRadio-CarPlay",
+        sessionRole: connectingSceneSession.role
+      )
+      config.delegateClass = CarPlaySceneDelegate.self
+      config.sceneClass = CPTemplateApplicationScene.self
+      return config
+    }
+    // For the iPhone (UIWindowSceneSessionRoleApplication) and any future
+    // roles we don't explicitly handle, return a default config. iOS will
+    // then fall through to the AppDelegate window we set up in
+    // didFinishLaunchingWithOptions.
+    return UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
   }
 }

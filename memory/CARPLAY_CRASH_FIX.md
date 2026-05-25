@@ -1,122 +1,127 @@
-# CarPlay Crash Fix — Quick Notes
+# CarPlay Crash — UPDATED FIX (Round 2)
 
-> **Date:** Feb 25, 2026
-> **Crash:** `NSGenericException — Application does not implement CarPlay
-> template application lifecycle methods in its scene delegate`
-
----
-
-## Root Cause
-
-`MegaRadio.entitlements` declares `com.apple.developer.carplay-audio = true`,
-which tells iOS the app is a CarPlay-enabled audio app. iOS therefore
-launches a **separate UIScene** for the CarPlay screen, and looks up its
-delegate via `Info.plist → UIApplicationSceneManifest → UISceneConfigurations
-→ CPTemplateApplicationSceneSessionRoleApplication`.
-
-Our Info.plist did NOT have this manifest, so iOS couldn't find a delegate
-class — and crashed at launch the moment a CarPlay scene was requested
-(this happens immediately in the CarPlay Simulator).
+> **Date:** Feb 25, 2026 — _v2 (round 2)_
+> **Previous attempt:** SceneDelegate eklendi ama uygulama yine siyah ekrana
+> takıldı + tekrar `NSGenericException` aldı.
 
 ---
 
-## Fix Applied (3 files)
+## Round-1 Hatası
 
-### 1. `ios/MegaRadio/CarPlaySceneDelegate.swift` (NEW)
+İlk fix'te `Info.plist`'e `UIApplicationSupportsMultipleScenes = true`
+koyduk → iOS app'i **tam scene-based lifecycle**'a zorladı ama:
 
-New Swift class that conforms to `CPTemplateApplicationSceneDelegate` and
-forwards the connect / disconnect lifecycle to the existing
-`@g4rb4g3/react-native-carplay` module:
+1. iPhone için `UIWindowSceneSessionRoleApplication` config'i tanımlamadık
+2. `AppDelegate`'te `configurationForConnecting(_:)` metodu yoktu
+3. Sonuç: iOS hangi scene class'ı kullanacağını bilemedi → siyah ekran +
+   crash döngüsü
 
-```swift
-public func templateApplicationScene(_, didConnect interfaceController, to window) {
-    RNCarPlay.connect(with: interfaceController, window: window)
-}
+---
 
-public func templateApplicationScene(_, didDisconnectInterfaceController) {
-    RNCarPlay.disconnect()
-}
-```
+## Round-2 Fix (3 ek değişiklik)
 
-### 2. `ios/MegaRadio/MegaRadio-Bridging-Header.h` (MODIFIED)
-
-Added so the Swift class above can see the Obj-C `+connectWith…` class methods:
-
-```objc
-#import "RNCarPlay.h"
-```
-
-### 3. `ios/MegaRadio/Info.plist` (MODIFIED)
-
-Added the scene manifest entry:
+### 1. `Info.plist` — `UIApplicationSupportsMultipleScenes` artık `false`
 
 ```xml
-<key>UIApplicationSceneManifest</key>
-<dict>
-  <key>UIApplicationSupportsMultipleScenes</key>
-  <true/>
-  <key>UISceneConfigurations</key>
-  <dict>
-    <key>CPTemplateApplicationSceneSessionRoleApplication</key>
-    <array>
-      <dict>
-        <key>UISceneClassName</key>
-        <string>CPTemplateApplicationScene</string>
-        <key>UISceneConfigurationName</key>
-        <string>MegaRadio-CarPlay</string>
-        <key>UISceneDelegateClassName</key>
-        <string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
-      </dict>
-    </array>
-  </dict>
-</dict>
+<key>UIApplicationSupportsMultipleScenes</key>
+<false/>
 ```
 
-> **Note:** We intentionally did NOT add the iPhone (`UIWindowSceneSessionRoleApplication`)
-> scene config — that would force iOS to use a SwiftUI scene-based launch
-> path and break Expo / RN's existing UIApplicationDelegate startup. CarPlay
-> needs its own scene config; iPhone keeps the legacy delegate. Apple
-> supports this mixed setup.
+Bu önemli — iOS multi-scene'i zorlamıyor; iPhone tarafı **eski UIApplication
+Delegate flow'una düşüyor** (Expo/RN'nin window setup'ını koruyor), sadece
+CarPlay scene'i için manifest'i kullanıyor.
+
+### 2. `AppDelegate.swift` — `configurationForConnecting` extension eklendi
+
+iOS scene oluştururken ÖNCE bu metoda sorar; biz CarPlay role'ünü
+detect edip `CarPlaySceneDelegate`'i runtime'da bağlıyoruz. Plist + kod
+çift güvence:
+
+```swift
+import CarPlay
+
+extension AppDelegate {
+  public override func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      let config = UISceneConfiguration(
+        name: "MegaRadio-CarPlay",
+        sessionRole: connectingSceneSession.role
+      )
+      config.delegateClass = CarPlaySceneDelegate.self
+      config.sceneClass = CPTemplateApplicationScene.self
+      return config
+    }
+    return UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+  }
+}
+```
+
+### 3. CarPlaySceneDelegate.swift (Round 1'den korundu)
+
+Round-1'de oluşturulan dosya geçerli. Hâlâ Xcode target'ına eklenmiş
+olmalı — eğer Build Phases → Compile Sources'ta görünmüyorsa tekrar
+**Add Files to "MegaRadio"…** yap.
 
 ---
 
-## What the User Must Do in Xcode (Local Mac)
+## ⚠️ Kullanıcının Yapması Gerekenler
 
-The Swift file isn't auto-registered in the Xcode project — you need to
-add it manually once:
-
-1. Pull the latest commit:
+1. `git pull` ile son commit'i çek
+2. **Pods cache'i + DerivedData'yı tamamen sil** (önceki başarısız build artıkları):
    ```bash
-   cd ~/Documents/megaradioIOSAndroidReact
-   git pull origin main
+   cd ~/Documents/megaradioIOSAndroidReact/frontend/ios
+   rm -rf Pods Podfile.lock
+   rm -rf ~/Library/Developer/Xcode/DerivedData/MegaRadio-*
+   pod install --repo-update
+   cd ..
    ```
-2. Open the workspace:
+3. Xcode workspace'i kapat → tekrar aç:
    ```bash
-   open frontend/ios/MegaRadio.xcworkspace
+   open ios/MegaRadio.xcworkspace
    ```
-3. In Xcode's Project Navigator (left sidebar), right-click the
-   **MegaRadio** folder (group) → **Add Files to "MegaRadio"…**
-4. Select **`CarPlaySceneDelegate.swift`** → make sure:
-   - **Copy items if needed = OFF**
-   - **Target Membership = MegaRadio** is checked
-5. Clean: **Shift+Cmd+K** → Build & Run: **⌘R**
-
-The CarPlay Simulator now launches without crashing. The screen will be
-empty until your JS code calls `CarPlay.connect()` + `CarPlay.presentTemplate(…)`,
-which is what `src/services/carPlayService.ts` already does.
+4. **Project Navigator'da kontrol et** — `CarPlaySceneDelegate.swift`
+   `MegaRadio` group altında görünüyor mu? **Target Membership** sağ
+   panelden bak: `MegaRadio` checked olmalı.
+5. Eğer dosya yoksa: sağ tık → **Add Files to "MegaRadio"…** →
+   `CarPlaySceneDelegate.swift` seç → "Copy items if needed = OFF",
+   "Target Membership = MegaRadio" ✅
+6. **Shift+Cmd+K** (Clean Build Folder) → **⌘R** (Run)
 
 ---
 
-## Verifying
+## 🚀 Yeni Bonus: Otomatik NowPlayingTemplate
 
-Open the CarPlay simulator from Xcode:
-**I/O → External Displays → CarPlay**
+`carPlayService.ts` artık CarPlay bağlandığında:
+1. Root template'i oluşturuyor (Recently Played, Genres, Search vs.)
+2. **Eğer telefonda zaten bir istasyon çalıyorsa**, üstüne
+   `NowPlayingTemplate`'i otomatik push ediyor
 
-Expected:
-- App launches normally on the iPhone simulator
-- After 2–3 seconds the CarPlay window shows the MegaRadio list of
-  recently played stations (or empty state if no plays yet)
+Sonuç: Kullanıcı arabaya bindiğinde CarPlay ekranında **doğrudan oynayan
+istasyonu görür** + Play/Pause/Skip butonları hazır. Spotify / Apple
+Music UX paritesi. Extra tap yok.
 
-If the CarPlay window stays black:
-- Check Xcode console for `[CarPlay]` logs from `carPlayService.ts`
-- Make sure `CarPlay.connect()` is called from your JS code on app startup
+Log: `[CarPlay] Auto-pushing NowPlayingTemplate for active station`
+veya `[CarPlay] No active station - skipping auto NowPlaying`.
+
+---
+
+## Test Beklentisi
+
+CarPlay Simulator'da (Xcode → I/O → External Displays → CarPlay):
+
+| Senaryo | Beklenen |
+|---|---|
+| App ilk açılış (iPhone) | Normal MegaRadio ana ekranı, siyah ekran YOK |
+| CarPlay bağlan (hiç çalmadan) | CarPlay'de Recently Played, Genres, Search ListTemplate'i |
+| Telefonda Rock Antenne çalıyor → arabaya bağla | CarPlay'de DOĞRUDAN Rock Antenne NowPlayingTemplate'i, Play/Pause çalışıyor |
+| CarPlay'den çık → tekrar bağla | Yine en son çalan istasyonun NowPlaying'i |
+
+Eğer hâlâ crash veya siyah ekran varsa **mutlaka Xcode console'unun**
+ilk 20 satırını paylaşın — özellikle:
+- `Bundle module name` (PRODUCT_MODULE_NAME değerini görelim)
+- `Could not instantiate class` benzeri mesajlar
+- `CarPlaySceneDelegate` adının log'larda görünüp görünmemesi

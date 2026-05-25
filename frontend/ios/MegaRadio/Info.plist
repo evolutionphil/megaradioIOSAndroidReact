@@ -92,20 +92,16 @@
     </array>
     <key>RCTNewArchEnabled</key>
     <true/>
-    <!--
-      CarPlay scene manifest. Required because the app declares the
-      `com.apple.developer.carplay-audio` entitlement; without it iOS
-      crashes at launch with:
-        "Application does not implement CarPlay template application
-         lifecycle methods in its scene delegate."
-      The default phone scene is NOT listed (so React Native's existing
-      UIApplicationDelegate-based startup keeps working unchanged); we
-      only describe the CarPlay scene role here.
-    -->
     <key>UIApplicationSceneManifest</key>
     <dict>
+      <!--
+        IMPORTANT: keep this `false`. We only define a delegate for the
+        CarPlay scene role; iPhone keeps using the legacy UIApplicationDelegate-
+        based startup (set up in AppDelegate.swift). Flipping this to true
+        forces iOS into full scene-based lifecycle and breaks Expo / RN.
+      -->
       <key>UIApplicationSupportsMultipleScenes</key>
-      <true/>
+      <false/>
       <key>UISceneConfigurations</key>
       <dict>
         <key>CPTemplateApplicationSceneSessionRoleApplication</key>

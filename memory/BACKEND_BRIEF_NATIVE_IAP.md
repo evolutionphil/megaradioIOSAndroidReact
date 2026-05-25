@@ -384,29 +384,56 @@ class IapService(context: Context) {
 
 ## 5) Backend `/api/user/subscription` — Hâlihazırda Var
 
-Mobil app'in çağırdığı endpoint zaten mevcut:
-- `POST /api/user/subscription` → receipt validate eder, Mongo'ya kaydeder
-- `GET /api/user/subscription` → aktif plan döner
+Mobile app'in `iapService.ts → reportToBackend()` çağırdığı endpoint zaten production'da çalışıyor:
+- `POST /api/user/subscription` → receipt validate eder, Mongo'ya kaydeder, plan döner
+- `GET /api/user/subscription` → aktif plan, isActive flag, expiryDate döner
 
-TV native shell'leri **aynı endpoint'i** kullanır. Body:
+TV native shell'leri **birebir aynı body**'i POST eder (mobile + TV ortak endpoint):
 
 ```json
 {
-  "platform": "ios",        // "ios" Apple TV için, "android" Android TV için
+  "platform": "ios",                              // Apple TV için "ios", Android TV için "android"
   "productId": "megaradio_premium_yearly",
   "transactionId": "200000xxxxxx",
-  "originalTransactionId": "200000xxxxxx",
-  "receipt": "MIIT.../base64-receipt",     // iOS
-  "purchaseToken": "abcd...token"          // Android
+  "originalTransactionId": "200000xxxxxx",        // iOS: originalTransactionIdIOS, Android: transactionId
+  "isTrial": false,
+  "receipt": "MIIT.../base64-receipt-data",       // SADECE iOS
+  "purchaseToken": "abcd...play-store-token"      // SADECE Android
 }
 ```
 
-Response:
+Auth header: `Authorization: Bearer <JWT>` — kullanıcının mobile/TV'de
+login olduğu token (Account Linking flow ile veya direct login ile gelmiş).
+
+Response (success):
 ```json
-{ "plan": "premium_yearly", "isActive": true, "expiryDate": "2027-02-25T00:00:00Z" }
+{
+  "plan": "premium_yearly",        // "none" | "remove_ads" | "premium_monthly" | "premium_yearly" | "premium_lifetime"
+  "isActive": true,
+  "expiryDate": "2027-02-25T00:00:00Z"   // null = lifetime
+}
 ```
 
-**Backend'de zaten implement edilmiş, ek iş yok.**
+**Backend'de zaten implement edilmiş** — mobile iOS/Android bunu kullanıyor.
+Apple TV ve Android TV native shell'lerinin yapacağı tek şey: aynı body'i
+aynı endpoint'e POST etmek. Sıfır backend değişikliği.
+
+### Plan Sync (TV açılışında)
+
+Mobile'da `iapService.syncSubscriptionFromBackend()` app startup'ta
+`GET /api/user/subscription` çağırarak local cache'i tazeliyor. TV
+shell'leri aynısını yapmalı; sonra web view'a JS bridge ile aktarmalı:
+
+```js
+window.MegaRadioBridge.__updateSubscription({
+  plan: "premium_yearly",
+  isActive: true,
+  expiryDate: "2027-02-25T00:00:00Z"
+});
+```
+
+Bu sayede Discover header'daki PREMIUM rozeti ve Settings sayfasındaki
+"Active until..." metni doğru görüntülenir.
 
 ---
 
