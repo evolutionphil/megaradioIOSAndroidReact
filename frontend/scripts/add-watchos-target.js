@@ -102,10 +102,54 @@ function findTargetByName(name) {
   }
   return null;
 }
+// Scrub leaked watch sources from the iOS app target's Sources phase.
+// Runs unconditionally — even on repeated invocations — so Xcode "Add Files"
+// mistakes from earlier sessions (where the user accidentally ticked the
+// MegaRadio target while adding watch .swift files) get cleaned up.
+function scrubWatchSourcesFromIosTarget() {
+  const nativeTargets = proj.hash.project.objects['PBXNativeTarget'] || {};
+  let iosUuid = null;
+  for (const k of Object.keys(nativeTargets)) {
+    if (k.endsWith('_comment')) continue;
+    const t = nativeTargets[k];
+    const n = (t && t.name || '').replace(/^"|"$/g, '');
+    if (n === 'MegaRadio') { iosUuid = k; break; }
+  }
+  if (!iosUuid) return 0;
+
+  const iosTgt = nativeTargets[iosUuid];
+  const sourcesPhases = proj.hash.project.objects['PBXSourcesBuildPhase'] || {};
+  const buildFileSec = proj.pbxBuildFileSection();
+  const fileRefSec = proj.pbxFileReferenceSection();
+  let totalRemoved = 0;
+  (iosTgt.buildPhases || []).forEach((bp) => {
+    const phase = sourcesPhases[bp.value];
+    if (!phase || !phase.files) return;
+    const before = phase.files.length;
+    phase.files = phase.files.filter((bf) => {
+      const bfObj = buildFileSec[bf.value];
+      if (!bfObj || !bfObj.fileRef) return true;
+      const ref = fileRefSec[bfObj.fileRef];
+      if (!ref) return true;
+      const refPath = (ref.path || ref.name || '').replace(/^"|"$/g, '');
+      // Strip anything under MegaRadioWatch/ — those belong to the watch target only.
+      return !refPath.startsWith('MegaRadioWatch/');
+    });
+    totalRemoved += (before - phase.files.length);
+  });
+  return totalRemoved;
+}
+
+const scrubbed = scrubWatchSourcesFromIosTarget();
+if (scrubbed > 0) {
+  log('Removed ' + scrubbed + ' watch source file(s) leaked into iOS target Sources phase ✂️');
+  fs.writeFileSync(PBX_PATH, proj.writeSync());
+}
+
 const existing = findTargetByName(TARGET_NAME);
 if (existing) {
-  log('Target "' + TARGET_NAME + '" already exists in pbxproj — nothing to do. ✅');
-  log('(Watch source files were still re-synced from watch/ios/MegaRadioWatch/ above.)');
+  log('Target "' + TARGET_NAME + '" already exists in pbxproj — nothing else to do. ✅');
+  log('(Watch source files were re-synced from watch/ios/MegaRadioWatch/ above.)');
   process.exit(0);
 }
 
@@ -168,6 +212,11 @@ log('Registering ' + swiftFiles.length + ' Swift source files…');
 swiftFiles.forEach((rel) => {
   proj.addSourceFile('MegaRadioWatch/' + rel.replace(/\\/g, '/'), { target: target.uuid }, groupKey);
 });
+
+// Re-scrub after adding — xcode-npm's addSourceFile sometimes leaks the
+// new build-file refs into BOTH targets. The unconditional scrub above
+// already ran earlier but we run it once more after the fact to be safe.
+scrubWatchSourcesFromIosTarget();
 
 // Info.plist + entitlements should NOT be in Sources/Resources — Xcode picks
 // them up via build settings (INFOPLIST_FILE, CODE_SIGN_ENTITLEMENTS).
