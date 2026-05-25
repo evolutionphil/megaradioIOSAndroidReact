@@ -109,36 +109,19 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 
 // MARK: - CarPlay Scene Configuration
 //
-// iOS calls this whenever it spins up a new UIScene. For the CarPlay role we
-// hand it our `CarPlaySceneDelegate`; for the regular iPhone role we return
-// a no-op config so iOS falls back to the legacy UIApplicationDelegate-based
-// startup that Expo / React Native already wires up in
-// `application(_:didFinishLaunchingWithOptions:)`.
+// DO NOT add `application(_:configurationForConnecting:options:)` here.
 //
-// This belt-and-suspenders setup means that even if Info.plist's
-// UIApplicationSceneManifest is missing or stripped, CarPlay will still
-// find its delegate at runtime — fixing the launch-time NSGenericException:
-//   "Application does not implement CarPlay template application
-//    lifecycle methods in its scene delegate."
-extension AppDelegate {
-  public func application(
-    _ application: UIApplication,
-    configurationForConnecting connectingSceneSession: UISceneSession,
-    options: UIScene.ConnectionOptions
-  ) -> UISceneConfiguration {
-    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
-      let config = UISceneConfiguration(
-        name: "MegaRadio-CarPlay",
-        sessionRole: connectingSceneSession.role
-      )
-      config.delegateClass = CarPlaySceneDelegate.self
-      config.sceneClass = CPTemplateApplicationScene.self
-      return config
-    }
-    // For the iPhone (UIWindowSceneSessionRoleApplication) and any future
-    // roles we don't explicitly handle, return a default config. iOS will
-    // then fall through to the AppDelegate window we set up in
-    // didFinishLaunchingWithOptions.
-    return UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
-  }
-}
+// Implementing that method forces iOS to adopt the UIScene lifecycle for
+// EVERY connecting scene — including the iPhone window. Because we have
+// no UIWindowSceneSessionRoleApplication scene delegate declared, iPhone
+// then gets a scene with no window delegate, AppDelegate.window is
+// IGNORED, and the React Native root view never makes it on-screen →
+// the app shows only the splash, then a permanent black screen.
+//
+// Instead, CarPlay scene configuration is handled entirely by Info.plist's
+// UIApplicationSceneManifest → CPTemplateApplicationSceneSessionRoleApplication
+// entry, which points at CarPlaySceneDelegate. With no scene config
+// declared (and no method overriding it) for the iPhone role, iOS falls
+// back to the legacy UIApplicationDelegate lifecycle we set up above in
+// application(_:didFinishLaunchingWithOptions:) — and the AppDelegate
+// window gets shown normally.
