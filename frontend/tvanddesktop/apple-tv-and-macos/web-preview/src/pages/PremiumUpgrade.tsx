@@ -223,10 +223,16 @@ export function PremiumUpgrade(): JSX.Element {
                 <QRCodeSVG
                   value={activationUrl}
                   size={248}
-                  level="M"
+                  level="H"
                   includeMargin={false}
                   fgColor="#0e0e0e"
                   bgColor="#ffffff"
+                  imageSettings={{
+                    src: assetPath('images/logo.png'),
+                    height: 52,
+                    width: 52,
+                    excavate: true,
+                  }}
                 />
               ) : null}
             </div>

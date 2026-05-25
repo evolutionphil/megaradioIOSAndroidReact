@@ -428,8 +428,14 @@ export function Login(): JSX.Element {
                   size={160}
                   bgColor="#ffffff"
                   fgColor="#000000"
-                  level="M"
+                  level="H"
                   includeMargin={false}
+                  imageSettings={{
+                    src: assetPath('images/logo.png'),
+                    height: 36,
+                    width: 36,
+                    excavate: true,
+                  }}
                 />
                 <p
                   style={{
