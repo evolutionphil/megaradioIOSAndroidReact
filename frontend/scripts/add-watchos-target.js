@@ -303,60 +303,97 @@ phase.files.push({
 
 // ─────────────────────────────────────────────────────────────────────
 // 5. Embed Watch Content build phase on the iOS app target
+//
+// xcode-npm's addBuildPhase mangles the dstPath / dstSubfolderSpec values
+// for "watch_app", producing builds with $(CONTENTS_FOLDER_PATH) duplicated
+// (e.g. MegaRadio.app/MegaRadio.app/Watch/MegaRadioWatch.app — a build
+// cycle). We hand-roll the PBXCopyFilesBuildPhase to guarantee the canonical
+// "$(CONTENTS_FOLDER_PATH)/Watch" copy-into-wrapper pattern Xcode generates
+// from its own UI.
 // ─────────────────────────────────────────────────────────────────────
 log('Adding Embed Watch Content phase to MegaRadio (iOS) target…');
-const iosTarget = proj.pbxTargetByName('MegaRadio');
-if (!iosTarget) fail('Main "MegaRadio" target not found — pbxproj corrupt?');
-
-// PBXCopyFilesBuildPhase with dstSubfolderSpec=16 (Wrapper), dstPath=$(CONTENTS_FOLDER_PATH)/Watch
-// is the standard "Embed Watch Content" pattern.
-const embedPhase = proj.addBuildPhase(
-  [], // empty file list; we'll add the product ref below
-  'PBXCopyFilesBuildPhase',
-  'Embed Watch Content',
-  iosTarget.uuid,
-  'watch_app',          // subfolderSpec resolves to 16
-  '"$(CONTENTS_FOLDER_PATH)/Watch"'
-);
-
-// Reference the watch app product (.app) so iOS target embeds it.
-// xcode-npm exposes the product ref via target.pbxNativeTarget.productReference
-const productRef = target.pbxNativeTarget.productReference;
-const productName = target.pbxNativeTarget.productReference_comment || (TARGET_NAME + '.app');
-
-// Add the productRef to PBXBuildFile + the embed phase's files array.
-const buildFileUuid = proj.generateUuid();
-proj.addToPbxBuildFileSection({
-  uuid: buildFileUuid,
-  fileRef: productRef,
-  fileRef_comment: productName,
-  settings: { ATTRIBUTES: ['RemoveHeadersOnCopy'] }, // standard for embedded apps
-}, 'Embed Watch Content');
-
-const phaseUuid = embedPhase.buildPhase.uuid || embedPhase.uuid;
-const copyPhaseSection = proj.hash.project.objects['PBXCopyFilesBuildPhase'];
-Object.keys(copyPhaseSection).forEach((k) => {
-  if (k.endsWith('_comment')) return;
-  const ph = copyPhaseSection[k];
-  if (ph && ph.name === '"Embed Watch Content"') {
-    if (!ph.files) ph.files = [];
-    ph.files.push({
-      value: buildFileUuid,
-      comment: productName + ' in Embed Watch Content',
-    });
+// pbxTargetByName returns { uuid, target } on success but signature changes
+// between xcode-npm versions. Look up the iOS native target directly.
+let iosTargetUuidFinal = null;
+{
+  const nt = proj.hash.project.objects['PBXNativeTarget'] || {};
+  for (const k of Object.keys(nt)) {
+    if (k.endsWith('_comment')) continue;
+    const t = nt[k];
+    const n = (t && t.name || '').replace(/^"|"$/g, '');
+    if (n === 'MegaRadio') { iosTargetUuidFinal = k; break; }
   }
+}
+if (!iosTargetUuidFinal) fail('Main "MegaRadio" target not found — pbxproj corrupt?');
+const iosTargetObj = proj.hash.project.objects['PBXNativeTarget'][iosTargetUuidFinal];
+
+// PBXBuildFile for the watch product wrapper (the .app)
+const watchProductRef = target.pbxNativeTarget.productReference;
+const watchProductName = target.pbxNativeTarget.productReference_comment || (TARGET_NAME + '.app');
+const embedBuildFileUuid = proj.generateUuid();
+proj.pbxBuildFileSection()[embedBuildFileUuid] = {
+  isa: 'PBXBuildFile',
+  fileRef: watchProductRef,
+  fileRef_comment: watchProductName,
+  settings: { ATTRIBUTES: ['RemoveHeadersOnCopy'] },
+};
+proj.pbxBuildFileSection()[embedBuildFileUuid + '_comment'] = watchProductName + ' in Embed Watch Content';
+
+// PBXCopyFilesBuildPhase — dstPath relative to wrapper, dstSubfolderSpec=16 (Wrapper)
+const embedPhaseUuid = proj.generateUuid();
+if (!proj.hash.project.objects['PBXCopyFilesBuildPhase']) {
+  proj.hash.project.objects['PBXCopyFilesBuildPhase'] = {};
+}
+proj.hash.project.objects['PBXCopyFilesBuildPhase'][embedPhaseUuid] = {
+  isa: 'PBXCopyFilesBuildPhase',
+  buildActionMask: 2147483647,
+  dstPath: '"$(CONTENTS_FOLDER_PATH)/Watch"',
+  dstSubfolderSpec: 1, // 1 = Wrapper (resolves to wrapper root, ie MegaRadio.app)
+  files: [
+    { value: embedBuildFileUuid, comment: watchProductName + ' in Embed Watch Content' },
+  ],
+  name: '"Embed Watch Content"',
+  runOnlyForDeploymentPostprocessing: 0,
+};
+proj.hash.project.objects['PBXCopyFilesBuildPhase'][embedPhaseUuid + '_comment'] = 'Embed Watch Content';
+
+// Append the phase to the iOS target's buildPhases list (at the END so it
+// runs after Code Sign etc. — Xcode default for embed phases).
+iosTargetObj.buildPhases = iosTargetObj.buildPhases || [];
+iosTargetObj.buildPhases.push({
+  value: embedPhaseUuid,
+  comment: 'Embed Watch Content',
 });
 
 // ─────────────────────────────────────────────────────────────────────
 // 6. Target dependency: iOS app → watch app
 // ─────────────────────────────────────────────────────────────────────
 log('Adding target dependency: MegaRadio → MegaRadioWatch…');
-proj.addTargetDependency(iosTarget.uuid, [target.uuid]);
+proj.addTargetDependency(iosTargetUuidFinal, [target.uuid]);
 
 // ─────────────────────────────────────────────────────────────────────
 // 7. Save
 // ─────────────────────────────────────────────────────────────────────
 fs.writeFileSync(PBX_PATH, proj.writeSync());
+
+// ─────────────────────────────────────────────────────────────────────
+// 8. Run fix-xcode-cycle.js automatically
+//
+// The RNGoogleMobileAds CocoaPods [CP-User] script phase declares
+// inputPaths/outputPaths that reference Info.plist, which creates a build
+// cycle with our newly-added Embed Watch Content phase. fix-xcode-cycle.js
+// clears those phantom paths and tags every [CP-User] phase with
+// `alwaysOutOfDate = 1`, which is the canonical fix recommended by both
+// CocoaPods and the React Native Firebase docs.
+// ─────────────────────────────────────────────────────────────────────
+try {
+  log('');
+  log('Running fix-xcode-cycle.js to scrub [CP-User] cycles…');
+  require('./fix-xcode-cycle.js');
+} catch (e) {
+  log('  warning: fix-xcode-cycle.js failed: ' + (e && e.message ? e.message : String(e)));
+  log('  please run it manually: node scripts/fix-xcode-cycle.js');
+}
 
 log('');
 log('✅ MegaRadioWatch target added successfully.');
