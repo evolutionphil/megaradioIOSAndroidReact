@@ -67,6 +67,17 @@ target 'MegaRadio' do
           bc.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         end
       end
+      # Disable Clang Static Analyzer for ALL pods. The dav1d / libwebp
+      # / libavif C decoders trip the analyzer with "Command Analyze failed"
+      # errors when Xcode runs Product → Analyze (or when builds are
+      # configured with RUN_CLANG_STATIC_ANALYZER = YES). The analyzer
+      # finds harmless dead-store / unused-value patterns in upstream C
+      # libraries that we don't ship and can't fix. Disabling per-target
+      # is the canonical CocoaPods fix.
+      target.build_configurations.each do |bc|
+        bc.build_settings['RUN_CLANG_STATIC_ANALYZER'] = 'NO'
+        bc.build_settings['CLANG_STATIC_ANALYZER_MODE'] = 'shallow'
+      end
     end
   end
 end
