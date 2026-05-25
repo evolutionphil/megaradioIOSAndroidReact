@@ -203,6 +203,128 @@ if (existing) {
   } else {
     log('Embed Watch Content phase already healthy.');
   }
+
+  // ─────────────────────────────────────────────────────────────────────
+  // REPAIR — verify the watch target's Sources build phase contains every
+  // .swift file. xcode-npm's addTarget() in older script runs sometimes
+  // failed to create a Sources phase, producing an empty .app bundle
+  // (Info.plist only, no Mach-O executable). Symptom:
+  //   "MegaRadioWatch.app is missing its bundle executable"
+  // ─────────────────────────────────────────────────────────────────────
+  log('Verifying watch target Sources build phase…');
+  const watchUuid = existing.uuid;
+  const watchTgt = proj.hash.project.objects['PBXNativeTarget'][watchUuid];
+  const sourcesAll = proj.hash.project.objects['PBXSourcesBuildPhase'] || {};
+  let sourcesUuid = (watchTgt.buildPhases || [])
+    .map((bp) => bp.value)
+    .find((u) => sourcesAll[u]);
+
+  if (!sourcesUuid) {
+    sourcesUuid = proj.generateUuid();
+    sourcesAll[sourcesUuid] = {
+      isa: 'PBXSourcesBuildPhase',
+      buildActionMask: 2147483647,
+      files: [],
+      runOnlyForDeploymentPostprocessing: 0,
+    };
+    sourcesAll[sourcesUuid + '_comment'] = 'Sources';
+    proj.hash.project.objects['PBXSourcesBuildPhase'] = sourcesAll;
+    watchTgt.buildPhases = watchTgt.buildPhases || [];
+    // Sources phase should come BEFORE Resources & Embed phases.
+    watchTgt.buildPhases.unshift({ value: sourcesUuid, comment: 'Sources' });
+    log('  · created missing Sources build phase');
+  }
+  const sourcesPhase = sourcesAll[sourcesUuid];
+  sourcesPhase.files = sourcesPhase.files || [];
+
+  // Build a set of swift filenames currently in the Sources phase so we
+  // don't add duplicates on every script run.
+  const refSec = proj.pbxFileReferenceSection();
+  const bfSec = proj.pbxBuildFileSection();
+  const present = new Set();
+  sourcesPhase.files.forEach((bf) => {
+    const buildFile = bfSec[bf.value];
+    if (!buildFile) return;
+    const ref = refSec[buildFile.fileRef];
+    if (!ref) return;
+    const p = (ref.path || ref.name || '').replace(/^"|"$/g, '');
+    if (p.startsWith('MegaRadioWatch/') && p.endsWith('.swift')) present.add(p);
+  });
+
+  // Look at the MegaRadioWatch group for existing swift file refs.
+  // (Files might be referenced in pbxproj but not wired into Sources.)
+  const groups = proj.hash.project.objects['PBXGroup'] || {};
+  let watchGroupUuid = null;
+  Object.keys(groups).forEach((k) => {
+    if (k.endsWith('_comment')) return;
+    const g = groups[k];
+    const gname = (g && (g.name || g.path) || '').replace(/^"|"$/g, '');
+    if (gname === 'MegaRadioWatch' || gname === TARGET_NAME) {
+      watchGroupUuid = k;
+    }
+  });
+
+  let addedSources = 0;
+  swiftFiles.forEach((rel) => {
+    const relPath = 'MegaRadioWatch/' + rel.replace(/\\/g, '/');
+    if (present.has(relPath)) return;
+
+    // Find an existing PBXFileReference for this path, or create one.
+    let fileRefUuid = null;
+    Object.keys(refSec).forEach((k) => {
+      if (k.endsWith('_comment')) return;
+      const ref = refSec[k];
+      const p = ((ref && (ref.path || ref.name)) || '').replace(/^"|"$/g, '');
+      if (p === relPath) fileRefUuid = k;
+    });
+    if (!fileRefUuid) {
+      fileRefUuid = proj.generateUuid();
+      refSec[fileRefUuid] = {
+        isa: 'PBXFileReference',
+        lastKnownFileType: 'sourcecode.swift',
+        name: path.basename(rel),
+        path: relPath,
+        sourceTree: '"<group>"',
+      };
+      refSec[fileRefUuid + '_comment'] = path.basename(rel);
+      if (watchGroupUuid) {
+        groups[watchGroupUuid].children = groups[watchGroupUuid].children || [];
+        groups[watchGroupUuid].children.push({
+          value: fileRefUuid,
+          comment: path.basename(rel),
+        });
+      }
+    }
+
+    // Add to PBXBuildFile + Sources phase
+    const bfUuid = proj.generateUuid();
+    bfSec[bfUuid] = {
+      isa: 'PBXBuildFile',
+      fileRef: fileRefUuid,
+      fileRef_comment: path.basename(rel),
+    };
+    bfSec[bfUuid + '_comment'] = path.basename(rel) + ' in Sources';
+    sourcesPhase.files.push({
+      value: bfUuid,
+      comment: path.basename(rel) + ' in Sources',
+    });
+    addedSources++;
+  });
+
+  if (addedSources > 0) {
+    log('  · added ' + addedSources + ' missing Swift source file(s) to Sources phase');
+    fs.writeFileSync(PBX_PATH, proj.writeSync());
+  } else {
+    log('  · all ' + swiftFiles.length + ' Swift files already in Sources phase');
+  }
+
+  // Defensive: re-scrub leaked sources from iOS target.
+  const leaked = scrubWatchSourcesFromIosTarget();
+  if (leaked > 0) {
+    fs.writeFileSync(PBX_PATH, proj.writeSync());
+    log('  · scrubbed ' + leaked + ' leaked source(s) from iOS target');
+  }
+
   log('(Watch source files were re-synced from watch/ios/MegaRadioWatch/ above.)');
 
   // Always re-run cycle fix on repeat invocations — pod install can
