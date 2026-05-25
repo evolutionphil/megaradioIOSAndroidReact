@@ -6,17 +6,35 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { assetPath } from "@/lib/assetPath";
+import { supportsNativeIap } from "@/lib/platform";
+import { PremiumUpgradeNative } from "./PremiumUpgradeNative";
 
 /**
- * Premium upgrade screen (Account-Linking pattern).
+ * Premium upgrade screen.
  *
- * Shows the user a QR code and 6-digit PIN that they enter on the
- * MegaRadio website (https://www.themegaradio.com/activate) to complete the
- * Stripe Checkout flow. No payment fields are rendered on the TV (Samsung &
- * LG store policy compliant). The page polls the backend every 3s and
- * automatically navigates back once the subscription becomes active.
+ * Platform routing:
+ *   - Apple TV (tvOS) → native StoreKit purchase via JS bridge
+ *   - Android TV       → native Google Play Billing via JS bridge
+ *   - Tizen / WebOS / Web / Electron → QR-code + 6-digit PIN
+ *     Account-Linking flow (Stripe Checkout on user's phone). This is the
+ *     ONLY compliant option on Samsung/LG TVs (they forbid in-app billing
+ *     outside their own marketplaces).
+ *
+ * Both branches share the same `Auth.loginWithToken()` payload contract
+ * and Backend `/api/user/subscription` endpoint, so once the user is
+ * Premium it shows up identically across all platforms.
  */
 export function PremiumUpgrade(): JSX.Element {
+  if (supportsNativeIap()) {
+    return <PremiumUpgradeNative />;
+  }
+  return <PremiumUpgradeQr />;
+}
+
+/**
+ * QR-code Account-Linking flow (Samsung / LG / Web / Desktop).
+ */
+function PremiumUpgradeQr(): JSX.Element {
   const { t } = useLocalization();
   const [, setLocation] = useLocation();
   const auth = useAuth();

@@ -352,7 +352,11 @@ export const GenreList = (): JSX.Element => {
         if (!focusedEl) return;
 
         const TOP_PADDING = 20;
-        const BOTTOM_PADDING = 120;
+        // 220px bottom: Global Player bar (top:925, h:155 of 1080 canvas) over-
+        // laps focused cards at the bottom of the viewport. Matching the value
+        // used in DiscoverNoUser.tsx ensures the focused card always sits a
+        // visible gap above the player bar.
+        const BOTTOM_PADDING = 220;
 
         const viewTop = container.scrollTop;
         const viewBottom = viewTop + container.clientHeight - BOTTOM_PADDING;
