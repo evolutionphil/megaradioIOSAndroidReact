@@ -693,7 +693,10 @@ export const Settings = (): JSX.Element => {
               marginBottom: '12px',
               cursor: 'pointer',
             }}
-            onClick={function() { setLocation('/premium-upgrade'); }}
+            onClick={function() {
+              // Premium users → Manage subscription. Free users → Upgrade.
+              setLocation(isPremium ? '/manage-subscription' : '/premium-upgrade');
+            }}
             data-testid="button-upgrade-premium"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -703,12 +706,17 @@ export const Settings = (): JSX.Element => {
             <div style={{ flex: 1 }}>
               <p className="font-['Ubuntu',Helvetica]" style={{ ...optionTextStyle, color: '#ff4199', fontWeight: 700 }}>
                 {isPremium
-                  ? (t('premium_active') || 'MegaRadio Premium · Active')
+                  ? (t('manage_subscription_title_premium') || 'Manage Premium')
                   : (t('upgrade_to_premium') || 'Upgrade to Premium')}
               </p>
               {!isPremium && (
                 <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '14px', color: 'rgba(255,255,255,0.55)', margin: '4px 0 0 0' }}>
                   {t('premium_tagline') || 'Ad-free · High-quality streams'}
+                </p>
+              )}
+              {isPremium && (
+                <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '14px', color: 'rgba(255,255,255,0.55)', margin: '4px 0 0 0' }}>
+                  {t('manage_subscription_hint') || 'Update payment · Change plan · Cancel'}
                 </p>
               )}
             </div>

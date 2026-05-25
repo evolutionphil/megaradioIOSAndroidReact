@@ -20,8 +20,10 @@ import { HelpProvider, useHelp } from "@/contexts/HelpContext";
 import { GlobalPlayer } from "@/components/GlobalPlayer";
 import { UpdateBanner } from "@/components/UpdateBanner";
 import { FocusDebugOverlay } from "@/components/FocusDebugOverlay";
+import { PastDueBanner } from "@/components/PastDueBanner";
 import { PremiumUpgrade } from "@/pages/PremiumUpgrade";
 import { OnboardingPremium } from "@/pages/OnboardingPremium";
+import { ManageSubscription } from "@/pages/ManageSubscription";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import NotFound from "@/pages/not-found";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -187,6 +189,7 @@ function Router() {
         <Route path="/" component={Splash} />
         <Route path="/login" component={Login} />
         <Route path="/premium-upgrade" component={PremiumUpgrade} />
+        <Route path="/manage-subscription" component={ManageSubscription} />
       
       {/* Onboarding Guide Pages */}
       <Route path="/guide-1" component={Guide1} />
@@ -216,6 +219,8 @@ function Router() {
     <GlobalPlayer />
     {/* Update banner — global, top z-index. Polls /api/tv/version once on mount. */}
     <UpdateBanner />
+    {/* Past-due banner — global, top center. Polls /api/subscription/status. */}
+    <PastDueBanner />
     {/* Focus debug overlay (top-right). Enable via ?debug=1 in URL. */}
     <FocusDebugOverlay />
     {/* Network Disconnect Modal - Global, highest z-index */}
