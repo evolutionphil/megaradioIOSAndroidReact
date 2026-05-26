@@ -20,7 +20,7 @@
 import Foundation
 import Combine
 
-enum Route: Equatable {
+enum Route: Equatable, Hashable {
     case splash
     case guide(Int)            // 1...4
     case discover

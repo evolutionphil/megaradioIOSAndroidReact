@@ -147,16 +147,24 @@ final class MetadataObserver: NSObject, AVPlayerItemMetadataOutputPushDelegate {
                         from track: AVPlayerItemTrack?) {
         for group in groups {
             for item in group.items {
-                let raw = (item.value as? String) ?? ""
-                // ICY streams often deliver "Artist - Title"
-                let parts = raw.components(separatedBy: " - ")
-                let artist = parts.count > 1 ? parts[0] : nil
-                let title = parts.count > 1 ? parts.dropFirst().joined(separator: " - ") : raw
-                Task { @MainActor in
-                    AudioPlayer.shared.handleMetadata(
-                        title: title.isEmpty ? nil : title,
-                        artist: artist
-                    )
+                // tvOS 16+ async load API. Capture the item locally because
+                // `AVMetadataItem.load(.value)` is async-throwing.
+                let mdItem = item
+                Task {
+                    let value = try? await mdItem.load(.value)
+                    let raw = (value as? String) ?? ""
+                    // ICY streams often deliver "Artist - Title"
+                    let parts = raw.components(separatedBy: " - ")
+                    let artist = parts.count > 1 ? parts[0] : nil
+                    let title  = parts.count > 1
+                        ? parts.dropFirst().joined(separator: " - ")
+                        : raw
+                    await MainActor.run {
+                        AudioPlayer.shared.handleMetadata(
+                            title: title.isEmpty ? nil : title,
+                            artist: artist
+                        )
+                    }
                 }
             }
         }
