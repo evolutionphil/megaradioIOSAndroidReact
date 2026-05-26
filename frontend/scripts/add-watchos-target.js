@@ -31,7 +31,48 @@
 
 const fs = require('fs');
 const path = require('path');
-const xcode = require('xcode');
+
+// ─────────────────────────────────────────────────────────────────────
+// Resolve the `xcode` parser. Some users hit Node v23+ resolver quirks
+// where `require('xcode')` fails even though node_modules/xcode exists
+// (top-level deps changed between Expo SDK versions). We try multiple
+// resolution paths, and if all fail we auto-install it locally.
+// ─────────────────────────────────────────────────────────────────────
+let xcode;
+function tryLoadXcode() {
+  const candidates = [
+    'xcode',
+    path.join(__dirname, '..', 'node_modules', 'xcode'),
+    path.join(__dirname, '..', 'node_modules', '@expo', 'config-plugins', 'node_modules', 'xcode'),
+  ];
+  for (const c of candidates) {
+    try {
+      // eslint-disable-next-line global-require
+      return require(c);
+    } catch (_) { /* try next */ }
+  }
+  return null;
+}
+xcode = tryLoadXcode();
+if (!xcode) {
+  console.log('[add-watchos-target] `xcode` npm package not found — installing it now…');
+  const { execSync } = require('child_process');
+  try {
+    execSync('yarn add --dev --ignore-scripts xcode@^3.0.1', {
+      stdio: 'inherit',
+      cwd: path.join(__dirname, '..'),
+    });
+  } catch (e) {
+    console.error('\u001b[31m[add-watchos-target] Failed to auto-install `xcode`. Run manually:\u001b[0m');
+    console.error('  cd frontend && yarn add --dev xcode');
+    process.exit(1);
+  }
+  xcode = tryLoadXcode();
+  if (!xcode) {
+    console.error('\u001b[31m[add-watchos-target] Still cannot load `xcode` after install. Aborting.\u001b[0m');
+    process.exit(1);
+  }
+}
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const IOS_DIR = path.join(REPO_ROOT, 'ios');

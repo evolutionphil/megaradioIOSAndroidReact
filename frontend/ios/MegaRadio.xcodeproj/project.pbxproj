@@ -27,6 +27,16 @@
 		51D038919C29476E890ADA5F /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885EB7D19A0D4272BFA4DAEE /* WatchSessionManager.swift */; };
 		3AED6E62313044DD8768FC15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 996D851A9BFE4B44B05ECB50 /* Assets.xcassets */; };
 		06F76BFA2CE2420DB3B11505 /* MegaRadioWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 563CAE3FF2894151990D266A /* MegaRadioWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EE13262E730C4C6CA6B66DBC /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B279516E6F4B98B4CE8A9C /* BrowseView.swift */; };
+		7BBEDBD5842C4941AF80788A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02FDEA95716439BB8D909E3 /* ContentView.swift */; };
+		74CB950E95594B9792F45948 /* CountriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335804C605664A109B1DB412 /* CountriesView.swift */; };
+		492AA29FE785417D97A53581 /* CountryStationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6603BE28FE9A415F8FF246FF /* CountryStationsView.swift */; };
+		84B2F9EAC3E248C0B2C1C933 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56846FA378F64C3AB7D56FF3 /* FavoritesView.swift */; };
+		63B8530D18434F2A89CFCC44 /* GenreStationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79870989CA94F7B8AE3DED8 /* GenreStationsView.swift */; };
+		FB25CC2BA0AB4A2FB9A9FEBA /* GenresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798C0B46DA9D4B82941069C6 /* GenresView.swift */; };
+		652C3BDF24F243599132C751 /* MegaRadioWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B00D505B04C4E9E989FDB85 /* MegaRadioWatchApp.swift */; };
+		1C6327F882084D1BBCE220DD /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7124A1A148664955873E3237 /* NowPlayingView.swift */; };
+		DDB82EF3AE8147E4BCFE30FC /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885EB7D19A0D4272BFA4DAEE /* WatchSessionManager.swift */; };
 /* End PBXBuildFile section */
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* MegaRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MegaRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,6 +191,7 @@
 			productType = "com.apple.product-type.application";
 			buildConfigurationList = D01D0A48C22A49AEACB0FB92;
 			buildPhases = (
+				BB258B3234434DEDA03970C3 /* Sources */,
 				CEB585C0A2CB46A382FC52CF /* Resources */,
 			);
 			buildRules = (
@@ -314,6 +325,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BB258B3234434DEDA03970C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE13262E730C4C6CA6B66DBC /* BrowseView.swift in Sources */,
+				7BBEDBD5842C4941AF80788A /* ContentView.swift in Sources */,
+				74CB950E95594B9792F45948 /* CountriesView.swift in Sources */,
+				492AA29FE785417D97A53581 /* CountryStationsView.swift in Sources */,
+				84B2F9EAC3E248C0B2C1C933 /* FavoritesView.swift in Sources */,
+				63B8530D18434F2A89CFCC44 /* GenreStationsView.swift in Sources */,
+				FB25CC2BA0AB4A2FB9A9FEBA /* GenresView.swift in Sources */,
+				652C3BDF24F243599132C751 /* MegaRadioWatchApp.swift in Sources */,
+				1C6327F882084D1BBCE220DD /* NowPlayingView.swift in Sources */,
+				DDB82EF3AE8147E4BCFE30FC /* WatchSessionManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -413,8 +441,8 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
