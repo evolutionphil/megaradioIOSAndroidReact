@@ -5,7 +5,6 @@
 	};
 	objectVersion = 54;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
@@ -13,9 +12,22 @@
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		F11749012D0307B40044C1D9 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11749002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */; };
 		F11749032D0307B40044C1D9 /* SiriPlayMediaHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11749022D0307B40044C1D9 /* SiriPlayMediaHandler.swift */; };
+		F11749052D0307B40044C1D9 /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11749042D0307B40044C1D9 /* MainSceneDelegate.swift */; };
 		C458C06C502741FABB661AE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A6D4185090D48C0BBDDC596 /* GoogleService-Info.plist */; };
+		0783477F4E0E49679374576F /* MegaRadioWatch.app in Copy Files */ = {isa = PBXBuildFile; fileRef = 563CAE3FF2894151990D266A /* MegaRadioWatch.app */; };
+		C7529E8769CE4E16895FE5C3 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B279516E6F4B98B4CE8A9C /* BrowseView.swift */; };
+		3FBBE4EFED4F4285924F07E1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02FDEA95716439BB8D909E3 /* ContentView.swift */; };
+		206E897906C94EF18D70CFD9 /* CountriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335804C605664A109B1DB412 /* CountriesView.swift */; };
+		00062CD2691B40A8A9EE05E6 /* CountryStationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6603BE28FE9A415F8FF246FF /* CountryStationsView.swift */; };
+		8C9649BF33234CAB8EB937AC /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56846FA378F64C3AB7D56FF3 /* FavoritesView.swift */; };
+		AB5ADCF1B466474EB00D4067 /* GenreStationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79870989CA94F7B8AE3DED8 /* GenreStationsView.swift */; };
+		1DD5964D0D914057A62C6481 /* GenresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798C0B46DA9D4B82941069C6 /* GenresView.swift */; };
+		289A366A8BD9428E842E2B30 /* MegaRadioWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B00D505B04C4E9E989FDB85 /* MegaRadioWatchApp.swift */; };
+		34648F3B47DC4DDC99E8B351 /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7124A1A148664955873E3237 /* NowPlayingView.swift */; };
+		51D038919C29476E890ADA5F /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885EB7D19A0D4272BFA4DAEE /* WatchSessionManager.swift */; };
+		3AED6E62313044DD8768FC15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 996D851A9BFE4B44B05ECB50 /* Assets.xcassets */; };
+		06F76BFA2CE2420DB3B11505 /* MegaRadioWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 563CAE3FF2894151990D266A /* MegaRadioWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* MegaRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MegaRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MegaRadio/Images.xcassets; sourceTree = "<group>"; };
@@ -26,10 +38,24 @@
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MegaRadio/AppDelegate.swift; sourceTree = "<group>"; };
 		F11749002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CarPlaySceneDelegate.swift; path = MegaRadio/CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		F11749022D0307B40044C1D9 /* SiriPlayMediaHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SiriPlayMediaHandler.swift; path = MegaRadio/SiriPlayMediaHandler.swift; sourceTree = "<group>"; };
+		F11749042D0307B40044C1D9 /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainSceneDelegate.swift; path = MegaRadio/MainSceneDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* MegaRadio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MegaRadio-Bridging-Header.h"; path = "MegaRadio/MegaRadio-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A6D4185090D48C0BBDDC596 /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "MegaRadio/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
+		563CAE3FF2894151990D266A /* MegaRadioWatch.app */ = {isa = PBXFileReference; name = "MegaRadioWatch.app"; path = "MegaRadioWatch.app"; sourceTree = BUILT_PRODUCTS_DIR; fileEncoding = undefined; lastKnownFileType = undefined; explicitFileType = "wrapper.application"; includeInIndex = 0; };
+		B1B279516E6F4B98B4CE8A9C /* BrowseView.swift */ = {isa = PBXFileReference; name = "BrowseView.swift"; path = "MegaRadioWatch/BrowseView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		F02FDEA95716439BB8D909E3 /* ContentView.swift */ = {isa = PBXFileReference; name = "ContentView.swift"; path = "MegaRadioWatch/ContentView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		335804C605664A109B1DB412 /* CountriesView.swift */ = {isa = PBXFileReference; name = "CountriesView.swift"; path = "MegaRadioWatch/CountriesView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		6603BE28FE9A415F8FF246FF /* CountryStationsView.swift */ = {isa = PBXFileReference; name = "CountryStationsView.swift"; path = "MegaRadioWatch/CountryStationsView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		56846FA378F64C3AB7D56FF3 /* FavoritesView.swift */ = {isa = PBXFileReference; name = "FavoritesView.swift"; path = "MegaRadioWatch/FavoritesView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		A79870989CA94F7B8AE3DED8 /* GenreStationsView.swift */ = {isa = PBXFileReference; name = "GenreStationsView.swift"; path = "MegaRadioWatch/GenreStationsView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		798C0B46DA9D4B82941069C6 /* GenresView.swift */ = {isa = PBXFileReference; name = "GenresView.swift"; path = "MegaRadioWatch/GenresView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		9B00D505B04C4E9E989FDB85 /* MegaRadioWatchApp.swift */ = {isa = PBXFileReference; name = "MegaRadioWatchApp.swift"; path = "MegaRadioWatch/MegaRadioWatchApp.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		7124A1A148664955873E3237 /* NowPlayingView.swift */ = {isa = PBXFileReference; name = "NowPlayingView.swift"; path = "MegaRadioWatch/NowPlayingView.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		885EB7D19A0D4272BFA4DAEE /* WatchSessionManager.swift */ = {isa = PBXFileReference; name = "WatchSessionManager.swift"; path = "MegaRadioWatch/WatchSessionManager.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		8A33BB1F26D54B9987E9C867 /* Info.plist */ = {isa = PBXFileReference; name = "Info.plist"; path = "MegaRadioWatch/Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
+		71654DD2EF5448D9AFF2C9CD /* MegaRadioWatch.entitlements */ = {isa = PBXFileReference; name = "MegaRadioWatch.entitlements"; path = "MegaRadioWatch/MegaRadioWatch.entitlements"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		996D851A9BFE4B44B05ECB50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = MegaRadioWatch/Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -39,7 +65,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
-
 /* Begin PBXGroup section */
 		13B07FAE1A68108700A75B9A /* MegaRadio */ = {
 			isa = PBXGroup;
@@ -47,6 +72,7 @@
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				F11749002D0307B40044C1D9 /* CarPlaySceneDelegate.swift */,
 				F11749022D0307B40044C1D9 /* SiriPlayMediaHandler.swift */,
+				F11749042D0307B40044C1D9 /* MainSceneDelegate.swift */,
 				F11748442D0722820044C1D9 /* MegaRadio-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -89,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* MegaRadio.app */,
+				563CAE3FF2894151990D266A /* MegaRadioWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,8 +129,28 @@
 			path = MegaRadio/Supporting;
 			sourceTree = "<group>";
 		};
+		BD0CBB5ABA874BDD9ED3DB16 /* MegaRadioWatch */ = {
+			isa = "PBXGroup";
+			children = (
+				B1B279516E6F4B98B4CE8A9C /* BrowseView.swift */,
+				F02FDEA95716439BB8D909E3 /* ContentView.swift */,
+				335804C605664A109B1DB412 /* CountriesView.swift */,
+				6603BE28FE9A415F8FF246FF /* CountryStationsView.swift */,
+				56846FA378F64C3AB7D56FF3 /* FavoritesView.swift */,
+				A79870989CA94F7B8AE3DED8 /* GenreStationsView.swift */,
+				798C0B46DA9D4B82941069C6 /* GenresView.swift */,
+				9B00D505B04C4E9E989FDB85 /* MegaRadioWatchApp.swift */,
+				7124A1A148664955873E3237 /* NowPlayingView.swift */,
+				885EB7D19A0D4272BFA4DAEE /* WatchSessionManager.swift */,
+				8A33BB1F26D54B9987E9C867 /* Info.plist */,
+				71654DD2EF5448D9AFF2C9CD /* MegaRadioWatch.entitlements */,
+				996D851A9BFE4B44B05ECB50 /* Assets.xcassets */,
+			);
+			name = MegaRadioWatch;
+			sourceTree = "<group>";
+			path = MegaRadioWatch;
+		};
 /* End PBXGroup section */
-
 /* Begin PBXNativeTarget section */
 		13B07F861A680F5B00A75B9A /* MegaRadio */ = {
 			isa = PBXNativeTarget;
@@ -115,6 +162,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
+				F513CC8FAB184B37B14E42AA /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
@@ -125,8 +173,22 @@
 			productReference = 13B07F961A680F5B00A75B9A /* MegaRadio.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E930CFDA76CA4FE89221BC95 /* "MegaRadioWatch" */ = {
+			isa = PBXNativeTarget;
+			name = "MegaRadioWatch";
+			productName = "MegaRadioWatch";
+			productReference = 563CAE3FF2894151990D266A;
+			productType = "com.apple.product-type.application";
+			buildConfigurationList = D01D0A48C22A49AEACB0FB92;
+			buildPhases = (
+				CEB585C0A2CB46A382FC52CF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+		};
 /* End PBXNativeTarget section */
-
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
@@ -152,10 +214,10 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* MegaRadio */,
+				E930CFDA76CA4FE89221BC95 /* "MegaRadioWatch" */,
 			);
 		};
 /* End PBXProject section */
-
 /* Begin PBXResourcesBuildPhase section */
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -168,8 +230,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEB585C0A2CB46A382FC52CF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3AED6E62313044DD8768FC15 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
-
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -233,7 +302,6 @@
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -242,11 +310,11 @@
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
 				F11749012D0307B40044C1D9 /* CarPlaySceneDelegate.swift in Sources */,
 				F11749032D0307B40044C1D9 /* SiriPlayMediaHandler.swift in Sources */,
+				F11749052D0307B40044C1D9 /* MainSceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -344,6 +412,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -410,6 +479,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -434,8 +504,59 @@
 			};
 			name = Release;
 		};
+		97D42A0EDFD041FB8C6C1A58 /* Debug */ = {
+			name = Debug;
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "MegaRadioWatch/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.visiongo.megaradio.watchkitapp;
+				SDKROOT = watchos;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+				TARGETED_DEVICE_FAMILY = "4";
+				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				CODE_SIGN_ENTITLEMENTS = "MegaRadioWatch/MegaRadioWatch.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				GENERATE_INFOPLIST_FILE = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+			};
+		};
+		DF23A656C32E48328FB52A99 /* Release */ = {
+			name = Release;
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "MegaRadioWatch/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.visiongo.megaradio.watchkitapp;
+				SDKROOT = watchos;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+				TARGETED_DEVICE_FAMILY = "4";
+				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				CODE_SIGN_ENTITLEMENTS = "MegaRadioWatch/MegaRadioWatch.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				GENERATE_INFOPLIST_FILE = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+			};
+		};
 /* End XCBuildConfiguration section */
-
 /* Begin XCConfigurationList section */
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MegaRadio" */ = {
 			isa = XCConfigurationList;
@@ -455,7 +576,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		D01D0A48C22A49AEACB0FB92 /* Build configuration list for PBXNativeTarget "MegaRadioWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97D42A0EDFD041FB8C6C1A58 /* Debug */,
+				DF23A656C32E48328FB52A99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+/* Begin PBXCopyFilesBuildPhase section */
+		F513CC8FAB184B37B14E42AA /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				06F76BFA2CE2420DB3B11505 /* MegaRadioWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

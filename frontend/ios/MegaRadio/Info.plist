@@ -96,17 +96,13 @@
       Scene manifest. CarPlay scene REQUIRES this entry because the app
       declares the `com.apple.developer.carplay-audio` entitlement.
       
-      For UIApplicationSupportsMultipleScenes we MUST use `true` here — with
-      `false` iOS still creates the CarPlay scene but refuses to create the
-      default iPhone window via the AppDelegate, leaving the app stuck on a
-      black screen after the splash. With `true` iOS will:
-        • call `application(_:configurationForConnecting:options:)` for the
-          CarPlay scene → we hand it CarPlaySceneDelegate
-        • use the legacy UIApplicationDelegate `application(_:
-          didFinishLaunchingWithOptions:)` for iPhone since we explicitly
-          DON'T declare a UIWindowSceneSessionRoleApplication entry here.
-        • the AppDelegate window setup that Expo / RN already wires up is
-          honoured and the JS bundle renders normally.
+      Because UIApplicationSceneManifest is present, iOS adopts the
+      UIScene lifecycle for the WHOLE app — including the iPhone window.
+      That means we MUST declare a UIWindowSceneSessionRoleApplication
+      entry as well, pointing at MainSceneDelegate. Without it the
+      iPhone window has no delegate, AppDelegate.window is ignored, and
+      the React Native root view never renders → black screen after
+      splash.
       
       Source: https://developer.apple.com/documentation/uikit/app_and_environment/
               scenes/specifying_the_scenes_your_app_supports
@@ -126,6 +122,15 @@
             <string>MegaRadio-CarPlay</string>
             <key>UISceneDelegateClassName</key>
             <string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
+          </dict>
+        </array>
+        <key>UIWindowSceneSessionRoleApplication</key>
+        <array>
+          <dict>
+            <key>UISceneConfigurationName</key>
+            <string>MegaRadio-Main</string>
+            <key>UISceneDelegateClassName</key>
+            <string>$(PRODUCT_MODULE_NAME).MainSceneDelegate</string>
           </dict>
         </array>
       </dict>

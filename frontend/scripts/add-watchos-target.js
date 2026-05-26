@@ -712,6 +712,73 @@ log('Patching Xcode scheme so Release/Archive builds the watch target…');
 patchScheme();
 
 // ─────────────────────────────────────────────────────────────────────
+// 8b. Ensure MainSceneDelegate.swift / CarPlaySceneDelegate.swift are in
+//     the main MegaRadio target's Sources phase.
+//
+// Expo's `prebuild --clean` regenerates `ios/` from scratch and loses any
+// Swift files we hand-rolled (MainSceneDelegate, CarPlaySceneDelegate,
+// SiriPlayMediaHandler). When that happens, the iPhone window scene has
+// no delegate → black screen after splash. We register them here so
+// `yarn ios:setup` resurrects them every time.
+// ─────────────────────────────────────────────────────────────────────
+function ensureSwiftFileInTarget(filename) {
+  // Re-load pbxproj into a fresh xcode parser (older parser instance is
+  // stale after our manual mutations above).
+  const project = xcode.project(PBX_PATH);
+  project.parseSync();
+  const pbx = project.hash.project.objects;
+  const buildFiles = pbx.PBXBuildFile || {};
+  // Already registered?
+  for (const k of Object.keys(buildFiles)) {
+    const v = buildFiles[k];
+    if (typeof v === 'object' && v.fileRef_comment === filename) {
+      return false;
+    }
+  }
+  // Find the main app target group ("MegaRadio").
+  const groups = pbx.PBXGroup || {};
+  let groupKey = null;
+  for (const k of Object.keys(groups)) {
+    const g = groups[k];
+    if (g && g.name === 'MegaRadio' && Array.isArray(g.children)) {
+      groupKey = k;
+      break;
+    }
+  }
+  if (!groupKey) return false;
+  // Find the iPhone app target.
+  const targets = pbx.PBXNativeTarget || {};
+  let targetUuid = null;
+  for (const k of Object.keys(targets)) {
+    const t = targets[k];
+    if (t && t.name === 'MegaRadio') {
+      targetUuid = k;
+      break;
+    }
+  }
+  if (!targetUuid) return false;
+  project.addSourceFile('MegaRadio/' + filename, { target: targetUuid }, groupKey);
+  fs.writeFileSync(PBX_PATH, project.writeSync());
+  return true;
+}
+
+log('');
+log('Ensuring iPhone scene + CarPlay Swift sources are registered…');
+for (const f of ['MainSceneDelegate.swift', 'CarPlaySceneDelegate.swift', 'SiriPlayMediaHandler.swift']) {
+  const srcPath = path.join(IOS_DIR, 'MegaRadio', f);
+  if (!fs.existsSync(srcPath)) {
+    log('  · ' + f + ' missing on disk — skipping (run expo prebuild first?)');
+    continue;
+  }
+  try {
+    const added = ensureSwiftFileInTarget(f);
+    log('  · ' + f + (added ? ' added to MegaRadio target ✅' : ' already in target'));
+  } catch (e) {
+    log('  · ' + f + ' failed to register: ' + (e && e.message ? e.message : String(e)));
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // 9. Run fix-xcode-cycle.js automatically
 //
 // The RNGoogleMobileAds CocoaPods [CP-User] script phase declares

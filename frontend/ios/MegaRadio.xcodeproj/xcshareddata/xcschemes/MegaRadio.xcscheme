@@ -20,6 +20,20 @@
                ReferencedContainer = "container:MegaRadio.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E930CFDA76CA4FE89221BC95"
+               BuildableName = "MegaRadioWatch.app"
+               BlueprintName = "MegaRadioWatch"
+               ReferencedContainer = "container:MegaRadio.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

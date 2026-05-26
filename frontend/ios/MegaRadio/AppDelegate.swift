@@ -15,6 +15,11 @@ public class AppDelegate: ExpoAppDelegate {
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
+  // Captured launchOptions so the UIScene lifecycle (MainSceneDelegate)
+  // can pass them through to React Native when it finally creates the
+  // window. AppDelegate fires earlier than `scene(_:willConnectTo:)`,
+  // and we don't have the windowScene at that point.
+  var launchOptionsForScene: [UIApplication.LaunchOptionsKey: Any]?
 
   public override func application(
     _ application: UIApplication,
@@ -40,15 +45,17 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
+    // Stash launchOptions for MainSceneDelegate. We can't mount React
+    // Native here anymore — the iPhone scene doesn't exist yet, and any
+    // UIWindow we create now will be invisible because it has no
+    // `windowScene`. MainSceneDelegate.scene(_:willConnectTo:options:)
+    // will pick this up and start React Native on the correct window.
+    self.launchOptionsForScene = launchOptions
+
 #if os(iOS) || os(tvOS)
-    window = UIWindow(frame: UIScreen.main.bounds)
 // @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-10e8520570672fd76b2403b7e1e27f5198a6349a
 FirebaseApp.configure()
 // @generated end @react-native-firebase/app-didFinishLaunchingWithOptions
-    factory.startReactNative(
-      withModuleName: "main",
-      in: window,
-      launchOptions: launchOptions)
 #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

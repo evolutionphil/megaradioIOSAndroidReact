@@ -1,0 +1,367 @@
+// WatchSessionManager.swift
+// Handles communication between Watch and iOS app via WatchConnectivity
+
+import Foundation
+import WatchConnectivity
+import Combine
+
+// MARK: - Data Models
+struct WatchStation: Codable, Identifiable {
+    let id: String
+    let name: String
+    let logo: String?
+    let streamUrl: String?
+    let genre: String?
+    let country: String?
+}
+
+struct WatchNowPlaying: Codable {
+    let stationId: String?
+    let stationName: String?
+    let stationLogo: String?
+    let songTitle: String?
+    let artistName: String?
+    let isPlaying: Bool
+}
+
+struct WatchGenre: Codable, Identifiable {
+    var id: String { name }
+    let name: String
+    let slug: String?
+    let icon: String
+    let stationCount: Int
+    
+    var resolvedSlug: String {
+        return slug ?? name.lowercased().replacingOccurrences(of: " ", with: "-")
+    }
+}
+
+struct WatchCountry: Codable, Identifiable {
+    var id: String { name }
+    let name: String
+    let code: String
+    let flag: String
+    let stationCount: Int
+}
+
+// MARK: - Watch Session Manager
+class WatchSessionManager: NSObject, ObservableObject {
+    static let shared = WatchSessionManager()
+    
+    // Published properties for SwiftUI
+    @Published var favorites: [WatchStation] = []
+    @Published var nowPlaying: WatchNowPlaying = WatchNowPlaying(
+        stationId: nil,
+        stationName: nil,
+        stationLogo: nil,
+        songTitle: nil,
+        artistName: nil,
+        isPlaying: false
+    )
+    @Published var genres: [WatchGenre] = []
+    @Published var recentlyPlayed: [WatchStation] = []
+    @Published var genreStations: [WatchStation] = []
+    @Published var isLoadingGenreStations: Bool = false
+    @Published var countries: [WatchCountry] = []
+    @Published var countryStations: [WatchStation] = []
+    @Published var isLoadingCountryStations: Bool = false
+    @Published var isConnected: Bool = false
+    @Published var isReachable: Bool = false
+    
+    private var session: WCSession?
+    
+    override init() {
+        super.init()
+        
+        if WCSession.isSupported() {
+            session = WCSession.default
+            session?.delegate = self
+            session?.activate()
+        }
+    }
+    
+    // MARK: - Send Commands to iOS App
+    
+    func sendPlayCommand() {
+        sendMessage(["command": "play"])
+    }
+    
+    func sendPauseCommand() {
+        sendMessage(["command": "pause"])
+    }
+    
+    func sendTogglePlayPause() {
+        sendMessage(["command": "togglePlayPause"])
+    }
+    
+    func sendNextStation() {
+        sendMessage(["command": "nextStation"])
+    }
+    
+    func sendPreviousStation() {
+        sendMessage(["command": "previousStation"])
+    }
+    
+    func playStation(id: String) {
+        sendMessage(["command": "playStation", "stationId": id])
+    }
+    
+    func requestFavorites() {
+        sendMessage(["command": "requestFavorites"])
+    }
+    
+    func requestNowPlaying() {
+        sendMessage(["command": "requestNowPlaying"])
+    }
+    
+    func requestGenres() {
+        sendMessage(["command": "requestGenres"])
+    }
+    
+    func requestRecentlyPlayed() {
+        sendMessage(["command": "requestRecentlyPlayed"])
+    }
+    
+    func requestGenreStations(slug: String) {
+        DispatchQueue.main.async {
+            self.isLoadingGenreStations = true
+            self.genreStations = []
+        }
+        sendMessage(["command": "requestGenreStations", "genreSlug": slug])
+    }
+    
+    func requestCountries() {
+        sendMessage(["command": "requestCountries"])
+    }
+    
+    func requestCountryStations(countryName: String) {
+        DispatchQueue.main.async {
+            self.isLoadingCountryStations = true
+            self.countryStations = []
+        }
+        sendMessage(["command": "requestCountryStations", "countryName": countryName])
+    }
+    
+    // MARK: - Private Methods
+    
+    private func sendMessage(_ message: [String: Any]) {
+        guard let session = session else {
+            print("[WatchSession] No session available")
+            return
+        }
+        
+        // Session must be activated
+        guard session.activationState == .activated else {
+            print("[WatchSession] Session not activated, activating...")
+            session.activate()
+            return
+        }
+        
+        if session.isReachable {
+            // Real-time messaging when iPhone app is foreground
+            session.sendMessage(message, replyHandler: { response in
+                print("[WatchSession] Response received: \(response)")
+                self.handleResponse(response)
+            }, errorHandler: { error in
+                print("[WatchSession] sendMessage error: \(error)")
+                // Fallback to transferUserInfo for commands
+                if let command = message["command"] as? String {
+                    session.transferUserInfo(message)
+                    print("[WatchSession] Fallback: transferUserInfo for command: \(command)")
+                }
+            })
+        } else {
+            // iPhone app is in background - use transferUserInfo for commands
+            // (applicationContext is for state, transferUserInfo is for queued messages)
+            if let command = message["command"] as? String {
+                session.transferUserInfo(message)
+                print("[WatchSession] Not reachable, using transferUserInfo for: \(command)")
+            }
+        }
+    }
+    
+    private func handleResponse(_ response: [String: Any]) {
+        DispatchQueue.main.async {
+            // Handle favorites response
+            if let favoritesData = response["favorites"] as? Data {
+                if let favorites = try? JSONDecoder().decode([WatchStation].self, from: favoritesData) {
+                    self.favorites = favorites
+                }
+            }
+            
+            // Handle now playing response
+            if let nowPlayingData = response["nowPlaying"] as? Data {
+                if let nowPlaying = try? JSONDecoder().decode(WatchNowPlaying.self, from: nowPlayingData) {
+                    self.nowPlaying = nowPlaying
+                }
+            }
+            
+            // Handle genres response
+            if let genresData = response["genres"] as? Data {
+                if let genres = try? JSONDecoder().decode([WatchGenre].self, from: genresData) {
+                    self.genres = genres
+                }
+            }
+            
+            // Handle recently played response
+            if let recentData = response["recentlyPlayed"] as? Data {
+                if let recent = try? JSONDecoder().decode([WatchStation].self, from: recentData) {
+                    self.recentlyPlayed = recent
+                }
+            }
+            
+            // Handle genre stations response
+            if let genreStationsData = response["genreStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
+                    self.genreStations = stations
+                    self.isLoadingGenreStations = false
+                }
+            }
+            
+            // Handle countries response
+            if let countriesData = response["countries"] as? Data {
+                if let countries = try? JSONDecoder().decode([WatchCountry].self, from: countriesData) {
+                    self.countries = countries
+                }
+            }
+            
+            // Handle country stations response
+            if let countryStationsData = response["countryStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: countryStationsData) {
+                    self.countryStations = stations
+                    self.isLoadingCountryStations = false
+                }
+            }
+        }
+    }
+}
+
+// MARK: - WCSessionDelegate
+extension WatchSessionManager: WCSessionDelegate {
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        DispatchQueue.main.async {
+            self.isConnected = activationState == .activated
+            
+            if activationState == .activated {
+                print("[WatchSession] Session activated successfully")
+                // Request initial data
+                self.requestFavorites()
+                self.requestNowPlaying()
+                self.requestGenres()
+            } else if let error = error {
+                print("[WatchSession] Activation failed: \(error)")
+            }
+        }
+    }
+    
+    func sessionReachabilityDidChange(_ session: WCSession) {
+        DispatchQueue.main.async {
+            self.isReachable = session.isReachable
+            print("[WatchSession] Reachability changed: \(session.isReachable)")
+            
+            if session.isReachable {
+                // Request fresh data when connection established
+                self.requestNowPlaying()
+            }
+        }
+    }
+    
+    // Receive messages from iOS app
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        handleIncomingMessage(message)
+    }
+    
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+        handleIncomingMessage(message)
+        replyHandler(["status": "received"])
+    }
+    
+    // Receive application context updates
+    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
+        handleIncomingMessage(applicationContext)
+    }
+    
+    // Receive queued user info transfers
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        handleIncomingMessage(userInfo)
+    }
+    
+    private func handleIncomingMessage(_ message: [String: Any]) {
+        DispatchQueue.main.async {
+            // Update favorites
+            if let favoritesData = message["favorites"] as? Data {
+                if let favorites = try? JSONDecoder().decode([WatchStation].self, from: favoritesData) {
+                    self.favorites = favorites
+                    print("[WatchSession] Received \(favorites.count) favorites")
+                }
+            }
+            
+            // Update now playing
+            if let nowPlayingData = message["nowPlaying"] as? Data {
+                if let nowPlaying = try? JSONDecoder().decode(WatchNowPlaying.self, from: nowPlayingData) {
+                    self.nowPlaying = nowPlaying
+                    print("[WatchSession] Now playing updated: \(nowPlaying.stationName ?? "None")")
+                }
+            }
+            
+            // Update genres
+            if let genresData = message["genres"] as? Data {
+                if let genres = try? JSONDecoder().decode([WatchGenre].self, from: genresData) {
+                    self.genres = genres
+                    print("[WatchSession] Received \(genres.count) genres")
+                }
+            }
+            
+            // Update recently played
+            if let recentData = message["recentlyPlayed"] as? Data {
+                if let recent = try? JSONDecoder().decode([WatchStation].self, from: recentData) {
+                    self.recentlyPlayed = recent
+                }
+            }
+            
+            // Update genre stations (response from requestGenreStations)
+            if let genreStationsData = message["genreStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
+                    self.genreStations = stations
+                    self.isLoadingGenreStations = false
+                    print("[WatchSession] Received \(stations.count) genre stations")
+                } else {
+                    self.genreStations = []
+                    self.isLoadingGenreStations = false
+                }
+            }
+            
+            // Update countries
+            if let countriesData = message["countries"] as? Data {
+                if let countries = try? JSONDecoder().decode([WatchCountry].self, from: countriesData) {
+                    self.countries = countries
+                    print("[WatchSession] Received \(countries.count) countries")
+                }
+            }
+            
+            // Update country stations
+            if let countryStationsData = message["countryStations"] as? Data {
+                if let stations = try? JSONDecoder().decode([WatchStation].self, from: countryStationsData) {
+                    self.countryStations = stations
+                    self.isLoadingCountryStations = false
+                    print("[WatchSession] Received \(stations.count) country stations")
+                } else {
+                    self.countryStations = []
+                    self.isLoadingCountryStations = false
+                }
+            }
+            
+            // Handle playback state change
+            if let isPlaying = message["isPlaying"] as? Bool {
+                self.nowPlaying = WatchNowPlaying(
+                    stationId: self.nowPlaying.stationId,
+                    stationName: self.nowPlaying.stationName,
+                    stationLogo: self.nowPlaying.stationLogo,
+                    songTitle: self.nowPlaying.songTitle,
+                    artistName: self.nowPlaying.artistName,
+                    isPlaying: isPlaying
+                )
+            }
+        }
+    }
+}
