@@ -73,12 +73,55 @@ FirebaseApp.configure()
     // ──────────────────────────────────────────────────────────────────
     NSLog("🟪 [AppDelegate] Creating legacy UIWindow and starting React Native…")
     window = UIWindow(frame: UIScreen.main.bounds)
+    NSLog("🟪 [AppDelegate] UIWindow created. frame=\(window!.frame), screen.bounds=\(UIScreen.main.bounds), screen.scale=\(UIScreen.main.scale)")
+
+    // Log ReactNativeDelegate bundleURL — if this is nil/invalid, JS never loads.
+    if let bURL = delegate.bundleURL() {
+      NSLog("🟪 [AppDelegate] bundleURL = \(bURL.absoluteString)")
+    } else {
+      NSLog("🔴 [AppDelegate] bundleURL is NIL — JS bundle cannot load!")
+    }
+
+    NSLog("🟪 [AppDelegate] Calling factory.startReactNative(moduleName: 'main', in: window)…")
     factory.startReactNative(
       withModuleName: "main",
       in: window,
       launchOptions: launchOptions)
     isReactNativeInitialized = true
-    NSLog("🟪 [AppDelegate] startReactNative returned. window.rootViewController=\(String(describing: window?.rootViewController)), isHidden=\(window?.isHidden ?? true), isKeyWindow=\(window?.isKeyWindow ?? false)")
+    NSLog("🟪 [AppDelegate] startReactNative returned.")
+    NSLog("🟪 [AppDelegate]   window.rootViewController = \(String(describing: window?.rootViewController))")
+    NSLog("🟪 [AppDelegate]   window.rootVC.view = \(String(describing: window?.rootViewController?.view))")
+    NSLog("🟪 [AppDelegate]   window.rootVC.view.frame = \(String(describing: window?.rootViewController?.view.frame))")
+    NSLog("🟪 [AppDelegate]   window.rootVC.view.backgroundColor = \(String(describing: window?.rootViewController?.view.backgroundColor))")
+    NSLog("🟪 [AppDelegate]   window.rootVC.view.subviews.count = \(window?.rootViewController?.view.subviews.count ?? -1)")
+    NSLog("🟪 [AppDelegate]   window.isHidden=\(window?.isHidden ?? true), isKeyWindow=\(window?.isKeyWindow ?? false), alpha=\(window?.alpha ?? -1), windowScene=\(String(describing: window?.windowScene))")
+
+    // Force key+visible defensively. ExpoReactNativeFactory is supposed
+    // to do this internally, but we double-call to rule it out as a cause.
+    window?.makeKeyAndVisible()
+    NSLog("🟪 [AppDelegate]   AFTER makeKeyAndVisible: isHidden=\(window?.isHidden ?? true), isKeyWindow=\(window?.isKeyWindow ?? false), alpha=\(window?.alpha ?? -1)")
+
+    // 1-second delayed window inspection — by this point the JS bundle
+    // should have rendered something. If subviews.count is still 0 or
+    // the view frame is still zero, the bug is in RN/JS, not native.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+      guard let self = self else { return }
+      NSLog("🟡 [AppDelegate +1s] window=\(String(describing: self.window))")
+      NSLog("🟡 [AppDelegate +1s]   isHidden=\(self.window?.isHidden ?? true), isKeyWindow=\(self.window?.isKeyWindow ?? false), alpha=\(self.window?.alpha ?? -1)")
+      NSLog("🟡 [AppDelegate +1s]   windowScene=\(String(describing: self.window?.windowScene))")
+      NSLog("🟡 [AppDelegate +1s]   rootVC=\(String(describing: self.window?.rootViewController))")
+      NSLog("🟡 [AppDelegate +1s]   rootVC.view.frame=\(String(describing: self.window?.rootViewController?.view.frame))")
+      NSLog("🟡 [AppDelegate +1s]   rootVC.view.subviews.count=\(self.window?.rootViewController?.view.subviews.count ?? -1)")
+      if let subviews = self.window?.rootViewController?.view.subviews {
+        for (i, sv) in subviews.enumerated() {
+          NSLog("🟡 [AppDelegate +1s]   subview[\(i)] = \(type(of: sv)) frame=\(sv.frame) hidden=\(sv.isHidden) alpha=\(sv.alpha)")
+        }
+      }
+      NSLog("🟡 [AppDelegate +1s]   UIApplication.shared.windows.count=\(UIApplication.shared.windows.count)")
+      for (i, w) in UIApplication.shared.windows.enumerated() {
+        NSLog("🟡 [AppDelegate +1s]   window[\(i)] = \(w) isKey=\(w.isKeyWindow) isHidden=\(w.isHidden) windowScene=\(String(describing: w.windowScene))")
+      }
+    }
 #endif
 
     NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions END")
@@ -161,15 +204,20 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
   // Extension point for config-plugins
 
   override func sourceURL(for bridge: RCTBridge) -> URL? {
-    // needed to return the correct URL for expo-dev-client.
-    bridge.bundleURL ?? bundleURL()
+    let url = bridge.bundleURL ?? bundleURL()
+    NSLog("🟧 [ReactNativeDelegate] sourceURL(for:) → \(String(describing: url))")
+    return url
   }
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
+    let url = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
+    NSLog("🟧 [ReactNativeDelegate] bundleURL() DEBUG → \(String(describing: url))")
+    return url
 #else
-    return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+    let url = Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+    NSLog("🟧 [ReactNativeDelegate] bundleURL() RELEASE → \(String(describing: url))")
+    return url
 #endif
   }
 }
