@@ -1,0 +1,163 @@
+# MegaRadio TV — Apple TV (tvOS) + macOS Project Specification
+#
+# This file is the SINGLE SOURCE OF TRUTH for the MegaRadioTV.xcodeproj.
+# DO NOT EDIT the generated `.xcodeproj` manually — your changes will be
+# overwritten on the next `yarn tvos:setup` run.
+#
+# Regenerate the project with:
+#     yarn tvos:setup
+#
+# Open Xcode with:
+#     open MegaRadioTV.xcodeproj
+#
+# This project is completely INDEPENDENT from the iOS/WatchOS app
+# (`frontend/ios/MegaRadio.xcodeproj`). It uses NO React Native — instead
+# it ships a tiny SwiftUI shell that loads the TV web preview via
+# WKWebView, plus native bridges for Siri remote, ShazamKit and StoreKit.
+
+name: MegaRadioTV
+
+options:
+  # Use Xcode 15+ format (no legacy build system)
+  bundleIdPrefix: com.visiongo.megaradio
+  deploymentTarget:
+    tvOS: "17.0"
+    macOS: "14.0"
+  developmentLanguage: "en"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  groupSortPosition: top
+  defaultConfig: Debug
+
+# Project-level build settings shared by all targets.
+settings:
+  base:
+    DEVELOPMENT_TEAM: "$(DEVELOPMENT_TEAM)" # Read from .env / Xcode personal settings
+    SWIFT_VERSION: "5.9"
+    ENABLE_USER_SCRIPT_SANDBOXING: NO       # Match iOS project policy
+    CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: NO             # We provide our own Info.plist
+    INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.music"
+    # Universal Purchase: same bundle id family across all 3 platforms.
+    # This lets users buy once and use on iPhone + Apple TV + Mac.
+    PRODUCT_BUNDLE_IDENTIFIER: com.visiongo.megaradio
+
+# ────────────────────────────────────────────────────────────────────────
+# TARGETS
+# ────────────────────────────────────────────────────────────────────────
+targets:
+
+  # 🟦 Main tvOS App
+  MegaRadioTV:
+    type: application
+    platform: tvOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: MegaRadioTVApp.swift
+      - path: ShazamRecognizer.swift
+      - path: StoreKitIapService.swift
+      - path: Brand
+        type: folder         # Treat as resource bundle
+        buildPhase: resources
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: "MegaRadio TV"
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleInfoDictionaryVersion: "6.0"
+        CFBundleName: MegaRadioTV
+        CFBundlePackageType: APPL
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: false
+        UILaunchStoryboardName: ""
+        UIRequiredDeviceCapabilities: [arm64]
+        # Siri intent surface
+        NSUserActivityTypes: [INPlayMediaIntent]
+        INAlternativeAppNames:
+          - MegaRadio
+          - Mega Radio
+        # Background audio + AirPlay
+        UIBackgroundModes: [audio, fetch, processing]
+        # ShazamKit privacy
+        NSAppleMusicUsageDescription: "MegaRadio uses Apple Music's audio recognition to identify songs playing on the radio."
+        NSMicrophoneUsageDescription: "MegaRadio listens briefly to identify songs playing on the radio."
+        # ATS – allow legacy radio streams (most stations are still HTTP)
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsArbitraryLoadsInWebContent: true
+    entitlements:
+      path: MegaRadioTV.entitlements
+      properties:
+        com.apple.developer.applesignin: [Default]
+        com.apple.developer.siri: true
+        com.apple.security.application-groups:
+          - group.com.visiongo.megaradio
+        com.apple.developer.shazamkit: true
+    settings:
+      base:
+        SDKROOT: appletvos
+        TARGETED_DEVICE_FAMILY: "3"           # 3 = Apple TV
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TVOS_DEPLOYMENT_TARGET: "17.0"
+
+  # 🟩 macOS App (Mac Catalyst would reuse the iOS target — but since we
+  # have no iOS target here, we make a separate native macOS app target
+  # sharing the same Swift sources. Universal Purchase still works because
+  # bundle id is the same family.)
+  MegaRadioMac:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: MegaRadioTVApp.swift
+      - path: ShazamRecognizer.swift
+      - path: StoreKitIapService.swift
+      - path: Brand
+        type: folder
+        buildPhase: resources
+    info:
+      path: Info-Mac.plist
+      properties:
+        CFBundleDisplayName: "MegaRadio"
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: com.visiongo.megaradio.mac
+        CFBundleInfoDictionaryVersion: "6.0"
+        CFBundleName: MegaRadioMac
+        CFBundlePackageType: APPL
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSMinimumSystemVersion: "14.0"
+        LSApplicationCategoryType: public.app-category.music
+        # Same as tvOS
+        NSUserActivityTypes: [INPlayMediaIntent]
+        INAlternativeAppNames: [MegaRadio]
+        NSAppleMusicUsageDescription: "MegaRadio uses Apple Music's audio recognition to identify songs playing on the radio."
+        NSMicrophoneUsageDescription: "MegaRadio listens briefly to identify songs playing on the radio."
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsArbitraryLoadsInWebContent: true
+    entitlements:
+      path: MegaRadioMac.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.network.server: false
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.device.audio-input: true
+        com.apple.developer.applesignin: [Default]
+        com.apple.developer.siri: true
+        com.apple.security.application-groups:
+          - group.com.visiongo.megaradio
+        com.apple.developer.shazamkit: true
+    settings:
+      base:
+        SDKROOT: macosx
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        COMBINE_HIDPI_IMAGES: YES

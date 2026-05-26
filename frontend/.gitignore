@@ -79,3 +79,10 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+# tvOS / macOS project — regenerated from project.yml via `yarn tvos:setup`
+tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj/
+tvanddesktop/apple-tv-and-macos/ios-tvos/*.xcuserdata/
+tvanddesktop/apple-tv-and-macos/ios-tvos/Info.plist
+tvanddesktop/apple-tv-and-macos/ios-tvos/Info-Mac.plist
+tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.entitlements
+tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioMac.entitlements

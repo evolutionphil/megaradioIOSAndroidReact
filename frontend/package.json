@@ -71,6 +71,7 @@
     "fix-cycle": "node ./scripts/fix-xcode-cycle.js",
     "watch-target": "node ./scripts/add-watchos-target.js",
     "ios:setup": "node ./scripts/add-watchos-target.js && cd ios && pod install && cd ..",
+    "tvos:setup": "node ./scripts/create-tvos-project.js",
     "prebuild:ios": "npx expo prebuild --platform ios --clean && cd ios && pod install && cd .. && node scripts/fix-xcode-cycle.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
