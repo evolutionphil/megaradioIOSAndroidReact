@@ -86,6 +86,14 @@ targets:
     type: application
     platform: tvOS
     deploymentTarget: "17.0"
+    # Explicit framework dependencies — xcodegen does not auto-link
+    # system frameworks that aren't typically used on tvOS.
+    # WebKit IS available on tvOS 17.0+ for WKWebView, but we need to
+    # list it explicitly so the linker can find it.
+    dependencies:
+      - sdk: WebKit.framework
+      - sdk: AVKit.framework
+      - sdk: AVFoundation.framework
     sources:
       - path: MegaRadioTVApp.swift          # tvOS-only (UIKit + UIPress + AVAudioSession)
       - path: StoreKitIapService.swift      # tvOS StoreKit 2 native IAP
@@ -148,3 +156,21 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TVOS_DEPLOYMENT_TARGET: "17.0"
+        # ──────────────────────────────────────────────────────────────
+        # Simulator-only code signing override
+        #
+        # tvOS Simulator builds don't actually need a real provisioning
+        # profile, but Xcode's "Automatic" signing flow still calls
+        # Apple Developer Portal to fetch one — and fails with
+        # "team has no devices" if no tvOS device is registered.
+        # These SDK-scoped overrides tell Xcode to skip signing entirely
+        # for the `appletvsimulator` SDK while keeping real signing
+        # active for `appletvos` (physical Apple TV) builds.
+        #
+        # If you later want to install on a real Apple TV, register
+        # the device in Apple Developer Portal (Devices tab) and
+        # Xcode will pick it up from the `appletvos` settings.
+        # ──────────────────────────────────────────────────────────────
+        "CODE_SIGN_IDENTITY[sdk=appletvsimulator*]": ""
+        "CODE_SIGNING_REQUIRED[sdk=appletvsimulator*]": "NO"
+        "CODE_SIGNING_ALLOWED[sdk=appletvsimulator*]": "NO"
