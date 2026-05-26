@@ -117,20 +117,23 @@ yarn tvos:setup
 brew install xcodegen
 ```
 
-### ❗ "No profiles for 'com.visiongo.megaradio' were found"
-Apple Developer Portal'da App ID'nin tvOS Capability'si açık değil:
-1. https://developer.apple.com/account/resources/identifiers/list
-2. `com.visiongo.megaradio` seç
-3. Capabilities listesinde tvOS aktif olsun
-4. Profile → otomatik üretilir
-
 ### ❗ "Communication with Apple failed — team has no devices"
-Apple Developer Portal'da TV cihazını kaydet (eğer fiziksel Apple TV'ye build atıyorsan):
-1. https://developer.apple.com/account/resources/devices/list
-2. + Register a Device → **Apple TV**
-3. Device ID: Apple TV'nin UDID'si (Xcode → Window → Devices and Simulators'da görünür)
+### ❗ "No profiles for 'com.visiongo.megaradio' were found"
 
-Simulator için bu adım gerekmez.
+**Sebep:** iOS App ID `com.visiongo.megaradio` Apple Developer Portal'da SADECE iOS için kayıtlı. tvOS Capability açık değil → Xcode tvOS provisioning profili bulamıyor.
+
+**Hızlı çözüm (şimdiki konfig):**
+`project.yml`'de bundle ID `com.visiongo.megaradio.tv` olarak ayarlandı → Xcode otomatik **yeni App ID** yaratır, hiçbir manuel iş YOK. **Bu sayfayı atlayabilirsin, build çalışacak.**
+
+**Sonuç:** Apple TV App Store'da AYRI bir uygulama olarak görünür (universal purchase değil — iOS müşterileri ayrıca satın alır).
+
+**Production yol (Universal Purchase için, sonraya):**
+1. https://developer.apple.com/account/resources/identifiers/list
+2. `com.visiongo.megaradio` (iOS App ID) seç
+3. Sayfanın altına in → **Additional Capabilities**
+4. **tvOS**'u etkinleştir → Save
+5. `project.yml`'de `com.visiongo.megaradio.tv` → `com.visiongo.megaradio` olarak değiştir
+6. `yarn tvos:setup` → Xcode artık universal profili çekebilir
 
 ### "AppIcon must include 400x240 icon"
 `Brand/Assets.xcassets/AppIcon.brandassets/`'e top shelf + AppIcon image setlerini eklemelisin. Hazır PNG'ler `Brand/` klasöründe.

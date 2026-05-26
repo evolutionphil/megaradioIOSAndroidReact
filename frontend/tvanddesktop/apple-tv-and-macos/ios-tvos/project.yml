@@ -40,9 +40,26 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     GENERATE_INFOPLIST_FILE: NO             # We provide our own Info.plist
     INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.music"
-    # Universal Purchase: same bundle id family across all 3 platforms.
-    # This lets users buy once and use on iPhone + Apple TV + Mac.
-    PRODUCT_BUNDLE_IDENTIFIER: com.visiongo.megaradio
+    # ──────────────────────────────────────────────────────────────────
+    # Bundle Identifier strategy
+    #
+    # Currently: `com.visiongo.megaradio.tv`
+    #   — a SEPARATE App ID from the iOS app. Xcode auto-registers it
+    #   on first build, no manual Apple Developer Portal work needed.
+    #   App will appear on the tvOS App Store as a STANDALONE listing.
+    #
+    # Future (Universal Purchase): change to `com.visiongo.megaradio`
+    #   — identical bundle ID to iOS. Users buy ONCE, use on iPhone
+    #   + Apple TV. Requires one-time manual step:
+    #     1) Visit https://developer.apple.com/account/resources/identifiers/list
+    #     2) Click on `com.visiongo.megaradio`
+    #     3) Scroll down → "Additional Capabilities"
+    #     4) Enable "tvOS" alongside iOS
+    #     5) Save. The provisioning profile will then auto-generate.
+    #
+    # When you switch back, just edit this single line and re-run
+    # `yarn tvos:setup`.
+    PRODUCT_BUNDLE_IDENTIFIER: com.visiongo.megaradio.tv
 
 # ────────────────────────────────────────────────────────────────────────
 # TARGETS
@@ -117,17 +134,18 @@ targets:
       path: MegaRadioTV.entitlements
       properties:
         com.apple.developer.applesignin: [Default]
-        com.apple.security.application-groups:
-          - group.com.visiongo.megaradio
-        # NOTE: Siri (INPlayMediaIntent) and ShazamKit do NOT need
-        # entitlement keys in this file. They're enabled by:
-        #   - Siri: Xcode → Signing & Capabilities → + Siri
-        #   - ShazamKit: Xcode → Signing & Capabilities → + ShazamKit
-        # Adding them here BEFORE you've enabled the corresponding
-        # App ID Capability in Apple Developer Portal causes:
-        #   "Entitlement X not found and could not be included in profile"
-        # Enable via Xcode UI when you actually need those features
-        # (Xcode will then add the correct entitlement key automatically).
+        # NOTE: Application Groups, Siri, ShazamKit, and CarPlay-related
+        # entitlements are intentionally OMITTED for development.
+        #
+        # Adding ANY entitlement here requires that the App ID has the
+        # corresponding Capability enabled in Apple Developer Portal
+        # FIRST. With auto-registered bundle IDs that's not the case,
+        # so leaving the list minimal means Xcode can auto-create the
+        # provisioning profile on first build with zero portal trips.
+        #
+        # When you're ready to ship, enable the needed capabilities
+        # in Xcode → Signing & Capabilities → "+ Capability" and they
+        # will be added to this file automatically.
     settings:
       base:
         SDKROOT: appletvos
