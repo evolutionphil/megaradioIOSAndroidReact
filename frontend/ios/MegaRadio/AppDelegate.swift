@@ -52,14 +52,36 @@ public class AppDelegate: ExpoAppDelegate {
 // @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-10e8520570672fd76b2403b7e1e27f5198a6349a
 FirebaseApp.configure()
 // @generated end @react-native-firebase/app-didFinishLaunchingWithOptions
+
+    // ──────────────────────────────────────────────────────────────────
+    // CRITICAL: Start React Native HERE on a legacy UIWindow.
+    //
+    // Why not in PhoneSceneDelegate? Because ExpoAppDelegate (our parent)
+    // does not actually invoke the UIScene lifecycle by default — it
+    // continues to use the legacy UIApplicationDelegate pipeline even
+    // when Info.plist declares a UIApplicationSceneManifest. As a result
+    // `application(_:configurationForConnecting:)` is NEVER called and
+    // PhoneSceneDelegate.scene(_:willConnectTo:) NEVER fires. JS still
+    // loads (Firebase analytics events fire), but there's no window
+    // attached to a UIWindowScene, so nothing renders → black screen.
+    //
+    // Starting RN here on `UIScreen.main.bounds` reproduces the
+    // pre-CarPlay behaviour that has always worked. If iOS DOES decide
+    // to spin up scenes later (e.g. CarPlay connecting), PhoneSceneDelegate
+    // detects isReactNativeReady() == true and reuses the root view
+    // controller in the new windowScene — no double-mount.
+    // ──────────────────────────────────────────────────────────────────
+    NSLog("🟪 [AppDelegate] Creating legacy UIWindow and starting React Native…")
+    window = UIWindow(frame: UIScreen.main.bounds)
+    factory.startReactNative(
+      withModuleName: "main",
+      in: window,
+      launchOptions: launchOptions)
+    isReactNativeInitialized = true
+    NSLog("🟪 [AppDelegate] startReactNative returned. window.rootViewController=\(String(describing: window?.rootViewController)), isHidden=\(window?.isHidden ?? true), isKeyWindow=\(window?.isKeyWindow ?? false)")
 #endif
 
-    // NOTE: We do NOT start React Native here. The PhoneSceneDelegate
-    // does that with the proper UIWindowScene-attached window, so the
-    // root view actually appears on-screen. Starting it here too (with
-    // a window that has no windowScene) is what previously produced
-    // the splash → black-screen bug.
-    NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions END — waiting for scenes")
+    NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions END")
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
