@@ -18,6 +18,8 @@ import SwiftUI
 import WebKit
 import AVKit
 
+#if os(tvOS)
+
 @main
 struct MegaRadioTVApp: App {
     init() {
@@ -225,3 +227,5 @@ final class RemoteFocusView: UIView {
         webView.evaluateJavaScript(js, completionHandler: nil)
     }
 }
+
+#endif // os(tvOS)

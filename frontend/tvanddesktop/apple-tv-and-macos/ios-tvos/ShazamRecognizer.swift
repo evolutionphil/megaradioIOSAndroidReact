@@ -17,8 +17,12 @@
 
 import Foundation
 import AVFoundation
-import ShazamKit
 import WebKit
+
+// ShazamKit is NOT available on tvOS (Apple platform restriction).
+// On macOS / iOS / watchOS it works as expected.
+#if !os(tvOS) && canImport(ShazamKit)
+import ShazamKit
 
 final class ShazamRecognizer: NSObject, SHSessionDelegate {
 
@@ -106,3 +110,5 @@ final class ShazamRecognizer: NSObject, SHSessionDelegate {
         return pcm
     }
 }
+
+#endif // !os(tvOS) && canImport(ShazamKit)

@@ -55,9 +55,11 @@ targets:
     platform: tvOS
     deploymentTarget: "17.0"
     sources:
-      - path: MegaRadioTVApp.swift
-      - path: ShazamRecognizer.swift
-      - path: StoreKitIapService.swift
+      - path: MegaRadioTVApp.swift          # tvOS-only (UIKit + UIPress + AVAudioSession)
+      - path: StoreKitIapService.swift      # Cross-platform (StoreKit 2)
+      # ShazamRecognizer.swift is intentionally EXCLUDED — ShazamKit is
+      # not available on tvOS at all. MegaRadioMacApp.swift is excluded
+      # because it would compile UIKit-incompatible AppKit code.
       - path: Brand
         type: folder         # Treat as resource bundle
         buildPhase: resources
@@ -113,18 +115,16 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TVOS_DEPLOYMENT_TARGET: "17.0"
 
-  # 🟩 macOS App (Mac Catalyst would reuse the iOS target — but since we
-  # have no iOS target here, we make a separate native macOS app target
-  # sharing the same Swift sources. Universal Purchase still works because
-  # bundle id is the same family.)
+  # 🟩 macOS App
   MegaRadioMac:
     type: application
     platform: macOS
     deploymentTarget: "14.0"
     sources:
-      - path: MegaRadioTVApp.swift
-      - path: ShazamRecognizer.swift
-      - path: StoreKitIapService.swift
+      - path: MegaRadioMacApp.swift         # macOS-only (AppKit + NSViewRepresentable)
+      - path: ShazamRecognizer.swift        # Works on macOS (and iOS); skipped via #if on tvOS
+      - path: StoreKitIapService.swift      # Cross-platform (StoreKit 2)
+      # MegaRadioTVApp.swift is excluded — it uses UIKit which macOS doesn't have.
       - path: Brand
         type: folder
         buildPhase: resources
