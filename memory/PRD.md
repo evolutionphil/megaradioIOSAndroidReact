@@ -5,10 +5,25 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## Tech Stack
 - **Mobile**: React Native (Expo Bare Workflow, RN 0.81.5)
-- **TV/Desktop**: React + TypeScript + Vite (single codebase, multiple native shells)
+- **TV/Desktop Web Core**: React + TypeScript + Vite (single codebase, multiple native shells)
+- **Apple TV**: Native SwiftUI (no React Native — WKWebView is unsupported on tvOS)
+- **Desktop**: Electron (Windows/macOS/Linux)
+- **Android TV**: Kotlin shell + same web preview
 - **Backend**: FastAPI + MongoDB + `api.themegaradio.com` (legacy)
 
-## What's Been Implemented (Apr 2026)
+## What's Been Implemented (Latest: Feb 2026 fork)
+
+### 🎯 Apple TV Native SwiftUI 1:1 Visual Parity (Feb 2026)
+Complete rewrite of `frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/` to pixel-match the existing Vite/React web preview:
+- **All 11 routes ported to SwiftUI** in dedicated files (Splash, Guides 1-4, Discover, RadioPlaying, Genres+GenreList, Search, Favorites, Settings, Login QR, CountrySelect).
+- **TVRouter.swift** mimics wouter hash-based routing.
+- **Stage1920x1080** view modifier renders every screen at native tvOS resolution using absolute coordinates copied from the web React code.
+- **Ubuntu font family** (Light/Regular/Medium/Bold) bundled into `Assets/Fonts/` and registered via `UIAppFonts` in `project.yml`.
+- **All web assets converted** (SVG → PNG via cairosvg) into `Assets/Images/` and referenced via `BrandImage("name")`.
+- **Brand tokens centralized** in `Theme.swift` (`#FF4199` accent, `#0E0E0E` bg, `#1A1A1A` surface, plus red/green/blue/yellow remote dots).
+- **Crash fix:** all env objects (`AudioPlayer`, `AuthStore`, `FavoritesStore`, `CountryStore`, `TVRouter`) injected at App root in `MegaRadioTVApp.swift`.
+- **ATS fix:** `NSAllowsArbitraryLoads: true` added to `project.yml` Info so legacy HTTP radio streams play.
+
 ### Backend Pending Items — ALL COMPLETED ✅ (May 26, 2026)
 Backend developer confirmed completion of both P1 backend tasks (TV login QR auto-activation + Google Play RTDN webhook). Verification:
 - **Web Activation `?code=`**: Endpoint `POST /api/auth/tv/activate` live at

@@ -98,19 +98,35 @@ targets:
       - sdk: MediaPlayer.framework
     sources:
       - path: MegaRadioTVApp.swift          # @main entry + AVAudioSession setup
+      - path: TVRouter.swift                # Hash-router clone for navigation
+      - path: CountryStore.swift            # Country selection persistence
       - path: Models.swift                  # Station / Genre / Country structs
       - path: APIClient.swift               # HTTP wrapper for api.themegaradio.com
       - path: AudioPlayer.swift             # AVPlayer wrapper (ObservableObject)
       - path: AuthStore.swift               # Pairing-code login + JWT storage
       - path: FavoritesStore.swift          # Local favorites persistence
-      - path: Theme.swift                   # Brand colours + StationArtwork
-      - path: StationCard.swift             # Reusable cards/rows
-      - path: Views.swift                   # Splash / Root / Home / Genres / Search / Favorites / Settings / NowPlaying
+      - path: Theme.swift                   # Brand tokens + Ubuntu font + Stage1920x1080 + BrandImage
+      - path: Views.swift                   # Router + shared widgets (logo, sidebar, header, global player)
+      - path: Splash.swift                  # /          → SplashPage
+      - path: Guides.swift                  # /guide-1..4 → GuidePage(step:)
+      - path: Discover.swift                # /discover-no-user → DiscoverPage + StationCardLarge
+      - path: RadioPlaying.swift            # /radio-playing → RadioPlayingPage
+      - path: Genres.swift                  # /genres + /genre-list/:tag
+      - path: Search.swift                  # /search
+      - path: Favorites.swift               # /favorites
+      - path: Settings.swift                # /settings + /login
+      - path: CountrySelect.swift           # /country-select
       - path: StoreKitIapService.swift      # tvOS StoreKit 2 IAP
       # ShazamRecognizer.swift is intentionally EXCLUDED — ShazamKit is
       # not available on tvOS at all. (Still on disk for future macOS use.)
       - path: Brand
         type: folder         # Treat as resource bundle
+        buildPhase: resources
+      - path: Assets/Images
+        type: folder         # Web-preview assets (logo, icons, hero backgrounds)
+        buildPhase: resources
+      - path: Assets/Fonts
+        type: folder         # Ubuntu font family (Light/Regular/Medium/Bold)
         buildPhase: resources
     info:
       path: Info.plist
@@ -140,6 +156,12 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
           NSAllowsArbitraryLoadsInWebContent: true
+        # Bundled Ubuntu font family — matches the web-preview design 1:1.
+        UIAppFonts:
+          - Ubuntu-Light.ttf
+          - Ubuntu-Regular.ttf
+          - Ubuntu-Medium.ttf
+          - Ubuntu-Bold.ttf
     entitlements:
       path: MegaRadioTV.entitlements
       properties:

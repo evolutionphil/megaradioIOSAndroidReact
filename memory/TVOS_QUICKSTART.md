@@ -8,13 +8,13 @@
 ## 🚀 Hızlı Başlangıç (Mac'te)
 
 ```bash
-# 1. Henüz yüklemediysen Homebrew'u kur
+# 1. Homebrew yoksa kur
 which brew || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # 2. Proje klasörüne git
 cd ~/Documents/megaradioIOSAndroidReact/frontend
 
-# 3. tvOS projesini otomatik üret (xcodegen otomatik kurulur)
+# 3. tvOS projesini sıfırdan üret (xcodegen otomatik kurulur)
 yarn tvos:setup
 
 # 4. Xcode'da aç
@@ -23,146 +23,104 @@ open tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj
 
 Xcode'da:
 - **Scheme** (sol üst) → `MegaRadioTV`
-- **Cihaz** → Apple TV Simulator
-- **Cmd+R** → Build & Run
+- **Cihaz** → Apple TV Simulator (örn. *Apple TV 4K (3rd generation)*)
+- **Cmd + R** → Build & Run
+
+İlk açılışta:
+1. Splash (mega**radio** logosu + pink ellipse) görünür
+2. 1.5s sonra **Guide 1 → 2 → 3 → 4** onboarding turu (tıkla / OK ile ilerle)
+3. Sonra **Discover** ekranı: sol sidebar, sağ üstte Country + Login pill, listeler
 
 ---
 
-## 🤔 Neden Sadece tvOS? macOS'a Ne Oldu?
+## 🎨 1:1 Tasarım Paritesi
 
-Önceki versiyonda `MegaRadioMac` adında ayrı bir SwiftUI macOS target'ı vardı. Şu sebeplerle kaldırıldı:
+tvOS uygulaması artık web-preview React kodunun **birebir kopyası**:
 
-| Native SwiftUI macOS | Mevcut Electron |
-|----------------------|------------------|
-| Yeni kod, yeni UI (AppKit) | ✅ Zaten çalışıyor |
-| Apple Mac UDID kaydı şart | ✅ Vision Go GmbH sertifikası signed |
-| Sadece macOS | ✅ Windows + Linux + macOS tek codebase |
-| ~10MB | ~150MB (kabul edilebilir) |
-| Mac App Store kolay | ✅ Mac App Store + DMG ikisi de mümkün |
+| Ekran | Web → SwiftUI Dosyası |
+|-------|----------------------|
+| Splash | `Splash.swift` |
+| Guide 1–4 | `Guides.swift` |
+| Discover (no-user) | `Discover.swift` |
+| Radio Playing | `RadioPlaying.swift` |
+| Genres / GenreList | `Genres.swift` |
+| Search | `Search.swift` |
+| Favorites | `Favorites.swift` |
+| Settings / Login (QR) | `Settings.swift` |
+| Country Select | `CountrySelect.swift` |
 
-**Sonuç:** Mevcut Electron app (`frontend/tvanddesktop/desktop/`) hem daha az bakım gerektiriyor hem de iOS/Android ile birebir aynı UX sunuyor (aynı web preview).
+### Asset & Font Adımları
+Tüm web `images/*.svg` ve `*.png` dosyaları PNG'ye dönüştürülüp `Assets/Images/`'a, Ubuntu fontu (Light/Regular/Medium/Bold) `Assets/Fonts/`'a kondu ve `project.yml` içinde `UIAppFonts`'a kaydedildi. `Stage1920x1080` view modifier ile tvOS native 1920×1080 ekranda piksel-piksel aynı pozisyonlar kullanılır.
 
-**tvOS farklı:** Electron tvOS'a port edilmedi, bu yüzden tvOS için **native Swift zorunlu** — bu klasör onun için.
+### Brand Token'ları
+- Pink accent: `#FF4199`
+- Background: `#0E0E0E`
+- Surface: `#1A1A1A`
+- Ubuntu fontu: 300/400/500/700 ağırlıkları bundle içinde
 
 ---
 
-## 📦 Bu Proje İçeriği
+## 🐞 Bilinen Düzeltmeler (bu oturum)
+
+| Sorun | Çözüm |
+|-------|-------|
+| ❌ `AudioPlayer` env object eksik → crash | ✅ `MegaRadioTVApp.swift` kökünde `.environmentObject(AudioPlayer.shared)` enjekte edildi (ayrıca AuthStore, FavoritesStore, CountryStore, TVRouter) |
+| ❌ HTTP radio stream'leri ATS engelliyor | ✅ `project.yml` → `NSAppTransportSecurity.NSAllowsArbitraryLoads: true` |
+| ❌ tvOS UI web-preview ile aynı değil | ✅ Tüm ekranlar `Stage1920x1080` + tam koordinat eşleşmesiyle baştan yazıldı |
+
+---
+
+## 🧪 Doğrulama Adımları
+
+`yarn tvos:setup` sonrası Xcode'da Cmd+R basıp şunları kontrol edin:
+
+1. **Splash:** Sol kenarda pembe ellipse glow + ortada `mega**radio**` logo + "Listen freely" + "megaradio.live" alt yazı
+2. **Guide 1:** Sağ kalibrasyonlu kırmızı bullet'lı tooltip "This is the discovery page..." + sol üstte vurgulanmış Discover butonu + ok işareti
+3. **Guide 2/3/4:** Sırayla Genres (green), Search (blue), Favorites (yellow) tooltip'leri
+4. **Discover:** Hand-crowd-disco background + sol sidebar + üst sağda Country + Login pill + sezgisel istasyon kartları
+5. **İstasyona tıkla:** Crash YOK, Radio Playing ekranı açılıyor, 480×480 artwork + büyük başlık + Play/Pause/Heart/Back butonları
+6. **AVPlayer:** HTTP stream'leri çalıyor (ATS izin verdi)
+
+---
+
+## 📁 Klasör Yapısı
 
 ```
-tvanddesktop/apple-tv-and-macos/ios-tvos/
-├── project.yml                      ← TEK gerçek kaynak (YAML spec)
-├── MegaRadioTVApp.swift             ← SwiftUI app + WKWebView + Siri remote
-├── ShazamRecognizer.swift           ← Şarkı tanıma (tvOS'ta YOK, sadece disk'te durur)
-├── StoreKitIapService.swift         ← In-App Purchase
-├── Brand/                           ← App icon, top shelf PNG'leri
-├── MegaRadioTV.xcodeproj/           ← ⚙️ OTOMATİK üretilen (git'te yok)
-├── Info.plist                       ← ⚙️ OTOMATİK (git'te yok)
-└── MegaRadioTV.entitlements         ← ⚙️ OTOMATİK (git'te yok)
+ios-tvos/
+├── project.yml                  # xcodegen kaynağı
+├── MegaRadioTVApp.swift         # @main, env objects, AVAudioSession
+├── TVRouter.swift               # Wouter-clone hash routing
+├── Theme.swift                  # Brand tokens + Stage1920x1080 + BrandImage
+├── Views.swift                  # Router + sidebar/header/global-player
+├── Splash.swift                 # /
+├── Guides.swift                 # /guide-1..4
+├── Discover.swift               # /discover-no-user
+├── RadioPlaying.swift           # /radio-playing
+├── Genres.swift                 # /genres + /genre-list/:tag
+├── Search.swift                 # /search
+├── Favorites.swift              # /favorites
+├── Settings.swift               # /settings + /login
+├── CountrySelect.swift          # /country-select
+├── AudioPlayer.swift            # AVPlayer ObservableObject
+├── AuthStore.swift              # Pairing-code login
+├── FavoritesStore.swift         # UserDefaults-backed favorites
+├── CountryStore.swift           # Country picker persistence
+├── APIClient.swift              # api.themegaradio.com wrapper
+├── Models.swift                 # Station / Genre / Country / responses
+├── StoreKitIapService.swift     # StoreKit 2 (Apple TV IAP)
+├── ShazamRecognizer.swift       # (excluded — ShazamKit not on tvOS)
+├── Assets/
+│   ├── Images/                  # logo, icons, hero images (PNG)
+│   └── Fonts/                   # Ubuntu .ttf (Light/Regular/Medium/Bold)
+└── Brand/                       # AppIcon / TopShelf
 ```
 
-### Target
-
-| Target | Platform | Bundle ID | Ne yapar? |
-|--------|----------|-----------|-----------|
-| `MegaRadioTV` | tvOS 17+ | `com.visiongo.megaradio` | Apple TV uygulaması — Siri remote, AirPlay, StoreKit IAP |
-
-> **Universal Purchase:** tvOS bundle ID iOS ile aynı → kullanıcı **bir kez** alır, **iPhone + Apple TV** üzerinde kullanır.
-
 ---
 
-## 🖥️ macOS İçin (Electron)
+## 🛠️ Sık Karşılaşılan Sorunlar
 
-```bash
-cd ~/Documents/megaradioIOSAndroidReact/frontend/tvanddesktop/desktop
-yarn install
-yarn build:mac    # → dist/MegaRadio-1.0.x-universal.dmg
-```
+**"Ubuntu font not loading"** → Fontlar `UIAppFonts` array'inde var, ama Xcode bazen cache'i temizleyene kadar font'u görmez. `Product → Clean Build Folder` (Shift+Cmd+K), sonra Build.
 
-İmzalama otomatik (`Vision Go GmbH (M6T85HP76P)` sertifikası `package.json`'da hazır).
+**"Image not found"** → `Assets/Images` klasörü `buildPhase: resources` olarak project.yml'de tanımlı. Yine de görünmüyorsa `yarn tvos:setup` ile projeyi yeniden oluştur.
 
----
-
-## 🛡️ iOS ve WatchOS'i Bozar Mı?
-
-**HAYIR.** Bağımsızlık garantileri:
-
-| Bunu | Bunu yapmıyor |
-|------|---------------|
-| ✅ Sadece `tvanddesktop/apple-tv-and-macos/ios-tvos/` klasörüne yazıyor | ❌ `frontend/ios/` klasörüne dokunmuyor |
-| ✅ Yeni `yarn tvos:setup` komutu | ❌ `yarn ios:setup` değişmedi |
-| ✅ Yeni `scripts/create-tvos-project.js` | ❌ `scripts/add-watchos-target.js` değişmedi |
-| ✅ Yeni Xcode projesi (`MegaRadioTV.xcodeproj`) | ❌ `MegaRadio.xcodeproj` değişmedi |
-| ✅ Hiçbir pod gerektirmiyor (saf SwiftUI) | ❌ `ios/Podfile` değişmedi |
-
-İstediğin zaman tamamen silebilirsin → iOS uygulaman etkilenmez.
-
----
-
-## ⚙️ project.yml'i Değiştirdiğinde
-
-```bash
-yarn tvos:setup
-```
-
-`.xcodeproj` regenerate olur. Xcode açıksa **Cmd+Q** ile kapatıp tekrar aç.
-
-> ⚠️ **DİKKAT:** Xcode UI üzerinden dosya/target ekleme — **kaybolur**. Hep `project.yml`'i güncelle.
-
----
-
-## 🐞 Sık Karşılaşılan Sorunlar
-
-### "xcodegen: command not found"
-```bash
-brew install xcodegen
-```
-
-### ❗ "Communication with Apple failed — team has no devices"
-### ❗ "No profiles for 'com.visiongo.megaradio' were found"
-
-**Sebep:** iOS App ID `com.visiongo.megaradio` Apple Developer Portal'da SADECE iOS için kayıtlı. tvOS Capability açık değil → Xcode tvOS provisioning profili bulamıyor.
-
-**Hızlı çözüm (şimdiki konfig):**
-`project.yml`'de bundle ID `com.visiongo.megaradio.tv` olarak ayarlandı → Xcode otomatik **yeni App ID** yaratır, hiçbir manuel iş YOK. **Bu sayfayı atlayabilirsin, build çalışacak.**
-
-**Sonuç:** Apple TV App Store'da AYRI bir uygulama olarak görünür (universal purchase değil — iOS müşterileri ayrıca satın alır).
-
-**Production yol (Universal Purchase için, sonraya):**
-1. https://developer.apple.com/account/resources/identifiers/list
-2. `com.visiongo.megaradio` (iOS App ID) seç
-3. Sayfanın altına in → **Additional Capabilities**
-4. **tvOS**'u etkinleştir → Save
-5. `project.yml`'de `com.visiongo.megaradio.tv` → `com.visiongo.megaradio` olarak değiştir
-6. `yarn tvos:setup` → Xcode artık universal profili çekebilir
-
-### "AppIcon must include 400x240 icon"
-`Brand/Assets.xcassets/AppIcon.brandassets/`'e top shelf + AppIcon image setlerini eklemelisin. Hazır PNG'ler `Brand/` klasöründe.
-
----
-
-## 📝 Tüm Komutlar Özet
-
-| Komut | Ne yapar |
-|-------|----------|
-| `yarn ios:setup` | iOS + WatchOS (mevcut, **değişmedi**) |
-| `yarn tvos:setup` | Apple TV projesi (**YENİ**) |
-| `yarn build:mac` (desktop/) | macOS Electron DMG |
-| `yarn build:win` (desktop/) | Windows EXE/NSIS |
-| `yarn build:linux` (desktop/) | Linux AppImage/DEB |
-| `open ios/MegaRadio.xcworkspace` | iOS / WatchOS aç |
-| `open tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj` | tvOS aç |
-
----
-
-## 🚢 App Store'a Gönderme (Apple TV)
-
-1. Xcode → MegaRadioTV scheme → **Product → Archive**
-2. Distribute App → App Store Connect
-3. Apple Developer Portal → tvOS app oluştur (eğer yoksa)
-4. App Store Connect → TestFlight → review submission
-
-Universal Purchase iOS app ile beraber çalışır (aynı bundle ID).
-
----
-
-_Last updated: May 26, 2026_
+**ATS değişiklikleri** → `project.yml` Info props altında. `yarn tvos:setup` çalıştırınca Info.plist otomatik yeniden üretilir.

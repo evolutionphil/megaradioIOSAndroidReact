@@ -1,10 +1,10 @@
-// MegaRadioTVApp.swift — Apple TV main entry point (native SwiftUI).
+// MegaRadioTVApp.swift — Apple TV entry point.
 //
-// Apple TV does NOT support WKWebView, so we cannot reuse the TV web
-// preview here. Instead this is a native SwiftUI app that talks to the
-// same MegaRadio backend API (https://api.themegaradio.com) the iOS and
-// Android apps use, and presents the same content with tvOS-optimized
-// focus engine + AVPlayer streaming.
+// • Mounts the SwiftUI scene at native 1920×1080.
+// • Injects shared singletons (AudioPlayer / AuthStore / FavoritesStore / Router)
+//   at the root so every child view — including `NowPlayingBar` rendered inside
+//   `.overlay` modifiers and any `NavigationStack` destinations — can read them
+//   safely via `@EnvironmentObject`.
 
 import SwiftUI
 import AVFoundation
@@ -13,7 +13,13 @@ import AVFoundation
 
 @main
 struct MegaRadioTVApp: App {
-    @State private var didFinishSplash = false
+
+    // Singletons. Owned at App scope so they survive screen changes.
+    @StateObject private var router    = TVRouter()
+    @StateObject private var player    = AudioPlayer.shared
+    @StateObject private var auth      = AuthStore.shared
+    @StateObject private var favorites = FavoritesStore.shared
+    @StateObject private var country   = CountryStore.shared
 
     init() {
         configureAudioSession()
@@ -21,24 +27,13 @@ struct MegaRadioTVApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                Theme.background.ignoresSafeArea()
-                if didFinishSplash {
-                    RootView()
-                        .transition(.opacity)
-                } else {
-                    SplashView()
-                        .transition(.opacity)
-                        .task {
-                            // Brief splash so Firebase/initial assets settle.
-                            try? await Task.sleep(nanoseconds: 1_200_000_000)
-                            withAnimation(.easeInOut(duration: 0.45)) {
-                                didFinishSplash = true
-                            }
-                        }
-                }
-            }
-            .preferredColorScheme(.dark)
+            RootRouterView()
+                .environmentObject(router)
+                .environmentObject(player)
+                .environmentObject(auth)
+                .environmentObject(favorites)
+                .environmentObject(country)
+                .preferredColorScheme(.dark)
         }
     }
 
