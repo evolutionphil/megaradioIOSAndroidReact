@@ -26,6 +26,7 @@ public class AppDelegate: ExpoAppDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions BEGIN")
 // @generated begin react-native-google-cast-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-b83f3fabf49797475a3f26a5bfeb5cfd51fa39c4
 #if canImport(GoogleCast) && os(iOS)
     let receiverAppID = kGCKDefaultMediaReceiverApplicationID
@@ -45,6 +46,7 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
+    NSLog("🟪 [AppDelegate] factory bound: \(factory)")
 
 #if os(iOS) || os(tvOS)
 // @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-10e8520570672fd76b2403b7e1e27f5198a6349a
@@ -57,25 +59,19 @@ FirebaseApp.configure()
     // root view actually appears on-screen. Starting it here too (with
     // a window that has no windowScene) is what previously produced
     // the splash → black-screen bug.
-
+    NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions END — waiting for scenes")
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   // MARK: - Scene Configuration (iOS 13+)
-  //
-  // Returning specific delegate classes here (instead of just relying on
-  // Info.plist) makes the wiring foolproof — Swift class name lookup via
-  // `$(PRODUCT_MODULE_NAME).Foo` can fail subtly (e.g. when the @objc
-  // rename differs from the module-prefixed name), but
-  // `config.delegateClass = X.self` always works because it's a direct
-  // metatype reference. Info.plist still declares the same scenes so
-  // Xcode validates the manifest at build time.
   public func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
     options: UIScene.ConnectionOptions
   ) -> UISceneConfiguration {
+    NSLog("🟪 [AppDelegate] configurationForConnecting role=\(connectingSceneSession.role.rawValue)")
     if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      NSLog("🟪 [AppDelegate] → returning CarPlaySceneDelegate config")
       let config = UISceneConfiguration(
         name: "CarPlay",
         sessionRole: connectingSceneSession.role
@@ -85,7 +81,7 @@ FirebaseApp.configure()
       return config
     }
 
-    // Phone / iPad: UIWindowSceneSessionRoleApplication.
+    NSLog("🟪 [AppDelegate] → returning PhoneSceneDelegate config")
     let config = UISceneConfiguration(
       name: "Default Configuration",
       sessionRole: connectingSceneSession.role

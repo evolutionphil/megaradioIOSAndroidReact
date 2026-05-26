@@ -4,10 +4,7 @@ import React
 
 /// PhoneSceneDelegate handles the main app window lifecycle.
 /// Required when UIApplicationSceneManifest is present in Info.plist.
-/// IMPORTANT: React Native bridge is initialized ONCE in AppDelegate.
-/// This delegate only transfers the existing root view to the scene window.
 @objc(PhoneSceneDelegate)
-@MainActor
 class PhoneSceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
@@ -16,57 +13,65 @@ class PhoneSceneDelegate: UIResponder, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        guard let windowScene = scene as? UIWindowScene else { return }
-        
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        
-        // Create window for this scene (must use windowScene for iOS 13+ scene lifecycle)
-        let window = UIWindow(windowScene: windowScene)
-        
-        // CRITICAL FIX: Do NOT call factory.startReactNative() if RN is already running.
-        // But if RN is NOT yet initialized (normal phone launch), start it here with the scene window.
-        if appDelegate?.isReactNativeReady() == true,
-           let existingRootVC = appDelegate?.window?.rootViewController {
-            // CarPlay cold-start scenario: RN was started by CarPlay before phone scene connected.
-            // Transfer the existing root view controller to this scene's window.
-            print("[PhoneSceneDelegate] Reusing existing React Native root view controller")
-            window.rootViewController = existingRootVC
-        } else {
-            // Normal launch: Phone scene is first. Start React Native with this scene's window.
-            print("[PhoneSceneDelegate] Starting React Native with scene window...")
-            if let factory = appDelegate?.reactNativeFactory {
-                factory.startReactNative(
-                    withModuleName: "main",
-                    in: window,
-                    launchOptions: nil
-                )
-            }
-            appDelegate?.markReactNativeInitialized()
-            print("[PhoneSceneDelegate] React Native started successfully")
+        NSLog("🟦 [PhoneSceneDelegate] scene(_:willConnectTo:options:) CALLED")
+        NSLog("🟦 [PhoneSceneDelegate] scene class: \(type(of: scene)), role: \(session.role.rawValue)")
+
+        guard let windowScene = scene as? UIWindowScene else {
+            NSLog("🔴 [PhoneSceneDelegate] FATAL: scene is NOT a UIWindowScene — got \(type(of: scene))")
+            return
         }
-        
+        NSLog("🟦 [PhoneSceneDelegate] windowScene OK")
+
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            NSLog("🔴 [PhoneSceneDelegate] FATAL: UIApplication.shared.delegate is NOT AppDelegate (got \(String(describing: UIApplication.shared.delegate)))")
+            return
+        }
+        NSLog("🟦 [PhoneSceneDelegate] appDelegate OK")
+
+        guard let factory = appDelegate.reactNativeFactory else {
+            NSLog("🔴 [PhoneSceneDelegate] FATAL: appDelegate.reactNativeFactory is nil — RN factory wasn't created in didFinishLaunchingWithOptions")
+            return
+        }
+        NSLog("🟦 [PhoneSceneDelegate] factory OK: \(factory)")
+
+        let window = UIWindow(windowScene: windowScene)
+        NSLog("🟦 [PhoneSceneDelegate] UIWindow created: bounds=\(window.bounds), windowScene=\(String(describing: window.windowScene))")
+
+        NSLog("🟦 [PhoneSceneDelegate] Calling factory.startReactNative(...)...")
+        factory.startReactNative(
+            withModuleName: "main",
+            in: window,
+            launchOptions: nil
+        )
+        NSLog("🟦 [PhoneSceneDelegate] factory.startReactNative returned. rootViewController=\(String(describing: window.rootViewController))")
+
         window.makeKeyAndVisible()
+        NSLog("🟦 [PhoneSceneDelegate] makeKeyAndVisible called. isKeyWindow=\(window.isKeyWindow), isHidden=\(window.isHidden), alpha=\(window.alpha)")
+
         self.window = window
-        appDelegate?.window = window
+        appDelegate.window = window
+        appDelegate.markReactNativeInitialized()
+
+        NSLog("🟩 [PhoneSceneDelegate] DONE — phone scene fully connected")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        // Called when the scene is being released by the system.
+        NSLog("🟦 [PhoneSceneDelegate] sceneDidDisconnect")
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
+        NSLog("🟦 [PhoneSceneDelegate] sceneDidBecomeActive. window.isKeyWindow=\(self.window?.isKeyWindow ?? false), rootVC=\(String(describing: self.window?.rootViewController))")
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
+        NSLog("🟦 [PhoneSceneDelegate] sceneWillResignActive")
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
+        NSLog("🟦 [PhoneSceneDelegate] sceneWillEnterForeground")
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
+        NSLog("🟦 [PhoneSceneDelegate] sceneDidEnterBackground")
     }
 }
