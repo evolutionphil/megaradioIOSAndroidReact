@@ -9,6 +9,40 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 - **Backend**: FastAPI + MongoDB + `api.themegaradio.com` (legacy)
 
 ## What's Been Implemented (Apr 2026)
+### iOS Splash → Black Screen Crash FIXED ✅ (May 26, 2026)
+- **Symptom**: After CarPlay/WatchOS integration, iPhone app loaded JS bundle
+  (Firebase analytics fired, all modules registered, `Running "main"` printed)
+  but stayed on a permanent black screen after splash.
+- **Root cause**: Previous Expo prebuild had deleted `PhoneSceneDelegate.swift`.
+  Info.plist still declared `UIApplicationSceneManifest` (required for CarPlay
+  entitlement), so iOS adopted the UIScene lifecycle for the iPhone window —
+  but with no scene delegate registered, RCTRootView ended up on a
+  `windowScene=nil` UIWindow and `RCTRootContentView.frame` stayed
+  `(0,0,0,0)` forever.
+- **Fix** (`ios/MegaRadio/PhoneSceneDelegate.swift`,
+  `ios/MegaRadio/AppDelegate.swift`, `ios/MegaRadio/Info.plist`,
+  `ios/MegaRadio.xcodeproj/project.pbxproj`):
+  - Restored `PhoneSceneDelegate.swift` from git history.
+  - Moved React Native initialization OUT of
+    `AppDelegate.didFinishLaunchingWithOptions` and INTO
+    `PhoneSceneDelegate.scene(_:willConnectTo:options:)` — that's the
+    only place we get a real `UIWindowScene` to attach to the UIWindow
+    before RN measures.
+  - `AppDelegate.configurationForConnecting` returns
+    `PhoneSceneDelegate.self` for `UIWindowSceneSessionRoleApplication` and
+    `CarPlaySceneDelegate.self` for `carTemplateApplication`.
+  - Info.plist declares both scenes (`UIWindowSceneSessionRoleApplication`
+    → `PhoneSceneDelegate`, `CPTemplateApplicationSceneSessionRoleApplication`
+    → `CarPlaySceneDelegate`).
+  - `scripts/add-watchos-target.js` now also registers
+    `PhoneSceneDelegate.swift` / `CarPlaySceneDelegate.swift` /
+    `SiriPlayMediaHandler.swift` into the MegaRadio target's Sources
+    phase, so any future `expo prebuild --clean` doesn't lose them again.
+  - Also added auto-install of `xcode` npm package fallback.
+- **Verified live**: User confirmed the app opens to the HomeScreen
+  (Austrian Rock Radio playing, Firebase / IAP / AdMob / Crashlytics all OK).
+
+
 
 ### TV UX polish: hidden player, scroll bugs, focus restore, login QR ✅ (Feb 25, 2026)
 - **GlobalPlayer.tsx**: Bottom audio bar is now also hidden on `/search`,

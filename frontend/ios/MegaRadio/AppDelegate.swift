@@ -16,17 +16,14 @@ public class AppDelegate: ExpoAppDelegate {
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
 
-  // Flag used by PhoneSceneDelegate to know if the RN bridge has already
-  // been started (e.g. by CarPlay connecting first in a cold-launch).
-  // It lets the phone scene reuse the existing rootViewController instead
-  // of double-mounting the bundle.
+  // Flag used by PhoneSceneDelegate / CarPlay coordination so we never
+  // double-initialise the React Native bridge.
   private var isReactNativeInitialized = false
 
   public override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-    NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions BEGIN")
 // @generated begin react-native-google-cast-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-b83f3fabf49797475a3f26a5bfeb5cfd51fa39c4
 #if canImport(GoogleCast) && os(iOS)
     let receiverAppID = kGCKDefaultMediaReceiverApplicationID
@@ -46,29 +43,38 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
-    NSLog("🟪 [AppDelegate] factory bound: \(factory)")
 
 #if os(iOS) || os(tvOS)
 // @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-10e8520570672fd76b2403b7e1e27f5198a6349a
 FirebaseApp.configure()
 // @generated end @react-native-firebase/app-didFinishLaunchingWithOptions
-
-    NSLog("🟪 [AppDelegate] Factory ready. RN startup is deferred to PhoneSceneDelegate (windowScene-bound).")
 #endif
 
-    NSLog("🟪 [AppDelegate] didFinishLaunchingWithOptions END")
+    // IMPORTANT: We do NOT start React Native here.
+    //
+    // ExpoAppDelegate forwards to the UIScene lifecycle, and RCTRootView's
+    // layout cycle needs a windowScene-attached UIWindow to compute its
+    // frame correctly. Starting RN here (on a windowScene=nil window) and
+    // then transferring the rootViewController to a scene window
+    // produces `RCTRootContentView frame=(0,0,0,0)` and a permanent
+    // black screen after splash. PhoneSceneDelegate.scene(_:willConnectTo:)
+    // creates the proper windowScene-bound UIWindow and starts RN there.
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   // MARK: - Scene Configuration (iOS 13+)
+  //
+  // We return the delegate classes here via direct metatype references
+  // (`config.delegateClass = X.self`) instead of relying solely on the
+  // `$(PRODUCT_MODULE_NAME).X` strings in Info.plist. This is the
+  // foolproof path — Info.plist still declares the same scenes so Xcode
+  // can validate the manifest at build time.
   public func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
     options: UIScene.ConnectionOptions
   ) -> UISceneConfiguration {
-    NSLog("🟪 [AppDelegate] configurationForConnecting role=\(connectingSceneSession.role.rawValue)")
     if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
-      NSLog("🟪 [AppDelegate] → returning CarPlaySceneDelegate config")
       let config = UISceneConfiguration(
         name: "CarPlay",
         sessionRole: connectingSceneSession.role
@@ -78,7 +84,6 @@ FirebaseApp.configure()
       return config
     }
 
-    NSLog("🟪 [AppDelegate] → returning PhoneSceneDelegate config")
     let config = UISceneConfiguration(
       name: "Default Configuration",
       sessionRole: connectingSceneSession.role
@@ -88,9 +93,6 @@ FirebaseApp.configure()
   }
 
   // MARK: - React Native bridge ready-state helpers
-  //
-  // PhoneSceneDelegate calls these to coordinate with CarPlay so we
-  // never double-initialise the JS runtime.
 
   @objc public func isReactNativeReady() -> Bool {
     return isReactNativeInitialized
@@ -110,12 +112,7 @@ FirebaseApp.configure()
   }
 
   // Universal Links + Siri voice intents (INPlayMediaIntent for CarPlay /
-  // "Hey Siri, play Rock Antenne on MegaRadio"). When iOS resolves a Siri
-  // media intent it hands us a userActivity of type `INPlayMediaIntent` (or
-  // `com.visiongo.megaradio.playMedia`). We unwrap the station name and
-  // synthesize a `megaradio://play?q=<name>` deep link — the React Native
-  // Linking handler (already wired up) opens the search/play flow exactly
-  // as if the user had tapped a deep link.
+  // "Hey Siri, play Rock Antenne on MegaRadio").
   public override func application(
     _ application: UIApplication,
     continue userActivity: NSUserActivity,
@@ -136,20 +133,14 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
   // Extension point for config-plugins
 
   override func sourceURL(for bridge: RCTBridge) -> URL? {
-    let url = bridge.bundleURL ?? bundleURL()
-    NSLog("🟧 [ReactNativeDelegate] sourceURL(for:) → \(String(describing: url))")
-    return url
+    bridge.bundleURL ?? bundleURL()
   }
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    let url = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
-    NSLog("🟧 [ReactNativeDelegate] bundleURL() DEBUG → \(String(describing: url))")
-    return url
+    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
 #else
-    let url = Bundle.main.url(forResource: "main", withExtension: "jsbundle")
-    NSLog("🟧 [ReactNativeDelegate] bundleURL() RELEASE → \(String(describing: url))")
-    return url
+    return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
   }
 }
