@@ -145,11 +145,11 @@ private struct DiscoverScrollArea: View {
                     }
                 }
 
-                // ── Country stations grid (7 per row).
+                // ── Country stations grid (7 per row, 200×264 cards, gap 24).
                 if !stations.isEmpty {
                     SectionTitle("Stations")
                     LazyVGrid(
-                        columns: Array(repeating: GridItem(.fixed(210), spacing: 20),
+                        columns: Array(repeating: GridItem(.fixed(200), spacing: 24),
                                        count: 7),
                         spacing: 30
                     ) {
@@ -182,6 +182,15 @@ private struct SectionTitle: View {
 // Cards & pills
 // ────────────────────────────────────────────────────────────────────
 
+// MARK: - Cards & pills (1:1 port of `web-preview/src/pages/DiscoverNoUser.tsx`)
+
+/// 200×264 station card matching the popular/stations grid in web.
+/// Layout (absolute coords):
+///   • Background: rgba(255,255,255,0.14)  ·  radius 11
+///   • Inner white box (34, 34) 132×132    ·  radius 6.6
+///   • Station name (centered, top 187)    ·  22 px medium
+///   • Category (centered, top 218.2)      ·  18 px light
+///   • Inset shadow inset 1.1 1.1 12.1 rgba(255,255,255,0.12)
 struct StationCardLarge: View {
     let station: Station
     let onPlay: () -> Void
@@ -189,32 +198,57 @@ struct StationCardLarge: View {
 
     var body: some View {
         Button(action: onPlay) {
-            VStack(alignment: .leading, spacing: 10) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 11)
-                        .fill(Color.white)
-                    StationArtwork(url: station.artworkURL, size: 168, cornerRadius: 7)
-                }
-                .frame(width: 210, height: 210)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 11)
-                        .stroke(isFocused ? Theme.accent : .clear, lineWidth: 4)
-                )
-                .scaleEffect(isFocused ? 1.06 : 1.0)
-                .shadow(color: isFocused ? Theme.accent.opacity(0.6) : .clear,
-                        radius: 24)
+            ZStack(alignment: .topLeading) {
+                // Card background.
+                RoundedRectangle(cornerRadius: 11)
+                    .fill(Color.white.opacity(isFocused ? 0.20 : 0.14))
+                    .frame(width: 200, height: 264)
 
+                // Inner white artwork container.
+                ZStack {
+                    RoundedRectangle(cornerRadius: 6.6).fill(Color.white)
+                    AsyncImage(url: station.artworkURL) { phase in
+                        if let img = phase.image {
+                            img.resizable().scaledToFill()
+                        } else {
+                            BrandImage(name: "fallback-favicon")
+                                .padding(24)
+                        }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 6.6))
+                }
+                .frame(width: 132, height: 132)
+                .offset(x: 34, y: 34)
+
+                // Station name — centered, top: 187.
                 Text(station.name)
-                    .font(.ubuntu(18, .medium))
+                    .font(.ubuntu(22, .medium))
                     .foregroundColor(.white)
                     .lineLimit(1)
-                    .frame(width: 210, alignment: .leading)
-                Text(station.tags?.split(separator: ",").first.map(String.init) ?? (station.country ?? ""))
-                    .font(.ubuntu(15))
-                    .foregroundColor(Theme.textSecondary)
+                    .frame(width: 180, alignment: .center)
+                    .offset(x: 10, y: 187)
+
+                // Category tag — centered, top: 218.2.
+                Text(station.tags?.split(separator: ",").first
+                        .map { String($0).trimmingCharacters(in: .whitespaces) }
+                     ?? station.country ?? "Radio")
+                    .font(.ubuntu(18, .light))
+                    .foregroundColor(.white)
                     .lineLimit(1)
-                    .frame(width: 210, alignment: .leading)
+                    .frame(width: 180, alignment: .center)
+                    .offset(x: 10, y: 218.2)
             }
+            .frame(width: 200, height: 264)
+            // Pink focus ring (only on focus, replaces tvOS default halo).
+            .overlay(
+                RoundedRectangle(cornerRadius: 11)
+                    .stroke(isFocused ? Theme.accent : .clear, lineWidth: 4)
+            )
+            .shadow(
+                color: isFocused ? Theme.accent.opacity(0.8) : .clear,
+                radius: 30
+            )
+            .scaleEffect(isFocused ? 1.04 : 1.0)
         }
         .buttonStyle(.tvTransparent)
         .focused($isFocused)

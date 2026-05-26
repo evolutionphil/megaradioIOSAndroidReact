@@ -41,7 +41,7 @@ struct SearchPage: View {
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVGrid(
-                            columns: Array(repeating: GridItem(.fixed(210), spacing: 20), count: 7),
+                            columns: Array(repeating: GridItem(.fixed(200), spacing: 24), count: 7),
                             spacing: 30
                         ) {
                             ForEach(results) { s in

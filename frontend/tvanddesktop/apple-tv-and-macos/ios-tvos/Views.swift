@@ -18,10 +18,18 @@ import SwiftUI
 #if os(tvOS)
 /// Removes tvOS's default white focus halo so we can apply our own pink
 /// border / glow / scale animations that match the web design exactly.
+///
+/// We make the label `focusable(true)` so the system still routes
+/// arrow-key navigation to it, and we call `focusEffectDisabled()` to
+/// suppress the default white halo. The caller is responsible for
+/// attaching a `@FocusState` via `.focused($foo)` and rendering its
+/// own focus appearance.
 struct TVTransparentButtonStyle: PrimitiveButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .contentShape(Rectangle())
+            .focusable(true)
+            .focusEffectDisabled()
             .onTapGesture { configuration.trigger() }
     }
 }
