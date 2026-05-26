@@ -86,21 +86,29 @@ targets:
     type: application
     platform: tvOS
     deploymentTarget: "17.0"
-    # Explicit framework dependencies — xcodegen does not auto-link
-    # system frameworks that aren't typically used on tvOS.
-    # WebKit IS available on tvOS 17.0+ for WKWebView, but we need to
-    # list it explicitly so the linker can find it.
+    # Frameworks used by the native tvOS app:
+    #   • AVFoundation / AVKit — AVPlayer for live radio streams
+    #   • MediaPlayer       — Lock-screen / Siri Remote "Now Playing" info
+    # WebKit is intentionally NOT here because WKWebView is unavailable
+    # on tvOS (Apple platform restriction). The Apple TV app is fully
+    # native SwiftUI calling the same API as iOS/Android.
     dependencies:
-      - sdk: WebKit.framework
-      - sdk: AVKit.framework
       - sdk: AVFoundation.framework
+      - sdk: AVKit.framework
+      - sdk: MediaPlayer.framework
     sources:
-      - path: MegaRadioTVApp.swift          # tvOS-only (UIKit + UIPress + AVAudioSession)
-      - path: StoreKitIapService.swift      # tvOS StoreKit 2 native IAP
+      - path: MegaRadioTVApp.swift          # @main entry + AVAudioSession setup
+      - path: Models.swift                  # Station / Genre / Country structs
+      - path: APIClient.swift               # HTTP wrapper for api.themegaradio.com
+      - path: AudioPlayer.swift             # AVPlayer wrapper (ObservableObject)
+      - path: AuthStore.swift               # Pairing-code login + JWT storage
+      - path: FavoritesStore.swift          # Local favorites persistence
+      - path: Theme.swift                   # Brand colours + StationArtwork
+      - path: StationCard.swift             # Reusable cards/rows
+      - path: Views.swift                   # Splash / Root / Home / Genres / Search / Favorites / Settings / NowPlaying
+      - path: StoreKitIapService.swift      # tvOS StoreKit 2 IAP
       # ShazamRecognizer.swift is intentionally EXCLUDED — ShazamKit is
-      # not available on tvOS at all. (It still exists on disk so the
-      # macOS Electron app can shell out to a helper extension later
-      # if we ever need song-recognition on the desktop.)
+      # not available on tvOS at all. (Still on disk for future macOS use.)
       - path: Brand
         type: folder         # Treat as resource bundle
         buildPhase: resources
