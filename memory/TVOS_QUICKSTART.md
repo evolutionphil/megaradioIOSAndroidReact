@@ -1,75 +1,104 @@
-# Apple TV (tvOS) + macOS Quickstart
+# Apple TV (tvOS) Quickstart
 
-> **iOS ve WatchOS projenizi etkilemez.** Bu klasör tamamen bağımsızdır.
+> **Bu klasör SADECE Apple TV için. macOS ayrı projede: `frontend/tvanddesktop/desktop/` (Electron).**
+> iOS ve WatchOS hâlâ `frontend/ios/` altında, dokunulmamıştır.
+
+---
 
 ## 🚀 Hızlı Başlangıç (Mac'te)
 
 ```bash
-# 1. Henüz yüklemediysen Homebrew'u kontrol et
+# 1. Henüz yüklemediysen Homebrew'u kur
 which brew || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # 2. Proje klasörüne git
 cd ~/Documents/megaradioIOSAndroidReact/frontend
 
-# 3. tvOS + macOS projesini otomatik üret
-#    İlk çalıştırmada xcodegen otomatik kurulur (~30 saniye)
+# 3. tvOS projesini otomatik üret (xcodegen otomatik kurulur)
 yarn tvos:setup
 
 # 4. Xcode'da aç
 open tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj
 ```
 
-Xcode açılınca:
-- **Scheme seçici** (sol üstte) → `MegaRadioTV` (Apple TV için) veya `MegaRadioMac` (macOS için)
-- **Cihaz seçici** → Apple TV Simulator (tvOS) veya My Mac (macOS)
+Xcode'da:
+- **Scheme** (sol üst) → `MegaRadioTV`
+- **Cihaz** → Apple TV Simulator
 - **Cmd+R** → Build & Run
 
 ---
 
-## 📦 Bu Proje Ne İçeriyor?
+## 🤔 Neden Sadece tvOS? macOS'a Ne Oldu?
+
+Önceki versiyonda `MegaRadioMac` adında ayrı bir SwiftUI macOS target'ı vardı. Şu sebeplerle kaldırıldı:
+
+| Native SwiftUI macOS | Mevcut Electron |
+|----------------------|------------------|
+| Yeni kod, yeni UI (AppKit) | ✅ Zaten çalışıyor |
+| Apple Mac UDID kaydı şart | ✅ Vision Go GmbH sertifikası signed |
+| Sadece macOS | ✅ Windows + Linux + macOS tek codebase |
+| ~10MB | ~150MB (kabul edilebilir) |
+| Mac App Store kolay | ✅ Mac App Store + DMG ikisi de mümkün |
+
+**Sonuç:** Mevcut Electron app (`frontend/tvanddesktop/desktop/`) hem daha az bakım gerektiriyor hem de iOS/Android ile birebir aynı UX sunuyor (aynı web preview).
+
+**tvOS farklı:** Electron tvOS'a port edilmedi, bu yüzden tvOS için **native Swift zorunlu** — bu klasör onun için.
+
+---
+
+## 📦 Bu Proje İçeriği
 
 ```
 tvanddesktop/apple-tv-and-macos/ios-tvos/
 ├── project.yml                      ← TEK gerçek kaynak (YAML spec)
-├── MegaRadioTVApp.swift             ← Ana SwiftUI app + WKWebView
-├── ShazamRecognizer.swift           ← Şarkı tanıma
+├── MegaRadioTVApp.swift             ← SwiftUI app + WKWebView + Siri remote
+├── ShazamRecognizer.swift           ← Şarkı tanıma (tvOS'ta YOK, sadece disk'te durur)
 ├── StoreKitIapService.swift         ← In-App Purchase
 ├── Brand/                           ← App icon, top shelf PNG'leri
-├── MegaRadioTV.xcodeproj/           ← OTOMATİK üretilen (git'te yok)
-├── Info.plist                       ← OTOMATİK (git'te yok)
-└── MegaRadioTV.entitlements         ← OTOMATİK (git'te yok)
+├── MegaRadioTV.xcodeproj/           ← ⚙️ OTOMATİK üretilen (git'te yok)
+├── Info.plist                       ← ⚙️ OTOMATİK (git'te yok)
+└── MegaRadioTV.entitlements         ← ⚙️ OTOMATİK (git'te yok)
 ```
 
-### 2 Target
+### Target
 
 | Target | Platform | Bundle ID | Ne yapar? |
 |--------|----------|-----------|-----------|
-| `MegaRadioTV` | tvOS 17+ | `com.visiongo.megaradio` | Apple TV uygulaması — Siri remote, ShazamKit, AirPlay |
-| `MegaRadioMac` | macOS 14+ | `com.visiongo.megaradio.mac` | macOS uygulaması — menu bar, mini-player |
+| `MegaRadioTV` | tvOS 17+ | `com.visiongo.megaradio` | Apple TV uygulaması — Siri remote, AirPlay, StoreKit IAP |
 
-> **Universal Purchase:** tvOS bundle ID iOS ile aynı → kullanıcı **bir kez** alır, **iPhone + Apple TV** üzerinde kullanır. macOS biraz farklı bundle (`...mac`) çünkü Apple kuralları gereği iOS+tvOS+macOS aynı bundle id'de **sadece Mac Catalyst** ile mümkün.
+> **Universal Purchase:** tvOS bundle ID iOS ile aynı → kullanıcı **bir kez** alır, **iPhone + Apple TV** üzerinde kullanır.
+
+---
+
+## 🖥️ macOS İçin (Electron)
+
+```bash
+cd ~/Documents/megaradioIOSAndroidReact/frontend/tvanddesktop/desktop
+yarn install
+yarn build:mac    # → dist/MegaRadio-1.0.x-universal.dmg
+```
+
+İmzalama otomatik (`Vision Go GmbH (M6T85HP76P)` sertifikası `package.json`'da hazır).
 
 ---
 
 ## 🛡️ iOS ve WatchOS'i Bozar Mı?
 
-**HAYIR.** Şu noktalar garanti:
+**HAYIR.** Bağımsızlık garantileri:
 
 | Bunu | Bunu yapmıyor |
 |------|---------------|
 | ✅ Sadece `tvanddesktop/apple-tv-and-macos/ios-tvos/` klasörüne yazıyor | ❌ `frontend/ios/` klasörüne dokunmuyor |
-| ✅ Yeni `yarn tvos:setup` komutu ekledi | ❌ `yarn ios:setup` değişmedi |
+| ✅ Yeni `yarn tvos:setup` komutu | ❌ `yarn ios:setup` değişmedi |
 | ✅ Yeni `scripts/create-tvos-project.js` | ❌ `scripts/add-watchos-target.js` değişmedi |
 | ✅ Yeni Xcode projesi (`MegaRadioTV.xcodeproj`) | ❌ `MegaRadio.xcodeproj` değişmedi |
 | ✅ Hiçbir pod gerektirmiyor (saf SwiftUI) | ❌ `ios/Podfile` değişmedi |
 
-İstediğin zaman tamamen siliebilirsin (`rm -rf tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj`) — iOS uygulamanız etkilenmez.
+İstediğin zaman tamamen silebilirsin → iOS uygulaman etkilenmez.
 
 ---
 
 ## ⚙️ project.yml'i Değiştirdiğinde
-
-xcodegen tek gerçek kaynak olarak `project.yml`'i okur. Yeni Swift dosyası eklediğinde veya bundle ID değiştirdiğinde:
 
 ```bash
 yarn tvos:setup
@@ -77,62 +106,34 @@ yarn tvos:setup
 
 `.xcodeproj` regenerate olur. Xcode açıksa **Cmd+Q** ile kapatıp tekrar aç.
 
-> **⚠️ ÖNEMLİ:** Xcode UI üzerinden dosya/target ekleme — **kaybolur** çünkü `.xcodeproj` git'te yok ve regenerate'te overwrite olur. Hep `project.yml`'i güncelle.
-
----
-
-## 🎬 İlk Build'de Beklenen Davranış
-
-1. tvOS Simulator açılır
-2. Splash screen (logo)
-3. WKWebView, `https://www.themegaradio.com/tv` web preview'unu yükler
-4. Siri Remote D-pad → JS `KeyboardEvent` olarak forwardlanır
-5. Spatial navigation çalışır (zaten web preview'da var)
-
-> İlk açılışta web'in yüklenmesi 2-3 saniye sürebilir (CDN cache + RN bundle).
+> ⚠️ **DİKKAT:** Xcode UI üzerinden dosya/target ekleme — **kaybolur**. Hep `project.yml`'i güncelle.
 
 ---
 
 ## 🐞 Sık Karşılaşılan Sorunlar
 
 ### "xcodegen: command not found"
-Script bunu **otomatik halletmeli**. Manuel yüklemek için:
 ```bash
 brew install xcodegen
 ```
 
-### "No matching provisioning profile"
-Xcode'da: **Signing & Capabilities** → Team seç (Apple Developer hesabın).
-Eğer farklı bundle ID kullanmak istersen `project.yml`'de `PRODUCT_BUNDLE_IDENTIFIER`'ı değiştir.
+### ❗ "No profiles for 'com.visiongo.megaradio' were found"
+Apple Developer Portal'da App ID'nin tvOS Capability'si açık değil:
+1. https://developer.apple.com/account/resources/identifiers/list
+2. `com.visiongo.megaradio` seç
+3. Capabilities listesinde tvOS aktif olsun
+4. Profile → otomatik üretilir
 
-### "Could not find module 'CarPlay'"
-CarPlay tvOS'ta yok — `MegaRadioTVApp.swift`'te conditional kullanılıyor olmalı. Hata alırsan dosyaya `#if os(iOS)` wrapper ekle.
+### ❗ "Communication with Apple failed — team has no devices"
+Apple Developer Portal'da TV cihazını kaydet (eğer fiziksel Apple TV'ye build atıyorsan):
+1. https://developer.apple.com/account/resources/devices/list
+2. + Register a Device → **Apple TV**
+3. Device ID: Apple TV'nin UDID'si (Xcode → Window → Devices and Simulators'da görünür)
 
-### macOS target için "App Sandbox" hatası
-macOS App Store'a göndermek için sandbox açık olmalı. `project.yml`'de `com.apple.security.app-sandbox: true` zaten ayarlı.
+Simulator için bu adım gerekmez.
 
-### ❗ "Provisioning profile doesn't include the currently selected device"
-Apple Silicon Mac'ler iOS bundle'larını "Designed for iPad" özelliği ile çalıştırabildiğinden, Xcode senin Mac'ini de iOS device olarak görür. İki çözüm yolu var:
-
-**Çözüm A (önerilen): Mac'ini Apple Developer Devices listesine ekle**
-1. https://developer.apple.com/account/resources/devices/list adresine git
-2. **+ Register a Device** tıkla
-3. Platform: **macOS**
-4. Device ID (UDID): hata mesajındaki UUID (örn: `00008122-0005101A3C80001C`)
-5. Device Name: "iMac von mumiix"
-6. Continue → Register
-7. Xcode → Product → Clean Build Folder → Cmd+R
-
-**Çözüm B (hızlı): Personal Team kullan**
-Xcode → Target → Signing & Capabilities → Team → **(Personal Team)** seç. Apple Developer Program üyeliği olmadan, lokal cihazda 7 gün geçerli imzayla çalışır. App Store yayını için bu yeterli değil.
-
-### ❗ "Entitlement com.apple.developer.shazamkit not found"
-ShazamKit gibi entitlement'lar Apple Developer Portal'da App ID Capability olarak enable edilmiş olması gerekir. `project.yml`'den şimdilik kaldırdık. İhtiyaç duyduğunda:
-1. https://developer.apple.com/account/resources/identifiers/list adresine git
-2. `com.visiongo.megaradio` ID'sini seç
-3. **ShazamKit** capability'sini enable et
-4. Xcode → Target → Signing & Capabilities → **+ Capability → ShazamKit** ekle (entitlement otomatik üretilir)
-5. ⚠️ NOT: ShazamKit **tvOS'ta desteklenmiyor** — sadece iOS / macOS / watchOS
+### "AppIcon must include 400x240 icon"
+`Brand/Assets.xcassets/AppIcon.brandassets/`'e top shelf + AppIcon image setlerini eklemelisin. Hazır PNG'ler `Brand/` klasöründe.
 
 ---
 
@@ -141,22 +142,23 @@ ShazamKit gibi entitlement'lar Apple Developer Portal'da App ID Capability olara
 | Komut | Ne yapar |
 |-------|----------|
 | `yarn ios:setup` | iOS + WatchOS (mevcut, **değişmedi**) |
-| `yarn tvos:setup` | Apple TV + macOS projesini regenerate eder (**YENİ**) |
+| `yarn tvos:setup` | Apple TV projesi (**YENİ**) |
+| `yarn build:mac` (desktop/) | macOS Electron DMG |
+| `yarn build:win` (desktop/) | Windows EXE/NSIS |
+| `yarn build:linux` (desktop/) | Linux AppImage/DEB |
 | `open ios/MegaRadio.xcworkspace` | iOS / WatchOS aç |
-| `open tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj` | tvOS / macOS aç |
+| `open tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj` | tvOS aç |
 
 ---
 
-## 🚢 App Store'a Gönderme
+## 🚢 App Store'a Gönderme (Apple TV)
 
-### Apple TV
-1. Xcode → MegaRadioTV scheme → Product → Archive
+1. Xcode → MegaRadioTV scheme → **Product → Archive**
 2. Distribute App → App Store Connect
 3. Apple Developer Portal → tvOS app oluştur (eğer yoksa)
-4. TestFlight → internal testing → review submission
+4. App Store Connect → TestFlight → review submission
 
-### macOS
-Aynı akış ama scheme `MegaRadioMac`. Mac App Store kuralları için **App Sandbox** zorunlu (zaten açık).
+Universal Purchase iOS app ile beraber çalışır (aynı bundle ID).
 
 ---
 
