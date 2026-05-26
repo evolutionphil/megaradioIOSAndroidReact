@@ -135,7 +135,7 @@ struct AppSidebar: View {
     let active: Route
     @EnvironmentObject var router: TVRouter
 
-    private struct Item {
+    fileprivate struct Item {
         let id: String
         let label: String
         let icon: String   // PNG asset name in `Assets/Images/`
