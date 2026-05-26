@@ -98,11 +98,13 @@
       
       Because UIApplicationSceneManifest is present, iOS adopts the
       UIScene lifecycle for the WHOLE app — including the iPhone window.
-      That means we MUST declare a UIWindowSceneSessionRoleApplication
-      entry as well, pointing at MainSceneDelegate. Without it the
-      iPhone window has no delegate, AppDelegate.window is ignored, and
-      the React Native root view never renders → black screen after
-      splash.
+      We therefore declare BOTH scene roles:
+        • UIWindowSceneSessionRoleApplication       → PhoneSceneDelegate
+        • CPTemplateApplicationSceneSessionRole...  → CarPlaySceneDelegate
+      AppDelegate.application(_:configurationForConnecting:options:) ALSO
+      returns these classes via direct metatype references — that's the
+      foolproof path; Info.plist is the declarative fallback Xcode uses
+      to validate the manifest at build time.
       
       Source: https://developer.apple.com/documentation/uikit/app_and_environment/
               scenes/specifying_the_scenes_your_app_supports
@@ -113,24 +115,24 @@
       <true/>
       <key>UISceneConfigurations</key>
       <dict>
+        <key>UIWindowSceneSessionRoleApplication</key>
+        <array>
+          <dict>
+            <key>UISceneConfigurationName</key>
+            <string>Default Configuration</string>
+            <key>UISceneDelegateClassName</key>
+            <string>$(PRODUCT_MODULE_NAME).PhoneSceneDelegate</string>
+          </dict>
+        </array>
         <key>CPTemplateApplicationSceneSessionRoleApplication</key>
         <array>
           <dict>
             <key>UISceneClassName</key>
             <string>CPTemplateApplicationScene</string>
             <key>UISceneConfigurationName</key>
-            <string>MegaRadio-CarPlay</string>
+            <string>CarPlay</string>
             <key>UISceneDelegateClassName</key>
             <string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
-          </dict>
-        </array>
-        <key>UIWindowSceneSessionRoleApplication</key>
-        <array>
-          <dict>
-            <key>UISceneConfigurationName</key>
-            <string>MegaRadio-Main</string>
-            <key>UISceneDelegateClassName</key>
-            <string>$(PRODUCT_MODULE_NAME).MainSceneDelegate</string>
           </dict>
         </array>
       </dict>

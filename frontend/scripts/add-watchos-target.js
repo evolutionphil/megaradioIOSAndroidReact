@@ -805,7 +805,7 @@ function ensureSwiftFileInTarget(filename) {
 
 log('');
 log('Ensuring iPhone scene + CarPlay Swift sources are registered…');
-for (const f of ['MainSceneDelegate.swift', 'CarPlaySceneDelegate.swift', 'SiriPlayMediaHandler.swift']) {
+for (const f of ['PhoneSceneDelegate.swift', 'CarPlaySceneDelegate.swift', 'SiriPlayMediaHandler.swift']) {
   const srcPath = path.join(IOS_DIR, 'MegaRadio', f);
   if (!fs.existsSync(srcPath)) {
     log('  · ' + f + ' missing on disk — skipping (run expo prebuild first?)');

@@ -15,11 +15,12 @@ public class AppDelegate: ExpoAppDelegate {
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
-  // Captured launchOptions so the UIScene lifecycle (MainSceneDelegate)
-  // can pass them through to React Native when it finally creates the
-  // window. AppDelegate fires earlier than `scene(_:willConnectTo:)`,
-  // and we don't have the windowScene at that point.
-  var launchOptionsForScene: [UIApplication.LaunchOptionsKey: Any]?
+
+  // Flag used by PhoneSceneDelegate to know if the RN bridge has already
+  // been started (e.g. by CarPlay connecting first in a cold-launch).
+  // It lets the phone scene reuse the existing rootViewController instead
+  // of double-mounting the bundle.
+  private var isReactNativeInitialized = false
 
   public override func application(
     _ application: UIApplication,
@@ -45,20 +46,65 @@ public class AppDelegate: ExpoAppDelegate {
     reactNativeFactory = factory
     bindReactNativeFactory(factory)
 
-    // Stash launchOptions for MainSceneDelegate. We can't mount React
-    // Native here anymore — the iPhone scene doesn't exist yet, and any
-    // UIWindow we create now will be invisible because it has no
-    // `windowScene`. MainSceneDelegate.scene(_:willConnectTo:options:)
-    // will pick this up and start React Native on the correct window.
-    self.launchOptionsForScene = launchOptions
-
 #if os(iOS) || os(tvOS)
 // @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-10e8520570672fd76b2403b7e1e27f5198a6349a
 FirebaseApp.configure()
 // @generated end @react-native-firebase/app-didFinishLaunchingWithOptions
 #endif
 
+    // NOTE: We do NOT start React Native here. The PhoneSceneDelegate
+    // does that with the proper UIWindowScene-attached window, so the
+    // root view actually appears on-screen. Starting it here too (with
+    // a window that has no windowScene) is what previously produced
+    // the splash → black-screen bug.
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  // MARK: - Scene Configuration (iOS 13+)
+  //
+  // Returning specific delegate classes here (instead of just relying on
+  // Info.plist) makes the wiring foolproof — Swift class name lookup via
+  // `$(PRODUCT_MODULE_NAME).Foo` can fail subtly (e.g. when the @objc
+  // rename differs from the module-prefixed name), but
+  // `config.delegateClass = X.self` always works because it's a direct
+  // metatype reference. Info.plist still declares the same scenes so
+  // Xcode validates the manifest at build time.
+  public func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+      let config = UISceneConfiguration(
+        name: "CarPlay",
+        sessionRole: connectingSceneSession.role
+      )
+      config.delegateClass = CarPlaySceneDelegate.self
+      config.sceneClass = CPTemplateApplicationScene.self
+      return config
+    }
+
+    // Phone / iPad: UIWindowSceneSessionRoleApplication.
+    let config = UISceneConfiguration(
+      name: "Default Configuration",
+      sessionRole: connectingSceneSession.role
+    )
+    config.delegateClass = PhoneSceneDelegate.self
+    return config
+  }
+
+  // MARK: - React Native bridge ready-state helpers
+  //
+  // PhoneSceneDelegate calls these to coordinate with CarPlay so we
+  // never double-initialise the JS runtime.
+
+  @objc public func isReactNativeReady() -> Bool {
+    return isReactNativeInitialized
+  }
+
+  @objc public func markReactNativeInitialized() {
+    isReactNativeInitialized = true
   }
 
   // Linking API
@@ -76,17 +122,13 @@ FirebaseApp.configure()
   // `com.visiongo.megaradio.playMedia`). We unwrap the station name and
   // synthesize a `megaradio://play?q=<name>` deep link — the React Native
   // Linking handler (already wired up) opens the search/play flow exactly
-  // as if the user had tapped a deep link. This works in both the regular
-  // iOS UI and CarPlay (CarPlay session forwards continueUserActivity to
-  // the same AppDelegate method).
+  // as if the user had tapped a deep link.
   public override func application(
     _ application: UIApplication,
     continue userActivity: NSUserActivity,
     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
   ) -> Bool {
     if let mediaUrl = SiriPlayMediaHandler.deepLinkURL(for: userActivity) {
-      // Defer to the very next runloop so the JS bundle has a chance to
-      // mount its Linking listener before the URL fires.
       DispatchQueue.main.async {
         _ = RCTLinkingManager.application(application, open: mediaUrl, options: [:])
       }
@@ -113,22 +155,3 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 #endif
   }
 }
-
-// MARK: - CarPlay Scene Configuration
-//
-// DO NOT add `application(_:configurationForConnecting:options:)` here.
-//
-// Implementing that method forces iOS to adopt the UIScene lifecycle for
-// EVERY connecting scene — including the iPhone window. Because we have
-// no UIWindowSceneSessionRoleApplication scene delegate declared, iPhone
-// then gets a scene with no window delegate, AppDelegate.window is
-// IGNORED, and the React Native root view never makes it on-screen →
-// the app shows only the splash, then a permanent black screen.
-//
-// Instead, CarPlay scene configuration is handled entirely by Info.plist's
-// UIApplicationSceneManifest → CPTemplateApplicationSceneSessionRoleApplication
-// entry, which points at CarPlaySceneDelegate. With no scene config
-// declared (and no method overriding it) for the iPhone role, iOS falls
-// back to the legacy UIApplicationDelegate lifecycle we set up above in
-// application(_:didFinishLaunchingWithOptions:) — and the AppDelegate
-// window gets shown normally.
