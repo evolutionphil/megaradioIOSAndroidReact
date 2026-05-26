@@ -1,0 +1,245 @@
+name: Build TV Packages (Tizen .wgt + WebOS .ipk)
+
+# Triggers
+on:
+  # Manual run from the Actions tab
+  workflow_dispatch:
+    inputs:
+      sign_packages:
+        description: 'Sign Tizen .wgt? (requires AUTHOR_P12 + DISTRIBUTOR_P12 secrets)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+  # Auto-build on tag push (v1.0.0, v1.0.1, etc.)
+  push:
+    tags:
+      - 'tv-v*'
+
+  # Optional auto-build when TV web preview changes
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/tvanddesktop/apple-tv-and-macos/web-preview/**'
+      - 'frontend/tvanddesktop/samsung-tizen/**'
+      - 'frontend/tvanddesktop/lg-webos/**'
+      - '.github/workflows/build-tv-packages.yml'
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────
+  # Stage 1 — Build the shared TV web preview (Vite + React).
+  # Both Tizen and WebOS consume this dist/ output.
+  # ────────────────────────────────────────────────────────────────────
+  build-web-preview:
+    name: Build TV web preview (Vite)
+    runs-on: ubuntu-latest
+    outputs:
+      build_hash: ${{ steps.hash.outputs.hash }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/yarn.lock
+
+      - name: Install web-preview deps
+        working-directory: frontend/tvanddesktop/apple-tv-and-macos/web-preview
+        run: yarn install --frozen-lockfile
+
+      - name: Build TV preview (vite build)
+        working-directory: frontend/tvanddesktop/apple-tv-and-macos/web-preview
+        run: yarn build
+
+      - name: Compute build hash
+        id: hash
+        run: echo "hash=$(find frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-12)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload built web preview as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tv-web-preview-dist
+          path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist
+          retention-days: 7
+
+  # ────────────────────────────────────────────────────────────────────
+  # Stage 2A — Tizen .wgt packaging
+  # Uses Samsung's official Tizen Studio CLI (`tizen package`).
+  # ────────────────────────────────────────────────────────────────────
+  build-tizen-wgt:
+    name: Build Samsung Tizen .wgt
+    needs: build-web-preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download web-preview dist
+        uses: actions/download-artifact@v4
+        with:
+          name: tv-web-preview-dist
+          path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist
+
+      - name: Sync TV preview into samsung-tizen/dist
+        working-directory: frontend/tvanddesktop/samsung-tizen
+        run: node prepare-tizen.js
+
+      - name: Setup JDK 17 (required by Tizen Studio CLI)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Tizen Studio CLI
+        run: |
+          # Tizen Studio CLI is bundled in a single tarball that includes
+          # `tizen`, `web-cli`, and the cert/sign tooling.
+          mkdir -p $HOME/tizen-studio
+          curl -fsSL https://download.tizen.org/sdk/Installer/tizen-studio_5.0/web-cli_Tizen_Studio_5.0_ubuntu-64.bin -o /tmp/tizen-cli.bin
+          chmod +x /tmp/tizen-cli.bin
+          /tmp/tizen-cli.bin --accept-license $HOME/tizen-studio || true
+          echo "$HOME/tizen-studio/tools/ide/bin" >> $GITHUB_PATH
+          echo "$HOME/tizen-studio/tools" >> $GITHUB_PATH
+
+      - name: Verify Tizen CLI
+        run: tizen version || echo "tizen CLI not on PATH"
+
+      # ──── OPTIONAL: signing ─────────────────────────────────────────
+      # If you set AUTHOR_P12 + DISTRIBUTOR_P12 + their passwords as repo
+      # secrets, the .wgt will be signed and ready for Samsung Seller
+      # Office submission. If not, an UNSIGNED .wgt is produced (good
+      # for local testing in Tizen TV's developer mode).
+      - name: Import certificates (if provided)
+        if: ${{ inputs.sign_packages == 'true' && env.AUTHOR_P12 != '' }}
+        env:
+          AUTHOR_P12: ${{ secrets.TIZEN_AUTHOR_P12_BASE64 }}
+          DISTRIBUTOR_P12: ${{ secrets.TIZEN_DISTRIBUTOR_P12_BASE64 }}
+          AUTHOR_PASSWORD: ${{ secrets.TIZEN_AUTHOR_PASSWORD }}
+          DISTRIBUTOR_PASSWORD: ${{ secrets.TIZEN_DISTRIBUTOR_PASSWORD }}
+        run: |
+          mkdir -p $HOME/.tizen-certs
+          echo "$AUTHOR_P12" | base64 -d > $HOME/.tizen-certs/author.p12
+          echo "$DISTRIBUTOR_P12" | base64 -d > $HOME/.tizen-certs/distributor.p12
+          tizen security-profiles add \
+            --name megaradio \
+            --author $HOME/.tizen-certs/author.p12 \
+            --password "$AUTHOR_PASSWORD" \
+            --dist $HOME/.tizen-certs/distributor.p12 \
+            --dist-password "$DISTRIBUTOR_PASSWORD"
+
+      - name: Package .wgt
+        working-directory: frontend/tvanddesktop/samsung-tizen/dist
+        run: |
+          if [ -d "$HOME/.tizen-certs" ]; then
+            tizen package -t wgt -s megaradio -- .
+          else
+            # Unsigned dev build (still installable in Tizen TV dev mode)
+            tizen package -t wgt -- .
+          fi
+          ls -la *.wgt
+
+      - name: Upload .wgt artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: megaradio-tizen-wgt
+          path: frontend/tvanddesktop/samsung-tizen/dist/*.wgt
+          retention-days: 30
+
+  # ────────────────────────────────────────────────────────────────────
+  # Stage 2B — LG WebOS .ipk packaging
+  # Uses LG's @webos-tools/cli (`ares-package`).
+  # ────────────────────────────────────────────────────────────────────
+  build-webos-ipk:
+    name: Build LG WebOS .ipk
+    needs: build-web-preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download web-preview dist
+        uses: actions/download-artifact@v4
+        with:
+          name: tv-web-preview-dist
+          path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist
+
+      - name: Sync TV preview into lg-webos/dist
+        working-directory: frontend/tvanddesktop/lg-webos
+        run: node prepare-webos.js
+
+      - name: Install webOS CLI
+        run: |
+          # webOS CLI ships as an npm package since 2024 — easier than
+          # the legacy installer.
+          npm install -g @webos-tools/cli
+          ares --version
+
+      - name: Package .ipk
+        working-directory: frontend/tvanddesktop/lg-webos
+        run: |
+          ares-package dist/ -o .
+          ls -la *.ipk
+
+      - name: Upload .ipk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: megaradio-webos-ipk
+          path: frontend/tvanddesktop/lg-webos/*.ipk
+          retention-days: 30
+
+  # ────────────────────────────────────────────────────────────────────
+  # Stage 3 — Create a GitHub Release with both packages when a
+  # `tv-v*` tag is pushed (e.g. `git tag tv-v1.0.69 && git push --tags`)
+  # ────────────────────────────────────────────────────────────────────
+  release:
+    name: Publish TV Release
+    if: startsWith(github.ref, 'refs/tags/tv-v')
+    needs: [build-tizen-wgt, build-webos-ipk]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Tizen .wgt
+        uses: actions/download-artifact@v4
+        with:
+          name: megaradio-tizen-wgt
+          path: ./release-assets
+
+      - name: Download WebOS .ipk
+        uses: actions/download-artifact@v4
+        with:
+          name: megaradio-webos-ipk
+          path: ./release-assets
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "TV Release ${{ github.ref_name }}"
+          body: |
+            **Samsung Tizen + LG WebOS TV builds**
+            
+            - 📺 `*.wgt` → Samsung Apps Seller Office upload OR Tizen TV dev mode
+            - 📺 `*.ipk` → LG webOS dev mode install via `ares-install`
+            
+            Build hash: ${{ needs.build-web-preview.outputs.build_hash }}
+          files: |
+            release-assets/*.wgt
+            release-assets/*.ipk
+          draft: false
+          prerelease: false

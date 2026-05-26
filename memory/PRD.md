@@ -9,7 +9,22 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 - **Backend**: FastAPI + MongoDB + `api.themegaradio.com` (legacy)
 
 ## What's Been Implemented (Apr 2026)
-### iOS Splash → Black Screen Crash FIXED ✅ (May 26, 2026)
+### Backend Pending Items — ALL COMPLETED ✅ (May 26, 2026)
+Backend developer confirmed completion of both P1 backend tasks (TV login QR auto-activation + Google Play RTDN webhook). Verification:
+- **Web Activation `?code=`**: Endpoint `POST /api/auth/tv/activate` live at
+  `https://www.themegaradio.com/tv` — auto-fires on page load when user is
+  logged-in, preserves `?code=` through OAuth/email login when logged-out.
+  TV frontend already polls `GET /api/auth/tv/code/:code/status` (no
+  frontend changes needed).
+- **Android TV RTDN**: `POST /api/webhooks/google-play-rtdn` live with
+  shared-secret + OIDC JWT verification, idempotent messageId tracking,
+  Google Play Developer API receipt verification. Handles all 7
+  notificationType events (PURCHASED/RENEWED/CANCELED/EXPIRED/REVOKED/
+  ON_HOLD/GRACE). User just needs to set `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`
+  env var on Railway + finalize Pub/Sub push subscription endpoint URL
+  in Google Play Console.
+
+
 - **Symptom**: After CarPlay/WatchOS integration, iPhone app loaded JS bundle
   (Firebase analytics fired, all modules registered, `Running "main"` printed)
   but stayed on a permanent black screen after splash.
