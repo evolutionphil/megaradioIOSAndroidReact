@@ -41,25 +41,19 @@ settings:
     GENERATE_INFOPLIST_FILE: NO             # We provide our own Info.plist
     INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.music"
     # ──────────────────────────────────────────────────────────────────
-    # Bundle Identifier strategy
+    # Bundle Identifier — UNIVERSAL PURCHASE
     #
-    # Currently: `com.visiongo.megaradio.tv`
-    #   — a SEPARATE App ID from the iOS app. Xcode auto-registers it
-    #   on first build, no manual Apple Developer Portal work needed.
-    #   App will appear on the tvOS App Store as a STANDALONE listing.
+    # `com.visiongo.megaradio` is the SAME App ID as the iOS app.
+    # The App ID is configured at https://developer.apple.com/account/
+    # resources/identifiers/list to support iOS + iPadOS + macOS + tvOS
+    # + watchOS + visionOS at the platform level — so a tvOS app with
+    # this bundle id is valid and provisioning will succeed.
     #
-    # Future (Universal Purchase): change to `com.visiongo.megaradio`
-    #   — identical bundle ID to iOS. Users buy ONCE, use on iPhone
-    #   + Apple TV. Requires one-time manual step:
-    #     1) Visit https://developer.apple.com/account/resources/identifiers/list
-    #     2) Click on `com.visiongo.megaradio`
-    #     3) Scroll down → "Additional Capabilities"
-    #     4) Enable "tvOS" alongside iOS
-    #     5) Save. The provisioning profile will then auto-generate.
-    #
-    # When you switch back, just edit this single line and re-run
-    # `yarn tvos:setup`.
-    PRODUCT_BUNDLE_IDENTIFIER: com.visiongo.megaradio.tv
+    # On the App Store, this means iOS users can install the Apple TV
+    # version with a single tap on their TV. Universal Purchase is
+    # active automatically.
+    # ──────────────────────────────────────────────────────────────────
+    PRODUCT_BUNDLE_IDENTIFIER: com.visiongo.megaradio
 
 # ────────────────────────────────────────────────────────────────────────
 # TARGETS
