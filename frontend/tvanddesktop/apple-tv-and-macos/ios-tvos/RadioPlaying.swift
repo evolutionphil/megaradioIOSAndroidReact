@@ -224,7 +224,7 @@ struct RadioPlayingPage: View {
         primary: Bool,
         isFilled: Bool,
         pinkBorderOnly: Bool,
-        @ViewBuilder label: () -> L,
+        @ViewBuilder label: @escaping () -> L,
         action: @escaping () -> Void
     ) -> some View {
         FocusableCircle(size: 90.192, action: action) { isFocused in
