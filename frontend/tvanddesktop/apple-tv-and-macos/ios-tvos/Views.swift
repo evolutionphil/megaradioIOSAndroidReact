@@ -118,7 +118,7 @@ struct AppSidebar: View {
     @EnvironmentObject var router: TVRouter
     @FocusState private var focused: String?
 
-    private struct Item: Hashable {
+    private struct Item {
         let id: String
         let label: String
         let icon: String
