@@ -21,6 +21,10 @@ yarn tvos:setup
 open tvanddesktop/apple-tv-and-macos/ios-tvos/MegaRadioTV.xcodeproj
 ```
 
+> **⚠️ Önemli:** `project.yml`, `Assets/Fonts/`, veya `Assets/Images/` değişirse
+> mutlaka `yarn tvos:setup` çalıştırın. Yalnızca `.swift` dosya değişiklikleri için
+> Xcode hot reload yeterlidir (Cmd+R).
+
 Xcode'da:
 - **Scheme** (sol üst) → `MegaRadioTV`
 - **Cihaz** → Apple TV Simulator (örn. *Apple TV 4K (3rd generation)*)

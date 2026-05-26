@@ -1,14 +1,38 @@
 // Views.swift — Root router + shared components for MegaRadio TV.
 //
-// Each major page from `web-preview/src/pages/*.tsx` has been ported to its
-// own Swift file (Splash.swift, Guides.swift, Discover.swift, RadioPlaying.swift,
-// Genres.swift, Search.swift, Favorites.swift, Settings.swift, CountrySelect.swift)
-// so this file stays focused on the router + shared widgets.
+// Every reusable widget porting a piece of `web-preview/src/components/*.tsx`
+// lives here:
+//   • MegaRadioLogo       — `web-preview/.../Splash.tsx`+`DiscoverNoUser.tsx`
+//   • AppSidebar          — `web-preview/src/components/Sidebar.tsx`
+//   • CountryTriggerHeader/ LoginHeaderButton — header pills (1453, 67) / (1694, 67)
+//   • GlobalPlayerView    — `web-preview/src/components/GlobalPlayer.tsx`
+//
+// Plus the root router that swaps pages based on `TVRouter.route`.
 
 import SwiftUI
 
 // ────────────────────────────────────────────────────────────────────
-// Root — chooses which page to render based on TVRouter state.
+// Custom button style — fully transparent (no default tvOS halo).
+// ────────────────────────────────────────────────────────────────────
+
+#if os(tvOS)
+/// Removes tvOS's default white focus halo so we can apply our own pink
+/// border / glow / scale animations that match the web design exactly.
+struct TVTransparentButtonStyle: PrimitiveButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .contentShape(Rectangle())
+            .onTapGesture { configuration.trigger() }
+    }
+}
+
+extension PrimitiveButtonStyle where Self == TVTransparentButtonStyle {
+    static var tvTransparent: TVTransparentButtonStyle { TVTransparentButtonStyle() }
+}
+#endif
+
+// ────────────────────────────────────────────────────────────────────
+// Root router
 // ────────────────────────────────────────────────────────────────────
 
 struct RootRouterView: View {
@@ -17,13 +41,11 @@ struct RootRouterView: View {
 
     var body: some View {
         ZStack {
-            // Page switcher — `.id(...)` forces SwiftUI to rebuild on route change
-            // so each page's `.task` runs cleanly.
             currentPage
                 .id(routeID)
                 .transition(.opacity)
 
-            // Persistent global player overlay (matches web `GlobalPlayer`).
+            // Persistent global player (matches web `GlobalPlayer`).
             if let _ = player.currentStation, !shouldHideGlobalPlayer {
                 GlobalPlayerView()
                     .allowsHitTesting(true)
@@ -34,7 +56,6 @@ struct RootRouterView: View {
         .animation(.easeInOut(duration: 0.25), value: router.route)
     }
 
-    /// Hide the floating player on screens that present their OWN player UI.
     private var shouldHideGlobalPlayer: Bool {
         switch router.route {
         case .radioPlaying, .splash, .guide:
@@ -78,28 +99,21 @@ struct RootRouterView: View {
 }
 
 // ────────────────────────────────────────────────────────────────────
-// Shared widgets ported from web-preview
+// MegaRadioLogo — 1:1 port of the web `images/path-8.svg` + wordmark.
 // ────────────────────────────────────────────────────────────────────
 
-/// MegaRadio wordmark + pink path-8 swoosh.
-/// Web: top-left `(30, 64)` with size `164.421 × 57` on the discover page,
-/// and centered `(798, 484)` with size `323.069 × 112` on the splash.
+/// Splash size: 323.069 × 112. Header size: 164.421 × 57 (scale = 0.5085).
 struct MegaRadioLogo: View {
-    /// Visual scale relative to the splash-size logo (323×112).
-    /// `0.508` produces the 164×57 header version used on every main page.
     let scale: CGFloat
-
     init(scale: CGFloat = 1.0) { self.scale = scale }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            // Pink swoosh on the left (web: `images/path-8.svg`, occupies
-            // `right-[65.2%]` of the wrapper, i.e. left 34.8% of width).
+            // Pink swoosh (`images/path-8.svg`), occupies left 34.8% of width.
             BrandImage(name: "path-8")
                 .frame(width: 323.069 * 0.348 * scale, height: 112 * scale)
 
-            // Wordmark on the right (web: `left-[18.67%]`, `top-[46.16%]`,
-            // font 53.108px Ubuntu — "mega" Bold, "radio" Regular).
+            // Wordmark "mega" Bold + "radio" Regular — 53.108 px font.
             HStack(spacing: 0) {
                 Text("mega").font(.ubuntu(53.108 * scale, .bold))
                 Text("radio").font(.ubuntu(53.108 * scale, .regular))
@@ -111,17 +125,20 @@ struct MegaRadioLogo: View {
     }
 }
 
-/// Left vertical navigation sidebar.
-/// Web: fixed at `left:48, top:170, width:120, height:760`.
+// ────────────────────────────────────────────────────────────────────
+// AppSidebar — 1:1 port of `web-preview/src/components/Sidebar.tsx`.
+// Position: left:48, top:170, width:120, height:760.
+// Item: 120×100 each, 108 px vertical pitch (8 px gap).
+// ────────────────────────────────────────────────────────────────────
+
 struct AppSidebar: View {
     let active: Route
     @EnvironmentObject var router: TVRouter
-    @FocusState private var focused: String?
 
     private struct Item {
         let id: String
         let label: String
-        let icon: String
+        let icon: String   // PNG asset name in `Assets/Images/`
         let route: Route
     }
 
@@ -135,47 +152,19 @@ struct AppSidebar: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(Array(items.enumerated()), id: \.element.id) { _, item in
-                sidebarButton(item)
+        ZStack(alignment: .topLeading) {
+            ForEach(Array(items.enumerated()), id: \.element.id) { idx, item in
+                SidebarItemView(
+                    item: item,
+                    isActive: matches(active, item.route)
+                ) {
+                    router.go(item.route)
+                }
+                .offset(x: 0, y: CGFloat(idx) * 108)
             }
         }
-        .frame(width: 120, alignment: .topLeading)
-        .position(x: 48 + 60, y: 170 + (108 * CGFloat(items.count)) / 2)
-    }
-
-    @ViewBuilder
-    private func sidebarButton(_ item: Item) -> some View {
-        let isActive = matches(active, item.route)
-        let isFocused = focused == item.id
-
-        Button {
-            router.go(item.route)
-        } label: {
-            VStack(spacing: 6) {
-                BrandImage(name: item.icon)
-                    .frame(width: 28, height: 28)
-                Text(item.label)
-                    .font(.ubuntu(16, .medium))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-            }
-            .frame(width: 120, height: 100)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(isFocused ? Theme.accentFocusBg :
-                          isActive  ? Theme.accent.opacity(0.20) : Color.clear)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(isFocused ? Theme.accent : .clear, lineWidth: 2)
-            )
-            .shadow(color: isFocused ? Theme.accent.opacity(0.5) : .clear,
-                    radius: 16, x: 0, y: 0)
-            .opacity(isFocused ? 1 : 0.85)
-        }
-        .buttonStyle(.plain)
-        .focused($focused, equals: item.id)
+        .frame(width: 120, height: 760, alignment: .topLeading)
+        .offset(x: 48, y: 170)
     }
 
     private func matches(_ r: Route, _ target: Route) -> Bool {
@@ -193,7 +182,52 @@ struct AppSidebar: View {
     }
 }
 
-/// Country trigger pill placed in the header at `(1453, 67)`.
+/// Single sidebar item. Uses `tvTransparent` button style so we control
+/// the focus appearance entirely (no white halo, no tilt).
+private struct SidebarItemView: View {
+    let item: SidebarItem
+    let isActive: Bool
+    let onTap: () -> Void
+    @FocusState private var isFocused: Bool
+
+    typealias SidebarItem = AppSidebar.Item
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: 6) {
+                BrandImage(name: item.icon)
+                    .frame(width: 28, height: 28)
+                Text(item.label)
+                    .font(.ubuntu(16, .medium))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                    .frame(width: 104)
+            }
+            .frame(width: 120, height: 100)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(
+                        isFocused ? Theme.accent.opacity(0.25)
+                        : isActive ? Theme.accent.opacity(0.20)
+                        : Color.clear
+                    )
+            )
+            .shadow(color: isFocused ? Theme.accent.opacity(0.5) : .clear,
+                    radius: 16, x: 0, y: 0)
+            .opacity(isFocused ? 1 : 0.85)
+        }
+        .buttonStyle(.tvTransparent)
+        .focused($isFocused)
+        .animation(.easeInOut(duration: 0.2), value: isFocused)
+    }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Header pills
+// ────────────────────────────────────────────────────────────────────
+
+/// Country trigger at (1453, 67).
+/// Web: rounded white pill, flag + name + globe icon.
 struct CountryTriggerHeader: View {
     @EnvironmentObject var country: CountryStore
     @EnvironmentObject var router: TVRouter
@@ -202,35 +236,29 @@ struct CountryTriggerHeader: View {
     var body: some View {
         Button { router.go(.countrySelect) } label: {
             HStack(spacing: 10) {
-                Text(country.selectedCountryFlag)
-                    .font(.system(size: 24))
-                Text(country.selectedCountryCode == "GLOBAL"
-                     ? "Global"
-                     : country.selectedCountryName)
-                    .font(.ubuntu(18, .bold))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                BrandImage(name: "globe-icon")
-                    .frame(width: 18, height: 18)
+                Text(country.selectedCountryFlag).font(.system(size: 24))
+                Text(country.selectedCountryCode == "GLOBAL" ? "Global" : country.selectedCountryName)
+                    .font(.ubuntu(18, .bold)).foregroundColor(.white).lineLimit(1)
+                BrandImage(name: "globe-icon").frame(width: 18, height: 18)
             }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 18).padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 30)
-                    .fill(Color.white.opacity(isFocused ? 0.22 : 0.10))
+                    .fill(isFocused ? Theme.accent.opacity(0.25) : Color.white.opacity(0.10))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 30)
-                    .stroke(isFocused ? Color.white : .clear, lineWidth: 3)
+                    .stroke(isFocused ? Theme.accent : .clear, lineWidth: 3)
             )
+            .shadow(color: isFocused ? Theme.accent.opacity(0.6) : .clear, radius: 16)
             .scaleEffect(isFocused ? 1.05 : 1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
     }
 }
 
-/// Login pill in the header at `(1694, 67)`.
+/// Login button at (1694, 67).
 struct LoginHeaderButton: View {
     @EnvironmentObject var auth: AuthStore
     @EnvironmentObject var router: TVRouter
@@ -242,25 +270,18 @@ struct LoginHeaderButton: View {
         } label: {
             HStack(spacing: 6) {
                 if auth.isAuthenticated {
-                    Circle()
-                        .fill(Theme.accent)
-                        .frame(width: 34, height: 34)
+                    Circle().fill(Theme.accent).frame(width: 34, height: 34)
                         .overlay(
                             Text(String(auth.user?.displayName?.prefix(1) ?? "U"))
-                                .font(.ubuntu(16, .bold))
-                                .foregroundColor(.white)
+                                .font(.ubuntu(16, .bold)).foregroundColor(.white)
                         )
                 } else {
                     Image(systemName: "person.crop.circle")
-                        .font(.system(size: 22))
-                        .foregroundColor(.white)
-                    Text("Login")
-                        .font(.ubuntu(18, .bold))
-                        .foregroundColor(.white)
+                        .font(.system(size: 22)).foregroundColor(.white)
+                    Text("Login").font(.ubuntu(18, .bold)).foregroundColor(.white)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 16).padding(.vertical, 8)
             .frame(height: 51)
             .background(
                 RoundedRectangle(cornerRadius: 30)
@@ -268,23 +289,25 @@ struct LoginHeaderButton: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 30)
-                    .stroke(isFocused ? Color.white : .clear, lineWidth: 4)
+                    .stroke(isFocused ? .white : .clear, lineWidth: 4)
             )
             .shadow(color: isFocused ? Theme.accent.opacity(0.8) : .clear, radius: 30)
             .scaleEffect(isFocused ? 1.10 : 1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
     }
 }
 
-/// Global mini-player rendered at the bottom of every screen except the
-/// dedicated RadioPlaying / Splash / Guide pages.
+// ────────────────────────────────────────────────────────────────────
+// GlobalPlayerView — port of `web-preview/src/components/GlobalPlayer.tsx`.
+// Bottom-anchored mini player. No white halos — only pink ring on focus.
+// ────────────────────────────────────────────────────────────────────
+
 struct GlobalPlayerView: View {
     @EnvironmentObject var player: AudioPlayer
     @EnvironmentObject var router: TVRouter
     @EnvironmentObject var favorites: FavoritesStore
-    @FocusState private var focused: String?
 
     var body: some View {
         if let station = player.currentStation {
@@ -292,65 +315,64 @@ struct GlobalPlayerView: View {
                 Spacer()
                 HStack(spacing: 20) {
                     StationArtwork(url: station.artworkURL, size: 72, cornerRadius: 12)
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text(player.nowPlayingTitle ?? station.name)
-                            .font(.ubuntu(22, .bold))
-                            .foregroundColor(.white)
-                            .lineLimit(1)
+                            .font(.ubuntu(22, .bold)).foregroundColor(.white).lineLimit(1)
                         Text(player.nowPlayingArtist ?? station.country ?? "")
-                            .font(.ubuntu(16, .regular))
-                            .foregroundColor(Theme.textSecondary)
-                            .lineLimit(1)
+                            .font(.ubuntu(16)).foregroundColor(Theme.textSecondary).lineLimit(1)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                    Button { player.togglePlayPause() } label: {
-                        Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 60, height: 60)
-                            .background(Circle().fill(Theme.accent))
-                            .scaleEffect(focused == "play" ? 1.1 : 1)
-                    }
-                    .buttonStyle(.plain)
-                    .focused($focused, equals: "play")
+                    miniCircle(
+                        symbol: player.isPlaying ? "pause.fill" : "play.fill",
+                        primary: true,
+                        size: 60
+                    ) { player.togglePlayPause() }
 
-                    Button { favorites.toggle(station) } label: {
-                        Image(systemName: favorites.isFavorite(station) ? "heart.fill" : "heart")
-                            .font(.system(size: 24))
-                            .foregroundColor(favorites.isFavorite(station) ? Theme.accent : .white)
-                            .frame(width: 56, height: 56)
-                            .background(Circle().fill(Color.white.opacity(0.10)))
-                            .scaleEffect(focused == "fav" ? 1.1 : 1)
-                    }
-                    .buttonStyle(.plain)
-                    .focused($focused, equals: "fav")
+                    miniCircle(
+                        symbol: favorites.isFavorite(station) ? "heart.fill" : "heart",
+                        primary: false,
+                        size: 56,
+                        tint: favorites.isFavorite(station) ? Theme.accent : .white
+                    ) { favorites.toggle(station) }
 
-                    Button { router.go(.radioPlaying) } label: {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right")
-                            .font(.system(size: 22))
-                            .foregroundColor(.white)
-                            .frame(width: 56, height: 56)
-                            .background(Circle().fill(Color.white.opacity(0.10)))
-                            .scaleEffect(focused == "expand" ? 1.1 : 1)
-                    }
-                    .buttonStyle(.plain)
-                    .focused($focused, equals: "expand")
+                    miniCircle(
+                        symbol: "arrow.up.left.and.arrow.down.right",
+                        primary: false,
+                        size: 56
+                    ) { router.go(.radioPlaying) }
                 }
-                .padding(.horizontal, 28)
-                .padding(.vertical, 16)
+                .padding(.horizontal, 28).padding(.vertical, 16)
                 .frame(width: 1500, height: 110)
                 .background(
-                    RoundedRectangle(cornerRadius: 28)
-                        .fill(.ultraThinMaterial)
+                    RoundedRectangle(cornerRadius: 28).fill(.ultraThinMaterial)
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 28)
-                        .stroke(.white.opacity(0.10), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 28).stroke(.white.opacity(0.10), lineWidth: 1)
                 )
                 .padding(.bottom, 32)
             }
             .frame(width: 1920, height: 1080, alignment: .bottom)
+        }
+    }
+
+    @ViewBuilder
+    private func miniCircle(
+        symbol: String, primary: Bool, size: CGFloat,
+        tint: Color = .white, action: @escaping () -> Void
+    ) -> some View {
+        FocusableCircle(size: size, action: action) { isFocused in
+            ZStack {
+                Circle().fill(primary ? Theme.accent : Color.black)
+                Image(systemName: symbol)
+                    .font(.system(size: size * 0.42, weight: .bold))
+                    .foregroundColor(tint)
+            }
+            .overlay(
+                Circle().stroke(isFocused ? Theme.accent : .clear, lineWidth: 4)
+            )
+            .shadow(color: isFocused ? Theme.accent.opacity(0.8) : .clear, radius: 28)
         }
     }
 }

@@ -102,7 +102,7 @@ private struct GenreTile: View {
             .scaleEffect(isFocused ? 1.06 : 1)
             .shadow(color: isFocused ? .black.opacity(0.55) : .clear, radius: 24, x: 0, y: 12)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
     }
 }
@@ -134,7 +134,7 @@ struct GenreListPage: View {
                             .background(Circle().fill(.white.opacity(0.10)))
                             .foregroundColor(.white)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.tvTransparent)
                     Text(tag.capitalized).font(.ubuntu(48, .bold)).foregroundColor(.white)
                 }
 

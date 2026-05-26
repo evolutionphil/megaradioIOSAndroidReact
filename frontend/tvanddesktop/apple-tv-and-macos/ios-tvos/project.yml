@@ -119,14 +119,18 @@ targets:
       - path: StoreKitIapService.swift      # tvOS StoreKit 2 IAP
       # ShazamRecognizer.swift is intentionally EXCLUDED — ShazamKit is
       # not available on tvOS at all. (Still on disk for future macOS use.)
+      # `type: group` flattens files into the app bundle root, so
+      # `Bundle.main.url(forResource:withExtension:)` finds them by name.
+      # `type: folder` (the previous setting) created a folder reference
+      # that preserved subdirectories and prevented runtime lookup.
       - path: Brand
-        type: folder         # Treat as resource bundle
+        type: group
         buildPhase: resources
       - path: Assets/Images
-        type: folder         # Web-preview assets (logo, icons, hero backgrounds)
+        type: group          # Web-preview assets (logo, icons, hero backgrounds)
         buildPhase: resources
       - path: Assets/Fonts
-        type: folder         # Ubuntu font family (Light/Regular/Medium/Bold)
+        type: group          # Ubuntu font family (Light/Regular/Medium/Bold)
         buildPhase: resources
     info:
       path: Info.plist

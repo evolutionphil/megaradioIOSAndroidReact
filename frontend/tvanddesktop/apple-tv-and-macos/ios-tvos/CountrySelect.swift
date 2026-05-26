@@ -122,7 +122,7 @@ private struct CountryTile: View {
             )
             .scaleEffect(isFocused ? 1.04 : 1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
     }
 }

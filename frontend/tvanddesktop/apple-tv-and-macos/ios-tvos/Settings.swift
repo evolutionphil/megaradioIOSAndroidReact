@@ -43,7 +43,7 @@ struct SettingsPage: View {
                     .background(Capsule().fill(Theme.accent))
                     .foregroundColor(.white)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.tvTransparent)
             .padding(.top, 12)
         }
         .padding(40)
@@ -68,7 +68,7 @@ struct SettingsPage: View {
                     .background(Capsule().fill(Theme.accent))
                     .foregroundColor(.white)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.tvTransparent)
             .padding(.top, 12)
         }
         .padding(40)
@@ -125,7 +125,7 @@ struct LoginPage: View {
                                 .background(Capsule().fill(Theme.accent))
                                 .foregroundColor(.white)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.tvTransparent)
                         .padding(.top, 16)
                     }
                 }

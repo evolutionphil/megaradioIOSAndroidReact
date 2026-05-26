@@ -43,7 +43,7 @@ struct GuidePage: View {
             Button { advance() } label: {
                 Color.clear.frame(width: 1920, height: 1080)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.tvTransparent)
             .focused($ctaFocused)
         }
         .onAppear { ctaFocused = true }

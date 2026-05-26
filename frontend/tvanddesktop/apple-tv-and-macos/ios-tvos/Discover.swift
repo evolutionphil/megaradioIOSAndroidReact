@@ -216,7 +216,7 @@ struct StationCardLarge: View {
                     .frame(width: 210, alignment: .leading)
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
         .animation(.easeOut(duration: 0.18), value: isFocused)
     }
@@ -244,7 +244,7 @@ struct GenrePill: View {
                 )
                 .scaleEffect(isFocused ? 1.08 : 1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
     }
 }
@@ -280,7 +280,7 @@ struct RecentStationCard: View {
             .scaleEffect(isFocused ? 1.06 : 1)
             .shadow(color: isFocused ? Theme.accent.opacity(0.6) : .clear, radius: 18)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tvTransparent)
         .focused($isFocused)
     }
 }
