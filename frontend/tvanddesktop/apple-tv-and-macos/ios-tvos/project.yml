@@ -93,10 +93,17 @@ targets:
       path: MegaRadioTV.entitlements
       properties:
         com.apple.developer.applesignin: [Default]
-        com.apple.developer.siri: true
         com.apple.security.application-groups:
           - group.com.visiongo.megaradio
-        com.apple.developer.shazamkit: true
+        # NOTE: Siri (INPlayMediaIntent) and ShazamKit do NOT need
+        # entitlement keys in this file. They're enabled by:
+        #   - Siri: Xcode → Signing & Capabilities → + Siri
+        #   - ShazamKit: Xcode → Signing & Capabilities → + ShazamKit
+        # Adding them here BEFORE you've enabled the corresponding
+        # App ID Capability in Apple Developer Portal causes:
+        #   "Entitlement X not found and could not be included in profile"
+        # Enable via Xcode UI when you actually need those features
+        # (Xcode will then add the correct entitlement key automatically).
     settings:
       base:
         SDKROOT: appletvos
@@ -151,10 +158,13 @@ targets:
         com.apple.security.files.user-selected.read-write: true
         com.apple.security.device.audio-input: true
         com.apple.developer.applesignin: [Default]
-        com.apple.developer.siri: true
         com.apple.security.application-groups:
           - group.com.visiongo.megaradio
-        com.apple.developer.shazamkit: true
+        # NOTE: Siri (INPlayMediaIntent) and ShazamKit not enabled here
+        # for the same reason as the tvOS target — they require the
+        # App ID Capability to be enabled in Apple Developer Portal
+        # FIRST. Enable from Xcode → Signing & Capabilities once the
+        # backing Apple Developer Portal capability is active.
     settings:
       base:
         SDKROOT: macosx

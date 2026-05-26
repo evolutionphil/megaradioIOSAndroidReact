@@ -111,6 +111,29 @@ CarPlay tvOS'ta yok — `MegaRadioTVApp.swift`'te conditional kullanılıyor olm
 ### macOS target için "App Sandbox" hatası
 macOS App Store'a göndermek için sandbox açık olmalı. `project.yml`'de `com.apple.security.app-sandbox: true` zaten ayarlı.
 
+### ❗ "Provisioning profile doesn't include the currently selected device"
+Apple Silicon Mac'ler iOS bundle'larını "Designed for iPad" özelliği ile çalıştırabildiğinden, Xcode senin Mac'ini de iOS device olarak görür. İki çözüm yolu var:
+
+**Çözüm A (önerilen): Mac'ini Apple Developer Devices listesine ekle**
+1. https://developer.apple.com/account/resources/devices/list adresine git
+2. **+ Register a Device** tıkla
+3. Platform: **macOS**
+4. Device ID (UDID): hata mesajındaki UUID (örn: `00008122-0005101A3C80001C`)
+5. Device Name: "iMac von mumiix"
+6. Continue → Register
+7. Xcode → Product → Clean Build Folder → Cmd+R
+
+**Çözüm B (hızlı): Personal Team kullan**
+Xcode → Target → Signing & Capabilities → Team → **(Personal Team)** seç. Apple Developer Program üyeliği olmadan, lokal cihazda 7 gün geçerli imzayla çalışır. App Store yayını için bu yeterli değil.
+
+### ❗ "Entitlement com.apple.developer.shazamkit not found"
+ShazamKit gibi entitlement'lar Apple Developer Portal'da App ID Capability olarak enable edilmiş olması gerekir. `project.yml`'den şimdilik kaldırdık. İhtiyaç duyduğunda:
+1. https://developer.apple.com/account/resources/identifiers/list adresine git
+2. `com.visiongo.megaradio` ID'sini seç
+3. **ShazamKit** capability'sini enable et
+4. Xcode → Target → Signing & Capabilities → **+ Capability → ShazamKit** ekle (entitlement otomatik üretilir)
+5. ⚠️ NOT: ShazamKit **tvOS'ta desteklenmiyor** — sadece iOS / macOS / watchOS
+
 ---
 
 ## 📝 Tüm Komutlar Özet
