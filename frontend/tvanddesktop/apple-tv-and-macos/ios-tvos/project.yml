@@ -133,39 +133,12 @@ targets:
         type: group          # Ubuntu font family (Light/Regular/Medium/Bold)
         buildPhase: resources
     info:
+      # IMPORTANT: We provide a STATIC Info.plist on disk rather than letting
+      # xcodegen generate it from `properties:` below. This guarantees the
+      # critical `NSAppTransportSecurity.NSAllowsArbitraryLoads` key survives
+      # every regeneration. Without it the app cannot stream HTTP radio or
+      # show station logos hosted on legacy HTTP servers.
       path: Info.plist
-      properties:
-        CFBundleDisplayName: "MegaRadio TV"
-        CFBundleExecutable: $(EXECUTABLE_NAME)
-        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
-        CFBundleInfoDictionaryVersion: "6.0"
-        CFBundleName: MegaRadioTV
-        CFBundlePackageType: APPL
-        CFBundleShortVersionString: $(MARKETING_VERSION)
-        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        LSRequiresIPhoneOS: false
-        UILaunchStoryboardName: ""
-        UIRequiredDeviceCapabilities: [arm64]
-        # Siri intent surface
-        NSUserActivityTypes: [INPlayMediaIntent]
-        INAlternativeAppNames:
-          - MegaRadio
-          - Mega Radio
-        # Background audio + AirPlay
-        UIBackgroundModes: [audio, fetch, processing]
-        # ShazamKit privacy
-        NSAppleMusicUsageDescription: "MegaRadio uses Apple Music's audio recognition to identify songs playing on the radio."
-        NSMicrophoneUsageDescription: "MegaRadio listens briefly to identify songs playing on the radio."
-        # ATS – allow legacy radio streams (most stations are still HTTP)
-        NSAppTransportSecurity:
-          NSAllowsArbitraryLoads: true
-          NSAllowsArbitraryLoadsInWebContent: true
-        # Bundled Ubuntu font family — matches the web-preview design 1:1.
-        UIAppFonts:
-          - Ubuntu-Light.ttf
-          - Ubuntu-Regular.ttf
-          - Ubuntu-Medium.ttf
-          - Ubuntu-Bold.ttf
     entitlements:
       path: MegaRadioTV.entitlements
       properties:
