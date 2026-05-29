@@ -13,16 +13,54 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Feb 2026 fork)
 
-### 🎯 Apple TV Native SwiftUI 1:1 Visual Parity (Feb 2026)
-Complete rewrite of `frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/` to pixel-match the existing Vite/React web preview:
-- **All 11 routes ported to SwiftUI** in dedicated files (Splash, Guides 1-4, Discover, RadioPlaying, Genres+GenreList, Search, Favorites, Settings, Login QR, CountrySelect).
-- **TVRouter.swift** mimics wouter hash-based routing.
-- **Stage1920x1080** view modifier renders every screen at native tvOS resolution using absolute coordinates copied from the web React code.
-- **Ubuntu font family** (Light/Regular/Medium/Bold) bundled into `Assets/Fonts/` and registered via `UIAppFonts` in `project.yml`.
-- **All web assets converted** (SVG → PNG via cairosvg) into `Assets/Images/` and referenced via `BrandImage("name")`.
-- **Brand tokens centralized** in `Theme.swift` (`#FF4199` accent, `#0E0E0E` bg, `#1A1A1A` surface, plus red/green/blue/yellow remote dots).
-- **Crash fix:** all env objects (`AudioPlayer`, `AuthStore`, `FavoritesStore`, `CountryStore`, `TVRouter`) injected at App root in `MegaRadioTVApp.swift`.
-- **ATS fix:** `NSAllowsArbitraryLoads: true` added to `project.yml` Info so legacy HTTP radio streams play.
+### 🎯 Apple TV Native SwiftUI — Pixel-Perfect Rewrite in Progress (Feb 2026)
+**Status: PARTIAL** — Foundation built, 1:1 web-parity rewrites in progress.
+
+#### ✅ Completed in this session
+- **Build infrastructure:** `xcodegen` + `yarn tvos:setup` regenerates project from `project.yml`.
+- **Static Info.plist** (`ios-tvos/Info.plist`) — guarantees ATS `NSAllowsArbitraryLoads` + UIAppFonts + UIBackgroundModes survive every regen. project.yml `info.properties` was removed.
+- **Ubuntu font family bundled** in `Assets/Fonts/` (Light/Regular/Medium/Bold).
+- **All web SVG/PNG assets converted** (cairosvg → PNG) into `Assets/Images/`. `BrandImage("name")` resolves with 4 fallback paths + NSLock cache.
+- **TVRouter.swift** — wouter-clone routing with 11 routes (`Route: Equatable, Hashable`).
+- **Root env objects injected** in `MegaRadioTVApp.swift`: AudioPlayer, AuthStore, FavoritesStore, CountryStore, TVRouter (crash fix done).
+- **Focus halo killed** via `TVTransparentButtonStyle: PrimitiveButtonStyle` (focusable + focusEffectDisabled + onTapGesture).
+- **AppSidebar** matches web `Sidebar.tsx`: 120×100 items, 108px pitch, pink %45 focus + 3px border + scale 1.04 (clearly distinct from active %18).
+- **MegaRadioLogo** 1:1 swoosh + wordmark (mega-Bold + radio-Regular).
+- **RadioPlaying.swift** 1:1 port of web `RadioPlaying.tsx` (1217 lines) — radial gradient bg, 296×296 white card artwork, pink eq bars, station name 48px, tag row (flag/bitrate/codec/country), 4 controls 90.192×90.192, similar+popular scroll.
+- **StationCardLarge** matches web spec exactly: 200×264 card, rgba(255,255,255,0.14) bg, 132×132 inner white box (34,34), name centered top:187, tag centered top:218.2.
+
+#### 🔴 Remaining 1:1 Pixel-Perfect Rewrites (in user's priority order)
+User explicitly requested birer-birer rewrite in new session. Sequence:
+
+1. **CountrySelect** — current looks "close" but user wants 1:1 with web's `CountrySelectPage.tsx`. Verify dark tile + flag + ISO code styling, header position, search bar exact size, "Choose a country" 56px font.
+2. **Settings/Account** — Web `Settings.tsx` has MORE than just "Not signed in" + Sign In button. Verify: language switcher, sleep timer, audio quality, version info, sign-out flow when authenticated.
+3. **Search** — Web `Search.tsx` has popular searches / recent / suggested genres BELOW the input. Currently SwiftUI only shows input + grid.
+4. **Genres** — Web `Genres.tsx` uses specific per-genre background colors. Verify gradient palette + tile size + music-icon position.
+5. **Discover** — Final polish: hero background blend, scroll sections (recently played + for-you when authenticated).
+6. **RadioPlaying final pass** — verify all details vs `RadioPlaying.tsx` once user confirms baseline.
+
+#### 📁 Files to focus on next session
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/CountrySelect.swift`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/Settings.swift`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/Search.swift`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/Genres.swift`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/ios-tvos/Discover.swift`
+
+Reference (read line-by-line in next session):
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/pages/CountrySelectPage.tsx`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/pages/Settings.tsx`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/pages/Search.tsx`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/pages/Genres.tsx`
+- `/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/pages/DiscoverNoUser.tsx`
+
+#### ⚠️ Critical for next agent
+- User communicates in **Turkish** ("Lütfen iletişimi Türkçe sürdürün").
+- User builds locally on Mac. After every `project.yml` / Info.plist / Assets change, user MUST: `yarn tvos:setup` + DELETE app from simulator + Shift+Cmd+K + Cmd+R.
+- User compared this Apple TV app side-by-side with the Electron preview ("Apple TV ui Tizen/Electron ile 1:1 ayni olmali"). Treat the Electron/web-preview Vite React app as the definitive source of truth for pixel layout.
+- Use `Stage1920x1080` view modifier for any new page — copy absolute coordinates straight from the React JSX.
+- After EACH page rewrite, ask user to verify on local Xcode + screenshot, then move to the next page.
+- DO NOT try to do all pages at once — context will run out. ONE page per round.
+
 
 ### Backend Pending Items — ALL COMPLETED ✅ (May 26, 2026)
 Backend developer confirmed completion of both P1 backend tasks (TV login QR auto-activation + Google Play RTDN webhook). Verification:
