@@ -100,6 +100,7 @@ targets:
       - path: MegaRadioTVApp.swift          # @main entry + AVAudioSession setup
       - path: TVRouter.swift                # Hash-router clone for navigation
       - path: CountryStore.swift            # Country selection persistence
+      - path: SettingsStore.swift           # Settings selections persistence
       - path: CountryCatalog.swift          # /countries fetch + ISO map + flag URLs
       - path: Models.swift                  # Station / Genre / Country structs
       - path: APIClient.swift               # HTTP wrapper for api.themegaradio.com
@@ -107,6 +108,7 @@ targets:
       - path: AuthStore.swift               # Pairing-code login + JWT storage
       - path: FavoritesStore.swift          # Local favorites persistence
       - path: Theme.swift                   # Brand tokens + Ubuntu font + Stage1920x1080 + BrandImage
+      - path: TVKeyboard.swift              # Shared on-screen keyboard + flag components
       - path: Views.swift                   # Router + shared widgets (logo, sidebar, header, global player)
       - path: Splash.swift                  # /          → SplashPage
       - path: Guides.swift                  # /guide-1..4 → GuidePage(step:)

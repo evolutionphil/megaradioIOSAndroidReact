@@ -5,52 +5,87 @@ import SwiftUI
 struct GenresPage: View {
     @EnvironmentObject var router: TVRouter
     @EnvironmentObject var country: CountryStore
+    @EnvironmentObject var player: AudioPlayer
 
     @State private var genres: [Genre] = []
     @State private var loading = true
 
+    private var popularGenres: [Genre] { Array(genres.prefix(8)) }
+
+    private let cols = Array(repeating: GridItem(.flexible(), spacing: 21), count: 4)
+
     var body: some View {
         Stage1920x1080 {
-            // ── Hero gradient background.
+            // ── Hero background (matches Discover) + top/left fade overlays.
+            BrandImage(name: "hand-crowd-disco-1", contentMode: .fill)
+                .frame(width: 1939, height: 1292).offset(x: -10, y: -523)
             LinearGradient(
-                colors: [Theme.accent.opacity(0.25), Theme.background],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-            .frame(width: 1920, height: 1080)
+                stops: [.init(color: Theme.background, location: 0),
+                        .init(color: Theme.background.opacity(0.85), location: 0.10),
+                        .init(color: Theme.background.opacity(0.6), location: 0.18),
+                        .init(color: Theme.background, location: 0.30)],
+                startPoint: .top, endPoint: .bottom)
+                .frame(width: 1920, height: 1080)
+            LinearGradient(
+                stops: [.init(color: Theme.background, location: 0),
+                        .init(color: Theme.background, location: 0.08),
+                        .init(color: .clear, location: 0.20)],
+                startPoint: .leading, endPoint: .trailing)
+                .frame(width: 1920, height: 1080)
 
             MegaRadioLogo(scale: 164.421 / 323.069).offset(x: 30, y: 64)
-            CountryTriggerHeader().offset(x: 1453, y: 67)
-            LoginHeaderButton().offset(x: 1694, y: 67)
+            nowPlayingIndicator.offset(x: 1547, y: 67)
+            CountryTriggerHeader().offset(x: 1618, y: 67)
             AppSidebar(active: .genres)
 
-            VStack(alignment: .leading, spacing: 30) {
-                Text("Genres")
-                    .font(.ubuntu(56, .bold))
-                    .foregroundColor(.white)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Popular Genres").font(.ubuntu(32, .bold)).foregroundColor(.white)
+                        .padding(.leading, 6).padding(.bottom, 24)
 
-                if loading {
-                    HStack { Spacer(); ProgressView().scaleEffect(2); Spacer() }
-                        .frame(height: 600)
-                } else {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        LazyVGrid(
-                            columns: Array(repeating: GridItem(.fixed(330), spacing: 30), count: 5),
-                            spacing: 30
-                        ) {
-                            ForEach(genres) { g in
-                                GenreTile(genre: g) {
-                                    router.go(.genreList(g.name))
-                                }
+                    LazyVGrid(columns: cols, spacing: 19) {
+                        ForEach(popularGenres) { g in
+                            GenreCard(name: g.name, count: g.stationCount ?? 0, hPad: 40) {
+                                router.go(.genreList(g.name))
                             }
                         }
-                        .padding(.bottom, 100)
                     }
+                    .padding(.bottom, 40)
+
+                    Text("All").font(.ubuntu(32, .bold)).foregroundColor(.white)
+                        .padding(.leading, 6).padding(.bottom, 24)
+
+                    LazyVGrid(columns: cols, spacing: 19) {
+                        ForEach(genres) { g in
+                            GenreCard(name: g.name, count: g.stationCount ?? 0, hPad: 30) {
+                                router.go(.genreList(g.name))
+                            }
+                        }
+                    }
+                    .padding(.bottom, 100)
                 }
+                .padding(.init(top: 60, leading: 237, bottom: 0, trailing: 79))
             }
-            .frame(width: 1700, height: 910, alignment: .topLeading)
-            .offset(x: 192, y: 170)
+            .frame(width: 1920, height: 940, alignment: .topLeading)
+            .offset(x: 0, y: 140)
+
+            if loading {
+                ProgressView().tint(Theme.accent).scaleEffect(2)
+                    .frame(width: 1920, height: 1080)
+            }
         }
-        .task { await load() }
+        .task(id: country.selectedCountryCode) { await load() }
+    }
+
+    private var nowPlayingIndicator: some View {
+        HStack(spacing: 5) {
+            ForEach([35.0, 25.0, 30.0], id: \.self) { h in
+                RoundedRectangle(cornerRadius: 4).fill(.white).frame(width: 9, height: h)
+            }
+        }
+        .frame(width: 51, height: 51)
+        .background(RoundedRectangle(cornerRadius: 15)
+            .fill(player.isPlaying ? Theme.accent : Color.white.opacity(0.1)))
     }
 
     private func load() async {
@@ -61,46 +96,27 @@ struct GenresPage: View {
     }
 }
 
-private struct GenreTile: View {
-    let genre: Genre
+private struct GenreCard: View {
+    let name: String
+    let count: Int
+    let hPad: CGFloat
     let onTap: () -> Void
     @FocusState private var isFocused: Bool
 
-    private var gradientFor: LinearGradient {
-        // Deterministic color per genre name.
-        let hash = abs(genre.name.hashValue)
-        let palette: [(Color, Color)] = [
-            (Color(red: 1.00, green: 0.25, blue: 0.60), Color(red: 0.45, green: 0.10, blue: 0.50)),
-            (Color(red: 0.20, green: 0.55, blue: 0.95), Color(red: 0.08, green: 0.10, blue: 0.40)),
-            (Color(red: 0.20, green: 0.75, blue: 0.55), Color(red: 0.05, green: 0.30, blue: 0.20)),
-            (Color(red: 0.95, green: 0.55, blue: 0.10), Color(red: 0.45, green: 0.20, blue: 0.05)),
-            (Color(red: 0.65, green: 0.30, blue: 0.95), Color(red: 0.25, green: 0.10, blue: 0.55)),
-        ]
-        let (a, b) = palette[hash % palette.count]
-        return LinearGradient(colors: [a, b], startPoint: .topLeading, endPoint: .bottomTrailing)
-    }
-
     var body: some View {
         Button(action: onTap) {
-            ZStack(alignment: .bottomLeading) {
-                RoundedRectangle(cornerRadius: 22)
-                    .fill(gradientFor)
-                BrandImage(name: "music-icon")
-                    .opacity(0.20)
-                    .frame(width: 220, height: 220)
-                    .offset(x: 120, y: -30)
-                Text(genre.name.capitalized)
-                    .font(.ubuntu(28, .bold))
-                    .foregroundColor(.white)
-                    .padding(20)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(name).font(.ubuntu(24, .medium)).foregroundColor(.white).lineLimit(1)
+                Text("\(count) Stations").font(.ubuntu(22)).foregroundColor(.white)
             }
-            .frame(width: 330, height: 180)
-            .overlay(
-                RoundedRectangle(cornerRadius: 22)
-                    .stroke(isFocused ? .white : .clear, lineWidth: 4)
-            )
-            .scaleEffect(isFocused ? 1.06 : 1)
-            .shadow(color: isFocused ? .black.opacity(0.55) : .clear, radius: 24, x: 0, y: 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, hPad)
+            .frame(height: 139)
+            .background(RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white.opacity(isFocused ? 0.20 : 0.14)))
+            .overlay(RoundedRectangle(cornerRadius: 20)
+                .stroke(isFocused ? Theme.accent : .clear, lineWidth: 3))
+            .scaleEffect(isFocused ? 1.03 : 1)
         }
         .buttonStyle(.tvTransparent)
         .focused($isFocused)

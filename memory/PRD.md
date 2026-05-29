@@ -13,7 +13,29 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Feb 2026 fork)
 
-### 🎯 Apple TV Native SwiftUI — Pixel-Perfect Rewrite in Progress (Feb 2026)
+### 🎯 Apple TV — 1:1 Web Parity Rewrite (Feb 2026, session 2)
+**Status: PAGES REWRITTEN — awaiting user local Xcode build verification.**
+
+#### ✅ Completed this session
+- **ROOT CAUSE FIX — invisible icons/images:** Sidebar SVG icons used `fill="var(--fill-0, white)"`; the SVG→PNG converter (cairosvg) can't parse CSS `var()` and fell back to **black**, making icons invisible on the dark bg. New `scripts/convert_icons.py` resolves `var(--*, fallback)` → fallback colour and re-renders all icons at 256px preserving aspect ratio. All sidebar icons now white; `path-8` logo stays pink. This fixes the cross-cutting "icons missing/wrong" complaint on every page.
+- **CountrySelect** (`CountrySelect.swift`) — full rewrite mirroring `CountrySelector.tsx`: left search bar + scrollable flag list (flagcdn), right on-screen keyboard (13 layouts) + language dropdown + hint row. New `CountryCatalog.swift` (fetches `/api/countries`, name→ISO map, flag URLs).
+- **Settings** (`Settings.swift`) — full rewrite mirroring `Settings.tsx`: 7-category master list (Language/Keyboard/Playback/Timer/Accessibility/Account/Cast) + dynamic options panel + Go Premium gradient button + version block. New `SettingsStore.swift` persists selections.
+- **Search** (`Search.swift`) — full rewrite mirroring `Search.tsx`: search bar + results list (h:110 rows, highlighted match) + shared keyboard + "Recently Played" 2×4 grid. Removed wrong country/login header.
+- **Genres** (`Genres.swift`) — full rewrite mirroring `Genres.tsx`: hero bg + "Popular Genres" (2×4) and "All" (4-col) translucent cards with name + station count + now-playing equalizer pill. (Removed old colourful gradient tiles — those were never in the web design.)
+- **Sidebar** (`Views.swift`) — added missing 7th "Help" item (SF Symbol) for full parity; header flag pill now renders a real flag image from ISO code instead of an emoji string.
+- **Shared component** `TVKeyboard.swift` — `KbLayout`, `kbLayouts`, `kbFlagURL`, `KeyButton`, `FlagThumb` extracted so Country + Search stay identical.
+- **project.yml** — registered `CountryCatalog.swift`, `SettingsStore.swift`, `TVKeyboard.swift`. User MUST run `yarn tvos:setup`.
+
+> ⚠️ Native tvOS cannot be compiled/tested in the Emergent Linux container (no Xcode/swiftc). Verification is done by the user on a local Mac (build + screenshot). Code was self-reviewed against the React source for correctness.
+
+#### Build/verify steps for user
+```
+cd frontend/tvanddesktop/apple-tv-and-macos/ios-tvos
+yarn tvos:setup            # required: project.yml changed + 3 new files
+# Xcode: delete old app from simulator → Shift+Cmd+K (Clean) → Cmd+R (Run)
+```
+
+### 🎯 Apple TV Native SwiftUI — earlier foundation (Feb 2026, session 1)
 **Status: PARTIAL** — Foundation built, 1:1 web-parity rewrites in progress.
 
 #### ✅ Completed in this session

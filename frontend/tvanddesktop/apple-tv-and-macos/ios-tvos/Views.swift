@@ -146,8 +146,9 @@ struct AppSidebar: View {
     fileprivate struct Item {
         let id: String
         let label: String
-        let icon: String   // PNG asset name in `Assets/Images/`
-        let route: Route
+        let icon: String   // PNG asset name in `Assets/Images/`, or SF Symbol if isSymbol
+        let route: Route?  // nil = non-navigating (Help)
+        var isSymbol: Bool = false
     }
 
     private let items: [Item] = [
@@ -157,6 +158,7 @@ struct AppSidebar: View {
         .init(id: "favorites", label: "Favorites", icon: "heart-icon",    route: .favorites),
         .init(id: "country",   label: "Country",   icon: "globe-icon",    route: .countrySelect),
         .init(id: "settings",  label: "Settings",  icon: "settings-icon", route: .settings),
+        .init(id: "help",      label: "Help",      icon: "questionmark.circle", route: nil, isSymbol: true),
     ]
 
     var body: some View {
@@ -164,9 +166,9 @@ struct AppSidebar: View {
             ForEach(Array(items.enumerated()), id: \.element.id) { idx, item in
                 SidebarItemView(
                     item: item,
-                    isActive: matches(active, item.route)
+                    isActive: item.route.map { matches(active, $0) } ?? false
                 ) {
-                    router.go(item.route)
+                    if let r = item.route { router.go(r) }
                 }
                 .offset(x: 0, y: CGFloat(idx) * 108)
             }
@@ -203,8 +205,16 @@ private struct SidebarItemView: View {
     var body: some View {
         Button(action: onTap) {
             VStack(spacing: 6) {
-                BrandImage(name: item.icon)
-                    .frame(width: 28, height: 28)
+                Group {
+                    if item.isSymbol {
+                        Image(systemName: item.icon)
+                            .font(.system(size: 24, weight: .regular))
+                            .foregroundColor(.white)
+                    } else {
+                        BrandImage(name: item.icon)
+                    }
+                }
+                .frame(width: 28, height: 28)
                 Text(item.label)
                     .font(.ubuntu(16, .medium))
                     .foregroundColor(.white)
