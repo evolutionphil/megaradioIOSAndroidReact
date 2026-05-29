@@ -213,20 +213,28 @@ private struct SidebarItemView: View {
             }
             .frame(width: 120, height: 100)
             .background(
+                // Focused state has a brighter highlight + visible border so it
+                // is unambiguously distinct from the dimmer "active page" state.
                 RoundedRectangle(cornerRadius: 10)
                     .fill(
-                        isFocused ? Theme.accent.opacity(0.25)
-                        : isActive ? Theme.accent.opacity(0.20)
+                        isFocused ? Theme.accent.opacity(0.45)
+                        : isActive ? Theme.accent.opacity(0.18)
                         : Color.clear
                     )
             )
-            .shadow(color: isFocused ? Theme.accent.opacity(0.5) : .clear,
-                    radius: 16, x: 0, y: 0)
-            .opacity(isFocused ? 1 : 0.85)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(isFocused ? Theme.accent : .clear, lineWidth: 3)
+            )
+            .shadow(color: isFocused ? Theme.accent.opacity(0.7) : .clear,
+                    radius: 22, x: 0, y: 0)
+            .scaleEffect(isFocused ? 1.04 : 1.0)
+            .opacity(isFocused ? 1 : (isActive ? 0.95 : 0.8))
         }
         .buttonStyle(.tvTransparent)
         .focused($isFocused)
         .animation(.easeInOut(duration: 0.2), value: isFocused)
+        .animation(.easeInOut(duration: 0.2), value: isActive)
     }
 }
 
