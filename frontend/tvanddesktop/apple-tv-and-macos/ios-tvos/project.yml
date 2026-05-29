@@ -100,6 +100,7 @@ targets:
       - path: MegaRadioTVApp.swift          # @main entry + AVAudioSession setup
       - path: TVRouter.swift                # Hash-router clone for navigation
       - path: CountryStore.swift            # Country selection persistence
+      - path: CountryCatalog.swift          # /countries fetch + ISO map + flag URLs
       - path: Models.swift                  # Station / Genre / Country structs
       - path: APIClient.swift               # HTTP wrapper for api.themegaradio.com
       - path: AudioPlayer.swift             # AVPlayer wrapper (ObservableObject)

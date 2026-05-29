@@ -252,7 +252,14 @@ struct CountryTriggerHeader: View {
     var body: some View {
         Button { router.go(.countrySelect) } label: {
             HStack(spacing: 10) {
-                Text(country.selectedCountryFlag).font(.system(size: 24))
+                if country.selectedCountryCode == "GLOBAL" {
+                    BrandImage(name: "globe-icon").frame(width: 24, height: 24)
+                } else {
+                    FlagThumb(
+                        url: URL(string: "https://flagcdn.com/w40/\(country.selectedCountryCode.lowercased()).png"),
+                        width: 30, height: 20, cornerRadius: 3
+                    )
+                }
                 Text(country.selectedCountryCode == "GLOBAL" ? "Global" : country.selectedCountryName)
                     .font(.ubuntu(18, .bold)).foregroundColor(.white).lineLimit(1)
                 BrandImage(name: "globe-icon").frame(width: 18, height: 18)
