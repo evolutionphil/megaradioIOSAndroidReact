@@ -519,6 +519,28 @@ the user's last `yarn tvos:setup`, so they aren't in the built bundle. FIX = re-
   `https://www.themegaradio.com/tv?code={code}`) in a white card + "OR" divider + waiting
   indicator + Skip. Centered full-screen layout (no sidebar), matching Tizen.
 
+
+### tvOS FOCUS — REAL root cause + UIKit pressesBegan engine (2026-02)
+Previous attempts (`.focusSection()`, then single-container `.onMoveCommand`) FAILED on
+device. DEEP DIAGNOSIS: on tvOS a SwiftUI `ScrollView` is implicitly focusable and STEALS
+focus, so `.onMoveCommand` on a container never fires. Apple's supported low-level hook is
+`UIResponder.pressesBegan`. 
+- NEW: `RemoteControl.swift` — `RemoteCaptureUIView` (UIView, `canBecomeFocused`, overrides
+  `pressesBegan`) wrapped in `UIViewRepresentable`; `.remoteControl { key in }` View modifier;
+  `windowStart()` sliding-window helper. Added to project.yml (NEW FILE → user must run
+  `yarn tvos:setup`).
+- CountrySelect.swift now uses `.remoteControl` (no ScrollView, no onMoveCommand). The list +
+  language dropdown render a focus-driven sliding WINDOW of rows (no native scroll → no focus
+  stealing). Deterministic Tizen navigation: RIGHT from any row → keyboard, LEFT → sidebar, etc.
+- Pages must have NO focusable SwiftUI elements when using `.remoteControl` (cards/buttons
+  rendered as plain views, highlight from model).
+
+### Rollout (after user confirms Country pressesBegan works on device)
+- Convert Discover, Genres, Search, Favorites to `.remoteControl` + EngineSidebar + windowed
+  grids (make StationCardLarge/GenreCard/GenrePill plain `isFocused:` variants).
+- Discover infinite scroll: append `?page=N&country=` results as focus nears the grid end.
+
+
 ### Still pending (next)
 - Roll out the explicit focus engine (proven on Country) to Discover, Genres, Search,
   Favorites — ONLY after user confirms Country focus is correct on-device.

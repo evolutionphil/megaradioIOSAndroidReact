@@ -32,8 +32,6 @@ struct CountrySelectPage: View {
     @State private var lastKeyCol = 0
     @State private var langItemIdx = 0
 
-    @FocusState private var engineFocused: Bool
-
     private var activeLayout: KbLayout { kbLayouts[activeLayoutIndex] }
     private var rows: [[String]] { activeLayout.rows }
     private func rowLen(_ r: Int) -> Int { rows.indices.contains(r) ? rows[r].count : 0 }
@@ -73,20 +71,10 @@ struct CountrySelectPage: View {
 
             keyboardColumn.offset(x: 960, y: 110)
         }
-        .contentShape(Rectangle())
-        .focusable(true)
-        .focusEffectDisabled()
-        .focused($engineFocused)
-        .onMoveCommand { handleMove($0) }
-        .onTapGesture { activate() }
-        .onExitCommand {
-            if dropdownOpen { dropdownOpen = false; zone = .lang }
-            else { router.go(.discover) }
-        }
+        .remoteControl { handleKey($0) }
         .onAppear {
             catalog.loadIfNeeded()
             zone = .list
-            engineFocused = true
         }
     }
 
@@ -120,28 +108,22 @@ struct CountrySelectPage: View {
     // MARK: Country list
 
     private var countryList: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVStack(spacing: 6) {
-                    ForEach(Array(filtered.enumerated()), id: \.element.id) { idx, item in
-                        CountryRow(
-                            item: item,
-                            isSelected: item.code == country.selectedCountryCode,
-                            query: searchQuery,
-                            isFocused: zone == .list && listIdx == idx
-                        )
-                        .id(item.id)
-                    }
-                }
-                .padding(.bottom, 40)
-            }
-            .onChange(of: listIdx) { _, new in
-                guard filtered.indices.contains(new) else { return }
-                withAnimation(.easeOut(duration: 0.15)) {
-                    proxy.scrollTo(filtered[new].id, anchor: .center)
-                }
+        let count = filtered.count
+        let size = 8
+        let start = windowStart(focused: min(listIdx, max(0, count - 1)),
+                                count: count, size: size, lead: 3)
+        let end = min(start + size, count)
+        return VStack(spacing: 6) {
+            ForEach(Array(start..<end), id: \.self) { idx in
+                CountryRow(
+                    item: filtered[idx],
+                    isSelected: filtered[idx].code == country.selectedCountryCode,
+                    query: searchQuery,
+                    isFocused: zone == .list && listIdx == idx
+                )
             }
         }
+        .frame(maxWidth: .infinity, alignment: .top)
     }
 
     // MARK: Keyboard column (w:700)
@@ -192,41 +174,36 @@ struct CountrySelectPage: View {
     }
 
     private var languageDropdown: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 0) {
-                    ForEach(Array(kbLayouts.enumerated()), id: \.element.id) { idx, layout in
-                        let isActive = idx == activeLayoutIndex
-                        let isFoc = zone == .langItem && langItemIdx == idx
-                        HStack(spacing: 14) {
-                            FlagThumb(url: kbFlagURL(layout.id), width: 30, height: 20)
-                            Text(layout.label).font(.ubuntu(19, .medium))
-                            Spacer()
-                            if isActive && !isFoc {
-                                Text("✓").foregroundColor(Theme.accent).font(.system(size: 16))
-                            }
-                        }
-                        .foregroundColor(.white.opacity(isFoc || isActive ? 1 : 0.70))
-                        .padding(.horizontal, 24)
-                        .frame(width: 700, height: 58)
-                        .background(
-                            isFoc ? Theme.accent
-                            : isActive ? Theme.accent.opacity(0.15)
-                            : Color.clear
-                        )
-                        .id(layout.id)
+        let size = 6
+        let start = windowStart(focused: langItemIdx, count: kbLayouts.count, size: size, lead: 2)
+        let end = min(start + size, kbLayouts.count)
+        return VStack(spacing: 0) {
+            ForEach(Array(start..<end), id: \.self) { idx in
+                let layout = kbLayouts[idx]
+                let isActive = idx == activeLayoutIndex
+                let isFoc = zone == .langItem && langItemIdx == idx
+                HStack(spacing: 14) {
+                    FlagThumb(url: kbFlagURL(layout.id), width: 30, height: 20)
+                    Text(layout.label).font(.ubuntu(19, .medium))
+                    Spacer()
+                    if isActive && !isFoc {
+                        Text("✓").foregroundColor(Theme.accent).font(.system(size: 16))
                     }
                 }
-            }
-            .frame(width: 700, height: 400)
-            .background(RoundedRectangle(cornerRadius: 14).fill(Color(white: 0.118).opacity(0.98)))
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.accent.opacity(0.3), lineWidth: 2))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-            .onChange(of: langItemIdx) { _, new in
-                guard kbLayouts.indices.contains(new) else { return }
-                withAnimation { proxy.scrollTo(kbLayouts[new].id, anchor: .center) }
+                .foregroundColor(.white.opacity(isFoc || isActive ? 1 : 0.70))
+                .padding(.horizontal, 24)
+                .frame(width: 700, height: 58)
+                .background(
+                    isFoc ? Theme.accent
+                    : isActive ? Theme.accent.opacity(0.15)
+                    : Color.clear
+                )
             }
         }
+        .frame(width: 700, alignment: .top)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Color(white: 0.118).opacity(0.98)))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.accent.opacity(0.3), lineWidth: 2))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var hintRow: some View {
@@ -249,7 +226,20 @@ struct CountrySelectPage: View {
 
     // MARK: - Focus engine
 
-    private func handleMove(_ dir: MoveCommandDirection) {
+    @discardableResult
+    private func handleKey(_ key: RemoteKey) -> Bool {
+        switch key {
+        case .up, .down, .left, .right: move(key)
+        case .select: activate()
+        case .back:
+            if dropdownOpen { dropdownOpen = false; zone = .lang }
+            else { router.go(.discover) }
+        case .playPause: return false
+        }
+        return true
+    }
+
+    private func move(_ dir: RemoteKey) {
         switch zone {
         case .sidebar:
             switch dir {
