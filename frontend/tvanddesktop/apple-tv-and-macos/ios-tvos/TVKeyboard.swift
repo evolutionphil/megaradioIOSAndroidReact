@@ -42,6 +42,20 @@ struct KeyButton: View {
     let isFocused: Bool
     let onTap: () -> Void
 
+    var body: some View {
+        Button(action: onTap) {
+            KeyButtonLabel(keyChar: keyChar, isFocused: isFocused)
+        }
+        .buttonStyle(.tvTransparent)
+    }
+}
+
+/// Visual-only key (non-focusable). Used by the explicit-focus engine pages
+/// that render their own highlight from a focus model.
+struct KeyButtonLabel: View {
+    let keyChar: String
+    let isFocused: Bool
+
     private var isAction: Bool { keyChar == "SPACE" || keyChar == "DELETE" || keyChar == "CLEAR" }
     private var label: String {
         switch keyChar {
@@ -53,13 +67,10 @@ struct KeyButton: View {
     }
 
     var body: some View {
-        Button(action: onTap) {
-            labelView
-                .background(RoundedRectangle(cornerRadius: 12).fill(background))
-                .shadow(color: isFocused ? Theme.accent.opacity(0.5) : .clear, radius: 25)
-                .scaleEffect(isFocused ? 1.05 : 1)
-        }
-        .buttonStyle(.tvTransparent)
+        labelView
+            .background(RoundedRectangle(cornerRadius: 12).fill(background))
+            .shadow(color: isFocused ? Theme.accent.opacity(0.5) : .clear, radius: 25)
+            .scaleEffect(isFocused ? 1.05 : 1)
     }
 
     @ViewBuilder private var labelView: some View {

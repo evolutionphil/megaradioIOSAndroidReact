@@ -255,6 +255,84 @@ private struct SidebarItemView: View {
 }
 
 // ────────────────────────────────────────────────────────────────────
+// EngineSidebar — non-focusable sidebar for explicit-focus-engine pages.
+// Renders highlight from an external focus index (mirrors AppSidebar look)
+// so a single-container page can own ALL navigation (Tizen index model).
+// ────────────────────────────────────────────────────────────────────
+
+struct EngineSidebarItem {
+    let id: String
+    let label: String
+    let icon: String
+    let route: Route?
+    var isSymbol: Bool = false
+}
+
+let engineSidebarItems: [EngineSidebarItem] = [
+    .init(id: "discover",  label: "Discover",  icon: "radio-icon",    route: .discover),
+    .init(id: "genres",    label: "Genres",    icon: "music-icon",    route: .genres),
+    .init(id: "search",    label: "Search",    icon: "search-icon",   route: .search),
+    .init(id: "favorites", label: "Favorites", icon: "heart-icon",    route: .favorites),
+    .init(id: "country",   label: "Country",   icon: "globe-icon",    route: .countrySelect),
+    .init(id: "settings",  label: "Settings",  icon: "settings-icon", route: .settings),
+    .init(id: "help",      label: "Help",      icon: "questionmark.circle", route: nil, isSymbol: true),
+]
+
+struct EngineSidebar: View {
+    let activeIndex: Int      // page that is active (dim highlight)
+    let focusedIndex: Int?    // engine focus (bright highlight); nil if elsewhere
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(Array(engineSidebarItems.enumerated()), id: \.element.id) { idx, item in
+                EngineSidebarItemView(item: item,
+                                      isActive: idx == activeIndex,
+                                      isFocused: focusedIndex == idx)
+                    .offset(x: 0, y: CGFloat(idx) * 108)
+            }
+        }
+        .frame(width: 120, height: 760, alignment: .topLeading)
+        .offset(x: 48, y: 170)
+    }
+}
+
+private struct EngineSidebarItemView: View {
+    let item: EngineSidebarItem
+    let isActive: Bool
+    let isFocused: Bool
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Group {
+                if item.isSymbol {
+                    Image(systemName: item.icon)
+                        .font(.system(size: 24, weight: .regular)).foregroundColor(.white)
+                } else {
+                    BrandImage(name: item.icon)
+                }
+            }
+            .frame(width: 28, height: 28)
+            Text(item.label)
+                .font(.ubuntu(16, .medium)).foregroundColor(.white)
+                .lineLimit(1).frame(width: 104)
+        }
+        .frame(width: 120, height: 100)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(isFocused ? Theme.accent.opacity(0.45)
+                      : isActive ? Theme.accent.opacity(0.18) : Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isFocused ? Theme.accent : .clear, lineWidth: 3)
+        )
+        .shadow(color: isFocused ? Theme.accent.opacity(0.7) : .clear, radius: 22)
+        .scaleEffect(isFocused ? 1.04 : 1.0)
+        .opacity(isFocused ? 1 : (isActive ? 0.95 : 0.8))
+    }
+}
+
+// ────────────────────────────────────────────────────────────────────
 // Header pills
 // ────────────────────────────────────────────────────────────────────
 

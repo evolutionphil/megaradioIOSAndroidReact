@@ -1,21 +1,17 @@
 // CountrySelect.swift — 1:1 port of `web-preview/src/components/CountrySelector.tsx`
-// (mode="page"). Split layout:
-//   • LEFT  (x:246): "Select Country" title + search bar + scrollable flag list.
-//   • RIGHT (x:960): on-screen keyboard + language dropdown + hint row.
+// (mode="page"), rebuilt on the EXPLICIT INDEX-BASED FOCUS ENGINE so the remote
+// behaves EXACTLY like the Tizen build:
 //
-// Every coordinate / size / colour below is copied straight from the React
-// source so the native tvOS screen matches the Tizen/web build pixel-for-pixel.
+//   • The whole page is ONE focusable container. We intercept `onMoveCommand`
+//     (arrows) and the select press (`onTapGesture`) and drive a manual focus
+//     model — we do NOT rely on the geometric tvOS focus engine.
+//   • Focus is rendered from the model (zone + indices), so a RIGHT press from
+//     ANY country row jumps to the keyboard, a LEFT press always returns to the
+//     sidebar, etc. — regardless of on-screen geometry.
 
 import SwiftUI
 
-// MARK: - Focus targets
-
-private enum CSFocus: Hashable {
-    case country(Int)
-    case key(Int, Int)
-    case lang
-    case langItem(Int)
-}
+private enum CZone { case sidebar, list, key, lang, langItem }
 
 struct CountrySelectPage: View {
     @EnvironmentObject var router: TVRouter
@@ -25,12 +21,25 @@ struct CountrySelectPage: View {
     @State private var searchQuery = ""
     @State private var activeLayoutIndex = 0
     @State private var dropdownOpen = false
-    @FocusState private var focus: CSFocus?
+
+    // Explicit focus model.
+    @State private var zone: CZone = .list
+    @State private var sidebarIdx = 4          // "Country" is the active page
+    @State private var listIdx = 0
+    @State private var keyRow = 0
+    @State private var keyCol = 0
+    @State private var lastKeyRow = 0
+    @State private var lastKeyCol = 0
+    @State private var langItemIdx = 0
+
+    @FocusState private var engineFocused: Bool
 
     private var activeLayout: KbLayout { kbLayouts[activeLayoutIndex] }
+    private var rows: [[String]] { activeLayout.rows }
+    private func rowLen(_ r: Int) -> Int { rows.indices.contains(r) ? rows[r].count : 0 }
+    private var listFocused: Bool { zone == .list }
 
-    /// Countries filtered + sorted exactly like web. NO "Global" entry — a
-    /// concrete country is always required (auto-detected, UK fallback).
+    /// Countries filtered + sorted exactly like web. NO "Global" entry.
     private var filtered: [CountryItem] {
         let q = searchQuery.lowercased()
         var list = catalog.countries
@@ -46,19 +55,12 @@ struct CountrySelectPage: View {
         return list
     }
 
-    private var listFocused: Bool {
-        if case .country = focus { return true }
-        return false
-    }
-
     var body: some View {
         Stage1920x1080 {
-            AppSidebar(active: .countrySelect)
+            EngineSidebar(activeIndex: 4, focusedIndex: zone == .sidebar ? sidebarIdx : nil)
 
-            // Logo (left:30 top:40, 164.421×57)
             MegaRadioLogo(scale: 164.421 / 323.069).offset(x: 30, y: 40)
 
-            // Title (left:246 top:42, 32px bold)
             Text("Select Country")
                 .font(.ubuntu(32, .bold)).foregroundColor(.white)
                 .offset(x: 246, y: 42)
@@ -67,44 +69,48 @@ struct CountrySelectPage: View {
 
             countryList
                 .frame(width: 660, height: 1080 - 200 - 30, alignment: .topLeading)
-                .focusSection()
                 .offset(x: 246, y: 200)
 
-            keyboardColumn.focusSection().offset(x: 960, y: 110)
+            keyboardColumn.offset(x: 960, y: 110)
         }
-        .onAppear { catalog.loadIfNeeded() }
+        .contentShape(Rectangle())
+        .focusable(true)
+        .focusEffectDisabled()
+        .focused($engineFocused)
+        .onMoveCommand { handleMove($0) }
+        .onTapGesture { activate() }
+        .onExitCommand {
+            if dropdownOpen { dropdownOpen = false; zone = .lang }
+            else { router.go(.discover) }
+        }
+        .onAppear {
+            catalog.loadIfNeeded()
+            zone = .list
+            engineFocused = true
+        }
     }
 
-    // MARK: Search bar (w:660 h:76)
+    // MARK: Search bar
 
     private var searchBar: some View {
         HStack(spacing: 14) {
-            BrandImage(name: "search-icon")
-                .frame(width: 31, height: 31).opacity(0.6)
-
+            BrandImage(name: "search-icon").frame(width: 31, height: 31).opacity(0.6)
             HStack(spacing: 0) {
-                Text(searchQuery)
-                    .font(.ubuntu(25.94, .medium)).foregroundColor(.white)
-                    .lineLimit(1)
-                Rectangle().fill(Theme.accent)
-                    .frame(width: 3, height: 30).padding(.leading, 2)
+                Text(searchQuery).font(.ubuntu(25.94, .medium)).foregroundColor(.white).lineLimit(1)
+                Rectangle().fill(Theme.accent).frame(width: 3, height: 30).padding(.leading, 2)
                 if searchQuery.isEmpty {
                     Text("Search countries...")
                         .font(.ubuntu(25.94, .medium))
-                        .foregroundColor(.white.opacity(0.35))
-                        .padding(.leading, 4)
+                        .foregroundColor(.white.opacity(0.35)).padding(.leading, 4)
                 }
                 Spacer(minLength: 0)
             }
-
             Text("\(catalog.countries.count)")
                 .font(.ubuntu(16)).foregroundColor(.white.opacity(0.30))
         }
         .padding(.horizontal, 30)
         .frame(width: 660, height: 76)
-        .background(
-            RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.14))
-        )
+        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.14)))
         .overlay(
             RoundedRectangle(cornerRadius: 14)
                 .stroke(listFocused ? Theme.accent : Color(white: 0.443), lineWidth: 2.594)
@@ -114,21 +120,27 @@ struct CountrySelectPage: View {
     // MARK: Country list
 
     private var countryList: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack(spacing: 6) {
-                ForEach(Array(filtered.enumerated()), id: \.element.id) { idx, item in
-                    CountryRow(
-                        item: item,
-                        isSelected: item.code == country.selectedCountryCode,
-                        query: searchQuery,
-                        isFocused: focus == .country(idx)
-                    ) {
-                        select(item)
+        ScrollViewReader { proxy in
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(spacing: 6) {
+                    ForEach(Array(filtered.enumerated()), id: \.element.id) { idx, item in
+                        CountryRow(
+                            item: item,
+                            isSelected: item.code == country.selectedCountryCode,
+                            query: searchQuery,
+                            isFocused: zone == .list && listIdx == idx
+                        )
+                        .id(item.id)
                     }
-                    .focused($focus, equals: .country(idx))
+                }
+                .padding(.bottom, 40)
+            }
+            .onChange(of: listIdx) { _, new in
+                guard filtered.indices.contains(new) else { return }
+                withAnimation(.easeOut(duration: 0.15)) {
+                    proxy.scrollTo(filtered[new].id, anchor: .center)
                 }
             }
-            .padding(.bottom, 40)
         }
     }
 
@@ -136,17 +148,14 @@ struct CountrySelectPage: View {
 
     private var keyboardColumn: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(Array(activeLayout.rows.enumerated()), id: \.offset) { rowIdx, row in
-                let isActionRow = rowIdx == activeLayout.rows.count - 1
+            ForEach(Array(rows.enumerated()), id: \.offset) { rowIdx, row in
+                let isActionRow = rowIdx == rows.count - 1
                 HStack(spacing: isActionRow ? 10 : 6) {
                     ForEach(Array(row.enumerated()), id: \.offset) { colIdx, keyChar in
-                        KeyButton(
+                        KeyButtonLabel(
                             keyChar: keyChar,
-                            isFocused: focus == .key(rowIdx, colIdx)
-                        ) {
-                            press(keyChar)
-                        }
-                        .focused($focus, equals: .key(rowIdx, colIdx))
+                            isFocused: zone == .key && keyRow == rowIdx && keyCol == colIdx
+                        )
                     }
                 }
                 .padding(.top, isActionRow ? 14 : 0)
@@ -154,50 +163,41 @@ struct CountrySelectPage: View {
             }
 
             languageButton.padding(.top, 20)
-
             hintRow.padding(.top, 16)
         }
         .frame(width: 700, alignment: .leading)
     }
 
     private var languageButton: some View {
-        Button { dropdownOpen.toggle() } label: {
-            HStack {
-                HStack(spacing: 12) {
-                    FlagThumb(url: kbFlagURL(activeLayout.id), width: 32, height: 22)
-                    Text(activeLayout.label).font(.ubuntu(20, .medium))
-                }
-                Spacer()
-                Text("▼").font(.system(size: 16))
-                    .rotationEffect(.degrees(dropdownOpen ? 180 : 0))
+        HStack {
+            HStack(spacing: 12) {
+                FlagThumb(url: kbFlagURL(activeLayout.id), width: 32, height: 22)
+                Text(activeLayout.label).font(.ubuntu(20, .medium))
             }
-            .foregroundColor(focus == .lang ? .white : .white.opacity(0.70))
-            .padding(.horizontal, 24)
-            .frame(width: 700, height: 60)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(focus == .lang ? Theme.accent : Color.white.opacity(0.08))
-            )
-            .shadow(color: focus == .lang ? Theme.accent.opacity(0.4) : .clear, radius: 14)
+            Spacer()
+            Text("▼").font(.system(size: 16))
+                .rotationEffect(.degrees(dropdownOpen ? 180 : 0))
         }
-        .buttonStyle(.tvTransparent)
-        .focused($focus, equals: .lang)
+        .foregroundColor(zone == .lang ? .white : .white.opacity(0.70))
+        .padding(.horizontal, 24)
+        .frame(width: 700, height: 60)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(zone == .lang ? Theme.accent : Color.white.opacity(0.08))
+        )
+        .shadow(color: zone == .lang ? Theme.accent.opacity(0.4) : .clear, radius: 14)
         .overlay(alignment: .topLeading) {
             if dropdownOpen { languageDropdown.offset(y: -416) }
         }
     }
 
     private var languageDropdown: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 0) {
-                ForEach(Array(kbLayouts.enumerated()), id: \.element.id) { idx, layout in
-                    let isActive = idx == activeLayoutIndex
-                    let isFoc = focus == .langItem(idx)
-                    Button {
-                        activeLayoutIndex = idx
-                        dropdownOpen = false
-                        focus = .lang
-                    } label: {
+        ScrollViewReader { proxy in
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 0) {
+                    ForEach(Array(kbLayouts.enumerated()), id: \.element.id) { idx, layout in
+                        let isActive = idx == activeLayoutIndex
+                        let isFoc = zone == .langItem && langItemIdx == idx
                         HStack(spacing: 14) {
                             FlagThumb(url: kbFlagURL(layout.id), width: 30, height: 20)
                             Text(layout.label).font(.ubuntu(19, .medium))
@@ -214,20 +214,19 @@ struct CountrySelectPage: View {
                             : isActive ? Theme.accent.opacity(0.15)
                             : Color.clear
                         )
+                        .id(layout.id)
                     }
-                    .buttonStyle(.tvTransparent)
-                    .focused($focus, equals: .langItem(idx))
                 }
             }
+            .frame(width: 700, height: 400)
+            .background(RoundedRectangle(cornerRadius: 14).fill(Color(white: 0.118).opacity(0.98)))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.accent.opacity(0.3), lineWidth: 2))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .onChange(of: langItemIdx) { _, new in
+                guard kbLayouts.indices.contains(new) else { return }
+                withAnimation { proxy.scrollTo(kbLayouts[new].id, anchor: .center) }
+            }
         }
-        .frame(width: 700, height: 400)
-        .background(
-            RoundedRectangle(cornerRadius: 14).fill(Color(white: 0.118).opacity(0.98))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 14).stroke(Theme.accent.opacity(0.3), lineWidth: 2)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var hintRow: some View {
@@ -248,7 +247,86 @@ struct CountrySelectPage: View {
         }
     }
 
-    // MARK: Actions
+    // MARK: - Focus engine
+
+    private func handleMove(_ dir: MoveCommandDirection) {
+        switch zone {
+        case .sidebar:
+            switch dir {
+            case .up:    sidebarIdx = max(0, sidebarIdx - 1)
+            case .down:  sidebarIdx = min(engineSidebarItems.count - 1, sidebarIdx + 1)
+            case .right: zone = .list
+            default: break
+            }
+        case .list:
+            switch dir {
+            case .up:    listIdx = max(0, listIdx - 1)
+            case .down:  listIdx = min(max(0, filtered.count - 1), listIdx + 1)
+            case .left:  zone = .sidebar
+            case .right:
+                zone = .key
+                keyRow = min(lastKeyRow, rows.count - 1)
+                keyCol = min(lastKeyCol, max(0, rowLen(keyRow) - 1))
+            default: break
+            }
+        case .key:
+            switch dir {
+            case .up:
+                if keyRow > 0 { keyRow -= 1; keyCol = min(keyCol, rowLen(keyRow) - 1) }
+            case .down:
+                if keyRow < rows.count - 1 {
+                    keyRow += 1; keyCol = min(keyCol, rowLen(keyRow) - 1)
+                } else {
+                    lastKeyRow = keyRow; lastKeyCol = keyCol; zone = .lang
+                }
+            case .left:
+                if keyCol > 0 { keyCol -= 1 }
+                else { lastKeyRow = keyRow; lastKeyCol = keyCol; zone = .list }
+            case .right:
+                if keyCol < rowLen(keyRow) - 1 { keyCol += 1 }
+            default: break
+            }
+        case .lang:
+            switch dir {
+            case .up:
+                zone = .key
+                keyRow = rows.count - 1
+                keyCol = min(lastKeyCol, max(0, rowLen(keyRow) - 1))
+            case .left:
+                zone = .list
+            case .down:
+                if dropdownOpen { zone = .langItem; langItemIdx = activeLayoutIndex }
+            default: break
+            }
+        case .langItem:
+            switch dir {
+            case .up:   langItemIdx = max(0, langItemIdx - 1)
+            case .down: langItemIdx = min(kbLayouts.count - 1, langItemIdx + 1)
+            default: break
+            }
+        }
+    }
+
+    private func activate() {
+        switch zone {
+        case .sidebar:
+            let item = engineSidebarItems[sidebarIdx]
+            if item.id == "help" { HelpStore.shared.open() }
+            else if let r = item.route { router.go(r) }
+        case .list:
+            if filtered.indices.contains(listIdx) { select(filtered[listIdx]) }
+        case .key:
+            press(rows[keyRow][keyCol])
+            listIdx = 0
+        case .lang:
+            dropdownOpen.toggle()
+            if dropdownOpen { zone = .langItem; langItemIdx = activeLayoutIndex }
+        case .langItem:
+            activeLayoutIndex = langItemIdx
+            dropdownOpen = false
+            zone = .lang
+        }
+    }
 
     private func press(_ key: String) {
         switch key {
@@ -265,36 +343,30 @@ struct CountrySelectPage: View {
     }
 }
 
-// MARK: - Country row
+// MARK: - Country row (visual only — no focus state)
 
 private struct CountryRow: View {
     let item: CountryItem
     let isSelected: Bool
     let query: String
     let isFocused: Bool
-    let onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 16) {
-                flag
-                highlightedName
-                    .font(.ubuntu(isFocused ? 30 : 26, .medium))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                Spacer(minLength: 0)
-                if isSelected && !isFocused {
-                    Text("✓").font(.system(size: 16)).foregroundColor(Theme.accent)
-                }
+        HStack(spacing: 16) {
+            flag
+            highlightedName
+                .font(.ubuntu(isFocused ? 30 : 26, .medium))
+                .foregroundColor(.white)
+                .lineLimit(1)
+            Spacer(minLength: 0)
+            if isSelected && !isFocused {
+                Text("✓").font(.system(size: 16)).foregroundColor(Theme.accent)
             }
-            .padding(.horizontal, 24)
-            .frame(height: 110)
-            .background(
-                RoundedRectangle(cornerRadius: 12).fill(rowBackground)
-            )
-            .shadow(color: isFocused ? Theme.accent.opacity(0.35) : .clear, radius: 20)
         }
-        .buttonStyle(.tvTransparent)
+        .padding(.horizontal, 24)
+        .frame(height: 110)
+        .background(RoundedRectangle(cornerRadius: 12).fill(rowBackground))
+        .shadow(color: isFocused ? Theme.accent.opacity(0.35) : .clear, radius: 20)
     }
 
     private var rowBackground: Color {
@@ -310,7 +382,6 @@ private struct CountryRow: View {
                   cornerRadius: 6)
     }
 
-    /// Renders the country name with the matched substring tinted pink.
     private var highlightedName: Text {
         guard !query.isEmpty,
               let range = item.name.range(of: query, options: .caseInsensitive)

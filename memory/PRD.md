@@ -469,3 +469,37 @@ User feedback round (Turkish). Changes applied to `ios-tvos/*.swift` (no new fil
 - Cards (StationCardLarge 200×264, inner 132×132) already match web 1:1.
 - Rebuild: just `Cmd+R` in Xcode (no new files, project.yml unchanged).
 
+
+
+### tvOS EXPLICIT FOCUS ENGINE — Country page rebuilt (2026-02)
+`.focusSection()` proved insufficient: tvOS geometric focus can't jump from a
+country low in the list to the keyboard (no perpendicular overlap). User demands
+Tizen-identical index navigation. Implemented the real model:
+
+- **Engine pattern**: whole page = ONE focusable container
+  (`.focusable(true).focusEffectDisabled().onMoveCommand{}.onTapGesture{}`). A manual
+  focus model (`zone` + indices) drives all highlights. Arrows are intercepted and
+  routed by an explicit `handleMove(dir)`; select by `activate()`. Geometry is
+  irrelevant — RIGHT from ANY country → keyboard, LEFT from anywhere → sidebar, etc.
+  (`onTapGesture` select is reliable here — the app's `.tvTransparent` style already
+  uses it and select works.)
+- **Reusable pieces** (in Views.swift): `EngineSidebar` / `EngineSidebarItemView` +
+  `engineSidebarItems` (non-focusable sidebar highlighted from a model index).
+  `KeyButtonLabel` extracted in TVKeyboard.swift (visual-only key) so engine pages
+  render plain keys while Search keeps the old `KeyButton`.
+- **CountrySelect.swift** fully rewritten on the engine (sidebar + list + keyboard +
+  language dropdown all in one model). Visuals/layout unchanged (1:1 with web).
+
+**Background image (Discover/Genres black)**: gradients already match web exactly.
+Root cause = `Assets/Images` is `type: group` (xcodegen snapshots files at GENERATION
+time); hero PNGs (`hand-crowd-disco-1.png`, `discover-background.png`) were added after
+the user's last `yarn tvos:setup`, so they aren't in the built bundle. FIX = re-run
+`yarn tvos:setup`.
+
+### Rollout plan (next, once user confirms Country focus is perfect)
+- Apply the SAME engine to Discover, Genres, Search (reuse EngineSidebar + KeyButtonLabel;
+  refactor GenreCard/StationCardLarge/GenrePill to plain `isFocused:` views).
+- Discover infinite scroll (backend supports `?page=N&country=`; load more near bottom).
+- Settings → Account redesign 1:1 with Tizen: show code directly (no "Show code"
+  button, single line) + QR code for phone scanning. Login/account visual parity.
+
