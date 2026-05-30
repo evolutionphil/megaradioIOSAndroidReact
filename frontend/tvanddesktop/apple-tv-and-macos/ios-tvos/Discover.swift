@@ -121,28 +121,31 @@ private struct DiscoverScrollArea: View {
                 if !genres.isEmpty {
                     SectionTitle("Genres")
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        HStack(spacing: 20) {
                             ForEach(genres) { g in
                                 GenrePill(name: g.name) { onGenre(g) }
                             }
                         }
                         .padding(.horizontal, 74)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 15)
                     }
+                    .focusSection()
                 }
 
-                // ── Popular Right Now row.
+                // ── Popular Right Now (web: 2×7 grid, NOT a horizontal scroll).
                 if !popular.isEmpty {
                     SectionTitle("Popular Right Now")
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 30) {
-                            ForEach(popular) { s in
-                                StationCardLarge(station: s) { onPlay(s) }
-                            }
+                    LazyVGrid(
+                        columns: Array(repeating: GridItem(.fixed(200), spacing: 24), count: 7),
+                        spacing: 30
+                    ) {
+                        ForEach(popular) { s in
+                            StationCardLarge(station: s) { onPlay(s) }
                         }
-                        .padding(.horizontal, 74)
-                        .padding(.vertical, 10)
                     }
+                    .padding(.horizontal, 74)
+                    .padding(.top, 8)
+                    .focusSection()
                 }
 
                 // ── Country stations grid (7 per row, 200×264 cards, gap 24).
@@ -158,7 +161,9 @@ private struct DiscoverScrollArea: View {
                         }
                     }
                     .padding(.horizontal, 74)
+                    .padding(.top, 8)
                     .padding(.bottom, 120)
+                    .focusSection()
                 }
             }
             .padding(.top, 20)
@@ -263,20 +268,21 @@ struct GenrePill: View {
 
     var body: some View {
         Button(action: onTap) {
-            Text(name.capitalized)
-                .font(.ubuntu(18, .medium))
+            Text(name)
+                .font(.ubuntu(22, .medium))
                 .foregroundColor(.white)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 12)
+                .lineLimit(1)
+                .padding(.horizontal, 72)
+                .padding(.vertical, 28)
                 .background(
-                    Capsule().fill(isFocused
-                                   ? Theme.accent
-                                   : Color.white.opacity(0.10))
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(isFocused ? Theme.accent : Color.white.opacity(0.14))
                 )
                 .overlay(
-                    Capsule().stroke(isFocused ? .white : .clear, lineWidth: 2)
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(isFocused ? .white : .clear, lineWidth: 3)
                 )
-                .scaleEffect(isFocused ? 1.08 : 1)
+                .scaleEffect(isFocused ? 1.05 : 1)
         }
         .buttonStyle(.tvTransparent)
         .focused($isFocused)

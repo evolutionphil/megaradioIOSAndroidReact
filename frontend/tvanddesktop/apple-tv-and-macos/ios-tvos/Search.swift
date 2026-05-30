@@ -56,9 +56,10 @@ struct SearchPage: View {
 
             resultsList
                 .frame(width: 660, height: 1080 - 200 - 30, alignment: .topLeading)
+                .focusSection()
                 .offset(x: 246, y: 200)
 
-            rightColumn.offset(x: 960, y: 110)
+            rightColumn.focusSection().offset(x: 960, y: 110)
         }
         .onAppear {
             activeLayoutIndex = max(0, kbLayouts.firstIndex { $0.id == settings.keyboardId } ?? 0)

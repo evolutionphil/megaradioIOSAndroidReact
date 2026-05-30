@@ -67,6 +67,7 @@ struct GenresPage: View {
                 .padding(.init(top: 60, leading: 237, bottom: 0, trailing: 79))
             }
             .frame(width: 1920, height: 940, alignment: .topLeading)
+            .focusSection()
             .offset(x: 0, y: 140)
 
             if loading {
@@ -170,8 +171,10 @@ struct GenreListPage: View {
                                 }
                             }
                         }
+                        .padding(.top, 16)
                         .padding(.bottom, 100)
                     }
+                    .focusSection()
                 }
             }
             .frame(width: 1700, height: 910, alignment: .topLeading)

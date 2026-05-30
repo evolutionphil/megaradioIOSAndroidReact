@@ -43,8 +43,10 @@ struct FavoritesPage: View {
                                 }
                             }
                         }
+                        .padding(.top, 16)
                         .padding(.bottom, 100)
                     }
+                    .focusSection()
                 }
             }
             .frame(width: 1700, height: 910, alignment: .topLeading)

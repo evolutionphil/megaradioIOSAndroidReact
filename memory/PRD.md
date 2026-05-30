@@ -454,3 +454,18 @@ User feedback round (Turkish). Changes applied to `ios-tvos/*.swift` (no new fil
   exactly mirror the web `useTVNavigation` zone model.
 - P1: Desktop (Windows/Linux) Stripe subscription via external-browser checkout.
 
+
+
+### tvOS Focus pass #2 + Discover parity (2026-02)
+- Applied the working Settings-style `.focusSection()` grouping to ALL remaining pages:
+  Search (results ↔ keyboard), Genres (content), GenreList (grid), Favorites (grid),
+  Discover (Genres row / Popular grid / Stations grid each a section). Sidebar already a
+  section → LEFT/RIGHT between sidebar and content now reliable on every page.
+- Discover: "Popular Right Now" converted from a horizontal scroll to a **2×7 grid**
+  (matches web `DiscoverNoUser.tsx`). GenrePill restyled to web spec (px72/py28, r20,
+  22px, bg .14). `.clipped()` kept (web clips too).
+- Genres-detail / Favorites / grids: added `.padding(.top, 16)` to stop the top focused
+  card being clipped on the first row.
+- Cards (StationCardLarge 200×264, inner 132×132) already match web 1:1.
+- Rebuild: just `Cmd+R` in Xcode (no new files, project.yml unchanged).
+
