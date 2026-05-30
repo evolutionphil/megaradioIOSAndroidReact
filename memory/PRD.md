@@ -421,3 +421,36 @@ yarn build:mac                  # DMG (needs Apple Dev ID)
 | `#/equalizer` | ✅ |
 | `#/premium` (3-tier paywall) | ✅ |
 | `#/remove-ads` (yearly paywall) | ✅ |
+
+
+---
+
+## tvOS Native — UI/Focus Pass (2026-02)
+
+User feedback round (Turkish). Changes applied to `ios-tvos/*.swift` (no new files,
+`project.yml` unchanged — user just rebuilds in Xcode):
+
+- **Country**: Removed the "Global" option everywhere. A concrete country is always
+  active — auto-detected from the device region/language on first launch, **UK (GB)
+  fallback**. `CountryStore.swift` rewritten with `detect()`; `CountryCatalog` gained
+  `codeToName` / `name(for:)`. Selected-row match is now code-based.
+- **Directional focus**: Added `.focusSection()` grouping to fix Tizen-style jumps —
+  Country (list ↔ keyboard), Settings (categories ↔ detail panel), RadioPlaying
+  (controls / scroll grid), and the global `AppSidebar`. This makes RIGHT/UP from
+  anywhere in a region snap to the adjacent region (previously only worked when
+  geometrically aligned).
+- **Global player bar**: Rewritten 1:1 with `GlobalPlayer.tsx` — full-width 1920×155
+  translucent dark bar, white 89px logo, station name + country•metadata, and 3
+  black circular buttons (Play/Pause, Favorite=pink-when-active, Equalizer=pink-when-
+  playing). Now hidden on search/settings/country-select/login (was showing on country).
+- **Help popup**: Sidebar "Help" item opens a `HelpOverlay` ("Remote Control Colors":
+  Red=Favorite, Green=Play/Pause, Yellow=Search, Blue=Country) — port of web HelpModal.
+
+### Still open / next (needs user Xcode screenshots to verify)
+- Discover page parity (background hero + station-card layout / focus) — pending a fresh
+  screenshot; AppSidebar focusSection already improves left/right return.
+- If `.focusSection()` is not pixel-identical to Tizen on any page, implement the full
+  explicit index-based focus engine (single focusable container + `onMoveCommand`) to
+  exactly mirror the web `useTVNavigation` zone model.
+- P1: Desktop (Windows/Linux) Stripe subscription via external-browser checkout.
+

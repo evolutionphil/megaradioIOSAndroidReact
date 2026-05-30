@@ -60,13 +60,17 @@ struct RootRouterView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .transition(.opacity)
             }
+
+            // Global Help popup (sidebar "Help" item). Always on top.
+            HelpOverlay()
         }
         .animation(.easeInOut(duration: 0.25), value: router.route)
     }
 
     private var shouldHideGlobalPlayer: Bool {
         switch router.route {
-        case .radioPlaying, .splash, .guide:
+        case .radioPlaying, .splash, .guide,
+             .search, .settings, .countrySelect, .login:
             return true
         default:
             return false
@@ -168,12 +172,14 @@ struct AppSidebar: View {
                     item: item,
                     isActive: item.route.map { matches(active, $0) } ?? false
                 ) {
-                    if let r = item.route { router.go(r) }
+                    if item.id == "help" { HelpStore.shared.open() }
+                    else if let r = item.route { router.go(r) }
                 }
                 .offset(x: 0, y: CGFloat(idx) * 108)
             }
         }
         .frame(width: 120, height: 760, alignment: .topLeading)
+        .focusSection()
         .offset(x: 48, y: 170)
     }
 
@@ -262,15 +268,11 @@ struct CountryTriggerHeader: View {
     var body: some View {
         Button { router.go(.countrySelect) } label: {
             HStack(spacing: 10) {
-                if country.selectedCountryCode == "GLOBAL" {
-                    BrandImage(name: "globe-icon").frame(width: 24, height: 24)
-                } else {
-                    FlagThumb(
-                        url: URL(string: "https://flagcdn.com/w40/\(country.selectedCountryCode.lowercased()).png"),
-                        width: 30, height: 20, cornerRadius: 3
-                    )
-                }
-                Text(country.selectedCountryCode == "GLOBAL" ? "Global" : country.selectedCountryName)
+                FlagThumb(
+                    url: URL(string: "https://flagcdn.com/w40/\(country.selectedCountryCode.lowercased()).png"),
+                    width: 30, height: 20, cornerRadius: 3
+                )
+                Text(country.selectedCountryName)
                     .font(.ubuntu(18, .bold)).foregroundColor(.white).lineLimit(1)
                 BrandImage(name: "globe-icon").frame(width: 18, height: 18)
             }
@@ -342,70 +344,183 @@ struct GlobalPlayerView: View {
     @EnvironmentObject var router: TVRouter
     @EnvironmentObject var favorites: FavoritesStore
 
+    private let btn: CGFloat = 90.192   // web button diameter
+    private let top: CGFloat = 958       // web button/logo top
+
     var body: some View {
         if let station = player.currentStation {
-            VStack {
-                Spacer()
-                HStack(spacing: 20) {
-                    StationArtwork(url: station.artworkURL, size: 72, cornerRadius: 12)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(player.nowPlayingTitle ?? station.name)
-                            .font(.ubuntu(22, .bold)).foregroundColor(.white).lineLimit(1)
-                        Text(player.nowPlayingArtist ?? station.country ?? "")
-                            .font(.ubuntu(16)).foregroundColor(Theme.textSecondary).lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                    miniCircle(
-                        symbol: player.isPlaying ? "pause.fill" : "play.fill",
-                        primary: true,
-                        size: 60
-                    ) { player.togglePlayPause() }
-
-                    miniCircle(
-                        symbol: favorites.isFavorite(station) ? "heart.fill" : "heart",
-                        primary: false,
-                        size: 56,
-                        tint: favorites.isFavorite(station) ? Theme.accent : .white
-                    ) { favorites.toggle(station) }
-
-                    miniCircle(
-                        symbol: "arrow.up.left.and.arrow.down.right",
-                        primary: false,
-                        size: 56
-                    ) { router.go(.radioPlaying) }
+            ZStack(alignment: .topLeading) {
+                // ── Backdrop-blur dark bar: (0,925) 1920×155, black 0.61 @0.82.
+                ZStack {
+                    Rectangle().fill(.ultraThinMaterial)
+                    Rectangle().fill(Color.black.opacity(0.55))
                 }
-                .padding(.horizontal, 28).padding(.vertical, 16)
-                .frame(width: 1500, height: 110)
-                .background(
-                    RoundedRectangle(cornerRadius: 28).fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 28).stroke(.white.opacity(0.10), lineWidth: 1)
-                )
-                .padding(.bottom, 32)
+                .frame(width: 1920, height: 155)
+                .offset(x: 0, y: 925)
+
+                // ── Station logo (white bg, 89×89, r=4.45) at (235,958).
+                ZStack {
+                    RoundedRectangle(cornerRadius: 4.45).fill(.white)
+                    AsyncImage(url: station.artworkURL) { phase in
+                        if let img = phase.image { img.resizable().scaledToFill() }
+                        else { BrandImage(name: "fallback-station", contentMode: .fill) }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 4.45))
+                }
+                .frame(width: 89, height: 89)
+                .offset(x: 235, y: top)
+
+                // ── Station name (357,976), 24px medium, max 450.
+                Text(station.name)
+                    .font(.ubuntu(24, .medium)).foregroundColor(.white).lineLimit(1)
+                    .frame(width: 450, alignment: .leading)
+                    .offset(x: 357, y: 976)
+
+                // ── Country • metadata row (357,1007).
+                HStack(spacing: 12) {
+                    Text(station.country ?? "Radio")
+                        .font(.ubuntu(20, .light)).foregroundColor(.white).lineLimit(1)
+                    if let meta = player.nowPlayingTitle, !meta.isEmpty {
+                        Text("•").font(.system(size: 20)).foregroundColor(.white.opacity(0.5))
+                        Text(meta).font(.ubuntu(20, .light)).foregroundColor(Theme.accent).lineLimit(1)
+                    }
+                }
+                .frame(width: 750, alignment: .leading)
+                .offset(x: 357, y: 1007)
+
+                // ── Play / Pause (black circle) at (1462.54, 958).
+                circleButton(filled: false, action: { player.togglePlayPause() }) {
+                    Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 40, weight: .bold)).foregroundColor(.white)
+                }
+                .offset(x: 1462.54, y: top)
+
+                // ── Favorite (pink when active) at (1588.81, 958).
+                circleButton(filled: favorites.isFavorite(station),
+                             action: { favorites.toggle(station) }) {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 34, weight: .bold)).foregroundColor(.white)
+                }
+                .offset(x: 1588.81, y: top)
+
+                // ── Equalizer / expand (pink when playing) at (1715, 958).
+                circleButton(filled: player.isPlaying,
+                             action: { router.go(.radioPlaying) }) {
+                    HStack(alignment: .bottom, spacing: 2) {
+                        eqBar(playing: player.isPlaying, idle: 35.5)
+                        eqBar(playing: player.isPlaying, idle: 24.8)
+                        eqBar(playing: player.isPlaying, idle: 30.2)
+                    }
+                    .frame(width: 33.75, height: 35.5, alignment: .bottom)
+                }
+                .offset(x: 1715, y: top)
             }
-            .frame(width: 1920, height: 1080, alignment: .bottom)
+            .frame(width: 1920, height: 1080, alignment: .topLeading)
+        }
+    }
+
+    /// 90.192 circle. Black by default, pink when `filled`. Pink ring on focus.
+    @ViewBuilder
+    private func circleButton<L: View>(
+        filled: Bool, action: @escaping () -> Void, @ViewBuilder label: @escaping () -> L
+    ) -> some View {
+        FocusableCircle(size: btn, action: action) { isFocused in
+            ZStack {
+                Circle().fill(filled ? Theme.accent : Color.black)
+                label()
+            }
+            .overlay(
+                Circle().stroke(
+                    isFocused ? Theme.accent : (filled ? Theme.accent : Color.black),
+                    lineWidth: isFocused ? 4 : 3.608
+                )
+            )
+            .shadow(color: isFocused ? Theme.accent.opacity(0.8) : .clear, radius: 28)
         }
     }
 
     @ViewBuilder
-    private func miniCircle(
-        symbol: String, primary: Bool, size: CGFloat,
-        tint: Color = .white, action: @escaping () -> Void
-    ) -> some View {
-        FocusableCircle(size: size, action: action) { isFocused in
+    private func eqBar(playing: Bool, idle: CGFloat) -> some View {
+        if playing {
+            EQAnimatedBar(width: 8.88, color: .white, maxHeight: 35.5)
+        } else {
+            RoundedRectangle(cornerRadius: 10).fill(.white).frame(width: 8.88, height: idle)
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// HelpStore + HelpOverlay — port of the `HelpModal` in web `App.tsx`.
+// Triggered by the sidebar "Help" item.
+// ────────────────────────────────────────────────────────────────────
+
+@MainActor
+final class HelpStore: ObservableObject {
+    static let shared = HelpStore()
+    @Published var isOpen = false
+    private init() {}
+    func open() { isOpen = true }
+    func close() { isOpen = false }
+}
+
+private struct HelpColorRow: Identifiable {
+    let id = UUID()
+    let color: Color
+    let label: String
+}
+
+struct HelpOverlay: View {
+    @ObservedObject private var help = HelpStore.shared
+    @FocusState private var closeFocused: Bool
+
+    private let rows: [HelpColorRow] = [
+        .init(color: Color(red: 0xE7/255, green: 0x4C/255, blue: 0x3C/255), label: "Add to Favorites"),
+        .init(color: Color(red: 0x27/255, green: 0xAE/255, blue: 0x60/255), label: "Play / Pause"),
+        .init(color: Color(red: 0xF1/255, green: 0xC4/255, blue: 0x0F/255), label: "Open Search"),
+        .init(color: Color(red: 0x34/255, green: 0x98/255, blue: 0xDB/255), label: "Change Country"),
+    ]
+
+    var body: some View {
+        if help.isOpen {
             ZStack {
-                Circle().fill(primary ? Theme.accent : Color.black)
-                Image(systemName: symbol)
-                    .font(.system(size: size * 0.42, weight: .bold))
-                    .foregroundColor(tint)
+                Color.black.opacity(0.75).ignoresSafeArea()
+
+                VStack(spacing: 0) {
+                    Text("Remote Control Colors")
+                        .font(.ubuntu(32, .bold)).foregroundColor(.white)
+                        .padding(.bottom, 32)
+
+                    VStack(alignment: .leading, spacing: 20) {
+                        ForEach(rows) { row in
+                            HStack(spacing: 20) {
+                                Circle().fill(row.color).frame(width: 36, height: 36)
+                                    .shadow(color: row.color.opacity(0.5), radius: 8)
+                                Text(row.label)
+                                    .font(.ubuntu(24, .medium)).foregroundColor(Color(white: 0.88))
+                            }
+                        }
+                    }
+
+                    Button { help.close() } label: {
+                        Text("Close")
+                            .font(.ubuntu(22, .medium)).foregroundColor(.white)
+                            .padding(.horizontal, 48).padding(.vertical, 12)
+                            .background(RoundedRectangle(cornerRadius: 12)
+                                .fill(closeFocused ? Theme.accent : Theme.accent.opacity(0.3)))
+                            .overlay(RoundedRectangle(cornerRadius: 12)
+                                .stroke(Theme.accent.opacity(0.5), lineWidth: 2))
+                    }
+                    .buttonStyle(.tvTransparent)
+                    .focused($closeFocused)
+                    .padding(.top, 36)
+                }
+                .padding(.vertical, 48).padding(.horizontal, 56)
+                .frame(minWidth: 520, maxWidth: 640)
+                .background(RoundedRectangle(cornerRadius: 20).fill(Theme.surfaceAlt))
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Theme.accent.opacity(0.3), lineWidth: 2))
             }
-            .overlay(
-                Circle().stroke(isFocused ? Theme.accent : .clear, lineWidth: 4)
-            )
-            .shadow(color: isFocused ? Theme.accent.opacity(0.8) : .clear, radius: 28)
+            .onAppear { closeFocused = true }
+            .onExitCommand { help.close() }
         }
     }
 }

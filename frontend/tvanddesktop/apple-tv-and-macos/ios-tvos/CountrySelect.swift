@@ -29,7 +29,8 @@ struct CountrySelectPage: View {
 
     private var activeLayout: KbLayout { kbLayouts[activeLayoutIndex] }
 
-    /// Global option first, then countries filtered + sorted exactly like web.
+    /// Countries filtered + sorted exactly like web. NO "Global" entry — a
+    /// concrete country is always required (auto-detected, UK fallback).
     private var filtered: [CountryItem] {
         let q = searchQuery.lowercased()
         var list = catalog.countries
@@ -42,7 +43,7 @@ struct CountrySelectPage: View {
                     return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
                 }
         }
-        return [CountryItem.global] + list
+        return list
     }
 
     private var listFocused: Bool {
@@ -66,9 +67,10 @@ struct CountrySelectPage: View {
 
             countryList
                 .frame(width: 660, height: 1080 - 200 - 30, alignment: .topLeading)
+                .focusSection()
                 .offset(x: 246, y: 200)
 
-            keyboardColumn.offset(x: 960, y: 110)
+            keyboardColumn.focusSection().offset(x: 960, y: 110)
         }
         .onAppear { catalog.loadIfNeeded() }
     }
@@ -117,7 +119,7 @@ struct CountrySelectPage: View {
                 ForEach(Array(filtered.enumerated()), id: \.element.id) { idx, item in
                     CountryRow(
                         item: item,
-                        isSelected: item.name == country.selectedCountryName,
+                        isSelected: item.code == country.selectedCountryCode,
                         query: searchQuery,
                         isFocused: focus == .country(idx)
                     ) {
@@ -302,15 +304,10 @@ private struct CountryRow: View {
     }
 
     @ViewBuilder private var flag: some View {
-        if item.code == "GLOBAL" {
-            BrandImage(name: "globe-icon")
-                .frame(width: isFocused ? 52 : 46, height: isFocused ? 39 : 34)
-        } else {
-            FlagThumb(url: item.flagURL,
-                      width: isFocused ? 52 : 46,
-                      height: isFocused ? 39 : 34,
-                      cornerRadius: 6)
-        }
+        FlagThumb(url: item.flagURL,
+                  width: isFocused ? 52 : 46,
+                  height: isFocused ? 39 : 34,
+                  cornerRadius: 6)
     }
 
     /// Renders the country name with the matched substring tinted pink.

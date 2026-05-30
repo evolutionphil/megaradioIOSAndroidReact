@@ -16,13 +16,11 @@ struct CountryItem: Identifiable, Hashable {
     let code: String   // ISO alpha-2, e.g. "US", or "GLOBAL" / "XX"
     var id: String { code + name }
 
-    /// flagcdn URL (nil for GLOBAL / unknown — caller renders globe icon).
+    /// flagcdn URL (nil for unknown — caller renders a neutral placeholder).
     var flagURL: URL? {
         guard code != "GLOBAL", code != "XX", code.count == 2 else { return nil }
         return URL(string: "https://flagcdn.com/w80/\(code.lowercased()).png")
     }
-
-    static let global = CountryItem(name: "Global", code: "GLOBAL")
 }
 
 @MainActor
@@ -36,6 +34,16 @@ final class CountryCatalog: ObservableObject {
 
     /// ISO code for a full country name (returns "XX" when unmapped).
     static func code(for name: String) -> String { nameToCode[name] ?? "XX" }
+
+    /// Reverse map: ISO code → first matching full country name.
+    static let codeToName: [String: String] = {
+        var m: [String: String] = [:]
+        for (name, code) in nameToCode where m[code] == nil { m[code] = name }
+        return m
+    }()
+
+    /// Full catalog name for an ISO code (nil when unmapped).
+    static func name(for code: String) -> String? { codeToName[code.uppercased()] }
 
     func loadIfNeeded() {
         guard countries.isEmpty, !isLoading else { return }

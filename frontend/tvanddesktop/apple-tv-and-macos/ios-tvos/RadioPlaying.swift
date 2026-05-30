@@ -97,11 +97,13 @@ struct RadioPlayingPage: View {
 
             // ── Player controls (1372, 356).
             controlsRow
+                .focusSection()
                 .offset(x: 1372, y: 356)
 
             // ── Similar + popular scroll area (236, 559) 1610 × 521.
             scrollArea
                 .frame(width: 1610, height: 521)
+                .focusSection()
                 .offset(x: 236, y: 559)
         }
         .task(id: player.currentStation?.id) { await loadRelated() }

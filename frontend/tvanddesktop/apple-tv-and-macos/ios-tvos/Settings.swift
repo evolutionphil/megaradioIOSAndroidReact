@@ -105,7 +105,7 @@ struct SettingsPage: View {
                 .offset(x: 236, y: 64)
 
             HStack(spacing: 0) {
-                leftColumn.frame(width: 420)
+                leftColumn.frame(width: 420).focusSection()
                 Rectangle().fill(Color.white.opacity(0.06)).frame(width: 1)
                     .padding(.horizontal, 8)
                 rightColumn
@@ -234,6 +234,7 @@ struct SettingsPage: View {
                     .padding(.trailing, 16)
             }
             .frame(height: 800)
+            .focusSection()
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(.leading, 32)
