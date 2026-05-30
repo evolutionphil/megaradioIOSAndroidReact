@@ -503,3 +503,24 @@ the user's last `yarn tvos:setup`, so they aren't in the built bundle. FIX = re-
 - Settings → Account redesign 1:1 with Tizen: show code directly (no "Show code"
   button, single line) + QR code for phone scanning. Login/account visual parity.
 
+
+
+### tvOS — Background image ROOT CAUSE + Login/QR redesign (2026-02)
+- **Background black (Discover/Genres) — ROOT CAUSE FOUND & FIXED**: `hand-crowd-disco-1.png`
+  was actually a **JPEG renamed to .png** (invalid PNG signature `FFD8FF/JFIF`). Browsers
+  (web/Tizen) sniff content so it worked there, but Xcode's build-time PNG processing
+  (pngcrush) mangles a fake-PNG → `UIImage` returns nil → black. Re-encoded it to a REAL
+  PNG (PIL, 2000×1333, 1.57MB) with the same filename. Scanned all 24 PNGs — only this one
+  was bad; rest valid. Gradients already matched web exactly.
+- **Login/Account redesigned 1:1 with web `Login.tsx`**: removed the "Show my code" button —
+  code is now auto-requested on appear (`startPairing()`). Code shown as **6 single-row
+  character boxes** (88×108, pink) with `.fixedSize()` so it NEVER wraps to 2 lines.
+  Added a native **QR code** (CoreImage `qrCodeGenerator`, value
+  `https://www.themegaradio.com/tv?code={code}`) in a white card + "OR" divider + waiting
+  indicator + Skip. Centered full-screen layout (no sidebar), matching Tizen.
+
+### Still pending (next)
+- Roll out the explicit focus engine (proven on Country) to Discover, Genres, Search,
+  Favorites — ONLY after user confirms Country focus is correct on-device.
+- Discover infinite scroll (`?page=N&country=`).
+

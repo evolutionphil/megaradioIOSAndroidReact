@@ -1,6 +1,10 @@
 // Settings.swift — Port of `web-preview/src/pages/Settings.tsx` + `Login.tsx`.
 
 import SwiftUI
+import CoreImage.CIFilterBuiltins
+#if canImport(UIKit)
+import UIKit
+#endif
 
 // MARK: - Static option data (mirrors KEYBOARD_OPTIONS / LANGUAGE_OPTIONS)
 
@@ -485,92 +489,176 @@ struct SettingsPage: View {
 struct LoginPage: View {
     @EnvironmentObject var auth: AuthStore
     @EnvironmentObject var router: TVRouter
+    @FocusState private var skipFocused: Bool
+
+    private var codeChars: [String] {
+        guard let c = auth.pendingCode, !c.isEmpty else { return [] }
+        return c.map { String($0) }
+    }
 
     var body: some View {
-        Stage1920x1080 {
-            // ── Soft gradient background.
+        ZStack {
             LinearGradient(
-                colors: [Theme.accent.opacity(0.18), Theme.background],
+                colors: [Theme.accent.opacity(0.12), Theme.background],
                 startPoint: .topTrailing, endPoint: .bottomLeading
             )
-            .frame(width: 1920, height: 1080)
+            .ignoresSafeArea()
 
-            MegaRadioLogo(scale: 164.421 / 323.069).offset(x: 30, y: 64)
-            AppSidebar(active: .settings)
+            VStack(spacing: 0) {
+                MegaRadioLogo(scale: 220 / 323.069).padding(.bottom, 44)
 
-            HStack(alignment: .top, spacing: 80) {
-                // Left: instructions.
-                VStack(alignment: .leading, spacing: 28) {
-                    Text("Sign in with your phone")
-                        .font(.ubuntu(48, .bold))
-                        .foregroundColor(.white)
+                if let err = auth.lastError {
+                    errorState(err)
+                } else {
+                    Text("To connect your TV, visit:")
+                        .font(.ubuntu(28)).foregroundColor(.white.opacity(0.7))
+                        .padding(.bottom, 12)
+                    Text("themegaradio.com/tv")
+                        .font(.ubuntu(42, .bold)).foregroundColor(Theme.accent)
+                        .padding(.bottom, 12)
+                    Text("Scan the QR code with your phone, or enter this code manually:")
+                        .font(.ubuntu(24)).foregroundColor(.white.opacity(0.7))
+                        .multilineTextAlignment(.center)
+                        .padding(.bottom, 28)
 
-                    Group {
-                        labeledStep("1", "Open the MegaRadio app on your phone or any browser.")
-                        labeledStep("2", "Go to www.themegaradio.com/tv")
-                        labeledStep("3", "Enter the code shown on the right.")
+                    HStack(alignment: .center, spacing: 60) {
+                        codeBoxes
+                        orDivider
+                        qrBlock
                     }
+                    .padding(.bottom, 28)
 
-                    if let err = auth.lastError {
-                        Text(err).font(.ubuntu(20)).foregroundColor(Theme.accent)
-                    }
-
-                    if auth.pendingCode == nil {
-                        Button { Task { await auth.startPairing() } } label: {
-                            Text("Show my code")
-                                .font(.ubuntu(26, .bold))
-                                .padding(.horizontal, 50)
-                                .padding(.vertical, 18)
-                                .background(Capsule().fill(Theme.accent))
-                                .foregroundColor(.white)
-                        }
-                        .buttonStyle(.tvTransparent)
-                        .padding(.top, 16)
+                    if auth.pendingCode != nil {
+                        waitingIndicator
+                    } else {
+                        Text("Loading…").font(.ubuntu(22)).foregroundColor(.white.opacity(0.5))
                     }
                 }
-                .frame(width: 760, alignment: .leading)
 
-                // Right: code card.
-                if let code = auth.pendingCode {
-                    VStack(spacing: 22) {
-                        Text("Your code")
-                            .font(.ubuntu(22)).foregroundColor(Theme.textSecondary)
-                        Text(code)
-                            .font(.system(size: 110, weight: .black, design: .monospaced))
-                            .foregroundColor(.white)
-                            .tracking(12)
-                        Text("Waiting for activation…")
-                            .font(.ubuntu(20)).foregroundColor(Theme.textTertiary)
-                    }
-                    .padding(50)
-                    .frame(width: 540)
+                skipButton.padding(.top, 18)
+            }
+        }
+        .frame(width: 1920, height: 1080)
+        .onAppear {
+            skipFocused = true
+            if auth.pendingCode == nil { Task { await auth.startPairing() } }
+        }
+        .onDisappear { auth.stopPairing() }
+        .onExitCommand { router.go(.discover) }
+    }
+
+    /// 6 character boxes — always a single row (never wraps).
+    private var codeBoxes: some View {
+        HStack(spacing: 14) {
+            ForEach(0..<6, id: \.self) { idx in
+                let filled = idx < codeChars.count
+                let ch = filled ? codeChars[idx] : "-"
+                Text(ch)
+                    .font(.ubuntu(84, .bold))
+                    .foregroundColor(filled ? Theme.accent : .white.opacity(0.15))
+                    .frame(width: 88, height: 108)
                     .background(
-                        RoundedRectangle(cornerRadius: 28).fill(Theme.surface)
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(filled ? Theme.accent.opacity(0.08) : Color.white.opacity(0.03))
                     )
                     .overlay(
-                        RoundedRectangle(cornerRadius: 28)
-                            .stroke(Theme.accent.opacity(0.4), lineWidth: 2)
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(filled ? Theme.accent.opacity(0.5) : .white.opacity(0.15), lineWidth: 3)
                     )
-                    .shadow(color: Theme.accent.opacity(0.25), radius: 50)
-                }
             }
-            .frame(width: 1500, alignment: .topLeading)
-            .offset(x: 192, y: 220)
+        }
+        .fixedSize()
+    }
+
+    private var orDivider: some View {
+        VStack(spacing: 8) {
+            Rectangle().fill(.white.opacity(0.15)).frame(width: 2, height: 40)
+            Text("OR").font(.ubuntu(20, .bold)).foregroundColor(.white.opacity(0.5)).tracking(2)
+            Rectangle().fill(.white.opacity(0.15)).frame(width: 2, height: 40)
         }
     }
 
-    @ViewBuilder
-    private func labeledStep(_ n: String, _ text: String) -> some View {
-        HStack(alignment: .top, spacing: 18) {
-            Text(n)
-                .font(.ubuntu(22, .bold))
-                .foregroundColor(.white)
-                .frame(width: 44, height: 44)
-                .background(Circle().fill(Theme.accent))
-            Text(text)
-                .font(.ubuntu(22))
-                .foregroundColor(.white)
-                .lineSpacing(4)
+    @ViewBuilder private var qrBlock: some View {
+        if let code = auth.pendingCode {
+            VStack(spacing: 10) {
+                QRCodeView(string: "https://www.themegaradio.com/tv?code=\(code)")
+                    .frame(width: 160, height: 160)
+                Text("Scan with your phone")
+                    .font(.ubuntu(14, .medium)).foregroundColor(.black)
+            }
+            .padding(16)
+            .background(RoundedRectangle(cornerRadius: 14).fill(.white))
+            .shadow(color: Theme.accent.opacity(0.2), radius: 30)
+        } else {
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(style: StrokeStyle(lineWidth: 3, dash: [8]))
+                .foregroundColor(.white.opacity(0.15))
+                .frame(width: 192, height: 192)
+                .overlay(Text("QR").font(.ubuntu(16)).foregroundColor(.white.opacity(0.3)))
         }
+    }
+
+    private var waitingIndicator: some View {
+        HStack(spacing: 12) {
+            Circle().fill(Theme.accent).frame(width: 12, height: 12)
+            Text("Waiting for activation…")
+                .font(.ubuntu(22)).foregroundColor(.white.opacity(0.5))
+        }
+    }
+
+    private var skipButton: some View {
+        Button { router.go(.discover) } label: {
+            Text("Skip")
+                .font(.ubuntu(24, .medium)).foregroundColor(.white)
+                .padding(.horizontal, 40).frame(minWidth: 300).frame(height: 64)
+                .background(
+                    RoundedRectangle(cornerRadius: 32)
+                        .fill(skipFocused ? Theme.accent.opacity(0.2) : Color.white.opacity(0.08))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 32)
+                        .stroke(skipFocused ? Theme.accent : .white.opacity(0.2), lineWidth: 3)
+                )
+                .shadow(color: skipFocused ? Theme.accent.opacity(0.4) : .clear, radius: 20)
+        }
+        .buttonStyle(.tvTransparent)
+        .focused($skipFocused)
+    }
+
+    @ViewBuilder private func errorState(_ msg: String) -> some View {
+        VStack(spacing: 20) {
+            Text("Connection Error").font(.ubuntu(32, .bold)).foregroundColor(.white)
+            Text(msg).font(.ubuntu(22)).foregroundColor(.white.opacity(0.6))
+                .multilineTextAlignment(.center).frame(maxWidth: 600)
+            Button { Task { await auth.startPairing() } } label: {
+                Text("Retry").font(.ubuntu(24, .bold)).foregroundColor(.white)
+                    .frame(width: 300, height: 64)
+                    .background(RoundedRectangle(cornerRadius: 32).fill(Theme.accent))
+            }
+            .buttonStyle(.tvTransparent)
+        }
+    }
+}
+
+// MARK: - QR code (CoreImage, native — no dependency)
+
+struct QRCodeView: View {
+    let string: String
+    var body: some View {
+        if let img = Self.generate(string) {
+            Image(uiImage: img).interpolation(.none).resizable()
+        } else {
+            Color.gray
+        }
+    }
+    static func generate(_ string: String) -> UIImage? {
+        let context = CIContext()
+        let filter = CIFilter.qrCodeGenerator()
+        filter.message = Data(string.utf8)
+        filter.correctionLevel = "H"
+        guard let output = filter.outputImage else { return nil }
+        let scaled = output.transformed(by: CGAffineTransform(scaleX: 12, y: 12))
+        guard let cg = context.createCGImage(scaled, from: scaled.extent) else { return nil }
+        return UIImage(cgImage: cg)
     }
 }
