@@ -1,5 +1,5 @@
 {
-  "_comment": "MegaRadio TV remote-update config. Edit cdnBase to YOUR Cloudflare host. IMPORTANT: it MUST be a *.themegaradio.com subdomain so the app's detectApiBase() keeps pointing API calls at api.themegaradio.com.",
-  "cdnBase": "https://cdn.themegaradio.com/tv/",
+  "_comment": "MegaRadio TV remote-update config. cdnBase MUST be a *.themegaradio.com host so detectApiBase() keeps API calls on api.themegaradio.com. The Cloudflare Worker serves cdn-dist at the ROOT of cdn.themegaradio.com, so no /tv/ subpath.",
+  "cdnBase": "https://cdn.themegaradio.com/",
   "killSwitch": false
 }

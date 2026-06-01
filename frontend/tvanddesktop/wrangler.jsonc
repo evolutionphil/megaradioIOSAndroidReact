@@ -1,0 +1,14 @@
+{
+  // Cloudflare Worker (Static Assets) that serves the TV app from cdn-dist.
+  // Deploy:  cd frontend/tvanddesktop  ->  node build-cdn.js  ->  wrangler deploy
+  //
+  // This matches the Worker you already created in the dashboard
+  // (name "megaradio-tv", custom domain cdn.themegaradio.com). Deploying with
+  // this config turns it into a static-asset host serving the cdn-dist folder.
+  "name": "megaradio-tv",
+  "compatibility_date": "2024-12-01",
+  "assets": {
+    "directory": "./cdn-dist",
+    "not_found_handling": "single-page-application"
+  }
+}
