@@ -41,7 +41,7 @@ console.log('▸ Building TV web bundle...');
 let tizenVersion = '1.0.2';
 try {
   const cfg = fs.readFileSync(path.join(__dirname, 'config.xml'), 'utf8');
-  const m = cfg.match(/version="([\d.]+)"/);
+  const m = cfg.match(/version="(\d+\.\d+\.\d+)"/);
   if (m) tizenVersion = m[1];
 } catch (_) {}
 console.log('  embedded VITE_APP_VERSION =', tizenVersion);

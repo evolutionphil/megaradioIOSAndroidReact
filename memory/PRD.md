@@ -546,3 +546,37 @@ focus, so `.onMoveCommand` on a container never fires. Apple's supported low-lev
   Favorites — ONLY after user confirms Country focus is correct on-device.
 - Discover infinite scroll (`?page=N&country=`).
 
+
+
+### Tizen/WebOS CDN Remote-Update — COMPLETED & VALIDATED (2026-06-01)
+Over-the-air update system finalized & verified end-to-end in the container (Vite build
+is buildable here; only native tvOS isn't).
+- **Validated build chain runs clean**: `node build-cdn.js` → `cdn-dist/` (assets
+  rewritten to `./`, `version.json`, `_headers`). `prepare-tizen.js` + `prepare-webos.js`
+  both produce correct store packages = thin `index.html` bootstrap (CDN base injected) +
+  full `app/` local fallback + manifest/icons.
+- **ROOT-CAUSE FIX (Tizen would white-screen)**: the bootstrap navigates the top-level
+  document to `https://cdn.themegaradio.com/index.html`, but Tizen BLOCKS main-resource
+  navigation to an external origin unless whitelisted. Added
+  `<tizen:allow-navigation>*.themegaradio.com themegaradio.com</tizen:allow-navigation>`
+  to `samsung-tizen/config.xml`. Per Tizen docs this also makes the WRT keep injecting
+  `tizen`/`webapis` (color keys, MediaPlay, Back via tvinputdevice) into the CDN-served
+  page — otherwise remote keys would die.
+- **webOS**: no appinfo flag needed — packaged→external https navigation works by default;
+  CORS only governs XHR/fetch, not top-level nav; CDN serves its own assets same-origin.
+- **Bug fix**: `prepare-tizen.js` version regex matched the XML prolog `version="1.0"`
+  instead of the widget `version="1.0.2"`; anchored to 3-part semver. Fallback
+  `app/version.json` now self-identifies as 1.0.2.
+- **Docs**: `REMOTE_UPDATE.md` updated with Cloudflare Worker (`wrangler.jsonc`) deploy
+  steps + a "Platform güvenlik gereksinimleri (KRİTİK)" section documenting the
+  allow-navigation requirement.
+- **Cosmetic**: `remote-bootstrap.html` CDN_BASE comment fixed (root, no `/tv/` subpath)
+  to match `cdn-config.json`.
+- Files: `samsung-tizen/config.xml`, `samsung-tizen/prepare-tizen.js`,
+  `remote-bootstrap.html`, `REMOTE_UPDATE.md`. (`prepare-webos.js`, `build-cdn.js`,
+  `cdn-config.json`, `wrangler.jsonc` were already complete.)
+- **USER ACTION (test on devices)**: `wrangler deploy` the cdn-dist to
+  cdn.themegaradio.com → repackage Tizen `.wgt` (Tizen Studio) + LG `.ipk`
+  (`ares-package dist`) → install → verify app opens from CDN, color/Back keys work, and
+  killSwitch=true falls back to local `./app/`.
+
