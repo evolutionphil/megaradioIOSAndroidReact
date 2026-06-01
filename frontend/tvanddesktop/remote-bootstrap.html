@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>MegaRadio</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #0e0e0e; overflow: hidden; }
+  #boot { position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); text-align: center; font-family: Arial, sans-serif; }
+  #boot .ring { width: 64px; height: 64px; margin: 0 auto 26px; border: 6px solid rgba(255,255,255,0.14); border-top-color: #ff4199; border-radius: 50%; -webkit-animation: spin 1s linear infinite; animation: spin 1s linear infinite; }
+  #boot p { color: #7a7a7a; font-size: 22px; letter-spacing: 2px; margin: 0; }
+  @-webkit-keyframes spin { to { -webkit-transform: rotate(360deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div id="boot"><div class="ring"></div><p>MEGARADIO</p></div>
+<script>
+/*
+ * MegaRadio TV — Remote-update bootstrap (ES5, Tizen/WebOS safe).
+ *
+ * On launch it asks the CDN "is there an app to serve, and is it enabled?"
+ *   • CDN reachable + killSwitch !== true  ->  run the app FROM the CDN
+ *     (whole app: HTML/JS/CSS/assets — so any update is picked up instantly).
+ *   • CDN down / timeout / killSwitch      ->  run the LOCAL copy bundled in
+ *     the store package (offline-safe, review-safe).
+ *
+ * NOTE: __CDN_BASE__ is replaced at package time by prepare-tizen.js /
+ * prepare-webos.js from tvanddesktop/cdn-config.json.
+ */
+(function () {
+  var CDN_BASE = '__CDN_BASE__';            // e.g. https://cdn.themegaradio.com/tv/
+  var LOCAL    = './app/index.html';        // bundled fallback copy
+  var TIMEOUT  = 4500;
+  var done     = false;
+
+  function go(url) {
+    if (done) return; done = true;
+    try { window.location.replace(url); } catch (e) { window.location.href = url; }
+  }
+  function loadLocal() { go(LOCAL); }
+  function loadRemote(ver) { go(CDN_BASE + 'index.html?v=' + encodeURIComponent(ver)); }
+
+  // If anything is misconfigured, never hang — fall back to local.
+  if (!CDN_BASE || CDN_BASE.indexOf('__CDN') === 0 || CDN_BASE.indexOf('http') !== 0) {
+    loadLocal(); return;
+  }
+
+  var timer = setTimeout(loadLocal, TIMEOUT);
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', CDN_BASE + 'version.json?_=' + (new Date().getTime()), true);
+    try { xhr.timeout = TIMEOUT; } catch (e) {}
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4 || done) return;
+      clearTimeout(timer);
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var ok = false, ver = '1';
+        try {
+          var m = JSON.parse(xhr.responseText);
+          if (m && m.killSwitch !== true) { ok = true; ver = String(m.version || '1'); }
+        } catch (e) {}
+        if (ok) loadRemote(ver); else loadLocal();
+      } else {
+        loadLocal();
+      }
+    };
+    xhr.onerror   = function () { if (done) return; clearTimeout(timer); loadLocal(); };
+    xhr.ontimeout = function () { if (done) return; clearTimeout(timer); loadLocal(); };
+    xhr.send();
+  } catch (e) {
+    clearTimeout(timer); loadLocal();
+  }
+})();
+</script>
+</body>
+</html>

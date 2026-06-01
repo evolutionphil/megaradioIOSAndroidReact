@@ -55,8 +55,22 @@ try {
 console.log('▸ Cleaning output:', OUT_DIR);
 rmrf(OUT_DIR);
 
-console.log('▸ Copying TV bundle → lg-webos/dist/');
-copyDir(TV_DIST, OUT_DIR);
+const APP_DIR = path.join(OUT_DIR, 'app');
+console.log('▸ Copying TV bundle → lg-webos/dist/app/ (local fallback)');
+copyDir(TV_DIST, APP_DIR);
+
+let webosVersion = '1.0.2';
+try { webosVersion = JSON.parse(fs.readFileSync(path.join(__dirname, 'appinfo.json'), 'utf8')).version || webosVersion; } catch (_) {}
+fs.writeFileSync(
+  path.join(APP_DIR, 'version.json'),
+  JSON.stringify({ version: webosVersion, killSwitch: false, builtAt: new Date().toISOString() }, null, 2)
+);
+
+console.log('▸ Writing remote-update bootstrap (index.html)');
+const cdnCfg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'cdn-config.json'), 'utf8'));
+let boot = fs.readFileSync(path.join(__dirname, '..', 'remote-bootstrap.html'), 'utf8').replace(/__CDN_BASE__/g, cdnCfg.cdnBase);
+fs.writeFileSync(path.join(OUT_DIR, 'index.html'), boot);
+console.log('  CDN base =', cdnCfg.cdnBase);
 
 console.log('▸ Copying WebOS manifest + icons');
 fs.copyFileSync(path.join(__dirname, 'appinfo.json'), path.join(OUT_DIR, 'appinfo.json'));
@@ -83,7 +97,7 @@ function walkAndRewrite(dir) {
     else if (/\.(html|css)$/.test(entry.name)) rewriteFile(p);
   }
 }
-walkAndRewrite(OUT_DIR);
+walkAndRewrite(APP_DIR);
 
 console.log('\n✅ WebOS project ready at:', OUT_DIR);
 console.log('   Package with:');

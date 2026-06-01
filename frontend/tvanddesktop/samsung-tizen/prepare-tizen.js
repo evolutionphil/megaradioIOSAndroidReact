@@ -66,8 +66,23 @@ try {
 console.log('▸ Cleaning output:', OUT_DIR);
 rmrf(OUT_DIR);
 
-console.log('▸ Copying TV bundle → samsung-tizen/dist/');
-copyDir(TV_DIST, OUT_DIR);
+const APP_DIR = path.join(OUT_DIR, 'app');
+console.log('▸ Copying TV bundle → samsung-tizen/dist/app/ (local fallback)');
+copyDir(TV_DIST, APP_DIR);
+
+// version.json for the bundled fallback (so it self-identifies offline too).
+fs.writeFileSync(
+  path.join(APP_DIR, 'version.json'),
+  JSON.stringify({ version: tizenVersion, killSwitch: false, builtAt: new Date().toISOString() }, null, 2)
+);
+
+// Remote-update bootstrap → root index.html (CDN base injected from cdn-config.json).
+console.log('▸ Writing remote-update bootstrap (index.html)');
+const cdnCfg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'cdn-config.json'), 'utf8'));
+let boot = fs.readFileSync(path.join(__dirname, '..', 'remote-bootstrap.html'), 'utf8');
+boot = boot.replace(/__CDN_BASE__/g, cdnCfg.cdnBase);
+fs.writeFileSync(path.join(OUT_DIR, 'index.html'), boot);
+console.log('  CDN base =', cdnCfg.cdnBase);
 
 console.log('▸ Copying Tizen manifest + icon');
 fs.copyFileSync(path.join(__dirname, 'config.xml'), path.join(OUT_DIR, 'config.xml'));
@@ -124,7 +139,7 @@ function walkAndRewrite(dir) {
     else if (/\.(html|css)$/.test(entry.name)) rewriteFile(p);
   }
 }
-walkAndRewrite(OUT_DIR);
+walkAndRewrite(APP_DIR);
 
 console.log('\n✅ Tizen project ready at:', OUT_DIR);
 console.log('   Import this folder into Tizen Studio:');
