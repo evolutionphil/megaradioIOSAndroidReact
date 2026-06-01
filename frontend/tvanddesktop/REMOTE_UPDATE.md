@@ -78,22 +78,29 @@ node prepare-webos.js          # dist\ = bootstrap + app\ + appinfo.json
 > Worker `cdn-dist`'i kökten servis ettiği için bootstrap `CDN_BASE + 'index.html'`
 > ve `CDN_BASE + 'version.json'` çağırır.
 
-## 🔐 Platform güvenlik gereksinimleri (KRİTİK)
-Bootstrap, top-level dokümanı CDN kopyasına **yönlendirir** (`window.location.replace`).
-Platformlar harici origin'e yönlendirmeyi varsayılan olarak engeller:
+## 🔐 Mimari: INJECT modeli (Tizen/webOS native API'leri korur)
+Bootstrap top-level dokümanı CDN'e **YÖNLENDİRMEZ**. Bunun yerine yerel `file://`
+dokümanını app context olarak tutar ve CDN'den yalnızca JS/CSS/asset'leri **enjekte
+eder**:
+- Doküman `file://` kaldığı için Samsung `tizen`/`webapis` ve LG `webOS` global'leri
+  korunur → **ses (`webapis.avplay`) + renk/Back tuşları (`tizen.tvinputdevice`) çalışır.**
+- Kod yine CDN'den geldiği için **anlık OTA güncelleme** korunur.
+- `build-cdn.js`, CDN paketini **mutlak base** (`cdnBase`) ile derler; bootstrap
+  `window.__MR_ASSET_BASE__ = cdnBase` set eder → resim/font'lar da CDN'den gelir.
+- CDN düşerse / `killSwitch=true` → yerel `./app/` kopyasına düşer (offline-güvenli).
 
-- **Tizen (Samsung)** — `config.xml` içinde `<tizen:allow-navigation>*.themegaradio.com
-  themegaradio.com</tizen:allow-navigation>` ZORUNLU. Bu olmadan CDN'e yönlendirme
-  engellenir (beyaz ekran). Ayrıca allow-navigation, WRT'nin `tizen`/`webapis`
-  global'lerini (renk tuşları, MediaPlay, Back = tvinputdevice) uzak sayfaya da
-  enjekte etmesini sağlar — yoksa uzaktan kumanda tuşları çalışmaz. ✅ Eklendi.
-- **webOS (LG)** — paketli uygulamadan harici https'e yönlendirme varsayılan olarak
-  çalışır; `appinfo.json`'da ekstra bayrak GEREKMEZ (CORS yalnızca XHR/fetch için,
-  top-level navigasyon için değil). CDN kendi asset'lerini aynı origin'den servis
-  ettiği için CORS sorunu yoktur. API çağrıları runtime `detectApiBase()` ile
-  `api.themegaradio.com`'a gider.
-- **CSP (Tizen)** — `connect-src`/`script-src` zaten `https://*.themegaradio.com`'a
-  izin verir, dolayısıyla CDN asset'leri + API çağrıları CSP'den geçer.
+> ⚠️ **Neden navigate DEĞİL:** Samsung, uzak https origin'ine `tizen`/`webapis`
+> enjekte etmiyor (cihazda test edildi: `tizen is not defined` + `webapis is not
+> defined` → ses çalmadı). `<tizen:allow-navigation>` bunu çözmedi. INJECT bu yüzden
+> zorunlu.
+
+**CORS (otomatik halledildi):** CDN'in ES-modül bundle'ı `file://` dokümandan
+yükleneceği için modül fetch'i CORS gerektirir. `build-cdn.js` üretilen `_headers`'a
+`Access-Control-Allow-Origin: *` ekler — Cloudflare Worker/Pages bunu uygular.
+Tizen CSP'si (`script-src`/`connect-src https://*.themegaradio.com`) zaten izin verir.
+
+> ℹ️ `<tizen:allow-navigation>` config.xml'de duruyor (zararsız), ama INJECT modelinde
+> gerekmiyor (navigasyon yok).
 
 ## ✅ Doğrulama (TV'de)
 - CDN açık → uygulama CDN'den gelir; `version.json` değişince güncellenir.

@@ -580,3 +580,32 @@ is buildable here; only native tvOS isn't).
   (`ares-package dist`) → install → verify app opens from CDN, color/Back keys work, and
   killSwitch=true falls back to local `./app/`.
 
+
+### CDN Remote-Update — switched NAVIGATE → INJECT model (2026-06-01, device-driven)
+On-device test proved the navigate-to-CDN approach is fatal on Samsung: loading the app
+from the remote `https://cdn.themegaradio.com` origin means the runtime does NOT inject
+`tizen`/`webapis` → `webapis is not defined` (NO AUDIO via avplay) + `tizen is not
+defined` (no color/Back keys). `<tizen:allow-navigation>` did NOT fix it.
+**Fix = INJECT model** (keep local file:// document as app context; pull only JS/CSS/
+assets from CDN):
+- **`remote-bootstrap.html`** rewritten: stays on local doc, sets
+  `window.__MR_ASSET_BASE__ = cdnBase`, fetches `version.json` (killSwitch) + CDN
+  `index.html`, recreates its `<link>/<style>/<script>` nodes (absolute CDN URLs) into
+  the local document — plain helper scripts (polyfills, tv-remote-keys, tv-audio-player)
+  first, ES-module React entry last, chained by onload for order. Native globals survive
+  → audio + keys work. Falls back to local `./app/index.html` on CDN failure/killSwitch.
+- **`build-cdn.js`**: CDN bundle now built with ABSOLUTE base (`cfg.cdnBase`) into a
+  dedicated outDir (cdn-dist), so injected refs point at the CDN. `_headers` now emits
+  `Access-Control-Allow-Origin: *` (required: file:// document loads CDN ES-module).
+- **`src/lib/assetPath.ts`**: checks `window.__MR_ASSET_BASE__` FIRST (before the file://
+  branch) so images/fonts load from the CDN in the inject model. Backward compatible
+  (undefined on web preview / local fallback).
+- **Also fixed earlier this session**: images/icons were 404 on CDN because the prior
+  relative/`/api/tv-app/` base mismatched the CDN root — absolute base fixes it.
+- Validated in container: build-cdn produces absolute-CDN index.html + ACAO _headers;
+  bootstrap node-simulation extracts correct CDN URLs (helpers first, module last);
+  prepare-tizen/webos emit the inject bootstrap + local app/ fallback; backend preview
+  smoke test OK.
+- **USER ACTION**: `node build-cdn.js` + `npx wrangler@3 deploy` → rebuild `.wgt`/`.ipk`
+  (new bootstrap) → reinstall → verify audio plays + keys work + images load from CDN.
+

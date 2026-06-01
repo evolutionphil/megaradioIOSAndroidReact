@@ -6,6 +6,7 @@
 <title>MegaRadio</title>
 <style>
   html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #0e0e0e; overflow: hidden; }
+  #root { width: 100%; height: 100%; background: #0e0e0e; }
   #boot { position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); text-align: center; font-family: Arial, sans-serif; }
   #boot .ring { width: 64px; height: 64px; margin: 0 auto 26px; border: 6px solid rgba(255,255,255,0.14); border-top-color: #ff4199; border-radius: 50%; -webkit-animation: spin 1s linear infinite; animation: spin 1s linear infinite; }
   #boot p { color: #7a7a7a; font-size: 22px; letter-spacing: 2px; margin: 0; }
@@ -14,63 +15,147 @@
 </style>
 </head>
 <body>
-  <div id="boot"><div class="ring"></div><p>MEGARADIO</p></div>
+  <div id="root"><div id="boot"><div class="ring"></div><p>MEGARADIO</p></div></div>
 <script>
 /*
- * MegaRadio TV — Remote-update bootstrap (ES5, Tizen/WebOS safe).
+ * MegaRadio TV — Remote-update bootstrap (ES5, Tizen/WebOS safe) — INJECT model.
  *
- * On launch it asks the CDN "is there an app to serve, and is it enabled?"
- *   • CDN reachable + killSwitch !== true  ->  run the app FROM the CDN
- *     (whole app: HTML/JS/CSS/assets — so any update is picked up instantly).
- *   • CDN down / timeout / killSwitch      ->  run the LOCAL copy bundled in
- *     the store package (offline-safe, review-safe).
+ * WHY INJECT (not navigate): On Tizen/WebOS the native APIs (`tizen`, `webapis`,
+ * `webOS`) are injected by the runtime ONLY into the app's OWN document. If we
+ * navigate the top-level document to a remote https origin (the CDN), those
+ * globals are gone → `webapis.avplay` audio + `tizen.tvinputdevice` keys break.
  *
- * NOTE: __CDN_BASE__ is replaced at package time by prepare-tizen.js /
- * prepare-webos.js from tvanddesktop/cdn-config.json.
+ * So instead we KEEP this local file:// document as the app context and pull the
+ * app's JS/CSS/assets FROM the CDN into it:
+ *   • CDN reachable + killSwitch !== true  ->  fetch the CDN index.html, recreate
+ *     its <link>/<style>/<script> nodes here (absolute CDN URLs). The bundle runs
+ *     in THIS local document, so `tizen`/`webapis`/`webOS` stay available, while
+ *     the code itself is the latest from the CDN (instant OTA updates).
+ *   • CDN down / timeout / killSwitch      ->  navigate to the LOCAL copy bundled
+ *     in the store package (./app/index.html) — offline-safe, review-safe.
+ *
+ * __CDN_BASE__ is replaced at package time by prepare-tizen.js / prepare-webos.js.
+ * The CDN bundle is built with an ABSOLUTE base (= __CDN_BASE__) by build-cdn.js,
+ * so its assets already point at the CDN. window.__MR_ASSET_BASE__ makes the app's
+ * assetPath() pull images/fonts from the CDN too.
  */
 (function () {
-  var CDN_BASE = '__CDN_BASE__';            // e.g. https://cdn.themegaradio.com/  (served at root by the Cloudflare Worker)
+  var CDN_BASE = '__CDN_BASE__';            // e.g. https://cdn.themegaradio.com/
   var LOCAL    = './app/index.html';        // bundled fallback copy
-  var TIMEOUT  = 4500;
+  var TIMEOUT  = 6000;
   var done     = false;
 
-  function go(url) {
-    if (done) return; done = true;
-    try { window.location.replace(url); } catch (e) { window.location.href = url; }
+  function toAbs(u) {
+    if (!u) return u;
+    if (/^https?:\/\//i.test(u)) return u;     // already absolute
+    if (u.indexOf('//') === 0) return u;       // protocol-relative
+    if (u.indexOf('data:') === 0) return u;    // inline data URI
+    return CDN_BASE + u.replace(/^\.?\//, ''); // "./js/x" | "/js/x" -> CDN + "js/x"
   }
-  function loadLocal() { go(LOCAL); }
-  function loadRemote(ver) { go(CDN_BASE + 'index.html?v=' + encodeURIComponent(ver)); }
 
-  // If anything is misconfigured, never hang — fall back to local.
+  function loadLocal() {
+    if (done) return; done = true;
+    try { window.location.replace(LOCAL); } catch (e) { window.location.href = LOCAL; }
+  }
+
+  // Misconfigured base → never hang; run the local copy.
   if (!CDN_BASE || CDN_BASE.indexOf('__CDN') === 0 || CDN_BASE.indexOf('http') !== 0) {
     loadLocal(); return;
   }
 
-  var timer = setTimeout(loadLocal, TIMEOUT);
-  try {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', CDN_BASE + 'version.json?_=' + (new Date().getTime()), true);
-    try { xhr.timeout = TIMEOUT; } catch (e) {}
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4 || done) return;
-      clearTimeout(timer);
-      if (xhr.status >= 200 && xhr.status < 300) {
-        var ok = false, ver = '1';
-        try {
-          var m = JSON.parse(xhr.responseText);
-          if (m && m.killSwitch !== true) { ok = true; ver = String(m.version || '1'); }
-        } catch (e) {}
-        if (ok) loadRemote(ver); else loadLocal();
-      } else {
-        loadLocal();
-      }
-    };
-    xhr.onerror   = function () { if (done) return; clearTimeout(timer); loadLocal(); };
-    xhr.ontimeout = function () { if (done) return; clearTimeout(timer); loadLocal(); };
-    xhr.send();
-  } catch (e) {
-    clearTimeout(timer); loadLocal();
+  // Tell the app to resolve image/font asset paths against the CDN.
+  try { window.__MR_ASSET_BASE__ = CDN_BASE; } catch (e) {}
+
+  var timer = setTimeout(loadLocal, TIMEOUT + 4000);
+  function fail() { if (done) return; clearTimeout(timer); loadLocal(); }
+
+  function get(url, cb) {
+    try {
+      var x = new XMLHttpRequest();
+      x.open('GET', url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + (new Date().getTime()), true);
+      try { x.timeout = TIMEOUT; } catch (e) {}
+      x.onreadystatechange = function () {
+        if (x.readyState !== 4) return;
+        if (x.status >= 200 && x.status < 300) cb(null, x.responseText);
+        else cb(new Error('HTTP ' + x.status), null);
+      };
+      x.onerror = function () { cb(new Error('net'), null); };
+      x.ontimeout = function () { cb(new Error('timeout'), null); };
+      x.send();
+    } catch (e) { cb(e, null); }
   }
+
+  function injectFromHtml(html) {
+    if (done) return;
+    var doc;
+    try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { doc = null; }
+    if (!doc || !doc.head || !doc.body) { fail(); return; }
+    done = true; clearTimeout(timer);
+
+    // 1) <link> (fonts / preconnect / stylesheets) + inline <style> from head.
+    var headNodes = doc.head.querySelectorAll('link, style');
+    for (var i = 0; i < headNodes.length; i++) {
+      var n = headNodes[i];
+      if (n.tagName === 'LINK') {
+        var l = document.createElement('link');
+        for (var a = 0; a < n.attributes.length; a++) {
+          var at = n.attributes[a];
+          l.setAttribute(at.name, at.name === 'href' ? toAbs(at.value) : at.value);
+        }
+        document.head.appendChild(l);
+      } else {
+        var st = document.createElement('style');
+        st.textContent = n.textContent;
+        document.head.appendChild(st);
+      }
+    }
+
+    // 2) Scripts: run the plain helpers (polyfills/platform/nav/keys/player) FIRST
+    //    in order, then the ES-module React entry LAST (mirrors the deferred-module
+    //    order of the original index.html). Chain via onload so order is guaranteed.
+    var scripts = doc.querySelectorAll('script');
+    var plain = [], modules = [];
+    for (var j = 0; j < scripts.length; j++) {
+      var sc = scripts[j];
+      var type = (sc.getAttribute('type') || '').toLowerCase();
+      if (type === 'module') modules.push(sc); else plain.push(sc);
+    }
+    var queue = plain.concat(modules);
+
+    function runNext(k) {
+      if (k >= queue.length) return;
+      var sc = queue[k];
+      var src = sc.getAttribute('src');
+      var type = sc.getAttribute('type') || '';
+      var el = document.createElement('script');
+      el.async = false;
+      if (type) el.type = type;
+      if (src) {
+        el.src = toAbs(src);
+        if (sc.getAttribute('crossorigin') !== null) el.crossOrigin = 'anonymous';
+        el.onload = function () { runNext(k + 1); };
+        el.onerror = function () { runNext(k + 1); };
+        document.body.appendChild(el);
+      } else {
+        el.text = sc.textContent || '';
+        document.body.appendChild(el);
+        runNext(k + 1);
+      }
+    }
+    runNext(0);
+  }
+
+  // Step 1: version.json (killSwitch check). Step 2: fetch + inject index.html.
+  get(CDN_BASE + 'version.json', function (err, body) {
+    if (err || done) { fail(); return; }
+    var ok = false;
+    try { var m = JSON.parse(body); if (m && m.killSwitch !== true) ok = true; } catch (e) {}
+    if (!ok) { fail(); return; }
+    get(CDN_BASE + 'index.html', function (e2, html) {
+      if (e2 || !html || done) { fail(); return; }
+      injectFromHtml(html);
+    });
+  });
 })();
 </script>
 </body>

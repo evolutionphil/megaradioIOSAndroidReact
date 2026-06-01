@@ -41,9 +41,10 @@ function rewriteAssetPaths(dir) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) rewriteAssetPaths(p);
     else if (/\.(html|css)$/.test(e.name)) {
-      // Vite emits assets under base "/api/tv-app/"; make them relative so the
-      // app works from ANY origin (CDN path, or file:// local fallback).
-      fs.writeFileSync(p, fs.readFileSync(p, 'utf8').replace(/\/api\/tv-app\//g, './'));
+      // Vite emits assets under base "/api/tv-app/"; rewrite to the ABSOLUTE
+      // CDN base so the injected bundle resolves from the CDN even when the
+      // host document is the local file:// bootstrap (inject model).
+      fs.writeFileSync(p, fs.readFileSync(p, 'utf8').replace(/\/api\/tv-app\//g, cfg.cdnBase));
     }
   }
 }
@@ -51,21 +52,21 @@ function rewriteAssetPaths(dir) {
 const cfg = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
 const version = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14); // YYYYMMDDHHMMSS
 
-// IMPORTANT — CDN is served at the ROOT of cdn.themegaradio.com, so the bundle
-// MUST use a RELATIVE base ("./"). The normal/backend build uses base
-// "/api/tv-app/" (Vite's `BASE_URL`), and the app's assetPath() falls back to
-// that base on any non-file:// origin. On the CDN https origin that resolves to
-// cdn.themegaradio.com/api/tv-app/... → 404 (broken images/icons/logos).
-// Building with `--base=./` makes BASE_URL "./" so assetPath() emits "./images/x"
-// which resolves correctly from the CDN root (and still works on the backend
-// preview + file:// because the app uses hash routing). We build into a DEDICATED
+// INJECT MODEL — the store package keeps a LOCAL file:// bootstrap document
+// (so Samsung `tizen`/`webapis` + LG `webOS` native APIs stay injected → audio
+// + remote keys work) and only pulls the JS/CSS/assets from the CDN. For the
+// injected <script src>/<link href> to resolve to the CDN (not the local file://
+// document), the CDN bundle MUST be built with an ABSOLUTE base = cfg.cdnBase.
+// The app's assetPath() also reads window.__MR_ASSET_BASE__ (set by the
+// bootstrap) so images/fonts load from the CDN too. We build into a DEDICATED
 // outDir (cdn-dist) so the backend's tv-preview build is never disturbed.
-console.log('▸ Building TV web bundle (relative base "./" for CDN root)...');
+console.log('▸ Building TV web bundle (absolute CDN base for inject model)...');
+console.log('  base =', cfg.cdnBase);
 rmrf(OUT_DIR);
 let built = false;
 try {
   const shell = process.platform === 'win32' ? true : (fs.existsSync('/bin/bash') ? '/bin/bash' : true);
-  execSync(`yarn build --base=./ --outDir="${OUT_DIR}" --emptyOutDir`, {
+  execSync(`yarn build --base="${cfg.cdnBase}" --outDir="${OUT_DIR}" --emptyOutDir`, {
     cwd: TV_SRC_DIR, stdio: 'inherit', shell, env: { ...process.env, VITE_APP_VERSION: version },
   });
   built = fs.existsSync(path.join(OUT_DIR, 'index.html'));
@@ -83,14 +84,20 @@ if (!built) {
 const manifest = { version: version, killSwitch: cfg.killSwitch === true, builtAt: new Date().toISOString() };
 fs.writeFileSync(path.join(OUT_DIR, 'version.json'), JSON.stringify(manifest, null, 2));
 
-// Cloudflare Pages cache rules (automatic — no dashboard config needed):
+// Cloudflare cache + CORS rules (Workers/Pages honour _headers):
 //  • version.json  → never cached (TVs see updates immediately)
 //  • assets/*      → cached forever (filenames are hashed)
+//  • /*  ACAO *    → REQUIRED so the local file:// bootstrap can load the CDN's
+//                    ES-module bundle (module scripts are always CORS-fetched).
 fs.writeFileSync(path.join(OUT_DIR, '_headers'),
+  '/*\n' +
+  '  Access-Control-Allow-Origin: *\n' +
   '/version.json\n' +
   '  Cache-Control: no-cache, no-store, must-revalidate\n' +
+  '  Access-Control-Allow-Origin: *\n' +
   '/assets/*\n' +
-  '  Cache-Control: public, max-age=31536000, immutable\n'
+  '  Cache-Control: public, max-age=31536000, immutable\n' +
+  '  Access-Control-Allow-Origin: *\n'
 );
 
 console.log('\n✅ CDN bundle ready:', OUT_DIR);

@@ -22,9 +22,19 @@ export function assetPath(path: string): string {
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
 
   try {
-    // file:// runtime → always relative (Tizen `.wgt`, WebOS `.ipk`).
-    if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-      return './' + cleanPath;
+    if (typeof window !== 'undefined') {
+      const w = window as unknown as { __MR_ASSET_BASE__?: string };
+      // Remote-update INJECT model: the Tizen/WebOS bootstrap stays on the local
+      // file:// document (so native `tizen`/`webapis`/`webOS` APIs survive) and
+      // sets __MR_ASSET_BASE__ to the CDN root. Assets (images/fonts) must then
+      // load from the CDN, not relative to the local file:// document.
+      if (w.__MR_ASSET_BASE__) {
+        return String(w.__MR_ASSET_BASE__) + cleanPath;
+      }
+      // file:// runtime → always relative (Tizen `.wgt`, WebOS `.ipk` local fallback).
+      if (window.location && window.location.protocol === 'file:') {
+        return './' + cleanPath;
+      }
     }
   } catch (_) { /* SSR / very old engines */ }
 
