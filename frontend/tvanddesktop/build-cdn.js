@@ -51,19 +51,34 @@ function rewriteAssetPaths(dir) {
 const cfg = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
 const version = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14); // YYYYMMDDHHMMSS
 
-console.log('▸ Building TV web bundle...');
+// IMPORTANT — CDN is served at the ROOT of cdn.themegaradio.com, so the bundle
+// MUST use a RELATIVE base ("./"). The normal/backend build uses base
+// "/api/tv-app/" (Vite's `BASE_URL`), and the app's assetPath() falls back to
+// that base on any non-file:// origin. On the CDN https origin that resolves to
+// cdn.themegaradio.com/api/tv-app/... → 404 (broken images/icons/logos).
+// Building with `--base=./` makes BASE_URL "./" so assetPath() emits "./images/x"
+// which resolves correctly from the CDN root (and still works on the backend
+// preview + file:// because the app uses hash routing). We build into a DEDICATED
+// outDir (cdn-dist) so the backend's tv-preview build is never disturbed.
+console.log('▸ Building TV web bundle (relative base "./" for CDN root)...');
+rmrf(OUT_DIR);
+let built = false;
 try {
   const shell = process.platform === 'win32' ? true : (fs.existsSync('/bin/bash') ? '/bin/bash' : true);
-  execSync('yarn build', { cwd: TV_SRC_DIR, stdio: 'inherit', shell, env: { ...process.env, VITE_APP_VERSION: version } });
+  execSync(`yarn build --base=./ --outDir="${OUT_DIR}" --emptyOutDir`, {
+    cwd: TV_SRC_DIR, stdio: 'inherit', shell, env: { ...process.env, VITE_APP_VERSION: version },
+  });
+  built = fs.existsSync(path.join(OUT_DIR, 'index.html'));
 } catch (e) {
-  if (!fs.existsSync(TV_DIST)) { console.error('✗ Build failed and no previous bundle at', TV_DIST); process.exit(1); }
-  console.warn('⚠ build failed — using existing bundle.');
+  console.warn('⚠ dedicated CDN build failed — falling back to existing bundle + rewrite.');
 }
-
-console.log('▸ Staging CDN folder:', OUT_DIR);
-rmrf(OUT_DIR);
-copyDir(TV_DIST, OUT_DIR);
-rewriteAssetPaths(OUT_DIR);
+if (!built) {
+  if (!fs.existsSync(TV_DIST)) { console.error('✗ No bundle available at', TV_DIST); process.exit(1); }
+  console.log('▸ Staging from existing bundle (fallback):', TV_DIST);
+  rmrf(OUT_DIR);
+  copyDir(TV_DIST, OUT_DIR);
+  rewriteAssetPaths(OUT_DIR);
+}
 
 const manifest = { version: version, killSwitch: cfg.killSwitch === true, builtAt: new Date().toISOString() };
 fs.writeFileSync(path.join(OUT_DIR, 'version.json'), JSON.stringify(manifest, null, 2));
