@@ -68,6 +68,16 @@ rewriteAssetPaths(OUT_DIR);
 const manifest = { version: version, killSwitch: cfg.killSwitch === true, builtAt: new Date().toISOString() };
 fs.writeFileSync(path.join(OUT_DIR, 'version.json'), JSON.stringify(manifest, null, 2));
 
+// Cloudflare Pages cache rules (automatic — no dashboard config needed):
+//  • version.json  → never cached (TVs see updates immediately)
+//  • assets/*      → cached forever (filenames are hashed)
+fs.writeFileSync(path.join(OUT_DIR, '_headers'),
+  '/version.json\n' +
+  '  Cache-Control: no-cache, no-store, must-revalidate\n' +
+  '/assets/*\n' +
+  '  Cache-Control: public, max-age=31536000, immutable\n'
+);
+
 console.log('\n✅ CDN bundle ready:', OUT_DIR);
 console.log('   version =', version, '| killSwitch =', manifest.killSwitch);
 console.log('\n   Upload the WHOLE folder to your CDN root (cdnBase in cdn-config.json):');
