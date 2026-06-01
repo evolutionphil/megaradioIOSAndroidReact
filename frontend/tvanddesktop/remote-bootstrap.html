@@ -40,6 +40,7 @@
  * assetPath() pull images/fonts from the CDN too.
  */
 (function () {
+  try { console.log('[MegaRadio] INJECT bootstrap v2 active — local file:// context, assets from CDN'); } catch (e) {}
   var CDN_BASE = '__CDN_BASE__';            // e.g. https://cdn.themegaradio.com/
   var LOCAL    = './app/index.html';        // bundled fallback copy
   var TIMEOUT  = 6000;
