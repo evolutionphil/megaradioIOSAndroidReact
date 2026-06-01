@@ -11,6 +11,7 @@ var _onStatusChange: ((status: string) => void) | null = null;
 var _lastCommandHash: string | null = null;
 var _isConnected: boolean = false;
 var _pollCount: number = 0;
+var _notFoundCount: number = 0;
 
 function getDeviceId(): string {
   if (_deviceId) return _deviceId;
@@ -147,6 +148,18 @@ function pollForCommands() {
   })
   .then(function(response) {
     console.log('[Cast] Poll #' + currentPoll + ' HTTP ' + response.status);
+    if (response.status === 404) {
+      // Endpoint does not exist on the backend (cast server side not deployed).
+      // A 404 is definitive, not transient — stop hammering it every 3s.
+      _notFoundCount++;
+      if (_notFoundCount >= 2) {
+        console.warn('[Cast] /api/cast/poll returns 404 (cast endpoints not available on backend) — disabling cast polling.');
+        if (_onStatusChange) _onStatusChange('unavailable');
+        castService.stopPolling();
+      }
+      return null;
+    }
+    _notFoundCount = 0;
     if (!response.ok) {
       return response.text().then(function(txt) {
         throw new Error('Poll HTTP ' + response.status + ': ' + txt.substring(0, 200));
@@ -155,6 +168,7 @@ function pollForCommands() {
     return response.json();
   })
   .then(function(data) {
+    if (!data) return;
     console.log('[Cast] Poll #' + currentPoll + ' response:', JSON.stringify(data).substring(0, 500));
 
     if (!_isConnected) {
@@ -219,6 +233,7 @@ export var castService = {
     _shouldPoll = true;
     _lastCommandHash = null;
     _pollCount = 0;
+    _notFoundCount = 0;
 
     pollForCommands();
 
