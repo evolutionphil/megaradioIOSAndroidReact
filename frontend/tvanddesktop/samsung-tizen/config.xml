@@ -17,6 +17,8 @@
         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com;
         connect-src 'self' https://themegaradio.com http://themegaradio.com wss://themegaradio.com ws://themegaradio.com
                     https://api.themegaradio.com http://api.themegaradio.com wss://api.themegaradio.com ws://api.themegaradio.com
+                    https://*.radiolise.com wss://*.radiolise.com http://*.radiolise.com ws://*.radiolise.com
+                    https://*.radio-browser.info https://de1.api.radio-browser.info
                     https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com data:;

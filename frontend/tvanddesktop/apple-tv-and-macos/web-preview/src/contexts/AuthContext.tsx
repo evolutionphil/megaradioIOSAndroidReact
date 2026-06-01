@@ -231,10 +231,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     .then(function(data) {
       console.log('[Auth] Code response:', JSON.stringify(data));
       var code = data.code;
-      var expiresAt = data.expiresAt;
-      if (!expiresAt && data.expiresIn) {
-        expiresAt = new Date(Date.now() + data.expiresIn * 1000).toISOString();
-      }
+      // CLOCK-SAFE: always derive the deadline from THIS device's clock + the
+      // relative TTL. Smart TVs (Tizen/WebOS) frequently have a wrong system
+      // clock; comparing the server's ABSOLUTE expiresAt against the TV's
+      // Date.now() then makes the code look "expired" instantly. Using
+      // Date.now() + expiresIn keeps both sides on the same (TV) clock.
+      var ttlSec = Number(data.expiresIn) || 600;
+      var expiresAt = new Date(Date.now() + ttlSec * 1000).toISOString();
       setDeviceCode(code);
       setCodeExpiresAt(expiresAt);
       setLoginError(false);
