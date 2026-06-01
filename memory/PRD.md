@@ -609,3 +609,23 @@ assets from CDN):
 - **USER ACTION**: `node build-cdn.js` + `npx wrangler@3 deploy` → rebuild `.wgt`/`.ipk`
   (new bootstrap) → reinstall → verify audio plays + keys work + images load from CDN.
 
+### Tizen INJECT model — VERIFIED WORKING ON DEVICE (2026-06-01)
+User device test confirmed: `[MegaRadio] INJECT bootstrap v2 active` → no more
+`tizen`/`webapis` undefined → **audio plays** (`avplay` onReady/onPlay) → keys work →
+images load from CDN. CDN OTA confirmed (cf-fonts + inject marker). 🎯
+
+### Self-hosted Ubuntu font (offline-safe) — 2026-06-01
+Fixed the only remaining cosmetic issue: `file:///cf-fonts/...woff2 ERR_ACCESS_DENIED`
+(Cloudflare auto-rewrote Google Fonts to root-relative `/cf-fonts/` which breaks under
+file://). Now self-hosted:
+- Added 8 woff2 (Ubuntu 300/400/500/700 × latin/latin-ext) to
+  `web-preview/public/fonts/`.
+- Prepended `@font-face` to `public/css/tv-styles.css` using `url("../fonts/..")` —
+  relative to the CSS file, so it resolves identically on CDN, `/api/tv-app/` preview,
+  and `file://` local fallback.
+- Removed the Google Fonts `<link>`/preconnect from `web-preview/index.html`.
+- Verified: preview renders Ubuntu with zero font/cf-fonts/gstatic errors; fonts bundled
+  into cdn-dist + Tizen/WebOS `app/` fallback (offline-safe).
+- **USER ACTION**: `node build-cdn.js` + `npx wrangler@3 deploy` → rebuild & reinstall
+  `.wgt` → font now loads with no `cf-fonts` ACCESS_DENIED.
+
