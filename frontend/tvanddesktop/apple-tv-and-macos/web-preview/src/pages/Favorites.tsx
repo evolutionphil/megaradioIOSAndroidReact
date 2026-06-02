@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useState, useRef, useEffect } from "react";
-import { resolveStationImageUrl } from "@/lib/imageUtils";
+import { resolveStationImageUrl, handleStationImageError } from "@/lib/imageUtils";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Station } from "@/services/megaRadioApi";
@@ -287,9 +287,7 @@ export const Favorites = (): JSX.Element => {
                         className="absolute inset-0 max-w-none object-cover pointer-events-none w-full h-full"
                         src={getStationImage(station)}
                     loading="lazy"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-                        }}
+                        onError={(e) => handleStationImageError(e, station.faviconFallback, FALLBACK_IMAGE)}
                       />
                     </div>
                     <p className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[100px] not-italic text-[22px] text-center text-white top-[187px] translate-x-[-50%] truncate px-2 max-w-[180px]">

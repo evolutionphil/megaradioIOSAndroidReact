@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { resolveStationImageUrl } from "@/lib/imageUtils";
+import { resolveStationImageUrl, handleStationImageError } from "@/lib/imageUtils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { megaRadioApi, type Station } from "@/services/megaRadioApi";
 import { cacheService } from "@/services/cacheService";
@@ -511,9 +511,7 @@ export const GenreList = (): JSX.Element => {
                     className="absolute inset-0 max-w-none object-cover pointer-events-none w-full h-full"
                     src={getStationImage(station)}
                     loading="lazy"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-                    }}
+                    onError={(e) => handleStationImageError(e, station.faviconFallback, FALLBACK_IMAGE)}
                   />
                 </div>
                 <p className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[100px] not-italic text-[22px] text-center text-white top-[187px] translate-x-[-50%] truncate px-2 max-w-[180px]">

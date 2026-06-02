@@ -724,3 +724,20 @@ Verified via curl against production `api.themegaradio.com`:
   pure OTA). The Tizen `config.xml` `connect-src` change needs ONE `.wgt` rebuild +
   reinstall for the playlist audio fix to take effect (webOS `.ipk` too if used).
 
+### Station logo fallback CHAIN — S3 → favicon → fallback image (2026-06-02, session 2)
+Per user: logos should come from our own S3; favicon only as a secondary fallback,
+local image as last resort. Implemented:
+- `megaRadioApi.ts slimStation()`: `favicon = logoAssets.webp256` (S3) when
+  `status==='completed'`; added `faviconFallback` = raw favicon (kept as secondary).
+  `Station` interface gained `faviconFallback?: string`.
+- `imageUtils.ts handleStationImageError()`: shared <img> onError walker —
+  step 1 swaps to the raw favicon (once, via dataset flag), step 2 swaps to the
+  local fallback-station image.
+- Wired into all station-logo onError sites: DiscoverNoUser, Search, Favorites,
+  GenreList, GlobalPlayer, IdleScreensaver, RadioPlaying (now-playing + similar +
+  popular). (ContinueListening rail already had a final-image fallback.)
+- Verified in preview: search "best" → real logos for Radio Best / Best FM /
+  Budapest / Debrecen; S3-less stations fall to branded fallback; **0 broken imgs**.
+- Backend still needs to re-process `failed` logoAssets (12–20% of stations) — see
+  `BACKEND_BRIEF_TV_PROXY_ENDPOINTS.md`.
+

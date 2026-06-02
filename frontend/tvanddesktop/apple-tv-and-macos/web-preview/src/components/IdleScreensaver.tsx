@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { resolveStationImageUrl } from '@/lib/imageUtils';
+import { resolveStationImageUrl, handleStationImageError } from '@/lib/imageUtils';
 import { useGlobalPlayer } from '@/contexts/GlobalPlayerContext';
 import { assetPath } from '@/lib/assetPath';
 
@@ -116,9 +116,7 @@ export const IdleScreensaver = ({ isVisible, onInteraction }: IdleScreensaverPro
                 src={getStationImage(currentStation)}
                 alt={currentStation.name}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-                }}
+                onError={(e) => handleStationImageError(e, currentStation.faviconFallback, FALLBACK_IMAGE)}
               />
             </div>
 

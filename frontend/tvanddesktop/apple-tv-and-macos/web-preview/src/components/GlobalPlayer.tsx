@@ -1,5 +1,5 @@
 import { useGlobalPlayer } from "@/contexts/GlobalPlayerContext";
-import { resolveStationImageUrl } from "@/lib/imageUtils";
+import { resolveStationImageUrl, handleStationImageError } from "@/lib/imageUtils";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Station } from "@/services/megaRadioApi";
@@ -62,9 +62,7 @@ export const GlobalPlayer = (): JSX.Element | null => {
           src={getStationImage(currentStation)}
           alt={currentStation.name}
           className="w-full h-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-          }}
+          onError={(e) => handleStationImageError(e, currentStation.faviconFallback, FALLBACK_IMAGE)}
         />
       </div>
 

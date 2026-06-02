@@ -45,3 +45,30 @@ export function resolveStationImageUrl(favicon: string | undefined | null): stri
   // upstream; there's nothing better to do than hand it to the catalog host.
   return IMAGE_API_BASE + '/api/image/' + encodeURIComponent(favicon);
 }
+
+// Shared <img> onError chain for station logos:
+//   1) primary src (S3 logo) failed → try the raw favicon (`faviconFallback`)
+//   2) that failed too → swap to the local fallback-station image
+// Tracks progress on the element's dataset so each step only runs once.
+export function handleStationImageError(
+  e: { currentTarget?: HTMLImageElement; target?: EventTarget | null },
+  faviconFallback: string | undefined | null,
+  fallbackImage: string,
+): void {
+  const img = (e.currentTarget || e.target) as HTMLImageElement | null;
+  if (!img) return;
+
+  // Step 1 — try the original favicon once (only when the S3 logo was primary).
+  if (!img.dataset.fbStep && faviconFallback) {
+    img.dataset.fbStep = 'favicon';
+    const resolved = resolveStationImageUrl(faviconFallback);
+    if (resolved && resolved !== img.src) {
+      img.src = resolved;
+      return;
+    }
+  }
+
+  // Step 2 — local fallback image (final).
+  img.dataset.fbStep = 'fallback';
+  if (img.src !== fallbackImage) img.src = fallbackImage;
+}

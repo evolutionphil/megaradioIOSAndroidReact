@@ -1,5 +1,5 @@
 import { useLocation, Link } from "wouter";
-import { resolveStationImageUrl } from "@/lib/imageUtils";
+import { resolveStationImageUrl, handleStationImageError } from "@/lib/imageUtils";
 import { useQuery } from "@tanstack/react-query";
 import { megaRadioApi, type Station } from "@/services/megaRadioApi";
 import { useMemo, useEffect, useRef, useState } from "react";
@@ -808,7 +808,7 @@ export const RadioPlaying = (): JSX.Element => {
               src={getStationImage(currentStation)}
               alt={currentStation.name}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={function(e) { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+              onError={(e) => handleStationImageError(e, currentStation.faviconFallback, FALLBACK_IMAGE)}
             />
           </div>
 
@@ -912,9 +912,7 @@ export const RadioPlaying = (): JSX.Element => {
                     loading="lazy"
           alt={station?.name || 'Radio Station'}
           className="absolute inset-0 max-w-none object-cover pointer-events-none w-full h-full"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-          }}
+          onError={(e) => handleStationImageError(e, station?.faviconFallback, FALLBACK_IMAGE)}
         />
       </div>
 
@@ -1136,9 +1134,7 @@ export const RadioPlaying = (): JSX.Element => {
                     className="w-full h-full object-cover"
                     alt={similarStation.name}
                     src={getStationImage(similarStation)}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-                    }}
+                    onError={(e) => handleStationImageError(e, similarStation?.faviconFallback, FALLBACK_IMAGE)}
                   />
                 </div>
                 <p className="font-['Ubuntu',Helvetica] font-medium text-[22px] text-center text-white leading-normal mt-[21px] truncate px-2">
@@ -1181,9 +1177,7 @@ export const RadioPlaying = (): JSX.Element => {
                     className="w-full h-full object-cover"
                     alt={popularStation.name}
                     src={getStationImage(popularStation)}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-                    }}
+                    onError={(e) => handleStationImageError(e, popularStation?.faviconFallback, FALLBACK_IMAGE)}
                   />
                 </div>
                 <p className="font-['Ubuntu',Helvetica] font-medium text-[22px] text-center text-white leading-normal mt-[21px] truncate px-2">

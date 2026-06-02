@@ -25,6 +25,7 @@ export interface Station {
   url_resolved?: string;
   homepage?: string;
   favicon?: string;
+  faviconFallback?: string;
   tags?: string | string[];
   country?: string;
   countrycode?: string;
@@ -218,6 +219,10 @@ function slimStation(station: any): Station {
     url_resolved: station.urlResolved || station.url_resolved,
     homepage: station.homepage,
     favicon: s3Logo || station.favicon,
+    // When the S3 logo is the primary, keep the raw favicon as a SECONDARY
+    // fallback so the <img> onError chain can try it before the local
+    // fallback-station image (S3 → favicon → fallback image).
+    faviconFallback: s3Logo && station.favicon && station.favicon !== s3Logo ? station.favicon : undefined,
     tags: station.tags,
     country: station.country,
     countrycode: station.countrycode || station.countryCode,

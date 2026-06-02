@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { resolveStationImageUrl } from "@/lib/imageUtils";
+import { resolveStationImageUrl, handleStationImageError } from "@/lib/imageUtils";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { megaRadioApi, type Station } from "@/services/megaRadioApi";
@@ -640,7 +640,7 @@ export const Search = (): JSX.Element => {
                   src={getStationImage(station)}
                   alt=""
                   className={`rounded-[6px] object-cover flex-shrink-0 ${isItemFocused ? 'w-[52px] h-[52px]' : 'w-[46px] h-[46px]'}`}
-                  onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                  onError={(e) => handleStationImageError(e, station.faviconFallback, FALLBACK_IMAGE)}
                 />
                 <div className="flex flex-col min-w-0 flex-1">
                   <p className={`font-['Ubuntu',Helvetica] font-medium leading-normal not-italic truncate ${isItemFocused ? 'text-[30px] text-white' : 'text-[26px]'}`}>
@@ -818,7 +818,7 @@ export const Search = (): JSX.Element => {
                         className="w-full h-full object-cover"
                         src={getStationImage(station)}
                         loading="lazy"
-                        onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                        onError={(e) => handleStationImageError(e, station.faviconFallback, FALLBACK_IMAGE)}
                       />
                     </div>
                     <p className={`font-['Ubuntu',Helvetica] font-medium text-[18px] text-center text-white truncate w-full leading-tight`}>
