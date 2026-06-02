@@ -81,6 +81,7 @@ console.log('▸ Writing remote-update bootstrap (index.html)');
 const cdnCfg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'cdn-config.json'), 'utf8'));
 let boot = fs.readFileSync(path.join(__dirname, '..', 'remote-bootstrap.html'), 'utf8');
 boot = boot.replace(/__CDN_BASE__/g, cdnCfg.cdnBase);
+boot = boot.replace(/__APP_VERSION__/g, tizenVersion);
 fs.writeFileSync(path.join(OUT_DIR, 'index.html'), boot);
 console.log('  CDN base =', cdnCfg.cdnBase);
 

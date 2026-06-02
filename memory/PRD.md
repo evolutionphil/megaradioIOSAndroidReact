@@ -629,3 +629,18 @@ file://). Now self-hosted:
 - **USER ACTION**: `node build-cdn.js` + `npx wrangler@3 deploy` → rebuild & reinstall
   `.wgt` → font now loads with no `cf-fonts` ACCESS_DENIED.
 
+### TV open-telemetry ping — wired to backend (2026-06-01)
+Backend dev shipped `GET /api/tv/telemetry/open` (204, CORS *) + admin
+`GET /api/admin/tv-telemetry?days=7` (per-version remote/local counts, unique TVs,
+localPct = killSwitch rollback signal). Frontend wired in `remote-bootstrap.html`:
+- `telemetry(src)` fire-and-forget `new Image()` beacon — never blocks the app.
+- Sends `src` (remote=inject succeeded / local=fallback), `v` (CDN bundle version from
+  version.json), `plat` (auto-detected tizen/webos/other), `app` (`__APP_VERSION__`
+  replaced by prepare-tizen/webos = package version), `did` (persistent anon id in
+  localStorage).
+- `prepare-tizen.js` + `prepare-webos.js` now replace `__APP_VERSION__`.
+- Validated in container: bootstrap JS syntax OK, placeholders replaced (app=1.0.2),
+  `telemetry/open` returns 204 with ACAO `*`.
+- **USER ACTION**: redeploy CDN + rebuild/reinstall `.wgt` → dashboard shows version
+  adoption & remote/local split.
+
