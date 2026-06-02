@@ -959,7 +959,11 @@ export const Settings = (): JSX.Element => {
                   <span style={{ fontWeight: 700 }}>mega</span><span style={{ fontWeight: 300 }}>radio</span>
                 </p>
                 <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '14px', color: 'rgba(255,255,255,0.3)', margin: 0 }} data-testid="text-app-version">
-                  Version 3.0
+                  {(() => {
+                    const src = (typeof window !== 'undefined' && (window as unknown as { __MR_BOOT_SRC__?: string }).__MR_BOOT_SRC__) === 'cdn' ? 'C' : 'L';
+                    const build = (import.meta as any).env?.VITE_APP_VERSION;
+                    return 'Version 3.0 · ' + src + (build ? ' (' + build + ')' : '');
+                  })()}
                 </p>
               </div>
             </div>

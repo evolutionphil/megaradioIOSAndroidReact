@@ -119,6 +119,7 @@
     try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { doc = null; }
     if (!doc || !doc.head || !doc.body) { fail(); return; }
     done = true; clearTimeout(timer);
+    try { window.__MR_BOOT_SRC__ = 'cdn'; } catch (e) {}   // Settings shows "· C"
     telemetry('remote');
 
     // 1) <link> (fonts / preconnect / stylesheets) + inline <style> from head.

@@ -644,3 +644,22 @@ localPct = killSwitch rollback signal). Frontend wired in `remote-bootstrap.html
 - **USER ACTION**: redeploy CDN + rebuild/reinstall `.wgt` → dashboard shows version
   adoption & remote/local split.
 
+### Settings version + L/C source indicator + font CSP + onboarding focus (2026-06-02)
+- **"Version 3.0" kaynağı**: `Settings.tsx` içinde hardcoded. Artık
+  `Version 3.0 · {C|L} (VITE_APP_VERSION)` gösteriyor — C=CDN inject, L=local fallback
+  (`window.__MR_BOOT_SRC__`, bootstrap inject yolunda 'cdn' set ediyor); build id =
+  çalışan bundle'ın gömülü sürümü. Preview'de doğrulandı: "Version 3.0 · L (1.0.2)".
+- **Font CSP fix**: self-hosted Ubuntu inject modunda CDN'den geldiği için Tizen
+  `config.xml` CSP `font-src`'ye `https://*.themegaradio.com` eklendi (yoksa
+  "Refused to load the font"). config.xml pakette → tek seferlik `.wgt` reinstall gerekir.
+- **Onboarding focus fix**: `OnboardingPremium.tsx` revealed (QR) ekranında
+  "Maybe later — Continue free" butonu kalıcı vurgulu + ENTER ile çalışır (eskiden focus
+  yok + ENTER ölüydü).
+
+### NEXT (önerilen): Async cache-first OTA (araştırıldı, onay bekliyor)
+Mevcut bootstrap network-first (CDN cevabını bekler → ilk açılış bloklu). Önerilen:
+cache-first + stale-while-revalidate — local'den anında aç, CDN'i arka planda indir,
+sonraki açılışta yeni sürüm. GEREKLİ değişiklik: build-cdn.js hashed `assets/*`'i
+biriktirmeli (silmemeli) ki TV'deki bayat cached index.html yeni deploy sonrası 404
+vermesin. killSwitch → cache temizle → next launch local (rollback).
+
