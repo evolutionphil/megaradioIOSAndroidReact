@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { initGA } from "./lib/analytics";
+import { scheduleBundleUpdate } from "./lib/bundleUpdater";
 
 // Initialize Google Analytics
 if (import.meta.env.VITE_GA_MEASUREMENT_ID) {
@@ -23,3 +24,6 @@ window.addEventListener("orientationchange", applyTvScale);
 applyTvScale();
 
 createRoot(document.getElementById("root")!).render(<App />);
+
+// Background OTA for the packaged TV apps (cache-first; no-op on web/Electron).
+scheduleBundleUpdate();

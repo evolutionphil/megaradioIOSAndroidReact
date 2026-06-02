@@ -94,31 +94,14 @@
   // Tell the app to resolve image/font asset paths against the CDN.
   try { window.__MR_ASSET_BASE__ = CDN_BASE; } catch (e) {}
 
-  var timer = setTimeout(loadLocal, TIMEOUT + 4000);
-  function fail() { if (done) return; clearTimeout(timer); loadLocal(); }
-
-  function get(url, cb) {
-    try {
-      var x = new XMLHttpRequest();
-      x.open('GET', url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + (new Date().getTime()), true);
-      try { x.timeout = TIMEOUT; } catch (e) {}
-      x.onreadystatechange = function () {
-        if (x.readyState !== 4) return;
-        if (x.status >= 200 && x.status < 300) cb(null, x.responseText);
-        else cb(new Error('HTTP ' + x.status), null);
-      };
-      x.onerror = function () { cb(new Error('net'), null); };
-      x.ontimeout = function () { cb(new Error('timeout'), null); };
-      x.send();
-    } catch (e) { cb(e, null); }
-  }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
   function injectFromHtml(html) {
     if (done) return;
     var doc;
     try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { doc = null; }
-    if (!doc || !doc.head || !doc.body) { fail(); return; }
-    done = true; clearTimeout(timer);
+    if (!doc || !doc.head || !doc.body) { loadLocal(); return; }
+    done = true;
     try { window.__MR_BOOT_SRC__ = 'cdn'; } catch (e) {}   // Settings shows "· C"
     telemetry('remote');
 
@@ -175,17 +158,21 @@
     runNext(0);
   }
 
-  // Step 1: version.json (killSwitch check). Step 2: fetch + inject index.html.
-  get(CDN_BASE + 'version.json', function (err, body) {
-    if (err || done) { fail(); return; }
-    var ok = false;
-    try { var m = JSON.parse(body); if (m && m.killSwitch !== true) ok = true; if (m && m.version) REMOTE_VERSION = String(m.version); } catch (e) {}
-    if (!ok) { fail(); return; }
-    get(CDN_BASE + 'index.html', function (e2, html) {
-      if (e2 || !html || done) { fail(); return; }
-      injectFromHtml(html);
-    });
-  });
+  // === CACHE-FIRST boot (non-blocking) ===
+  // The running app's background updater (bundleUpdater.ts) stores the latest CDN
+  // index.html in localStorage('mr_cdn_html'). Here we inject it INSTANTLY — no
+  // network on the critical path, so the app never blocks on boot. If there is no
+  // cache yet (fresh install) or it was cleared (killSwitch rollback), boot the
+  // bundled LOCAL copy instantly. The app then refreshes the cache for NEXT launch.
+  // (Old hashed assets are kept on the CDN by build-cdn.js, so a cached older
+  //  index.html never 404s.)
+  var cachedHtml = lsGet('mr_cdn_html');
+  if (cachedHtml) {
+    REMOTE_VERSION = lsGet('mr_cdn_ver') || '';
+    injectFromHtml(cachedHtml);
+  } else {
+    loadLocal();
+  }
 })();
 </script>
 </body>

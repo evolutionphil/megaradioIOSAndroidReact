@@ -656,10 +656,24 @@ localPct = killSwitch rollback signal). Frontend wired in `remote-bootstrap.html
   "Maybe later — Continue free" butonu kalıcı vurgulu + ENTER ile çalışır (eskiden focus
   yok + ENTER ölüydü).
 
-### NEXT (önerilen): Async cache-first OTA (araştırıldı, onay bekliyor)
-Mevcut bootstrap network-first (CDN cevabını bekler → ilk açılış bloklu). Önerilen:
-cache-first + stale-while-revalidate — local'den anında aç, CDN'i arka planda indir,
-sonraki açılışta yeni sürüm. GEREKLİ değişiklik: build-cdn.js hashed `assets/*`'i
-biriktirmeli (silmemeli) ki TV'deki bayat cached index.html yeni deploy sonrası 404
-vermesin. killSwitch → cache temizle → next launch local (rollback).
+### Async cache-first OTA — IMPLEMENTED ✅ (2026-06-02, approach A)
+Non-blocking boot delivered (user reported first-open blocking on the network-first model).
+- **`remote-bootstrap.html`** → CACHE-FIRST: injects `localStorage['mr_cdn_html']`
+  instantly if present (· C), else boots bundled local copy instantly (· L). NO network
+  on the boot critical path → never blocks. Removed the blocking version.json/index.html
+  fetch + timeout from the boot path.
+- **`src/lib/bundleUpdater.ts`** (new) + wired in `main.tsx` → after first paint (4s),
+  ONLY on file:// (packaged TV; no-op on web/Electron): fetch CDN version.json; killSwitch
+  → clear cache (rollback); newer version → stash CDN index.html in localStorage +
+  prewarm assets → shown on NEXT launch.
+- **`build-cdn.js`** → ACCUMULATE: build to temp, merge into cdn-dist keeping old hashed
+  `assets/*` (so a cached older index.html never 404s after a new deploy); prune >30 days.
+  Verified assets 1→2 on rebuild (old kept + new added).
+- Behaviour: fresh install → 1st launch local (instant) → bg downloads CDN → 2nd launch
+  CDN (instant) → new deploys appear next-launch. **CDN down/gone → app still works**
+  (cached or bundled local). killSwitch → next launch local.
+- Container-validated: bootstrap JS syntax OK + cache-first markers; bundleUpdater compiles
+  + no-op on https preview (0 console errors); accumulation works.
+- **USER ACTION**: deploy CDN + ONE more `.wgt`/.ipk reinstall (bootstrap changed) — LAST
+  forced reinstall; all future changes are pure OTA.
 

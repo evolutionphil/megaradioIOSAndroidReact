@@ -29,6 +29,20 @@ const OUT_DIR    = path.join(HERE, 'cdn-dist');
 const CONFIG     = path.join(HERE, 'cdn-config.json');
 
 function rmrf(p) { if (fs.existsSync(p)) fs.rmSync(p, { recursive: true, force: true }); }
+function pruneOldAssets(dir, days) {
+  // Cap accumulation: drop hashed assets older than `days` (any TV that lagged that
+  // long re-fetches the current bundle anyway). Files re-written this build keep a
+  // fresh mtime, so only truly-unused old hashes are removed.
+  if (!fs.existsSync(dir)) return;
+  const cutoff = Date.now() - days * 24 * 3600 * 1000;
+  let removed = 0;
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (!e.isFile()) continue;
+    const p = path.join(dir, e.name);
+    try { if (fs.statSync(p).mtimeMs < cutoff) { fs.rmSync(p, { force: true }); removed++; } } catch (_) {}
+  }
+  if (removed) console.log('▸ Pruned', removed, 'stale asset(s) (>' + days + 'd)');
+}
 function copyDir(src, dst) {
   fs.mkdirSync(dst, { recursive: true });
   for (const e of fs.readdirSync(src, { withFileTypes: true })) {
@@ -62,21 +76,32 @@ const version = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14); //
 // outDir (cdn-dist) so the backend's tv-preview build is never disturbed.
 console.log('▸ Building TV web bundle (absolute CDN base for inject model)...');
 console.log('  base =', cfg.cdnBase);
-rmrf(OUT_DIR);
+// ACCUMULATE model: build into a TEMP dir, then MERGE into cdn-dist KEEPING old
+// hashed assets/*. This is required for the cache-first bootstrap: a TV that booted
+// a previous (cached) index.html must still find its (older-hash) JS on the CDN even
+// after a newer deploy — otherwise it would 404. Old assets are pruned after 30 days.
+const TMP = OUT_DIR + '-tmp';
+rmrf(TMP);
 let built = false;
 try {
   const shell = process.platform === 'win32' ? true : (fs.existsSync('/bin/bash') ? '/bin/bash' : true);
-  execSync(`yarn build --base="${cfg.cdnBase}" --outDir="${OUT_DIR}" --emptyOutDir`, {
+  execSync(`yarn build --base="${cfg.cdnBase}" --outDir="${TMP}" --emptyOutDir`, {
     cwd: TV_SRC_DIR, stdio: 'inherit', shell, env: { ...process.env, VITE_APP_VERSION: version },
   });
-  built = fs.existsSync(path.join(OUT_DIR, 'index.html'));
+  built = fs.existsSync(path.join(TMP, 'index.html'));
 } catch (e) {
   console.warn('⚠ dedicated CDN build failed — falling back to existing bundle + rewrite.');
 }
-if (!built) {
+if (built) {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  copyDir(TMP, OUT_DIR);                 // overwrite entry/css/js/fonts, ADD new assets/*, KEEP old
+  rmrf(TMP);
+  pruneOldAssets(path.join(OUT_DIR, 'assets'), 30);
+} else {
+  rmrf(TMP);
   if (!fs.existsSync(TV_DIST)) { console.error('✗ No bundle available at', TV_DIST); process.exit(1); }
   console.log('▸ Staging from existing bundle (fallback):', TV_DIST);
-  rmrf(OUT_DIR);
+  fs.mkdirSync(OUT_DIR, { recursive: true });
   copyDir(TV_DIST, OUT_DIR);
   rewriteAssetPaths(OUT_DIR);
 }
