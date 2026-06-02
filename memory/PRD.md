@@ -677,3 +677,20 @@ Non-blocking boot delivered (user reported first-open blocking on the network-fi
 - **USER ACTION**: deploy CDN + ONE more `.wgt`/.ipk reinstall (bootstrap changed) — LAST
   forced reinstall; all future changes are pure OTA.
 
+### Station image + audio robustness (2026-06-02)
+Investigated user reports (Turkish station logos not showing + some stations not playing).
+Root cause = **backend/external, NOT a regression** from the CDN/inject work:
+- **Logos**: backend `api.themegaradio.com/api/tv-icon-proxy` 404s for many stations +
+  external station icon servers with expired certs / redirects / 503. App's
+  `resolveStationImageUrl` + onError→fallback is correct (unchanged). Backend brief needed.
+- **Audio**: `tv-audio-player.js` avplay is correct (HTTP+HTTPS); Super FM actually played
+  in the user's log; CSP allows http media. Failures are slow/dead external streams.
+App-side improvements shipped (both OTA, no reinstall):
+- **Optimized `fallback-station.png`** 1024²/1MB → 400²/160KB (TV was choking rendering
+  many 1MB placeholders in lists).
+- **avplay watchdog** in `public/js/tv-audio-player.js`: 15s timeout on `prepareAsync`
+  (some HTTP streams hang with neither onPlay nor onError) → converts a silent hang into
+  onError so the existing 3-attempt retry chain kicks in. Syntax-checked; in cdn bundle.
+- **USER ACTION**: `node build-cdn.js && npx wrangler@3 deploy` → OTA (next launch). No
+  `.wgt` reinstall (helper JS + images come from CDN).
+
