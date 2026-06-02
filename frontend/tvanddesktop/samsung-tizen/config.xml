@@ -28,7 +28,8 @@
                     https://api.themegaradio.com http://api.themegaradio.com wss://api.themegaradio.com ws://api.themegaradio.com
                     https://*.radiolise.com wss://*.radiolise.com http://*.radiolise.com ws://*.radiolise.com
                     https://*.radio-browser.info https://de1.api.radio-browser.info
-                    https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;
+                    https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com
+                    http: https:;
         style-src 'self' 'unsafe-inline' https://*.themegaradio.com https://fonts.googleapis.com;
         font-src 'self' https://*.themegaradio.com https://fonts.gstatic.com data:;
         img-src 'self' https: http: data:;

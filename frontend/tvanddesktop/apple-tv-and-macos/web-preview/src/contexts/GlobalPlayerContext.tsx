@@ -63,6 +63,37 @@ async function resolveStreamUrl(url: string): Promise<{ resolvedUrl: string; isP
   }
 }
 
+// Packaged-TV playlist resolver. Samsung `avplay` and webOS HTML5 audio CANNOT
+// parse `.pls` / `.m3u` playlist *files* — they need a direct stream URL. On the
+// web build the backend `/api/stream-resolve` handled this, but on a real TV
+// (file://) that endpoint is unreachable AND `api.themegaradio.com` doesn't
+// expose it, so playlist stations (e.g. Süper FM `...SUPER_FMAAC.pls`, Best FM
+// `.../listen.pls`) silently failed. Here we fetch the playlist text directly
+// (Tizen WRT allows cross-origin reads via `<access origin="*">` + network
+// privilege; CSP `connect-src http: https:`) and extract the first stream URL.
+async function resolvePlaylistOnTV(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, { method: 'GET' });
+    const text = await res.text();
+    const lines = text.split(/\r?\n/);
+
+    // .pls → File1=http://...  (case-insensitive, may be FileN)
+    for (const line of lines) {
+      const m = line.match(/^\s*File\d+\s*=\s*(\S+)/i);
+      if (m && /^https?:\/\//i.test(m[1])) return m[1].trim();
+    }
+    // .m3u / generic → first non-comment line that is an http(s) URL
+    for (const line of lines) {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) continue;
+      if (/^https?:\/\//i.test(t)) return t;
+    }
+  } catch (err: any) {
+    console.warn('[RESOLVE-TV] playlist fetch failed, using original:', err?.message || err);
+  }
+  return url;
+}
+
 export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   var { isAuthenticated, token } = useAuth();
   const [currentStation, setCurrentStation] = useState<Station | null>(null);
@@ -382,7 +413,24 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     const needsResolve = urlLower.endsWith('.m3u') || urlLower.endsWith('.pls') || 
       urlLower.includes('.m3u?') || urlLower.includes('.pls?');
 
-    if (needsResolve && !isTV) {
+    if (needsResolve && isTV) {
+      // Samsung/webOS can't parse .pls/.m3u — resolve to a direct stream URL first.
+      console.log('[🎵 PLAY] TV playlist detected — resolving client-side...');
+      resolvePlaylistOnTV(rawUrl).then(direct => {
+        if (currentStationRef.current?._id !== station._id) {
+          setIsBuffering(false);
+          return;
+        }
+        console.log('[🎵 PLAY] TV playlist resolved:', rawUrl.substring(0, 60), '→', direct.substring(0, 60));
+        startPlayback(direct);
+      }).catch(() => {
+        if (currentStationRef.current?._id === station._id) {
+          startPlayback(rawUrl);
+        } else {
+          setIsBuffering(false);
+        }
+      });
+    } else if (needsResolve && !isTV) {
       console.log('[🎵 PLAY] URL looks like a playlist, resolving first...');
       resolveStreamUrl(rawUrl).then(result => {
         if (currentStationRef.current?._id !== station._id) {

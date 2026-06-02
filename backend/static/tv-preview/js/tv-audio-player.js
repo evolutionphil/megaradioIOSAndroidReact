@@ -79,12 +79,32 @@
                     
                     webapis.avplay.setListener(listener);
                     
-                    // Prepare and play
+                    // Prepare and play — with a WATCHDOG. On some slow/dead HTTP
+                    // streams (e.g. raw-IP Turkish stations) prepareAsync() neither
+                    // resolves nor errors, leaving the player hung (no onPlay AND no
+                    // onError) so it looks like "nothing plays". The 15s watchdog turns
+                    // that silent hang into an onError, so the app's existing retry
+                    // chain (3 attempts) kicks in instead of stalling forever.
+                    var settled = false;
+                    var watchdog = setTimeout(function() {
+                        if (settled) return;
+                        settled = true;
+                        console.error('[Samsung Player] prepareAsync timeout (15s) — treating as error');
+                        try { webapis.avplay.stop(); webapis.avplay.close(); } catch (e) {}
+                        self.onError && self.onError('PREPARE_TIMEOUT');
+                    }, 15000);
+
                     webapis.avplay.prepareAsync(function() {
+                        if (settled) return;
+                        settled = true;
+                        clearTimeout(watchdog);
                         webapis.avplay.play();
                         self.isPlaying = true;
                         self.onPlay && self.onPlay();
                     }, function(error) {
+                        if (settled) return;
+                        settled = true;
+                        clearTimeout(watchdog);
                         console.error('Prepare failed:', error);
                         self.onError && self.onError(error);
                     });

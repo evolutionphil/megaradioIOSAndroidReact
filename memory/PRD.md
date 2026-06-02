@@ -694,3 +694,33 @@ App-side improvements shipped (both OTA, no reinstall):
 - **USER ACTION**: `node build-cdn.js && npx wrangler@3 deploy` → OTA (next launch). No
   `.wgt` reinstall (helper JS + images come from CDN).
 
+### TV station images + playlist audio — ROOT CAUSE + fix (2026-06-02, session 2)
+Deep investigation of "Best Fm / Süper FM çalmıyor + resimler gözükmüyor" (Turkish).
+Verified via curl against production `api.themegaradio.com`:
+- **Images ROOT CAUSE**: production API does NOT expose `/api/tv-icon-proxy`
+  (returns Express `Cannot GET … ` 404). Also `/api/stream-proxy` and
+  `/api/stream-resolve` are 404 there (they only exist on the Emergent FastAPI
+  preview backend). So on a real TV the `http://` favicon upgrade always failed →
+  missing logos. FIX (`src/lib/imageUtils.ts`): on packaged TV (`file://`) load the
+  `http://` favicon DIRECTLY (CSP `img-src http:` allows it, no mixed-content under
+  file://). Web/preview/Electron https path unchanged (still uses working proxy).
+- **Audio ROOT CAUSE**: Turkish playlist stations (Süper FM `…SUPER_FMAAC.pls`,
+  Best Fm `…/listen.pls`, Metro FM …) ship `.pls`/`.m3u` URLs. avplay/webOS audio
+  can't parse playlist *files*; on TV the code intentionally skipped resolution
+  (`needsResolve && !isTV`) and the backend resolver is unreachable → silent fail
+  (matches "debug ederken çalışıyor" = web build resolved it, TV didn't). FIX
+  (`src/contexts/GlobalPlayerContext.tsx`): new `resolvePlaylistOnTV()` fetches the
+  playlist text client-side and extracts the first stream URL before handing avplay
+  a direct URL; graceful fallback to original on failure. Tizen `config.xml`
+  `connect-src` broadened with `http: https:` so the playlist fetch isn't CSP-blocked.
+- StreamTheWorld redirect stations (Super Fm `…/livestream-redirect/SUPER_FM_SC`)
+  are 302→audio/mpeg and should already play (avplay follows redirects). Raw-IP
+  SHOUTcast (`http://46.20.7.126/;stream.mp3`) are flaky external servers (15s
+  watchdog already converts hangs → retry).
+- Backend brief: `/app/memory/BACKEND_BRIEF_TV_PROXY_ENDPOINTS.md`.
+- Build verified in container (vite build OK, markers present in bundle, preview
+  smoke test OK, no regression).
+- **USER ACTION**: `node build-cdn.js && npx wrangler@3 deploy` (OTA, images fix is
+  pure OTA). The Tizen `config.xml` `connect-src` change needs ONE `.wgt` rebuild +
+  reinstall for the playlist audio fix to take effect (webOS `.ipk` too if used).
+

@@ -8,14 +8,24 @@ const IMAGE_API_BASE = 'https://api.themegaradio.com';
 // `window.location.origin` is the empty string OR "file://", neither of
 // which can serve our backend. Force the absolute production host in that
 // case. Same `detectApiBase()` logic AuthContext / useSubscriptionLink use.
-const ICON_PROXY = (() => {
-  if (typeof window === 'undefined') return IMAGE_API_BASE + '/api/tv-icon-proxy?url=';
+// On a packaged TV (.wgt / .ipk) or Apple TV WKWebView the document runs from
+// `file://` (origin is "" / "null"). In that context there is NO mixed-content
+// restriction, and the Tizen/webOS CSP already allows `img-src http:`, so we can
+// (and MUST) load legacy `http://` station favicons DIRECTLY. The production
+// `api.themegaradio.com` does NOT expose `/api/tv-icon-proxy` (returns 404), so
+// routing through it is exactly why station logos were missing on real TVs.
+const isFileContext = (() => {
+  if (typeof window === 'undefined') return false;
   const protocol = window.location.protocol;
-  // file:// → use the production backend's full URL.
-  if (protocol === 'file:' || !window.location.origin || window.location.origin === 'null') {
+  return protocol === 'file:' || !window.location.origin || window.location.origin === 'null';
+})();
+
+// Only used on https web/preview/Electron, where a same-origin proxy actually
+// exists (Emergent backend) and mixed-content would otherwise warn.
+const ICON_PROXY = (() => {
+  if (typeof window === 'undefined' || isFileContext) {
     return IMAGE_API_BASE + '/api/tv-icon-proxy?url=';
   }
-  // Web preview / Electron https — same-origin proxy works.
   return `${window.location.origin}/api/tv-icon-proxy?url=`;
 })();
 
@@ -23,10 +33,15 @@ export function resolveStationImageUrl(favicon: string | undefined | null): stri
   if (!favicon || favicon === 'null' || favicon.trim() === '') return null;
 
   if (favicon.startsWith('http://')) {
-    // Upgrade insecure origins through the backend icon-proxy.
+    // Packaged TV (file://): load the http favicon directly — no proxy needed,
+    // no mixed-content under file://, and the production proxy is 404 anyway.
+    if (isFileContext) return favicon;
+    // Web/Electron https: upgrade insecure origins through the backend icon-proxy.
     return ICON_PROXY + encodeURIComponent(favicon);
   }
   if (favicon.startsWith('https://')) return favicon;
 
+  // Relative favicon path. On packaged TV the /api/image/ route is also absent
+  // upstream; there's nothing better to do than hand it to the catalog host.
   return IMAGE_API_BASE + '/api/image/' + encodeURIComponent(favicon);
 }
