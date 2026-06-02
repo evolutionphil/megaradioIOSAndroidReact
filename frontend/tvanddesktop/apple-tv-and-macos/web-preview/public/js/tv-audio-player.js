@@ -28,6 +28,15 @@
             this.play = function(url) {
                 self.currentUrl = url;
                 
+                // Cancel any watchdog left over from a PREVIOUS play() call.
+                // avplay is a SINGLETON: a stale watchdog firing stop()/close()
+                // would kill THIS (newly started) stream. This happens when the
+                // app fires play() twice in quick succession (auto-play re-trigger).
+                if (self._watchdog) {
+                    clearTimeout(self._watchdog);
+                    self._watchdog = null;
+                }
+
                 try {
                     // Always close player before opening new stream to reset state
                     try {
@@ -86,9 +95,25 @@
                     // that silent hang into an onError, so the app's existing retry
                     // chain (3 attempts) kicks in instead of stalling forever.
                     var settled = false;
-                    var watchdog = setTimeout(function() {
+                    self._watchdog = setTimeout(function() {
                         if (settled) return;
+                        // Before declaring a timeout, verify the player isn't
+                        // actually PLAYING. Samsung sometimes starts playback
+                        // without firing the prepareAsync success callback; killing
+                        // a stream that is in fact playing was the real cause of
+                        // "Super Fm cuts out after 15s and retries".
+                        var liveState = 'UNKNOWN';
+                        try { liveState = webapis.avplay.getState(); } catch (e) {}
+                        if (liveState === 'PLAYING' || liveState === 'READY') {
+                            console.log('[Samsung Player] Watchdog: state is ' + liveState + ' — stream is fine, NOT erroring');
+                            settled = true;
+                            self._watchdog = null;
+                            self.isPlaying = (liveState === 'PLAYING');
+                            self.onPlay && self.onPlay();
+                            return;
+                        }
                         settled = true;
+                        self._watchdog = null;
                         console.error('[Samsung Player] prepareAsync timeout (15s) — treating as error');
                         try { webapis.avplay.stop(); webapis.avplay.close(); } catch (e) {}
                         self.onError && self.onError('PREPARE_TIMEOUT');
@@ -97,14 +122,14 @@
                     webapis.avplay.prepareAsync(function() {
                         if (settled) return;
                         settled = true;
-                        clearTimeout(watchdog);
+                        if (self._watchdog) { clearTimeout(self._watchdog); self._watchdog = null; }
                         webapis.avplay.play();
                         self.isPlaying = true;
                         self.onPlay && self.onPlay();
                     }, function(error) {
                         if (settled) return;
                         settled = true;
-                        clearTimeout(watchdog);
+                        if (self._watchdog) { clearTimeout(self._watchdog); self._watchdog = null; }
                         console.error('Prepare failed:', error);
                         self.onError && self.onError(error);
                     });

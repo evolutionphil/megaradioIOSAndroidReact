@@ -32,6 +32,10 @@ const ICON_PROXY = (() => {
 export function resolveStationImageUrl(favicon: string | undefined | null): string | null {
   if (!favicon || favicon === 'null' || favicon.trim() === '') return null;
 
+  // Inline data URIs (base64 logos) are already self-contained — return as-is.
+  // Previously these were prefixed with /api/image/ → guaranteed 404 on TV.
+  if (favicon.startsWith('data:')) return favicon;
+
   if (favicon.startsWith('http://')) {
     // Packaged TV (file://): load the http favicon directly — no proxy needed,
     // no mixed-content under file://, and the production proxy is 404 anyway.

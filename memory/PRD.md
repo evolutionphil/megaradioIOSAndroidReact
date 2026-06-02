@@ -741,3 +741,24 @@ local image as last resort. Implemented:
 - Backend still needs to re-process `failed` logoAssets (12–20% of stations) — see
   `BACKEND_BRIEF_TV_PROXY_ENDPOINTS.md`.
 
+### CRITICAL: avplay watchdog killed a PLAYING stream (Super Fm) — fixed (2026-06-02 s2)
+Root cause found from real Samsung TV logs (user): the app fired `play()` twice in
+quick succession (RadioPlaying auto-play re-trigger). avplay is a SINGLETON; the
+superseded call's 15s `prepareAsync` watchdog later fired `stop()/close()`, KILLING
+the stream that was actually playing (`onPlay - Stream playing successfully` had
+already fired) → false `PREPARE_TIMEOUT` → retry → audio cut out. This is the real
+reason "Super Fm çalmıyor" (it played, then died after 15s).
+Fix in `public/js/tv-audio-player.js`:
+- Watchdog moved to instance var `self._watchdog`; each new `play()` cancels the
+  previous watchdog first (no stale singleton kill).
+- Before the watchdog declares a timeout it re-checks `webapis.avplay.getState()`;
+  if `PLAYING`/`READY` it treats the stream as fine (fires onPlay) instead of killing it.
+- `imageUtils.ts`: `data:` URI favicons now returned as-is (were wrongly prefixed
+  with `/api/image/` → 404; seen in TV logs for slowturk base64 logo).
+- `tv-audio-player.js` is loaded from CDN by the bootstrap (`./js/x` → CDN), so this
+  fix is PURE OTA (`node build-cdn.js && npx wrangler@3 deploy`, applies within 1–2
+  TV restarts). NO `.wgt` reinstall for the audio watchdog fix.
+- Note: Super Fm URL is a StreamTheWorld HTTPS redirect (NOT a playlist) — avplay
+  handles it; the watchdog was the only problem. The `.pls` client-side resolver +
+  `connect-src` change still benefits true playlist stations (needs the one `.wgt`).
+
