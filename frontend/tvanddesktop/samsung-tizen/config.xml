@@ -30,7 +30,7 @@
                     https://*.radio-browser.info https://de1.api.radio-browser.info
                     https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;
         style-src 'self' 'unsafe-inline' https://*.themegaradio.com https://fonts.googleapis.com;
-        font-src 'self' https://fonts.gstatic.com data:;
+        font-src 'self' https://*.themegaradio.com https://fonts.gstatic.com data:;
         img-src 'self' https: http: data:;
         media-src 'self' https: http:;
     </tizen:content-security-policy>

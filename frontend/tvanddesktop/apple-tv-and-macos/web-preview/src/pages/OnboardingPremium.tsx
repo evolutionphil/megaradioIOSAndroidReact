@@ -58,11 +58,14 @@ export const OnboardingPremium = (): JSX.Element => {
 
   usePageKeyHandler('/onboarding-premium', (e: KeyboardEvent) => {
     const kc = e.keyCode || 0;
-    // Once the user revealed the QR they can only Back-out (Escape) or wait.
+    // Once the user revealed the QR they can either continue-free (ENTER on the
+    // highlighted "Maybe later" button) or Back-out (Escape) — or wait for activation.
     if (codeRevealed) {
       if (kc === 10009 || kc === 461 || kc === 8) {
         setCodeRevealed(false);
         setFocusIndex(0);
+      } else if (kc === 13) { // ENTER → continue free (the only focusable control here)
+        completeOnboarding();
       }
       return;
     }
@@ -325,20 +328,27 @@ export const OnboardingPremium = (): JSX.Element => {
             )}
           </div>
 
-          {/* Persistent skip CTA at bottom */}
+          {/* Persistent skip CTA at bottom — always highlighted (sole control here) */}
           <button
             data-testid="button-onboarding-skip-revealed"
             onClick={completeOnboarding}
             style={{
               position: 'absolute',
               left: 96, bottom: 96,
-              padding: '16px 32px',
+              padding: '18px 36px',
               borderRadius: 30,
-              border: '2px solid rgba(255,255,255,0.18)',
-              background: 'rgba(255,255,255,0.04)',
-              color: 'rgba(255,255,255,0.7)',
-              fontSize: 18,
+              border: '3px solid #ff4199',
+              background: 'rgba(255,65,153,0.14)',
+              color: '#fff',
+              fontSize: 20,
+              fontWeight: 600,
               cursor: 'pointer',
+              transform: 'scale(1.04)',
+              boxShadow: '0 10px 34px rgba(255,65,153,0.45)',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
             }}
           >
             {t('onboarding_premium_maybe_later') || 'Maybe later — Continue free'}
