@@ -1,37 +1,57 @@
-# Backend Brief — Missing TV proxy/resolve endpoints on production (api.themegaradio.com)
+# Backend Brief — TV station logos: use S3 (`logoAssets`) + re-process failed ones
 
 Date: 2026-06-02
 
-## Finding (verified via curl)
-The packaged TV app (Tizen .wgt / webOS .ipk / Apple TV) hits the PRODUCTION API
-host `https://api.themegaradio.com`. Three endpoints the TV web code references
-DO NOT EXIST there (Express-style `Cannot GET …` → 404):
+## What the frontend now does (fixed this session)
+The TV/web app previously rendered the raw external `favicon` field (often
+`http://…/favicon.ico`, expired-cert, 404 → missing logos on TV). It now PREFERS
+the backend's own S3-processed logo when available:
 
-| Endpoint | Production status | Used for |
-|---|---|---|
-| `GET /api/tv-icon-proxy?url=` | **404 (missing)** | upgrade legacy `http://` station favicons → https |
-| `GET /api/stream-proxy?url=`  | **404 (missing)** | proxy http audio on https pages |
-| `GET /api/stream-resolve?url=`| **404 (missing)** | follow redirects / resolve playlists |
+```
+station.logoAssets.status === 'completed'  →  use logoAssets.webp256 (or .original)
+otherwise                                  →  fall back to station.favicon
+```
 
-(These DO exist on the Emergent FastAPI preview backend — that's why it works in
-the web preview but not on a real TV.)
+`logoAssets.webp256` is already `https://megaradio-station-logos.s3.eu-north-1.amazonaws.com/...logo-256.webp`
+— S3, https, optimized → NO proxy needed.
 
-`GET /api/stations` works (200) — the catalog API itself is fine.
+## Coverage measured (sample of 100 each, live)
+| Set | S3 `completed` | `failed` | no `logoAssets` |
+|---|---|---|---|
+| Türkiye | 78% | 20% | 2% |
+| Global | 75% | 16% | 9% |
+| USA | 79% | 12% | 9% |
 
-## Frontend mitigation already shipped (OTA, no backend dependency)
-- **Images**: on packaged TV (`file://`) the app now loads `http://` favicons
-  DIRECTLY (CSP `img-src http:` allows it, no mixed-content under file://), instead
-  of routing through the dead production proxy. `src/lib/imageUtils.ts`.
-- **Audio**: on TV the app now resolves `.pls` / `.m3u` playlists client-side
-  (fetch + parse first stream URL) before handing avplay a direct URL, because
-  avplay/webOS audio can't parse playlist files and the backend resolver is
-  unreachable. `src/contexts/GlobalPlayerContext.tsx` + Tizen `config.xml`
-  `connect-src http: https:`.
+So ~75–79% of logos now come from S3 reliably. 
 
-## Optional backend improvement (nice-to-have, not required anymore)
-If you want a server-side fallback instead of client-side resolution, port these 3
-endpoints from the Emergent FastAPI backend (`/app/backend/server.py`,
-`tv_icon_proxy` / `stream_proxy` / `stream_resolve`) to the Node `api.themegaradio.com`
-service. The icon-proxy should additionally PARSE `.pls`/`.m3u` and return the
-direct stream URL for true playlist resolution (the current FastAPI resolve only
-follows HTTP redirects).
+## BACKEND ACTION — re-process the `failed` ones
+The remaining missing logos are stations where the S3 logo job FAILED, e.g.:
+- `HTTP 503 / 404 / 410 / 402 / 403 - Access denied` (upstream favicon gone/blocked)
+- `certificate has expired`
+- `Outbound URL rejected by SSRF guard: port-not-allowed` (favicon on a non-standard
+  port, e.g. `:8000`) and `private-ip-resolved` (raw-IP stations)
+
+Requests for the backend team:
+1. **Retry** the `failed` logoAssets jobs (many upstreams are intermittently up).
+2. For `403 / cert-expired / 404`, fetch the logo from an **alternate source**
+   (station homepage `<link rel=icon>`, Clearbit/`favicon` service, or manual upload).
+3. Consider **relaxing the SSRF guard** for the logo fetcher specifically so
+   non-standard-port favicons (`:8000`, etc.) and raw-IP stations can be processed
+   (these are common for Turkish stations).
+4. Confirm: is `logoAssets` returned on ALL list/search/genre endpoints (incl. with
+   `?tv=1`)? It is present on `/api/stations` today — please keep it on every
+   station-returning endpoint so the app can always prefer S3.
+
+Once failed jobs are re-processed, ~100% of logos come from S3 and the legacy
+favicon path (and any proxy) becomes unnecessary.
+
+---
+
+# (Earlier) Missing TV proxy/resolve endpoints on production (api.themegaradio.com)
+
+The packaged TV app hits `https://api.themegaradio.com`. These do NOT exist there
+(404), they only exist on the Emergent FastAPI preview backend:
+`GET /api/tv-icon-proxy`, `GET /api/stream-proxy`, `GET /api/stream-resolve`.
+With the S3-logo fix above, `tv-icon-proxy` is largely unnecessary. `stream-resolve`
+is now handled client-side on TV for `.pls`/`.m3u` playlists.
+

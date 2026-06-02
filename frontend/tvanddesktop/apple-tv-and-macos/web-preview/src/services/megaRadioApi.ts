@@ -203,13 +203,21 @@ async function fetchWithTimeout(url: string, options?: RequestInit, timeout = FE
 }
 
 function slimStation(station: any): Station {
+  // Prefer the backend's own S3-hosted, pre-processed logo (https, optimized
+  // 256px WebP) over the raw external `favicon` (often http / 404 / expired
+  // cert → missing logos on TV). The backend stores it under `logoAssets`
+  // once processing is `completed`; fall back to `favicon` only when there's
+  // no usable S3 asset (status failed / pending).
+  const la = station.logoAssets;
+  const s3Logo = la && la.status === 'completed' ? (la.webp256 || la.original) : null;
+
   return {
     _id: station._id,
     name: station.name,
     url: station.url,
     url_resolved: station.urlResolved || station.url_resolved,
     homepage: station.homepage,
-    favicon: station.favicon,
+    favicon: s3Logo || station.favicon,
     tags: station.tags,
     country: station.country,
     countrycode: station.countrycode || station.countryCode,
