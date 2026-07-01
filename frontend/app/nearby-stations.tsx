@@ -5,11 +5,11 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   RefreshControl,
   useWindowDimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -116,7 +116,7 @@ export default function NearbyStationsScreen() {
             <Image
               source={{ uri: logoUrl }}
               style={styles.gridLogo}
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <View style={styles.gridPlaceholder}>
@@ -164,7 +164,7 @@ export default function NearbyStationsScreen() {
             <Image
               source={{ uri: logoUrl }}
               style={styles.listLogo}
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <View style={styles.listPlaceholder}>
@@ -295,7 +295,7 @@ export default function NearbyStationsScreen() {
                         <Image
                           source={{ uri: getLogoUrl(item) }}
                           style={styles.gridLogo}
-                          resizeMode="cover"
+                          contentFit="cover"
                         />
                       ) : (
                         <View style={styles.gridPlaceholder}>

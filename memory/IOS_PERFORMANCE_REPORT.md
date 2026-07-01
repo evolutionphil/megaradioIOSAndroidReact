@@ -68,9 +68,13 @@ highest-traffic logo renderers to `expo-image` with `cachePolicy="memory-disk"`:
   3-stage fallback chain preserved.
 - `src/components/StationCard.tsx` — all 3 logo variants (large/compact/list).
 - `src/components/MiniPlayer.tsx` — always-visible now-playing logo.
-Kept on RN `<Image>` for now (low-frequency / single images, lower risk): `player.tsx`
-artwork + secondary screens. Can migrate incrementally later.
-Result: station logos are now disk+memory cached → no re-download on re-appearance,
-lower memory churn & smoother scrolling on iOS. Bundle verified clean.
+UPDATE — migration now COMPLETE across the whole app (22 .tsx files on expo-image):
+lists, player artwork (cover+contain mapped), index.tsx Image + ImageBackground,
+profiles/followers/users/notifications/country-selector/share/cast-modal, etc.
+All `resizeMode` mapped to `contentFit` (cover/contain), all remote logos use
+`cachePolicy="memory-disk"` via the shared components; default disk cache elsewhere.
+Result: station logos & avatars are disk+memory cached → no re-download on
+re-appearance, lower memory churn & smoother scrolling on iOS. Bundle verified clean
+(HTTP 200, no Syntax/Transform/resolve errors). No design/behavior change.
 - Split player.tsx / profile.tsx / AudioProvider.tsx into memoized subcomponents (P2-2).
 - Add `getItemLayout` to fixed-height lists for instant scroll.

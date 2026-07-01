@@ -9,9 +9,9 @@ import {
   FlatList,
   ActivityIndicator,
   Pressable,
-  Image,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -168,7 +168,7 @@ export const CountrySelectorModal: React.FC<Props> = ({ visible, onClose }) => {
                       <Image
                         source={{ uri: item.flagUrl }}
                         style={styles.flagImage}
-                        resizeMode="cover"
+                        contentFit="cover"
                       />
                     ) : (
                       <Text style={styles.flag}>{item.flag || countryCodeToFlag(item.code)}</Text>

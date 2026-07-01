@@ -9,10 +9,10 @@ import {
   ActivityIndicator,
   Keyboard,
   FlatList,
-  Image,
   Platform,
   useWindowDimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -295,7 +295,7 @@ export default function SearchScreen() {
             <Image
               source={{ uri: item.imageUrl }}
               style={styles.radioLogoImage}
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <Ionicons name={getResultIcon(item.type)} size={24} color="#5B5B5B" />

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   Switch,
   Modal,
   TextInput,
@@ -15,6 +14,7 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -453,7 +453,7 @@ export default function ProfileScreen() {
                     <Image
                       source={{ uri: item.flagUrl }}
                       style={s.flagImage}
-                      resizeMode="cover"
+                      contentFit="cover"
                     />
                   ) : (
                     <Text style={s.flagEmoji}>{item.flag}</Text>

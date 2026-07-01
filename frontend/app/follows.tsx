@@ -5,11 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Image,
   TextInput,
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';

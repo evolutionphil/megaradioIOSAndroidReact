@@ -5,9 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   useWindowDimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../../src/constants/theme';
@@ -63,7 +63,7 @@ export default function RecordsScreen() {
                     <Image
                       source={{ uri: getLogoUrl(station) }}
                       style={styles.logoImage}
-                      resizeMode="cover"
+                      contentFit="cover"
                     />
                   </View>
                   <View style={styles.stationInfo}>

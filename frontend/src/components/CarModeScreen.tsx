@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   Dimensions,
   StatusBar,
@@ -12,6 +11,7 @@ import {
   Animated,
   LayoutChangeEvent,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -144,7 +144,7 @@ const StationCarousel = ({
                 key={`img-${station._id}`}
                 source={{ uri: logoUrl }}
                 style={[carouselStyles.cardImage, { borderRadius: cfg.radius }]}
-                resizeMode="cover"
+                contentFit="cover"
               />
             ) : (
               <View style={[carouselStyles.cardPlaceholder, { borderRadius: cfg.radius }]}>

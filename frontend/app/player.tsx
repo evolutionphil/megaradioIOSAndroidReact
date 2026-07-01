@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ActivityIndicator,
   Animated,
@@ -14,6 +13,7 @@ import {
   useWindowDimensions,
   Linking,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
@@ -243,7 +243,7 @@ const GridItem = React.memo(({
         <Image
           source={{ uri: imageError ? 'https://themegaradio.com/logo.png' : stationLogo }}
           style={styles.gridImage}
-          resizeMode="cover"
+          contentFit="cover"
           onError={() => setImageError(true)}
         />
       </View>
@@ -632,14 +632,14 @@ export default function PlayerScreen() {
                 <Image
                   source={{ uri: logoUrl }}
                   style={styles.artwork}
-                  resizeMode="cover"
+                  contentFit="cover"
                   onError={() => setArtworkError(true)}
                 />
               ) : (
                 <Image
                   source={FALLBACK_LOGO}
                   style={styles.artwork}
-                  resizeMode="cover"
+                  contentFit="cover"
                 />
               )}
               {/* Country Flag */}
@@ -648,7 +648,7 @@ export default function PlayerScreen() {
                   <Image
                     source={{ uri: `https://flagcdn.com/w40/${(currentStation.countrycode || currentStation.countryCode || '').toLowerCase()}.png` }}
                     style={styles.countryFlag}
-                    resizeMode="cover"
+                    contentFit="cover"
                   />
                 </View>
               )}
@@ -784,7 +784,7 @@ export default function PlayerScreen() {
                 <Image 
                   source={require('../assets/icons/share-icon.png')} 
                   style={{ width: 24, height: 24, tintColor: '#888888' }} 
-                  resizeMode="contain"
+                  contentFit="contain"
                 />
               </TouchableOpacity>
               {/* Cast/Airplay */}
@@ -795,7 +795,7 @@ export default function PlayerScreen() {
                 <Image 
                   source={require('../assets/icons/airplay-icon.png')} 
                   style={{ width: 24, height: 24, tintColor: '#888888' }} 
-                  resizeMode="contain"
+                  contentFit="contain"
                 />
               </TouchableOpacity>
             </View>

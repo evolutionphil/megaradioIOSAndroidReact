@@ -5,13 +5,13 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
-  Image,
   Share,
   Linking,
   Dimensions,
   Platform,
   StatusBar,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlowEffect } from './GlowEffect';
@@ -134,7 +134,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 <Image
                   source={{ uri: logoUrl }}
                   style={styles.artwork}
-                  resizeMode="cover"
+                  contentFit="cover"
                 />
               ) : (
                 <View style={styles.artworkPlaceholder}>

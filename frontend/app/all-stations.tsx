@@ -5,13 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   RefreshControl,
   TextInput,
   useWindowDimensions,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -220,7 +220,7 @@ export default function AllStationsScreen() {
           <Image
             source={{ uri: logoUrl }}
             style={styles.gridLogo}
-            resizeMode="cover"
+            contentFit="cover"
             defaultSource={DEFAULT_STATION_LOGO_SOURCE}
           />
         </View>
@@ -250,7 +250,7 @@ export default function AllStationsScreen() {
           <Image
             source={{ uri: logoUrl }}
             style={styles.listLogo}
-            resizeMode="cover"
+            contentFit="cover"
             defaultSource={DEFAULT_STATION_LOGO_SOURCE}
           />
         </View>

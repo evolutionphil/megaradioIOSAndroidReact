@@ -11,13 +11,12 @@ import {
   Pressable,
   RefreshControl,
   ActivityIndicator,
-  Image,
   Dimensions,
-  ImageBackground,
   Platform,
   useWindowDimensions,
   FlatList,
 } from 'react-native';
+import { Image, ImageBackground } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -294,7 +293,7 @@ export default function HomeScreen() {
       <Image 
         source={{ uri: logoUrl }} 
         style={{ width: '100%', height: '100%' }} 
-        resizeMode="cover" 
+        contentFit="cover" 
       />
     );
   };
@@ -324,7 +323,7 @@ export default function HomeScreen() {
                   uri={getLogoUrl(station)} 
                   fallbackSource={FALLBACK_LOGO}
                   style={styles.gridImage} 
-                  resizeMode="cover" 
+                  contentFit="cover" 
                 />
               </View>
               <Text style={styles.stationGridName} numberOfLines={1}>{station.name}</Text>
@@ -395,7 +394,7 @@ export default function HomeScreen() {
                   <Image
                     source={{ uri: `https://flagcdn.com/w80/${countryCode.toLowerCase()}.png` }}
                     style={styles.flagImageHeader}
-                    resizeMode="cover"
+                    contentFit="cover"
                   />
                 ) : (
                   <Ionicons name="globe-outline" size={22} color={colors.text} />
@@ -485,7 +484,7 @@ export default function HomeScreen() {
                         source={{ uri: getGenreBackground(index) }}
                         style={styles.genreCardBackground}
                         imageStyle={styles.genreCardImage}
-                        resizeMode="cover"
+                        contentFit="cover"
                       >
                         <Text style={styles.genreCardText}>{genre.name}</Text>
                       </ImageBackground>
@@ -523,7 +522,7 @@ export default function HomeScreen() {
                           uri={logoUrl} 
                           fallbackSource={FALLBACK_LOGO}
                           style={styles.popularLogoImage} 
-                          resizeMode="cover" 
+                          contentFit="cover" 
                         />
                       </View>
                       <View style={styles.popularInfo}>
@@ -602,7 +601,7 @@ export default function HomeScreen() {
                       fallbackUri={getGenreBannerImage(genre)}
                       fallbackSource={require('../../assets/images/genres/genre-default.png')}
                       style={StyleSheet.absoluteFill}
-                      resizeMode="cover"
+                      contentFit="cover"
                     />
                     {/* gradientColors kept as ultimate visual style reference */}
                     {false && (

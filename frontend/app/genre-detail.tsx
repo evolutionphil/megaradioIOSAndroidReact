@@ -5,13 +5,13 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   RefreshControl,
   TextInput,
   useWindowDimensions,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -197,7 +197,7 @@ export default function GenreDetailScreen() {
             <Image
               source={{ uri: logoUrl }}
               style={styles.gridLogo}
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <View style={styles.gridPlaceholder}>
@@ -232,7 +232,7 @@ export default function GenreDetailScreen() {
             <Image
               source={{ uri: logoUrl }}
               style={styles.listLogo}
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <View style={styles.listPlaceholder}>
