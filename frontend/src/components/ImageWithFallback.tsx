@@ -21,27 +21,43 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   style,
   ...props
 }) => {
-  const [hasError, setHasError] = useState(false);
+  // 0 = primary uri, 1 = fallbackUri (remote), 2 = local fallbackSource
+  const [stage, setStage] = useState<0 | 1 | 2>(0);
 
-  // If no URI provided, use fallback immediately
-  if (!uri || uri.trim() === '') {
-    return <Image source={fallbackSource} style={style} {...props} />;
+  // Reset the chain whenever the sources change (e.g., list re-uses the row).
+  React.useEffect(() => {
+    setStage(0);
+  }, [uri, fallbackUri]);
+
+  const hasPrimary = !!(uri && uri.trim() !== '');
+  const hasFallbackUri = !!(fallbackUri && fallbackUri.trim() !== '');
+
+  // Stage 0: primary
+  if (stage === 0 && hasPrimary) {
+    return (
+      <Image
+        source={{ uri }}
+        style={style}
+        onError={() => setStage(hasFallbackUri ? 1 : 2)}
+        {...props}
+      />
+    );
   }
 
-  // If error occurred, show fallback
-  if (hasError) {
-    return <Image source={fallbackSource} style={style} {...props} />;
+  // Stage 1 (or no primary but has fallbackUri): remote fallback URL
+  if (stage <= 1 && hasFallbackUri) {
+    return (
+      <Image
+        source={{ uri: fallbackUri }}
+        style={style}
+        onError={() => setStage(2)}
+        {...props}
+      />
+    );
   }
 
-  // Try to load the original image
-  return (
-    <Image
-      source={{ uri }}
-      style={style}
-      onError={() => setHasError(true)}
-      {...props}
-    />
-  );
+  // Final: local fallback asset (never fails)
+  return <Image source={fallbackSource} style={style} {...props} />;
 };
 
 export default ImageWithFallback;

@@ -584,10 +584,7 @@ export default function HomeScreen() {
                 contentContainerStyle={{ paddingHorizontal: sidePadding, gap: 12 }}
               >
               {discoverableGenresList.map((genre: any, index: number) => {
-                // Use discoverableImage from API or fallback
-                const apiImageUrl = getDiscoverableGenreImage(genre) || getGenreBannerImage(genre);
-                
-                // Fallback gradient colors if no image
+                // Fallback gradient colors (kept as ultimate visual reference)
                 const gradientColors = [
                   ['#667eea', '#764ba2'],
                   ['#f093fb', '#f5576c'],
@@ -600,13 +597,15 @@ export default function HomeScreen() {
                     style={[styles.discoverableBannerItem, { width: bannerWidth, height: bannerHeight }]}
                     onPress={() => handleGenrePress(genre)}
                   >
-                    {apiImageUrl ? (
-                      <Image 
-                        source={{ uri: apiImageUrl }}
-                        style={StyleSheet.absoluteFill}
-                        resizeMode="cover"
-                      />
-                    ) : (
+                    <ImageWithFallback
+                      uri={getDiscoverableGenreImage(genre)}
+                      fallbackUri={getGenreBannerImage(genre)}
+                      fallbackSource={require('../../assets/images/genres/genre-default.png')}
+                      style={StyleSheet.absoluteFill}
+                      resizeMode="cover"
+                    />
+                    {/* gradientColors kept as ultimate visual style reference */}
+                    {false && (
                       <LinearGradient
                         colors={gradientColors}
                         start={{ x: 0, y: 0 }}

@@ -271,6 +271,8 @@ export default function PlayerScreen() {
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallMode, setPaywallMode] = useState<'premium' | 'remove_ads'>('premium');
+  // Main artwork image load error → fall back to local MegaRadio logo.
+  const [artworkError, setArtworkError] = useState(false);
   const sleepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const insets = useSafeAreaInsets();
   
@@ -446,6 +448,11 @@ export default function PlayerScreen() {
   }, []);
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
+
+  // Reset artwork error when the station changes so the new logo gets a fresh try.
+  React.useEffect(() => {
+    setArtworkError(false);
+  }, [currentStation?._id]);
   
   // Memoize stations to prevent re-renders
   const popularStations = useMemo(() => {
@@ -621,11 +628,12 @@ export default function PlayerScreen() {
             <View style={{ width: LOGO_SIZE, height: LOGO_SIZE }}>
               <GlowEffect size={LOGO_SIZE + 180} top={-90} left={-90} opacity={0.65} color="255, 65, 153" />
               <View style={[styles.artworkWrapper, { width: LOGO_SIZE, height: LOGO_SIZE }]}>
-              {logoUrl ? (
+              {logoUrl && !artworkError ? (
                 <Image
                   source={{ uri: logoUrl }}
                   style={styles.artwork}
                   resizeMode="cover"
+                  onError={() => setArtworkError(true)}
                 />
               ) : (
                 <Image
