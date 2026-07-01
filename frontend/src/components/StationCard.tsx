@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, borderRadius, spacing, typography, shadows, gradients } from '../constants/theme';
@@ -57,7 +58,8 @@ const StationCardBase: React.FC<StationCardProps> = ({
             <Image 
               source={{ uri: logoUrl }} 
               style={styles.largeLogoImage} 
-              resizeMode="cover"
+              contentFit="cover"
+              cachePolicy="memory-disk"
               onError={handleImageError}
             />
             {isPlaying && !isLoading && (

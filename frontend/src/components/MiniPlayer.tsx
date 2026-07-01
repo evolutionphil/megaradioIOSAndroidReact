@@ -3,11 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -152,7 +152,8 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
           <Image 
             source={logoSource} 
             style={styles.logo} 
-            resizeMode="cover"
+            contentFit="cover"
+            cachePolicy="memory-disk"
             onError={() => setLogoError(true)}
           />
         </TouchableOpacity>

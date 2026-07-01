@@ -58,6 +58,19 @@ Not a direct perf bug but increases re-render surface & maintenance risk.
 4. `React.memo` on hot list-item components + FlatList tuning props (P1-1/P1-2).
 
 ## 📋 Backlog (opt-in, larger)
-- Migrate shared station-logo rendering to `expo-image` for caching (P2-1).
+- ~~Migrate shared station-logo rendering to `expo-image` for caching (P2-1).~~ **DONE** (see below)
+
+### expo-image migration (DONE, hot paths only — no design change)
+`expo-image ~3.0.11` (already a direct dep, recommended for Expo 54). Migrated the
+highest-traffic logo renderers to `expo-image` with `cachePolicy="memory-disk"`:
+- `src/components/ImageWithFallback.tsx` — full rewrite on expo-image; `resizeMode`
+  legacy prop mapped to `contentFit` (cover default = identical to RN Image); same
+  3-stage fallback chain preserved.
+- `src/components/StationCard.tsx` — all 3 logo variants (large/compact/list).
+- `src/components/MiniPlayer.tsx` — always-visible now-playing logo.
+Kept on RN `<Image>` for now (low-frequency / single images, lower risk): `player.tsx`
+artwork + secondary screens. Can migrate incrementally later.
+Result: station logos are now disk+memory cached → no re-download on re-appearance,
+lower memory churn & smoother scrolling on iOS. Bundle verified clean.
 - Split player.tsx / profile.tsx / AudioProvider.tsx into memoized subcomponents (P2-2).
 - Add `getItemLayout` to fixed-height lists for instant scroll.

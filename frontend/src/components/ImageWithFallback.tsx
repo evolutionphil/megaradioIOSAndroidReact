@@ -1,24 +1,52 @@
 import React, { useState } from 'react';
-import { Image, ImageProps, ImageSourcePropType, StyleSheet, View } from 'react-native';
+import { ImageSourcePropType } from 'react-native';
+import { Image as ExpoImage, ImageContentFit } from 'expo-image';
 
 // Default station logo - LOCAL asset for fallback (no network required)
 const DEFAULT_STATION_LOGO_SOURCE = require('../../assets/images/default-station-logo.png');
 
-interface ImageWithFallbackProps extends Omit<ImageProps, 'source'> {
+interface ImageWithFallbackProps {
   uri?: string | null;
   fallbackUri?: string;
-  fallbackSource?: ImageSourcePropType;
+  fallbackSource?: ImageSourcePropType | number;
+  style?: any;
+  /** RN-style prop; mapped to expo-image `contentFit` for backwards compatibility. */
+  resizeMode?: 'cover' | 'contain' | 'stretch' | 'center' | 'repeat';
+  contentFit?: ImageContentFit;
+  [key: string]: any;
+}
+
+// Map legacy RN `resizeMode` → expo-image `contentFit` so existing call sites
+// keep the exact same visual layout. Defaults to "cover" (same as RN Image).
+function toContentFit(
+  resizeMode?: string,
+  contentFit?: ImageContentFit,
+): ImageContentFit {
+  if (contentFit) return contentFit;
+  switch (resizeMode) {
+    case 'contain':
+      return 'contain';
+    case 'stretch':
+      return 'fill';
+    case 'center':
+      return 'none';
+    default:
+      return 'cover';
+  }
 }
 
 /**
- * Image component with automatic fallback to default logo on error
- * Use this for station logos, user avatars, and any image that might fail to load
+ * Image component with automatic fallback chain + disk/memory caching (expo-image).
+ * Chain: primary uri -> fallbackUri (remote) -> local fallbackSource.
+ * Drop-in replacement for the previous RN-Image based version.
  */
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   uri,
   fallbackUri,
   fallbackSource = DEFAULT_STATION_LOGO_SOURCE,
   style,
+  resizeMode,
+  contentFit,
   ...props
 }) => {
   // 0 = primary uri, 1 = fallbackUri (remote), 2 = local fallbackSource
@@ -29,15 +57,18 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
     setStage(0);
   }, [uri, fallbackUri]);
 
+  const fit = toContentFit(resizeMode, contentFit);
   const hasPrimary = !!(uri && uri.trim() !== '');
   const hasFallbackUri = !!(fallbackUri && fallbackUri.trim() !== '');
 
   // Stage 0: primary
   if (stage === 0 && hasPrimary) {
     return (
-      <Image
-        source={{ uri }}
+      <ExpoImage
+        source={{ uri: uri as string }}
         style={style}
+        contentFit={fit}
+        cachePolicy="memory-disk"
         onError={() => setStage(hasFallbackUri ? 1 : 2)}
         {...props}
       />
@@ -47,9 +78,11 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   // Stage 1 (or no primary but has fallbackUri): remote fallback URL
   if (stage <= 1 && hasFallbackUri) {
     return (
-      <Image
-        source={{ uri: fallbackUri }}
+      <ExpoImage
+        source={{ uri: fallbackUri as string }}
         style={style}
+        contentFit={fit}
+        cachePolicy="memory-disk"
         onError={() => setStage(2)}
         {...props}
       />
@@ -57,7 +90,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   }
 
   // Final: local fallback asset (never fails)
-  return <Image source={fallbackSource} style={style} {...props} />;
+  return <ExpoImage source={fallbackSource} style={style} contentFit={fit} {...props} />;
 };
 
 export default ImageWithFallback;
