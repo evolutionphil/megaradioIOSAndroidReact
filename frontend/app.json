@@ -147,7 +147,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Ses kaydı yapabilmek için mikrofon erişimi gereklidir.",
+          "microphonePermission": "Microphone access is required for audio recording.",
           "ios": {
             "allowsBackgroundAudioPlayback": true
           },
@@ -167,7 +167,7 @@
         {
           "androidAppId": "ca-app-pub-8771434485570434~7427742767",
           "iosAppId": "ca-app-pub-8771434485570434~4044224468",
-          "userTrackingPermission": "MegaRadio, size daha iyi ve kişiselleştirilmiş bir reklam deneyimi sunmak için cihaz bilgilerinizi kullanmak istiyor."
+          "userTrackingPermission": "MegaRadio uses your device information to provide you with a better and more personalized advertising experience."
         }
       ],
       "./plugins/withAdMobFix.js",
