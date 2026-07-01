@@ -77,19 +77,21 @@ export const getStationLogoUrl = (
 
   try {
     // ── 1. S3 optimized logo (best quality, fastest) ──────────────
-    if (station.logoAssets?.status === 'completed' && station.logoAssets?.folder) {
+    if (station.logoAssets?.status === 'completed') {
       // Pick best available size based on preference
       const webpUrl = preferSize === 'large'
         ? (station.logoAssets.webp256 || station.logoAssets.webp96 || station.logoAssets.webp48)
         : (station.logoAssets.webp256 || station.logoAssets.webp96 || station.logoAssets.webp48);
 
       if (webpUrl && typeof webpUrl === 'string' && webpUrl.trim()) {
-        // New data: full URL (https://megaradio-station-logos.s3...)
+        // New data: full URL (https://megaradio-station-logos.s3...) → use as-is.
         if (webpUrl.startsWith('https://') || webpUrl.startsWith('http://')) {
           return webpUrl;
         }
-        // Old data: just filename (logo-256.webp)
-        return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${webpUrl}`;
+        // Old data: just a filename (logo-256.webp) → needs the folder prefix.
+        if (station.logoAssets.folder) {
+          return `https://themegaradio.com/station-logos/${station.logoAssets.folder}/${webpUrl}`;
+        }
       }
     }
 
