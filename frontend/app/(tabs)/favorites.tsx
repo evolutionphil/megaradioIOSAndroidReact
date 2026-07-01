@@ -354,6 +354,10 @@ const getGenreDisplay = (station: Station): string => {
           data={filteredFavorites}
           renderItem={renderStationItem}
           keyExtractor={(item) => item._id}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={11}
+          updateCellsBatchingPeriod={50}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
@@ -388,6 +392,10 @@ const getGenreDisplay = (station: Station): string => {
           data={reorderedList}
           renderItem={renderStationItem}
           keyExtractor={(item) => item._id}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={11}
+          updateCellsBatchingPeriod={50}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
         />
@@ -442,6 +450,10 @@ const getGenreDisplay = (station: Station): string => {
           data={filteredFavorites}
           renderItem={renderStationItem}
           keyExtractor={(item) => item._id}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={11}
+          updateCellsBatchingPeriod={50}
           key={`${viewMode}-${responsive.isTablet ? 'tablet' : 'phone'}`} // Force re-render when view mode or device changes
           numColumns={viewMode === 'grid' ? (responsive.isTablet ? 5 : 3) : 1}
           contentContainerStyle={[

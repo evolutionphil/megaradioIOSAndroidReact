@@ -1,7 +1,7 @@
 // AudioProvider - Single shared audio player using react-native-track-player
 // This provides TRUE background audio and lock screen controls for iOS/Android
 
-import React, { createContext, useCallback, useEffect, useRef, useState, ReactNode } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 import { sendLog } from '../services/remoteLog';
 sendLog('AUDIO_PROVIDER_FILE_LOADING');
 
@@ -1590,7 +1590,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
   }, [favorites, currentStation, playStation, pause, resume, togglePlayPause]);
 
-  const value: AudioContextType = {
+  const value: AudioContextType = useMemo(() => ({
     playStation,
     stopPlayback,
     pause,
@@ -1601,9 +1601,18 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     playbackState: storePlaybackState,
     streamUrl,
     isPlaying,
-  };
-
-  sendLog('AUDIO_PROVIDER_RENDERING');
+  }), [
+    playStation,
+    stopPlayback,
+    pause,
+    resume,
+    togglePlayPause,
+    setVolume,
+    currentStation,
+    storePlaybackState,
+    streamUrl,
+    isPlaying,
+  ]);
 
   return (
     <AudioContext.Provider value={value}>

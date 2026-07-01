@@ -15,7 +15,7 @@ interface StationCardProps {
   variant?: 'default' | 'compact' | 'large';
 }
 
-export const StationCard: React.FC<StationCardProps> = ({
+const StationCardBase: React.FC<StationCardProps> = ({
   station,
   onPress,
   isPlaying = false,
@@ -356,4 +356,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export const StationCard = React.memo(StationCardBase);
 export default StationCard;

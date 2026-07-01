@@ -38,7 +38,7 @@ const getGenreStyle = (slug: string) => {
   return genreStyles[key] || genreStyles.default;
 };
 
-export const GenreCard: React.FC<GenreCardProps> = ({
+const GenreCardBase: React.FC<GenreCardProps> = ({
   genre,
   onPress,
   style,
@@ -131,4 +131,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export const GenreCard = React.memo(GenreCardBase);
 export default GenreCard;
