@@ -69,13 +69,14 @@ export const QuickActionsHandler: React.FC = () => {
     return () => sub?.remove?.();
   }, []);
 
-  // Siri App Shortcut (iOS 16+): native AppIntent opens megaradio://?playLast=1
+  // Voice assistant deep link (iOS Siri App Shortcut / Android Google Assistant
+  // App Action): both dispatch megaradio://?playLast=1
   useEffect(() => {
-    if (Platform.OS !== 'ios') return;
+    if (Platform.OS === 'web') return;
     const { Linking } = require('react-native');
     const handleUrl = (url: string | null) => {
       if (!url || !url.includes('playLast=1')) return;
-      console.log('[QuickActions] Siri playLast deep link received');
+      console.log('[QuickActions] Voice assistant playLast deep link received');
       setTimeout(() => {
         InteractionManager.runAfterInteractions(() => playLastStation());
       }, 500);

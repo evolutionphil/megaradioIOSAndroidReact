@@ -171,6 +171,7 @@
       ],
       "./plugins/withAndroidBuildFix.js",
       "./plugins/withAppIntents.js",
+      "./plugins/withAndroidAppActions.js",
       "./plugins/withAirPlay.js",
       "./plugins/withAndroidAutoFull.js",
       "./plugins/withCleartextTraffic.js",

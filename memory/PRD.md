@@ -13,6 +13,19 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Google Assistant App Actions — Android (Jun 2026)
+- `plugins/withAndroidAppActions.js`: prebuild'de `res/xml/assistant_shortcuts.xml` yazar
+  (`actions.intent.PLAY_MUSIC` capability → `megaradio://?playLast=1` url-template,
+  targetPackage/Class app.json'dan dinamik) + MainActivity'ye `android.app.shortcuts`
+  meta-data ekler
+- `QuickActionsHandler` sesli asistan deep link listener'ı artık Android'de de aktif
+  (gate `!== 'ios'` → `=== 'web'`)
+- DOĞRULANDI: `expo prebuild --platform android` konteynerde çalıştırıldı — XML `com.megaradio`
+  ile yazıldı, manifest meta-data eklendi
+- ⚠️ App Actions'ın sesle tetiklenmesi için uygulamanın Google Play'de yayınlı olması (internal
+  track yeterli) gerekir; geliştirme testinde Android Studio "App Actions Test Tool" kullanılır
+- Kullanım: "Hey Google, MegaRadio'da müzik çal / play MegaRadio" → son istasyon çalar
+
 ### 🎯 Siri App Shortcuts — Sıfır Kurulum (Jun 2026)
 - `plugins/ios/MegaRadioAppIntents.swift`: iOS 16+ `AppIntent` (`PlayLastStationIntent`,
   openAppWhenRun=true → `megaradio://?playLast=1` dispatch) + `AppShortcutsProvider`

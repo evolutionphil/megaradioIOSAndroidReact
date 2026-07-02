@@ -9,7 +9,7 @@
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" tools:node="remove"/>
   <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
@@ -26,11 +26,15 @@
     </intent>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true" android:enableOnBackInvokedCallback="false" android:usesCleartextTraffic="true">
+    <meta-data android:name="androidx.car.app.TintableAttributionIcon" android:resource="@drawable/ic_auto_icon"/>
     <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-8771434485570434~7427742767" tools:replace="android:value"/>
     <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-8771434485570434~7427742767" tools:replace="android:value"/>
     <meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING" android:value="true" tools:replace="android:value"/>
+    <meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING" android:value="true" tools:replace="android:value"/>
+    <meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION" android:value="true" tools:replace="android:value"/>
     <meta-data android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION" android:value="true" tools:replace="android:value"/>
     <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc"/>
+    <meta-data android:name="com.google.android.gms.car.application.theme" android:resource="@style/MegaRadioAutoTheme"/>
     <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME" android:value="com.reactnative.googlecast.GoogleCastOptionsProvider"/>
     <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="default"/>
     <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification_icon_color"/>
@@ -40,7 +44,7 @@
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
-    <service android:name="com.doublesymmetry.trackplayer.service.MusicService" android:exported="true" android:foregroundServiceType="mediaPlayback" tools:replace="android:exported,android:foregroundServiceType"/>
+    <service android:name="com.doublesymmetry.trackplayer.service.MusicService" android:exported="false" android:foregroundServiceType="mediaPlayback" tools:replace="android:exported,android:foregroundServiceType"/>
     <service android:name="org.birkir.carplay.CarPlayService" tools:node="remove"/>
     <service android:name="org.birkir.carplay.CarPlayHeadlessTaskService" tools:node="remove"/>
     <service android:name=".MegaRadioAutoService" android:exported="true">
@@ -59,7 +63,9 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="megaradio"/>
         <data android:scheme="com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"/>
+        <data android:scheme="com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"/>
       </intent-filter>
+      <meta-data android:name="android.app.shortcuts" android:resource="@xml/assistant_shortcuts"/>
     </activity>
   </application>
 </manifest>

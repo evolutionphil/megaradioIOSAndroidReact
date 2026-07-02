@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+  <capability android:name="actions.intent.PLAY_MUSIC">
+    <intent
+      android:action="android.intent.action.VIEW"
+      android:targetPackage="com.megaradio"
+      android:targetClass="com.megaradio.MainActivity">
+      <url-template android:value="megaradio://?playLast=1" />
+    </intent>
+  </capability>
+</shortcuts>
