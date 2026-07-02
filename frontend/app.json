@@ -2,7 +2,7 @@
   "expo": {
     "name": "MegaRadio",
     "slug": "megaradio",
-    "version": "1.0.69",
+    "version": "1.0.70",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": [
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "usesAppleSignIn": true,
       "splash": {
         "image": "./assets/images/splash.png",
@@ -51,8 +51,6 @@
         "NSLocationWhenInUseUsageDescription": "MegaRadio uses your location to find nearby radio stations.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "MegaRadio uses your location to find nearby radio stations.",
         "NSPhotoLibraryUsageDescription": "Photo library access is required to upload a profile picture.",
-        "NSCameraUsageDescription": "Camera access is required to take a profile picture.",
-        "NSMicrophoneUsageDescription": "Microphone access is required for audio recording.",
         "ITSAppUsesNonExemptEncryption": false,
         "BGTaskSchedulerPermittedIdentifiers": [
           "com.visiongo.megaradio.refresh",
@@ -66,6 +64,53 @@
       },
       "entitlements": {
         "com.apple.developer.carplay-audio": true
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": ["C617.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": ["35F9.1"]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": ["E174.1"]
+          }
+        ],
+        "NSPrivacyCollectedDataTypes": [
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCrashData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypePerformanceData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeProductInteraction",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAnalytics"]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCoarseLocation",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": ["NSPrivacyCollectedDataTypePurposeAppFunctionality"]
+          }
+        ]
       }
     },
     "android": {
@@ -79,7 +124,7 @@
         "backgroundColor": "#000000"
       },
       "package": "com.megaradio",
-      "versionCode": 90,
+      "versionCode": 91,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
@@ -90,14 +135,14 @@
         "FOREGROUND_SERVICE",
         "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "WAKE_LOCK",
-        "VIBRATE",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "CAMERA",
-        "RECORD_AUDIO"
+        "VIBRATE"
       ],
       "blockedPermissions": [
-        "android.permission.RECEIVE_BOOT_COMPLETED"
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
       ]
     },
     "web": {
@@ -154,13 +199,15 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Photo library access is required to upload a profile picture."
+          "photosPermission": "Photo library access is required to upload a profile picture.",
+          "cameraPermission": false,
+          "microphonePermission": false
         }
       ],
       [
         "expo-audio",
         {
-          "microphonePermission": "Microphone access is required for audio recording.",
+          "microphonePermission": false,
           "ios": {
             "allowsBackgroundAudioPlayback": true
           },

@@ -13,6 +13,23 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Yayın Hazırlığı — Mağaza Uyumluluğu (Jun 2026)
+- Sürümler: version 1.0.69→**1.0.70**, iOS buildNumber 3→**4**, Android versionCode 90→**91**
+- iOS Privacy Manifest: `app.json ios.privacyManifests` eklendi (4 required-reason API:
+  UserDefaults CA92.1, FileTimestamp C617.1, SystemBootTime 35F9.1, DiskSpace E174.1 +
+  CollectedDataTypes: Crash/Performance/ProductInteraction/CoarseLocation, Tracking=false)
+  → prebuild `ios/MegaRadio/PrivacyInfo.xcprivacy` üretiyor, pbxproj'e kayıtlı (ITMS-91053 çözüldü)
+- İzin temizliği (kullanılmadıkları kod taramasıyla doğrulandı — kayıt/kamera özelliği yok):
+  - iOS: NSMicrophoneUsageDescription + NSCameraUsageDescription kaldırıldı;
+    expo-audio `microphonePermission:false`, expo-image-picker `cameraPermission:false, microphonePermission:false`
+  - Android: RECORD_AUDIO, CAMERA, READ/WRITE_EXTERNAL_STORAGE permissions listesinden çıkarıldı
+    VE `blockedPermissions`'a eklendi → manifest'te `tools:node="remove"` (lib eklese bile silinir)
+- DOĞRULANDI: her iki platform prebuild konteynerde çalıştırıldı — versionCode 91, buildNumber 4,
+  Info.plist'te mic/camera string yok, PrivacyInfo üretildi, blocked izinler remove işaretli
+- Kullanıcı tarafı kalanlar: Xcode 26 doğrulaması (A1), Android 15/16'da edge-to-edge UI turu (A4),
+  Play Data Safety + App Privacy formları (A7), AAB'de 16KB kontrolü (A5)
+- Araştırma raporu: `/app/memory/MOBILE_UPDATE_IMPROVEMENTS_2026.md`
+
 ### 🎯 Launch Source Telemetrisi (Jun 2026)
 - `src/services/launchSourceService.ts` (yeni): GA4 `app_launch` eventi, `launch_source` parametresi
   (`normal` / `quick_action` / `siri` / `assistant`) — Firebase Analytics'e gider (backend değişikliği yok)

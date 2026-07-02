@@ -39,6 +39,7 @@
 		1C6327F882084D1BBCE220DD /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7124A1A148664955873E3237 /* NowPlayingView.swift */; };
 		DDB82EF3AE8147E4BCFE30FC /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885EB7D19A0D4272BFA4DAEE /* WatchSessionManager.swift */; };
 		90E67363DF51405EA36B9831 /* MegaRadioAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EE76AD9B774F77AFBD179B /* MegaRadioAppIntents.swift */; };
+		5416937CB9E24809B5251DA7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1D46A8D193684088BD3DB37E /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		71654DD2EF5448D9AFF2C9CD /* MegaRadioWatch.entitlements */ = {isa = PBXFileReference; name = "MegaRadioWatch.entitlements"; path = "MegaRadioWatch/MegaRadioWatch.entitlements"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		996D851A9BFE4B44B05ECB50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = MegaRadioWatch/Assets.xcassets; sourceTree = "<group>"; };
 		70EE76AD9B774F77AFBD179B /* MegaRadioAppIntents.swift */ = {isa = PBXFileReference; name = "MegaRadioAppIntents.swift"; path = "MegaRadio/MegaRadioAppIntents.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		1D46A8D193684088BD3DB37E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; name = "PrivacyInfo.xcprivacy"; path = "MegaRadio/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				6A6D4185090D48C0BBDDC596 /* GoogleService-Info.plist */,
 				70EE76AD9B774F77AFBD179B /* MegaRadioAppIntents.swift */,
+				1D46A8D193684088BD3DB37E /* PrivacyInfo.xcprivacy */,
 			);
 			name = MegaRadio;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				C458C06C502741FABB661AE3 /* GoogleService-Info.plist in Resources */,
+				5416937CB9E24809B5251DA7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -105,8 +105,8 @@ android {
         applicationId 'com.megaradio'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 90
-        versionName "1.0.69"
+        versionCode 91
+        versionName "1.0.70"
 
         multiDexEnabled true
 

@@ -26,7 +26,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.69</string>
+    <string>1.0.70</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -39,7 +39,7 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>3</string>
+    <string>4</string>
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-8771434485570434~4044224468</string>
     <key>GADDelayAppMeasurementInit</key>
@@ -68,8 +68,6 @@
       <string>_airplay._tcp</string>
       <string>_raop._tcp</string>
     </array>
-    <key>NSCameraUsageDescription</key>
-    <string>Camera access is required to take a profile picture.</string>
     <key>NSLocalNetworkUsageDescription</key>
     <string>${PRODUCT_NAME} uses the local network to discover Cast-enabled devices on your WiFi network</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -78,8 +76,6 @@
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>MegaRadio uses your location to find nearby radio stations.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Microphone access is required for audio recording.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Photo library access is required to upload a profile picture.</string>
     <key>NSSiriUsageDescription</key>
