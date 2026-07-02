@@ -13,6 +13,16 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 tv/init Cache-First + DiskCache whenReady (Jun 2026)
+- `tvInitService.initializeApp`: AsyncStorage'a `@megaradio_tv_init:{country}:{lang}` anahtarıyla
+  yanıt yazılıyor. Cache HIT → çeviriler ANINDA uygulanır, network tazelemesi fire-and-forget
+  arka planda (UI asla beklemez). Cache MISS (ilk açılış) → normal fetch + cache yaz.
+- `diskCacheService`: `whenReady()` promise eklendi (AsyncStorage fallback memory-layer'ı asenkron
+  hidrate oluyordu; react-query `initialData` cold-start'ta cache'i ıskalayabiliyordu).
+- `_layout.tsx checkAndRoute`: routing öncesi `Promise.race([diskCache.whenReady(), 1s cap])` —
+  ana ekran sorguları diskten anında dolu gelir; 1s üstünde asla bloke etmez.
+- Test: tsc'de yeni hata yok (mevcut 4 hata pre-existing), web bundle 200 OK.
+
 ### 🎯 iOS Cold-Start Freeze Fix (P0) ✅ (Jun 2026 — dd.rtf log analysis)
 User's release-build Xcode logs showed 15-20s UI block on first launch. Root causes + fixes
 (full RCA: `/app/memory/IOS_STARTUP_BLOCK_ANALYSIS.md`, tested: `test_reports/iteration_46.json` ALL PASS):

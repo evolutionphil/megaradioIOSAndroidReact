@@ -609,6 +609,16 @@ export default function RootLayout() {
       try {
         const onboardingComplete = await checkOnboardingComplete();
         setHasCheckedOnboarding(true);
+
+        // Wait briefly (max 1s) for the disk cache memory layer to hydrate so
+        // home-screen queries get instant initialData — never blocks beyond the cap
+        try {
+          const { diskCache } = require('../src/services/diskCacheService');
+          await Promise.race([
+            diskCache.whenReady(),
+            new Promise<void>((r) => setTimeout(r, 1000)),
+          ]);
+        } catch (e) {}
         
         // Don't redirect if user is navigating to a specific route
         if (segments.length > 0 && !['(tabs)', 'onboarding'].includes(segments[0] as string)) {

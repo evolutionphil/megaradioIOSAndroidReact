@@ -9,6 +9,12 @@ import { Platform } from 'react-native';
 let cacheStorage: any;
 let cacheBackend: 'mmkv' | 'asyncstorage' | 'memory' = 'memory';
 
+// Resolves when the backing store is readable (AsyncStorage fallback loads async)
+let markCacheReady: () => void;
+const cacheReadyPromise = new Promise<void>((resolve) => {
+  markCacheReady = resolve;
+});
+
 // Initialize cache storage with proper fallback chain:
 // MMKV (fastest) -> AsyncStorage (persistent) -> In-memory Map (last resort)
 function initCacheStorage() {
@@ -17,6 +23,7 @@ function initCacheStorage() {
     const { MMKV } = require('react-native-mmkv');
     cacheStorage = new MMKV({ id: 'megaradio-cache' });
     cacheBackend = 'mmkv';
+    markCacheReady();
     console.log('[DiskCache] Using MMKV (native, fastest)');
     return;
   } catch (e) {
@@ -46,6 +53,8 @@ function initCacheStorage() {
           console.log('[DiskCache] AsyncStorage loaded', memoryLayer.size, 'entries');
         } catch (err) {
           console.warn('[DiskCache] AsyncStorage load error:', err);
+        } finally {
+          markCacheReady();
         }
       };
 
@@ -78,6 +87,7 @@ function initCacheStorage() {
 
   // Last resort: In-memory Map (not persistent, web only)
   console.warn('[DiskCache] Using in-memory fallback (NOT persistent - data lost on restart!)');
+  markCacheReady();
   const memStore = new Map<string, string>();
   cacheStorage = {
     set: (key: string, value: string) => memStore.set(key, value),
@@ -114,6 +124,12 @@ const CACHE_VERSION = 1;
 export const diskCache = {
   getBackend(): string {
     return cacheBackend;
+  },
+
+  // Await this (with a timeout cap) before first reads on cold start —
+  // the AsyncStorage fallback hydrates its memory layer asynchronously
+  whenReady(): Promise<void> {
+    return cacheReadyPromise;
   },
 
   set<T>(key: string, data: T): void {

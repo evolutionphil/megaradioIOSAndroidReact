@@ -5,6 +5,7 @@
 
 import api from './api';
 import i18n from './i18nService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface TvInitGenre {
   _id: string;
@@ -87,25 +88,51 @@ export const fetchTvInit = async (
 };
 
 /**
- * Initialize app with TV init data
- * - Loads translations into i18n
+ * Initialize app with TV init data — CACHE-FIRST, fully non-blocking:
+ * - If a cached response exists: apply it instantly and refresh from network in the BACKGROUND
+ * - If not: fetch from network (first launch only) and cache the result
  */
 export const initializeApp = async (
   country?: string,
   lang?: string
 ): Promise<TvInitResponse | null> => {
+  const effectiveLang = lang || i18n.language || 'tr';
+  const cacheKey = `@megaradio_tv_init:${country || 'global'}:${effectiveLang}`;
+
+  const applyTranslations = (data: TvInitResponse) => {
+    if (data.translations && Object.keys(data.translations).length > 0) {
+      i18n.addResourceBundle(effectiveLang, 'translation', data.translations, true, true);
+      console.log('[TvInit] Loaded', Object.keys(data.translations).length, 'translations for', effectiveLang);
+    }
+  };
+
+  const refreshFromNetwork = async (): Promise<TvInitResponse> => {
+    const data = await fetchTvInit(country, undefined, lang);
+    applyTranslations(data);
+    AsyncStorage.setItem(cacheKey, JSON.stringify(data)).catch(() => {});
+    return data;
+  };
+
   try {
     console.log('[TvInit] initializeApp called with country:', country, 'lang:', lang);
-    const data = await fetchTvInit(country, undefined, lang);
 
-    // Load translations into i18n
-    if (data.translations && Object.keys(data.translations).length > 0) {
-      const currentLang = lang || i18n.language || 'tr';
-      i18n.addResourceBundle(currentLang, 'translation', data.translations, true, true);
-      console.log('[TvInit] Loaded', Object.keys(data.translations).length, 'translations for', currentLang);
+    let cached: TvInitResponse | null = null;
+    try {
+      const raw = await AsyncStorage.getItem(cacheKey);
+      if (raw) cached = JSON.parse(raw);
+    } catch {}
+
+    if (cached) {
+      console.log('[TvInit] Cache HIT - applying instantly, refreshing in background');
+      applyTranslations(cached);
+      refreshFromNetwork().catch((e) =>
+        console.log('[TvInit] Background refresh failed (non-blocking):', e?.message || e)
+      );
+      return cached;
     }
 
-    return data;
+    console.log('[TvInit] Cache MISS - fetching from network (first launch)');
+    return await refreshFromNetwork();
   } catch (error) {
     console.error('[TvInit] Failed to initialize app:', error);
     return null;
