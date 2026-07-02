@@ -13,6 +13,16 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Son Çalınan İstasyon Pre-Warm (Jun 2026)
+- `AudioProvider`: mount'tan 3s sonra + `InteractionManager` içinde (tamamen fire-and-forget):
+  1. `@megaradio_last_played_station` AsyncStorage'dan okunur
+  2. Logo `expo-image.prefetch` ile memory-disk cache'e alınır (UI + lock screen artwork anında)
+  3. URL playlist ise (.pls/.m3u/.asx) `stationService.resolveStream` önceden çözülür →
+     modül-seviyesi `prewarmedResolve { stationId, candidates }`
+- `resolveStreamUrl` native playlist branch'i: pre-warm HIT ise network'e gitmeden candidates'ı
+  anında kullanır (one-shot, kullanım sonrası temizlenir). Direct stream'lerde zaten network yok.
+- Test: tsc'de yeni hata yok, web bundle 200 OK. Native doğrulama kullanıcının iPhone build'inde.
+
 ### 🎯 tv/init Cache-First + DiskCache whenReady (Jun 2026)
 - `tvInitService.initializeApp`: AsyncStorage'a `@megaradio_tv_init:{country}:{lang}` anahtarıyla
   yanıt yazılıyor. Cache HIT → çeviriler ANINDA uygulanır, network tazelemesi fire-and-forget

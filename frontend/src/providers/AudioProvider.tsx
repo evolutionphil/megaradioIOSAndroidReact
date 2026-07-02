@@ -89,6 +89,8 @@ let globalPlayId = 0;
 let currentPlayingStationId: string | null = null;
 let listeningStartTime: Date | null = null;
 let lastMetadataTitle: string | null = null; // Track last metadata to detect changes
+// Startup pre-warm for the last played station (resolved playlist candidates)
+let prewarmedResolve: { stationId: string; candidates: string[] } | null = null;
 
 // ============================================
 // TRACK PLAYER SETUP
@@ -523,6 +525,14 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (Platform.OS !== 'web') {
       // Check if URL is a playlist that needs resolution
       if (isPlaylistUrl(streamUrl)) {
+        // PRE-WARM HIT: startup already resolved this station's playlist — zero-delay play
+        if (prewarmedResolve && prewarmedResolve.stationId === station._id && prewarmedResolve.candidates.length > 0) {
+          streamCandidatesRef.current = prewarmedResolve.candidates;
+          const prewarmedUrl = prewarmedResolve.candidates[0];
+          prewarmedResolve = null; // one-shot
+          console.log('[AudioProvider] Native: Using PRE-WARMED resolve:', prewarmedUrl.substring(0, 60));
+          return prewarmedUrl;
+        }
         console.log('[AudioProvider] Native: Playlist detected (.pls/.m3u/.asx), resolving...');
         try {
           const streamData = await stationService.resolveStream(streamUrl);
@@ -663,6 +673,47 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
     return 'MegaRadio';
   }, []);
+
+  // STARTUP PRE-WARM (fully async, fire-and-forget — never blocks UI):
+  // prefetch last played station's logo into expo-image cache and pre-resolve
+  // its playlist URL so the first play tap starts with zero network delay
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const timer = setTimeout(() => {
+      InteractionManager.runAfterInteractions(async () => {
+        try {
+          const raw = await AsyncStorage.getItem(LAST_PLAYED_STATION_KEY);
+          if (!raw) return;
+          const station: Station = JSON.parse(raw);
+          if (!station || !station._id) return;
+          console.log('[AudioProvider] Pre-warming last played station:', station.name);
+
+          // 1) Logo → expo-image memory/disk cache (also used by lock screen artwork)
+          try {
+            const { Image: ExpoImage } = require('expo-image');
+            const artwork = getArtworkUrl(station);
+            if (artwork) {
+              ExpoImage.prefetch(artwork, { cachePolicy: 'memory-disk' })?.catch?.(() => {});
+            }
+          } catch (e) {}
+
+          // 2) Playlist stream resolve (the only network cost at play time)
+          const urlResolved = (station as any).urlResolved || station.url_resolved;
+          const primaryUrl = (urlResolved && urlResolved.trim() !== '') ? urlResolved : station.url;
+          if (primaryUrl && isPlaylistUrl(primaryUrl)) {
+            const streamData = await stationService.resolveStream(primaryUrl);
+            if (streamData?.candidates?.length > 0) {
+              prewarmedResolve = { stationId: station._id, candidates: streamData.candidates };
+              console.log('[AudioProvider] Pre-warm: playlist resolved,', streamData.candidates.length, 'candidates ready');
+            }
+          }
+        } catch (e) {
+          console.log('[AudioProvider] Pre-warm failed (non-blocking):', (e as any)?.message || e);
+        }
+      });
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [getArtworkUrl, isPlaylistUrl]);
 
   // Update lock screen metadata helper
   const updateLockScreenMetadata = useCallback(async (
