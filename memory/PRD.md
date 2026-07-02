@@ -13,6 +13,16 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Startup Süresi Telemetrisi + Yayın Sonrası Analiz Planı (Jun 2026)
+- `_layout.tsx`: modül-seviyesi `JS_START_TIME` → splash gizlenince fark hesaplanıp 8s ertelemeli
+  GA4 `app_startup_time { duration_ms, platform }` eventi (once-guard `startupReportedRef`)
+- `analyticsService.native.ts`: `logStartupTime(ms)` eklendi (web'de yok, optional chaining güvenli)
+- `/app/memory/POST_RELEASE_ANALYSIS_PLAN.md` (yeni): ilk hafta analiz planı — konsol yolları,
+  başarı kriterleri (medyan <4s, p90 <8s, kısayol oranı >%3), v1.0.71 karar kuralları
+- ⚠️ İLK GÜN GÖREVİ: GA4 Admin → Custom definitions → `launch_source` (dimension) ve
+  `duration_ms` (metric) kaydedilmeli — geriye dönük çalışmaz
+- Test: TS temiz, Metro bundle çözümleme hatasız
+
 ### 🎯 Yayın Hazırlığı — Mağaza Uyumluluğu (Jun 2026)
 - Sürümler: version 1.0.69→**1.0.70**, iOS buildNumber 3→**4**, Android versionCode 90→**91**
 - iOS Privacy Manifest: `app.json ios.privacyManifests` eklendi (4 required-reason API:

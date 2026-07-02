@@ -63,6 +63,17 @@ class AnalyticsService {
     } catch (e) {}
   }
 
+  // Cold start duration: JS start → splash hidden (ms)
+  async logStartupTime(durationMs: number): Promise<void> {
+    try {
+      const a = await getAnalytics();
+      if (a) await a().logEvent('app_startup_time', {
+        duration_ms: Math.round(durationMs),
+        platform: Platform.OS,
+      });
+    } catch (e) {}
+  }
+
   // Station play
   async logStationPlay(stationId: string, stationName: string, genre?: string): Promise<void> {
     try {

@@ -1,5 +1,8 @@
 // LOGGING: Import at very top
 import { sendLog } from '../src/services/remoteLog';
+
+// Cold start timing anchor: JS bundle execution start
+const JS_START_TIME = Date.now();
 sendLog('LAYOUT_FILE_LOADING');
 
 import React, { useCallback, useState, useEffect, useRef } from 'react';
@@ -180,6 +183,7 @@ const GlobalMiniPlayer = React.memo(() => {
 
 export default function RootLayout() {
   const [isNavigationReady, setIsNavigationReady] = useState(false);
+  const startupReportedRef = useRef(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
   const preloadStarted = useRef(false);
@@ -678,6 +682,18 @@ export default function RootLayout() {
       setSplashHidden(true);
     }
   }, [fontsLoaded, fontError, countryLoaded, splashHidden]);
+
+  // Report cold start duration (JS start → splash hidden) once, deferred 8s
+  useEffect(() => {
+    if (!splashHidden || startupReportedRef.current) return;
+    startupReportedRef.current = true;
+    const startupMs = Date.now() - JS_START_TIME;
+    console.log('[Layout] Startup time (JS start → splash hidden):', startupMs, 'ms');
+    const t = setTimeout(() => {
+      analyticsService.logStartupTime?.(startupMs)?.catch?.(() => {});
+    }, 8000);
+    return () => clearTimeout(t);
+  }, [splashHidden]);
 
   const onLayoutRootView = useCallback(async () => {
     // Fonts loaded - app is ready
