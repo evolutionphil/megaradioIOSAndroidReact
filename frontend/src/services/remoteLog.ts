@@ -22,6 +22,9 @@ const getBuildNumber = () => {
 };
 
 export const sendLog = (message: string, data?: any) => {
+  // DEV ONLY - in release builds this is a no-op (network calls at module load
+  // and render time were saturating NSURLSession during app startup)
+  if (!__DEV__) return;
   // Fire and forget - don't await, don't block
   fetch(LOG_ENDPOINT, {
     method: 'POST',

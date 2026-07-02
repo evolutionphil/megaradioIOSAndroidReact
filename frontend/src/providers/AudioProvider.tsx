@@ -14,7 +14,7 @@ import TrackPlayer, {
   AppKilledPlaybackBehavior,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-import { Platform } from 'react-native';
+import { Platform, InteractionManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePlayerStore } from '../store/playerStore';
 import { useFavoritesStore } from '../store/favoritesStore';
@@ -421,27 +421,20 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
     
-    // Track Player setup with timeout to prevent hanging
-    // 20s gives Firebase + AdMob + IAP enough time to settle on cold start
-    const setupWithTimeout = async () => {
-      try {
-        const setupPromise = setupTrackPlayer();
-        const timeoutPromise = new Promise<boolean>((resolve) =>
-          setTimeout(() => {
-            console.warn('[AudioProvider] Track Player setup timed out after 20s — will retry on first play');
-            resolve(false);
-          }, 20000)
-        );
-        const success = await Promise.race([setupPromise, timeoutPromise]);
-        if (success) {
-          console.log('[AudioProvider] Ready to play!');
-        }
-      } catch (e) {
-        console.error('[AudioProvider] Track Player setup error:', e);
-      }
-      setIsReady(true);
-    };
-    setupWithTimeout();
+    // DEFERRED setup: don't compete with Firebase/AdMob/fonts during the
+    // launch window. UI is never gated on this — playStation() lazily sets up
+    // the player if this hasn't finished yet.
+    setIsReady(true);
+    const timer = setTimeout(() => {
+      InteractionManager.runAfterInteractions(() => {
+        setupTrackPlayer()
+          .then((success) => {
+            if (success) console.log('[AudioProvider] Ready to play!');
+          })
+          .catch((e) => console.error('[AudioProvider] Track Player setup error:', e));
+      });
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   // Resolve stream URL helper - returns { url, candidates } for fallback support
@@ -811,6 +804,15 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setCurrentStation(station);
       setMiniPlayerVisible(true);
       return;
+    }
+
+    // LAZY SETUP: deferred init may not have run yet — setupTrackPlayer is
+    // idempotent and returns immediately when already initialized
+    if (!trackPlayerInitialized) {
+      const setupOk = await setupTrackPlayer();
+      if (!setupOk) {
+        console.warn('[AudioProvider] Player setup failed, attempting playback anyway');
+      }
     }
 
     // Same station? Toggle play/pause

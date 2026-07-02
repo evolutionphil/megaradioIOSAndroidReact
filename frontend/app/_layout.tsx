@@ -7,7 +7,7 @@ import { Stack, router, useSegments, useRootNavigationState } from 'expo-router'
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, StyleSheet, Platform, AppState, AppStateStatus, Text } from 'react-native';
+import { View, StyleSheet, Platform, AppState, AppStateStatus, Text, InteractionManager } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -178,8 +178,6 @@ const GlobalMiniPlayer = React.memo(() => {
 });
 
 export default function RootLayout() {
-  sendLog('ROOT_LAYOUT_FUNCTION_START');
-  
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
   const [i18nReady, setI18nReady] = useState(false);
@@ -286,8 +284,6 @@ export default function RootLayout() {
         crashlyticsService.setupGlobalErrorHandler();
         crashlyticsService.log('App started');
         crashlyticsService.setAttribute('app_version_code', '90');
-        // Send a test non-fatal to verify Crashlytics is working
-        crashlyticsService.recordError(new Error('Crashlytics verification ping'), 'AppStartup');
         console.log('[Layout] Firebase Crashlytics initialized');
       } catch (error) {
         console.warn('[Layout] Firebase Crashlytics init error:', error);
@@ -328,47 +324,37 @@ export default function RootLayout() {
     loadAuth();
   }, []);
 
-  // Load premium status on app startup
+  // Load premium status on app startup (fast, AsyncStorage only)
+  // IAP/StoreKit init is DEFERRED — it was competing with launch and blocking
+  // the native module queue for 15s+ on cold start
   useEffect(() => {
-    const loadPremium = async () => {
-      try {
-        await usePremiumStore.getState().loadPremiumStatus();
-        console.log('[Layout] Premium status loaded:', usePremiumStore.getState().plan);
-        
-        // Initialize IAP on native (non-blocking, with timeout)
-        if (Platform.OS !== 'web') {
-          try {
-            const { iapService } = require('../src/services/iapService');
-            // Timeout wrapper to prevent IAP from blocking app startup
-            const iapTimeout = new Promise<boolean>((resolve) =>
-              setTimeout(() => {
-                console.warn('[Layout] IAP init timed out after 15s');
-                resolve(false);
-              }, 15000)
-            );
-            const result = await Promise.race([iapService.initialize(), iapTimeout]);
-            console.log('[Layout] IAP initialized:', result);
-          } catch (iapError) {
-            console.log('[Layout] IAP init error (expected on simulator):', iapError);
-          }
-        }
+    usePremiumStore.getState().loadPremiumStatus()
+      .then(() => console.log('[Layout] Premium status loaded:', usePremiumStore.getState().plan))
+      .catch((error) => console.log('[Layout] Premium load error:', error));
 
-        // GÖREV 2: Sync subscription from backend (if user is logged in)
+    if (Platform.OS === 'web') return;
+
+    // Defer IAP init until UI is interactive (4s after mount + interactions done)
+    const timer = setTimeout(() => {
+      InteractionManager.runAfterInteractions(async () => {
         try {
+          const { iapService } = require('../src/services/iapService');
+          const result = await iapService.initialize();
+          console.log('[Layout] IAP initialized (deferred):', result);
+
+          // Sync subscription from backend (if user is logged in)
           const { isAuthenticated } = useAuthStore.getState();
-          if (isAuthenticated && Platform.OS !== 'web') {
-            const { iapService } = require('../src/services/iapService');
+          if (isAuthenticated) {
             await iapService.syncSubscriptionFromBackend();
             console.log('[Layout] Backend subscription sync complete');
           }
-        } catch (syncError) {
-          console.warn('[Layout] Backend subscription sync error:', syncError);
+        } catch (iapError) {
+          console.log('[Layout] IAP deferred init error (expected on simulator):', iapError);
         }
-      } catch (error) {
-        console.log('[Layout] Premium load error:', error);
-      }
-    };
-    loadPremium();
+      });
+    }, 4000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Load stored country selection on app startup - WAIT FOR IT
@@ -381,28 +367,24 @@ export default function RootLayout() {
         await useLocationStore.getState().loadStoredCountry();
         const state = useLocationStore.getState();
         console.log('[Layout] Country loaded:', state.country, 'isManuallySet:', state.isManuallySet);
-        
-        // Try GPS detection if country was NOT explicitly set by user (picker)
-        // GPS-detected countries stored previously will be refreshed
+
+        // GPS detection runs fully in BACKGROUND — it must never hold the splash
+        // screen (it used to block it for up to 5s on every cold start)
         if (!state.isManuallySet) {
-          console.log('[Layout] Country not manually set, attempting GPS detection...');
-          // Timeout GPS detection — reduced to 5s for iPad compatibility
-          const gpsTimeout = new Promise<void>((resolve) => {
-            setTimeout(() => {
-              console.warn('[Layout] GPS detection timed out after 5s');
-              resolve();
-            }, 5000);
-          });
-          await Promise.race([useLocationStore.getState().fetchLocation(), gpsTimeout]);
-          const newState = useLocationStore.getState();
-          console.log('[Layout] GPS detection result:', newState.country, newState.countryCode);
+          console.log('[Layout] Country not manually set, starting background GPS detection...');
+          useLocationStore.getState().fetchLocation()
+            .then(() => {
+              const newState = useLocationStore.getState();
+              console.log('[Layout] GPS detection result:', newState.country, newState.countryCode);
+            })
+            .catch(() => {});
         } else {
           console.log('[Layout] Country manually set by user, skipping GPS detection');
         }
       } catch (error) {
         console.error('[Layout] Failed to load stored country:', error);
       } finally {
-        // Always mark as loaded, even on error (will use default/detection)
+        // Splash is unblocked as soon as the stored country is read (fast)
         setCountryLoaded(true);
       }
     };
@@ -683,8 +665,6 @@ export default function RootLayout() {
       sendLog('FONTS_LOADED', { fontsLoaded, fontError: fontError?.message });
     }
   }, [fontsLoaded, fontError]);
-
-  sendLog('ROOT_LAYOUT_RENDER_START');
 
   return (
     <RootErrorBoundary>

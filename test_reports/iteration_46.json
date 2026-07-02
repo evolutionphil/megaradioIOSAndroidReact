@@ -1,0 +1,59 @@
+{
+  "summary": "Verified code-level fixes for iOS cold-start freeze bug (native-only bug; user validates on iPhone via Xcode). All 4 code-review checkpoints PASS. Web regression smoke on preview URL matches the documented pre-existing baseline (white screen + 'Bundling...' toast) with NO NEW JS exceptions; 'Running application main' and '[Onboarding] All images preloaded' both observed, i.e. JS bundle executes cleanly. Backend /api/tv-proxy/translations/en returns 200.",
+  "code_review_findings": {
+    "remoteLog_ts": "PASS — sendLog (line 24) has early return 'if (!__DEV__) return;' at line 27, BEFORE the fetch(). Release builds are a true no-op.",
+    "_layout_tsx_render_body": "PASS — 'ROOT_LAYOUT_FUNCTION_START' and 'ROOT_LAYOUT_RENDER_START' are gone (grep returned nothing). All remaining sendLog calls are at MODULE-LOAD scope (lines 3, 15, 33, 109, 114, 132, 143, 160) which fire once per JS bundle load, or inside useEffect/mount handlers (line 193 ROOT_LAYOUT_MOUNTED, 665 FONTS_LOADED, 51 error boundary). None execute on every render.",
+    "_layout_tsx_loadCountry": "PASS — useEffect (line 363-392): awaits loadStoredCountry() (AsyncStorage), then fires fetchLocation() as fire-and-forget with .then/.catch (no await, no Promise.race). setCountryLoaded(true) is in the finally block (line 388) so splash unblocks as soon as stored country is read.",
+    "_layout_tsx_IAP_deferred": "PASS — useEffect (line 330-358): usePremiumStore.loadPremiumStatus() runs immediately (line 331). IAP init is deferred via setTimeout(4000) + InteractionManager.runAfterInteractions (lines 338-355), NOT awaited in the effect body. Cleanup returns clearTimeout(timer).",
+    "_layout_tsx_verification_ping": "PASS — grep for 'verification ping' / 'verification_ping' returned zero matches. The fake Crashlytics recordError at startup is removed.",
+    "_layout_tsx_InteractionManager_import": "PASS — imported from 'react-native' at line 10.",
+    "AudioProvider_setup_effect": "PASS — useEffect (line 416-438): web platform sets setIsReady(true) and returns early (line 418-422); native path sets setIsReady(true) IMMEDIATELY (line 427) then defers setupTrackPlayer via setTimeout(1500) + InteractionManager.runAfterInteractions (lines 428-436). No Promise.race, no 20s timeout on TrackPlayer.setupPlayer. (The lone 20000 at line 1053 is the ICY-metadata fallback polling delay, unrelated.)",
+    "AudioProvider_playStation_lazy_guard": "PASS — line 802 has web-platform early return; the lazy-init guard 'if (!trackPlayerInitialized) await setupTrackPlayer()' is at lines 811-816, placed AFTER the web early return and BEFORE any TrackPlayer.* call. setupTrackPlayer() is idempotent (early return at line 97 when already initialized).",
+    "AudioProvider_InteractionManager_import": "PASS — imported from 'react-native' at line 17.",
+    "package_json_mmkv": "PASS — 'react-native-mmkv': '4.2.0' at line 144. No leftover v2 (2.12.2) reference anywhere in package.json."
+  },
+  "regression_web_smoke": {
+    "url": "https://tvos-ui-match.preview.emergentagent.com",
+    "wait_seconds": 45,
+    "js_bundle_executes": true,
+    "signals_seen": [
+      "Running application \"main\" with appParams",
+      "[Onboarding] All images preloaded",
+      "[NativeCast] Google Cast not available (expected on web)",
+      "[NativeCast] AirPlay not available (expected on non-iOS)",
+      "[WatchService] Not available (non-iOS or no native module)"
+    ],
+    "pageerror_count": 0,
+    "new_js_exceptions": 0,
+    "visible_ui": "White page with 'Bundling... app/_layout.tsx' toast (matches documented pre-existing baseline — reproduced by main agent via git stash A/B)",
+    "known_baseline_noise_reproduced": [
+      "CORS/ERR_FAILED to api.themegaradio.com/api/logs/remote (sendLog dev-mode POSTs — expected; verifies __DEV__ path still runs on web)",
+      "'shadow*' / 'textShadow*' style props deprecation warnings",
+      "useNativeDriver warning (RCTAnimation missing on web)",
+      "Persistent 'Bundling...' toast + white screen"
+    ]
+  },
+  "regression_backend_smoke": {
+    "endpoint": "/api/tv-proxy/translations/en",
+    "status": 200,
+    "sample_body_prefix": "{\"modal_error_try_again\":\"Something went wrong. Please try again.\",\"guide_discover_description\":\"Find radio stations from around the world\",...}"
+  },
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "critical_code_review_comments": [
+    "Module-load sendLog fan-out (LAYOUT_FILE_LOADING, LAYOUT_IMPORTS_1/2, LAYOUT_ALL_IMPORTS_DONE, BEFORE_QUERY_CLIENT, QUERY_CLIENT_CREATED, BEFORE_HELPER_FUNCTIONS, BEFORE_ROOT_LAYOUT_DEFINITION, FONTS_LOADED, ROOT_LAYOUT_MOUNTED) still totals ~9 POSTs to api.themegaradio.com/api/logs/remote on cold start in DEV builds. Correctly gated behind !__DEV__ so release iOS is unaffected, but if remote logging is ever enabled in TestFlight/production for diagnostics, this bunch will re-introduce NSURLSession pressure. Consider batching to a single POST on debounce, or gating with an additional runtime toggle.",
+    "In _layout.tsx line 341 the deferred IAP block uses require('../src/services/iapService') inside runAfterInteractions. Fine on native; on web it would run if the Platform.OS === 'web' early-return at line 335 were removed later. Keep that guard.",
+    "AudioProvider setupTrackPlayer (line 96) protects against double-init with the module-level 'trackPlayerInitialized' flag AND with a getPlaybackState() probe — good. But two concurrent playStation() calls during the 1.5s deferred window can both hit the '!trackPlayerInitialized' branch and both call setupPlayer(). Consider wrapping the lazy path in a shared Promise (once-lock) to avoid a duplicate setupPlayer race on rapid tap.",
+    "_layout.tsx is 744 lines — beyond the 700-line guideline. Consider extracting the 8+ startup useEffects into a hooks module for readability (non-blocking)."
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100% (regression baseline preserved, no new JS errors)"},
+  "test_credentials": "N/A — no auth flows in scope",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Native iOS cold-start freeze bug — final verification is done on user's iPhone via Xcode Instruments (JS agent cannot run iOS). All 4 code-level checkpoints from the review request are confirmed present in /app/frontend/{app/_layout.tsx, src/providers/AudioProvider.tsx, src/services/remoteLog.ts, package.json}. Expo web target on preview URL is bundling-blocked (pre-existing baseline, confirmed by main agent via git stash A/B) — do NOT try to fix. If the user reports the iPhone still freezes, next steps for main agent: (a) add a debug-only per-line timing log via Xcode's os_signpost around each of _layout.tsx's 8 useEffects, (b) profile with Instruments -> System Trace to see which native module holds the JS thread, (c) confirm the archived Release build indeed shipped with __DEV__=false (Hermes stripped sendLog fetch).",
+  "rca_of_the_issue": "Original iOS cold-start freeze (15-20s) had four contributors, all now fixed at code level: (1) remoteLog.sendLog fired ~9 module-load + per-render fetch POSTs to api.themegaradio.com/api/logs/remote saturating NSURLSession — fixed by !__DEV__ early return AND by removing ROOT_LAYOUT_FUNCTION_START / ROOT_LAYOUT_RENDER_START from render body. (2) Splash was gated on a GPS Promise.race with a 5s ceiling — fixed by making fetchLocation() fire-and-forget and setting countryLoaded=true in finally after AsyncStorage read. (3) IAP/StoreKit initialize() was awaited synchronously in the mount effect, blocking the JS thread for 15s+ against Firebase/AdMob/fonts — fixed by setTimeout(4000) + InteractionManager.runAfterInteractions deferral. (4) TrackPlayer.setupPlayer wrapped in Promise.race with 20s timeout with no lazy fallback — fixed by immediate setIsReady(true), deferred setup via setTimeout(1500) + InteractionManager, and a lazy-init guard in playStation() that runs setupTrackPlayer() only when the user actually taps play. The 'Crashlytics verification ping' bogus recordError was also removed. Verification on native iOS must be done by the user in Xcode."
+}
