@@ -93,12 +93,22 @@ let lastMetadataTitle: string | null = null; // Track last metadata to detect ch
 // ============================================
 // TRACK PLAYER SETUP
 // ============================================
+let trackPlayerSetupPromise: Promise<boolean> | null = null;
+
+// Once-lock: concurrent callers (deferred init + rapid playStation taps) share one setup
 async function setupTrackPlayer(): Promise<boolean> {
   if (trackPlayerInitialized) {
     console.log('[AudioProvider] Track Player already initialized');
     return true;
   }
+  if (trackPlayerSetupPromise) return trackPlayerSetupPromise;
+  trackPlayerSetupPromise = doSetupTrackPlayer().finally(() => {
+    trackPlayerSetupPromise = null;
+  });
+  return trackPlayerSetupPromise;
+}
 
+async function doSetupTrackPlayer(): Promise<boolean> {
   try {
     console.log('[AudioProvider] Initializing Track Player...');
     

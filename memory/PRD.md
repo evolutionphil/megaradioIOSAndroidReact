@@ -11,7 +11,24 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 - **Android TV**: Kotlin shell + same web preview
 - **Backend**: FastAPI + MongoDB + `api.themegaradio.com` (legacy)
 
-## What's Been Implemented (Latest: Feb 2026 fork)
+## What's Been Implemented (Latest: Jun 2026 fork)
+
+### 🎯 iOS Cold-Start Freeze Fix (P0) ✅ (Jun 2026 — dd.rtf log analysis)
+User's release-build Xcode logs showed 15-20s UI block on first launch. Root causes + fixes
+(full RCA: `/app/memory/IOS_STARTUP_BLOCK_ANALYSIS.md`, tested: `test_reports/iteration_46.json` ALL PASS):
+1. `sendLog` fired network POSTs at module-load AND on EVERY RootLayout render → now no-op
+   in release (`!__DEV__` early return) + render-body calls removed (`remoteLog.ts`, `_layout.tsx`).
+2. Splash gated on GPS (5s Promise.race) → `countryLoaded` set right after AsyncStorage read;
+   `fetchLocation()` fire-and-forget in background (`_layout.tsx`).
+3. IAP/StoreKit init chain (10s+8s+8s) awaited at mount → deferred setTimeout(4000) +
+   `InteractionManager.runAfterInteractions` (`_layout.tsx`).
+4. TrackPlayer setup 20s timeout with NO retry → `setIsReady(true)` immediately, setup deferred
+   1.5s + InteractionManager, TRUE lazy-init guard in `playStation()` with once-lock
+   (`trackPlayerSetupPromise`) against rapid-tap races (`AudioProvider.tsx`).
+5. Crashlytics "verification ping" fake error each startup removed.
+- MMKV note: v2 downgrade attempted & REVERTED (Expo 54 precompiled RN can't build v2; v4 needs
+  New Arch which is OFF). DiskCache AsyncStorage fallback is persistent & fine. Stay on 4.2.0.
+- USER VERIFICATION PENDING: rebuild on iPhone via Xcode (no pod install needed — JS-only changes).
 
 ### 🎯 Apple TV — 1:1 Web Parity Rewrite (Feb 2026, session 2)
 **Status: PAGES REWRITTEN — awaiting user local Xcode build verification.**
