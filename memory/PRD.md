@@ -13,6 +13,21 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Siri App Shortcuts — Sıfır Kurulum (Jun 2026)
+- `plugins/ios/MegaRadioAppIntents.swift`: iOS 16+ `AppIntent` (`PlayLastStationIntent`,
+  openAppWhenRun=true → `megaradio://?playLast=1` dispatch) + `AppShortcutsProvider`
+  (TR+EN ifadeler: "MegaRadio'da son istasyonu çal", "Play last station in MegaRadio")
+- `plugins/withAppIntents.js`: prebuild sırasında Swift dosyasını iOS projesine kopyalar +
+  Xcode build sources'a ekler (`IOSConfig.XcodeUtils.addBuildSourceFileToGroup`)
+- `QuickActionsHandler`: `playLast=1` deep link listener'ı eklendi (hot + cold start)
+- URL bilinçli olarak `megaradio://?playLast=1` (path'siz) → expo-router +not-found'a düşmez;
+  mevcut Siri `megaradio://play?q=` handler'ı ile çakışmaz
+- DOĞRULANDI: `expo prebuild --platform ios` konteynerde çalıştırıldı — pbxproj'e 4 referans
+  eklendi, Info.plist static shortcut yazıldı. NOT: prebuild öncesi pbxproj'e eksik trailing
+  newline eklendi (xcode parser "end of input" hatası veriyordu — fix-xcode-cycle.js sonrası oluşmuş)
+- Kullanım: cihazda build sonrası "Hey Siri, MegaRadio'da son istasyonu çal" — Shortcuts app'te
+  otomatik görünür, kurulum gerekmez
+
 ### 🎯 Quick Actions — "Son Çalınanı Çal" Kısayolu (Jun 2026)
 - Paket: `expo-quick-actions@6.0.2` (iOS Home Screen Quick Actions + Android App Shortcuts tek API)
 - `app.json`: plugin eklendi + iOS static action (`play-last`, symbol:play.circle) — uygulama hiç

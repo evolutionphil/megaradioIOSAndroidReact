@@ -69,6 +69,22 @@ export const QuickActionsHandler: React.FC = () => {
     return () => sub?.remove?.();
   }, []);
 
+  // Siri App Shortcut (iOS 16+): native AppIntent opens megaradio://?playLast=1
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    const { Linking } = require('react-native');
+    const handleUrl = (url: string | null) => {
+      if (!url || !url.includes('playLast=1')) return;
+      console.log('[QuickActions] Siri playLast deep link received');
+      setTimeout(() => {
+        InteractionManager.runAfterInteractions(() => playLastStation());
+      }, 500);
+    };
+    const sub = Linking.addEventListener('url', (ev: any) => handleUrl(ev?.url));
+    Linking.getInitialURL().then(handleUrl).catch(() => {});
+    return () => sub?.remove?.();
+  }, []);
+
   // Register/update the shortcut items (deferred, non-blocking)
   useEffect(() => {
     if (Platform.OS === 'web') return;

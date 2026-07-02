@@ -79,7 +79,7 @@
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>MegaRadio uses your location to find nearby radio stations.</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Ses kaydı yapabilmek için mikrofon erişimi gereklidir.</string>
+    <string>Microphone access is required for audio recording.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Photo library access is required to upload a profile picture.</string>
     <key>NSSiriUsageDescription</key>
@@ -92,23 +92,13 @@
     </array>
     <key>RCTNewArchEnabled</key>
     <true/>
-    <!--
-      Scene manifest. CarPlay scene REQUIRES this entry because the app
-      declares the `com.apple.developer.carplay-audio` entitlement.
-      
-      Because UIApplicationSceneManifest is present, iOS adopts the
-      UIScene lifecycle for the WHOLE app — including the iPhone window.
-      We therefore declare BOTH scene roles:
-        • UIWindowSceneSessionRoleApplication       → PhoneSceneDelegate
-        • CPTemplateApplicationSceneSessionRole...  → CarPlaySceneDelegate
-      AppDelegate.application(_:configurationForConnecting:options:) ALSO
-      returns these classes via direct metatype references — that's the
-      foolproof path; Info.plist is the declarative fallback Xcode uses
-      to validate the manifest at build time.
-      
-      Source: https://developer.apple.com/documentation/uikit/app_and_environment/
-              scenes/specifying_the_scenes_your_app_supports
-    -->
+    <key>SKAdNetworkItems</key>
+    <array>
+      <dict>
+        <key>SKAdNetworkIdentifier</key>
+        <string>cstr6suwn9.skadnetwork</string>
+      </dict>
+    </array>
     <key>UIApplicationSceneManifest</key>
     <dict>
       <key>UIApplicationSupportsMultipleScenes</key>
@@ -137,11 +127,20 @@
         </array>
       </dict>
     </dict>
-    <key>SKAdNetworkItems</key>
+    <key>UIApplicationShortcutItems</key>
     <array>
       <dict>
-        <key>SKAdNetworkIdentifier</key>
-        <string>cstr6suwn9.skadnetwork</string>
+        <key>UIApplicationShortcutItemTitle</key>
+        <string>Play Last Station</string>
+        <key>UIApplicationShortcutItemType</key>
+        <string>play-last</string>
+        <key>UIApplicationShortcutItemUserInfo</key>
+        <dict>
+          <key>action</key>
+          <string>play-last</string>
+        </dict>
+        <key>UIApplicationShortcutItemIconSymbolName</key>
+        <string>play.circle</string>
       </dict>
     </array>
     <key>UIBackgroundModes</key>
