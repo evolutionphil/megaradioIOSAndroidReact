@@ -275,6 +275,16 @@ export default function RootLayout() {
       }
     };
     initAnalytics();
+
+    // Launch source baseline: if no fast-access path (quick action / Siri /
+    // Assistant) reported within the startup window, count it as 'normal'
+    const launchTimer = setTimeout(() => {
+      try {
+        const { reportLaunchSource } = require('../src/services/launchSourceService');
+        reportLaunchSource('normal');
+      } catch (e) {}
+    }, 6000);
+    return () => clearTimeout(launchTimer);
   }, []);
 
   // Initialize Firebase Crashlytics

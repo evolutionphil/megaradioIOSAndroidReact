@@ -13,6 +13,19 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Launch Source Telemetrisi (Jun 2026)
+- `src/services/launchSourceService.ts` (yeni): GA4 `app_launch` eventi, `launch_source` parametresi
+  (`normal` / `quick_action` / `siri` / `assistant`) — Firebase Analytics'e gider (backend değişikliği yok)
+- `analyticsService.native.ts`: `logAppLaunch(source)` metodu eklendi (web'de yok — optional chaining ile güvenli)
+- Kaynak yakalama: QuickActionsHandler kısayol → `quick_action`; sesli asistan deep link →
+  iOS'ta `siri`, Android'de `assistant`; `_layout` 6s sonra hiçbiri tetiklenmediyse `normal` (once-lock,
+  özel kaynaklar warm launch'ta da her seferinde loglanır)
+- Görüntüleme: Firebase Console → Analytics → Events → `app_launch` → `launch_source` parametresi
+- Test: Metro bundle temiz (launchSourceService çözümlendi), TS'de yeni gerçek hata yok
+  (TS2307 .native suffix uyarısı codebase'deki mevcut kalıp)
+- NOT: Bu edit sırasında QuickActionsHandler'da oluşan bozuk satır (` default QuickActionsHandler;`)
+  tespit edilip temizlendi
+
 ### 🎯 Google Assistant App Actions — Android (Jun 2026)
 - `plugins/withAndroidAppActions.js`: prebuild'de `res/xml/assistant_shortcuts.xml` yazar
   (`actions.intent.PLAY_MUSIC` capability → `megaradio://?playLast=1` url-template,

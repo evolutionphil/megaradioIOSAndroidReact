@@ -8,6 +8,7 @@ import { Platform, InteractionManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAudio } from '../hooks/useAudioPlayer';
 import { usePlayerStore } from '../store/playerStore';
+import { reportLaunchSource } from '../services/launchSourceService';
 import i18n from '../services/i18nService';
 
 const LAST_PLAYED_STATION_KEY = '@megaradio_last_played_station';
@@ -45,6 +46,7 @@ export const QuickActionsHandler: React.FC = () => {
 
   const handleAction = (action: any) => {
     if (action?.id === 'play-last' || action?.params?.action === 'play-last') {
+      reportLaunchSource('quick_action');
       playLastStation();
     }
   };
@@ -77,6 +79,7 @@ export const QuickActionsHandler: React.FC = () => {
     const handleUrl = (url: string | null) => {
       if (!url || !url.includes('playLast=1')) return;
       console.log('[QuickActions] Voice assistant playLast deep link received');
+      reportLaunchSource(Platform.OS === 'ios' ? 'siri' : 'assistant');
       setTimeout(() => {
         InteractionManager.runAfterInteractions(() => playLastStation());
       }, 500);

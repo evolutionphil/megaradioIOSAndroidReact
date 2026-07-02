@@ -52,6 +52,17 @@ class AnalyticsService {
     } catch (e) {}
   }
 
+  // App launch source (normal / quick_action / siri / assistant)
+  async logAppLaunch(launchSource: string): Promise<void> {
+    try {
+      const a = await getAnalytics();
+      if (a) await a().logEvent('app_launch', {
+        launch_source: launchSource,
+        platform: Platform.OS,
+      });
+    } catch (e) {}
+  }
+
   // Station play
   async logStationPlay(stationId: string, stationName: string, genre?: string): Promise<void> {
     try {
