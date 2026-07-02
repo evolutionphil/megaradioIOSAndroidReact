@@ -109,6 +109,19 @@
       "expo-router",
       "expo-apple-authentication",
       [
+        "expo-quick-actions",
+        {
+          "iosActions": [
+            {
+              "id": "play-last",
+              "title": "Play Last Station",
+              "icon": "symbol:play.circle",
+              "params": { "action": "play-last" }
+            }
+          ]
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "android": {

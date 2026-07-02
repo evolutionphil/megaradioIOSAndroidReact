@@ -13,6 +13,20 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### 🎯 Quick Actions — "Son Çalınanı Çal" Kısayolu (Jun 2026)
+- Paket: `expo-quick-actions@6.0.2` (iOS Home Screen Quick Actions + Android App Shortcuts tek API)
+- `app.json`: plugin eklendi + iOS static action (`play-last`, symbol:play.circle) — uygulama hiç
+  açılmadan bile ikon basılı tutunca kısayol görünür
+- `src/components/QuickActionsHandler.tsx` (yeni, AudioProvider içinde mount):
+  - Dinamik item kaydı 5s ertelemeli + InteractionManager (non-blocking); subtitle = son istasyon adı,
+    istasyon değiştikçe güncellenir; başlık i18n `quick_action_play_last`
+  - `addListener` (sıcak) + `QuickActions.initial` (cold start, 2s + interactions sonrası) →
+    `LAST_PLAYED_STATION_KEY` okunur → `playStation` (lazy TrackPlayer guard sayesinde güvenli)
+- ⚠️ YENİ NATIVE MODÜL: kullanıcı bu sefer `npx expo prebuild` + `pod install` YAPMALI
+- Test: tsc yeni hata yok, app.json JSON valid, web bundle temiz. Native doğrulama cihazda.
+- NOT: Gerçek kilit ekranı widget'ı (iOS WidgetKit/AudioPlaybackIntent) native Swift target ister —
+  backlog'a alındı; bu sürüm ikon basılı tutma kısayolu (iOS+Android).
+
 ### 🎯 Son Çalınan İstasyon Pre-Warm (Jun 2026)
 - `AudioProvider`: mount'tan 3s sonra + `InteractionManager` içinde (tamamen fire-and-forget):
   1. `@megaradio_last_played_station` AsyncStorage'dan okunur

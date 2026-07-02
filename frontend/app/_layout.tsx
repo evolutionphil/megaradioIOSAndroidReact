@@ -99,6 +99,7 @@ class AudioErrorBoundary extends React.Component<{ children: React.ReactNode }, 
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
+import { QuickActionsHandler } from '../src/components/QuickActionsHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
 import TrackPlayer from 'react-native-track-player';
 // FlowAlive DISABLED - NPM package has bug (yalc reference in dependencies)
@@ -683,6 +684,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <AudioErrorBoundary>
               <PlayAtLoginHandler />
+              <QuickActionsHandler />
               <NotificationHandler />
               {/* CarPlay - Re-enabled after native delegate fixes */}
               <CarPlayHandler />
