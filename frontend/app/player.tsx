@@ -210,6 +210,8 @@ const EqualizerBars = React.memo(() => {
   );
 });
 
+import { ImageWithFallback } from '../src/components/ImageWithFallback';
+
 // GridItem extracted OUTSIDE PlayerScreen to prevent unmount/remount on re-render
 const GridItem = React.memo(({
   station,
@@ -219,16 +221,10 @@ const GridItem = React.memo(({
 }: {
   station: Station;
   onPress: (station: Station) => void;
-  getLogoUrl: (station: Station) => string;
+  getLogoUrl: (station: Station) => string | null;
   itemWidth: number;
 }) => {
   const stationLogo = getLogoUrl(station);
-  const [imageError, setImageError] = useState(false);
-
-  // Reset error when station changes
-  React.useEffect(() => {
-    setImageError(false);
-  }, [station._id]);
 
   return (
     <TouchableOpacity
@@ -236,14 +232,14 @@ const GridItem = React.memo(({
       onPress={() => onPress(station)}
       activeOpacity={0.7}
       delayPressIn={0}
-      data-testid={`grid-item-${station._id}`}
+      testID={`grid-item-${station._id}`}
     >
       <View style={[styles.gridImageWrapper, { width: itemWidth, height: itemWidth }]}>
-        <Image
-          source={{ uri: imageError ? 'https://themegaradio.com/logo.png' : stationLogo }}
+        <ImageWithFallback
+          testID={`player-grid-logo-${station._id}`}
+          uri={stationLogo}
           style={styles.gridImage}
           contentFit="cover"
-          onError={() => setImageError(true)}
         />
       </View>
       <Text style={styles.gridStationName} numberOfLines={1}>
@@ -435,7 +431,7 @@ export default function PlayerScreen() {
 
   const getLogoUrl = useCallback((station: Station) => {
     // Use centralized helper with 'large' preference for player screen
-    return getStationLogoUrl(station, 'large') || 'https://themegaradio.com/logo.png';
+    return getStationLogoUrl(station, 'large');
   }, []);
 
   const logoUrl = currentStation ? getLogoUrl(currentStation) : null;
@@ -443,7 +439,7 @@ export default function PlayerScreen() {
   // Reset artwork error when the station changes so the new logo gets a fresh try.
   React.useEffect(() => {
     setArtworkError(false);
-  }, [currentStation?._id]);
+  }, [currentStation?._id, logoUrl]);
   
   // Memoize stations to prevent re-renders
   const popularStations = useMemo(() => {

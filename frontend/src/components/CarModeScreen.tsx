@@ -10,8 +10,9 @@ import {
   PanResponder,
   Animated,
   LayoutChangeEvent,
+  ActivityIndicator,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from './ImageWithFallback';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -139,20 +140,12 @@ const StationCarousel = ({
               } : {},
             ]}
           >
-            {logoUrl ? (
-              <Image
-                key={`img-${station._id}`}
-                source={{ uri: logoUrl }}
+              <ImageWithFallback
+                testID={`car-mode-logo-${posIdx}-${station._id}`}
+                uri={logoUrl}
                 style={[carouselStyles.cardImage, { borderRadius: cfg.radius }]}
                 contentFit="cover"
               />
-            ) : (
-              <View style={[carouselStyles.cardPlaceholder, { borderRadius: cfg.radius }]}>
-                <Text style={carouselStyles.placeholderText}>
-                  {station.name?.charAt(0) || '?'}
-                </Text>
-              </View>
-            )}
           </View>
         );
       })}
@@ -239,7 +232,7 @@ const VolumeSlider = ({
       <TouchableOpacity 
         style={volumeStyles.muteBtn} 
         onPress={onMuteToggle} 
-        data-testid="car-mode-mute-btn"
+        testID="car-mode-mute-btn"
       >
         <Ionicons
           name={isMuted ? 'volume-mute' : 'volume-off'}
@@ -347,9 +340,9 @@ const EqualizerBars = () => {
           Animated.timing(anim, { toValue: min, duration: dur, useNativeDriver: false }),
         ])
       );
-    loop(anim1, 8, 22, 400).start();
-    loop(anim2, 6, 18, 350).start();
-    loop(anim3, 10, 20, 450).start();
+    const animations = [loop(anim1, 8, 22, 400), loop(anim2, 6, 18, 350), loop(anim3, 10, 20, 450)];
+    animations.forEach(animation => animation.start());
+    return () => animations.forEach(animation => animation.stop());
   }, []);
 
   return (
@@ -488,7 +481,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
   const bottomPadding = Platform.OS === 'ios' ? 34 : Math.max(20, insets.bottom + 10);
 
   return (
-    <View style={styles.overlay} data-testid="car-mode-screen">
+    <View style={styles.overlay} testID="car-mode-screen">
       <StatusBar barStyle="light-content" backgroundColor="#1B1C1E" />
       
       {/* Main content with manual safe area padding */}
@@ -499,7 +492,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
           <TouchableOpacity
             style={styles.closeBtn}
             onPress={onClose}
-            data-testid="car-mode-close-btn"
+            testID="car-mode-close-btn"
           >
             <Text style={[styles.closeBtnText, ub]}>Kapat</Text>
           </TouchableOpacity>
@@ -527,7 +520,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
           <Text
             style={[styles.stationName, ub]}
             numberOfLines={1}
-            data-testid="car-mode-station-name"
+            testID="car-mode-station-name"
           >
             {displayedStation?.name || 'No Station'}
           </Text>
@@ -538,15 +531,15 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
 
         {/* ── Controls: Prev | Pause | Next ─── */}
         <View style={styles.controlsRow}>
-          <TouchableOpacity style={styles.controlBtn} onPress={handlePrev} data-testid="car-mode-prev-btn">
+          <TouchableOpacity style={styles.controlBtn} onPress={handlePrev} testID="car-mode-prev-btn">
             <View style={styles.iconRow}>
               <View style={styles.prevBarLine} />
               <View style={styles.prevTriangle} />
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.controlBtn} onPress={togglePlayPause} disabled={isLoading} data-testid="car-mode-playpause-btn">
-            {isPlaying ? (
+          <TouchableOpacity style={styles.controlBtn} onPress={togglePlayPause} testID="car-mode-playpause-btn">
+            {isLoading ? <ActivityIndicator testID="car-mode-loading" color="#FFFFFF" /> : isPlaying ? (
               <View style={styles.iconRow}>
                 <View style={styles.pauseBar} />
                 <View style={[styles.pauseBar, { marginLeft: 12 * S }]} />
@@ -556,7 +549,7 @@ export const CarModeScreen: React.FC<CarModeScreenProps> = ({ visible, onClose, 
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.controlBtn} onPress={handleNext} data-testid="car-mode-next-btn">
+          <TouchableOpacity style={styles.controlBtn} onPress={handleNext} testID="car-mode-next-btn">
             <View style={styles.iconRow}>
               <View style={styles.nextTriangle} />
               <View style={styles.nextBarLine} />

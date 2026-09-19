@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,17 @@ import {
   TouchableOpacity,
   Share,
   Linking,
-  Dimensions,
-  Platform,
+  ActivityIndicator,
   StatusBar,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlowEffect } from './GlowEffect';
 import * as Clipboard from 'expo-clipboard';
 import type { Station } from '../types';
+import { ImageWithFallback } from './ImageWithFallback';
+import { resolveStationShareUrl, stationShareContent } from '../utils/stationShare';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ARTWORK_SIZE = 190;
 
 interface ShareModalProps {
@@ -37,69 +36,48 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   getLogoUrl,
 }) => {
   const insets = useSafeAreaInsets();
+  const [busy, setBusy] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
+  const inFlight = useRef(false);
+  const generation = useRef(0);
+  useEffect(() => {
+    generation.current++;
+    setShareError(null);
+    return () => { generation.current++; };
+  }, [visible, station?._id]);
 
   if (!station) return null;
 
   const logoUrl = getLogoUrl(station);
-  const stationUrl = `https://themegaradio.com/station/${station._id}`;
   const shareText = `${station.name} - MegaRadio`;
-  const shareMessage = nowPlayingTitle
-    ? `${station.name} - ${nowPlayingTitle}\nMegaRadio'da dinle: ${stationUrl}`
-    : `${station.name} - MegaRadio'da dinle: ${stationUrl}`;
-
-  const handleFacebookShare = () => {
-    const fbUrl = `fb://share?link=${encodeURIComponent(stationUrl)}`;
-    Linking.canOpenURL(fbUrl).then((supported) => {
-      if (supported) {
-        Linking.openURL(fbUrl);
-      } else {
-        Linking.openURL(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(stationUrl)}&quote=${encodeURIComponent(shareText)}`);
-      }
-    });
-  };
-
-  const handleInstagramShare = async () => {
-    // Instagram doesn't have a direct share URL, use native share with Instagram hint
-    onClose();
+  const withShareUrl = async (action: (url: string) => Promise<unknown>) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    const request = generation.current;
+    setBusy(true);
+    setShareError(null);
     try {
-      await Share.share({
-        message: shareMessage,
-        url: stationUrl,
-        title: shareText,
-      });
-    } catch {}
+      const url = await resolveStationShareUrl(station);
+      if (request !== generation.current) return;
+      await action(url);
+      if (request === generation.current) onClose();
+    } catch (error) {
+      if (request === generation.current) setShareError(error instanceof Error ? error.message : 'Paylaşım başarısız. Tekrar deneyin.');
+    } finally {
+      inFlight.current = false;
+      setBusy(false);
+    }
   };
-
-  const handleWhatsAppShare = async () => {
-    // Use native Share API instead of direct URL scheme
-    // This opens the system share sheet and lets user choose their WhatsApp app
-    onClose();
-    try {
-      await Share.share({
-        message: shareMessage,
-        url: Platform.OS === 'ios' ? stationUrl : undefined,
-        title: shareText,
-      });
-    } catch {}
-  };
-
-  const handleCopyLink = async () => {
-    await Clipboard.setStringAsync(stationUrl);
-    onClose();
-  };
-
-  const handleMore = async () => {
-    onClose();
-    setTimeout(async () => {
-      try {
-        await Share.share({
-          message: shareMessage,
-          url: stationUrl,
-          title: shareText,
-        });
-      } catch {}
-    }, 300);
-  };
+  const handleFacebookShare = () => withShareUrl(async url => {
+    const facebook = `fb://share?link=${encodeURIComponent(url)}`;
+    const supported = await Linking.canOpenURL(facebook).catch(() => false);
+    return Linking.openURL(supported ? facebook :
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(shareText)}`);
+  });
+  const handleInstagramShare = () => withShareUrl(url => Share.share(stationShareContent(station, url, nowPlayingTitle)));
+  const handleWhatsAppShare = handleInstagramShare;
+  const handleMore = handleInstagramShare;
+  const handleCopyLink = () => withShareUrl(url => Clipboard.setStringAsync(url));
 
   return (
     <Modal
@@ -108,9 +86,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       transparent={false}
       onRequestClose={onClose}
       statusBarTranslucent
+      testID="share-modal-dialog"
     >
       <StatusBar barStyle="light-content" backgroundColor="#1B1C1E" />
-      <View style={[styles.fullScreen, { paddingTop: insets.top, paddingBottom: insets.bottom || 24 }]} data-testid="share-modal">
+      <View style={[styles.fullScreen, { paddingTop: insets.top, paddingBottom: insets.bottom || 24 }]} testID="share-modal">
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
@@ -118,7 +97,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <TouchableOpacity
             style={styles.closeBtn}
             onPress={onClose}
-            data-testid="share-modal-close"
+            testID="share-modal-close"
           >
             <Ionicons name="close" size={22} color="#FFF" />
           </TouchableOpacity>
@@ -130,17 +109,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <View style={styles.artworkSection}>
             <GlowEffect size={ARTWORK_SIZE + 80} top={0} left={0} opacity={0.40} />
             <View style={styles.artworkWrapper}>
-              {logoUrl ? (
-                <Image
-                  source={{ uri: logoUrl }}
+                <ImageWithFallback
+                  testID="share-station-logo"
+                  uri={logoUrl}
                   style={styles.artwork}
                   contentFit="cover"
                 />
-              ) : (
-                <View style={styles.artworkPlaceholder}>
-                  <Ionicons name="radio" size={60} color="#666" />
-                </View>
-              )}
             </View>
           </View>
 
@@ -152,29 +126,34 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           </View>
 
           {/* Station info */}
-          <Text style={styles.stationName} numberOfLines={1}>{station.name}</Text>
-          <Text style={styles.songTitle} numberOfLines={1}>{nowPlayingTitle || 'Live Radio'}</Text>
+          <Text testID="share-station-name" style={styles.stationName} numberOfLines={1}>{station.name}</Text>
+          <Text testID="share-song-title" style={styles.songTitle} numberOfLines={1}>{nowPlayingTitle || 'Live Radio'}</Text>
+          {busy && <ActivityIndicator testID="share-loading" color="#FF4199" />}
+          {shareError && <Text testID="share-error" accessibilityRole="alert" style={styles.shareError}>{shareError}</Text>}
 
           {/* Social buttons - Facebook, Instagram, WhatsApp */}
           <View style={styles.socialRow}>
             <TouchableOpacity
               style={[styles.socialBtn, { backgroundColor: '#3b5998' }]}
               onPress={handleFacebookShare}
-              data-testid="share-facebook"
+              testID="share-facebook"
+              disabled={busy}
             >
               <FontAwesome5 name="facebook-f" size={24} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.socialBtn, { backgroundColor: '#C13584' }]}
               onPress={handleInstagramShare}
-              data-testid="share-instagram"
+              testID="share-instagram"
+              disabled={busy}
             >
               <FontAwesome5 name="instagram" size={26} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.socialBtn, { backgroundColor: '#25D366' }]}
               onPress={handleWhatsAppShare}
-              data-testid="share-whatsapp"
+              testID="share-whatsapp"
+              disabled={busy}
             >
               <FontAwesome5 name="whatsapp" size={26} color="#FFF" />
             </TouchableOpacity>
@@ -187,7 +166,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <TouchableOpacity
             style={styles.actionRow}
             onPress={handleCopyLink}
-            data-testid="share-copy-link"
+            testID="share-copy-link"
+            disabled={busy}
           >
             <Ionicons name="link-outline" size={22} color="#FFF" />
             <Text style={styles.actionText}>Copy Link</Text>
@@ -197,7 +177,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <TouchableOpacity
             style={styles.actionRow}
             onPress={handleMore}
-            data-testid="share-more"
+            testID="share-more"
+            disabled={busy}
           >
             <Ionicons name="ellipsis-horizontal" size={22} color="#FFF" />
             <Text style={styles.actionText}>More</Text>
@@ -209,6 +190,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 };
 
 const styles = StyleSheet.create({
+  shareError: { color: '#FF4199', textAlign: 'center', fontSize: 14, marginBottom: 12 },
   fullScreen: {
     flex: 1,
     backgroundColor: '#1B1C1E',

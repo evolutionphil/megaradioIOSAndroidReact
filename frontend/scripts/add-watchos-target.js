@@ -137,7 +137,7 @@ log('Found ' + swiftFiles.length + ' swift, ' + plistFiles.length + ' plist, ' +
   let raw = fs.readFileSync(PBX_PATH, 'utf8');
   if (!raw.endsWith('\n')) {
     raw = raw.replace(/\s*$/, '') + '\n';
-    fs.writeFileSync(PBX_PATH, raw);
+    fs.writeFileSync(PBX_PATH, raw.trimEnd() + '\n');
     log('Normalised pbxproj trailing newline');
   }
 }
@@ -199,7 +199,7 @@ function scrubWatchSourcesFromIosTarget() {
 const scrubbed = scrubWatchSourcesFromIosTarget();
 if (scrubbed > 0) {
   log('Removed ' + scrubbed + ' watch source file(s) leaked into iOS target Sources phase ✂️');
-  fs.writeFileSync(PBX_PATH, proj.writeSync());
+  fs.writeFileSync(PBX_PATH, proj.writeSync().trimEnd() + '\n');
 }
 
 const existing = findTargetByName(TARGET_NAME);
@@ -239,7 +239,7 @@ if (existing) {
   });
 
   if (fixedSpec > 0) {
-    fs.writeFileSync(PBX_PATH, proj.writeSync());
+    fs.writeFileSync(PBX_PATH, proj.writeSync().trimEnd() + '\n');
     log('Repaired ' + fixedSpec + ' Embed Watch Content setting(s). ✅');
   } else {
     log('Embed Watch Content phase already healthy.');
@@ -354,7 +354,7 @@ if (existing) {
 
   if (addedSources > 0) {
     log('  · added ' + addedSources + ' missing Swift source file(s) to Sources phase');
-    fs.writeFileSync(PBX_PATH, proj.writeSync());
+    fs.writeFileSync(PBX_PATH, proj.writeSync().trimEnd() + '\n');
   } else {
     log('  · all ' + swiftFiles.length + ' Swift files already in Sources phase');
   }
@@ -362,7 +362,7 @@ if (existing) {
   // Defensive: re-scrub leaked sources from iOS target.
   const leaked = scrubWatchSourcesFromIosTarget();
   if (leaked > 0) {
-    fs.writeFileSync(PBX_PATH, proj.writeSync());
+    fs.writeFileSync(PBX_PATH, proj.writeSync().trimEnd() + '\n');
     log('  · scrubbed ' + leaked + ' leaked source(s) from iOS target');
   }
 
@@ -392,7 +392,7 @@ if (existing) {
       });
       if (teamFixed > 0) {
         log('  · propagated DEVELOPMENT_TEAM=' + repairTeamId + ' to ' + teamFixed + ' watch build config(s)');
-        fs.writeFileSync(PBX_PATH, proj.writeSync());
+        fs.writeFileSync(PBX_PATH, proj.writeSync().trimEnd() + '\n');
       }
     }
   } else {
@@ -684,7 +684,7 @@ proj.addTargetDependency(iosTargetUuidFinal, [target.uuid]);
 // ─────────────────────────────────────────────────────────────────────
 // 7. Save
 // ─────────────────────────────────────────────────────────────────────
-fs.writeFileSync(PBX_PATH, proj.writeSync());
+fs.writeFileSync(PBX_PATH, proj.writeSync().trimEnd() + '\n');
 
 // ─────────────────────────────────────────────────────────────────────
 // 8. Patch MegaRadio.xcscheme — add Watch target to BuildAction
@@ -799,7 +799,7 @@ function ensureSwiftFileInTarget(filename) {
   }
   if (!targetUuid) return false;
   project.addSourceFile('MegaRadio/' + filename, { target: targetUuid }, groupKey);
-  fs.writeFileSync(PBX_PATH, project.writeSync());
+  fs.writeFileSync(PBX_PATH, project.writeSync().trimEnd() + '\n');
   return true;
 }
 

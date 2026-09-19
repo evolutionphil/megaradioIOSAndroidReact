@@ -202,7 +202,7 @@ console.log('\n+ Set ENABLE_USER_SCRIPT_SANDBOXING = NO');
 // ============================================================
 
 if (content !== originalContent) {
-  fs.writeFileSync(pbxprojPath, content);
+  fs.writeFileSync(pbxprojPath, content.trimEnd() + '\n');
   console.log('');
   console.log('======================================================');
   console.log(`[fix-xcode-cycle] DONE! Fixed ${fixedPhases.length} [CP-User] phases:`);

@@ -241,6 +241,7 @@
       "./plugins/withTrackPlayerServiceFix.js",
       "./plugins/withCarPlayNativeFix.js",
       "./plugins/withCarPlayScenes.js",
+      "./plugins/withSwiftAudioExRadioFix.js",
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
       "./plugins/withGoogleServicesFix.js",
@@ -257,6 +258,7 @@
       "typedRoutes": true
     },
     "extra": {
+      "websiteUrl": "https://themegaradio.com",
       "router": {},
       "eas": {
         "projectId": "8c6c2a63-f514-4419-93c1-975a3e9119ca"

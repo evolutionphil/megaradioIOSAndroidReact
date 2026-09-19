@@ -3,7 +3,7 @@ import { ImageSourcePropType } from 'react-native';
 import { Image as ExpoImage, ImageContentFit } from 'expo-image';
 
 // Default station logo - LOCAL asset for fallback (no network required)
-const DEFAULT_STATION_LOGO_SOURCE = require('../../assets/images/default-station-logo.png');
+import { DEFAULT_STATION_LOGO_SOURCE } from '../utils/stationLogoHelper';
 
 interface ImageWithFallbackProps {
   uri?: string | null;
@@ -47,6 +47,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   style,
   resizeMode,
   contentFit,
+  onError,
   ...props
 }) => {
   // 0 = primary uri, 1 = fallbackUri (remote), 2 = local fallbackSource
@@ -65,12 +66,14 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   if (stage === 0 && hasPrimary) {
     return (
       <ExpoImage
+        {...props}
+        key={`primary-${uri}`}
+        recyclingKey={`primary-${uri}`}
         source={{ uri: uri as string }}
         style={style}
         contentFit={fit}
         cachePolicy="memory-disk"
-        onError={() => setStage(hasFallbackUri ? 1 : 2)}
-        {...props}
+        onError={(event) => { setStage(hasFallbackUri ? 1 : 2); onError?.(event); }}
       />
     );
   }
@@ -79,18 +82,21 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   if (stage <= 1 && hasFallbackUri) {
     return (
       <ExpoImage
+        {...props}
+        key={`secondary-${fallbackUri}`}
+        recyclingKey={`secondary-${fallbackUri}`}
         source={{ uri: fallbackUri as string }}
         style={style}
         contentFit={fit}
         cachePolicy="memory-disk"
-        onError={() => setStage(2)}
-        {...props}
+        onError={(event) => { setStage(2); onError?.(event); }}
       />
     );
   }
 
   // Final: local fallback asset (never fails)
-  return <ExpoImage source={fallbackSource} style={style} contentFit={fit} {...props} />;
+  return <ExpoImage {...props} key="local-fallback" recyclingKey="local-fallback"
+    source={fallbackSource} style={style} contentFit="contain" />;
 };
 
 export default ImageWithFallback;

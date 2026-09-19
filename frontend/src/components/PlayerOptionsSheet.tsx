@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   Modal,
   Share,
-  Platform,
-  Linking,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
@@ -15,6 +14,7 @@ import { colors, spacing, typography } from '../constants/theme';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useAuthStore } from '../store/authStore';
 import type { Station } from '../types';
+import { resolveStationShareUrl, stationShareContent } from '../utils/stationShare';
 
 interface PlayerOptionsSheetProps {
   visible: boolean;
@@ -22,9 +22,6 @@ interface PlayerOptionsSheetProps {
   station: Station | null;
   onShowEqualizer?: () => void;
 }
-
-const APP_SCHEME = 'megaradio://';
-const WEB_BASE_URL = 'https://themegaradio.com';
 
 export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
   visible,
@@ -36,23 +33,6 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   
   const stationIsFavorite = station ? isFavorite(station._id) : false;
-
-  // Generate share URLs
-  const getWebUrl = () => {
-    if (!station) return WEB_BASE_URL;
-    return `${WEB_BASE_URL}/station/${station.slug || station._id}`;
-  };
-
-  const getDeepLink = () => {
-    if (!station) return APP_SCHEME;
-    return `${APP_SCHEME}station/${station._id}`;
-  };
-
-  // Generate share message
-  const getShareMessage = () => {
-    if (!station) return 'Check out MegaRadio!';
-    return `🎵 I'm listening to ${station.name} on MegaRadio!\n\nJoin me and discover thousands of radio stations from around the world.\n\n${getWebUrl()}`;
-  };
 
   // Handle add/remove favorite
   const handleFavoriteToggle = async () => {
@@ -68,29 +48,24 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
 
   // Handle copy link
   const handleCopyLink = async () => {
-    const url = getWebUrl();
-    await Clipboard.setStringAsync(url);
-    // Show feedback (could use toast)
-    onClose();
+    if (!station) return;
+    try {
+      await Clipboard.setStringAsync(await resolveStationShareUrl(station));
+      onClose();
+    } catch (error) {
+      Alert.alert('Paylaşım', error instanceof Error ? error.message : 'Bağlantı hazırlanamadı.');
+    }
   };
 
   // Handle native share
   const handleShare = async () => {
     try {
-      const message = getShareMessage();
-      
-      if (Platform.OS === 'ios') {
-        await Share.share({
-          message: message,
-          url: getWebUrl(),
-        });
-      } else {
-        await Share.share({
-          message: message,
-        });
-      }
+      if (!station) return;
+      const url = await resolveStationShareUrl(station);
+      await Share.share(stationShareContent(station, url));
     } catch (error) {
       console.error('Share error:', error);
+      Alert.alert('Paylaşım', error instanceof Error ? error.message : 'Bağlantı hazırlanamadı.');
     }
     onClose();
   };
@@ -116,11 +91,13 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
       transparent
       animationType="slide"
       onRequestClose={onClose}
+      testID="player-options-modal"
     >
       <TouchableOpacity 
         style={styles.overlay} 
         activeOpacity={1} 
         onPress={onClose}
+        testID="player-options-dismiss"
       >
         <View style={styles.sheet}>
           {/* Drag Handle */}
@@ -134,6 +111,7 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
             <TouchableOpacity 
               style={styles.optionRow}
               onPress={handleFavoriteToggle}
+              testID="player-options-favorite"
             >
               <View style={styles.optionIcon}>
                 <Ionicons 
@@ -151,6 +129,7 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
             <TouchableOpacity 
               style={styles.optionRow}
               onPress={handlePlayPreview}
+              testID="player-options-preview"
             >
               <View style={styles.optionIcon}>
                 <Ionicons name="play" size={24} color="#FFFFFF" />
@@ -165,6 +144,7 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
             <TouchableOpacity 
               style={styles.optionRow}
               onPress={handleEqualizer}
+              testID="player-options-equalizer"
             >
               <View style={styles.optionIcon}>
                 <Ionicons name="options" size={24} color="#FFFFFF" />
@@ -182,6 +162,7 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
             <TouchableOpacity 
               style={styles.optionRow}
               onPress={handleCopyLink}
+              testID="player-options-copy-link"
             >
               <View style={styles.optionIcon}>
                 <Ionicons name="link" size={24} color="#FFFFFF" />
@@ -193,6 +174,7 @@ export const PlayerOptionsSheet: React.FC<PlayerOptionsSheetProps> = ({
             <TouchableOpacity 
               style={styles.optionRow}
               onPress={handleShare}
+              testID="player-options-share"
             >
               <View style={styles.optionIcon}>
                 <Ionicons name="share-outline" size={24} color="#FFFFFF" />

@@ -1,0 +1,74 @@
+{
+  "summary": "Executed issue49-focused regression coverage using new runnable Node harnesses and pytest read-only checks. Verified image fallback/share wiring/SwiftAudioEx patch guards/AudioProvider watchdog static guards. Critical failure remains: canonical slug page for Best FM (`/station/best-fm-2`) returns HTTP 410, which breaks shared canonical slug flow despite slug generation logic being correct.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET https://themegaradio.com/station/best-fm-2",
+        "issue": "Returns 410 Gone. Share helper now generates slug URL correctly, but canonical destination for required Best FM example is not reachable.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Share URL slug canonical validation (Best FM example)",
+        "issue": "Generated slug URL is `/station/best-fm-2` as required, but destination currently returns 410, causing broken share outcome for that station.",
+        "affected_testIDs": [
+          "player-share-btn",
+          "share-whatsapp",
+          "share-copy-link",
+          "player-options-share",
+          "player-options-copy-link"
+        ]
+      },
+      {
+        "flow": "Native runtime freeze verification (Turkey Best FM tap freeze)",
+        "issue": "Not reproducible in this container (no iOS native runtime/Xcode execution). Only source-level patch/harness checks were executed.",
+        "affected_testIDs": []
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_issue49_share_and_image.cjs",
+    "/app/tests/regression_issue49_swiftaudio_patch.cjs",
+    "/app/tests/regression_issue49_audio_and_build_scripts.cjs",
+    "/app/tests/regression_issue49_live_readonly.cjs",
+    "/app/backend/tests/test_issue49_live_readonly.py",
+    "/app/test_reports/pytest/pytest_issue49_live_readonly.xml"
+  ],
+  "action_items": [
+    "Fix canonical station routing/content for `best-fm-2` so `https://themegaradio.com/station/best-fm-2` does not return 410.",
+    "After canonical route fix, retest share flows end-to-end for Virgin (`virgin-radio-turkiye`) and Best (`best-fm-2`) from ShareModal + PlayerOptionsSheet.",
+    "Run real iOS native runtime verification for Best FM freeze scenario; current run validated only source-transform/config behavior for SwiftAudioEx patch, not device runtime playback freeze reproduction.",
+    "Re-run `/app/tests/regression_issue49_live_readonly.cjs` and `pytest /app/backend/tests/test_issue49_live_readonly.py` after canonical URL fix."
+  ],
+  "critical_code_review_comments": [
+    "ImageWithFallback chain/reset behavior and local contain fallback are wired as expected; CarMode and player-grid logos both use ImageWithFallback with required testIDs.",
+    "Share flow now routes through shared helper (`stationShare.ts`) from both ShareModal and PlayerOptionsSheet, with message-only payload (no duplicated `url` field).",
+    "SwiftAudioEx patch script is fail-closed (pinned SHA, altered source rejected), idempotent, and validated against temp Pods fixture with missing/multiple-source failure cases.",
+    "AudioProvider watchdog/stale guards and 3-track placeholder + `skip(1)` queue behavior are present in source-level checks; runtime event ordering still needs native execution to fully validate.",
+    "app.json `expo.extra.websiteUrl` is correctly set to `https://themegaradio.com`."
+  ],
+  "updated_files": [
+    "/app/tests/regression_issue49_share_and_image.cjs",
+    "/app/tests/regression_issue49_swiftaudio_patch.cjs",
+    "/app/tests/regression_issue49_audio_and_build_scripts.cjs",
+    "/app/tests/regression_issue49_live_readonly.cjs",
+    "/app/backend/tests/test_issue49_live_readonly.py",
+    "/app/test_reports/iteration_49.json"
+  ],
+  "success_rate": {
+    "backend": "67%",
+    "frontend": "75%"
+  },
+  "seed_data_creation": "None (read-only GET checks only).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "User requested no Expo/Metro preview debugging and no native-runtime screenshots. This run used runnable JS harnesses + read-only network checks. Native iOS playback freeze bug cannot be reproduced here; only Swift source transform/config behavior was tested.",
+  "rca_of_issue": "RCA: share helper correctly builds slug URL and avoids ID URLs, but required Best FM canonical target currently serves HTTP 410 (Gone). Repro: run `/app/tests/regression_issue49_live_readonly.cjs` (fails at canonical assertion) or pytest `test_canonical_station_page_uses_slug` (1 failed). Mitigation: restore canonical slug route/content for `best-fm-2` (or redirect to a valid slug page) so generated share links resolve for end users."
+}

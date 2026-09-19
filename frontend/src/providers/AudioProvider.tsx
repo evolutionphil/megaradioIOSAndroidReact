@@ -200,18 +200,42 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setMiniPlayerVisible,
   } = usePlayerStore();
 
+  const streamLoadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const preparingQueueRef = useRef(false);
+  const clearStreamLoadTimer = useCallback(() => {
+    if (streamLoadTimerRef.current) clearTimeout(streamLoadTimerRef.current);
+    streamLoadTimerRef.current = null;
+  }, []);
+  const startStreamLoadTimer = useCallback((requestId: number) => {
+    clearStreamLoadTimer();
+    streamLoadTimerRef.current = setTimeout(() => {
+      if (requestId !== globalPlayId) return;
+      globalPlayId++;
+      currentPlayingStationId = null; // Same-station retry must create a fresh item.
+      preparingQueueRef.current = false;
+      setPlaybackState('error');
+      setError('Station did not respond. Please try again or choose another station.');
+      void TrackPlayer.reset().catch(() => {});
+    }, 15000);
+  }, [clearStreamLoadTimer, setError, setPlaybackState]);
+  useEffect(() => clearStreamLoadTimer, [clearStreamLoadTimer]);
+
   // Listen to Track Player events
   useTrackPlayerEvents([Event.PlaybackState, Event.PlaybackError, Event.PlaybackMetadataReceived, Event.MetadataCommonReceived], async (event) => {
+    // Reset/queue setup emits old-item events. They cannot finish or fail a new request.
+    if (preparingQueueRef.current || !currentPlayingStationId) return;
     if (event.type === Event.PlaybackState) {
       console.log('[AudioProvider] Playback state changed:', event.state);
       
       switch (event.state) {
         case State.Playing:
+          clearStreamLoadTimer();
           setPlaybackState('playing');
           // Reset retry count on successful playback
           failoverRetryCountRef.current = 0;
           break;
         case State.Paused:
+          clearStreamLoadTimer();
           setPlaybackState('paused');
           break;
         case State.Stopped:
@@ -219,6 +243,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           break;
         case State.Buffering:
         case State.Loading:
+          if (!streamLoadTimerRef.current) startStreamLoadTimer(globalPlayId);
           setPlaybackState('buffering');
           break;
         case State.Error:
@@ -230,6 +255,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
     
     if (event.type === Event.PlaybackError) {
+      clearStreamLoadTimer();
+      const requestId = globalPlayId;
       console.error('[AudioProvider] Playback error:', event);
       
       // STREAM FAILOVER: Try next candidate URL automatically
@@ -249,7 +276,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           console.log('[AudioProvider] FAILOVER: Trying next URL:', nextUrl.substring(0, 60));
           
           try {
+            preparingQueueRef.current = true;
+            startStreamLoadTimer(requestId);
+            setPlaybackState('loading');
             await TrackPlayer.reset();
+            if (requestId !== globalPlayId) return;
             await TrackPlayer.add({
               id: currentStation._id || `station_${Date.now()}`,
               url: nextUrl,
@@ -260,14 +291,18 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               duration: 86400, // Fake duration for skip buttons
               headers: { 'Icy-MetaData': '1', 'User-Agent': 'MegaRadio/1.0' },
             });
+            if (requestId !== globalPlayId) return;
+            preparingQueueRef.current = false;
             await TrackPlayer.play();
+            if (requestId !== globalPlayId) return;
             
             console.log('[AudioProvider] FAILOVER: Successfully switched to candidate', currentCandidateIndexRef.current + 1);
             setStreamUrl(nextUrl);
-            setPlaybackState('playing');
             return; // Don't set error state
           } catch (fallbackError) {
             console.error('[AudioProvider] FAILOVER: Candidate also failed:', fallbackError);
+          } finally {
+            if (requestId === globalPlayId) preparingQueueRef.current = false;
           }
         } else {
           console.log('[AudioProvider] FAILOVER: All candidates exhausted');
@@ -275,6 +310,9 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
       
       // All failover attempts failed
+      if (requestId !== globalPlayId) return;
+      clearStreamLoadTimer();
+      currentPlayingStationId = null;
       setError('Stream playback error - all URLs failed');
       setPlaybackState('error');
     }
@@ -472,6 +510,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const MAX_FAILOVER_RETRIES = 3; // Max retries per candidate
   
   const resolveStreamUrl = useCallback(async (station: Station): Promise<string | null> => {
+    const requestId = globalPlayId;
     // Get urlResolved - API returns camelCase "urlResolved"
     const urlResolved = (station as any).urlResolved || station.url_resolved;
     const originalUrl = station.url;
@@ -529,6 +568,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         console.log('[AudioProvider] Native: Playlist detected (.pls/.m3u/.asx), resolving...');
         try {
           const streamData = await stationService.resolveStream(streamUrl);
+          if (requestId !== globalPlayId) return null;
           if (streamData.candidates && streamData.candidates.length > 0) {
             // Store all candidates for fallback
             streamCandidatesRef.current = streamData.candidates;
@@ -565,6 +605,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (isPlaylistUrl(streamUrl)) {
         console.log('[AudioProvider] Web: Playlist detected, resolving...');
         const streamData = await stationService.resolveStream(streamUrl);
+        if (requestId !== globalPlayId) return null;
         if (streamData.candidates && streamData.candidates.length > 0) {
           streamCandidatesRef.current = streamData.candidates;
           streamUrl = streamData.candidates[0];
@@ -853,18 +894,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
 
-    // LAZY SETUP: deferred init may not have run yet — setupTrackPlayer is
-    // idempotent and returns immediately when already initialized
-    if (!trackPlayerInitialized) {
-      const setupOk = await setupTrackPlayer();
-      if (!setupOk) {
-        console.warn('[AudioProvider] Player setup failed, attempting playback anyway');
-      }
-    }
-
     // Same station? Toggle play/pause
     if (currentPlayingStationId === station._id) {
       console.log('[AudioProvider] Same station - toggling');
+      if (preparingQueueRef.current) return;
       const state = await TrackPlayer.getPlaybackState();
       if (state.state === State.Playing) {
         await TrackPlayer.pause();
@@ -917,11 +950,24 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // NEW STATION - increment play ID for race condition prevention
     const myPlayId = ++globalPlayId;
     console.log('[AudioProvider] New PlayID:', myPlayId);
+    preparingQueueRef.current = true;
+    clearStreamLoadTimer();
+    startStreamLoadTimer(myPlayId);
+    setPlaybackState('loading');
+    setError(null);
+    setCurrentStation(station);
+    setMiniPlayerVisible(true);
 
     try {
+      if (!trackPlayerInitialized) {
+        const setupOk = await setupTrackPlayer();
+        if (globalPlayId !== myPlayId) return;
+        if (!setupOk) throw new Error('Audio player could not be initialized');
+      }
       // STEP 1: STOP CURRENT PLAYBACK & CLEAR OLD METADATA
       console.log('[AudioProvider] STEP 1: Stopping current playback...');
       await TrackPlayer.reset();
+      if (globalPlayId !== myPlayId) return;
       
       // IMPORTANT: Clear previous station's metadata immediately
       // This prevents showing old station's info while loading new one
@@ -1006,6 +1052,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         duration: fakeDuration,
         headers: icyHeaders,
       });
+      if (globalPlayId !== myPlayId) return;
       
       // Add the actual current station
       await TrackPlayer.add({
@@ -1018,6 +1065,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         duration: fakeDuration,
         headers: icyHeaders,
       });
+      if (globalPlayId !== myPlayId) return;
       
       // Add a "next" placeholder (will be replaced when user presses Next)
       await TrackPlayer.add({
@@ -1030,13 +1078,17 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         duration: fakeDuration,
         headers: icyHeaders,
       });
+      if (globalPlayId !== myPlayId) return;
       
       // Skip to the actual track (index 1)
       await TrackPlayer.skip(1);
+      if (globalPlayId !== myPlayId) return;
+      preparingQueueRef.current = false;
 
       // STEP 6: Start playback
       console.log('[AudioProvider] STEP 6: Starting playback...');
       await TrackPlayer.play();
+      if (globalPlayId !== myPlayId) return;
       
       listeningStartTime = new Date();
 
@@ -1133,6 +1185,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
 
     } catch (error) {
+      if (globalPlayId !== myPlayId) return;
       console.error('[AudioProvider] Play failed:', error);
       
       // Try next candidate if available (Backend recommendation: fallback to candidates[1], candidates[2], etc.)
@@ -1140,7 +1193,9 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (nextUrl) {
         console.log('[AudioProvider] Retrying with next candidate...');
         try {
+          preparingQueueRef.current = true;
           await TrackPlayer.reset();
+          if (globalPlayId !== myPlayId) return;
           await TrackPlayer.add({
             id: station._id || `station_${Date.now()}`,
             url: nextUrl,
@@ -1151,7 +1206,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             isLiveStream: true,
             headers: { 'Icy-MetaData': '1', 'User-Agent': 'MegaRadio/1.0' },
           });
+          if (globalPlayId !== myPlayId) return;
+          preparingQueueRef.current = false;
           await TrackPlayer.play();
+          if (globalPlayId !== myPlayId) return;
           console.log('[AudioProvider] Fallback playback started successfully');
           
           // Update stream URL and continue
@@ -1167,19 +1225,29 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         }
       }
       
+      if (globalPlayId !== myPlayId) return;
+      clearStreamLoadTimer();
+      currentPlayingStationId = null;
       setError(error instanceof Error ? error.message : 'Failed to play');
       setPlaybackState('error');
+    } finally {
+      if (globalPlayId === myPlayId) preparingQueueRef.current = false;
     }
-  }, [resolveStreamUrl, tryNextCandidate, getArtworkUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking]);
+  }, [resolveStreamUrl, tryNextCandidate, getArtworkUrl, setCurrentStation, setPlaybackState, setStreamUrl, setError, setMiniPlayerVisible, fetchNowPlaying, startStatsTracking, clearStreamLoadTimer, startStreamLoadTimer]);
 
   // Stop playback completely
   const stopPlayback = useCallback(async () => {
     console.log('[AudioProvider] ========== STOP PLAYBACK ==========');
+    globalPlayId++;
+    clearStreamLoadTimer();
+    preparingQueueRef.current = false;
+    setPlaybackState('idle');
+    setMiniPlayerVisible(false);
     
     // Stop stats tracking
     stopStatsTracking();
     try {
-      await statsService.endSession();
+      void statsService.endSession().catch(() => {});
       console.log('[AudioProvider] Stats session ended');
     } catch (e) {
       console.log('[AudioProvider] Failed to end stats session:', e);
@@ -1200,7 +1268,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       listeningStartTime = null;
     }
 
-    globalPlayId++;
     currentPlayingStationId = null;
 
     // Web check
@@ -1216,11 +1283,12 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     setPlaybackState('idle');
     setMiniPlayerVisible(false);
-  }, [setPlaybackState, setMiniPlayerVisible, stopStatsTracking]);
+  }, [setPlaybackState, setMiniPlayerVisible, stopStatsTracking, clearStreamLoadTimer]);
 
   // Pause
   const pause = useCallback(async () => {
     console.log('[AudioProvider] Pause');
+    clearStreamLoadTimer();
     if (Platform.OS === 'web') {
       setPlaybackState('paused');
       return;
@@ -1230,7 +1298,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch (e) {
       console.error('[AudioProvider] Pause error:', e);
     }
-  }, [setPlaybackState]);
+  }, [setPlaybackState, clearStreamLoadTimer]);
 
   // Resume
   const resume = useCallback(async () => {
@@ -1249,6 +1317,10 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Toggle play/pause
   const togglePlayPause = useCallback(async () => {
     console.log('[AudioProvider] Toggle play/pause');
+    if (storePlaybackState === 'loading' || storePlaybackState === 'buffering') {
+      await stopPlayback();
+      return;
+    }
     
     if (Platform.OS === 'web') {
       if (storePlaybackState === 'playing') {
@@ -1273,7 +1345,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch (e) {
       console.error('[AudioProvider] Toggle error:', e);
     }
-  }, [storePlaybackState, currentStation, playStation, setPlaybackState]);
+  }, [storePlaybackState, currentStation, playStation, setPlaybackState, stopPlayback]);
 
   // Set volume
   const setVolume = useCallback(async (volume: number) => {

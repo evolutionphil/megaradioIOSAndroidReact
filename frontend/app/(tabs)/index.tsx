@@ -51,7 +51,7 @@ import { CountrySelectorModal, countryCodeToFlag } from '../../src/components/Co
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Station, Genre } from '../../src/types';
 
-const FALLBACK_LOGO = require('../../assets/megaradio-icon.png');
+const FALLBACK_LOGO = require('../../assets/images/default-station-logo.png');
 
 // Fixed padding for all elements - same as Jazz banner
 const SIDE_PADDING = 15;

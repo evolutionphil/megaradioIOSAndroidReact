@@ -53,6 +53,11 @@ target 'MegaRadio' do
   )
 
   post_install do |installer|
+    # MegaRadio SwiftAudioEx live-radio fix
+    radio_patch = File.join(__dir__, '..', 'scripts', 'patch-swiftaudioex.js')
+    unless system('node', radio_patch, installer.sandbox.root.to_s)
+      raise 'MegaRadio SwiftAudioEx patch failed; refusing to build the unpatched player'
+    end
     react_native_post_install(
       installer,
       config[:reactNativePath],

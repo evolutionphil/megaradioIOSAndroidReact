@@ -13,6 +13,46 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### En son mobil hata turu — araç modu / Best FM / paylaşım (test 49–50)
+- Kullanıcı: iOS araç modunda ve Recently Played'de eksik logolar, Best FM Türkiye'ye
+  basınca tüm uygulama donması, WhatsApp paylaşımında ID yerine slug talebi. Android
+  kullanıcıda denenmemiş; ortak mobil kod için de koruma eklendi. TV tasarımı değişmedi.
+- Araç modu carousel ve player Recently Played kartları `ImageWithFallback` kullanıyor.
+  Missing/503 artwork -> bundled `default-station-logo.png`; hata zinciri, URI değişiminde
+  reset ve consumer onError birleştirme davranışı test50'de executable harness ile doğrulandı.
+- RNTP4.1.2 / SwiftAudioEx1.1.0: iOS26 canlı yayında eager asset chapter/metadata probe
+  ve `asset.duration` sorgusu donma riski taşıyor (upstream PR106). Yeni
+  `withSwiftAudioExRadioFix` Podfile hook'u, `scripts/patch-swiftaudioex.js` ile bu radyo
+  uygulamasında static asset probe'u kaldırır, item duration ve ICY timed metadata'yı
+  korur. Pinned SHA, idempotence ve unknown-source fail-closed testleri geçti.
+- ÖNEMLİ: Bu ortamda gerçek Pods/native build yok; düzeltme kullanıcının `pod install`
+  + yeni Xcode derlemesinde native binary'ye girer. Donmanın cihazda bittiği kanıtlanmadı.
+- AudioProvider: 15sn initial/buffering deadline, stopped/stale request guards, aynı
+  istasyon retry ve loading cancel. Üç öğeli lockscreen next/previous kuyruğu korundu.
+  Bu kısım test50'de source/harness düzeyinde kontrol edildi; native event sırası cihazda test edilmeli.
+- Paylaşım: `expo.extra.websiteUrl` üzerinden gerçek website domaini; slug yoksa
+  station detail'den alınıyor, ID/name'den sahte slug üretilmiyor. WhatsApp dahil native
+  payload'da URL yalnızca message içinde bir defa. Kopyalama/diğer menü aynı helper'ı kullanıyor.
+- HEAD ile açık 404/410 görülen sayfa paylaşımı uyarıyla engelleniyor; 3sn deadline;
+  network/timeout/405 veya noIndex tek başına geçerli slug'ı engellemiyor.
+- DIŞ ENGEL: `/station/best-fm-2` test50'de 410 `x-seo-cache=JUNK-410` dönüyor.
+  Mobil artık bu koşulda bozuk link göndermiyor. Website server kaynağı bu depoda yok;
+  sayfa dış backend'de düzeltilmeden Best FM sayfa paylaşımı tamamlanamaz.
+- Best FM stream'i test ortamında 12sn timeout, Virgin favicon 503 verdi. Bunlar o anki
+  ağ gözlemi; radyonun global/kalıcı olarak kapandığını kanıtlamaz.
+- Xcode proje üretimi: watch/fix-cycle scriptlerinin PBX dosyasını trailing newline'sız
+  yazması sonraki prebuild parser'ını bozuyordu; tüm yazımlar newline ile bitiyor.
+  prebuild + watch-target sync + PBX parser geçti.
+- Son test: `/app/test_reports/iteration_50.json`; tam notlar
+  `/app/memory/MOBILE_LOGO_PLAYBACK_SHARE_FIXES.md`. Hiçbir gerçek paylaşım/satın alma/hesap
+  mutasyonu yapılmadı. Mobil preview kullanıcı isteğiyle kapsam dışında.
+
+#### Bu turdan kalan P0
+- Yeni iOS native derleme sonrası Best FM tıklama/cancel/başka istasyona geçiş ve
+  kilit ekranı/CarPlay kumandalarını cihazda doğrulama; Android aynı loading korumalarını deneme.
+- Best FM external canonical410 için website/API tarafında yayın durumunu düzeltme.
+  Mobil kod bu dış kaynağı düzelttiğini iddia etmemeli.
+
 ### Güncel hata düzeltme turu — Eylül 2026 (önceki durum notlarının önüne geçer)
 - Kullanıcı kapsamı genişletti: önce iOS/Android + canlı API sözleşmeleri, sonra tvOS,
   watchOS, Android TV, Samsung/Tizen ve LG/webOS. Soru sorulmadan kesin hatalar düzeltildi.

@@ -1,0 +1,69 @@
+{
+  "summary": "Retested issue49/after49 fixes via executable Node regression harnesses and pytest (no Expo/Metro preview per request). New stationShare HEAD-validation behavior is verified: 404/410 rejected with Turkish unavailable message; network/timeout/405 paths preserve valid slug URL; missing-slug recovery behaves the same. External website blocker remains: Best FM canonical page currently returns 410 (x-seo-cache=JUNK-410), classified as EXTERNAL UNAVAILABLE.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET/HEAD https://themegaradio.com/station/best-fm-2",
+        "issue": "Canonical station page currently returns HTTP 410 (x-seo-cache=JUNK-410). This is external website availability, not app-side slug fabrication behavior.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Share canonical link generation/validation",
+        "issue": "Client negative-flow handling is correct (rejects only 404/410, preserves slug on network/timeout/405), but Best FM canonical destination is externally unavailable (410).",
+        "affected_testIDs": [
+          "share-whatsapp",
+          "share-copy-link",
+          "player-options-share",
+          "player-options-copy-link"
+        ]
+      },
+      {
+        "flow": "Best FM full-freeze native reproduction",
+        "issue": "STATIC-ONLY verification done in this container (source/harness checks). Real iOS native runtime/device freeze reproduction is not executable here.",
+        "affected_testIDs": []
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_issue49_share_and_image.cjs",
+    "/app/tests/regression_issue49_swiftaudio_patch.cjs",
+    "/app/tests/regression_issue49_audio_and_build_scripts.cjs",
+    "/app/tests/regression_issue49_live_readonly.cjs",
+    "/app/backend/tests/test_issue49_live_readonly.py",
+    "/app/test_reports/pytest/pytest_issue49_live_readonly.xml"
+  ],
+  "action_items": [
+    "Website/canonical routing owner should resolve external 410 for /station/best-fm-2 (or redirect to a valid slug page).",
+    "After canonical recovery, rerun /app/tests/regression_issue49_live_readonly.cjs and pytest /app/backend/tests/test_issue49_live_readonly.py.",
+    "Run on-device iOS validation for Best FM tap freeze; container run cannot claim runtime freeze fully fixed."
+  ],
+  "critical_code_review_comments": [
+    "stationShare.ts now enforces bounded HEAD validation with AbortController(3s) and only treats explicit 404/410 as unavailable.",
+    "Share URL recovery for missing legacy slug is validated and does not fabricate alternate station IDs/slugs under network failures.",
+    "ImageWithFallback behavior was tested with executable hook/runtime doubles: remote->fallbackUri->local chain, missing-uri fallback, uri-change reset, and external onError composition.",
+    "AudioProvider/SwiftAudioEx checks were rerun via existing issue49 harnesses; native runtime behavior remains static-source/harness verified only in this environment."
+  ],
+  "updated_files": [
+    "/app/tests/regression_issue49_share_and_image.cjs",
+    "/app/tests/regression_issue49_live_readonly.cjs",
+    "/app/backend/tests/test_issue49_live_readonly.py",
+    "/app/test_reports/iteration_50.json"
+  ],
+  "success_rate": {
+    "backend": "75%",
+    "frontend": "85%"
+  },
+  "seed_data_creation": "None (read-only checks and local test doubles only).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "User requested no Expo/Metro preview UI run; this iteration therefore focused on executable source/harness/readonly network validations. External Best FM canonical availability remains unresolved and explicitly classified as EXTERNAL UNAVAILABLE.",
+  "rca_of_issue": "RCA: app-side share logic regression is addressed (bounded HEAD, correct error classification, legacy-slug recovery) and negative flow behaves correctly. Remaining failure is external website canonical endpoint for best-fm-2 returning 410 (x-seo-cache=JUNK-410), so client correctly blocks share/copy for that station under current live conditions."
+}
