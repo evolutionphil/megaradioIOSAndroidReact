@@ -13,6 +13,54 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### En son tur — hesap istatistikleri, Community, profil paylaşımı ve app links (test51–52)
+- Kullanıcı: logout/login başka hesapta aynı Total Listening/Unique Stations/Songs Played;
+  Community eksik kullanıcılar; profil Share no-op; radyo/profil bağlantıları uygulamayı
+  açsın, yoksa indirme yönlendirmesi; All Stations dahil fallback logo tam sığsın.
+- İstatistikler cihazda `@megaradio/stats-v2/user:<id>/...` veya ayrı guest namespace'inde.
+  Her çağrı hesabı await öncesi yakalar; per-owner queue paralel güncellemeleri korur.
+  AudioProvider outgoing-session cleanup eski owner'ı yakalar; playback sürerse yeni
+  hesabın kendi oturumu başlar. Partial seconds birikir, dakika iki kez yazılmaz,
+  session end şarkı sayısını artırmaz. Stale process session'ı offline süreye yazılmaz.
+- Eski cihaz-geneli karışık istatistikler SİLİNMEDİ ama sahibi bilinmediği için hiçbir
+  hesaba otomatik atanmadı. Yeni sayaçlar scoped olarak birikir. Cloud sync eklenmedi.
+- Statistics ekranı owner değişiminde eski değeri göstermeden loading/reset yapar;
+  eski async sonuçlar iptal edilir. Kullanıcı istemediği için destructive reset düğmesi eklenmedi.
+- Community/public-profiles ortak directory, dedup, refresh/retry, next-page tekrar
+  algılama; arama sadece yüklenen profillerde olduğu açık. Takip cache'i viewer-id bazlı,
+  geciken eski status/mutation sonuçları ve hesap değişimleri korunur,4-worker sınırı var.
+- Canlı API şu an page/offset/skip değişse de aynı100kaydı veriyor; >100başka public
+  kullanıcı gerçekten var mı bilinmiyor. Tüm kullanıcılar geri getirildi denemez.
+  Ayrıntı `COMMUNITY_API_PAGINATION_FINDING.md`.
+- Kendi/public profile Share gerçek native share payload'ına bağlandı. Sadece public
+  profil paylaşılır; tekHTTPSlink, slug varsa slug yoksa doğru sabitID. Radio slug akışı korundu.
+- iOS associatedDomains ve Android autoVerify filtreleri; Expo +native-intent pure
+  parser + open-link resolver. Cold/warm URL station/player veya public user-profile'a
+  yönlenir; aynı çalan radyoyu tekrar linkten açmak pause etmez. Siri/OAuth korundu.
+  Malformed/dot/encoded-slash path kontrolü test51bulgusundan sonra düzeltildi.
+- Native config generated prebuild geçti; gerçek cihaz cold/warm validation yapılmadı.
+- DIŞ ENGEL: Live Android assetlinks `com.visiongo.megaradio`; actualAndroidpkg
+  `com.megaradio`. Gerçek Play signing SHA ile websiteassociation düzeltilmeli.
+  iOS AASA'da M6T85HP76P.com.visiongo.megaradio var; signed archive application-id'si doğrulanmalı.
+- No-app store banner + gerçek değerlerle association üreten script hazır:
+  `frontend/linking/README.md`. Live website kaynağı bu repoda yok, banner yayınlanmadı.
+  Automatic deferred post-install link aktarımı yok; kurulum sonrası orijinal linke tekrar dokunma.
+- Logo: AllStations, favorites/grid/list, genre,nearby,search radios, shared StationCard,
+  MiniPlayer,main player,public user cards ve önceki car/recent/share alanları ortak
+  ImageWithFallback; legacy remote default URL de local asset'e döner, fallback `contain`.
+- Test52:3executable regression harness +7live readonly API test geçti. Native fiziksel
+  deep links ve external website publication kapsam dışı/engelli. Rapor iteration52.
+- Test51'deki previewURL404 mevcutapp çağrısı değildi: gerçek API origin kaynakta
+  api.themegaradio.com; test hedefi düzeltildi. Eski hardcoded API config ayrı teknik borç,
+  bu turde sessizce değiştirilmedi. API key ve hesap bilgileri bu notlarda paylaşılmaz.
+
+#### Güncel P0 / P1
+- P0: Android website assetlinks gerçek package+Play certificate eşleştirmesi; iOS/Android
+  yeni native build ile gerçek WhatsApp link cold/warm/deviceacceptance.
+- P0: Website install-banner/config ekleme; otomatik deferred flow olmadan açık tekrar-tıklama yönlendirmesi.
+- P1: Community backend pagination/search contract; kullanıcıların yalnızca public profilleri görünmeli.
+- Önceki Best FM canonical410 ve gerçek cihaz audio test sınırları geçerlidir; bu turde TV kodu değişmedi.
+
 ### En son mobil hata turu — araç modu / Best FM / paylaşım (test 49–50)
 - Kullanıcı: iOS araç modunda ve Recently Played'de eksik logolar, Best FM Türkiye'ye
   basınca tüm uygulama donması, WhatsApp paylaşımında ID yerine slug talebi. Android

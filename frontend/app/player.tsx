@@ -615,20 +615,7 @@ export default function PlayerScreen() {
             <View style={{ width: LOGO_SIZE, height: LOGO_SIZE }}>
               <GlowEffect size={LOGO_SIZE + 180} top={-90} left={-90} opacity={0.65} color="255, 65, 153" />
               <View style={[styles.artworkWrapper, { width: LOGO_SIZE, height: LOGO_SIZE }]}>
-              {logoUrl && !artworkError ? (
-                <Image
-                  source={{ uri: logoUrl }}
-                  style={styles.artwork}
-                  contentFit="cover"
-                  onError={() => setArtworkError(true)}
-                />
-              ) : (
-                <Image
-                  source={FALLBACK_LOGO}
-                  style={styles.artwork}
-                  contentFit="cover"
-                />
-              )}
+              <ImageWithFallback testID="player-station-logo" uri={logoUrl} style={styles.artwork} contentFit="contain" />
               {/* Country Flag */}
               {(currentStation?.countrycode || currentStation?.countryCode) && (
                 <View style={styles.countryFlagContainer}>

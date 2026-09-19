@@ -1,0 +1,57 @@
+{
+  "summary": "Retested Issue51 after raw-path guard fix using updated Node regression harnesses and live readonly pytest against app-configured API origin. All requested regression flows passed, including malformed link edge cases, stats isolation/reset semantics, community/share/logo checks, and native config/banner generator checks. User-requested 'missing reset button' is confirmed false-positive (no destructive reset UI requested).",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "https://themegaradio.com/.well-known/assetlinks.json",
+        "issue": "External website association still references com.visiongo.megaradio instead of com.megaradio; verified-links for current Android package remain externally blocked.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "GET https://api.themegaradio.com/api/public-profiles",
+        "issue": "Observed API limitation persists: responses capped/repeated at 100 profiles without reliable pagination metadata (external backend/data scope)."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_issue51_stats.cjs",
+    "/app/tests/regression_issue51_directory_links_share_logo.cjs",
+    "/app/tests/regression_issue51_native_config_and_banner.cjs",
+    "/app/backend/tests/test_issue51_live_readonly.py",
+    "/app/test_reports/pytest/pytest_issue51_live_readonly.xml"
+  ],
+  "action_items": [
+    "No functional Issue51 regressions found in covered scope; keep malformed-link guard as implemented.",
+    "Track legacy technical debt separately: frontend API base and API key are hardcoded in source, though current live target resolution now tested correctly.",
+    "Website owner must publish correct Android assetlinks for com.megaradio and certificate.",
+    "Community completeness requires external API pagination/search contract improvements before claiming full directory coverage beyond current 100-record envelope."
+  ],
+  "critical_code_review_comments": [
+    "incomingLinks raw-path checks now correctly reject /station/../x, /user/%2e%2e/x, double-encoded dot segments, and encoded slash payloads while preserving OAuth/foreign links and Siri play URLs.",
+    "Statistics/account isolation behavior remains correct: owner-captured writes, guest/account partitioning, partial-minute accumulation, no double song increments on endSession, owner-scoped reset service.",
+    "The prior 'missing reset button' report was a requirement misread; statistics display reset-on-account-change is implemented without adding destructive UI.",
+    "src/constants/api.ts and src/services/api.ts still hardcode production host/key (known debt, not a newly introduced regression in this retest)."
+  ],
+  "updated_files": [
+    "/app/tests/regression_issue51_directory_links_share_logo.cjs",
+    "/app/backend/tests/test_issue51_live_readonly.py",
+    "/app/test_reports/iteration_52.json"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100% (harness scope); native installed/uninstalled cold/warm not runnable in this environment"
+  },
+  "seed_data_creation": "None (read-only API calls and isolated JS test doubles only).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Per user instruction, no Expo preview/Metro debugging was performed. Live API tests now target the app-configured origin directly (https://api.themegaradio.com) with public header parity. Physical native deep-link acceptance (installed/uninstalled, cold/warm) remains environment-blocked and must be validated on devices.",
+  "rca_of_issue": "Iteration_51 traversal failure was due to URL normalization before malformed-segment rejection. Current implementation validates raw path segments prior to normalized routing and now passes targeted traversal/encoding regressions."
+}

@@ -1,0 +1,75 @@
+{
+  "summary": "Executed issue51 regression via new executable Node harnesses + live read-only pytest API checks (no Expo/Metro preview per request). Stats/account isolation, community pagination handling, profile share behavior, app-link config generation, and website banner DOM behavior were tested. One critical resolver bug remains: incomingLinks traversal path (`/station/../x`) is not rejected to `/link-error`.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET {EXPO_PUBLIC_BACKEND_URL}/api/public-profiles",
+        "issue": "Preview base URL returned 404 for `/api/public-profiles`; live community checks only succeeded against `https://api.themegaradio.com`. This confirms environment/API-base mismatch risk for integrations expecting EXPO backend URL.",
+        "priority": "HIGH"
+      },
+      {
+        "endpoint": "GET https://themegaradio.com/.well-known/assetlinks.json",
+        "issue": "Live assetlinks still points to `com.visiongo.megaradio` while app package is `com.megaradio` (external website association blocker for Android verified links).",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Universal/App link input sanitization",
+        "issue": "`incomingLinkPath('https://themegaradio.com/station/../x')` returns original URL instead of `/link-error`; traversal-like path is not rejected as required.",
+        "affected_testIDs": []
+      },
+      {
+        "flow": "Statistics screen reset requirement",
+        "issue": "`app/statistics.tsx` has owner snapshot/loading/stale callback guard, but no visible reset control was found despite issue51 requirement mentioning reset handling at screen level.",
+        "affected_testIDs": [
+          "statistics-loading",
+          "total-listening-card",
+          "unique-stations-card",
+          "music-played-card"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_issue51_stats.cjs",
+    "/app/tests/regression_issue51_directory_links_share_logo.cjs",
+    "/app/tests/regression_issue51_native_config_and_banner.cjs",
+    "/app/backend/tests/test_issue51_live_readonly.py",
+    "/app/test_reports/pytest/pytest_issue51_live_readonly.xml"
+  ],
+  "action_items": [
+    "Fix `src/utils/incomingLinks.ts` to hard-reject traversal patterns like `..` segments for recognized domains/schemes and return `/link-error`.",
+    "Align frontend API base usage with environment configuration (currently `src/constants/api.ts` + `src/services/api.ts` hardcode host/key, bypassing EXPO backend URL routing).",
+    "If product requires statistics reset from statistics screen, add explicit UI action and testID, then retest owner-scoped reset flow.",
+    "External website owner must update Android assetlinks package/cert entries to `com.megaradio` + correct Play signing fingerprint."
+  ],
+  "critical_code_review_comments": [
+    "`src/services/api.ts` hardcodes API host + X-API-Key; this violates env-only URL/credential policy and can diverge from preview routing behavior.",
+    "Stats service regression scenarios passed: owner capture before async read, queued serialization, guest/account isolation, stale-session non-charging, and no endSession song increments.",
+    "Community directory normalization/pagination behavior is correctly defensive against repeated page payloads and private-profile exclusion on client side.",
+    "Open-link resolver has proper stale-callback guard (`active` flag) and same-station non-toggle behavior, but upstream path sanitization bug in `incomingLinks` still allows traversal-style path to bypass `/link-error` output."
+  ],
+  "updated_files": [
+    "/app/tests/regression_issue51_stats.cjs",
+    "/app/tests/regression_issue51_directory_links_share_logo.cjs",
+    "/app/tests/regression_issue51_native_config_and_banner.cjs",
+    "/app/backend/tests/test_issue51_live_readonly.py",
+    "/app/test_reports/iteration_51.json"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "67%"
+  },
+  "seed_data_creation": "None (read-only API checks + isolated JS test doubles only).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "No Expo/Metro preview testing executed by request. Node regression harnesses are reusable and executable. One harness intentionally fails at the incoming link traversal assertion to keep the unresolved security/integration bug visible.",
+  "rca_of_issue": "Root cause for failing universal-link case: `incomingLinkPath` uses `new URL()` normalization, so `/station/../x` canonicalizes and falls through to returning original path instead of being blocked. Mitigation: inspect raw path before normalization or explicitly reject dot-segments (`..`) for recognized website/app-link routes before routing decisions."
+}

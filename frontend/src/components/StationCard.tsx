@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from './ImageWithFallback';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, borderRadius, spacing, typography, shadows } from '../constants/theme';
@@ -24,22 +24,7 @@ const StationCardBase: React.FC<StationCardProps> = ({
   style,
   variant = 'default',
 }) => {
-  const [imageError, setImageError] = useState(false);
-  
-  // Use centralized logo helper
-  const getLogoUrl = (): string => {
-    if (imageError) return DEFAULT_STATION_LOGO;
-    return getStationLogoUrl(station) || DEFAULT_STATION_LOGO;
-  };
-
-  const logoUrl = getLogoUrl();
-  
-  // Handle image load error - switch to default logo
-  const handleImageError = () => {
-    if (!imageError) {
-      setImageError(true);
-    }
-  };
+  const logoUrl = getStationLogoUrl(station);
 
   if (variant === 'large') {
     return (
@@ -56,12 +41,12 @@ const StationCardBase: React.FC<StationCardProps> = ({
           end={{ x: 0, y: 1 }}
         >
           <View style={styles.largeLogo}>
-            <Image 
-              source={{ uri: logoUrl }} 
+            <ImageWithFallback
+              testID={`station-card-large-logo-${station._id}`}
+              uri={logoUrl}
               style={styles.largeLogoImage} 
               contentFit="cover"
               cachePolicy="memory-disk"
-              onError={handleImageError}
             />
             {isPlaying && !isLoading && (
               <View style={styles.largePlayingIndicator}>
@@ -96,11 +81,11 @@ const StationCardBase: React.FC<StationCardProps> = ({
         activeOpacity={0.7}
       >
         <View style={styles.compactLogo}>
-          <Image 
-            source={{ uri: logoUrl }} 
+          <ImageWithFallback
+            testID={`station-card-compact-logo-${station._id}`}
+            uri={logoUrl}
             style={styles.compactLogoImage} 
             resizeMode="cover"
-            onError={handleImageError}
           />
         </View>
         <Text style={styles.compactName} numberOfLines={1}>{station.name}</Text>
@@ -116,11 +101,11 @@ const StationCardBase: React.FC<StationCardProps> = ({
       activeOpacity={0.7}
     >
       <View style={styles.logoContainer}>
-        <Image
-          source={{ uri: logoUrl }}
+        <ImageWithFallback
+          testID={`station-card-logo-${station._id}`}
+          uri={logoUrl}
           style={styles.logo}
           resizeMode="cover"
-          onError={handleImageError}
         />
         {isPlaying && !isLoading && (
           <View style={styles.playingBadge}>

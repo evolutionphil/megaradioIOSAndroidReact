@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
-import statsService, { ListeningStats } from '../src/services/statsService';
+import statsService, { ListeningStats, emptyStats } from '../src/services/statsService';
+import { useAuthStore } from '../src/store/authStore';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -60,6 +61,8 @@ interface LocalStats extends ListeningStats {
 export default function StatisticsScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const owner = useAuthStore(state => state.isAuthenticated ? state.user?._id || (state.user as any)?.id || null : null);
+  const [loadedOwner, setLoadedOwner] = useState<string | null | undefined>(undefined);
   const [stats, setStats] = useState<LocalStats>({
     totalMinutes: 0,
     totalStations: 136000,
@@ -70,27 +73,20 @@ export default function StatisticsScreen() {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
+  useFocusEffect(React.useCallback(() => {
+    let active = true;
     setIsLoading(true);
-    try {
-      const [storedStats, uniqueCount] = await Promise.all([
-        statsService.getStats(),
-        statsService.getUniqueStationsListened(),
-      ]);
-      setStats({
-        ...storedStats,
-        uniqueStations: uniqueCount,
-      });
-    } catch (e) {
-      console.log('Failed to load stats:', e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    setStats({ ...emptyStats(), uniqueStations: 0 });
+    Promise.all([statsService.getStats(owner), statsService.getUniqueStationsListened(owner)])
+      .then(([stored, count]) => {
+        if (!active) return;
+        setStats({ ...stored, uniqueStations: count });
+        setLoadedOwner(owner);
+      })
+      .catch(() => { if (active) setLoadedOwner(owner); })
+      .finally(() => { if (active) setIsLoading(false); });
+    return () => { active = false; };
+  }, [owner]));
 
   // Format minutes to hours and minutes
   const formatListeningTime = (totalMinutes: number) => {
@@ -114,7 +110,7 @@ export default function StatisticsScreen() {
         <TouchableOpacity 
           onPress={() => router.back()} 
           style={styles.backButton}
-          data-testid="statistics-back-btn"
+          testID="statistics-back-btn"
         >
           <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
         </TouchableOpacity>
@@ -122,17 +118,17 @@ export default function StatisticsScreen() {
         <View style={styles.headerSpacer} />
       </View>
 
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
+      {isLoading || loadedOwner !== owner ? (
+        <View testID="statistics-loading" style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#FF4199" />
         </View>
       ) : (
         <>
           {/* Total Listening Card */}
-          <View style={styles.totalListeningCard} data-testid="total-listening-card">
+          <View style={styles.totalListeningCard} testID="total-listening-card">
             <View style={styles.totalListeningContent}>
               <Text style={styles.cardLabel}>{t('total_listening', 'Total Listening')}</Text>
-              <Text style={styles.totalListeningValue}>
+              <Text testID="statistics-listening-value" style={styles.totalListeningValue}>
                 {formatListeningTime(stats.totalMinutes)}
               </Text>
             </View>
@@ -144,15 +140,15 @@ export default function StatisticsScreen() {
           {/* Stats Row */}
           <View style={styles.statsRow}>
             {/* Unique Stations Listened Card */}
-            <View style={styles.statCard} data-testid="unique-stations-card">
+            <View style={styles.statCard} testID="unique-stations-card">
               <Text style={styles.cardLabel}>{t('unique_stations', 'Unique Stations')}</Text>
-              <Text style={styles.statValue}>{stats.uniqueStations}</Text>
+              <Text testID="statistics-unique-stations-value" style={styles.statValue}>{stats.uniqueStations}</Text>
             </View>
 
             {/* Music Played Card */}
-            <View style={styles.statCard} data-testid="music-played-card">
+            <View style={styles.statCard} testID="music-played-card">
               <Text style={styles.cardLabel}>{t('songs_played', 'Songs Played')}</Text>
-              <Text style={styles.statValue}>{formatNumber(stats.musicPlayed)}</Text>
+              <Text testID="statistics-songs-value" style={styles.statValue}>{formatNumber(stats.musicPlayed)}</Text>
             </View>
           </View>
         </>

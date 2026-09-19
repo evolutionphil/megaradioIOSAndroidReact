@@ -62,6 +62,17 @@
         <data android:scheme="com.googleusercontent.apps.246210957471-18662dh38h9tmlk7nppdk15ucbha4emk"/>
         <data android:scheme="com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"/>
       </intent-filter>
+      <intent-filter android:autoVerify="true" data-generated="true">
+        <action android:name="android.intent.action.VIEW"/>
+        <data android:scheme="https" android:host="themegaradio.com" android:pathPrefix="/station/"/>
+        <data android:scheme="https" android:host="themegaradio.com" android:pathPrefix="/user/"/>
+        <data android:scheme="https" android:host="themegaradio.com" android:pathPrefix="/genre/"/>
+        <data android:scheme="https" android:host="themegaradio.com" android:pathPattern="/.*/station/.*"/>
+        <data android:scheme="https" android:host="themegaradio.com" android:pathPattern="/.*/user/.*"/>
+        <data android:scheme="https" android:host="themegaradio.com" android:pathPattern="/.*/genre/.*"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
       <meta-data android:name="android.app.shortcuts" android:resource="@xml/assistant_shortcuts"/>
     </activity>
   </application>

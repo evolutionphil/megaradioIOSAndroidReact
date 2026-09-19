@@ -11,7 +11,7 @@ import {
   useWindowDimensions,
   Platform,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from '../src/components/ImageWithFallback';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -193,17 +193,7 @@ export default function GenreDetailScreen() {
         data-testid={`grid-station-${station._id}`}
       >
         <View style={styles.gridLogoContainer}>
-          {logoUrl ? (
-            <Image
-              source={{ uri: logoUrl }}
-              style={styles.gridLogo}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={styles.gridPlaceholder}>
-              <Ionicons name="radio" size={32} color={colors.textMuted} />
-            </View>
-          )}
+          <ImageWithFallback testID={`genre-grid-logo-${station._id}`} uri={logoUrl} style={styles.gridLogo} contentFit="contain" />
         </View>
         <Text style={styles.gridName} numberOfLines={1} ellipsizeMode="tail">{station.name}</Text>
         <Text style={styles.gridLocation} numberOfLines={1} ellipsizeMode="tail">
@@ -228,17 +218,7 @@ export default function GenreDetailScreen() {
         data-testid={`list-station-${station._id}`}
       >
         <View style={styles.listLogoContainer}>
-          {logoUrl ? (
-            <Image
-              source={{ uri: logoUrl }}
-              style={styles.listLogo}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={styles.listPlaceholder}>
-              <Ionicons name="radio" size={24} color={colors.textMuted} />
-            </View>
-          )}
+          <ImageWithFallback testID={`genre-list-logo-${station._id}`} uri={logoUrl} style={styles.listLogo} contentFit="contain" />
         </View>
         <View style={styles.listInfo}>
           <Text style={styles.listName} numberOfLines={1}>{station.name}</Text>

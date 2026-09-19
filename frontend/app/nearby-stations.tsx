@@ -9,7 +9,7 @@ import {
   RefreshControl,
   useWindowDimensions,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from '../src/components/ImageWithFallback';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -113,17 +113,7 @@ export default function NearbyStationsScreen() {
         testID={`grid-station-${station._id}`}
       >
         <View style={[styles.gridLogoContainer, playing && styles.gridLogoContainerActive]}>
-          {logoUrl ? (
-            <Image
-              source={{ uri: logoUrl }}
-              style={styles.gridLogo}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={styles.gridPlaceholder}>
-              <Ionicons name="radio" size={32} color={colors.textMuted} />
-            </View>
-          )}
+          <ImageWithFallback testID={`nearby-grid-logo-${station._id}`} uri={logoUrl} style={styles.gridLogo} contentFit="contain" />
           {loading && (
             <View style={styles.loadingOverlay}>
               <ActivityIndicator size="small" color={colors.text} />
@@ -161,17 +151,7 @@ export default function NearbyStationsScreen() {
         testID={`list-station-${station._id}`}
       >
         <View style={styles.listLogoContainer}>
-          {logoUrl ? (
-            <Image
-              source={{ uri: logoUrl }}
-              style={styles.listLogo}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={styles.listPlaceholder}>
-              <Ionicons name="radio" size={24} color={colors.textMuted} />
-            </View>
-          )}
+          <ImageWithFallback testID={`nearby-list-logo-${station._id}`} uri={logoUrl} style={styles.listLogo} contentFit="contain" />
         </View>
         <View style={styles.listInfo}>
           <Text style={styles.listName} numberOfLines={1}>{station.name}</Text>
@@ -293,17 +273,7 @@ export default function NearbyStationsScreen() {
                     testID={`grid-station-${item._id}`}
                   >
                     <View style={[styles.gridLogoContainer, isStationPlaying(item) && styles.gridLogoContainerActive]}>
-                      {getLogoUrl(item) ? (
-                        <Image
-                          source={getLogoUrl(item) || DEFAULT_STATION_LOGO_SOURCE}
-                          style={styles.gridLogo}
-                          contentFit="cover"
-                        />
-                      ) : (
-                        <View style={styles.gridPlaceholder}>
-                          <Ionicons name="radio" size={32} color={colors.textMuted} />
-                        </View>
-                      )}
+                      <ImageWithFallback testID={`nearby-grid-logo-${item._id}`} uri={getLogoUrl(item)} style={styles.gridLogo} contentFit="contain" />
                       {isStationLoading(item) && (
                         <View style={styles.loadingOverlay}>
                           <ActivityIndicator size="small" color={colors.text} />

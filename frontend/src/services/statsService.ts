@@ -1,283 +1,166 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const STATS_KEY = 'listening_stats';
-const HISTORY_KEY = 'listening_history';
-const LAST_SESSION_KEY = 'last_listening_session';
-const UNIQUE_STATIONS_KEY = 'unique_stations_set';
+import { useAuthStore } from '../store/authStore';
 
 export interface ListeningStats {
   totalMinutes: number;
   totalStations: number;
-  musicPlayed: number;  // This tracks the number of different songs played (from metadata changes)
-  uniqueStationsListened: number; // This tracks unique stations the user has listened to
+  musicPlayed: number;
+  uniqueStationsListened: number;
   lastUpdated: string;
+  totalSeconds?: number;
 }
-
 export interface ListeningSession {
   stationId: string;
   stationName: string;
   stationLogo?: string;
   startTime: number;
+  accountedUntil?: number;
   endTime?: number;
   durationMinutes: number;
 }
-
-const defaultStats: ListeningStats = {
-  totalMinutes: 0,
-  totalStations: 136000, // Total available stations
-  musicPlayed: 0,
-  uniqueStationsListened: 0,
-  lastUpdated: new Date().toISOString(),
+export type StatsOwner = string | null;
+export const getStatsOwner = (): StatsOwner => {
+  const auth = useAuthStore.getState();
+  return auth.isAuthenticated ? auth.user?._id || (auth.user as any)?.id || null : null;
 };
+export const emptyStats = (): ListeningStats => ({
+  totalMinutes: 0, totalStations: 136000, musicPlayed: 0,
+  uniqueStationsListened: 0, lastUpdated: new Date().toISOString(),
+});
 
-/**
- * Stats Service - Tracks user listening statistics
- */
+// Legacy device-wide keys have no reliable owner. Leave them untouched, but do
+// not copy possibly mixed account history into whichever account logs in next.
+const key = (owner: StatsOwner, name: string) =>
+  `@megaradio/stats-v2/${owner ? `user:${encodeURIComponent(owner)}` : 'guest'}/${name}`;
+const queues = new Map<string, Promise<unknown>>();
+const liveSessions = new Set<string>();
+
+// Capture owner at invocation, BEFORE awaiting anything. Serialize read-modify-
+// write per account so parallel minute/song/unique updates cannot lose counts.
+function queued<T>(owner: StatsOwner, work: () => Promise<T>): Promise<T> {
+  const scope = key(owner, 'queue');
+  const prior = queues.get(scope) || Promise.resolve();
+  const next = prior.catch(() => {}).then(work);
+  queues.set(scope, next);
+  void next.finally(() => { if (queues.get(scope) === next) queues.delete(scope); }).catch(() => {});
+  return next;
+}
+async function read<T>(owner: StatsOwner, name: string, fallback: T): Promise<T> {
+  const raw = await AsyncStorage.getItem(key(owner, name));
+  if (!raw) return fallback;
+  try { return JSON.parse(raw) as T; } catch { return fallback; }
+}
+const write = (owner: StatsOwner, name: string, value: unknown) =>
+  AsyncStorage.setItem(key(owner, name), JSON.stringify(value));
+const readStats = (owner: StatsOwner) => read(owner, 'totals', emptyStats());
+async function saveStats(owner: StatsOwner, stats: ListeningStats) {
+  await write(owner, 'totals', { ...stats, lastUpdated: new Date().toISOString() });
+}
+async function accrue(owner: StatsOwner, session: ListeningSession, now: number) {
+  const from = session.accountedUntil ?? session.startTime;
+  const seconds = Math.max(0, (now - from) / 1000);
+  if (seconds) {
+    const stats = await readStats(owner);
+    stats.totalSeconds = (stats.totalSeconds ?? stats.totalMinutes * 60) + seconds;
+    stats.totalMinutes = Math.floor(stats.totalSeconds / 60);
+    await saveStats(owner, stats);
+    session.accountedUntil = now;
+  }
+}
+async function end(owner: StatsOwner) {
+  const session = await read<ListeningSession | null>(owner, 'session', null);
+  if (!session) return;
+  if (!liveSessions.has(key(owner, 'session'))) {
+    await AsyncStorage.removeItem(key(owner, 'session'));
+    return; // A previous process's stale timestamp is not listening time.
+  }
+  const now = Date.now();
+  await accrue(owner, session, now);
+  const history = await read<ListeningSession[]>(owner, 'history', []);
+  const durationMinutes = Math.max(0, Math.floor((now - session.startTime) / 60000));
+  if (durationMinutes) await write(owner, 'history', [
+    { ...session, endTime: now, durationMinutes }, ...history,
+  ].slice(0, 100));
+  // Ending a station session is NOT a new song.
+  await AsyncStorage.removeItem(key(owner, 'session'));
+  liveSessions.delete(key(owner, 'session'));
+}
+
 export const statsService = {
-  /**
-   * Get current listening stats
-   */
-  async getStats(): Promise<ListeningStats> {
-    try {
-      const stored = await AsyncStorage.getItem(STATS_KEY);
-      if (stored) {
-        return JSON.parse(stored);
-      }
-      return defaultStats;
-    } catch (error) {
-      console.error('Failed to load stats:', error);
-      return defaultStats;
-    }
+  getStats(owner: StatsOwner = getStatsOwner()): Promise<ListeningStats> {
+    return queued(owner, () => readStats(owner));
   },
-
-  /**
-   * Save stats to storage
-   */
-  async saveStats(stats: ListeningStats): Promise<void> {
-    try {
-      await AsyncStorage.setItem(STATS_KEY, JSON.stringify({
-        ...stats,
-        lastUpdated: new Date().toISOString(),
-      }));
-    } catch (error) {
-      console.error('Failed to save stats:', error);
-    }
+  saveStats(stats: ListeningStats, owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, () => saveStats(owner, stats));
   },
-
-  /**
-   * Start a listening session
-   * Call this when playback starts
-   */
-  async startSession(stationId: string, stationName: string, stationLogo?: string): Promise<void> {
-    const session: ListeningSession = {
-      stationId,
-      stationName,
-      stationLogo,
-      startTime: Date.now(),
-      durationMinutes: 0,
-    };
-    
-    try {
-      await AsyncStorage.setItem(LAST_SESSION_KEY, JSON.stringify(session));
-    } catch (error) {
-      console.error('Failed to start session:', error);
-    }
+  startSession(stationId: string, stationName: string, stationLogo?: string,
+    owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, async () => {
+      const existing = await read<ListeningSession | null>(owner, 'session', null);
+      if (existing?.stationId === stationId && liveSessions.has(key(owner, 'session'))) return;
+      await end(owner);
+      const now = Date.now();
+      await write(owner, 'session', {
+        stationId, stationName, stationLogo, startTime: now,
+        accountedUntil: now, durationMinutes: 0,
+      });
+      liveSessions.add(key(owner, 'session'));
+    });
   },
-
-  /**
-   * End the current listening session
-   * Call this when playback stops or station changes
-   */
-  async endSession(): Promise<void> {
-    try {
-      const sessionStr = await AsyncStorage.getItem(LAST_SESSION_KEY);
-      if (!sessionStr) return;
-      
-      const session: ListeningSession = JSON.parse(sessionStr);
-      const endTime = Date.now();
-      const durationMs = endTime - session.startTime;
-      const durationMinutes = Math.floor(durationMs / 60000);
-      
-      // Only count if listened for at least 1 minute
-      if (durationMinutes >= 1) {
-        // Update session
-        session.endTime = endTime;
-        session.durationMinutes = durationMinutes;
-        
-        // Update stats
-        const stats = await this.getStats();
-        stats.totalMinutes += durationMinutes;
-        stats.musicPlayed += 1;
-        await this.saveStats(stats);
-        
-        // Add to history
-        await this.addToHistory(session);
-      }
-      
-      // Clear current session
-      await AsyncStorage.removeItem(LAST_SESSION_KEY);
-    } catch (error) {
-      console.error('Failed to end session:', error);
-    }
+  endSession(owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, () => end(owner));
   },
-
-  /**
-   * Add session to listening history
-   */
-  async addToHistory(session: ListeningSession): Promise<void> {
-    try {
-      const historyStr = await AsyncStorage.getItem(HISTORY_KEY);
-      const history: ListeningSession[] = historyStr ? JSON.parse(historyStr) : [];
-      
-      // Add new session at the beginning
-      history.unshift(session);
-      
-      // Keep only last 100 sessions
-      const trimmedHistory = history.slice(0, 100);
-      
-      await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(trimmedHistory));
-    } catch (error) {
-      console.error('Failed to add to history:', error);
-    }
+  addToHistory(session: ListeningSession, owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, async () => {
+      const history = await read<ListeningSession[]>(owner, 'history', []);
+      await write(owner, 'history', [session, ...history].slice(0, 100));
+    });
   },
-
-  /**
-   * Get listening history
-   */
-  async getHistory(): Promise<ListeningSession[]> {
-    try {
-      const historyStr = await AsyncStorage.getItem(HISTORY_KEY);
-      return historyStr ? JSON.parse(historyStr) : [];
-    } catch (error) {
-      console.error('Failed to get history:', error);
-      return [];
-    }
+  getHistory(owner: StatsOwner = getStatsOwner()): Promise<ListeningSession[]> {
+    return queued(owner, () => read<ListeningSession[]>(owner, 'history', []));
   },
-
-  /**
-   * Update stats in real-time while listening
-   * Call this periodically (e.g., every minute)
-   */
-  async updateListeningTime(): Promise<void> {
-    try {
-      const sessionStr = await AsyncStorage.getItem(LAST_SESSION_KEY);
-      if (!sessionStr) return;
-      
-      const session: ListeningSession = JSON.parse(sessionStr);
-      const currentTime = Date.now();
-      const durationMs = currentTime - session.startTime;
-      const durationMinutes = Math.floor(durationMs / 60000);
-      
-      // Update session start time to track incremental minutes
-      if (durationMinutes >= 1) {
-        // Add 1 minute to total
-        const stats = await this.getStats();
-        stats.totalMinutes += 1;
-        await this.saveStats(stats);
-        
-        // Update session start time for next increment
-        session.startTime = currentTime;
-        await AsyncStorage.setItem(LAST_SESSION_KEY, JSON.stringify(session));
-      }
-    } catch (error) {
-      console.error('Failed to update listening time:', error);
-    }
+  updateListeningTime(owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, async () => {
+      const session = await read<ListeningSession | null>(owner, 'session', null);
+      if (!session || !liveSessions.has(key(owner, 'session'))) return;
+      await accrue(owner, session, Date.now());
+      await write(owner, 'session', session);
+    });
   },
-
-  /**
-   * Get unique stations listened to
-   */
-  async getUniqueStationsCount(): Promise<number> {
-    try {
-      const history = await this.getHistory();
-      const uniqueStations = new Set(history.map(s => s.stationId));
-      return uniqueStations.size;
-    } catch (error) {
-      return 0;
-    }
+  resetStats(owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, async () => {
+      liveSessions.delete(key(owner, 'session'));
+      await AsyncStorage.multiRemove(['totals', 'history', 'session', 'unique'].map(name => key(owner, name)));
+    });
   },
-
-  /**
-   * Reset all stats (for testing)
-   */
-  async resetStats(): Promise<void> {
-    try {
-      await AsyncStorage.multiRemove([STATS_KEY, HISTORY_KEY, LAST_SESSION_KEY]);
-    } catch (error) {
-      console.error('Failed to reset stats:', error);
-    }
+  incrementMusicPlayed(owner: StatsOwner = getStatsOwner()): Promise<void> {
+    return queued(owner, async () => {
+      const stats = await readStats(owner);
+      stats.musicPlayed++;
+      await saveStats(owner, stats);
+    });
   },
-
-  /**
-   * Increment music played count
-   * Call this when metadata changes (new song starts)
-   */
-  async incrementMusicPlayed(): Promise<void> {
-    try {
-      const stats = await this.getStats();
-      stats.musicPlayed += 1;
-      await this.saveStats(stats);
-    } catch (error) {
-      console.error('Failed to increment music played:', error);
-    }
-  },
-
-  /**
-   * Track a unique station listened
-   * Call this when a station starts playing
-   * Returns true if this is a new unique station
-   */
-  async trackUniqueStation(stationId: string): Promise<boolean> {
-    try {
-      // Get existing unique stations set
-      const storedSet = await AsyncStorage.getItem(UNIQUE_STATIONS_KEY);
-      const uniqueStations: string[] = storedSet ? JSON.parse(storedSet) : [];
-      
-      // Check if already tracked
-      if (uniqueStations.includes(stationId)) {
-        return false;
-      }
-      
-      // Add new station
-      uniqueStations.push(stationId);
-      await AsyncStorage.setItem(UNIQUE_STATIONS_KEY, JSON.stringify(uniqueStations));
-      
-      // Update stats with new count
-      const stats = await this.getStats();
-      stats.uniqueStationsListened = uniqueStations.length;
-      await this.saveStats(stats);
-      
-      console.log('[StatsService] New unique station tracked:', stationId, 'Total:', uniqueStations.length);
+  trackUniqueStation(stationId: string, owner: StatsOwner = getStatsOwner()): Promise<boolean> {
+    return queued(owner, async () => {
+      const stations = await read<string[]>(owner, 'unique', []);
+      if (!stationId || stations.includes(stationId)) return false;
+      stations.push(stationId);
+      await write(owner, 'unique', stations);
+      const stats = await readStats(owner);
+      stats.uniqueStationsListened = stations.length;
+      await saveStats(owner, stats);
       return true;
-    } catch (error) {
-      console.error('Failed to track unique station:', error);
-      return false;
-    }
+    });
   },
-
-  /**
-   * Get count of unique stations listened
-   * This combines both live tracking and history-based count
-   */
-  async getUniqueStationsListened(): Promise<number> {
-    try {
-      // First check the dedicated unique stations tracking
-      const storedSet = await AsyncStorage.getItem(UNIQUE_STATIONS_KEY);
-      const uniqueStations: string[] = storedSet ? JSON.parse(storedSet) : [];
-      
-      // Also get from history as a fallback
-      const history = await this.getHistory();
-      const historyStations = new Set(history.map(s => s.stationId));
-      
-      // Combine both sets
-      const allUnique = new Set([...uniqueStations, ...Array.from(historyStations)]);
-      
-      return allUnique.size;
-    } catch (error) {
-      console.error('Failed to get unique stations listened:', error);
-      return 0;
-    }
+  getUniqueStationsListened(owner: StatsOwner = getStatsOwner()): Promise<number> {
+    return queued(owner, async () => {
+      const stations = await read<string[]>(owner, 'unique', []);
+      const history = await read<ListeningSession[]>(owner, 'history', []);
+      return new Set([...stations, ...history.map(session => session.stationId)]).size;
+    });
+  },
+  getUniqueStationsCount(owner: StatsOwner = getStatsOwner()): Promise<number> {
+    return this.getUniqueStationsListened(owner);
   },
 };
-
 export default statsService;

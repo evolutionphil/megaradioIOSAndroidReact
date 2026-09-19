@@ -13,6 +13,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { Image } from 'expo-image';
+import { ImageWithFallback } from '../src/components/ImageWithFallback';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -291,7 +292,9 @@ export default function SearchScreen() {
       >
         {/* Logo */}
         <View style={styles.radioLogo}>
-          {item.imageUrl ? (
+          {item.type === 'radio' ? (
+            <ImageWithFallback testID={`search-station-logo-${item._id}`} uri={item.imageUrl} style={styles.radioLogoImage} contentFit="contain" />
+          ) : item.imageUrl ? (
             <Image
               source={{ uri: item.imageUrl }}
               style={styles.radioLogoImage}

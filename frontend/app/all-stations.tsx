@@ -11,7 +11,7 @@ import {
   useWindowDimensions,
   Platform,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from '../src/components/ImageWithFallback';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -199,8 +199,8 @@ export default function AllStationsScreen() {
       : t('all_stations', 'All Stations');
 
   // Helper function to build reliable logo URL with fallback - using centralized helper
-  const getLogoUrl = useCallback((station: Station): string => {
-    return getStationLogoUrl(station) || DEFAULT_STATION_LOGO_URL;
+  const getLogoUrl = useCallback((station: Station): string | null => {
+    return getStationLogoUrl(station);
   }, []);
 
   // Grid Item Render Function - no hooks, using Image's built-in error handling
@@ -214,14 +214,14 @@ export default function AllStationsScreen() {
         style={[styles.gridItem, { width: GRID_ITEM_WIDTH }, playing && styles.gridItemActive]}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
-        data-testid={`grid-station-${station._id}`}
+        testID={`grid-station-${station._id}`}
       >
         <View style={[styles.gridLogoContainer, { width: GRID_ITEM_WIDTH, height: GRID_ITEM_WIDTH }]}>
-          <Image
-            source={{ uri: logoUrl }}
+          <ImageWithFallback
+            testID={`all-stations-grid-logo-${station._id}`}
+            uri={logoUrl}
             style={styles.gridLogo}
             contentFit="cover"
-            defaultSource={DEFAULT_STATION_LOGO_SOURCE}
           />
         </View>
         <Text style={[styles.gridName, { width: GRID_ITEM_WIDTH }]} numberOfLines={1}>{station.name}</Text>
@@ -244,14 +244,14 @@ export default function AllStationsScreen() {
         style={[styles.listItem, playing && styles.listItemActive]}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
-        data-testid={`list-station-${station._id}`}
+        testID={`list-station-${station._id}`}
       >
         <View style={styles.listLogoContainer}>
-          <Image
-            source={{ uri: logoUrl }}
+          <ImageWithFallback
+            testID={`all-stations-list-logo-${station._id}`}
+            uri={logoUrl}
             style={styles.listLogo}
             contentFit="cover"
-            defaultSource={DEFAULT_STATION_LOGO_SOURCE}
           />
         </View>
         <View style={styles.listInfo}>

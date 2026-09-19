@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from './ImageWithFallback';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -149,12 +149,12 @@ export const MiniPlayer: React.FC<MiniPlayerProps> = ({ isGlobal = false }) => {
 
         {/* Station Logo - Tappable to open player */}
         <TouchableOpacity style={styles.logoContainer} onPress={handlePress} activeOpacity={0.8}>
-          <Image 
-            source={logoSource} 
+          <ImageWithFallback
+            testID="mini-player-station-logo"
+            uri={logoUrl}
             style={styles.logo} 
             contentFit="cover"
             cachePolicy="memory-disk"
-            onError={() => setLogoError(true)}
           />
         </TouchableOpacity>
 

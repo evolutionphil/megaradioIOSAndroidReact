@@ -5,6 +5,7 @@
 	};
 	objectVersion = 54;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
@@ -41,6 +42,7 @@
 		5416937CB9E24809B5251DA7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1D46A8D193684088BD3DB37E /* PrivacyInfo.xcprivacy */; };
 		941359EBF04D4367BC4C8940 /* MegaRadioSceneCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7B632293E04AB2B3E1DD19 /* MegaRadioSceneCoordinator.swift */; };
 /* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* MegaRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MegaRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MegaRadio/Images.xcassets; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 		1D46A8D193684088BD3DB37E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; name = "PrivacyInfo.xcprivacy"; path = "MegaRadio/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		BE7B632293E04AB2B3E1DD19 /* MegaRadioSceneCoordinator.swift */ = {isa = PBXFileReference; name = "MegaRadioSceneCoordinator.swift"; path = "MegaRadio/MegaRadioSceneCoordinator.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -81,6 +84,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
 		13B07FAE1A68108700A75B9A /* MegaRadio */ = {
 			isa = PBXGroup;
@@ -170,6 +174,7 @@
 			path = MegaRadioWatch;
 		};
 /* End PBXGroup section */
+
 /* Begin PBXNativeTarget section */
 		13B07F861A680F5B00A75B9A /* MegaRadio */ = {
 			isa = PBXNativeTarget;
@@ -209,6 +214,7 @@
 			);
 		};
 /* End PBXNativeTarget section */
+
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
@@ -238,6 +244,7 @@
 			);
 		};
 /* End PBXProject section */
+
 /* Begin PBXResourcesBuildPhase section */
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -260,6 +267,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -323,6 +331,7 @@
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -355,6 +364,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -453,7 +463,6 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -518,7 +527,6 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -597,6 +605,7 @@
 			};
 		};
 /* End XCBuildConfiguration section */
+
 /* Begin XCConfigurationList section */
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MegaRadio" */ = {
 			isa = XCConfigurationList;
@@ -626,6 +635,7 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		F513CC8FAB184B37B14E42AA /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;

@@ -19,6 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
+      "associatedDomains": ["applinks:themegaradio.com"],
       "buildNumber": "5",
       "usesAppleSignIn": true,
       "splash": {
@@ -128,6 +129,19 @@
         "backgroundColor": "#000000"
       },
       "package": "com.megaradio",
+      "intentFilters": [{
+        "action": "VIEW",
+        "autoVerify": true,
+        "category": ["BROWSABLE", "DEFAULT"],
+        "data": [
+          { "scheme": "https", "host": "themegaradio.com", "pathPrefix": "/station/" },
+          { "scheme": "https", "host": "themegaradio.com", "pathPrefix": "/user/" },
+          { "scheme": "https", "host": "themegaradio.com", "pathPrefix": "/genre/" },
+          { "scheme": "https", "host": "themegaradio.com", "pathPattern": "/.*/station/.*" },
+          { "scheme": "https", "host": "themegaradio.com", "pathPattern": "/.*/user/.*" },
+          { "scheme": "https", "host": "themegaradio.com", "pathPattern": "/.*/genre/.*" }
+        ]
+      }],
       "versionCode": 92,
       "googleServicesFile": "./google-services.json",
       "permissions": [
@@ -259,6 +273,8 @@
     },
     "extra": {
       "websiteUrl": "https://themegaradio.com",
+      "appStoreUrl": "https://apps.apple.com/app/id6759302561",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.megaradio",
       "router": {},
       "eas": {
         "projectId": "8c6c2a63-f514-4419-93c1-975a3e9119ca"

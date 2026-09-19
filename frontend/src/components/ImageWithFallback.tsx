@@ -3,7 +3,7 @@ import { ImageSourcePropType } from 'react-native';
 import { Image as ExpoImage, ImageContentFit } from 'expo-image';
 
 // Default station logo - LOCAL asset for fallback (no network required)
-import { DEFAULT_STATION_LOGO_SOURCE } from '../utils/stationLogoHelper';
+import { DEFAULT_STATION_LOGO_SOURCE, DEFAULT_STATION_LOGO_URL } from '../utils/stationLogoHelper';
 
 interface ImageWithFallbackProps {
   uri?: string | null;
@@ -41,8 +41,8 @@ function toContentFit(
  * Drop-in replacement for the previous RN-Image based version.
  */
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
-  uri,
-  fallbackUri,
+  uri: rawUri,
+  fallbackUri: rawFallbackUri,
   fallbackSource = DEFAULT_STATION_LOGO_SOURCE,
   style,
   resizeMode,
@@ -50,6 +50,11 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   onError,
   ...props
 }) => {
+  // A legacy remote placeholder is not a station image: always use our bundled
+  // asset with contain, rather than downloading/cropping the site's wide logo.
+  const isPlaceholder = (value?: string | null) => !!value && value.split(/[?#]/)[0].replace(/\/$/, '') === DEFAULT_STATION_LOGO_URL;
+  const uri = isPlaceholder(rawUri) ? null : rawUri;
+  const fallbackUri = isPlaceholder(rawFallbackUri) ? undefined : rawFallbackUri;
   // 0 = primary uri, 1 = fallbackUri (remote), 2 = local fallbackSource
   const [stage, setStage] = useState<0 | 1 | 2>(0);
 

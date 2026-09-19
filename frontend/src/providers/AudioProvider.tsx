@@ -20,6 +20,7 @@ import { useRecentlyPlayedStore } from '../store/recentlyPlayedStore';
 import stationService from '../services/stationService';
 import userService from '../services/userService';
 import statsService from '../services/statsService';
+import { useAuthStore } from '../store/authStore';
 import watchService from '../services/watchService';
 import wearOSService from '../services/wearOSService';
 import { adMobService } from '../services/adMobService';
@@ -179,6 +180,7 @@ async function doSetupTrackPlayer(): Promise<boolean> {
 import { buildStreamCandidates, isPlaylistStream } from '../utils/streamSources';
 
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const statsOwner = useAuthStore(state => state.isAuthenticated ? state.user?._id || (state.user as any)?.id || null : null);
   const [isReady, setIsReady] = useState(false);
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const nowPlayingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -199,6 +201,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setError,
     setMiniPlayerVisible,
   } = usePlayerStore();
+
+  useEffect(() => { lastMetadataTitle = null; }, [statsOwner]);
+  // Cleanup captures the OUTGOING account, not the newly logged-in one.
+  useEffect(() => {
+    if (!currentStation || storePlaybackState !== 'playing') return;
+    void statsService.startSession(currentStation._id, currentStation.name,
+      currentStation.favicon, statsOwner).catch(console.error);
+    void statsService.trackUniqueStation(currentStation._id, statsOwner).catch(console.error);
+    return () => { void statsService.endSession(statsOwner).catch(console.error); };
+  }, [statsOwner, currentStation?._id, storePlaybackState]);
 
   const streamLoadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const preparingQueueRef = useRef(false);
@@ -1112,14 +1124,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       // STEP 7: Start statistics tracking
       console.log('[AudioProvider] STEP 7: Starting statistics tracking...');
       try {
-        await statsService.endSession();
-        await statsService.startSession(
-          station._id,
-          station.name,
-          station.favicon || station.logo
-        );
-        // Track unique station
-        await statsService.trackUniqueStation(station._id);
+        // The account-aware playing effect owns sessions and unique counts.
         startStatsTracking();
         console.log('[AudioProvider] Stats session started for:', station.name);
       } catch (e) {

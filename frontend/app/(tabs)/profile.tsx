@@ -13,6 +13,7 @@ import {
   FlatList,
   ActivityIndicator,
   Platform,
+  Share,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,6 +34,7 @@ const RewardedAdButton = Platform.OS !== 'web'
   : () => null;
 import api from '../../src/services/api';
 import userService from '../../src/services/userService';
+import { profileShareContent } from '../../src/utils/profileShare';
 import API_ENDPOINTS from '../../src/constants/api';
 import { LogoutModal } from '../../src/components/LogoutModal';
 import { usePremiumStore } from '../../src/store/premiumStore';
@@ -143,6 +145,20 @@ export default function ProfileScreen() {
   // Avatar upload
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [localAvatar, setLocalAvatar] = useState<string | null>(null);
+  const [sharingProfile, setSharingProfile] = useState(false);
+  const shareProfile = async () => {
+    if (!user || sharingProfile) return;
+    const owner = user._id || user.id;
+    setSharingProfile(true);
+    try {
+      const { title, message } = await profileShareContent(user);
+      const current = useAuthStore.getState().user;
+      if ((current?._id || current?.id) !== owner) return;
+      await Share.share({ title, message });
+    } catch (error) {
+      Alert.alert(t('share', 'Share'), error instanceof Error ? error.message : 'Profil paylaşılamadı.');
+    } finally { setSharingProfile(false); }
+  };
 
   // App info from API
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
@@ -173,15 +189,24 @@ export default function ProfileScreen() {
   // Login response may not include these - fetch from API
   const [followersCount, setFollowersCount] = useState(user?.followersCount || 0);
   const [followsCount, setFollowsCount] = useState(user?.followingCount || 0);
+  useEffect(() => {
+    setNameValue(user?.name || user?.fullName || 'Guest');
+    setEmailValue(user?.email || '');
+    setLocalAvatar(null);
+    setPrivateProfile(user?.isPublicProfile === false);
+    setFollowersCount(user?.followersCount || 0);
+    setFollowsCount(user?.followingCount || 0);
+  }, [user?._id, user?.id]);
   
   // Refresh profile data from API to get accurate follower/following counts
   useEffect(() => {
+    let active = true;
     if (user?._id || user?.id) {
       const userId = user._id || user.id;
       api.get(`/api/user-profile/${userId}`)
         .then(res => {
           const data = res.data;
-          if (data) {
+          if (data && active) {
             const fc = data.followersCount ?? data.followers ?? 0;
             const gc = data.followingCount ?? data.following ?? 0;
             setFollowersCount(typeof fc === 'number' ? fc : 0);
@@ -190,6 +215,7 @@ export default function ProfileScreen() {
         })
         .catch(e => console.log('[Profile] Could not refresh profile counts:', e?.message));
     }
+    return () => { active = false; };
   }, [user?._id, user?.id]);
 
   // Fetch countries from API with rich format (includes flags)
@@ -836,7 +862,10 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity><Ionicons name="share-outline" size={22} color="#FFF" /></TouchableOpacity>
+            <TouchableOpacity testID="profile-share-button" onPress={shareProfile} disabled={sharingProfile}
+              accessibilityLabel={t('share_profile', 'Share profile')} style={s.shareButton}>
+              {sharingProfile ? <ActivityIndicator testID="profile-share-loading" color="#FFF" /> : <Ionicons name="share-outline" size={22} color="#FFF" />}
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -1112,6 +1141,7 @@ export default function ProfileScreen() {
 }
 
 const s = StyleSheet.create({
+  shareButton: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   container: { flex: 1, backgroundColor: '#0D0D0F' },
   // Header
   header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },

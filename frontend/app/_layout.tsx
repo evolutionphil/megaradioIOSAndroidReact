@@ -697,6 +697,8 @@ export default function RootLayout() {
                   <Stack.Screen name="followers" options={{ headerShown: false }} />
                   <Stack.Screen name="follows" options={{ headerShown: false }} />
                   <Stack.Screen name="user-profile" options={{ headerShown: false }} />
+                  <Stack.Screen name="open-link" options={{ headerShown: false }} />
+                  <Stack.Screen name="link-error" options={{ headerShown: false }} />
                   <Stack.Screen name="languages" options={{ headerShown: false }} />
                   <Stack.Screen name="auth-options" options={{ headerShown: false }} />
                   <Stack.Screen name="forgot-password" options={{ headerShown: false }} />

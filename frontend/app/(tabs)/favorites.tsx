@@ -13,7 +13,7 @@ import {
   Keyboard,
   useWindowDimensions,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from '../../src/components/ImageWithFallback';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -205,10 +205,10 @@ const getGenreDisplay = (station: Station): string => {
     if (isReordering) {
       return (
         <View style={styles.stationCard} data-testid={`favorite-station-reorder-${item._id}`}>
-          <Image
-            source={{ uri: getLogoUrl(item) }}
+          <ImageWithFallback
+            testID={`favorite-reorder-logo-${item._id}`}
+            uri={getLogoUrl(item)}
             style={styles.stationLogo}
-            defaultSource={{ uri: FALLBACK_LOGO }}
           />
           <View style={styles.stationInfo}>
             <Text style={styles.stationName} numberOfLines={1}>
@@ -238,10 +238,10 @@ const getGenreDisplay = (station: Station): string => {
           data-testid={`favorite-grid-${item._id}`}
         >
           <View style={styles.gridImageContainer}>
-            <Image
-              source={{ uri: getLogoUrl(item) }}
+            <ImageWithFallback
+              testID={`favorite-grid-logo-${item._id}`}
+              uri={getLogoUrl(item)}
               style={styles.gridImage}
-              defaultSource={{ uri: FALLBACK_LOGO }}
             />
             {isPlaying && (
               <View style={styles.gridPlayingIndicator}>
@@ -267,10 +267,10 @@ const getGenreDisplay = (station: Station): string => {
         activeOpacity={0.7}
         data-testid={`favorite-station-${item._id}`}
       >
-        <Image
-          source={{ uri: getLogoUrl(item) }}
+        <ImageWithFallback
+          testID={`favorite-list-logo-${item._id}`}
+          uri={getLogoUrl(item)}
           style={styles.stationLogo}
-          defaultSource={{ uri: FALLBACK_LOGO }}
         />
         <View style={styles.stationInfo}>
           <Text style={[styles.stationName, isPlaying && styles.stationNamePlaying]} numberOfLines={1}>

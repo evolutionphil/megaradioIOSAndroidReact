@@ -22,6 +22,8 @@ import { getStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../src/utils/statio
 import { useUserFavorites, useUserProfile } from '../src/hooks/useQueries';
 import { getPreloadedFavorites } from '../src/services/preloadService';
 import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
+import { ImageWithFallback } from '../src/components/ImageWithFallback';
+import { profileShareContent } from '../src/utils/profileShare';
 
 interface FavoriteStation {
   id: string;
@@ -35,7 +37,7 @@ const STATIONS_PER_PAGE = 29;
 export default function UserProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string }>();
+  const params = useLocalSearchParams<{ userId: string; userName: string; userAvatar: string; userSlug: string }>();
   const { user: currentUser, isAuthenticated } = useAuthStore();
   const { playStation } = useAudioPlayer();
   const [allStations, setAllStations] = useState<FavoriteStation[]>([]);
@@ -66,6 +68,11 @@ export default function UserProfileScreen() {
 
   // Check for preloaded data first
   useEffect(() => {
+    setAllStations([]);
+    setVisibleCount(STATIONS_PER_PAGE);
+    setFollowerCount(0);
+    setFollowingCount(0);
+    setIsFollowing(false);
     if (userId) {
       try {
         const preloaded = getPreloadedFavorites(userId);
@@ -87,7 +94,7 @@ export default function UserProfileScreen() {
   // Update stations when React Query data arrives
   useEffect(() => {
     try {
-      if (favoritesData && Array.isArray(favoritesData) && favoritesData.length > 0) {
+      if (Array.isArray(favoritesData)) {
         setAllStations(favoritesData.map((s: any) => ({
           id: s?._id || s?.id || '',
           name: s?.name || 'Unknown Station',
@@ -221,32 +228,14 @@ export default function UserProfileScreen() {
   };
 
   const handleShare = async (platform: string) => {
-    const shareUrl = `https://themegaradio.com/user/${params.userId}`;
-    const shareMessage = `Check out ${userName}'s profile on MegaRadio!`;
-
-    switch (platform) {
-      case 'facebook':
-        Linking.openURL(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
-        break;
-      case 'instagram':
-        // Instagram doesn't support direct URL sharing, open app
-        Linking.openURL('instagram://');
-        break;
-      case 'twitter':
-        Linking.openURL(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(shareUrl)}`);
-        break;
-      case 'whatsapp':
-        Linking.openURL(`whatsapp://send?text=${encodeURIComponent(shareMessage + ' ' + shareUrl)}`);
-        break;
-      case 'copy':
-        await Clipboard.setStringAsync(shareUrl);
-        setShowShareModal(false);
-        break;
-      case 'more':
-        setShowShareModal(false);
-        Share.share({ message: shareMessage, url: shareUrl });
-        break;
-    }
+    try {
+      const { title, message, url } = await profileShareContent({ _id: userId, slug: params.userSlug, name: userName });
+      if (platform === 'copy') await Clipboard.setStringAsync(url);
+      else if (platform === 'facebook') await Linking.openURL(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
+      else if (platform === 'twitter') await Linking.openURL(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`);
+      else await Share.share({ title, message });
+      setShowShareModal(false);
+    } catch (error) { Alert.alert('Paylaşım', error instanceof Error ? error.message : 'Profil paylaşılamadı.'); }
   };
 
   const renderStation = ({ item }: { item: FavoriteStation }) => {
@@ -257,7 +246,7 @@ export default function UserProfileScreen() {
     
     return (
       <View style={styles.stationCard}>
-        <Image source={{ uri: logoUri }} style={styles.stationLogo} />
+        <ImageWithFallback testID={`public-profile-station-logo-${item.id}`} uri={logoUri} style={styles.stationLogo} />
         <View style={styles.stationInfo}>
           <Text style={styles.stationName}>{item.name || 'Unknown Station'}</Text>
           <Text style={styles.stationGenre}>{item.genre || ''}</Text>
@@ -305,7 +294,7 @@ export default function UserProfileScreen() {
         <TouchableOpacity 
           style={styles.shareBtn} 
           onPress={() => setShowShareModal(true)}
-          data-testid="user-profile-share-btn"
+          testID="user-profile-share-btn"
         >
           <Ionicons name="share-social-outline" size={24} color="#FFFFFF" />
         </TouchableOpacity>
@@ -347,7 +336,7 @@ export default function UserProfileScreen() {
       )}
 
       {/* Share Modal */}
-      <Modal visible={showShareModal} transparent animationType="slide" onRequestClose={() => setShowShareModal(false)}>
+      <Modal testID="public-profile-share-modal" visible={showShareModal} transparent animationType="slide" onRequestClose={() => setShowShareModal(false)}>
         <TouchableOpacity 
           style={styles.modalOverlay} 
           activeOpacity={1} 
@@ -361,22 +350,22 @@ export default function UserProfileScreen() {
           
           {/* Social Icons Row */}
           <View style={styles.socialRow}>
-            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#3B5998' }]} onPress={() => handleShare('facebook')}>
+            <TouchableOpacity testID="public-profile-share-facebook" style={[styles.socialBtn, { backgroundColor: '#3B5998' }]} onPress={() => handleShare('facebook')}>
               <FontAwesome5 name="facebook-f" size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#E4405F' }]} onPress={() => handleShare('instagram')}>
+            <TouchableOpacity testID="public-profile-share-instagram" style={[styles.socialBtn, { backgroundColor: '#E4405F' }]} onPress={() => handleShare('instagram')}>
               <FontAwesome5 name="instagram" size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#1DA1F2' }]} onPress={() => handleShare('twitter')}>
+            <TouchableOpacity testID="public-profile-share-twitter" style={[styles.socialBtn, { backgroundColor: '#1DA1F2' }]} onPress={() => handleShare('twitter')}>
               <FontAwesome5 name="twitter" size={24} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.socialBtn, { backgroundColor: '#25D366' }]} onPress={() => handleShare('whatsapp')}>
+            <TouchableOpacity testID="public-profile-share-whatsapp" style={[styles.socialBtn, { backgroundColor: '#25D366' }]} onPress={() => handleShare('whatsapp')}>
               <FontAwesome5 name="whatsapp" size={24} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
 
           {/* Copy Link */}
-          <TouchableOpacity style={styles.shareOption} onPress={() => handleShare('copy')}>
+          <TouchableOpacity testID="public-profile-share-copy" style={styles.shareOption} onPress={() => handleShare('copy')}>
             <View style={styles.shareOptionIcon}>
               <Ionicons name="link-outline" size={22} color="#FFFFFF" />
             </View>
@@ -384,7 +373,7 @@ export default function UserProfileScreen() {
           </TouchableOpacity>
 
           {/* More */}
-          <TouchableOpacity style={styles.shareOption} onPress={() => handleShare('more')}>
+          <TouchableOpacity testID="public-profile-share-more" style={styles.shareOption} onPress={() => handleShare('more')}>
             <View style={styles.shareOptionIcon}>
               <Ionicons name="ellipsis-horizontal" size={22} color="#FFFFFF" />
             </View>
