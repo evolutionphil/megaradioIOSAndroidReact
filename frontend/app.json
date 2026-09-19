@@ -3,6 +3,7 @@
     "name": "MegaRadio",
     "slug": "megaradio",
     "version": "1.0.70",
+    "newArchEnabled": false,
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": [
@@ -18,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "usesAppleSignIn": true,
       "splash": {
         "image": "./assets/images/splash.png",
@@ -37,6 +38,9 @@
           "armv7"
         ],
         "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["megaradio"]
+          },
           {
             "CFBundleURLSchemes": [
               "com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn"
@@ -124,7 +128,7 @@
         "backgroundColor": "#000000"
       },
       "package": "com.megaradio",
-      "versionCode": 91,
+      "versionCode": 92,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",
@@ -171,6 +175,7 @@
         {
           "android": {
             "usesCleartextTraffic": true,
+            "useLegacyPackaging": true,
             "newArchEnabled": false,
             "kotlinVersion": "2.0.0",
             "extraProguardRules": "-keep class io.invertase.** { *; }\n-keep class com.google.android.gms.ads.** { *; }"
@@ -224,6 +229,7 @@
       "./plugins/withCleartextTraffic.js",
       "./plugins/withSwift5Mode.js",
       "react-native-google-cast",
+      "./plugins/withAdMobFix.js",
       [
         "react-native-google-mobile-ads",
         {
@@ -232,9 +238,9 @@
           "userTrackingPermission": "MegaRadio uses your device information to provide you with a better and more personalized advertising experience."
         }
       ],
-      "./plugins/withAdMobFix.js",
       "./plugins/withTrackPlayerServiceFix.js",
       "./plugins/withCarPlayNativeFix.js",
+      "./plugins/withCarPlayScenes.js",
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
       "./plugins/withGoogleServicesFix.js",

@@ -305,7 +305,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Bold',
   },
   headerRight: {
     width: 40,
@@ -346,7 +345,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Medium',
     marginBottom: 2,
   },
   subText: {
@@ -377,7 +375,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Medium',
     marginBottom: 8,
   },
   emptyText: {
@@ -398,6 +395,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Medium',
   },
 });

@@ -3,6 +3,7 @@
 // Complements watchService.ts (iOS) for cross-platform watch support
 
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import { getStationStreamUrl } from '../utils/streamSources';
 
 const WearDataLayer = Platform.OS === 'android' ? NativeModules.WearDataLayer : null;
 
@@ -62,7 +63,7 @@ class WearOSService {
         country: station.country || '',
         city: station.city || '',
         logoUrl: station.logo || station.favicon || '',
-        streamUrl: station.streamUrl || station.url_resolved || '',
+        streamUrl: getStationStreamUrl(station),
         genre: station.genres?.[0] || station.genre || '',
       });
       WearDataLayer.updateNowPlaying(stationJson, isPlaying, songTitle || '', artistName || '');
@@ -80,7 +81,7 @@ class WearOSService {
         country: s.country || '',
         city: s.city || '',
         logoUrl: s.logo || s.favicon || '',
-        streamUrl: s.streamUrl || s.url_resolved || '',
+        streamUrl: getStationStreamUrl(s),
         genre: s.genres?.[0] || s.genre || '',
       }));
       WearDataLayer.updateFavorites(JSON.stringify(mapped));
@@ -98,7 +99,7 @@ class WearOSService {
         country: s.country || '',
         city: s.city || '',
         logoUrl: s.logo || s.favicon || '',
-        streamUrl: s.streamUrl || s.url_resolved || '',
+        streamUrl: getStationStreamUrl(s),
         genre: s.genres?.[0] || s.genre || '',
       }));
       WearDataLayer.updateStations(JSON.stringify(mapped));

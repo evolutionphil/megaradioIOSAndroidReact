@@ -26,9 +26,12 @@ export const QuickActionsHandler: React.FC = () => {
   const playStationRef = useRef(playStation);
   playStationRef.current = playStation;
   const handledInitial = useRef(false);
+  const playbackPending = useRef(false);
   const { currentStation } = usePlayerStore();
 
   const playLastStation = async () => {
+    if (playbackPending.current) return;
+    playbackPending.current = true;
     try {
       const raw = await AsyncStorage.getItem(LAST_PLAYED_STATION_KEY);
       if (!raw) {
@@ -38,9 +41,15 @@ export const QuickActionsHandler: React.FC = () => {
       const station = JSON.parse(raw);
       if (!station || !station._id) return;
       console.log('[QuickActions] Playing last station:', station.name);
-      await playStationRef.current(station);
+      // A voice command means PLAY, not toggle/pause an already playing station.
+      const current = usePlayerStore.getState();
+      if (current.currentStation?._id !== station._id || current.playbackState !== 'playing') {
+        await playStationRef.current(station);
+      }
     } catch (e) {
       console.log('[QuickActions] Play failed:', (e as any)?.message || e);
+    } finally {
+      playbackPending.current = false;
     }
   };
 
@@ -57,18 +66,20 @@ export const QuickActionsHandler: React.FC = () => {
     const QuickActions = getQuickActions();
     if (!QuickActions) return;
 
+    let disposed = false;
+    let initialTimer: ReturnType<typeof setTimeout> | undefined;
     const sub = QuickActions.addListener?.(handleAction);
 
     // App launched (cold start) via the shortcut — wait for stores/player to settle
     if (!handledInitial.current && QuickActions.initial) {
       handledInitial.current = true;
       const initial = QuickActions.initial;
-      setTimeout(() => {
-        InteractionManager.runAfterInteractions(() => handleAction(initial));
+      initialTimer = setTimeout(() => {
+        InteractionManager.runAfterInteractions(() => { if (!disposed) handleAction(initial); });
       }, 2000);
     }
 
-    return () => sub?.remove?.();
+    return () => { disposed = true; clearTimeout(initialTimer); sub?.remove?.(); };
   }, []);
 
   // Voice assistant deep link (iOS Siri App Shortcut / Android Google Assistant
@@ -76,17 +87,25 @@ export const QuickActionsHandler: React.FC = () => {
   useEffect(() => {
     if (Platform.OS === 'web') return;
     const { Linking } = require('react-native');
+    let disposed = false;
+    const timers = new Set<ReturnType<typeof setTimeout>>();
     const handleUrl = (url: string | null) => {
-      if (!url || !url.includes('playLast=1')) return;
+      if (!url || disposed) return;
+      let parsed: URL;
+      try { parsed = new URL(url); } catch { return; }
+      if (parsed.protocol !== 'megaradio:' || parsed.searchParams.get('playLast') !== '1') return;
       console.log('[QuickActions] Voice assistant playLast deep link received');
-      reportLaunchSource(Platform.OS === 'ios' ? 'siri' : 'assistant');
-      setTimeout(() => {
-        InteractionManager.runAfterInteractions(() => playLastStation());
+      reportLaunchSource(parsed.searchParams.get('source') === 'quick_action'
+        ? 'quick_action' : Platform.OS === 'ios' ? 'siri' : 'assistant');
+      const timer = setTimeout(() => {
+        timers.delete(timer);
+        InteractionManager.runAfterInteractions(() => { if (!disposed) void playLastStation(); });
       }, 500);
+      timers.add(timer);
     };
     const sub = Linking.addEventListener('url', (ev: any) => handleUrl(ev?.url));
     Linking.getInitialURL().then(handleUrl).catch(() => {});
-    return () => sub?.remove?.();
+    return () => { disposed = true; timers.forEach(clearTimeout); sub?.remove?.(); };
   }, []);
 
   // Register/update the shortcut items (deferred, non-blocking)

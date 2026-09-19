@@ -6,3 +6,5 @@
 // (Swift) can call its +connectWithInterfaceController:window: and +disconnect
 // class methods.
 #import "RNCarPlay.h"
+
+#import <RNCarPlay/RNCarPlay.h>

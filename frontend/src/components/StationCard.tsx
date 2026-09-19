@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'rea
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, borderRadius, spacing, typography, shadows, gradients } from '../constants/theme';
+import { colors, borderRadius, spacing, typography, shadows } from '../constants/theme';
 import { getStationLogoUrl, DEFAULT_STATION_LOGO } from '../utils/stationLogoHelper';
 import type { Station } from '../types';
 
@@ -29,7 +29,7 @@ const StationCardBase: React.FC<StationCardProps> = ({
   // Use centralized logo helper
   const getLogoUrl = (): string => {
     if (imageError) return DEFAULT_STATION_LOGO;
-    return getStationLogoUrl(station);
+    return getStationLogoUrl(station) || DEFAULT_STATION_LOGO;
   };
 
   const logoUrl = getLogoUrl();
@@ -45,11 +45,12 @@ const StationCardBase: React.FC<StationCardProps> = ({
     return (
       <TouchableOpacity
         style={[styles.largeContainer, style]}
+        testID={`station-card-large-${station._id}`}
         onPress={() => onPress(station)}
         activeOpacity={0.8}
       >
         <LinearGradient
-          colors={gradients.cardElevated as any}
+          colors={[colors.surfaceLight, colors.backgroundCard]}
           style={styles.largeGradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -72,7 +73,9 @@ const StationCardBase: React.FC<StationCardProps> = ({
           <Text style={styles.largeCountry} numberOfLines={1}>
             {station.country || 'Radio'}
           </Text>
-          <TouchableOpacity style={[styles.largePlayBtn, isPlaying && styles.playBtnActive]}>
+          <TouchableOpacity testID={`station-card-large-play-${station._id}`}
+            onPress={() => onPress(station)}
+            style={[styles.largePlayBtn, isPlaying && styles.playBtnActive]}>
             {isLoading ? (
               <ActivityIndicator size="small" color={colors.text} />
             ) : (
@@ -88,6 +91,7 @@ const StationCardBase: React.FC<StationCardProps> = ({
     return (
       <TouchableOpacity
         style={[styles.compactContainer, isPlaying && styles.compactActive, style]}
+        testID={`station-card-compact-${station._id}`}
         onPress={() => onPress(station)}
         activeOpacity={0.7}
       >
@@ -107,6 +111,7 @@ const StationCardBase: React.FC<StationCardProps> = ({
   return (
     <TouchableOpacity
       style={[styles.container, isPlaying && styles.containerPlaying, style]}
+      testID={`station-card-${station._id}`}
       onPress={() => onPress(station)}
       activeOpacity={0.7}
     >
@@ -145,6 +150,7 @@ const StationCardBase: React.FC<StationCardProps> = ({
 
       <TouchableOpacity 
         style={[styles.playButton, isPlaying && styles.playButtonActive]}
+        testID={`station-card-play-${station._id}`}
         onPress={() => onPress(station)}
       >
         {isLoading ? (
@@ -174,9 +180,9 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   containerPlaying: {
-    backgroundColor: colors.backgroundCardHover,
+    backgroundColor: colors.surfaceLight,
     borderColor: colors.primary,
-    ...shadows.glow,
+    ...shadows.md,
   },
   logoContainer: {
     width: 52,
@@ -221,7 +227,7 @@ const styles = StyleSheet.create({
   eqBar3: { height: 5 },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.overlay,
+    backgroundColor: colors.backgroundSecondary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -241,8 +247,8 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   playButton: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     borderRadius: borderRadius.full,
     backgroundColor: colors.primary,
     justifyContent: 'center',
@@ -306,8 +312,8 @@ const styles = StyleSheet.create({
   },
   largePlayBtn: {
     marginTop: spacing.sm,
-    width: 32,
-    height: 32,
+    width: 44,
+    height: 44,
     borderRadius: borderRadius.full,
     backgroundColor: colors.primary,
     justifyContent: 'center',
@@ -330,7 +336,7 @@ const styles = StyleSheet.create({
   },
   compactActive: {
     borderColor: colors.primary,
-    backgroundColor: colors.backgroundCardHover,
+    backgroundColor: colors.surfaceLight,
   },
   compactLogo: {
     width: 32,

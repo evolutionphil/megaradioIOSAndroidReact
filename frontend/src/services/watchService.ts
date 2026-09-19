@@ -2,6 +2,7 @@
 // Service to handle Apple Watch communication from React Native
 
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import { getStationStreamUrl } from '../utils/streamSources';
 
 // Only import on iOS
 const WatchConnectivityBridge = Platform.OS === 'ios' ? NativeModules.WatchConnectivityBridge : null;
@@ -93,7 +94,7 @@ class WatchService {
         id: station._id || station.id || '',
         name: station.name || '',
         logo: station.logo || station.favicon || '',
-        streamUrl: station.streamUrl || station.url_resolved || '',
+        streamUrl: getStationStreamUrl(station),
         genre: station.genres?.[0] || station.genre || '',
         country: station.country || '',
       }));
@@ -152,7 +153,7 @@ class WatchService {
         id: station._id || station.id || '',
         name: station.name || '',
         logo: station.logo || station.favicon || '',
-        streamUrl: station.streamUrl || station.url_resolved || station.urlResolved || station.url || '',
+        streamUrl: getStationStreamUrl(station),
         genre: station.genres?.[0] || station.genre || '',
         country: station.country || '',
       }));
@@ -185,7 +186,7 @@ class WatchService {
         id: station._id || station.id || '',
         name: station.name || '',
         logo: station.logo || station.favicon || '',
-        streamUrl: station.streamUrl || station.url_resolved || station.urlResolved || station.url || '',
+        streamUrl: getStationStreamUrl(station),
         genre: station.genres?.[0] || station.genre || '',
         country: station.country || '',
       }));

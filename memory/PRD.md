@@ -13,6 +13,49 @@ MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — produ
 
 ## What's Been Implemented (Latest: Jun 2026 fork)
 
+### Güncel hata düzeltme turu — Eylül 2026 (önceki durum notlarının önüne geçer)
+- Kullanıcı kapsamı genişletti: önce iOS/Android + canlı API sözleşmeleri, sonra tvOS,
+  watchOS, Android TV, Samsung/Tizen ve LG/webOS. Soru sorulmadan kesin hatalar düzeltildi.
+  Kullanıcı Xcode'da mobilin açıldığını bildirdi; Expo/Metro önizleme incelemesini istemiyor.
+- `sendLog` / `remoteLog.ts` / `carPlayLogService.ts` ve mobildeki tüm ilgili çağrılar
+  tamamen kaldırıldı. Firebase Crashlytics ve GA4 açılış telemetrisi korundu.
+- Mobil 1.0.70, Android versionCode **92**, iOS build **5**. Gönderilen 1.0.69(91)
+  kaydındaki `libreactnative.so` SoLoader hatası için legacy native-library packaging
+  etkinleştirildi. Bu bir uyumluluk önlemi; cihaz/APK olmadan ABI kök nedeni veya
+  çöküşün cihazda bittiği kanıtlanmış değildir. Tüm ABI'ler ve RN bootstrap korundu.
+- CarPlay: temiz prebuild'e dayanıklı scene plugin, CarPlay-first tek React root,
+  telefon scene'ine aynı root aktarımı, native yükleniyor şablonu, cold/warm URL/Siri/
+  quick-action aktarımı. Sekme bilgileri doğru constructor config'ine taşındı;
+  bağlantı koptuğunda eski async şablon sonuçları eleniyor.
+- Mobil: yakındaki istasyon oynatma, gerçek ilk stream'e göre failover sırası,
+  query içeren playlist algılama, StationCard hataları, bildirim alanları,
+  yinelenen font/çeviri anahtarları ve Watch API alan eşlemeleri düzeltildi.
+- Saatler: şarkı değişiminde metadata gönderimi; camelCase stream URL desteği;
+  watchOS yükleme zaman aşımı ve cached applicationContext işlenmesi.
+- tvOS: `tag` yerine canlı API'nin desteklediği `genre` filtresi; idempotent play/pause;
+  eski KVO/metadata sonuçlarını eleme; boş/geçersiz stream URL atlama ve countrycode eşleme.
+- Android TV: mevcut ekranlara uygun Assistant/deep-link rotaları, platform algılama,
+  eksik TVProvider bağımlılığı. Google Billing IO thread + doğrulama hatalarını başarı
+  saymama + pending satın alımlara yetki vermeme + oturum aktarımı ve yaşam döngüsü temizliği.
+- StoreKit tvOS: signed JWS, canlı AuthStore token'ı, yalnızca backend kabulünden sonra
+  finish, restore hatalarının iletilmesi. Gerçek satın alım yapılmadı/test edilmedi.
+- Samsung/LG: başarısız CDN script/timeout için yerel fallback, nested CSS yolları,
+  başarısız derlemeden eski paket üretmeyi engelleme, LG sürüm enjeksiyonu.
+- Kanıt: `/app/test_reports/iteration_48.json`; 7 Node regresyon dosyası ve 5 canlı
+  read-only API testi geçti. Temiz iOS prebuild izole kopyada geçti. Tizen/LG paket
+  içerikleri üretildi; bunlar imzalı `.wgt/.ipk` veya native cihaz testleri değildir.
+- Tam rapor: `/app/memory/CROSS_PLATFORM_BUGFIX_REPORT.md`.
+
+#### Güncel P0 / P1 / P2
+- P0: yeni native build ile CarPlay-first → telefon, disconnect/reconnect; Android
+  SoLoader cihaz regresyonu; sandbox StoreKit/Play Billing doğrulama/restore turu.
+- P1: harici API `tag` parametresi filtrelemiyor; istemciler düzeltildi, server kaynağı
+  bu depoda değil. `/app/memory/BACKEND_TAG_FILTER_FINDING.md` reproduksiyon içerir.
+- P1: root tsc hâlâ eski mobil tip uyumsuzlukları + ayrı TV projelerinin alias hataları
+  içeriyor. Bu tur için tüm kod tabanı typecheck-clean/bug-free denmiyor.
+- P2: önceki tasarım/focus parity işleri ve yeni özellikler bu hata düzeltme turunun
+  dışında. Yeni Architecture geçişi yapılmadı, mevcut legacy yapı korundu.
+
 ### 🎯 Startup Süresi Telemetrisi + Yayın Sonrası Analiz Planı (Jun 2026)
 - `_layout.tsx`: modül-seviyesi `JS_START_TIME` → splash gizlenince fark hesaplanıp 8s ertelemeli
   GA4 `app_startup_time { duration_ms, platform }` eventi (once-guard `startupReportedRef`)

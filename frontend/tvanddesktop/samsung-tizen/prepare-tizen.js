@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { rewritePackagedAssets } = require('../_shared/packaged-assets');
 
 const REPO_ROOT  = path.resolve(__dirname, '..', '..', '..');
 const TV_SRC_DIR = path.join(REPO_ROOT, 'frontend', 'tvanddesktop', 'apple-tv-and-macos', 'web-preview');
@@ -54,13 +55,8 @@ try {
     env: { ...process.env, VITE_APP_VERSION: tizenVersion },
   });
 } catch (e) {
-  console.warn('⚠ yarn build başarısız oldu — TV_DIST mevcut ise devam edeceğim.');
-  if (!fs.existsSync(TV_DIST)) {
-    console.error('✗ TV bundle bulunamadı:', TV_DIST);
-    console.error('  Lütfen önce şunu çalıştırın:');
-    console.error('  cd ' + TV_SRC_DIR + ' && yarn build');
-    process.exit(1);
-  }
+  console.error('TV build failed. Refusing to package an old or partial bundle.');
+  process.exit(1);
 }
 
 console.log('▸ Cleaning output:', OUT_DIR);
@@ -102,7 +98,6 @@ fs.copyFileSync(path.join(__dirname, '.tproject.template'), path.join(OUT_DIR, '
 // We park EVERY scheme://host/api/... match before doing the relative-/api/
 // rewrite, then restore them verbatim afterwards.
 console.log('▸ Rewriting absolute /api/* asset paths in HTML/CSS (NEVER touch JS)...');
-const BACKEND_HOST = 'https://api.themegaradio.com';
 
 /**
  * Rewrite HTML / CSS only.
@@ -127,7 +122,7 @@ function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
 
   // Asset base prefix → relative path.
-  s = s.replace(/\/api\/tv-app\//g, './');
+  s = rewritePackagedAssets(s, filePath, APP_DIR);
 
   fs.writeFileSync(filePath, s);
 }

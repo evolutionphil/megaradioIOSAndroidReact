@@ -43,6 +43,17 @@ function withAdMobManifestAPI(config) {
       },
     });
 
+    // The ads plugin appends optimization flags on incremental prebuilds.
+    // This mod runs after it and keeps exactly one value per AdMob key.
+    const seen = new Set();
+    application['meta-data'] = application['meta-data'].filter(entry => {
+      const name = entry.$?.['android:name'];
+      if (!name?.startsWith('com.google.android.gms.ads.')) return true;
+      if (seen.has(name)) return false;
+      seen.add(name);
+      return true;
+    });
+
     console.log('[withAdMobFix] Layer 1: Source manifest meta-data set');
     return config;
   });

@@ -482,7 +482,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Ubuntu-Medium',
     color: '#000000',
-    fontFamily: 'System',
   },
   clearButton: {
     marginLeft: 10,
@@ -504,7 +503,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'System',
   },
 
   // Filter Chips
@@ -528,7 +526,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    fontFamily: 'System',
   },
   filterChipTextActive: {
     color: '#FFFFFF',
@@ -578,7 +575,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'System',
     marginBottom: 6,
   },
   radioGenre: {
@@ -639,7 +635,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'System',
   },
   emptyText: {
     fontSize: 14,
@@ -660,7 +655,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'System',
   },
   initialText: {
     fontSize: 14,

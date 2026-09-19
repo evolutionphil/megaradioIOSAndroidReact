@@ -93,7 +93,7 @@ final class APIClient {
     }
 
     func fetchStationsByGenre(_ genre: String, limit: Int = 40) async throws -> [Station] {
-        let r: StationsResponse = try await get("/api/stations", query: ["tag": genre, "limit": "\(limit)"])
+        let r: StationsResponse = try await get("/api/stations", query: ["genre": genre, "limit": "\(limit)"])
         return r.items
     }
 

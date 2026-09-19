@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { rewritePackagedAssets } = require('../_shared/packaged-assets');
 
 const REPO_ROOT  = path.resolve(__dirname, '..', '..', '..');
 const TV_SRC_DIR = path.join(REPO_ROOT, 'frontend', 'tvanddesktop', 'apple-tv-and-macos', 'web-preview');
@@ -39,17 +40,15 @@ function copyDir(src, dst) {
 }
 
 console.log('▸ Building TV web bundle...');
+const webosVersion = JSON.parse(fs.readFileSync(path.join(__dirname, 'appinfo.json'), 'utf8')).version;
+if (!webosVersion) throw new Error('Missing webOS app version');
 try {
   const shell = process.platform === 'win32' ? true : (fs.existsSync('/bin/bash') ? '/bin/bash' : true);
-  execSync('yarn build', { cwd: TV_SRC_DIR, stdio: 'inherit', shell });
+  execSync('yarn build', { cwd: TV_SRC_DIR, stdio: 'inherit', shell,
+    env: { ...process.env, VITE_APP_VERSION: webosVersion } });
 } catch (e) {
-  console.warn('⚠ yarn build başarısız oldu — TV_DIST mevcut ise devam edeceğim.');
-  if (!fs.existsSync(TV_DIST)) {
-    console.error('✗ TV bundle bulunamadı:', TV_DIST);
-    console.error('  Lütfen önce şunu çalıştırın:');
-    console.error('  cd ' + TV_SRC_DIR + ' && yarn build');
-    process.exit(1);
-  }
+  console.error('TV build failed. Refusing to package an old or partial bundle.');
+  process.exit(1);
 }
 
 console.log('▸ Cleaning output:', OUT_DIR);
@@ -59,8 +58,6 @@ const APP_DIR = path.join(OUT_DIR, 'app');
 console.log('▸ Copying TV bundle → lg-webos/dist/app/ (local fallback)');
 copyDir(TV_DIST, APP_DIR);
 
-let webosVersion = '1.0.2';
-try { webosVersion = JSON.parse(fs.readFileSync(path.join(__dirname, 'appinfo.json'), 'utf8')).version || webosVersion; } catch (_) {}
 fs.writeFileSync(
   path.join(APP_DIR, 'version.json'),
   JSON.stringify({ version: webosVersion, killSwitch: false, builtAt: new Date().toISOString() }, null, 2)
@@ -87,7 +84,7 @@ fs.copyFileSync(path.join(__dirname, 'splash.png'),    path.join(OUT_DIR, 'splas
 console.log('▸ Rewriting absolute /api/* asset paths in HTML/CSS (NEVER touch JS)...');
 function rewriteFile(filePath) {
   let s = fs.readFileSync(filePath, 'utf8');
-  s = s.replace(/\/api\/tv-app\//g, './');
+  s = rewritePackagedAssets(s, filePath, APP_DIR);
   fs.writeFileSync(filePath, s);
 }
 function walkAndRewrite(dir) {

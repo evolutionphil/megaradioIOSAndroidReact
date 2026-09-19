@@ -45,6 +45,8 @@
   var LOCAL    = './app/index.html';        // bundled fallback copy
   var TIMEOUT  = 6000;
   var done     = false;
+  var fallingBack = false;
+  var bootTimer = null;
   var APP_VERSION    = '__APP_VERSION__';   // store package version (replaced at package time)
   var REMOTE_VERSION = '';                  // CDN bundle version (read from version.json)
 
@@ -73,7 +75,13 @@
   }
 
   function loadLocal() {
-    if (done) return; done = true;
+    // Injection started != application loaded. Still fall back on missing CDN
+    // assets, timeout, or offline relaunch with cached HTML.
+    if (fallingBack) return;
+    fallingBack = true;
+    done = true;
+    if (bootTimer) clearTimeout(bootTimer);
+    try { delete window.__MR_ASSET_BASE__; } catch (e) {}
     telemetry('local');
     try { window.location.replace(LOCAL); } catch (e) { window.location.href = LOCAL; }
   }
@@ -103,7 +111,7 @@
     if (!doc || !doc.head || !doc.body) { loadLocal(); return; }
     done = true;
     try { window.__MR_BOOT_SRC__ = 'cdn'; } catch (e) {}   // Settings shows "· C"
-    telemetry('remote');
+    bootTimer = setTimeout(loadLocal, TIMEOUT);
 
     // 1) <link> (fonts / preconnect / stylesheets) + inline <style> from head.
     var headNodes = doc.head.querySelectorAll('link, style');
@@ -116,6 +124,7 @@
           l.setAttribute(at.name, at.name === 'href' ? toAbs(at.value) : at.value);
         }
         document.head.appendChild(l);
+        if ((l.rel || '').toLowerCase() === 'stylesheet') l.onerror = loadLocal;
       } else {
         var st = document.createElement('style');
         st.textContent = n.textContent;
@@ -134,9 +143,15 @@
       if (type === 'module') modules.push(sc); else plain.push(sc);
     }
     var queue = plain.concat(modules);
+    if (!queue.length) { loadLocal(); return; }
 
     function runNext(k) {
-      if (k >= queue.length) return;
+      if (fallingBack) return;
+      if (k >= queue.length) {
+        if (bootTimer) clearTimeout(bootTimer);
+        telemetry('remote');
+        return;
+      }
       var sc = queue[k];
       var src = sc.getAttribute('src');
       var type = sc.getAttribute('type') || '';
@@ -147,7 +162,7 @@
         el.src = toAbs(src);
         if (sc.getAttribute('crossorigin') !== null) el.crossOrigin = 'anonymous';
         el.onload = function () { runNext(k + 1); };
-        el.onerror = function () { runNext(k + 1); };
+        el.onerror = loadLocal;
         document.body.appendChild(el);
       } else {
         el.text = sc.textContent || '';

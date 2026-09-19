@@ -1,5 +1,3 @@
-import { sendLog } from '../../src/services/remoteLog';
-sendLog('TABS_LAYOUT_FILE_LOADING');
 
 import React from 'react';
 import { Tabs } from 'expo-router';
@@ -11,7 +9,6 @@ import { colors } from '../../src/constants/theme';
 import { MiniPlayer } from '../../src/components/MiniPlayer';
 import { usePlayerStore } from '../../src/store/playerStore';
 import { useLanguageStore } from '../../src/store/languageStore';
-sendLog('TABS_LAYOUT_IMPORTS_DONE');
 
 // Tab bar height constant for MiniPlayer positioning
 export const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 85 : 65;

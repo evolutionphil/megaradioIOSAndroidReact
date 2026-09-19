@@ -58,7 +58,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (station) {
       useRecentlyPlayedStore.getState().addStation(station);
       // Track station play in analytics
-      flowaliveService.trackStationPlayed(station.id, station.name, station.tags?.[0]);
+      flowaliveService.trackStationPlayed(station._id, station.name, station.tags?.split(',')[0]);
     }
   },
 
@@ -70,7 +70,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     
     // Track pause event
     if (state === 'paused' && prevState === 'playing' && station) {
-      flowaliveService.trackStationPaused(station.id, station.name);
+      flowaliveService.trackStationPaused(station._id, station.name);
     }
   },
 
@@ -100,7 +100,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ errorMessage: message, playbackState: message ? 'error' : 'idle' });
     // Track playback error in analytics
     if (message && station) {
-      flowaliveService.trackPlaybackError(station.id, message);
+      flowaliveService.trackPlaybackError(station._id, message);
     }
   },
 

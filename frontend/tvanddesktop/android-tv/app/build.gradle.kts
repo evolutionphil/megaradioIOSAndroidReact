@@ -34,6 +34,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.leanback:leanback:1.0.0")
+    implementation("androidx.tvprovider:tvprovider:1.1.0")
     implementation("androidx.webkit:webkit:1.11.0")
     implementation("androidx.media:media:1.7.0")
     // Google Play Billing v7 — in-app purchases / subscriptions for the

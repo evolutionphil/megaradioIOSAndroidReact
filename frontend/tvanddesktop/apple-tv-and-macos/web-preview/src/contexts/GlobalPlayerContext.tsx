@@ -5,6 +5,7 @@ import { recentlyPlayedService } from "@/services/recentlyPlayedService";
 import { recommendationService } from "@/services/recommendationService";
 import { trackStationPlay, trackError } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
+import { detectPlatform } from '@/lib/platform';
 
 // Radiolise public ICY metadata WebSocket gateway.
 // Override via VITE_METADATA_WS for self-hosted instance.
@@ -30,7 +31,7 @@ interface GlobalPlayerContextType {
 const GlobalPlayerContext = createContext<GlobalPlayerContextType | undefined>(undefined);
 
 const isTizen = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('tizen');
-const isWebOS = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('webos');
+const isWebOS = detectPlatform() === 'webos';
 const isTV = isTizen || isWebOS;
 
 function getProxiedUrl(url: string): string {
@@ -110,6 +111,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   const maxRetries = 3;
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentStationRef = useRef<Station | null>(null);
+  const playGenerationRef = useRef(0);
 
   // Initialize TV audio player once
   useEffect(() => {
@@ -175,6 +177,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
           console.log(`[🔄 RETRY] Will retry in ${delay}ms (attempt ${retryCountRef.current + 1}/${maxRetries})`);
           
           retryTimeoutRef.current = setTimeout(async () => {
+            if (currentStationRef.current !== currentStationToRetry) return;
             retryCountRef.current++;
             
             if (audioPlayerRef.current && currentStationToRetry) {
@@ -212,6 +215,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     }
 
     return () => {
+      playGenerationRef.current++;
+      currentStationRef.current = null;
       // Clear retry timeout on unmount
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current);
@@ -370,6 +375,11 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     }
 
     const rawUrl = station.url_resolved || station.url;
+    if (!rawUrl || typeof rawUrl !== 'string' || !rawUrl.trim()) {
+      setStreamError('This station has no stream URL');
+      return;
+    }
+    const generation = ++playGenerationRef.current;
     
     console.log('[🎵 PLAY] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('[🎵 PLAY] Station:', station.name);
@@ -403,7 +413,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
       console.log('[🎵 PLAY] Final play URL:', playUrl.substring(0, 120));
       
       setTimeout(() => {
-        if (audioPlayerRef.current && currentStationRef.current?._id === station._id) {
+        if (audioPlayerRef.current && generation === playGenerationRef.current && currentStationRef.current?._id === station._id) {
           audioPlayerRef.current.play(playUrl);
         }
       }, 50);
@@ -417,36 +427,26 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
       // Samsung/webOS can't parse .pls/.m3u — resolve to a direct stream URL first.
       console.log('[🎵 PLAY] TV playlist detected — resolving client-side...');
       resolvePlaylistOnTV(rawUrl).then(direct => {
-        if (currentStationRef.current?._id !== station._id) {
-          setIsBuffering(false);
-          return;
-        }
+        if (generation !== playGenerationRef.current) return;
         console.log('[🎵 PLAY] TV playlist resolved:', rawUrl.substring(0, 60), '→', direct.substring(0, 60));
         startPlayback(direct);
       }).catch(() => {
-        if (currentStationRef.current?._id === station._id) {
+        if (generation === playGenerationRef.current) {
           startPlayback(rawUrl);
-        } else {
-          setIsBuffering(false);
         }
       });
     } else if (needsResolve && !isTV) {
       console.log('[🎵 PLAY] URL looks like a playlist, resolving first...');
       resolveStreamUrl(rawUrl).then(result => {
-        if (currentStationRef.current?._id !== station._id) {
-          setIsBuffering(false);
-          return;
-        }
+        if (generation !== playGenerationRef.current) return;
         if (result.error) {
           console.warn('[🎵 PLAY] Resolve had error:', result.error, '- using resolved anyway');
         }
         console.log('[🎵 PLAY] Resolved:', rawUrl.substring(0, 60), '→', result.resolvedUrl.substring(0, 60));
         startPlayback(result.resolvedUrl);
       }).catch(() => {
-        if (currentStationRef.current?._id === station._id) {
+        if (generation === playGenerationRef.current) {
           startPlayback(rawUrl);
-        } else {
-          setIsBuffering(false);
         }
       });
     } else {
@@ -466,6 +466,10 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const pauseStation = () => {
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
+    }
     if (audioPlayerRef.current) {
       audioPlayerRef.current.pause();
     }
@@ -485,6 +489,15 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const stopStation = () => {
+    playGenerationRef.current++;
+    currentStationRef.current = null;
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
+    }
+    setIsBuffering(false);
+    setCurrentStation(null);
+    setIsPlaying(false);
     if (audioPlayerRef.current) {
       audioPlayerRef.current.stop();
       setCurrentStation(null);

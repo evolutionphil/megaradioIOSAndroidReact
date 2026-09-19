@@ -85,9 +85,11 @@ export function PremiumUpgradeNative(): JSX.Element {
 
   function handlePurchase(productId: string) {
     if (purchasing) return;
+    if (!auth.token) { setLocation('/login'); return; }
     setPurchasing(true);
     nativeIap
-      .purchaseProduct(productId)
+      .setAuthToken(auth.token)
+      .then(() => nativeIap.purchaseProduct(productId))
       .then((res: IapPurchaseResult) => {
         if (res && res.ok) {
           setActivated(true);
@@ -112,9 +114,11 @@ export function PremiumUpgradeNative(): JSX.Element {
 
   function handleRestore() {
     if (purchasing) return;
+    if (!auth.token) { setLocation('/login'); return; }
     setPurchasing(true);
     nativeIap
-      .restorePurchases()
+      .setAuthToken(auth.token)
+      .then(() => nativeIap.restorePurchases())
       .then((res) => {
         setPurchasing(false);
         if (res && res.ok) {

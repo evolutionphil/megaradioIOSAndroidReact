@@ -110,6 +110,7 @@ function call<T = any>(fn: string, args: Record<string, any> = {}, timeoutMs = 3
 }
 
 export const nativeIap = {
+  setAuthToken: (token: string | null): Promise<void> => call('setAuthToken', { token: token || '' }),
   /** Fetches the localized product list from StoreKit / Play Billing. */
   getProducts: (): Promise<IapProduct[]> => call("getProducts"),
 

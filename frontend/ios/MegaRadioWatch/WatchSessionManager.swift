@@ -69,6 +69,8 @@ class WatchSessionManager: NSObject, ObservableObject {
     @Published var isReachable: Bool = false
     
     private var session: WCSession?
+    private var genreRequestTimer: DispatchWorkItem?
+    private var countryRequestTimer: DispatchWorkItem?
     
     override init() {
         super.init()
@@ -126,6 +128,10 @@ class WatchSessionManager: NSObject, ObservableObject {
         DispatchQueue.main.async {
             self.isLoadingGenreStations = true
             self.genreStations = []
+            self.genreRequestTimer?.cancel()
+            let timeout = DispatchWorkItem { [weak self] in self?.isLoadingGenreStations = false }
+            self.genreRequestTimer = timeout
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: timeout)
         }
         sendMessage(["command": "requestGenreStations", "genreSlug": slug])
     }
@@ -138,6 +144,10 @@ class WatchSessionManager: NSObject, ObservableObject {
         DispatchQueue.main.async {
             self.isLoadingCountryStations = true
             self.countryStations = []
+            self.countryRequestTimer?.cancel()
+            let timeout = DispatchWorkItem { [weak self] in self?.isLoadingCountryStations = false }
+            self.countryRequestTimer = timeout
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: timeout)
         }
         sendMessage(["command": "requestCountryStations", "countryName": countryName])
     }
@@ -212,6 +222,9 @@ class WatchSessionManager: NSObject, ObservableObject {
             
             // Handle genre stations response
             if let genreStationsData = response["genreStations"] as? Data {
+                self.genreRequestTimer?.cancel()
+                self.isLoadingGenreStations = false
+                self.genreStations = []
                 if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
                     self.genreStations = stations
                     self.isLoadingGenreStations = false
@@ -227,6 +240,9 @@ class WatchSessionManager: NSObject, ObservableObject {
             
             // Handle country stations response
             if let countryStationsData = response["countryStations"] as? Data {
+                self.countryRequestTimer?.cancel()
+                self.isLoadingCountryStations = false
+                self.countryStations = []
                 if let stations = try? JSONDecoder().decode([WatchStation].self, from: countryStationsData) {
                     self.countryStations = stations
                     self.isLoadingCountryStations = false
@@ -241,8 +257,10 @@ extension WatchSessionManager: WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DispatchQueue.main.async {
             self.isConnected = activationState == .activated
+            self.isReachable = session.isReachable
             
             if activationState == .activated {
+                self.handleIncomingMessage(session.receivedApplicationContext)
                 print("[WatchSession] Session activated successfully")
                 // Request initial data
                 self.requestFavorites()
@@ -321,6 +339,7 @@ extension WatchSessionManager: WCSessionDelegate {
             
             // Update genre stations (response from requestGenreStations)
             if let genreStationsData = message["genreStations"] as? Data {
+                self.genreRequestTimer?.cancel()
                 if let stations = try? JSONDecoder().decode([WatchStation].self, from: genreStationsData) {
                     self.genreStations = stations
                     self.isLoadingGenreStations = false
@@ -341,6 +360,7 @@ extension WatchSessionManager: WCSessionDelegate {
             
             // Update country stations
             if let countryStationsData = message["countryStations"] as? Data {
+                self.countryRequestTimer?.cancel()
                 if let stations = try? JSONDecoder().decode([WatchStation].self, from: countryStationsData) {
                     self.countryStations = stations
                     self.isLoadingCountryStations = false

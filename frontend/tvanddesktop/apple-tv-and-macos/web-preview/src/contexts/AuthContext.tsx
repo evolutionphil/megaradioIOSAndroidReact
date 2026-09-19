@@ -141,6 +141,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   var isAuthenticated = !!token && !!user;
 
+  // Keep the Android TV receipt validator's session current, including logout.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !(window as any).MegaRadioNative?.invoke) return;
+    import('@/lib/nativeIap').then(({ nativeIap }) => nativeIap.setAuthToken(token))
+      .catch(error => console.warn('[Auth] Native billing session sync failed:', error?.message));
+  }, [token]);
+
   useEffect(function() {
     var savedToken = null;
     try {

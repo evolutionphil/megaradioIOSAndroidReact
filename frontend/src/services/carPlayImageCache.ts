@@ -2,7 +2,7 @@
 // Downloads and caches station logos locally for CarPlay display
 // CarPlay does NOT support remote URLs - images must be local file paths
 
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
 const CACHE_DIR = `${FileSystem.cacheDirectory}carplay_images/`;

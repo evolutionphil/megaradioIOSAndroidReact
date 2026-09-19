@@ -20,6 +20,7 @@ import { colors, gradients, spacing, borderRadius, typography } from '../src/con
 import { useNearbyStations } from '../src/hooks/useQueries';
 import { useLocationStore } from '../src/store/locationStore';
 import { usePlayerStore } from '../src/store/playerStore';
+import { useAudioPlayer } from '../src/hooks/useAudioPlayer';
 import { useResponsive } from '../src/hooks/useResponsive';
 import { getStationLogoUrl, DEFAULT_STATION_LOGO_SOURCE } from '../src/utils/stationLogoHelper';
 import type { Station } from '../src/types';
@@ -44,7 +45,8 @@ export default function NearbyStationsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   
   // Player state
-  const { currentStation, playbackState, play } = usePlayerStore();
+  const { currentStation, playbackState } = usePlayerStore();
+  const { playStation } = useAudioPlayer();
 
   // Fetch nearby stations - larger radius (200km) and more stations
   const { data: nearbyData, isLoading, refetch } = useNearbyStations(latitude, longitude, 200, 100);
@@ -57,8 +59,7 @@ export default function NearbyStationsScreen() {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
+    try { await refetch(); } finally { setRefreshing(false); }
   };
 
   const handleBackPress = () => {
@@ -67,7 +68,7 @@ export default function NearbyStationsScreen() {
 
   const handleStationPress = async (station: Station) => {
     try {
-      await play(station);
+      await playStation(station);
     } catch (error) {
       console.error('Error playing station:', error);
     }
@@ -109,7 +110,7 @@ export default function NearbyStationsScreen() {
         style={[styles.gridItem, { width: GRID_ITEM_WIDTH }]}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
-        data-testid={`grid-station-${station._id}`}
+        testID={`grid-station-${station._id}`}
       >
         <View style={[styles.gridLogoContainer, playing && styles.gridLogoContainerActive]}>
           {logoUrl ? (
@@ -157,7 +158,7 @@ export default function NearbyStationsScreen() {
         style={[styles.listItem, playing && styles.listItemActive]}
         onPress={() => handleStationPress(station)}
         activeOpacity={0.7}
-        data-testid={`list-station-${station._id}`}
+        testID={`list-station-${station._id}`}
       >
         <View style={styles.listLogoContainer}>
           {logoUrl ? (
@@ -187,6 +188,7 @@ export default function NearbyStationsScreen() {
         </View>
         <TouchableOpacity
           style={[styles.playButton, playing && styles.playButtonActive]}
+          testID={`nearby-play-${station._id}`}
           onPress={() => handleStationPress(station)}
         >
           {loading ? (
@@ -212,7 +214,7 @@ export default function NearbyStationsScreen() {
             <TouchableOpacity 
               style={styles.backButton} 
               onPress={handleBackPress}
-              data-testid="nearby-stations-back-btn"
+              testID="nearby-stations-back-btn"
             >
               <Ionicons name="chevron-back" size={28} color={colors.text} />
             </TouchableOpacity>
@@ -229,14 +231,14 @@ export default function NearbyStationsScreen() {
               <TouchableOpacity 
                 style={[styles.headerButton, viewMode === 'grid' && styles.headerButtonActive]}
                 onPress={() => setViewMode('grid')}
-                data-testid="view-grid-btn"
+                testID="view-grid-btn"
               >
                 <Ionicons name="grid" size={20} color={viewMode === 'grid' ? colors.accentPink : colors.text} />
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.headerButton, viewMode === 'list' && styles.headerButtonActive]}
                 onPress={() => setViewMode('list')}
-                data-testid="view-list-btn"
+                testID="view-list-btn"
               >
                 <Ionicons name="menu" size={22} color={viewMode === 'list' ? colors.accentPink : colors.text} />
               </TouchableOpacity>
@@ -249,7 +251,7 @@ export default function NearbyStationsScreen() {
               <ActivityIndicator size="large" color={colors.accentPink} />
               <Text style={styles.loadingText}>{t('loading_stations', 'Loading stations...')}</Text>
             </View>
-          ) : !latitude || !longitude ? (
+          ) : latitude == null || longitude == null ? (
             <View style={styles.emptyState}>
               <Ionicons name="location-outline" size={64} color={colors.textMuted} />
               <Text style={styles.emptyTitle}>{t('location_required', 'Location Required')}</Text>
@@ -288,12 +290,12 @@ export default function NearbyStationsScreen() {
                     }]}
                     onPress={() => handleStationPress(item)}
                     activeOpacity={0.7}
-                    data-testid={`grid-station-${item._id}`}
+                    testID={`grid-station-${item._id}`}
                   >
                     <View style={[styles.gridLogoContainer, isStationPlaying(item) && styles.gridLogoContainerActive]}>
                       {getLogoUrl(item) ? (
                         <Image
-                          source={{ uri: getLogoUrl(item) }}
+                          source={getLogoUrl(item) || DEFAULT_STATION_LOGO_SOURCE}
                           style={styles.gridLogo}
                           contentFit="cover"
                         />
@@ -533,8 +535,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   playButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: 20,
     backgroundColor: colors.accentPink,
     justifyContent: 'center',

@@ -20,13 +20,19 @@ struct Station: Codable, Identifiable, Hashable {
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name, url, urlResolved, favicon, country, countryCode, tags
+        case name, url, urlResolved, favicon, country, tags
+        case countryCode = "countrycode"
         case bitrate, codec, votes, homepage
     }
 
     var streamURL: URL? {
-        if let resolved = urlResolved, let u = URL(string: resolved) { return u }
-        if let raw = url, let u = URL(string: raw) { return u }
+        for value in [urlResolved, url] {
+            guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !value.isEmpty, let u = URL(string: value),
+                  let scheme = u.scheme?.lowercased(), ["http", "https"].contains(scheme),
+                  u.host != nil else { continue }
+            return u
+        }
         return nil
     }
 

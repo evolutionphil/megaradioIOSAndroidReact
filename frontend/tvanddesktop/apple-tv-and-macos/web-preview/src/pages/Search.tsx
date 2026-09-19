@@ -89,7 +89,11 @@ export const Search = (): JSX.Element => {
   const { playStation } = useGlobalPlayer();
   const { t } = useLocalization();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(() => {
+    // Android TV Assistant passes the spoken query in the hash route.
+    const query = typeof window !== 'undefined' ? window.location.hash.split('?')[1] : '';
+    return new URLSearchParams(query || '').get('q') || '';
+  });
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [recentlyPlayedStations, setRecentlyPlayedStations] = useState<Station[]>([]);

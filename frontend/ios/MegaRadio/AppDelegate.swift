@@ -16,10 +16,6 @@ public class AppDelegate: ExpoAppDelegate {
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
 
-  // Flag used by PhoneSceneDelegate / CarPlay coordination so we never
-  // double-initialise the React Native bridge.
-  private var isReactNativeInitialized = false
-
   public override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -36,6 +32,7 @@ public class AppDelegate: ExpoAppDelegate {
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
 #endif
 // @generated end react-native-google-cast-didFinishLaunchingWithOptions
+    MegaRadioSceneCoordinator.shared.launchOptions = launchOptions ?? [:]
     let delegate = ReactNativeDelegate()
     let factory = ExpoReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
@@ -60,46 +57,6 @@ FirebaseApp.configure()
     // black screen after splash. PhoneSceneDelegate.scene(_:willConnectTo:)
     // creates the proper windowScene-bound UIWindow and starts RN there.
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-  // MARK: - Scene Configuration (iOS 13+)
-  //
-  // We return the delegate classes here via direct metatype references
-  // (`config.delegateClass = X.self`) instead of relying solely on the
-  // `$(PRODUCT_MODULE_NAME).X` strings in Info.plist. This is the
-  // foolproof path — Info.plist still declares the same scenes so Xcode
-  // can validate the manifest at build time.
-  public func application(
-    _ application: UIApplication,
-    configurationForConnecting connectingSceneSession: UISceneSession,
-    options: UIScene.ConnectionOptions
-  ) -> UISceneConfiguration {
-    if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
-      let config = UISceneConfiguration(
-        name: "CarPlay",
-        sessionRole: connectingSceneSession.role
-      )
-      config.delegateClass = CarPlaySceneDelegate.self
-      config.sceneClass = CPTemplateApplicationScene.self
-      return config
-    }
-
-    let config = UISceneConfiguration(
-      name: "Default Configuration",
-      sessionRole: connectingSceneSession.role
-    )
-    config.delegateClass = PhoneSceneDelegate.self
-    return config
-  }
-
-  // MARK: - React Native bridge ready-state helpers
-
-  @objc public func isReactNativeReady() -> Bool {
-    return isReactNativeInitialized
-  }
-
-  @objc public func markReactNativeInitialized() {
-    isReactNativeInitialized = true
   }
 
   // Linking API

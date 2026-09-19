@@ -1,13 +1,12 @@
 // LOGGING: Import at very top
-import { sendLog } from '../src/services/remoteLog';
 
 // Cold start timing anchor: JS bundle execution start
 const JS_START_TIME = Date.now();
-sendLog('LAYOUT_FILE_LOADING');
 
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import Constants from 'expo-constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, StyleSheet, Platform, AppState, AppStateStatus, Text, InteractionManager } from 'react-native';
@@ -15,7 +14,6 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18nextProvider } from 'react-i18next';
-sendLog('LAYOUT_IMPORTS_1');
 
 // Prevent splash screen from auto-hiding (we control when it hides)
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -33,7 +31,6 @@ import { adMobService } from '../src/services/adMobService';
 import { usePremiumStore } from '../src/store/premiumStore';
 import { rateUsService } from '../src/services/rateUsService';
 import { RateUsModal } from '../src/components/RateUsModal';
-sendLog('LAYOUT_IMPORTS_2');
 
 import { AudioProvider } from '../src/providers/AudioProvider';
 
@@ -51,7 +48,6 @@ class RootErrorBoundary extends React.Component<{ children: React.ReactNode }, {
   
   componentDidCatch(error: Error, errorInfo: any) {
     console.error('[RootErrorBoundary] App crash caught:', error.message);
-    sendLog('ROOT_ERROR_BOUNDARY', { error: error.message, stack: errorInfo?.componentStack?.substring(0, 500) });
     try { crashlyticsService.recordError(error, 'RootErrorBoundary'); } catch (e) {}
     // Force hide splash so user sees something
     try { SplashScreen.hideAsync(); } catch (e) {}
@@ -104,18 +100,15 @@ import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
 import { QuickActionsHandler } from '../src/components/QuickActionsHandler';
 import { NotificationHandler } from '../src/components/NotificationHandler';
-import TrackPlayer from 'react-native-track-player';
 // FlowAlive DISABLED - NPM package has bug (yalc reference in dependencies)
 // import { FlowAliveProvider } from 'flowalive-analytics/expo';
 import { flowaliveService } from '../src/services/flowaliveService';
 import analyticsService from '../src/services/analyticsService';
 import crashlyticsService from '../src/services/crashlyticsService';
-sendLog('LAYOUT_ALL_IMPORTS_DONE');
 
 // CarPlay - Re-enabled after fixing native delegate issues
 import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
-sendLog('BEFORE_QUERY_CLIENT');
 
 // Create a client with optimized defaults for performance (based on backend recommendations)
 let queryClient: QueryClient;
@@ -133,9 +126,7 @@ try {
       },
     },
   });
-  sendLog('QUERY_CLIENT_CREATED');
 } catch (e: any) {
-  sendLog('QUERY_CLIENT_ERROR', { error: e?.message || String(e) });
   // Create minimal client as fallback
   queryClient = new QueryClient();
 }
@@ -144,7 +135,6 @@ const ONBOARDING_COMPLETE_KEY = '@megaradio_onboarding_complete';
 // FlowAlive DISABLED - NPM package bug
 // const FLOWALIVE_API_KEY = 'flowalive_b42f8188aad215f2250e5f0889adcbf4';
 
-sendLog('BEFORE_HELPER_FUNCTIONS');
 
 // Storage helper for cross-platform support
 const checkOnboardingComplete = async (): Promise<boolean> => {
@@ -161,7 +151,6 @@ const checkOnboardingComplete = async (): Promise<boolean> => {
   }
 };
 
-sendLog('BEFORE_ROOT_LAYOUT_DEFINITION');
 
 // Global MiniPlayer wrapper - MOVED INSIDE to avoid module-level hook issues
 const GlobalMiniPlayer = React.memo(() => {
@@ -195,7 +184,6 @@ export default function RootLayout() {
 
   // Log on first render
   useEffect(() => {
-    sendLog('ROOT_LAYOUT_MOUNTED');
 
     // Configure Google Sign-In native SDK (call once at app start)
     if (Platform.OS !== 'web') {
@@ -298,7 +286,10 @@ export default function RootLayout() {
         await crashlyticsService.initialize();
         crashlyticsService.setupGlobalErrorHandler();
         crashlyticsService.log('App started');
-        crashlyticsService.setAttribute('app_version_code', '90');
+        const build = Platform.OS === 'android'
+          ? Constants.nativeBuildVersion || Constants.expoConfig?.android?.versionCode
+          : Constants.nativeBuildVersion || Constants.expoConfig?.ios?.buildNumber;
+        crashlyticsService.setAttribute('app_version_code', String(build ?? 'unknown'));
         console.log('[Layout] Firebase Crashlytics initialized');
       } catch (error) {
         console.warn('[Layout] Firebase Crashlytics init error:', error);
@@ -510,39 +501,6 @@ export default function RootLayout() {
     return () => { cancelled = true; };
   }, [splashHidden]);
 
-  // Setup Track Player once (only on native platforms, not web, and don't block UI)
-  // NOTE: Full Track Player setup with capabilities is done in AudioProvider.tsx
-  // This is just a fallback check - AudioProvider handles the real setup
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      console.log('[Layout] Web platform - skipping Track Player setup');
-      return;
-    }
-
-    let mounted = true;
-    
-    const checkPlayerStatus = async () => {
-      try {
-        // Just check if already initialized - AudioProvider does the real setup
-        const currentState = await TrackPlayer.getPlaybackState().catch(() => null);
-        
-        if (currentState) {
-          console.log('[Layout] Track Player already initialized by AudioProvider');
-        } else {
-          console.log('[Layout] Track Player not yet initialized - AudioProvider will handle it');
-        }
-      } catch (error: any) {
-        console.log('[Layout] Track Player status check:', error?.message || 'Not initialized yet');
-      }
-    };
-
-    checkPlayerStatus();
-    
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
   // Preload TV/Mobile init data - Works for BOTH TV and mobile platforms
   // This fetches all essential startup data in one API call
   const [appDataReady, setAppDataReady] = useState(false);
@@ -699,7 +657,6 @@ export default function RootLayout() {
     // Fonts loaded - app is ready
     if (fontsLoaded || fontError) {
       console.log('[Layout] Fonts loaded, app ready');
-      sendLog('FONTS_LOADED', { fontsLoaded, fontError: fontError?.message });
     }
   }, [fontsLoaded, fontError]);
 

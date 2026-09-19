@@ -33,12 +33,14 @@ export function detectPlatform(): TvPlatform {
     if ((window as any).webkit?.messageHandlers?.megaradio) return 'appletv';
 
     // 3. Android TV auto-detect via injected JS interface
-    if ((window as any).MegaRadioNative?.platform === 'androidtv') return 'androidtv';
+    if (typeof (window as any).MegaRadioNative?.invoke === 'function') return 'androidtv';
 
     // 4. UA-based fallbacks
     const ua = (navigator.userAgent || '').toLowerCase();
     if (ua.indexOf('tizen') !== -1) return 'tizen';
-    if (ua.indexOf('webos') !== -1) return 'webos';
+    if ((window as any).webOS || (window as any).webOSSystem ||
+        ua.indexOf('webos') !== -1 || ua.indexOf('web0s') !== -1) return 'webos';
+    if (ua.indexOf('megaradioandroidtv') !== -1) return 'androidtv';
     if (ua.indexOf('electron') !== -1) return 'electron';
 
     return 'web';

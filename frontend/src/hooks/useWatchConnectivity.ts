@@ -6,19 +6,19 @@ import { Platform } from 'react-native';
 import watchService from '../services/watchService';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { usePlayerStore } from '../store/playerStore';
+import { useAudioPlayer } from './useAudioPlayer';
 
 export const useWatchConnectivity = () => {
   const { favorites } = useFavoritesStore();
-  const { 
-    currentStation, 
-    isPlaying, 
-    nowPlayingInfo,
-    playStation,
-    pause,
-    resume,
-    playNextFavorite,
-    playPreviousFavorite 
-  } = usePlayerStore();
+  const { currentStation, playbackState, nowPlaying: nowPlayingInfo } = usePlayerStore();
+  const { playStation, pause, resume } = useAudioPlayer();
+  const isPlaying = playbackState === 'playing';
+  const playFavorite = useCallback((direction: number) => {
+    if (!favorites.length) return;
+    const index = favorites.findIndex(station => station._id === currentStation?._id);
+    const nextIndex = index < 0 ? 0 : (index + direction + favorites.length) % favorites.length;
+    void playStation(favorites[nextIndex]).catch(error => console.warn('[Watch] Playback failed', error));
+  }, [favorites, currentStation?._id, playStation]);
 
   // Update Watch with favorites whenever they change
   useEffect(() => {
@@ -32,7 +32,7 @@ export const useWatchConnectivity = () => {
     if (Platform.OS !== 'ios') return;
     
     watchService.updateNowPlaying({
-      stationId: currentStation?._id || currentStation?.id,
+      stationId: currentStation?._id,
       stationName: currentStation?.name,
       stationLogo: currentStation?.logo || currentStation?.favicon,
       songTitle: nowPlayingInfo?.title,
@@ -70,10 +70,10 @@ export const useWatchConnectivity = () => {
           }
           break;
         case 'nextStation':
-          playNextFavorite();
+          playFavorite(1);
           break;
         case 'previousStation':
-          playPreviousFavorite();
+          playFavorite(-1);
           break;
         case 'playStation':
           if (command.stationId) {
@@ -82,7 +82,7 @@ export const useWatchConnectivity = () => {
               (s: any) => (s._id || s.id) === command.stationId
             );
             if (station) {
-              playStation(station);
+              void playStation(station).catch(error => console.warn('[Watch] Playback failed', error));
             }
           }
           break;
@@ -92,7 +92,7 @@ export const useWatchConnectivity = () => {
     return () => {
       unsubscribe();
     };
-  }, [favorites, isPlaying, playStation, pause, resume, playNextFavorite, playPreviousFavorite]);
+  }, [favorites, isPlaying, playStation, pause, resume, playFavorite]);
 
   // Check if Watch app is installed
   const checkWatchApp = useCallback(async () => {

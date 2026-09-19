@@ -31,6 +31,7 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var webView: WebView
     private val billingService by lazy { BillingService(this) }
+    private var nativeBridge: MegaRadioNativeBridge? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +78,7 @@ class MainActivity : FragmentActivity() {
             // Apple TV — see /app/frontend/tvanddesktop/apple-tv-and-macos/
             // web-preview/src/lib/nativeIap.ts.
             addJavascriptInterface(
-                MegaRadioNativeBridge(this@MainActivity, this, billingService),
+                MegaRadioNativeBridge(this@MainActivity, this, billingService).also { nativeBridge = it },
                 "MegaRadioNative"
             )
             systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
@@ -103,8 +104,8 @@ class MainActivity : FragmentActivity() {
      * `window.__MR_HANDLE_DEEP_LINK__` helper already knows how to open.
      *
      *   SEARCH(jazz)                → https://…/tv#/search?q=jazz
-     *   VIEW megaradio://play?…     → https://…/tv#/play/<stationId>
-     *   VIEW megaradio://genre/jazz → https://…/tv#/genres/jazz
+     *   VIEW megaradio://play?…     → https://…/tv#/radio-playing?station=<id>
+     *   VIEW megaradio://genre/jazz → https://…/tv#/genre-list/jazz
      */
     private fun intentToUrl(intent: Intent?): String? {
         if (intent == null) return null
@@ -118,8 +119,10 @@ class MainActivity : FragmentActivity() {
                 val data = intent.data ?: return null
                 if (data.scheme != "megaradio") return null
                 when (data.host) {
-                    "play"   -> data.getQueryParameter("station")?.let { "$base#/play/$it" }
-                    "genre"  -> data.pathSegments.firstOrNull()?.let { "$base#/genres/$it" }
+                    "play"   -> data.getQueryParameter("station")?.takeIf { it.isNotBlank() }
+                        ?.let { "$base#/radio-playing?station=${Uri.encode(it)}" }
+                    "genre"  -> data.pathSegments.firstOrNull()?.takeIf { it.isNotBlank() }
+                        ?.let { "$base#/genre-list/${Uri.encode(it)}" }
                     "home"   -> base
                     "search" -> data.getQueryParameter("q")?.let { "$base#/search?q=${Uri.encode(it)}" }
                     else     -> null
@@ -174,6 +177,8 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun onDestroy() {
+        nativeBridge?.close()
+        billingService.close()
         webView.destroy()
         super.onDestroy()
     }

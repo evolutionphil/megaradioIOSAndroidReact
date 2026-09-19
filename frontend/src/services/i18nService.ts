@@ -158,7 +158,6 @@ const defaultTranslations: Record<string, string> = {
   search_genre: 'Search genre',
   search_following: 'Search following...',
   search_followers: 'Search followers...',
-  search_stations: 'Search stations...',
   car_mode: 'Car Mode',
   popular_stations: 'Popular Stations',
   stations_near_you: 'Stations Near You',
@@ -297,7 +296,6 @@ const defaultTranslations: Record<string, string> = {
   try_different_location: 'Try moving to a different location',
   
   // Followers/Following
-  remove: 'Remove',
   no_followers: 'No followers yet',
   no_following: 'Not following anyone yet',
   

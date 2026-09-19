@@ -4,7 +4,7 @@
 // 1. Forces newArchEnabled=false in gradle.properties (overrides any default)
 // 2. Enables MultiDex explicitly (safety net for 65K method limit)
 // 3. Adds comprehensive ProGuard keep rules for all native libraries
-// 4. Configures DEX compiler options for large projects
+// Native multidex is built into the supported Android API levels.
 
 const { withDangerousMod, withGradleProperties } = require('@expo/config-plugins');
 const fs = require('fs');
@@ -63,19 +63,11 @@ function withMultiDexAndDexOptions(config) {
       console.log('[withAndroidBuildFix] Added multiDexEnabled true to defaultConfig');
     }
 
-    // Add dexOptions for large projects if not present
-    if (!content.includes('dexOptions')) {
-      // Insert after the android { block's opening configs
-      content = content.replace(
-        /(android\s*\{[^]*?)(buildTypes\s*\{)/s,
-        `$1dexOptions {
-        preDexLibraries true
-        javaMaxHeapSize "4g"
-    }
-    $2`
-      );
+    // Remove our obsolete AGP dexOptions block, including on non-clean prebuild.
+    if (/dexOptions\s*\{[^}]*\}/.test(content)) {
+      content = content.replace(/\s*dexOptions\s*\{[^}]*\}/g, '');
       modified = true;
-      console.log('[withAndroidBuildFix] Added dexOptions to android block');
+      console.log('[withAndroidBuildFix] Removed obsolete dexOptions');
     }
 
     // Add multidex dependency if not present
@@ -205,8 +197,8 @@ function withAndroid15BootFix(config) {
     // 1. Remove RECEIVE_BOOT_COMPLETED permission
     if (manifest.includes('RECEIVE_BOOT_COMPLETED')) {
       manifest = manifest.replace(
-        /\s*<uses-permission android:name="android\.permission\.RECEIVE_BOOT_COMPLETED"[^/]*\/>/g,
-        ''
+        /<uses-permission\b[^>]*android:name="android\.permission\.RECEIVE_BOOT_COMPLETED"[^>]*\/>/g,
+        (entry) => entry.includes('tools:node="remove"') ? entry : ''
       );
       modified = true;
       console.log('[withAndroidBuildFix] Removed RECEIVE_BOOT_COMPLETED permission');
@@ -215,8 +207,9 @@ function withAndroid15BootFix(config) {
     // 2. Remove any BOOT_COMPLETED intent-filter receivers
     // This regex matches <receiver> blocks containing BOOT_COMPLETED
     manifest = manifest.replace(
-      /\s*<receiver[^>]*>[\s\S]*?BOOT_COMPLETED[\s\S]*?<\/receiver>/g,
+      /\s*<receiver\b[^>]*>(?:(?!<\/receiver>)[\s\S])*?<\/receiver>/g,
       (match) => {
+        if (!match.includes('BOOT_COMPLETED')) return match;
         modified = true;
         console.log('[withAndroidBuildFix] Removed BOOT_COMPLETED receiver');
         return '';

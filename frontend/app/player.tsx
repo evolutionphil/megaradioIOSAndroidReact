@@ -36,7 +36,6 @@ import { PremiumPaywall } from '../src/components/PremiumPaywall';
 import CastModal from '../src/components/CastModal';
 import { UniversalCastButton } from '../src/components/UniversalCastButton';
 import { NativeCastModal } from '../src/components/NativeCastModal';
-import { sendLog } from '../src/services/remoteLog';
 import { getStationLogoUrl } from '../src/utils/stationLogoHelper';
 import type { Station } from '../src/types';
 
@@ -417,20 +416,12 @@ export default function PlayerScreen() {
   const handleStationPress = useCallback(async (station: Station) => {
     console.log('[Player] Station pressed:', station.name, 'ID:', station._id);
     // Send to remote log for debugging
-    sendLog('[Player] Station pressed from grid', { 
-      stationName: station.name, 
-      stationId: station._id,
-      currentStationId: currentStation?._id,
-      currentStationName: currentStation?.name
-    });
     try {
       // Always call playStation - it handles stopping internally
       await playStation(station);
       console.log('[Player] playStation completed for:', station.name);
-      sendLog('[Player] playStation completed', { stationName: station.name });
     } catch (error) {
       console.error('[Player] Failed to play station:', error);
-      sendLog('[Player] Failed to play station', { error: String(error) });
     }
   }, [playStation, currentStation]);
 
@@ -1256,7 +1247,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: 'Ubuntu-Bold',
     fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
     marginBottom: 16,

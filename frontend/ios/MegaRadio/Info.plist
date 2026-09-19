@@ -34,12 +34,18 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>megaradio</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
           <string>com.googleusercontent.apps.957628580421-664s6dft9n8kp91futrnpsugd4fcsonn</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>4</string>
+    <string>5</string>
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-8771434485570434~4044224468</string>
     <key>GADDelayAppMeasurementInit</key>
@@ -87,7 +93,7 @@
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
     </array>
     <key>RCTNewArchEnabled</key>
-    <true/>
+    <false/>
     <key>SKAdNetworkItems</key>
     <array>
       <dict>
@@ -98,7 +104,7 @@
     <key>UIApplicationSceneManifest</key>
     <dict>
       <key>UIApplicationSupportsMultipleScenes</key>
-      <true/>
+      <false/>
       <key>UISceneConfigurations</key>
       <dict>
         <key>UIWindowSceneSessionRoleApplication</key>
@@ -113,10 +119,10 @@
         <key>CPTemplateApplicationSceneSessionRoleApplication</key>
         <array>
           <dict>
-            <key>UISceneClassName</key>
-            <string>CPTemplateApplicationScene</string>
             <key>UISceneConfigurationName</key>
             <string>CarPlay</string>
+            <key>UISceneClassName</key>
+            <string>CPTemplateApplicationScene</string>
             <key>UISceneDelegateClassName</key>
             <string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
           </dict>

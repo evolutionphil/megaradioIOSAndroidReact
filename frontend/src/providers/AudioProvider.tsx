@@ -2,8 +2,6 @@
 // This provides TRUE background audio and lock screen controls for iOS/Android
 
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
-import { sendLog } from '../services/remoteLog';
-sendLog('AUDIO_PROVIDER_FILE_LOADING');
 
 import TrackPlayer, { 
   Capability, 
@@ -29,7 +27,6 @@ import { genreService } from '../services/genreService';
 import api from '../services/api';
 import { API_ENDPOINTS } from '../constants/api';
 import type { Station } from '../types';
-sendLog('AUDIO_PROVIDER_IMPORTS_DONE');
 
 // Country name to flag emoji mapping
 const COUNTRY_FLAGS: { [key: string]: string } = {
@@ -179,6 +176,8 @@ async function doSetupTrackPlayer(): Promise<boolean> {
 // ============================================
 // PROVIDER COMPONENT
 // ============================================
+import { buildStreamCandidates, isPlaylistStream } from '../utils/streamSources';
+
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isReady, setIsReady] = useState(false);
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -190,6 +189,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
   const {
     currentStation,
+    nowPlaying: watchNowPlaying,
     playbackState: storePlaybackState,
     streamUrl,
     setCurrentStation,
@@ -463,14 +463,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Free users get url (standard quality) when available
   
   // Helper to check if URL is a playlist
-  const isPlaylistUrl = useCallback((url: string | undefined): boolean => {
-    if (!url) return false;
-    const lowerUrl = url.toLowerCase();
-    return lowerUrl.endsWith('.pls') || 
-           lowerUrl.endsWith('.m3u') || 
-           lowerUrl.endsWith('.m3u8') ||
-           lowerUrl.endsWith('.asx');
-  }, []);
+  const isPlaylistUrl = useCallback(isPlaylistStream, []);
   
   // Store candidates for fallback - IMPROVED with retry count tracking
   const streamCandidatesRef = useRef<string[]>([]);
@@ -556,16 +549,9 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
       
       // Direct stream URL - build candidates list for fallback
-      // Priority: urlResolved > url > urlBackup > urlAlternatives
-      const candidates: string[] = [];
-      if (urlResolved && urlResolved.trim() !== '') candidates.push(urlResolved);
-      if (originalUrl && originalUrl !== urlResolved) candidates.push(originalUrl);
-      if (urlBackup && !candidates.includes(urlBackup)) candidates.push(urlBackup);
-      if (Array.isArray(urlAlternatives)) {
-        urlAlternatives.forEach((alt: string) => {
-          if (alt && !candidates.includes(alt)) candidates.push(alt);
-        });
-      }
+      // Index zero MUST match the chosen free/premium URL, including urlLow/High.
+      const candidates = buildStreamCandidates(streamUrl, urlResolved, originalUrl,
+        urlBackup, Array.isArray(urlAlternatives) ? urlAlternatives : []);
       streamCandidatesRef.current = candidates;
       
       console.log('[AudioProvider] Native: Stream candidates:', candidates.length);
@@ -1377,11 +1363,11 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
   // Send now playing info to Watch
   useEffect(() => {
-    const nowPlayingData = usePlayerStore.getState().nowPlaying;
-    
+    const nowPlayingData = watchNowPlaying;
+
     if (Platform.OS === 'ios') {
       watchService.updateNowPlaying({
-        stationId: currentStation?._id || currentStation?.id,
+        stationId: currentStation?._id,
         stationName: currentStation?.name,
         stationLogo: currentStation?.logo || currentStation?.favicon,
         songTitle: nowPlayingData?.title,
@@ -1396,7 +1382,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         nowPlayingData?.artist || ''
       );
     }
-  }, [currentStation, isPlaying]);
+  }, [currentStation, isPlaying, watchNowPlaying]);
   
   // Update Watch playback state
   useEffect(() => {

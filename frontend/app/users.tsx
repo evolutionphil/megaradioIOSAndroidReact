@@ -326,7 +326,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Ubuntu-Bold',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Bold',
   },
   searchBtn: {
     width: 40,
@@ -386,7 +385,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Medium',
     marginBottom: 2,
   },
   userRadios: {
@@ -411,7 +409,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Medium',
   },
   followingBtnText: {
     color: '#FF4081',
@@ -435,7 +432,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Ubuntu-Medium',
     color: '#FFFFFF',
-    fontFamily: 'Ubuntu-Medium',
     marginBottom: 8,
   },
   emptyText: {

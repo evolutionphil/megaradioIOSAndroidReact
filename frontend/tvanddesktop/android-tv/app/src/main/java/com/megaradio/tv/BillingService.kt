@@ -6,6 +6,15 @@ import android.util.Log
 import com.android.billingclient.api.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
 import org.json.JSONArray
 import org.json.JSONObject
@@ -51,17 +60,24 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
     /** Pending purchase awaitable, completed by [onPurchasesUpdated]. */
     private var pendingPurchase: CompletableDeferred<JSONObject>? = null
     private var pendingProductId: String? = null
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val connectionMutex = Mutex()
+    private val purchaseMutex = Mutex()
 
-    suspend fun connect(): Boolean = suspendCancellableCoroutine { cont ->
-        if (billingClient.isReady) { cont.resume(true); return@suspendCancellableCoroutine }
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(result: BillingResult) {
-                cont.resume(result.responseCode == BillingClient.BillingResponseCode.OK)
+    suspend fun connect(): Boolean = connectionMutex.withLock {
+        if (billingClient.isReady) return@withLock true
+        withTimeout(15000) {
+            suspendCancellableCoroutine { cont ->
+                billingClient.startConnection(object : BillingClientStateListener {
+                    override fun onBillingSetupFinished(result: BillingResult) {
+                        if (cont.isActive) cont.resume(result.responseCode == BillingClient.BillingResponseCode.OK)
+                    }
+                    override fun onBillingServiceDisconnected() {
+                        if (cont.isActive) cont.resume(false)
+                    }
+                })
             }
-            override fun onBillingServiceDisconnected() {
-                Log.w(TAG, "BillingClient disconnected; will reconnect on next request")
-            }
-        })
+        }
     }
 
     suspend fun getProducts(): JSONArray {
@@ -110,13 +126,30 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
     }
 
     private suspend fun queryProductDetails(params: QueryProductDetailsParams): List<ProductDetails> =
-        suspendCancellableCoroutine { cont ->
-            billingClient.queryProductDetailsAsync(params) { _, list ->
-                cont.resume(list ?: emptyList())
+        withTimeout(15000) { suspendCancellableCoroutine { cont ->
+            billingClient.queryProductDetailsAsync(params) { result, list ->
+                if (cont.isActive) {
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK) cont.resume(list)
+                    else cont.resumeWith(Result.failure(IllegalStateException(result.debugMessage)))
+                }
             }
-        }
+        } }
 
     suspend fun purchase(activity: Activity, productId: String): JSONObject {
+        check(!authToken.isNullOrBlank()) { "Sign in before purchasing" }
+        require(ALL_IDS.contains(productId)) { "Unknown product" }
+        if (!purchaseMutex.tryLock()) return JSONObject().put("ok", false).put("error", "Purchase already in progress")
+        try {
+            return withTimeout(110000) { purchaseLocked(activity, productId) }
+        } finally {
+            pendingPurchase?.cancel()
+            pendingPurchase = null
+            pendingProductId = null
+            purchaseMutex.unlock()
+        }
+    }
+
+    private suspend fun purchaseLocked(activity: Activity, productId: String): JSONObject {
         if (!connect()) return JSONObject().put("ok", false).put("error", "Billing service unavailable")
 
         val type = if (INAPP_PRODUCT_IDS.contains(productId))
@@ -165,19 +198,22 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
 
         when (result.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
-                val purchase = purchases?.firstOrNull()
-                if (purchase != null) {
-                    // Acknowledge purchase
-                    acknowledgeIfNeeded(purchase)
-                    // Notify backend
-                    val plan = postReceiptToBackend(productId, purchase)
-                    deferred.complete(JSONObject().apply {
-                        put("ok", true)
-                        put("productId", productId)
-                        put("plan", plan)
-                    })
+                val purchase = purchases?.firstOrNull { it.products.contains(productId) }
+                if (purchase?.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                    // Return from Billing's main-thread callback immediately.
+                    scope.launch {
+                        try {
+                            val plan = postReceiptToBackend(productId, purchase)
+                            acknowledgeIfNeeded(purchase)
+                            deferred.complete(JSONObject().put("ok", true)
+                                .put("productId", productId).put("plan", plan))
+                        } catch (error: Exception) {
+                            deferred.completeExceptionally(error)
+                        }
+                    }
                 } else {
-                    deferred.complete(JSONObject().put("ok", false).put("error", "No purchase returned"))
+                    deferred.complete(JSONObject().put("ok", false).put("error",
+                        if (purchase?.purchaseState == Purchase.PurchaseState.PENDING) "Purchase pending approval" else "No completed purchase returned"))
                 }
             }
             BillingClient.BillingResponseCode.USER_CANCELED ->
@@ -188,17 +224,23 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
         }
     }
 
-    private fun acknowledgeIfNeeded(purchase: Purchase) {
+    private suspend fun acknowledgeIfNeeded(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged) {
             val params = AcknowledgePurchaseParams.newBuilder()
                 .setPurchaseToken(purchase.purchaseToken).build()
-            billingClient.acknowledgePurchase(params) { res ->
-                Log.d(TAG, "ack: ${res.responseCode}")
-            }
+            withTimeout(15000) { suspendCancellableCoroutine<Unit> { cont ->
+                billingClient.acknowledgePurchase(params) { result ->
+                    if (cont.isActive) {
+                        if (result.responseCode == BillingClient.BillingResponseCode.OK) cont.resume(Unit)
+                        else cont.resumeWith(Result.failure(IllegalStateException("Purchase acknowledgement failed")))
+                    }
+                }
+            } }
         }
     }
 
     suspend fun restore(): JSONObject {
+        check(!authToken.isNullOrBlank()) { "Sign in before restoring purchases" }
         if (!connect()) return JSONObject().put("ok", false).put("error", "Billing service unavailable")
         val subsQuery = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.SUBS).build()
@@ -213,6 +255,7 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
 
         val productId = purchase.products.firstOrNull() ?: ""
         val plan = postReceiptToBackend(productId, purchase)
+        acknowledgeIfNeeded(purchase)
         return JSONObject().apply {
             put("ok", true)
             put("productId", productId)
@@ -221,18 +264,23 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
     }
 
     private suspend fun queryPurchases(params: QueryPurchasesParams): List<Purchase> =
-        suspendCancellableCoroutine { cont ->
-            billingClient.queryPurchasesAsync(params) { _, list -> cont.resume(list) }
-        }
+        withTimeout(15000) { suspendCancellableCoroutine { cont ->
+            billingClient.queryPurchasesAsync(params) { result, list ->
+                if (cont.isActive) {
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK) cont.resume(list)
+                    else cont.resumeWith(Result.failure(IllegalStateException(result.debugMessage)))
+                }
+            }
+        } }
 
     /**
      * POST receipt to backend. Mirrors mobile iapService.ts reportToBackend.
-     * Runs synchronously inside the purchase callback (~100ms typical).
+     * Runs off the UI thread. No local entitlement fallback on verification errors.
      */
-    private fun postReceiptToBackend(productId: String, purchase: Purchase): String {
-        val token = authToken
-        if (token.isNullOrEmpty()) return planFromProductId(productId)
-        return try {
+    private suspend fun postReceiptToBackend(productId: String, purchase: Purchase): String {
+        val token = authToken?.takeIf { it.isNotBlank() }
+            ?: throw IllegalStateException("Sign in to verify your purchase")
+        val plan = withContext(Dispatchers.IO) {
             val url = URL("$API_BASE/api/user/subscription")
             val conn = (url.openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
@@ -242,6 +290,7 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
                 connectTimeout = 8000
                 readTimeout = 8000
             }
+            try {
             val body = JSONObject().apply {
                 put("platform", "android")
                 put("productId", productId)
@@ -251,20 +300,23 @@ class BillingService(private val context: Context) : PurchasesUpdatedListener {
                 put("purchaseToken", purchase.purchaseToken)
             }
             conn.outputStream.use { it.write(body.toString().toByteArray()) }
+            check(conn.responseCode in 200..299) { "Purchase verification failed (HTTP ${conn.responseCode})" }
             val responseText = conn.inputStream.bufferedReader().use { it.readText() }
             val obj = JSONObject(responseText)
-            obj.optString("plan").takeIf { it.isNotBlank() } ?: planFromProductId(productId)
-        } catch (e: Exception) {
-            Log.w(TAG, "Backend receipt POST failed (non-fatal): ${e.message}")
-            planFromProductId(productId)
+            check(obj.optBoolean("success", true) && (obj.isNull("error") || obj.optString("error").isBlank())) {
+                "Purchase verification rejected"
+            }
+            (obj.opt("plan") as? String)?.takeIf { it.isNotBlank() }
+                ?: throw IllegalStateException("No verified subscription returned")
+            } finally { conn.disconnect() }
         }
+        check(authToken == token) { "Account changed while verifying purchase" }
+        return plan
     }
 
-    private fun planFromProductId(pid: String): String = when (pid) {
-        "megaradio_premium_yearly" -> "premium_yearly"
-        "megaradio_premium_monthly1" -> "premium_monthly"
-        "megaradio_premium_lifetime" -> "premium_lifetime"
-        "megaradio_remove_ads_yearly1" -> "remove_ads"
-        else -> "premium"
+    fun close() {
+        pendingPurchase?.cancel()
+        scope.cancel()
+        billingClient.endConnection()
     }
 }

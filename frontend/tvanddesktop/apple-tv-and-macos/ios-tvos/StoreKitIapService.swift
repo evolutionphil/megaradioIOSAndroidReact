@@ -11,6 +11,9 @@
 
 import Foundation
 import StoreKit
+#if canImport(UIKit)
+import UIKit
+#endif
 
 #if os(tvOS) || os(iOS) || os(macOS)
 
@@ -36,7 +39,7 @@ final class StoreKitIapService {
     /// Auth token from the web view (Account-Linking JWT). Set this from the
     /// JS bridge whenever the user logs in / out so backend receipt posts
     /// carry the correct Bearer header.
-    var authToken: String?
+    var authToken: String? { AuthStore.shared.token }
 
     private init() {
         // Apple highly recommends starting a listener on app launch so renewals
@@ -45,8 +48,14 @@ final class StoreKitIapService {
             for await result in StoreKit.Transaction.updates {
                 guard let self else { return }
                 if case .verified(let txn) = result {
-                    _ = try? await self.reportToBackend(transaction: txn, productId: txn.productID)
-                    await txn.finish()
+                    do {
+                        _ = try await self.reportToBackend(transaction: txn, productId: txn.productID,
+                                                           receipt: result.jwsRepresentation)
+                        await txn.finish()
+                    } catch {
+                        // Keep unfinished so restore/StoreKit can retry synchronization.
+                        print("[StoreKit] Subscription sync failed; transaction remains unfinished")
+                    }
                 }
             }
         }
@@ -76,6 +85,10 @@ final class StoreKitIapService {
     // MARK: - Purchase
 
     func purchase(productId: String) async throws -> [String: Any] {
+        guard let token = authToken, !token.isEmpty else {
+            throw NSError(domain: "MegaRadio.StoreKit", code: 401,
+                          userInfo: [NSLocalizedDescriptionKey: "Sign in before purchasing"])
+        }
         let product: Product
         if let cached = products.first(where: { $0.id == productId }) {
             product = cached
@@ -90,7 +103,8 @@ final class StoreKitIapService {
         case .success(let verification):
             switch verification {
             case .verified(let txn):
-                let plan = try await reportToBackend(transaction: txn, productId: productId)
+                let plan = try await reportToBackend(transaction: txn, productId: productId,
+                                                     receipt: verification.jwsRepresentation)
                 await txn.finish()
                 return [
                     "ok": true,
@@ -112,11 +126,15 @@ final class StoreKitIapService {
     // MARK: - Restore
 
     func restore() async throws -> [String: Any] {
-        try? await AppStore.sync()
+        try await AppStore.sync()
 
         for await result in StoreKit.Transaction.currentEntitlements {
             if case .verified(let txn) = result {
-                let plan = try await reportToBackend(transaction: txn, productId: txn.productID)
+                guard txn.revocationDate == nil,
+                      txn.expirationDate.map({ $0 > Date() }) ?? true else { continue }
+                let plan = try await reportToBackend(transaction: txn, productId: txn.productID,
+                                                     receipt: result.jwsRepresentation)
+                await txn.finish()
                 return [
                     "ok": true,
                     "productId": txn.productID,
@@ -134,22 +152,24 @@ final class StoreKitIapService {
         if let url = URL(string: "App-Prefs:root=STORE&path=SUBSCRIPTIONS") {
             await UIApplication.shared.open(url)
         }
-        #else
+        #elseif os(iOS)
         if #available(iOS 15.0, *) {
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 try await AppStore.showManageSubscriptions(in: scene)
             }
         }
+        #elseif os(macOS)
+        throw NSError(domain: "MegaRadio.StoreKit", code: 501,
+                      userInfo: [NSLocalizedDescriptionKey: "Manage subscriptions in App Store account settings"])
         #endif
     }
 
     // MARK: - Backend receipt validation
 
-    private func reportToBackend(transaction txn: StoreKit.Transaction, productId: String) async throws -> String {
+    private func reportToBackend(transaction txn: StoreKit.Transaction, productId: String, receipt: String) async throws -> String {
         guard let token = authToken, !token.isEmpty else {
-            // No logged-in user → just trust StoreKit locally; the user can
-            // log in later and we'll re-sync via /api/user/subscription GET.
-            return planFromProductId(productId)
+            throw NSError(domain: "MegaRadio.StoreKit", code: 401,
+                          userInfo: [NSLocalizedDescriptionKey: "Sign in to verify your purchase"])
         }
 
         var body: [String: Any] = [
@@ -161,37 +181,31 @@ final class StoreKitIapService {
         ]
         // jwsRepresentation is StoreKit 2's signed JWS receipt; the backend
         // verifies it against Apple's public keys.
-        body["receipt"] = txn.jsonRepresentation.base64EncodedString()
+        body["receipt"] = receipt
 
         guard let url = URL(string: apiBaseUrl + "/api/user/subscription") else {
-            return planFromProductId(productId)
+            throw APIError.invalidURL
         }
         var req = URLRequest(url: url)
+        req.timeoutInterval = 15
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        do {
-            let (data, _) = try await URLSession.shared.data(for: req)
-            if let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let plan = obj["plan"] as? String, !plan.isEmpty {
-                return plan
-            }
-        } catch {
-            // Non-fatal — local activation already done in the success path.
+        let (data, response) = try await URLSession.shared.data(for: req)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw APIError.requestFailed((response as? HTTPURLResponse)?.statusCode ?? -1)
         }
-        return planFromProductId(productId)
-    }
-
-    private func planFromProductId(_ pid: String) -> String {
-        switch pid {
-        case "megaradio_premium_yearly":     return "premium_yearly"
-        case "megaradio_premium_monthly1":   return "premium_monthly"
-        case "megaradio_premium_lifetime":   return "premium_lifetime"
-        case "megaradio_remove_ads_yearly1": return "remove_ads"
-        default: return "premium"
+        guard authToken == token,
+              let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              (obj["success"] as? Bool) != false,
+              obj["error"] == nil || obj["error"] is NSNull || (obj["error"] as? String) == "",
+              let plan = obj["plan"] as? String,
+              !plan.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw APIError.decodingFailed("No verified subscription returned")
         }
+        return plan
     }
 }
 

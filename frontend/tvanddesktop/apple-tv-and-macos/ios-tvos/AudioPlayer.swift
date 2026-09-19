@@ -54,7 +54,7 @@ final class AudioPlayer: ObservableObject {
 
         statusObserver = item.observe(\.status, options: [.new]) { [weak self] item, _ in
             Task { @MainActor in
-                guard let self else { return }
+                guard let self, self.player?.currentItem === item else { return }
                 switch item.status {
                 case .readyToPlay:
                     self.isBuffering = false
@@ -68,7 +68,8 @@ final class AudioPlayer: ObservableObject {
         }
         rateObserver = p.observe(\.rate, options: [.new]) { [weak self] p, _ in
             Task { @MainActor in
-                self?.isPlaying = p.rate > 0
+                guard let self, self.player === p else { return }
+                self.isPlaying = p.rate > 0
             }
         }
         p.play()
@@ -86,6 +87,23 @@ final class AudioPlayer: ObservableObject {
         updateNowPlayingInfo()
     }
 
+    func resume() {
+        guard let player else {
+            if let station = currentStation { play(station) }
+            return
+        }
+        player.play()
+        isPlaying = true
+        updateNowPlayingInfo()
+    }
+
+    func pause() {
+        player?.pause()
+        isPlaying = false
+        isBuffering = false
+        updateNowPlayingInfo()
+    }
+
     func stop() {
         player?.pause()
         player?.replaceCurrentItem(with: nil)
@@ -99,7 +117,8 @@ final class AudioPlayer: ObservableObject {
 
     // MARK: - ICY metadata callback
 
-    fileprivate func handleMetadata(title: String?, artist: String?) {
+    fileprivate func handleMetadata(from output: AVPlayerItemMetadataOutput, title: String?, artist: String?) {
+        guard metadataOutput === output else { return }
         nowPlayingTitle = title
         nowPlayingArtist = artist
         updateNowPlayingInfo()
@@ -123,11 +142,11 @@ final class AudioPlayer: ObservableObject {
     private func configureRemoteCommands() {
         let center = MPRemoteCommandCenter.shared()
         center.playCommand.addTarget { [weak self] _ in
-            Task { @MainActor in self?.togglePlayPause() }
+            Task { @MainActor in self?.resume() }
             return .success
         }
         center.pauseCommand.addTarget { [weak self] _ in
-            Task { @MainActor in self?.togglePlayPause() }
+            Task { @MainActor in self?.pause() }
             return .success
         }
         center.togglePlayPauseCommand.addTarget { [weak self] _ in
@@ -161,6 +180,7 @@ final class MetadataObserver: NSObject, AVPlayerItemMetadataOutputPushDelegate {
                         : raw
                     await MainActor.run {
                         AudioPlayer.shared.handleMetadata(
+                            from: output,
                             title: title.isEmpty ? nil : title,
                             artist: artist
                         )

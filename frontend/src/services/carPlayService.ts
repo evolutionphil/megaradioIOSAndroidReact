@@ -3,7 +3,6 @@
 
 import { Platform, NativeModules } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
-import CarPlayLogger from './carPlayLogService';
 import i18n, { addLanguageChangeListener } from './i18nService';
 import { getStationLogoUrl as centralGetStationLogoUrl, DEFAULT_STATION_LOGO_URL } from '../utils/stationLogoHelper';
 import { getCarPlayImagePath, cacheStationImages } from './carPlayImageCache';
@@ -133,22 +132,11 @@ if (Platform.OS !== 'web') {
     SearchTemplate = carplayModule.SearchTemplate;
     VoiceControlTemplate = carplayModule.VoiceControlTemplate;
     
-    CarPlayLogger.moduleLoaded('react-native-carplay', true);
-    CarPlayLogger.info('CarPlay modules loaded', {
-      CarPlay: !!CarPlay,
-      ListTemplate: !!ListTemplate,
-      TabBarTemplate: !!TabBarTemplate,
-      NowPlayingTemplate: !!NowPlayingTemplate,
-      GridTemplate: !!GridTemplate,
-      SearchTemplate: !!SearchTemplate,
-      VoiceControlTemplate: !!VoiceControlTemplate,
-    });
     
     // CRITICAL: Register handlers IMMEDIATELY when module loads
     // This ensures we catch connection events even if they fire before initialize()
     if (CarPlay && !handlersRegistered) {
       try {
-        CarPlayLogger.info('[RN] EARLY REGISTRATION - Registering connection handlers at module load');
         
         // INFINITE LOOP FIX: Store callback references for later cleanup
         earlyOnConnectCallback = () => {
@@ -159,15 +147,10 @@ if (Platform.OS !== 'web') {
           }
           lastConnectHandledAt = now;
           
-          CarPlayLogger.info('[RN] EARLY onConnect callback FIRED (before initialize)', {
-            timestamp: new Date().toISOString(),
-            hasCallbacks: !!playStationCallback,
-          });
           pendingConnection = true;
         };
         
         earlyOnDisconnectCallback = () => {
-          CarPlayLogger.info('[RN] EARLY onDisconnect callback FIRED');
           pendingConnection = false;
           connectionFullyHandled = false;
           lastConnectHandledAt = 0; // Reset debounce on disconnect
@@ -180,7 +163,6 @@ if (Platform.OS !== 'web') {
         // NOTE: Only check the property, do NOT call checkForConnection() on Android
         try {
           if (CarPlay.connected) {
-            CarPlayLogger.info('[RN] CarPlay ALREADY CONNECTED at module load time!');
             pendingConnection = true;
           }
         } catch (connErr) {
@@ -190,12 +172,10 @@ if (Platform.OS !== 'web') {
         handlersRegistered = true;
       } catch (handlerErr: any) {
         console.log('[CarPlayService] Error registering CarPlay handlers:', handlerErr);
-        CarPlayLogger.info('[RN] Handler registration failed', { error: String(handlerErr) });
       }
     }
   } catch (e: any) {
     console.log('[CarPlayService] CarPlay module not available:', e);
-    CarPlayLogger.moduleError('react-native-carplay', e);
   }
 }
 
@@ -236,6 +216,11 @@ interface CarPlayServiceType {
 
 // Global state
 let isCarPlayConnected = false;
+let connectionGeneration = 0;
+let activeRootTemplates: any[] = [];
+const sessionIsCurrent = (generation: number) =>
+  isCarPlayConnected && generation === connectionGeneration;
+const destroyTemplates = (templates: any[]) => templates.forEach(template => template?.destroy?.());
 let playStationCallback: ((station: Station) => Promise<void>) | null = null;
 let getStationsCallback: (() => Promise<Station[]>) | null = null;
 let getFavoritesCallback: (() => Promise<Station[]>) | null = null;
@@ -318,15 +303,13 @@ const getArtworkUrl = (station: Station): string => {
 
 // Create Favorites List Template
 const createFavoritesTemplate = async (): Promise<any> => {
-  CarPlayLogger.templateCreating('Favorites');
+  const generation = connectionGeneration;
   
   if (!ListTemplate || !getFavoritesCallback) {
-    CarPlayLogger.templateFailed('Favorites', 'ListTemplate or callback not available');
     return null;
   }
   
   try {
-    CarPlayLogger.dataLoading('favorites');
     
     // COLD START FIX: Increased timeout to 10s for cold start scenarios
     // JS bundle initialization and API calls can take longer on first launch
@@ -339,7 +322,7 @@ const createFavoritesTemplate = async (): Promise<any> => {
     );
     
     const favorites = await Promise.race([getFavoritesCallback(), timeoutPromise]);
-    CarPlayLogger.dataLoaded('favorites', favorites.length);
+    if (!sessionIsCurrent(generation)) return null;
     
     // Build items with imgUrl for async native image loading
     // Native iOS downloads images asynchronously via imgUrl during item creation
@@ -355,6 +338,8 @@ const createFavoritesTemplate = async (): Promise<any> => {
     
     const template = new ListTemplate({
       title: t('carplay_favorites', 'Favorites'),
+      tabTitle: t('carplay_favorites', 'Favorites'),
+      tabSystemImageName: 'heart.fill',
       sections: [{
         header: `${t('carplay_favorite_stations', 'Favorite Stations')} (${favorites.length})`,
         items,
@@ -362,23 +347,18 @@ const createFavoritesTemplate = async (): Promise<any> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = favorites[index];
         if (station && playStationCallback) {
-          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing favorite:', station.name);
           try {
             await playStationCallback(station);
-            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
             showNowPlayingTemplate(station);
           } catch (e: any) {
-            CarPlayLogger.playbackError(e, station.name);
           }
         }
       },
     });
     
-    CarPlayLogger.templateCreated('Favorites', { itemCount: favorites.length });
     return template;
   } catch (error: any) {
-    CarPlayLogger.templateError('Favorites', error);
     console.error('[CarPlay] Error creating favorites template:', error);
     return null;
   }
@@ -386,15 +366,13 @@ const createFavoritesTemplate = async (): Promise<any> => {
 
 // Create Recently Played List Template
 const createRecentlyPlayedTemplate = async (): Promise<any> => {
-  CarPlayLogger.templateCreating('RecentlyPlayed');
+  const generation = connectionGeneration;
   
   if (!ListTemplate || !getRecentlyPlayedCallback) {
-    CarPlayLogger.templateFailed('RecentlyPlayed', 'ListTemplate or callback not available');
     return null;
   }
   
   try {
-    CarPlayLogger.dataLoading('recentlyPlayed');
     
     // COLD START FIX: Increased timeout to 10s for cold start scenarios
     const TIMEOUT_MS = 10000;
@@ -406,7 +384,7 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     );
     
     const recentStations = await Promise.race([getRecentlyPlayedCallback(), timeoutPromise]);
-    CarPlayLogger.dataLoaded('recentlyPlayed', recentStations.length);
+    if (!sessionIsCurrent(generation)) return null;
     
     // Use ListTemplate for Recently Played - supports imgUrl for remote logos
     // (GridTemplate does NOT support imgUrl, only local images)
@@ -425,6 +403,8 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
     
     const template = new ListTemplate({
       title: t('carplay_recently_played', 'Zuletzt gespielt'),
+      tabTitle: t('carplay_recently_played', 'Recently Played'),
+      tabSystemImageName: 'clock.fill',
       sections: [{
         header: `${t('carplay_recent_stations', 'Recent Stations')} (${stationsSlice.length})`,
         items,
@@ -432,23 +412,18 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stationsSlice[index];
         if (station && playStationCallback) {
-          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing recent:', station.name);
           try {
             await playStationCallback(station);
-            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
             showNowPlayingTemplate(station);
           } catch (e: any) {
-            CarPlayLogger.playbackError(e, station.name);
           }
         }
       },
     });
     
-    CarPlayLogger.templateCreated('RecentlyPlayed', { itemCount: stationsSlice.length });
     return template;
   } catch (error: any) {
-    CarPlayLogger.templateError('RecentlyPlayed', error);
     console.error('[CarPlay] Error creating recently played template:', error);
     return null;
   }
@@ -456,13 +431,12 @@ const createRecentlyPlayedTemplate = async (): Promise<any> => {
 
 // Create Genres Grid Template (40 genres in grid layout)
 const createGenresTemplate = async (): Promise<any> => {
-  CarPlayLogger.templateCreating('Genres');
+  const generation = connectionGeneration;
   
   // Try GridTemplate first, fallback to ListTemplate
   const TemplateClass = GridTemplate || ListTemplate;
   
   if (!TemplateClass || !getGenresCallback) {
-    CarPlayLogger.templateFailed('Genres', 'Template or callback not available');
     return null;
   }
   
@@ -513,7 +487,6 @@ const createGenresTemplate = async (): Promise<any> => {
   };
   
   try {
-    CarPlayLogger.dataLoading('genres');
     
     // COLD START FIX: Increased timeout to 10s for cold start scenarios
     const TIMEOUT_MS = 10000;
@@ -525,7 +498,7 @@ const createGenresTemplate = async (): Promise<any> => {
     );
     
     const genres = await Promise.race([getGenresCallback(), timeoutPromise]);
-    CarPlayLogger.dataLoaded('genres', genres.length);
+    if (!sessionIsCurrent(generation)) return null;
     
     // Using ListTemplate with genre-specific LOCAL icons - no backend dependency
     // Each genre gets its own icon (rock guitar, jazz sax, pop mic, etc.)
@@ -534,6 +507,8 @@ const createGenresTemplate = async (): Promise<any> => {
     
     const template = new ListTemplate({
       title: t('carplay_genres', 'Genres'),
+      tabTitle: t('carplay_genres', 'Genres'),
+      tabSystemImageName: 'square.grid.2x2.fill',
       sections: [{
         header: `${t('carplay_music_genres', 'Music Genres')} (${Math.min(genres.length, 40)})`,
         items: genres.slice(0, 40).map(genre => {
@@ -552,17 +527,14 @@ const createGenresTemplate = async (): Promise<any> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const genre = genres[index];
         if (genre) {
-          CarPlayLogger.info('Genre selected', { genre: genre.name });
           console.log('[CarPlay] Genre selected:', genre.name);
           await showGenreStationsTemplate(genre.name);
         }
       },
     });
     
-    CarPlayLogger.templateCreated('Genres (List)', { genreCount: Math.min(genres.length, 40) });
     return template;
   } catch (error: any) {
-    CarPlayLogger.templateError('Genres', error);
     console.error('[CarPlay] Error creating genres template:', error);
     return null;
   }
@@ -570,10 +542,10 @@ const createGenresTemplate = async (): Promise<any> => {
 
 // Create Genre Stations List Template
 const showGenreStationsTemplate = async (genre: string): Promise<void> => {
-  CarPlayLogger.templateCreating(`GenreStations-${genre}`);
+  if (!isCarPlayConnected) return;
+  const generation = connectionGeneration;
   
   if (!ListTemplate || !CarPlay || !getStationsByGenreCallback) {
-    CarPlayLogger.templateFailed(`GenreStations-${genre}`, 'Dependencies not available');
     console.error('[CarPlay] showGenreStationsTemplate failed - missing dependencies:', {
       ListTemplate: !!ListTemplate,
       CarPlay: !!CarPlay,
@@ -583,7 +555,6 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
   }
   
   try {
-    CarPlayLogger.dataLoading(`genreStations-${genre}`);
     console.log('[CarPlay] Fetching stations for genre:', genre);
     
     // Add timeout for genre station fetch (max 15 seconds)
@@ -596,14 +567,13 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
     );
     
     const stations = await Promise.race([getStationsByGenreCallback(genre), timeoutPromise]);
-    CarPlayLogger.dataLoaded(`genreStations-${genre}`, stations.length);
+    if (!sessionIsCurrent(generation)) return;
     
     console.log('[CarPlay] Got', stations.length, 'stations for genre:', genre);
     
     // If no stations found, show an informative message
     if (!stations || stations.length === 0) {
       console.warn('[CarPlay] No stations found for genre:', genre);
-      CarPlayLogger.warn(`[RN] No stations found for genre: ${genre}`);
       
       // Show empty state template
       const emptyTemplate = new ListTemplate({
@@ -642,38 +612,31 @@ const showGenreStationsTemplate = async (genre: string): Promise<void> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stationsSlice[index];
         if (station && playStationCallback) {
-          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing from genre:', station.name);
           try {
             await playStationCallback(station);
-            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
             showNowPlayingTemplate(station);
           } catch (e: any) {
-            CarPlayLogger.playbackError(e, station.name);
           }
         }
       },
     });
     
     CarPlay.pushTemplate(template, true);
-    CarPlayLogger.templateCreated(`GenreStations-${genre}`, { stationCount: Math.min(stations.length, 50) });
   } catch (error: any) {
-    CarPlayLogger.templateError(`GenreStations-${genre}`, error);
     console.error('[CarPlay] Error showing genre stations:', error);
   }
 };
 
 // Create Browse/Popular Stations List Template (50 stations with logos)
 const createBrowseTemplate = async (): Promise<any> => {
-  CarPlayLogger.templateCreating('Browse');
+  const generation = connectionGeneration;
   
   if (!ListTemplate || !getStationsCallback) {
-    CarPlayLogger.templateFailed('Browse', 'ListTemplate or callback not available');
     return null;
   }
   
   try {
-    CarPlayLogger.dataLoading('popularStations');
     
     // COLD START FIX: Increased timeout to 10s for cold start scenarios
     const TIMEOUT_MS = 10000;
@@ -685,7 +648,7 @@ const createBrowseTemplate = async (): Promise<any> => {
     );
     
     const stations = await Promise.race([getStationsCallback(), timeoutPromise]);
-    CarPlayLogger.dataLoaded('popularStations', stations.length);
+    if (!sessionIsCurrent(generation)) return null;
     
     // Build items with imgUrl for async native image loading (max 50)
     const stationsSlice = stations.slice(0, 50);
@@ -707,6 +670,8 @@ const createBrowseTemplate = async (): Promise<any> => {
     
     const template = new ListTemplate({
       title: t('carplay_discover', 'Discover'),
+      tabTitle: t('carplay_discover', 'Discover'),
+      tabSystemImageName: 'music.note.list',
       sections: [{
         header: `${t('carplay_popular_stations', 'Popular Stations')} (${Math.min(stations.length, 50)})`,
         items,
@@ -714,23 +679,18 @@ const createBrowseTemplate = async (): Promise<any> => {
       onItemSelect: async ({ index }: { index: number }) => {
         const station = stationsSlice[index];
         if (station && playStationCallback) {
-          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay] Playing from browse:', station.name);
           try {
             await playStationCallback(station);
-            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
             showNowPlayingTemplate(station);
           } catch (e: any) {
-            CarPlayLogger.playbackError(e, station.name);
           }
         }
       },
     });
     
-    CarPlayLogger.templateCreated('Browse', { stationCount: Math.min(stations.length, 50) });
     return template;
   } catch (error: any) {
-    CarPlayLogger.templateError('Browse', error);
     console.error('[CarPlay] Error creating browse template:', error);
     return null;
   }
@@ -738,7 +698,7 @@ const createBrowseTemplate = async (): Promise<any> => {
 
 // Show Now Playing Template - Enhanced with favorite button, Up Next, and proper callbacks
 const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName?: string): void => {
-  if (!NowPlayingTemplate || !CarPlay) return;
+  if (!NowPlayingTemplate || !CarPlay || !isCarPlayConnected) return;
   
   // ANDROID AUTO GUARD: Skip if carContext may not be ready
   if (Platform.OS === 'android' && !isCarPlayConnected) {
@@ -777,7 +737,6 @@ const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName
       // Handle custom button presses
       onButtonPressed: async (e: { id: string; templateId: string }) => {
         console.log('[CarPlay NowPlaying] Button pressed:', e.id);
-        CarPlayLogger.info('[RN] NowPlaying button pressed', { buttonId: e.id });
         
         if (e.id === 'toggle-favorite' && currentNowPlayingStation) {
           // Toggle favorite for current station
@@ -787,41 +746,31 @@ const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName
               const stationId = currentNowPlayingStation._id || (currentNowPlayingStation as any).id;
               const isNowFavorite = isFavoriteCallback ? isFavoriteCallback(stationId) : false;
               console.log('[CarPlay NowPlaying] Favorite toggled:', currentNowPlayingStation.name, '-> isFavorite:', isNowFavorite);
-              CarPlayLogger.info('[RN] Favorite toggled', { 
-                station: currentNowPlayingStation.name, 
-                isFavorite: isNowFavorite 
-              });
             } catch (err) {
               console.error('[CarPlay NowPlaying] Toggle favorite error:', err);
-              CarPlayLogger.error('[RN] Toggle favorite error', { error: String(err) });
             }
           }
         } else if (e.id === 'more-options') {
           console.log('[CarPlay NowPlaying] More options pressed for:', currentNowPlayingStation?.name);
-          CarPlayLogger.info('[RN] More options pressed', { station: currentNowPlayingStation?.name });
         }
       },
       // Handle Up Next button press - play next similar station
       onUpNextButtonPressed: async () => {
         console.log('[CarPlay NowPlaying] Up Next pressed');
-        CarPlayLogger.info('[RN] Up Next button pressed');
         
         if (getNextStationCallback && playStationCallback) {
           try {
             const nextStation = await getNextStationCallback();
             if (nextStation) {
               console.log('[CarPlay NowPlaying] Playing next station:', nextStation.name);
-              CarPlayLogger.info('[RN] Playing next station from Up Next', { station: nextStation.name });
               await playStationCallback(nextStation);
               // Update NowPlaying with new station
               showNowPlayingTemplate(nextStation);
             } else {
               console.log('[CarPlay NowPlaying] No next station available');
-              CarPlayLogger.info('[RN] No next station available');
             }
           } catch (err) {
             console.error('[CarPlay NowPlaying] Up Next error:', err);
-            CarPlayLogger.error('[RN] Up Next error', { error: String(err) });
           }
         }
       },
@@ -831,26 +780,18 @@ const showNowPlayingTemplate = (station: Station, songTitle?: string, artistName
     console.log('[CarPlay] Showing enhanced NowPlaying for:', station.name, 
       '| buttons:', buttons.length, 
       '| upNext: enabled');
-    CarPlayLogger.info('[RN] NowPlaying template shown', { 
-      station: station.name, 
-      buttonCount: buttons.length,
-      upNextEnabled: true,
-    });
   } catch (error) {
     console.error('[CarPlay] Error showing now playing:', error);
-    CarPlayLogger.error('[RN] Error showing NowPlaying', { error: String(error) });
   }
 };
 
 // Create Search Template for CarPlay
 const createSearchTemplate = async (): Promise<any> => {
   if (!SearchTemplate || !ListTemplate) {
-    CarPlayLogger.warn('[RN] SearchTemplate or ListTemplate not available');
     return null;
   }
   
   try {
-    CarPlayLogger.info('[RN] Creating Search Template');
     
     // Track search results for item selection
     let searchResults: Station[] = [];
@@ -858,7 +799,6 @@ const createSearchTemplate = async (): Promise<any> => {
     const searchTemplate = new SearchTemplate({
       // Called when user types in search field
       onSearch: async (query: string) => {
-        CarPlayLogger.info('[RN] Search query received', { query });
         console.log('[CarPlay Search] Query:', query);
         
         if (!query || query.length < 2) {
@@ -869,7 +809,6 @@ const createSearchTemplate = async (): Promise<any> => {
         try {
           if (searchStationsCallback) {
             searchResults = await searchStationsCallback(query);
-            CarPlayLogger.info('[RN] Search results', { count: searchResults.length, query });
             console.log('[CarPlay Search] Found', searchResults.length, 'stations');
             
             // Return results for display - each item needs text and detailText
@@ -878,11 +817,9 @@ const createSearchTemplate = async (): Promise<any> => {
               detailText: station.country || station.tags?.split(',')[0] || 'Radio',
             }));
           } else {
-            CarPlayLogger.warn('[RN] searchStationsCallback not available');
             return [];
           }
         } catch (error: any) {
-          CarPlayLogger.error('[RN] Search error', { error: String(error), query });
           console.error('[CarPlay Search] Error:', error);
           return [];
         }
@@ -890,19 +827,15 @@ const createSearchTemplate = async (): Promise<any> => {
       
       // Called when user selects a search result
       onItemSelect: async ({ index }: { index: number }) => {
-        CarPlayLogger.info('[RN] Search item selected', { index });
         console.log('[CarPlay Search] Selected index:', index);
         
         const station = searchResults[index];
         if (station && playStationCallback) {
-          CarPlayLogger.stationSelected(station.name, station._id);
           console.log('[CarPlay Search] Playing:', station.name);
           try {
             await playStationCallback(station);
-            CarPlayLogger.playbackStarted(station.name, station.url_resolved || station.url);
             showNowPlayingTemplate(station);
           } catch (e: any) {
-            CarPlayLogger.playbackError(e, station.name);
             console.error('[CarPlay Search] Playback error:', e);
           }
         }
@@ -910,16 +843,13 @@ const createSearchTemplate = async (): Promise<any> => {
       
       // Optional: Called when search button is pressed
       onSearchButtonPressed: () => {
-        CarPlayLogger.info('[RN] Search button pressed');
         console.log('[CarPlay Search] Search button pressed');
       },
     });
     
-    CarPlayLogger.templateCreated('Search', {});
     console.log('[CarPlay] Search template created successfully');
     return searchTemplate;
   } catch (error: any) {
-    CarPlayLogger.templateError('Search', error);
     console.error('[CarPlay] Error creating search template:', error);
     return null;
   }
@@ -936,7 +866,6 @@ const openSearchScreen = async (): Promise<void> => {
     const searchTemplate = await createSearchTemplate();
     if (searchTemplate) {
       CarPlay.pushTemplate(searchTemplate, true);
-      CarPlayLogger.info('[RN] Search screen pushed via voice command');
       console.log('[CarPlay] Search screen opened');
     }
   } catch (error) {
@@ -946,6 +875,8 @@ const openSearchScreen = async (): Promise<void> => {
 
 // Create Root Tab Bar Template
 const createRootTemplate = async (): Promise<void> => {
+  if (!isCarPlayConnected) return;
+  const generation = connectionGeneration;
   // ANDROID AUTO GUARD: On Android, the native carContext may not be initialized yet
   // during cold start. The native patch now returns errors gracefully instead of crashing,
   // but we add a JS-side guard to avoid unnecessary error cycles.
@@ -953,12 +884,10 @@ const createRootTemplate = async (): Promise<void> => {
     try {
       // checkForConnection is safe to call even without carContext
       // If it doesn't throw, the native module is at least loaded
-      if (CarPlay?.bridge?.checkForConnection) {
-        CarPlay.bridge.checkForConnection();
-      }
+      // Do not call checkForConnection here: Android emits another didConnect,
+      // which previously caused a root-template rebuild loop.
     } catch (e) {
       console.log('[CarPlay] Android: Native module not ready yet, deferring template creation');
-      CarPlayLogger.info('[RN] Android: carContext may not be ready, deferring', { error: String(e) });
       return;
     }
   }
@@ -966,7 +895,6 @@ const createRootTemplate = async (): Promise<void> => {
   // CRASH FIX: Prevent concurrent template creation which can cause
   // REASwizzledUIManager race condition with RCTUIManager
   if (isCreatingTemplate) {
-    CarPlayLogger.info('[RN] createRootTemplate() QUEUED - already creating template');
     // Mark that a refresh is pending so we rebuild after current creation finishes
     pendingCallbackRefresh = true;
     return;
@@ -974,15 +902,9 @@ const createRootTemplate = async (): Promise<void> => {
   
   isCreatingTemplate = true;
   pendingCallbackRefresh = false;
-  CarPlayLogger.info('[RN] createRootTemplate() STARTED');
   
   if (!TabBarTemplate || !CarPlay) {
     console.log('[CarPlay] Templates not available');
-    CarPlayLogger.error('[RN] Templates NOT AVAILABLE', { 
-      TabBarTemplate: !!TabBarTemplate, 
-      CarPlay: !!CarPlay,
-      ListTemplate: !!ListTemplate,
-    });
     // CRITICAL: Release mutex before returning!
     isCreatingTemplate = false;
     return;
@@ -990,13 +912,11 @@ const createRootTemplate = async (): Promise<void> => {
   
   try {
     console.log('[CarPlay] Creating root template...');
-    CarPlayLogger.info('[RN] Creating root template - fetching data...');
     
     // Create all tab templates with individual error handling
     // NOTE: SearchTemplate CANNOT be added as a tab in Audio category apps
     // iOS CarPlay only allows ListTemplate, GridTemplate, InformationTemplate, NowPlayingTemplate as tabs
     // Search will be added as a list item in Browse tab instead
-    CarPlayLogger.info('[RN] Starting Promise.allSettled for all templates');
     const startTime = Date.now();
     
     const results = await Promise.allSettled([
@@ -1008,7 +928,6 @@ const createRootTemplate = async (): Promise<void> => {
     ]);
     
     const duration = Date.now() - startTime;
-    CarPlayLogger.info('[RN] Promise.allSettled completed', { durationMs: duration });
     
     const [favoritesResult, recentResult, browseResult, genresResult] = results;
     
@@ -1016,76 +935,53 @@ const createRootTemplate = async (): Promise<void> => {
     const recentTemplate = recentResult.status === 'fulfilled' ? recentResult.value : null;
     const browseTemplate = browseResult.status === 'fulfilled' ? browseResult.value : null;
     const genresTemplate = genresResult.status === 'fulfilled' ? genresResult.value : null;
+    if (!sessionIsCurrent(generation)) {
+      destroyTemplates([favoritesTemplate, recentTemplate, browseTemplate, genresTemplate]);
+      isCreatingTemplate = false;
+      if (isCarPlayConnected) void createRootTemplate();
+      return;
+    }
     
-    CarPlayLogger.info('[RN] Template creation results', {
-      favorites: favoritesResult.status,
-      recent: recentResult.status,
-      browse: browseResult.status,
-      genres: genresResult.status,
-    });
     
     // Log any failures
     if (favoritesResult.status === 'rejected') {
       console.error('[CarPlay] Favorites template failed:', favoritesResult.reason);
-      CarPlayLogger.error('[RN] Favorites template FAILED', { error: String(favoritesResult.reason) });
     }
     if (recentResult.status === 'rejected') {
       console.error('[CarPlay] Recent template failed:', recentResult.reason);
-      CarPlayLogger.error('[RN] Recent template FAILED', { error: String(recentResult.reason) });
     }
     if (browseResult.status === 'rejected') {
       console.error('[CarPlay] Browse template failed:', browseResult.reason);
-      CarPlayLogger.error('[RN] Browse template FAILED', { error: String(browseResult.reason) });
     }
     if (genresResult.status === 'rejected') {
       console.error('[CarPlay] Genres template failed:', genresResult.reason);
-      CarPlayLogger.error('[RN] Genres template FAILED', { error: String(genresResult.reason) });
     }
     
     // Build tabs array with available templates
     const templates: any[] = [];
     
     if (browseTemplate) {
-      browseTemplate.tabTitle = t('carplay_discover', 'Discover');
-      browseTemplate.tabSystemImageName = 'music.note.list';
       templates.push(browseTemplate);
-      CarPlayLogger.info('[RN] Browse tab added');
     }
     
     // NOTE: SearchTemplate removed - not allowed as tab in Audio apps
     // Search is triggered via Siri voice commands or programmatically
     
     if (favoritesTemplate) {
-      favoritesTemplate.tabTitle = t('carplay_favorites', 'Favorites');
-      favoritesTemplate.tabSystemImageName = 'heart.fill';
       templates.push(favoritesTemplate);
-      CarPlayLogger.info('[RN] Favorites tab added');
     }
     
     if (recentTemplate) {
-      recentTemplate.tabTitle = t('carplay_recently_played', 'Recently Played');
-      recentTemplate.tabSystemImageName = 'clock.fill';
       templates.push(recentTemplate);
-      CarPlayLogger.info('[RN] Recent tab added');
     }
     
     if (genresTemplate) {
-      genresTemplate.tabTitle = t('carplay_genres', 'Genres');
-      genresTemplate.tabSystemImageName = 'square.grid.2x2.fill';
       templates.push(genresTemplate);
-      CarPlayLogger.info('[RN] Genres tab added');
     }
     
-    CarPlayLogger.info('[RN] Total tabs created', { tabCount: templates.length });
     
     if (templates.length === 0) {
       console.log('[CarPlay] No templates available - showing fallback');
-      CarPlayLogger.warn('[RN] NO TEMPLATES AVAILABLE - showing fallback', {
-        favoritesTemplate: !!favoritesTemplate,
-        recentTemplate: !!recentTemplate,
-        browseTemplate: !!browseTemplate,
-        genresTemplate: !!genresTemplate,
-      });
       // Create a simple fallback list template
       if (ListTemplate) {
         const fallbackTemplate = new ListTemplate({
@@ -1098,8 +994,9 @@ const createRootTemplate = async (): Promise<void> => {
             }],
           }],
         });
-        CarPlay.setRootTemplate(fallbackTemplate, true);
-        CarPlayLogger.warn('[RN] Fallback template SET');
+        CarPlay.setRootTemplate(fallbackTemplate, false);
+        destroyTemplates(activeRootTemplates);
+        activeRootTemplates = [fallbackTemplate];
       }
       // CRITICAL: Release mutex before returning!
       isCreatingTemplate = false;
@@ -1107,26 +1004,21 @@ const createRootTemplate = async (): Promise<void> => {
     }
     
     // Create tab bar
-    CarPlayLogger.info('[RN] Creating TabBarTemplate with tabs', { tabCount: templates.length });
     const tabBarTemplate = new TabBarTemplate({
       templates: templates,
       onTemplateSelect: (selectedTemplate: any, selectedIndex: number) => {
         console.log('[CarPlay] Tab selected:', selectedIndex);
-        CarPlayLogger.info('[RN] Tab selected', { index: selectedIndex });
       },
     });
     
     // Set as root template
-    CarPlayLogger.info('[RN] Calling CarPlay.setRootTemplate()...');
     try {
-      CarPlay.setRootTemplate(tabBarTemplate, true);
+      CarPlay.setRootTemplate(tabBarTemplate, false);
+      destroyTemplates(activeRootTemplates);
+      activeRootTemplates = [...templates, tabBarTemplate];
+      connectionFullyHandled = true;
       console.log('[CarPlay] Root template set successfully with', templates.length, 'tabs');
-      CarPlayLogger.info('[RN] ROOT TEMPLATE SET SUCCESSFULLY', { 
-        tabCount: templates.length,
-        tabs: templates.map((t, i) => t.tabTitle || `Tab ${i}`)
-      });
     } catch (setRootError: any) {
-      CarPlayLogger.error('[RN] setRootTemplate FAILED', { error: String(setRootError) });
       console.error('[CarPlay] setRootTemplate failed:', setRootError);
     }
     
@@ -1137,28 +1029,20 @@ const createRootTemplate = async (): Promise<void> => {
     // rebuild templates with the new callbacks (e.g., real playStation)
     // INFINITE LOOP FIX: Only retry once, with longer delay
     if (pendingCallbackRefresh) {
-      CarPlayLogger.info('[RN] Pending callback refresh detected - rebuilding templates (once)');
       pendingCallbackRefresh = false;
       setTimeout(() => {
         createRootTemplate().catch((err) => {
-          CarPlayLogger.error('[RN] Pending refresh createRootTemplate FAILED', { error: String(err) });
         });
       }, 2000); // Increased delay to prevent rapid cycling
     }
     
   } catch (error: any) {
     console.error('[CarPlay] Error creating root template:', error);
-    CarPlayLogger.error('[RN] FATAL ERROR in createRootTemplate', { 
-      error: String(error),
-      message: error?.message,
-      stack: error?.stack?.substring(0, 500)
-    });
     // Release mutex on error as well
     isCreatingTemplate = false;
     
     // On error, retry ONCE if callbacks were updated
     if (pendingCallbackRefresh) {
-      CarPlayLogger.info('[RN] Pending callback refresh after error - retrying once');
       pendingCallbackRefresh = false;
       setTimeout(() => {
         createRootTemplate().catch(() => {});
@@ -1191,34 +1075,10 @@ const CarPlayService: CarPlayServiceType = {
     
     if (!CarPlay) {
       console.log('[CarPlayService] CarPlay module not loaded');
-      CarPlayLogger.start();
-      CarPlayLogger.error('CarPlay module NOT LOADED in React Native', {
-        platform: Platform.OS,
-        carPlayModule: null,
-        possibleCauses: [
-          '1. react-native-carplay not installed',
-          '2. Pod not linked correctly', 
-          '3. Native module not compiled'
-        ]
-      });
       return;
     }
     
     console.log('[CarPlayService] ===== INITIALIZING =====');
-    CarPlayLogger.start();
-    CarPlayLogger.serviceInitializing();
-    CarPlayLogger.info('[RN] CarPlay service INITIALIZING', {
-      platform: Platform.OS,
-      carPlayAvailable: !!CarPlay,
-      carPlayMethods: CarPlay ? Object.keys(CarPlay) : [],
-      listTemplateAvailable: !!ListTemplate,
-      tabBarTemplateAvailable: !!TabBarTemplate,
-      gridTemplateAvailable: !!GridTemplate,
-      searchTemplateAvailable: !!SearchTemplate,
-      nowPlayingTemplateAvailable: !!NowPlayingTemplate,
-      pendingConnection: pendingConnection,
-      handlersAlreadyRegistered: handlersRegistered,
-    });
     
     // Store callbacks
     playStationCallback = playStation;
@@ -1233,25 +1093,11 @@ const CarPlayService: CarPlayServiceType = {
     getNextStationCallback = getNextStation || null;
     getPreviousStationCallback = getPreviousStation || null;
     
-    CarPlayLogger.info('[RN] Callbacks registered', {
-      playStation: !!playStation,
-      getStations: !!getStations,
-      getFavorites: !!getFavorites,
-      getRecentlyPlayed: !!getRecentlyPlayed,
-      getGenres: !!getGenres,
-      getStationsByGenre: !!getStationsByGenre,
-      searchStations: !!searchStations,
-      toggleFavorite: !!toggleFavorite,
-      isFavorite: !!isFavorite,
-      getNextStation: !!getNextStation,
-      getPreviousStation: !!getPreviousStation,
-    });
     
     // INFINITE LOOP FIX: Unregister old handlers before registering new ones
     // This prevents callback accumulation in the Set<OnConnectCallback>
     // Each registerOnConnect() adds a NEW function to the Set, causing duplicates
     console.log('[CarPlayService] Cleaning up old handlers and re-registering...');
-    CarPlayLogger.info('[RN] Cleaning up old handlers before re-registration');
     
     // Unregister the EARLY handlers (they served their purpose)
     if (earlyOnConnectCallback) {
@@ -1284,11 +1130,6 @@ const CarPlayService: CarPlayServiceType = {
       lastConnectHandledAt = now;
       
       console.log('[CarPlay] ========== CONNECTED (React Native callback) ==========');
-      CarPlayLogger.connected({ 
-        timestamp: new Date().toISOString(),
-        event: '[RN] registerOnConnect callback FIRED',
-        nextStep: 'Creating root template...'
-      });
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       pendingConnection = false;
@@ -1297,17 +1138,13 @@ const CarPlayService: CarPlayServiceType = {
       // ANDROID AUTO FIX: Add a small delay on Android to allow carContext to fully initialize
       const templateDelay = Platform.OS === 'android' ? 500 : 0;
       
-      CarPlayLogger.info('[RN] About to call createRootTemplate()', { delayMs: templateDelay });
       
       const doCreateTemplate = () => {
         createRootTemplate().then(() => {
-          CarPlayLogger.info('[RN] createRootTemplate() completed');
-          connectionFullyHandled = true;
           // Stop cold-start timer once template is successfully created
           if (coldStartRetryTimer) {
             clearInterval(coldStartRetryTimer);
             coldStartRetryTimer = null;
-            CarPlayLogger.info('[RN] Cold-start timer stopped (template created successfully)');
           }
 
           // CONTINUOUS LISTENING: if a station is already playing on the
@@ -1323,32 +1160,16 @@ const CarPlayService: CarPlayServiceType = {
             const currentStation = usePlayerStore?.getState?.()?.currentStation;
             const nowPlaying = usePlayerStore?.getState?.()?.nowPlaying;
             if (currentStation && NowPlayingTemplate && CarPlay) {
-              CarPlayLogger.info('[RN] Auto-pushing NowPlayingTemplate for active station', {
-                stationId: currentStation._id || currentStation.id,
-                stationName: currentStation.name,
-                hasMetadata: !!nowPlaying,
-              });
               showNowPlayingTemplate(
                 currentStation,
                 nowPlaying?.songTitle,
                 nowPlaying?.artistName,
               );
             } else {
-              CarPlayLogger.info('[RN] No active station - skipping auto NowPlaying', {
-                hasStation: !!currentStation,
-                nowPlayingTemplateLoaded: !!NowPlayingTemplate,
-              });
             }
           } catch (autoErr) {
-            CarPlayLogger.warn('[RN] Auto NowPlaying push failed (non-fatal)', {
-              error: String(autoErr),
-            });
           }
         }).catch((err) => {
-          CarPlayLogger.error('[RN] createRootTemplate() FAILED', {
-            error: String(err),
-            stack: err?.stack?.substring(0, 500)
-          });
         });
       };
       
@@ -1363,16 +1184,14 @@ const CarPlayService: CarPlayServiceType = {
     
     // Register CarPlay disconnection handler
     console.log('[CarPlayService] Registering onDisconnect handler...');
-    CarPlayLogger.info('[RN] Registering onDisconnect handler');
     
     registeredOnDisconnectCallback = () => {
       console.log('[CarPlay] ========== DISCONNECTED (React Native callback) ==========');
-      CarPlayLogger.disconnected({ 
-        timestamp: new Date().toISOString(),
-        event: '[RN] registerOnDisconnect callback FIRED',
-      });
       isCarPlayConnected = false;
       CarPlayService.isConnected = false;
+      connectionGeneration++;
+      destroyTemplates(activeRootTemplates);
+      activeRootTemplates = [];
       pendingConnection = false;
       connectionFullyHandled = false;
       lastConnectHandledAt = 0; // Reset debounce on disconnect
@@ -1380,22 +1199,13 @@ const CarPlayService: CarPlayServiceType = {
     
     CarPlay.registerOnDisconnect(registeredOnDisconnectCallback);
     
-    CarPlayLogger.info('[RN] Connection handlers registered successfully');
     
     // CRITICAL: Check if CarPlay was already connected before we registered
     // This handles the race condition where CarPlay connects before JS initializes
     const alreadyConnected = CarPlay.connected || pendingConnection;
-    CarPlayLogger.info('[RN] Checking if already connected', { 
-      alreadyConnected,
-      carPlayConnectedProperty: CarPlay.connected,
-      pendingConnection: pendingConnection,
-      carPlayType: typeof CarPlay.connected,
-    });
     
     if (alreadyConnected) {
       console.log('[CarPlay] Already connected - creating root template immediately');
-      CarPlayLogger.alreadyConnected();
-      CarPlayLogger.info('[RN] CarPlay was ALREADY CONNECTED - creating template now');
       isCarPlayConnected = true;
       CarPlayService.isConnected = true;
       pendingConnection = false;
@@ -1406,18 +1216,12 @@ const CarPlayService: CarPlayServiceType = {
       
       const doCreate = () => {
         createRootTemplate().then(() => {
-          CarPlayLogger.info('[RN] createRootTemplate() completed (already connected case)');
-          connectionFullyHandled = true;
           // Stop cold-start timer
           if (coldStartRetryTimer) {
             clearInterval(coldStartRetryTimer);
             coldStartRetryTimer = null;
           }
         }).catch((err) => {
-          CarPlayLogger.error('[RN] createRootTemplate() FAILED (already connected case)', {
-            error: String(err),
-            stack: err?.stack?.substring(0, 500)
-          });
         });
       };
       
@@ -1428,8 +1232,6 @@ const CarPlayService: CarPlayServiceType = {
       }
     }
     
-    CarPlayLogger.serviceInitialized();
-    CarPlayLogger.info('[RN] CarPlay service INITIALIZED - waiting for connection');
     console.log('[CarPlayService] Initialized and waiting for connection');
     
     // COLD-START FIX: Start periodic check for CarPlay connection
@@ -1442,7 +1244,6 @@ const CarPlayService: CarPlayServiceType = {
     coldStartRetryCount = 0;
     
     if (!connectionFullyHandled) {
-      CarPlayLogger.info('[RN] Starting cold-start retry timer (safe mode)');
       coldStartRetryTimer = setInterval(() => {
         coldStartRetryCount++;
         
@@ -1461,38 +1262,24 @@ const CarPlayService: CarPlayServiceType = {
         // Check if CarPlay is now connected (via the connected property, not events)
         const nowConnected = CarPlay?.connected || false;
         
-        CarPlayLogger.info('[RN] Cold-start check', {
-          attempt: coldStartRetryCount,
-          maxAttempts: MAX_COLD_START_RETRIES,
-          isConnected: isCarPlayConnected,
-          carPlayConnected: nowConnected,
-          connectionFullyHandled,
-        });
         
         // If connected but not yet handled, create template
         if (nowConnected && !connectionFullyHandled && !isCreatingTemplate && playStationCallback) {
-          CarPlayLogger.info('[RN] Cold-start: Creating template (attempt ' + coldStartRetryCount + ')');
           isCarPlayConnected = true;
           CarPlayService.isConnected = true;
           lastConnectHandledAt = Date.now();
           
           createRootTemplate().then(() => {
-            CarPlayLogger.info('[RN] Cold-start: createRootTemplate() completed');
-            connectionFullyHandled = true;
             if (coldStartRetryTimer) {
               clearInterval(coldStartRetryTimer);
               coldStartRetryTimer = null;
             }
           }).catch((err) => {
-            CarPlayLogger.error('[RN] Cold-start: createRootTemplate() FAILED', { error: String(err) });
           });
         }
         
         // Stop after max retries or if connection is handled
         if (coldStartRetryCount >= MAX_COLD_START_RETRIES || connectionFullyHandled) {
-          CarPlayLogger.info('[RN] Cold-start: Stopping timer', { 
-            reason: connectionFullyHandled ? 'connected' : 'max retries' 
-          });
           if (coldStartRetryTimer) {
             clearInterval(coldStartRetryTimer);
             coldStartRetryTimer = null;
@@ -1504,14 +1291,11 @@ const CarPlayService: CarPlayServiceType = {
     // Subscribe to language changes - refresh templates when language changes
     if (!languageListenerUnsubscribe) {
       languageListenerUnsubscribe = addLanguageChangeListener((newLang) => {
-        CarPlayLogger.info('[RN] Language changed to', { lang: newLang });
         needsTemplateRefresh = true;
         
         // If currently connected, refresh templates
         if (isCarPlayConnected && CarPlay) {
-          CarPlayLogger.info('[RN] Refreshing CarPlay templates for new language');
           createRootTemplate().catch((err) => {
-            CarPlayLogger.error('[RN] Failed to refresh templates', { error: String(err) });
           });
         }
       });
@@ -1525,14 +1309,10 @@ const CarPlayService: CarPlayServiceType = {
     currentNowPlayingStation = station;
     
     console.log('[CarPlay] Updating now playing:', station.name, songTitle, artistName);
-    CarPlayLogger.nowPlayingUpdated(station.name, songTitle, artistName);
   },
   
   disconnect: () => {
     console.log('[CarPlayService] Disconnecting...');
-    CarPlayLogger.serviceDisconnecting();
-    CarPlayLogger.flush();
-    CarPlayLogger.stop();
     
     // Stop cold-start retry timer
     if (coldStartRetryTimer) {
@@ -1582,6 +1362,9 @@ const CarPlayService: CarPlayServiceType = {
     currentNowPlayingStation = null;
     isCarPlayConnected = false;
     CarPlayService.isConnected = false;
+    connectionGeneration++;
+    destroyTemplates(activeRootTemplates);
+    activeRootTemplates = [];
     pendingConnection = false;
     needsTemplateRefresh = false;
     connectionFullyHandled = false;
@@ -1602,15 +1385,12 @@ const CarPlayService: CarPlayServiceType = {
     }
     
     console.log('[CarPlayService] Refreshing all templates...');
-    CarPlayLogger.info('[RN] Manual template refresh requested');
     
     try {
       await createRootTemplate();
       console.log('[CarPlayService] Templates refreshed successfully');
-      CarPlayLogger.info('[RN] Templates refreshed successfully');
     } catch (err) {
       console.error('[CarPlayService] Failed to refresh templates:', err);
-      CarPlayLogger.error('[RN] Failed to refresh templates', { error: String(err) });
     }
   },
   
@@ -1624,7 +1404,6 @@ const CarPlayService: CarPlayServiceType = {
     }
     
     console.log('[CarPlayService] Refreshing favorites template...');
-    CarPlayLogger.info('[RN] Refreshing favorites template');
     
     try {
       const favTemplate = await createFavoritesTemplate();
@@ -1647,7 +1426,6 @@ const CarPlayService: CarPlayServiceType = {
     }
     
     console.log('[CarPlayService] Refreshing recently played template...');
-    CarPlayLogger.info('[RN] Refreshing recently played template');
     
     try {
       // Full refresh since individual tab update may not be supported

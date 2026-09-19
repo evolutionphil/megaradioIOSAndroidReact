@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -83,13 +84,14 @@ class MegaRadioNativeBridge(
 
     private fun resolve(id: String, payload: Any) {
         val json = payload.toString()
-        val safeId = id.replace("'", "\\'")
+        val safeId = JSONObject.quote(id)
         val js = "window.MegaRadioBridge && window.MegaRadioBridge.__resolveIap" +
-                " && window.MegaRadioBridge.__resolveIap('$safeId', $json);"
+                " && window.MegaRadioBridge.__resolveIap($safeId, $json);"
         webView.post { webView.evaluateJavascript(js, null) }
     }
 
     companion object { private const val TAG = "MegaRadioNativeBridge" }
+    fun close() { scope.cancel() }
 }
 
 /**

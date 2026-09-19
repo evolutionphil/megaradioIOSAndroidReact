@@ -318,8 +318,6 @@ export const CarPlayHandler: React.FC = () => {
   const { country, countryEnglish } = useLocationStore();
   const recentStations = useRecentlyPlayedStore(state => state.stations);
   
-  // Send log immediately when component mounts (before useEffect)
-  const { sendLog } = require('../services/remoteLog');
   
   // Debounced refresh function to avoid too many refreshes
   const debouncedRefresh = (reason: string) => {
@@ -338,11 +336,10 @@ export const CarPlayHandler: React.FC = () => {
     refreshDebounceTimer = setTimeout(async () => {
       if (CarPlayService.isConnected && !isRefreshing) {
         console.log(`[CarPlayHandler] Triggering CarPlay refresh: ${reason}`);
-        sendLog('[CarPlayHandler] Refreshing CarPlay', { reason });
         
         isRefreshing = true;
         try {
-          await CarPlayService.refreshTemplates();
+          await CarPlayService.refreshTemplates?.();
           console.log('[CarPlayHandler] CarPlay refresh completed');
         } catch (err) {
           console.error('[CarPlayHandler] CarPlay refresh failed:', err);
@@ -360,7 +357,6 @@ export const CarPlayHandler: React.FC = () => {
     if (Platform.OS === 'web') return;
     
     console.log('[CarPlayHandler] Component mounted - initializing CarPlay early (without playStation)');
-    sendLog('[CarPlayHandler] EARLY INIT - mounting', { hasPlayStation: !!playStation });
 
     // Pre-warm the cache in background
     const { country: c, countryEnglish: ce } = useLocationStore.getState();
@@ -370,14 +366,12 @@ export const CarPlayHandler: React.FC = () => {
       useFavoritesStore.getState().loadLocalFavorites().catch(() => {}),
     ]).then(() => {
       console.log('[CarPlayHandler] Cache pre-warmed successfully');
-      sendLog('[CarPlayHandler] Cache pre-warmed');
     }).catch(() => {});
 
     // Initialize with a no-op playStation placeholder
     // Templates will be created and visible, play will work once playStation is available
     const deferredPlayStation = async (station: any) => {
       console.log('[CarPlayHandler] Deferred play - waiting for playStation...');
-      sendLog('[CarPlayHandler] Deferred play attempt', { station: station?.name });
       
       // Retry up to 20 times (10 seconds total) for cold start scenarios
       // Check BOTH isAudioReady AND playStationRef to ensure real audio provider is ready
@@ -388,12 +382,10 @@ export const CarPlayHandler: React.FC = () => {
         
         if (audioReady && currentPlayStation) {
           console.log('[CarPlayHandler] playStation + AudioProvider ready after', (attempt + 1) * 500, 'ms');
-          sendLog('[CarPlayHandler] Deferred play SUCCESS', { delay: (attempt + 1) * 500 });
           return currentPlayStation(station);
         }
       }
       console.warn('[CarPlayHandler] playStation still not available after 10s - giving up');
-      sendLog('[CarPlayHandler] Deferred play FAILED - timeout after 10s');
     };
 
     try {
@@ -412,10 +404,8 @@ export const CarPlayHandler: React.FC = () => {
       );
       initializedRef.current = true;
       console.log('[CarPlayHandler] CarPlayService.initialize completed (early, deferred play)');
-      sendLog('[CarPlayHandler] CarPlayService.initialize COMPLETED (early)');
     } catch (error: any) {
       console.error('[CarPlayHandler] Error initializing:', error);
-      sendLog('[CarPlayHandler] ERROR initializing', { error: String(error) });
     }
 
     return () => {
@@ -442,7 +432,6 @@ export const CarPlayHandler: React.FC = () => {
     if (Platform.OS === 'web' || !playStation || !initializedRef.current) return;
     
     console.log('[CarPlayHandler] playStation NOW AVAILABLE - updating CarPlay callbacks');
-    sendLog('[CarPlayHandler] playStation READY - updating callbacks');
     
     // Re-initialize with real playStation to update the callback
     try {
@@ -460,13 +449,11 @@ export const CarPlayHandler: React.FC = () => {
         getPreviousStation
       );
       console.log('[CarPlayHandler] CarPlayService re-initialized with real playStation');
-      sendLog('[CarPlayHandler] CarPlayService RE-INITIALIZED with playStation');
       
       // COLD START FIX: If CarPlay is already connected, force a template refresh
       // This ensures playback works even if templates were created with deferred play
       if (CarPlayService.isConnected) {
         console.log('[CarPlayHandler] CarPlay is connected - forcing template refresh with real playStation');
-        sendLog('[CarPlayHandler] Forcing template refresh (connected + playStation ready)');
         setTimeout(() => {
           CarPlayService.refreshTemplates?.().catch((err: any) => {
             console.error('[CarPlayHandler] Template refresh error:', err);
@@ -489,10 +476,8 @@ export const CarPlayHandler: React.FC = () => {
     if (currentCountry && currentCountry !== lastCountry) {
       if (lastCountry !== null) {
         console.log('[CarPlayHandler] Country changed from', lastCountry, 'to', currentCountry);
-        sendLog('[CarPlayHandler] Country changed', { from: lastCountry, to: currentCountry });
       } else {
         console.log('[CarPlayHandler] Country first detected:', currentCountry);
-        sendLog('[CarPlayHandler] Country first detected', { country: currentCountry });
       }
       
       // IMPORTANT: Invalidate React Query cache to prevent showing old country data
@@ -517,7 +502,6 @@ export const CarPlayHandler: React.FC = () => {
     // Skip first load (-1), only trigger on actual changes after initial load
     if (lastFavoritesCount >= 0 && currentCount !== lastFavoritesCount) {
       console.log('[CarPlayHandler] Favorites changed from', lastFavoritesCount, 'to', currentCount);
-      sendLog('[CarPlayHandler] Favorites changed', { from: lastFavoritesCount, to: currentCount });
       
       // Trigger CarPlay template refresh
       debouncedRefresh(`Favorites changed: ${lastFavoritesCount} → ${currentCount}`);
@@ -535,7 +519,6 @@ export const CarPlayHandler: React.FC = () => {
     // Skip first load (-1), only trigger on actual changes after initial load
     if (lastRecentCount >= 0 && currentCount !== lastRecentCount) {
       console.log('[CarPlayHandler] Recently played changed from', lastRecentCount, 'to', currentCount);
-      sendLog('[CarPlayHandler] Recently played changed', { from: lastRecentCount, to: currentCount });
       
       // Trigger CarPlay template refresh
       debouncedRefresh(`Recently played changed: ${lastRecentCount} → ${currentCount}`);
@@ -570,7 +553,6 @@ export const CarPlayHandler: React.FC = () => {
           genre: string;
         }) => {
           console.log('[CarPlayHandler] Android Auto play station:', event.stationName);
-          sendLog('[CarPlayHandler] Android Auto play station', { station: event.stationName });
           
           // Create station object and play
           const station: Station = {
@@ -599,7 +581,6 @@ export const CarPlayHandler: React.FC = () => {
         'AndroidAutoPlaybackCommand',
         (event: { command: string }) => {
           console.log('[CarPlayHandler] Android Auto command:', event.command);
-          sendLog('[CarPlayHandler] Android Auto command', { command: event.command });
           
           // Handle commands through TrackPlayer
           // Note: These are typically handled by react-native-track-player automatically

@@ -1,5 +1,3 @@
-import { sendLog } from '../src/services/remoteLog';
-sendLog('ONBOARDING_FILE_LOADING');
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -27,7 +25,6 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
-sendLog('ONBOARDING_IMPORTS_DONE');
 
 const { width, height } = Dimensions.get('window');
 
