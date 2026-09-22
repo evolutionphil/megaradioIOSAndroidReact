@@ -56,6 +56,12 @@ html, body {
 .eq-focus-control { transition: outline-color 120ms, background-color 120ms; }
 .tv-restored-card:focus { outline: none; }
 
+/* Keep the bounded TV scroll viewport on its own compositor layer. On Tizen,
+   scrolling the large discovery surface in the page layer blocks commits for
+   hundreds of milliseconds. Promote the viewport, never every card or the
+   unbounded list: the latter would multiply GPU memory as more stations load. */
+.tv-scroll-viewport { will-change: transform; }
+
 .carousel-cues { position: absolute; inset: 0; pointer-events: none; z-index: 30; }
 .carousel-edge { position: absolute; top: 0; bottom: 0; width: 76px; pointer-events: none; }
 .carousel-edge-left { left: 0; background: linear-gradient(90deg, rgba(0,0,0,.3), transparent); }
