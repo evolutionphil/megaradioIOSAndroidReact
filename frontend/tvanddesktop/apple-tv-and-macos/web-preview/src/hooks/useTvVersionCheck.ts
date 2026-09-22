@@ -43,20 +43,51 @@ function detectPlatform(): Platform {
   return 'web';
 }
 
-function getCurrentVersion(): string {
-  // Build-time injected version (Vite define) OR fallback to "0.0.0" so any
-  // backend response newer than that triggers the banner during dev.
-  return (import.meta as any).env?.VITE_APP_VERSION || '0.0.0';
+// CDN releases have IDs such as gha-<run>-<sha>. They are not store versions.
+function packageVersion(value: unknown): string | null {
+  return typeof value === 'string' && /^\d+\.\d+\.\d+$/.test(value) ? value : null;
 }
 
-function cmpSemver(a: string, b: string): number {
-  const pa = a.split('.').map((n) => parseInt(n, 10) || 0);
-  const pb = b.split('.').map((n) => parseInt(n, 10) || 0);
-  for (let i = 0; i < 3; i++) {
-    if ((pa[i] || 0) > (pb[i] || 0)) return 1;
-    if ((pa[i] || 0) < (pb[i] || 0)) return -1;
+async function getCurrentVersion(platform: Platform): Promise<string | null> {
+  if (platform === 'tizen') {
+    try {
+      return packageVersion((window as any).tizen.application.getCurrentApplication().appInfo.version);
+    } catch { return null; }
   }
-  return 0;
+  if (platform === 'webos') {
+    // Read the installed IPK metadata, never the CDN's build or version.json.
+    // The bootstrap is /index.html; the bundled fallback is /app/index.html.
+    if (window.location.protocol !== 'file:') return null;
+    return new Promise((resolve) => {
+      const xhr = new XMLHttpRequest();
+      try {
+        const relative = /\/app\/index\.html$/.test(window.location.pathname)
+          ? '../appinfo.json' : './appinfo.json';
+        xhr.open('GET', new URL(relative, window.location.href).href, true);
+        xhr.timeout = 4000;
+        xhr.onload = () => {
+          try {
+            resolve((xhr.status === 0 || xhr.status === 200)
+              ? packageVersion(JSON.parse(xhr.responseText).version) : null);
+          } catch { resolve(null); }
+        };
+        xhr.onerror = xhr.ontimeout = xhr.onabort = () => resolve(null);
+        xhr.send();
+      } catch { resolve(null); }
+    });
+  }
+  return packageVersion((import.meta as any).env?.VITE_APP_VERSION);
+}
+
+function isOlder(current: string, target: unknown): boolean {
+  const valid = packageVersion(target);
+  if (!valid) return false;
+  const pa = current.split('.').map(Number);
+  const pb = valid.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if (pa[i] !== pb[i]) return pa[i] < pb[i];
+  }
+  return false;
 }
 
 type UpdateState =
@@ -77,20 +108,24 @@ export function useTvVersionCheck(): UpdateState {
         if (aborted) return;
 
         const platform = detectPlatform();
-        const current = getCurrentVersion();
+        const current = await getCurrentVersion(platform);
+        if (aborted || !current) return;
         const latest = data.latest?.[platform];
         const minimum = data.minimum?.[platform];
-        const storeUrl = data.storeUrl?.[platform];
+        // TV window.open can replace the native app with a website. For a real
+        // package update, instruct users to open the TV store themselves.
+        const storeUrl = platform === 'tizen' || platform === 'webos'
+          ? undefined : data.storeUrl?.[platform];
         const lang = (typeof navigator !== 'undefined' && navigator.language?.startsWith('tr')) ? 'tr' : 'en';
         const notes = data.releaseNotes?.[lang as 'tr' | 'en'];
 
         // Force update?
-        if (minimum && cmpSemver(current, minimum) < 0) {
+        if (minimum && isOlder(current, minimum)) {
           setState({ kind: 'forced', latest: latest || minimum, minimum, storeUrl, notes });
           return;
         }
         // Soft update?
-        if (latest && cmpSemver(current, latest) < 0) {
+        if (latest && isOlder(current, latest)) {
           // Respect 7-day dismiss cooldown for soft banner
           const dismissedAt = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
           const ageDays = (Date.now() - dismissedAt) / (1000 * 60 * 60 * 24);
