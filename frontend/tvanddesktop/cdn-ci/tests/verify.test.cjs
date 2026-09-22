@@ -131,3 +131,13 @@ for (const file of ['version.json', 'index.html', 'assets/main.hash.js']) {
     });
   }
 }
+
+
+test('CDN probes match the file:// TV origin and a supported client', async () => {
+  await get('https://cdn.themegaradio.com/', 'version.json', async (url, options) => {
+    assert.equal(options.headers.Origin, 'null');
+    assert.match(options.headers['User-Agent'], /Tizen|Web0S/);
+    assert.equal(options.headers.Accept, 'application/json');
+    return response('{}');
+  });
+});
