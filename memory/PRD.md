@@ -1,5 +1,76 @@
 # MegaRadio - Product Requirements Document
 
+## Son iş — iteration62–63: LG webOS3.x açılışı + Cloudflare yönlendirmesi
+
+### Kullanıcı kapsamı
+LG QA eskiv1.0.0: webOS3.0/3.5 siyah/splash,4.0/4.5/5.0 sonnotta düzelmiş.
+Kullanıcı **eski paket** olduğunu doğruladı, güncelkoddan yenisürümü düzeltme,
+4+ davranışınıkoruma veCDN/APIerişiminikontrol etme onaylandı. AyrıcaCloudflaretoken
+menüsünübulamadığınıvebizimyapmamızıistedi. OrtamdaCFcredential/hesaperişimiyok;
+token/AccountID/GitHubSecret/WAFkuralı oluşturulmadı. Gizli token sohbette istenmedi.
+
+### Somut kök neden / düzeltme
+- LGresmitablosu3.xChromium38,4.x53; ikisindenativeESMyok. EskiViteçıktısımoduleonly;
+  es2017/chrome53 tekbaşınaES5değildir. Publicpolyfills.js dahi const/forof/destructure
+  içeriyordu, Vitepublicdosyalarınıtranspileetmiyor. Eski3.xCSSvariablesdeyok.
+- Vite5korunarakplugin-legacy5.4.3modern+SystemJS/ES5; compat/runtime-entry.js
+  core-js/fetch/abort/encodingküçükDOMshim -> classicES5 **yardımcılardanönce**.
+  compat/build-plugin.ts public/jsBabelES5; compat/legacy-css.cjs rootscope+rule
+  tokenlarınıstatikfallbackyapar,CSScolor/insetfallback. DinamikCSSvar/grid/gap tam
+  emülasyonugarantisiYOK; fizikseleskiTVgörseltesti gereklidir.
+- _shared/legacy-entry.js paketHTML'sinialways-classic yapar,Safariinlineprobe'ukaldırır;
+  LG/Samsungpreparebuhelper+check-legacy(10scriptES5) çalıştırır. HTTPSdualmodernkorunur.
+- remote-bootstrapv3 eski/moduleonlycache'i reddeder,yeniyerelpakete döner; script
+  id/data-src korunur, sadececlassicSystemJSentry yüklenir. Başarı megaradio-ready
+  Reactcommiteventiyle; script.onloadtekbaşınabaşarıdeğil.20snCDNwatchdog→local,
+  yerelstartup-guard25sn hataUI+Retry; favori/authstorageNOTcleared,OTAkeysonly.
+- main.tsx ReadyApp useEffect sinyali; preparednewLGappinfo1.0.3; requiredACG[]
+  yeniCLIuyarısıiçin, uygulamadagerçekLunaçağrısıyok/SDKtanımlarıçağrıdeğildir.
+  Eski requiredPermissions aynenbırakıldı; yeniLuna/nativeloginauthizniistenmedi.
+- CDNvalidator data-srcartifacts kapsar; workflowES5+bootstrap runtime testgateekli.
+  YeniwebTVdepsYarnCLIiledüzenlendi; mainmobilepackage/yarnlock/appjson/metroSHAaynı.
+
+### Ek bulunan mobil preview kilidi (iteration62 HIGH kapandı)
+İlkRCA'coldMetro'dediama131? HTMLsnapshotRateUsModal'deSSRrenderToString/Suspense
+gösterdi. HiddenRateUsModal useTranslation initialrender'da suspendederkenparent
+RootLayout'ıninitI18n effect'i commitolamıyordu. **Tek satır** RateUsModal.tsx
+useTranslation(undefined,{useSuspense:false}); app.jsonweb.output/metro/envdeğişmedi.
+Main20260922_131433veagent63 rootgerçekonboardingSkip/Enjoy açıldı,Bundlingyok.
+Önceki20260922_130958test 'PASS' yanlışassertti(sadeceBundlingtext); kanıtsayılmamalı.
+
+### Test / teslim
+- iteration62&63raporlarokundu,testeditsincelendi.25CDNhelpertest+16bootstrapVMtest
+  **41/41PASS**; TVhelpers6APItestPASS,1unusedSSEskip. ES5parse10script LG/Tizen/CDN,
+  TVtsc/lint,gerçekLG/Samsung/CDNbuild,Wranglerdryrun,officialactionlintPASS.
+- Modernpreviewveclassicpackagedbrowserboot+legacyAPIremoval testleri62PASS;
+  VMtestler gerçekbootstrapkodunu çalıştırır,no-cache/oldcache/validqueue/ready/error/
+  reject/timeout/retry. Stubfixturetestleri **fizikselChromium38testi değildir**.
+- Testportablepathdüzeltildi; nativeignoredlgdist'e bağımlılıkkaldırıldı.
+  TV_LEGACY_HTMLopsiyonel; CIdefaultfreshcdn-dist/index.html. AbsoluteCDNve relative
+  URLassertleriayrıldı; runtimeScriptnodes type/nomodule gerçektenasserted.
+- **YeniIPK hazır** `/app/artifacts/webos/com.themegaradio.app_1.0.3_all.ipk`.
+  Official@webos-tools/cli3.2.6tvprofileares-package+--infoPASS, size~6.45MBunpacked.
+  SHA256 `2e8ae9938b25ed6d1b16aaecd001f01f21537942efcbe20e7136f4754c8fcafc`.
+  Geçicidownloadcopy `backend/static/tv-preview/downloads/...ipk`; externalpreview
+  `/api/tv-app/downloads/com.themegaradio.app_1.0.3_all.ipk`curl+hashmatchPASS.
+  **YeniVitepreviewbuild'i downloads/'ıkaldırabilir**; artifactkaynağındanrecopygerekir.
+- Guide`lg-webos/QA_WEBOS3_STARTUP.md`; `CLOUDFLARE_QA_ACCESS.md` gerçek260QAIP/CIDR
+  (182.224.177.0 eklenmedi),SecurityEventsöncedoğrulama,API TokenvaluevsID/AccountID,
+  GitHubSecretkurulumu. QAIPbaşlığıspoofederekdoğrulandıiddiasıyok.
+
+### Açık sınırlar ve sonraki adımlar
+- P0 gerçekwebOS3.0/3.5yeni1.0.3IPKcihazkabulü/QAtekrarı;4+/Samsungkumanda/sesregresyonu.
+  Eski1.0.0paketiCDNyegüncellemekyetmez,yeniyerelbootstrap'içerenIPKkurulmalı.
+- P0 Cloudflarehesapsahibi:token+accountIDGitHubSecretsveinitialCDNhistoryseed;
+  QAIPSecurityEvents/RayIDvarsaen darallow/skipistisnası. CF/WAFdeğiştirilmedi.
+- BizimağımızdanCDNmanifest/root(307→200)veAPI200; QAağerişimigaranti değil.
+  **CanlıCDNmodernsürümhâlâeski**; buişyerelCDNoutputvepaketüretimi,yayınYOK.
+- P1 CDNbundleduallegacyafterhistorypipelinekurulumu, caches/killSwitchyerelgeri dönüş
+  gerçekTVtesti. P2 eskiTVgrid/flexgap/dinamikCSSfine-tuning gerekirsecihazgözleminegöre.
+- Auth/IAP/storepurchase/nativeiOS/watchruntimeleributurda test edilmedi/değişmedi.
+
+---
+
 ## Güncel iş — iteration61: GitHub Actions → Samsung/LG CDN
 
 ### İstek / onay

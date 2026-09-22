@@ -1,6 +1,6 @@
 {
   "id": "com.themegaradio.app",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "vendor": "Vision Go GmbH",
   "type": "web",
   "main": "index.html",
@@ -19,6 +19,7 @@
   "accessibility": {
     "supportsAudioGuidance": false
   },
+  "requiredACG": [],
   "requiredPermissions": [
     "time.query",
     "audio.operation",

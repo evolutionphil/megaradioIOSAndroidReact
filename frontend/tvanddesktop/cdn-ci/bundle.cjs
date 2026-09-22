@@ -17,7 +17,7 @@ function listFiles(dir, prefix = '') {
 function entryReferences(html, base) {
   const root = new URL(base);
   const references = new Set();
-  for (const match of html.matchAll(/<(?:script|link|img)\b[^>]*(?:src|href)=["']([^"']+)["']/gi)) {
+  for (const match of html.matchAll(/<(?:script|link|img)\b[^>]*?(?:src|href|data-src)=["']([^"']+)["']/gi)) {
     const url = new URL(match[1], base);
     if (url.origin !== root.origin) continue; // Public fonts, SDKs, etc. are external.
     if (!url.pathname.startsWith(root.pathname)) throw new Error(`Asset escapes CDN base: ${match[1]}`);

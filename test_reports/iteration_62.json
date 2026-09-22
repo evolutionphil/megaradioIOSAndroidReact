@@ -1,0 +1,55 @@
+{
+  "summary": "Executed mixed backend/frontend regression for TV legacy startup scope: helper APIs pass, CDN/legacy static checks pass, packaged WebOS classic entry boots in browser, but Expo root preview still shows white Bundling screen.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Expo root web preview",
+        "issue": "Root URL renders white screen with 'Bundling... app/_layout.tsx' and does not reach usable UI during smoke check.",
+        "testID": "N/A",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Packaged classic WebOS entry strict-no-module expectation",
+        "issue": "Static packaged index strips module tags as intended, but runtime DOM still showed 1 module script node (from nomodule guard snippet behavior). Verify this is acceptable for strict LG3.x policy.",
+        "affected_testIDs": []
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_tv_desktop_endpoints.py",
+    "/app/test_reports/pytest/pytest_tv_desktop_iter62.xml",
+    "/app/tests/test_webos_legacy_bootstrap_regression.cjs",
+    "/app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/compat/check-legacy.cjs"
+  ],
+  "action_items": [
+    "Main agent should debug Expo web root bundling hang in app/_layout.tsx path (white screen remains).",
+    "Confirm whether Vite nomodule runtime guard creating a module node is allowed for the packaged strict-classic policy; remove/adjust if policy requires zero module nodes at runtime.",
+    "Physical LG webOS 3.0/3.5 device validation is still pending; browser/API-removal checks here are not a hardware certification."
+  ],
+  "critical_code_review_comments": [
+    "Legacy safeguards are present in code: bootstrap fallback clears only mr_cdn_html/mr_cdn_ver, startup guard timeout UI (TV_STARTUP_TIMEOUT), and legacy SystemJS path with data-src checks.",
+    "ES5/static compatibility checks passed for built tv-preview and packaged app via compat/check-legacy.cjs.",
+    "Cloudflare QA IP expression in docs expands to exactly 260 addresses and excludes 182.224.177.0 (verified by script)."
+  ],
+  "updated_files": [
+    "/app/tests/test_webos_legacy_bootstrap_regression.cjs",
+    "/app/test_reports/iteration_62.json"
+  ],
+  "success_rate": {
+    "backend": "100% (6 passed, 1 skipped in helper API suite)",
+    "frontend": "85% (TV preview/classic flows passed; Expo root preview failed)"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Executed: pytest test_tv_desktop_endpoints against https://tvos-ui-match.preview.emergentagent.com; python unittest + node --test under frontend/tvanddesktop/cdn-ci/tests; legacy check script on /app/backend/static/tv-preview and /app/frontend/tvanddesktop/lg-webos/dist/app; browser smoke for /api/tv-app and staged packaged classic entry; API-removal browser check for fetch/AbortController/TextEncoder/URLSearchParams/Object.fromEntries/Promise.finally restoration.",
+  "rca_of_issue": "Expo root white screen reproduced from https://tvos-ui-match.preview.emergentagent.com/ screenshot showing 'Bundling... app/_layout.tsx'. This indicates Metro/web route bootstrap path remains blocked outside the TV preview route. TV legacy/WebOS packaging path itself loaded successfully in browser checks."
+}

@@ -9,11 +9,11 @@
  *
  * After this script, package with ares-package CLI (installed with webOS TV CLI):
  *   $ ares-package tvanddesktop/lg-webos/dist
- *   → produces com.themegaradio.app_1.0.2_all.ipk in the current directory.
+ *   → produces com.themegaradio.app_<appinfo version>_all.ipk in the current directory.
  *
  * Install to dev TV:
  *   $ ares-setup-device --add LG_TV --info "{...}"   (one time)
- *   $ ares-install --device LG_TV com.themegaradio.app_1.0.2_all.ipk
+ *   $ ares-install --device LG_TV com.themegaradio.app_<version>_all.ipk
  *
  * For LG Content Store submission: upload the .ipk on http://seller.lgappstv.com
  */
@@ -21,6 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { rewritePackagedAssets } = require('../_shared/packaged-assets');
+const { activateLegacyEntry } = require('../_shared/legacy-entry');
 
 const REPO_ROOT  = path.resolve(__dirname, '..', '..', '..');
 const TV_SRC_DIR = path.join(REPO_ROOT, 'frontend', 'tvanddesktop', 'apple-tv-and-macos', 'web-preview');
@@ -95,9 +96,12 @@ function walkAndRewrite(dir) {
   }
 }
 walkAndRewrite(APP_DIR);
+const localEntry = path.join(APP_DIR, 'index.html');
+fs.writeFileSync(localEntry, activateLegacyEntry(fs.readFileSync(localEntry, 'utf8')));
+require('../apple-tv-and-macos/web-preview/compat/check-legacy.cjs').checkLegacy(APP_DIR);
 
 console.log('\n✅ WebOS project ready at:', OUT_DIR);
 console.log('   Package with:');
 console.log('     ares-package', OUT_DIR);
 console.log('   Install on dev TV:');
-console.log('     ares-install --device LG_TV com.themegaradio.app_1.0.2_all.ipk');
+console.log(`     ares-install --device LG_TV com.themegaradio.app_${webosVersion}_all.ipk`);

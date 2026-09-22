@@ -27,10 +27,10 @@
  *
  * So instead we KEEP this local file:// document as the app context and pull the
  * app's JS/CSS/assets FROM the CDN into it:
- *   • CDN reachable + killSwitch !== true  ->  fetch the CDN index.html, recreate
- *     its <link>/<style>/<script> nodes here (absolute CDN URLs). The bundle runs
+ *   • Compatible cached CDN index.html -> recreate its resources here.
+ *     Its classic/SystemJS bundle runs
  *     in THIS local document, so `tizen`/`webapis`/`webOS` stay available, while
- *     the code itself is the latest from the CDN (instant OTA updates).
+ *     the code is the last successfully cached CDN version (next-launch update).
  *   • CDN down / timeout / killSwitch      ->  navigate to the LOCAL copy bundled
  *     in the store package (./app/index.html) — offline-safe, review-safe.
  *
@@ -40,10 +40,10 @@
  * assetPath() pull images/fonts from the CDN too.
  */
 (function () {
-  try { console.log('[MegaRadio] INJECT bootstrap v2 active — local file:// context, assets from CDN'); } catch (e) {}
+  try { console.log('[MegaRadio] INJECT bootstrap v3 — classic legacy loader, local native context'); } catch (e) {}
   var CDN_BASE = '__CDN_BASE__';            // e.g. https://cdn.themegaradio.com/
   var LOCAL    = './app/index.html';        // bundled fallback copy
-  var TIMEOUT  = 6000;
+  var TIMEOUT  = 20000;
   var done     = false;
   var fallingBack = false;
   var bootTimer = null;
@@ -82,6 +82,8 @@
     done = true;
     if (bootTimer) clearTimeout(bootTimer);
     try { delete window.__MR_ASSET_BASE__; } catch (e) {}
+    // Discard only a failed OTA cache, never account/favorite storage.
+    try { localStorage.removeItem('mr_cdn_html'); localStorage.removeItem('mr_cdn_ver'); } catch (e) {}
     telemetry('local');
     try { window.location.replace(LOCAL); } catch (e) { window.location.href = LOCAL; }
   }
@@ -109,8 +111,23 @@
     var doc;
     try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { doc = null; }
     if (!doc || !doc.head || !doc.body) { loadLocal(); return; }
+    var legacyPolyfill = doc.getElementById('vite-legacy-polyfill');
+    var legacyEntry = doc.getElementById('vite-legacy-entry');
+    if (!legacyPolyfill || !legacyEntry || !legacyEntry.getAttribute('data-src')) {
+      // Cached older module-only HTML cannot boot Chromium38/53. Use new package.
+      loadLocal(); return;
+    }
     done = true;
     try { window.__MR_BOOT_SRC__ = 'cdn'; } catch (e) {}   // Settings shows "· C"
+    window.__MR_APP_READY__ = false;
+    window.__MR_BOOT_FALLBACK__ = loadLocal;
+    function onReady() {
+      if (fallingBack) return;
+      if (bootTimer) clearTimeout(bootTimer);
+      document.removeEventListener('megaradio-ready', onReady);
+      telemetry('remote');
+    }
+    document.addEventListener('megaradio-ready', onReady);
     bootTimer = setTimeout(loadLocal, TIMEOUT);
 
     // 1) <link> (fonts / preconnect / stylesheets) + inline <style> from head.
@@ -118,6 +135,7 @@
     for (var i = 0; i < headNodes.length; i++) {
       var n = headNodes[i];
       if (n.tagName === 'LINK') {
+        if ((n.getAttribute('rel') || '').toLowerCase() === 'modulepreload') continue;
         var l = document.createElement('link');
         for (var a = 0; a < n.attributes.length; a++) {
           var at = n.attributes[a];
@@ -132,32 +150,39 @@
       }
     }
 
-    // 2) Scripts: run the plain helpers (polyfills/platform/nav/keys/player) FIRST
-    //    in order, then the ES-module React entry LAST (mirrors the deferred-module
-    //    order of the original index.html). Chain via onload so order is guaranteed.
+    // 2) All packaged TVs use the classic SystemJS path (also works on file://).
+    // Preserve attributes/IDs; skip modern module probes and nomodule auto-loader.
     var scripts = doc.querySelectorAll('script');
-    var plain = [], modules = [];
+    var queue = [];
     for (var j = 0; j < scripts.length; j++) {
       var sc = scripts[j];
       var type = (sc.getAttribute('type') || '').toLowerCase();
-      if (type === 'module') modules.push(sc); else plain.push(sc);
+      if (type === 'module' || sc.hasAttribute('nomodule') || sc === legacyEntry || sc === legacyPolyfill) continue;
+      if (type && type !== 'text/javascript' && type !== 'application/javascript') continue;
+      queue.push(sc);
     }
-    var queue = plain.concat(modules);
-    if (!queue.length) { loadLocal(); return; }
+    queue.push(legacyPolyfill);
 
     function runNext(k) {
       if (fallingBack) return;
       if (k >= queue.length) {
-        if (bootTimer) clearTimeout(bootTimer);
-        telemetry('remote');
+        try {
+          if (!window.System || !window.System.import) { loadLocal(); return; }
+          window.System.import(toAbs(legacyEntry.getAttribute('data-src'))).catch(loadLocal);
+        } catch (e) { loadLocal(); }
+        // Loading a script is not proof React mounted. Only megaradio-ready
+        // clears the watchdog and marks a successful remote boot.
         return;
       }
       var sc = queue[k];
       var src = sc.getAttribute('src');
-      var type = sc.getAttribute('type') || '';
       var el = document.createElement('script');
       el.async = false;
-      if (type) el.type = type;
+      for (var a = 0; a < sc.attributes.length; a++) {
+        var attr = sc.attributes[a];
+        if (attr.name === 'src' || attr.name === 'nomodule' || attr.name === 'defer' || attr.name === 'async') continue;
+        el.setAttribute(attr.name, attr.name === 'data-src' ? toAbs(attr.value) : attr.value);
+      }
       if (src) {
         el.src = toAbs(src);
         if (sc.getAttribute('crossorigin') !== null) el.crossOrigin = 'anonymous';

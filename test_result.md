@@ -103,6 +103,30 @@
 #====================================================================================================
 
 # Current fork — iteration54 (supersedes old scope/status below)
+# LATEST iteration62: LGQA oldv1.0.0black/splash3.0/3.5; userconfirmedOLDpackage,
+# fixCURRENTnewbuild, preserve4+/Samsung; asksCloudflaretokenhelp, accountnotconnected.
+# RCAofficialLG3.x Chromium38/4.x53 NOESM; priorbuildmoduleonly, publicpolyfills evenconst/
+# forof, missingnativefetch; bootstrapdidn'tkeepIDs/Reactready. Sourcefix legacyVite5plugin
+# dualchunks+ES5compatruntimeFIRST+allpublic/jsBabel;scopedCSSvarfallback;classicSystemJS
+# packagedentry;bootstrapv3legacycache+localfallback+Reactreadywatchdog;startupfailureUI.
+# NewLGmanifest1.0.3,requiredACG[]noLunapermissionsrequested. BuiltactualIPKwithofficial
+# @webos-tools/cli3.2.6tvprofile atartifacts/webos (willrebuildafterfinalchanges).
+# ModernpublicpreviewselftestReactready/compat/splashgonePASS;all10legacy/helper scripts
+# acornES5PASS;CDNrealbuild+25pipelineunitPASS;CDN/apiHTTP200fromthispodNOTproofQAIPranges.
+# Cloudflare/GitHubtokenabsent; nofirewall/token/secretcreated. GuidanceCLOUDFLARE_QA_ACCESS.md
+# exactLGIPs withoutincluding182.224.177.0, noIPspoofaswhitelisttest. NeedrealQAnetwork/device.
+# PackageinstallguardlegitresolvedExpoCLIpassthrough-- -- --cwdTV; mobilepackage/yarnlock/
+# appjson/metro SHA256 unchanged. TVdependenciesupdatedbyYarnONLY (no manualmanifestedit).
+# iteration62legacyboot/APIpolyfillsPASS; reportedMobileHIGHresolved63:RateUsModalone-line
+# useSuspensefalse fixeshiddenmodalinitiali18ncommitdeadlock. NOTSSRconfigchange.
+# Main131433+agent63realonboardingPASS; earlier130958'PASS'printincorrectBundlingtextonly.
+# iteration63 actualVMbootstrap/guard16PASS; CIusesfreshCDNfixture notignoredlgdist,
+# absolutedata-srcpreserved+relativeURLresolutionassertionscorrected.41totalunitPASS;
+# API6PASS1optionalSSEskip;ES5parse10LG/Tizen/CDNscriptsPASS;build/lint/dryrun/actionlintPASS.
+# FinalIPK artifacts/webos/com.themegaradio.app_1.0.3_all.ipk actualofficialTVCLIbuilt/infoPASS.
+# SHA2562e8ae9938b25ed6d1b16aaecd001f01f21537942efcbe20e7136f4754c8fcafc.
+# Temporarydownloadat/api/tv-app/downloads/com.themegaradio.app_1.0.3_all.ipk verifiedhash;
+# nextpreviewVitebuildcanremove downloads ->recopyfromartifactsifneeded.
 # CURRENT TASK iteration61: user approved GitHubActions main relevantTV/CDNpath push
 # plus workflow_dispatch, CloudflareSecrets setup guide. TEMPLATE ONLY; no credentials
 # requested/chatted, NO GitHub release or Cloudflare production publication authorized here.
@@ -193,7 +217,7 @@
 # Source review alone cannot validate native playback/StoreKit/Play Billing/device bridges.
 # The handoff payload-type claim was inaccurate: Electron JSON serialization already present.
 
-user_problem_statement: "Latest: prepare automatic GitHub main relevantTV/CDN changes plus manual workflow for existing Samsung/LG CloudflareCDN. Workflow/helpers/docs prepared and offline checks passed iteration61; no credentialed publication or GitHub release executed. User must add2GitHubSecrets and fulllegacyCDNseedarchive, then runjob. PreviousTVUI/metadata/Back improvements retained; nativeTV/runtime separate. Older task entries historical."
+user_problem_statement: "Latest LG QA oldv1.0.0 webOS3.0/3.5black/splash; userapprovedfixCURRENTnewpackage andpreserve4+. New1.0.3ipk prepared; ES5legacy/runtime/CSS/bootstrap/timeoutfixed andtested62–63; actualhardwareQA stillpending. UserneedsCloudflaretokenhelp; noaccountaccess/credentials, no WAF/token/secret/CDNproductionchanges. ExactIPguide provided. PreviousCDNautomation andappfeatures retained."
 frontend:
   - task: "Android SoLoader native packaging mitigation"
     implemented: true
@@ -240,10 +264,12 @@ frontend:
         working: false
         comment: "Screenshot hangs at white Bundling... app/_layout.tsx despite bundle 200 (8.5MB,1s) and Watch/NativeCast/Onboarding logs. remoteLog CORS storm removed for web but NOT the primary root cause; 2 troubleshooter recommendations about sendLog were speculative. Need actual lazy route module/promise investigation. Do not modify protected metro/index main/env."
 test_plan:
-  current_focus: ["Iteration61 CDN automation25tests+nativeactionlint+dryrunPASS", "UserGitHubSecrets and fullseedarchive setup", "ActualGitHub/Cloudflare job and nativeTVacceptance pending"]
+  current_focus: ["Iteration62–63 legacyTVfix41tests+ES5+package PASS", "NewLG1.0.3IPKactualdeviceQA", "Cloudflareaccountowner token/Secret/IPevent steps pending"]
   test_all: false
   test_priority: high_first
 agent_communication:
+  - agent: main
+    message: "62/63 reports andtestchangesreviewed;16VM+25CDNunitPASS. Latesttests madeCIportablefreshcdnHTML(noignoredlgdist),absoluteURLsfixtureassertfixed. RootmobileHIGHwasrealRateUsModalinitialSuspense;one-lineopt-outfixed,main+agentactualonboardingPASS,appjsonoutputunchanged. GeneratedandverifiedLG1.0.3ipk/downloadhash;Tizen/CDNbuildES5PASS. NoCFaccount/noactualCloudflare/Githubwrites, noQAIPnetworkorphysical3.xproof. MustaskusertryNEWpackage, oldv1.0.0notenough."
   - agent: main
     message: "Iteration61 report and4testfiles read.13Python+12NodetestsPASS, nowwiredworkflow. RealCDNbuild/typecheck/localvalidation/WranglerdryrunPASS, officialactionlint1.7.12ARM64checksum+workflowlintPASS. No actualpublication. TwoGitHubSecrets+publishedtv-cdn-seedFULLhistorybackuprequired; missinghistoryfailsclosed. SourcechangeslimitedCDNbuildhelpers/docs/workflow; appUI/native/protectedenvunchanged."
   - agent: main
