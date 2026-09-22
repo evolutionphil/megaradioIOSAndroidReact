@@ -2,10 +2,22 @@ const fs = require('fs');
 const path = require('path');
 const { digest, entryReferences, validateBundle } = require('./bundle.cjs');
 
+// Probe the actual file:// TV client shape. Generic automation user agents can
+// receive a browser challenge even when the Samsung/LG requests are permitted.
+const TV_USER_AGENTS = {
+  samsung: 'Mozilla/5.0 (SMART-TV; LINUX; Tizen 5.5) AppleWebKit/537.36 (KHTML, like Gecko) 69.0.3497.106/5.5 TV Safari/537.36',
+  lg: 'Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.34 Safari/537.36 WebAppManager',
+};
+
 async function get(base, file, fetcher = fetch) {
   const url = new URL(file, base);
   url.searchParams.set('_verify', Date.now().toString());
-  const response = await fetcher(url, { signal: AbortSignal.timeout(20000), headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'Mozilla/5.0 (compatible; MegaRadioCDNVerifier/1.0)' } });
+  const client = process.env.CDN_VERIFY_CLIENT || 'samsung';
+  if (!TV_USER_AGENTS[client]) throw new Error('Unknown CDN_VERIFY_CLIENT');
+  const response = await fetcher(url, {
+    signal: AbortSignal.timeout(20000),
+    headers: { 'Cache-Control': 'no-cache', 'User-Agent': TV_USER_AGENTS[client], Origin: 'null', Accept: file.endsWith('.json') ? 'application/json' : '*/*' },
+  });
   if (!response.ok) throw new Error(`${url.origin}/${file}: HTTP ${response.status}; mitigation=${response.headers.get('cf-mitigated') || 'none'}; ray=${response.headers.get('cf-ray') || 'none'}`);
   const bytes = Buffer.from(await response.arrayBuffer());
   if (/\.(js|css|json)$/.test(file) && /^\s*<!?html|^\s*<!doctype/i.test(bytes.toString('utf8'))) {
@@ -47,7 +59,7 @@ async function verify(mode, directory, base, fetcher = fetch) {
   console.log(`Live version ${remote.version} and entry assets verified.`);
 }
 
-module.exports = { get, verify };
+module.exports = { get, verify, TV_USER_AGENTS };
 if (require.main === module) {
   const here = path.resolve(__dirname, '..');
   const cfg = JSON.parse(fs.readFileSync(path.join(here, 'cdn-config.json'), 'utf8'));
