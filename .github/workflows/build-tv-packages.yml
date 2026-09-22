@@ -35,19 +35,20 @@ jobs:
   # ────────────────────────────────────────────────────────────────────
   build-web-preview:
     name: Build TV web preview (Vite)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       build_hash: ${{ steps.hash.outputs.hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/yarn.lock
+          node-version: '22'
+
+      - name: Install pinned Yarn
+        run: npm install --global --force yarn@1.22.22
 
       - name: Install web-preview deps
         working-directory: frontend/tvanddesktop/apple-tv-and-macos/web-preview
@@ -59,13 +60,13 @@ jobs:
 
       - name: Compute build hash
         id: hash
-        run: echo "hash=$(find frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-12)" >> "$GITHUB_OUTPUT"
+        run: echo "hash=$(find backend/static/tv-preview -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-12)" >> "$GITHUB_OUTPUT"
 
       - name: Upload built web preview as artifact
         uses: actions/upload-artifact@v4
         with:
           name: tv-web-preview-dist
-          path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist
+          path: backend/static/tv-preview
           retention-days: 7
 
   # ────────────────────────────────────────────────────────────────────
@@ -75,21 +76,28 @@ jobs:
   build-tizen-wgt:
     name: Build Samsung Tizen .wgt
     needs: build-web-preview
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+
+      - name: Install pinned Yarn
+        run: npm install --global --force yarn@1.22.22
 
       - name: Download web-preview dist
         uses: actions/download-artifact@v4
         with:
           name: tv-web-preview-dist
-          path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist
+          path: backend/static/tv-preview
+
+      - name: Install web-preview deps for package-version build
+        working-directory: frontend/tvanddesktop/apple-tv-and-macos/web-preview
+        run: yarn install --frozen-lockfile --non-interactive
 
       - name: Sync TV preview into samsung-tizen/dist
         working-directory: frontend/tvanddesktop/samsung-tizen
@@ -163,21 +171,28 @@ jobs:
   build-webos-ipk:
     name: Build LG WebOS .ipk
     needs: build-web-preview
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+
+      - name: Install pinned Yarn
+        run: npm install --global --force yarn@1.22.22
 
       - name: Download web-preview dist
         uses: actions/download-artifact@v4
         with:
           name: tv-web-preview-dist
-          path: frontend/tvanddesktop/apple-tv-and-macos/web-preview/dist
+          path: backend/static/tv-preview
+
+      - name: Install web-preview deps for package-version build
+        working-directory: frontend/tvanddesktop/apple-tv-and-macos/web-preview
+        run: yarn install --frozen-lockfile --non-interactive
 
       - name: Sync TV preview into lg-webos/dist
         working-directory: frontend/tvanddesktop/lg-webos
@@ -211,7 +226,7 @@ jobs:
     name: Publish TV Release
     if: startsWith(github.ref, 'refs/tags/tv-v')
     needs: [build-tizen-wgt, build-webos-ipk]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
