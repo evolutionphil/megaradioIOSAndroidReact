@@ -1,0 +1,13 @@
+{
+  "service": "megaradio-tv",
+  "base": "https://megaradio-tv.lingering-morning-12b7.workers.dev/",
+  "version": "20260602184641",
+  "assets": {
+    "assets/index-DdgVm6n9.css": "4f4cce011c1704fb1a14988d3709e1bb3e70ea10812f8ca729267584049ac520",
+    "assets/index-BzSa6Sux.js": "cdf58519d41d762037e6c2b4aeb66a88d373c9464b3277cc54bb394e0f7af60d",
+    "assets/index-BxPldz6a.js": "99cf194f235f7644329cd724538ad3e83b147668eda704f0782be0bae3d3da5c",
+    "assets/index-3IMbifZq.js": "9a0fd06ef6f9e56348be47233b7d12a3ce57c4e63a84a377dd0cd2b759e93422",
+    "assets/index-1ZxUnLCm.js": "03dd897d6b5e26e334211f26b65e5cf7fb9a26ba1145703f351615fddf27b76a",
+    "assets/index-DO9nH0nc.js": "badf8819b6278c6b885f7db56917c615dbb812d83c67b7008e3dd32cc48c6226"
+  }
+}
