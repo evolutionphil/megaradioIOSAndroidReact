@@ -5,8 +5,8 @@ const { digest, entryReferences, validateBundle } = require('./bundle.cjs');
 async function get(base, file, fetcher = fetch) {
   const url = new URL(file, base);
   url.searchParams.set('_verify', Date.now().toString());
-  const response = await fetcher(url, { signal: AbortSignal.timeout(20000), headers: { 'Cache-Control': 'no-cache' } });
-  if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
+  const response = await fetcher(url, { signal: AbortSignal.timeout(20000), headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'Mozilla/5.0 (compatible; MegaRadioCDNVerifier/1.0)' } });
+  if (!response.ok) throw new Error(`${url.origin}/${file}: HTTP ${response.status}; mitigation=${response.headers.get('cf-mitigated') || 'none'}; ray=${response.headers.get('cf-ray') || 'none'}`);
   const bytes = Buffer.from(await response.arrayBuffer());
   if (/\.(js|css|json)$/.test(file) && /^\s*<!?html|^\s*<!doctype/i.test(bytes.toString('utf8'))) {
     throw new Error(`${file}: SPA fallback returned HTML instead of an asset`);
