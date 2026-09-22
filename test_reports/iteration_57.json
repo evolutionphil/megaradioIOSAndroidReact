@@ -1,0 +1,51 @@
+{
+  "summary": "Frontend-only targeted iteration57 completed on TV web preview (/api/tv-app): deterministic favorites fixture (35 cards), D-pad deep-row scroll, mouse-wheel end reachability, real-station currentStation flow, and mini-player safe-gap geometry across Discover/Genres/GenreList/Favorites were validated.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Runtime asset/network fetches during radio flow",
+        "issue": "Console shows intermittent external logo CORS/403 and icon-proxy 502/403 errors for some third-party assets; core layout/navigation/player-gap checks still passed.",
+        "affected_testIDs": [
+          "button-play-pause",
+          "button-global-play-pause"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_iteration57_reveal_tv_layout.cjs",
+    "/app/tests/regression_iteration57_browser_flow.py",
+    "/app/test_reports/artifacts_iter57/favorites_loaded.jpeg",
+    "/app/test_reports/artifacts_iter57/final_geometry.jpeg",
+    "/app/test_reports/artifacts_iter57/failure_state_retry2.jpeg"
+  ],
+  "action_items": [
+    "Optional hardening: reduce noisy third-party favicon/logo failures (CORS/403/502) in console by fallback policy or proxy resilience.",
+    "Keep /api/tv-app URL as canonical browser test entrypoint for TV/Desktop regressions (root URL serves Expo bundling shell)."
+  ],
+  "critical_code_review_comments": [
+    "Verified FavoritesContext uses shared buildApiUrl helper for favorites API calls (GET/POST/POST sync/DELETE), removing prior hardcoded host duplication.",
+    "Verified tvLayout revealTvItem scale math with executable test: 100px physical overflow at scale 0.5 yields 200 scrollTop delta (expected)."
+  ],
+  "updated_files": [
+    "/app/tests/regression_iteration57_reveal_tv_layout.cjs",
+    "/app/tests/regression_iteration57_browser_flow.py",
+    "/app/test_reports/iteration_57.json"
+  ],
+  "success_rate": {
+    "backend": "NA (frontend-only scope)",
+    "frontend": "96%"
+  },
+  "seed_data_creation": "Browser-only localStorage fixture at key mega_radio_favorites with 35 station objects; no backend mutation.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Confirmed selector is [data-testid^='station-card-']. Confirmed deterministic fixture works when seeded in localStorage then reloaded on /api/tv-app route. Verified final geometry metrics with active currentStation: stageBottom=901, backdropTop=925, gap=24 (button top=958) across Discover/Genres/GenreList/Favorites.",
+  "rca_of_issue": "Earlier failures were route/harness related: using root preview URL hit Expo bundling shell, and add_init_script alone did not populate favorites in already-open document context. Switching to /api/tv-app and deterministic localStorage seed + reload resolved reproducibility."
+}

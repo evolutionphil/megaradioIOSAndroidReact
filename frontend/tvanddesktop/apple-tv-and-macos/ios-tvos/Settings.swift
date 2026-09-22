@@ -183,7 +183,7 @@ struct SettingsPage: View {
     }
 
     private var goPremiumButton: some View {
-        Button { router.go(.discover) } label: {  // placeholder: premium upgrade route
+        Button { router.go(.premium) } label: {
             HStack(spacing: 10) {
                 Image(systemName: "star.fill").font(.system(size: 20))
                 Text("Go Premium").font(.ubuntu(20, .bold))
@@ -397,7 +397,7 @@ struct SettingsPage: View {
     }
 
     private var premiumRow: some View {
-        Button { router.go(.discover) } label: {  // upgrade route placeholder
+        Button { router.go(.premium) } label: {
             HStack(spacing: 20) {
                 Image(systemName: "star.fill").font(.system(size: 22)).foregroundColor(Theme.accent)
                 VStack(alignment: .leading, spacing: 4) {

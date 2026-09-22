@@ -2,12 +2,14 @@ import { Link } from "wouter";
 import { assetPath } from "@/lib/assetPath";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useHelp } from "@/contexts/HelpContext";
+import { TV_LAYOUT } from '@/lib/tvLayout';
 
 interface SidebarProps {
   activePage: 'discover' | 'genres' | 'search' | 'favorites' | 'settings' | 'country';
   isFocused: (index: number) => boolean;
   getFocusClasses: (focused: boolean) => string;
   isHelpFocused?: boolean;
+  onFocusItem?: (index: number) => void;
 }
 
 interface SidebarItemProps {
@@ -19,12 +21,13 @@ interface SidebarItemProps {
   activePage: SidebarProps['activePage'];
   isFocused: boolean;
   testId: string;
+  onFocus?: () => void;
 }
 
-function SidebarItem({ href, icon, label, isFocused: focused, activePage, page, testId }: SidebarItemProps) {
+function SidebarItem({ href, icon, label, isFocused: focused, activePage, page, testId, onFocus }: SidebarItemProps) {
   var isActive = activePage === page;
   return (
-    <Link href={href}>
+    <Link href={href} className="tv-sidebar-link" data-testid={`sidebar-link-${page}`} onFocus={onFocus}>
       <div
         style={{
           width: '120px',
@@ -72,7 +75,7 @@ function SidebarItem({ href, icon, label, isFocused: focused, activePage, page, 
 }
 
 
-export const Sidebar = ({ activePage, isFocused, getFocusClasses, isHelpFocused }: SidebarProps): JSX.Element => {
+export const Sidebar = ({ activePage, isFocused, getFocusClasses, isHelpFocused, onFocusItem }: SidebarProps): JSX.Element => {
   const { t } = useLocalization();
   const { openHelp } = useHelp();
   var setShowHelp = (v: boolean) => { if (v) openHelp(); };
@@ -89,7 +92,7 @@ export const Sidebar = ({ activePage, isFocused, getFocusClasses, isHelpFocused 
   var helpIndex = items.length;
 
   return (
-    <div style={{ position: 'fixed', left: '48px', top: '170px', width: '120px', height: '760px', zIndex: 60, pointerEvents: 'auto' }}>
+    <div data-testid="tv-sidebar" style={{ position: 'fixed', left: TV_LAYOUT.sidebarLeft, top: '170px', width: TV_LAYOUT.sidebarWidth, height: '760px', zIndex: 60, pointerEvents: 'auto' }}>
       {items.map(function(item, index) {
         return (
           <div key={item.page} style={{ position: 'absolute', left: 0, top: (index * 108) + 'px' }}>
@@ -102,6 +105,7 @@ export const Sidebar = ({ activePage, isFocused, getFocusClasses, isHelpFocused 
               activePage={activePage}
               isFocused={isFocused(index)}
               testId={item.testId}
+              onFocus={() => onFocusItem?.(index)}
             />
           </div>
         );
@@ -110,6 +114,9 @@ export const Sidebar = ({ activePage, isFocused, getFocusClasses, isHelpFocused 
       <div style={{ position: 'absolute', left: 0, top: (helpIndex * 108) + 'px' }}>
         <div
           tabIndex={0}
+          role="button"
+          className="tv-sidebar-help"
+          onFocus={() => onFocusItem?.(helpIndex)}
           onClick={function() { setShowHelp(true); }}
           onKeyDown={function(e: any) { if (e.key === 'Enter' || e.keyCode === 13) { setShowHelp(true); } }}
           style={{

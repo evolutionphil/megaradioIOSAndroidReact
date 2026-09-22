@@ -4,6 +4,8 @@
 
 const { app, BrowserWindow, Menu, shell, globalShortcut, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const { pathToFileURL } = require('url');
 const updater = require('./updater');
 const iap = require('./iap');
 
@@ -16,7 +18,8 @@ let mainWindow = null;
 let splashWindow = null;
 
 const APP_URL_PROD = 'https://desktop.themegaradio.com/api/tv-app/';
-const APP_URL_LOCAL = 'file://' + path.join(__dirname, '..', 'renderer', 'index.html');
+const LOCAL_FILE = path.join(__dirname, '..', 'renderer', 'index.html');
+const APP_URL_LOCAL = pathToFileURL(LOCAL_FILE).href;
 
 /**
  * Splash window — small frameless brand window shown for the first ~2-3
@@ -79,6 +82,7 @@ function createWindow() {
       nodeIntegration: false,
       sandbox: true,
       preload: path.join(__dirname, 'preload.js'),
+      additionalArguments: [`--megaradio-mas=${process.mas === true ? '1' : '0'}`],
       devTools: true,
     },
   });
@@ -109,11 +113,19 @@ function createWindow() {
   // Load the deployed TV preview by default; fall back to local bundle if offline.
   const url = process.env.MR_LOCAL === '1' ? APP_URL_LOCAL : APP_URL_PROD;
   console.log('[MegaRadio] Loading', url, 'with UA:', desktopUA);
-  mainWindow.loadURL(url);
+  let triedLocal = process.env.MR_LOCAL === '1';
+  let showingError = false;
 
   // Surface load failures so the user sees something better than a black window.
-  mainWindow.webContents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
+  mainWindow.webContents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL, isMainFrame) => {
+    if (!mainWindow || mainWindow.isDestroyed() || isMainFrame === false || showingError) return;
     if (errorCode === -3) return; // ERR_ABORTED — happens during normal redirects
+    if (!triedLocal && fs.existsSync(LOCAL_FILE)) {
+      triedLocal = true;
+      mainWindow.loadFile(LOCAL_FILE).catch(() => {});
+      return;
+    }
+    showingError = true;
     console.error('[MegaRadio] did-fail-load', errorCode, errorDescription, validatedURL);
     closeSplash();
     if (!mainWindow.isVisible()) mainWindow.show();
@@ -133,12 +145,15 @@ function createWindow() {
         <p><b>${safeMsg}</b></p>
         <p>URL: <code>${safeUrl}</code></p>
         <p>Internet bağlantınızı kontrol edin ve uygulamayı yeniden başlatın.</p>
-        <button onclick="location.href=${JSON.stringify(url)}">Yeniden dene</button>
+        <p>Use View → Reload to retry after reconnecting.</p>
       </div></body></html>
-    `));
+    `)).catch(() => {});
   });
+  // Register failure handlers before starting navigation; consume loadURL's rejection.
+  mainWindow.loadURL(url).catch(() => {});
 
   mainWindow.webContents.on('did-finish-load', () => {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
     console.log('[MegaRadio] did-finish-load', mainWindow.webContents.getURL());
     // Reveal the main window only after the page is painted, then drop the splash.
     if (!mainWindow.isVisible()) mainWindow.show();
@@ -148,6 +163,7 @@ function createWindow() {
   mainWindow.webContents.on('render-process-gone', (_e, details) => {
     console.error('[MegaRadio] renderer crashed:', details.reason);
     closeSplash();
+    if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) mainWindow.show();
   });
 
   // ────────────────────────────────────────────────────────────────────

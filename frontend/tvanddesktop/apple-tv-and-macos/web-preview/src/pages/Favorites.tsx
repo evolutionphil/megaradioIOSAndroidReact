@@ -10,9 +10,14 @@ import { Sidebar } from "@/components/Sidebar";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
 import { useNavigation } from "@/contexts/NavigationContext";
+import { useGlobalPlayer } from '@/contexts/GlobalPlayerContext';
+import { contentBottomInset, revealTvItem } from '@/lib/tvLayout';
+import { restoreNavigationPosition } from '@/lib/navigationRestore';
 
 export const Favorites = (): JSX.Element => {
   const { favorites } = useFavorites();
+  const { currentStation } = useGlobalPlayer();
+  const gridRef = useRef<HTMLDivElement>(null);
   const { t } = useLocalization();
   const [location, setLocation] = useLocation();
   const { setNavigationState, popNavigationState } = useNavigation();
@@ -56,6 +61,7 @@ export const Favorites = (): JSX.Element => {
           if (stationIndex >= 0 && stationIndex < favoritesArray.length) {
             const station = favoritesArray[stationIndex];
             if (station && station._id) {
+              setNavigationState(location, index, station._id, 'favorites');
               setLocation(`/radio-playing?station=${station._id}`);
             }
           }
@@ -66,12 +72,25 @@ export const Favorites = (): JSX.Element => {
   });
 
   // Restore sidebar focus when returning from another sidebar page.
+  const returnedRef = useRef(false);
   useEffect(() => {
-    const navState = popNavigationState();
-    if (navState && navState.returnFocusIndex !== null && navState.returnFocusIndex <= 5) {
-      setFocusIndex(navState.returnFocusIndex);
-    }
-  }, []); // run once on mount
+    if (returnedRef.current) return;
+    // Wait for FavoritesProvider's local/API list to populate before consuming return state.
+    if (!favoritesArray.length) return;
+    const navState = popNavigationState(location);
+    if (!navState) return;
+    returnedRef.current = true;
+    const index = favoritesArray.findIndex(s => s._id === navState.returnStationId);
+    setFocusIndex(index >= 0 ? favoritesStart + index : Math.min(navState.returnFocusIndex, totalItems - 1));
+    restoreNavigationPosition(navState);
+  }, [favoritesArray, location]);
+
+  // Custom navigation logic
+  useEffect(() => {
+    const grid = gridRef.current;
+    const card = grid?.querySelector<HTMLElement>(`[data-testid="station-card-${focusIndex - favoritesStart}"]`);
+    if (grid && card) revealTvItem(grid, card);
+  }, [focusIndex, favoritesArray.length, currentStation]);
 
   // Custom navigation logic
   const customHandleNavigation = (direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {
@@ -264,22 +283,27 @@ export const Favorites = (): JSX.Element => {
             </Link>
           </>
         ) : (
-          <>
+          <div ref={gridRef} data-testid="favorites-scroll-area" className="scrollbar-hide"
+            style={{ position: 'absolute', left: 216, right: 54, top: 296, bottom: contentBottomInset(!!currentStation), overflowY: 'auto', overflowX: 'hidden' }}>
+          <div style={{ position: 'relative', height: Math.ceil(favoritesArray.length / 7) * 294 + 40 }}>
             {/* Radio Station Cards - Dynamic Grid (7 columns like GenreList) */}
             {Array.isArray(favoritesArray) && favoritesArray.length > 0 && favoritesArray.map((station, index) => {
               if (!station || !station._id) return null;
               const row = Math.floor(index / 7);
               const col = index % 7;
-              const leftPosition = 236 + (col * 230); // 236px start, 230px between columns
-              const topPosition = 316 + (row * 294); // 316px start, 294px between rows
+              const leftPosition = 20 + (col * 230); // Preserve absolute canvas x=236.
+              const topPosition = 20 + (row * 294); // Preserve absolute canvas y=316.
               
               return (
-                <Link key={station._id} href={`/radio-playing?station=${station._id}`}>
+                <Link key={station._id} href={`/radio-playing?station=${station._id}`}
+                  onClick={() => setNavigationState(location, favoritesStart + index, station._id, 'favorites')}
+                  data-testid={`favorite-link-${index}`} onFocus={() => setFocusIndex(favoritesStart + index)}>
                   <div 
                     className={`absolute bg-[rgba(255,255,255,0.14)] h-[264px] overflow-clip rounded-[11px] w-[200px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors ${getFocusClasses(isFocused(favoritesStart + index))}`}
                     style={{ left: `${leftPosition}px`, top: `${topPosition}px` }}
                     data-testid={`station-card-${index}`}
-                    onClick={() => setLocation(`/radio-playing?station=${station._id}`)}
+                    data-station-id={station._id} data-nav-section="favorites"
+                    data-focused={isFocused(favoritesStart + index)}
                   >
                     <div className="absolute bg-white left-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px] top-[34px]">
                       <img
@@ -301,7 +325,8 @@ export const Favorites = (): JSX.Element => {
                 </Link>
               );
             })}
-          </>
+          </div>
+          </div>
         )}
       </div>
 

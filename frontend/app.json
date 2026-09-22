@@ -256,6 +256,7 @@
       "./plugins/withCarPlayNativeFix.js",
       "./plugins/withCarPlayScenes.js",
       "./plugins/withSwiftAudioExRadioFix.js",
+      "./plugins/withCompanionBridges.js",
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
       "./plugins/withGoogleServicesFix.js",

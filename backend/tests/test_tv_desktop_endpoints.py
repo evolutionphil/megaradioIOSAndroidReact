@@ -1,4 +1,6 @@
-"""Backend tests for TV/Desktop additions:
+"""Tests for the LOCAL FastAPI/browser-preview helpers, not the catalog API.
+Set TV_PREVIEW_BACKEND_URL to the current preview origin (no /api suffix).
+Do NOT target api.themegaradio.com: packaged shells use direct playback.
 - /api/stream-proxy
 - /api/stream-metadata (SSE)
 - /api/stream-resolve
@@ -10,8 +12,9 @@ import urllib.parse
 import requests
 import pytest
 
-BASE_URL = os.environ.get("EXPO_PUBLIC_BACKEND_URL", "https://music-premium-fix.preview.emergentagent.com").rstrip("/")
-ICY_STREAM = "http://stream.radioparadise.com/mp3-192"
+BASE_URL = os.environ.get("TV_PREVIEW_BACKEND_URL", "").rstrip("/")
+pytestmark = pytest.mark.skipif(not BASE_URL, reason="TV_PREVIEW_BACKEND_URL must explicitly target the preview helper server")
+ICY_STREAM = "https://stream.radioparadise.com/mp3-192"
 
 
 # ---------- /api/stream-resolve ----------
@@ -59,6 +62,7 @@ class TestStreamProxy:
 
 # ---------- /api/stream-metadata (SSE) ----------
 class TestStreamMetadataSSE:
+    @pytest.mark.skipif(os.environ.get("TEST_LEGACY_SSE") != "1", reason="Legacy SSE is unused; current player uses Radiolise WebSocket")
     def test_sse_emits_data_event(self):
         """Open SSE, expect a 'data:' (StreamTitle) event within ~30 seconds.
         Radio Paradise pushes ICY metadata frequently."""

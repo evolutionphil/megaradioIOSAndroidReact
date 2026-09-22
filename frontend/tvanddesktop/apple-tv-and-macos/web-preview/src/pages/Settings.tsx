@@ -5,6 +5,7 @@ import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { useSleepTimer } from "@/contexts/SleepTimerContext";
 import { useAccessibility } from "@/contexts/AccessibilityContext";
 import { Sidebar } from "@/components/Sidebar";
+import { TV_LAYOUT } from '@/lib/tvLayout';
 import { useHelp } from "@/contexts/HelpContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCast } from "@/contexts/CastContext";
@@ -843,7 +844,7 @@ export const Settings = (): JSX.Element => {
         {t('settings') || 'Settings'}
       </p>
 
-      <div style={{ position: 'absolute', left: '236px', top: '140px', width: '1650px', height: '900px', zIndex: 10, display: 'flex', gap: 0 }}>
+      <div data-testid="settings-content" style={{ position: 'absolute', left: TV_LAYOUT.contentLeft, right: TV_LAYOUT.contentRight, top: '140px', height: '900px', zIndex: 10, display: 'flex', gap: 0 }}>
 
         <div style={{ flexShrink: 0, width: '420px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingRight: '24px' }}>
@@ -972,20 +973,21 @@ export const Settings = (): JSX.Element => {
 
         <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.06)', flexShrink: 0, marginLeft: '8px', marginRight: '8px' }} />
 
-        <div style={{ flex: 1, minWidth: 0, paddingLeft: '32px' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px', marginBottom: '24px', height: '48px' }}>
-            <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 700, fontSize: '28px', color: '#ffffff', margin: 0, whiteSpace: 'nowrap' }}>
+        <div style={{ flex: 1, minWidth: 0, minHeight: 0, paddingLeft: '32px', display: 'flex', flexDirection: 'column' }}>
+          <div data-testid="settings-options-heading" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px', marginBottom: '24px', minHeight: '48px', flexShrink: 0 }}>
+            <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 700, fontSize: '28px', color: '#ffffff', margin: 0, maxWidth: '50%' }}>
               {getCategoryLabel(categories[categoryIndex])}
             </p>
             <div style={{ height: '1px', flex: 1, backgroundColor: 'rgba(255,255,255,0.06)' }} />
-            <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '18px', color: 'rgba(255,255,255,0.35)', flexShrink: 0, margin: 0 }}>
+            <p className="font-['Ubuntu',Helvetica]" style={{ fontWeight: 400, fontSize: '18px', color: 'rgba(255,255,255,0.35)', minWidth: 0, maxWidth: '50%', textAlign: 'right', margin: 0 }}>
               {renderCategoryDescription()}
             </p>
           </div>
 
           <div
             ref={optionListRef}
-            style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflowY: 'auto', paddingRight: '16px', height: '800px', scrollbarWidth: 'none' }}
+            data-testid="settings-options-list"
+            style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflowY: 'auto', paddingRight: '16px', flex: 1, minHeight: 0, scrollbarWidth: 'none' }}
           >
             {renderOptions()}
           </div>

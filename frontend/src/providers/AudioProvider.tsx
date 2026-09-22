@@ -21,6 +21,8 @@ import stationService from '../services/stationService';
 import userService from '../services/userService';
 import statsService from '../services/statsService';
 import { useAuthStore } from '../store/authStore';
+import { syncCompanionCatalog } from '../services/companionCatalogService';
+import { normalizeCompanionCountries } from '../utils/companionCountries';
 import watchService from '../services/watchService';
 import wearOSService from '../services/wearOSService';
 import { adMobService } from '../services/adMobService';
@@ -180,6 +182,14 @@ async function doSetupTrackPlayer(): Promise<boolean> {
 import { buildStreamCandidates, isPlaylistStream } from '../utils/streamSources';
 
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  useEffect(() => {
+    const task = InteractionManager.runAfterInteractions(() => {
+      if (Platform.OS === 'ios') watchService.initializeConnectivity();
+      if (Platform.OS === 'android') wearOSService.initializeConnectivity();
+      if (Platform.OS === 'ios' || Platform.OS === 'android') void syncCompanionCatalog(Platform.OS).catch(console.error);
+    });
+    return () => task.cancel();
+  }, []);
   const statsOwner = useAuthStore(state => state.isAuthenticated ? state.user?._id || (state.user as any)?.id || null : null);
   const [isReady, setIsReady] = useState(false);
   const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -1591,8 +1601,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           // Wear OS requests data refresh
           try {
             const data = command.data ? JSON.parse(command.data) : { type: 'all' };
-            if (data.type === 'all' || data.type === 'genre_stations') {
-              // Handled by genre/country station logic below
+            if (data.type === 'genre_stations' && data.genreId) {
+              await handleWatchCommand({ command: 'requestGenreStations', genreSlug: data.genreId });
+            } else if (data.type === 'country_stations' && data.countryCode) {
+              await handleWatchCommand({ command: 'requestCountryStations', countryName: data.countryCode });
+            } else if (data.type === 'all') {
+              wearOSService.updateFavorites(favorites);
+              const state = usePlayerStore.getState();
+              if (state.currentStation) wearOSService.updateNowPlaying(state.currentStation,
+                state.playbackState === 'playing', state.nowPlaying?.title || '', state.nowPlaying?.artist || '');
+              await syncCompanionCatalog('android');
             }
           } catch (e) {
             console.log('[AudioProvider] request_data parse error:', e);
@@ -1637,12 +1655,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               } else {
                 if (Platform.OS === 'ios') {
                   watchService.updateGenreStations([]);
+                } else {
+                  wearOSService.updateStations([]);
                 }
               }
             } catch (e) {
               console.log('[AudioProvider] Error fetching genre stations for Watch:', e);
               if (Platform.OS === 'ios') {
                 watchService.updateGenreStations([]);
+              } else {
+                wearOSService.updateStations([]);
               }
             }
           }
@@ -1650,16 +1672,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         case 'requestCountries':
           try {
             const countriesResponse = await api.get(API_ENDPOINTS.filters.countries);
-            const countryNames: string[] = countriesResponse.data || [];
-            
-            const watchCountries = countryNames
-              .filter((name: string) => name && name.length > 0)
-              .map((name: string) => ({
-                name,
-                code: name.substring(0, 2).toUpperCase(),
-                flag: countryNameToFlag(name),
-                stationCount: 0,
-              }));
+            const watchCountries = normalizeCompanionCountries(countriesResponse.data)
+              .map(country => ({ ...country, flag: country.flag || countryNameToFlag(country.name) }));
             
             if (Platform.OS === 'ios') {
               watchService.updateCountries(watchCountries);
@@ -1687,12 +1701,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               } else {
                 if (Platform.OS === 'ios') {
                   watchService.updateCountryStations([]);
+                } else {
+                  wearOSService.updateStations([]);
                 }
               }
             } catch (e) {
               console.log('[AudioProvider] Error fetching country stations for Watch:', e);
               if (Platform.OS === 'ios') {
                 watchService.updateCountryStations([]);
+              } else {
+                wearOSService.updateStations([]);
               }
             }
           }

@@ -1,117 +1,102 @@
 {
-  "project_name": "MegaRadio",
-  "app_type": "mobile_web_app",
-  "framework": "React Native / Expo",
-  "theme": {
-    "mode": "dark",
-    "palette": {
-      "background": "#000000",
-      "surface": "#1A1A1D",
-      "primary": "#8B5CF6",
-      "text": "#FFFFFF",
-      "textSecondary": "#AEAEB2"
+  "app_type": "existing_tv_and_desktop_shared_web_shell",
+  "version": "2026.07",
+  "project_title": "MegaRadio TV & Desktop Web Shell - Horizontal Scroll Carousel Arrow Blueprint",
+  "design_philosophy": "Netflix/Prime/AppleTV inspired TV-first and Desktop-friendly horizontal carousel navigation. Focus on subtle, semi-transparent edge-cue directional arrows (left/right) for scrollable rows while preserving exact D-Pad focus mechanics and strict header layout alignment.",
+  "layout_preservation_rules": {
+    "turkiye_capsule_heart_alignment": "Preserve existing RADIO_PLAYER_RIGHT=1841.002 stage px. Capsule outer right and favorite frame outer right match; right inset=78.998. NOT text edge.",
+    "sidebar_alignment": "Sidebar fixed at left48px width120px; content starts236px stage or74px relative to Discover content.",
+    "resolution_scale": "Canonical 1920x1080 stage scaled dynamically for desktop and TV viewports via main.tsx scaler."
+  },
+  "carousel_arrow_component_spec": {
+    "component_name": "HorizontalScrollArrowCue",
+    "target_rows": [
+      "RadioPlaying - Similar Radios (Benzer Radyolar)",
+      "RadioPlaying - Popular Radios (Popüler Radyolar)",
+      "DiscoverNoUser - Recently Played (Son Dinlenenler)",
+      "DiscoverNoUser - For You (Sizin İçin)",
+      "DiscoverNoUser - Popular Genres (Popüler Türler)"
+    ],
+    "visual_geometry": {
+      "arrow_size": "48px x 48px circular pill or 40px x 80px vertical edge bar",
+      "chevron_icon": "Lucide/SVG ChevronLeft & ChevronRight (24px, 3px stroke, white)",
+      "backdrop": "rgba(0, 0, 0, 0.45) with 8px backdrop-blur",
+      "border": "1px solid rgba(255, 255, 255, 0.15)",
+      "border_radius": "9999px (full rounded pill)",
+      "positioning": "Absolute vertical center of scroll container (top: 50%, transform: translateY(-50%))",
+      "left_arrow_inset": "left: 12px",
+      "right_arrow_inset": "right: 12px",
+      "z_index": "z-30"
+    },
+    "idle_hover_focus_states": {
+      "idle_state": {
+        "opacity": "0.35",
+        "scale": "1.0",
+        "pointer_events": "auto",
+        "transition": "opacity 0.25s ease, transform 0.2s ease, background-color 0.2s ease"
+      },
+      "hover_state": {
+        "opacity": "0.95",
+        "scale": "1.1",
+        "background_color": "rgba(255, 65, 153, 0.85)",
+        "box_shadow": "0 0 20px rgba(255, 65, 153, 0.6)"
+      },
+      "active_press_state": {
+        "scale": "0.95",
+        "opacity": "1.0"
+      },
+      "dpad_remote_mode": {
+        "focusable_by_dpad": false,
+        "dpad_behavior_explanation": "Arrows serve as visual directional edge-cues for TV users while D-pad focus navigates directly from card to card. When card focus moves near the right/left boundary, auto-scroll triggers seamlessly without breaking D-pad focus flow."
+      }
+    },
+    "boundary_behavior": {
+      "left_boundary": "When container.scrollLeft <= 5px, Left Arrow is hidden (opacity: 0, pointer-events: none).",
+      "right_boundary": "When container.scrollLeft + container.clientWidth >= container.scrollWidth - 5px, Right Arrow is hidden (opacity: 0, pointer-events: none).",
+      "scroll_step": "Clicking arrow scrolls container by 600px (approx 3-4 card widths) smoothly (behavior: 'smooth')."
     }
   },
-  "responsiveness": {
-    "breakpoints": {
-      "phone": 0,
-      "tablet": 768,
-      "desktop": 1024
-    },
-    "grid_system": {
-      "strategy": "dynamic_columns",
-      "rules": [
-        {
-          "min_width": 0,
-          "columns": 3,
-          "gap": 8,
-          "margin": "1.5%",
-          "description": "Standard Phone Layout"
-        },
-        {
-          "min_width": 768,
-          "columns": 4,
-          "gap": 12,
-          "margin": "1.5%",
-          "description": "iPad Portrait / Small Tablet"
-        },
-        {
-          "min_width": 1024,
-          "columns": 5,
-          "gap": 16,
-          "margin": "1.5%",
-          "description": "iPad Landscape / Large Tablet"
-        }
-      ]
-    },
-    "scaling": {
-      "strategy": "selective_scaling",
-      "rules": [
-        "Do NOT scale body text linearly (it becomes too big). Keep body text readable (14-16px).",
-        "Scale Headings (h1, h2) by 1.2x on Tablet.",
-        "Scale Artwork/Heroes by 1.5x - 2x on Tablet.",
-        "Increase whitespace/padding by 2x on Tablet."
-      ]
+  "typography": {
+    "font_family": "Ubuntu, Helvetica, sans-serif",
+    "headings": "Ubuntu Bold (700) / Ubuntu Medium (500)",
+    "subtitles": "Ubuntu Light (300)",
+    "headline_sizes": {
+      "h1_hero": "48px",
+      "h2_section": "32px",
+      "h3_card": "22px",
+      "body_meta": "18px",
+      "caption": "14px"
     }
   },
-  "component_guidelines": {
-    "HomeScreen": {
-      "path": "/app/frontend/app/(tabs)/index.tsx",
-      "changes_needed": [
-        "Replace fixed 'getGridItemSize' logic with dynamic column calculation based on breakpoints.",
-        "Update 'gridItem' width calculation to use variable column count (3 vs 4 vs 5).",
-        "Increase 'SIDE_PADDING' from 15 to 32 on Tablets.",
-        "Genre Cards: Allow width to grow or increase fixed width to 160px on Tablet."
-      ]
-    },
-    "PlayerScreen": {
-      "path": "/app/frontend/app/player.tsx",
-      "changes_needed": [
-        "LOGO_SIZE: Change from fixed 190 to dynamic (Phone: 190, Tablet: 350).",
-        "Layout: On Tablet, consider using a split view (Artwork Left, Controls Right) OR just centered with larger artwork.",
-        "Equalizer & Controls: Scale buttons slightly (1.2x) for better touch targets on large screens."
-      ]
-    },
-    "DiscoverScreen": {
-      "path": "/app/frontend/app/(tabs)/discover.tsx",
-      "changes_needed": [
-        "Discover Banner: Increase width from 300 to 450 on Tablet.",
-        "Genre Chips: Increase padding and font size slightly."
-      ]
-    },
-    "StationCard": {
-      "path": "/app/frontend/src/components/StationCard.tsx",
-      "changes_needed": [
-        "Remove fixed widths in 'largeContainer' (150px) if possible, or scale it to 200px on Tablet."
-      ]
-    },
-    "GenreCard": {
-      "path": "/app/frontend/src/components/GenreCard.tsx",
-      "changes_needed": [
-        "Update fixed width/height for Tablet variant.",
-        "Phone: 140x90 -> Tablet: 180x120"
-      ]
-    }
+  "colors": {
+    "background_dark": "#0E0E0E",
+    "primary_accent": "#FF4199",
+    "primary_accent_hover": "#FF1A85",
+    "accent_glow": "rgba(255, 65, 153, 0.8)",
+    "card_bg": "rgba(255, 255, 255, 0.14)",
+    "card_bg_hover": "rgba(255, 255, 255, 0.20)",
+    "card_border_focus": "#FF4199",
+    "text_primary": "#FFFFFF",
+    "text_secondary": "rgba(255, 255, 255, 0.7)",
+    "text_muted": "rgba(255, 255, 255, 0.4)"
   },
-  "utility_functions": {
-    "isTablet": "const isTablet = width >= 768;",
-    "getGridMetrics": "function getGridMetrics(width) { if(width >= 1024) return { cols: 5, gap: 16 }; if(width >= 768) return { cols: 4, gap: 12 }; return { cols: 3, gap: 8 }; }"
+  "testing_attributes": {
+    "left_arrow_testid": "{unique-row-id}-scroll-left",
+    "right_arrow_testid": "{unique-row-id}-scroll-right",
+    "card_testid_convention": "card-similar-{stationId}, card-popular-{stationId}, card-recent-station-{stationId}",
+    "section_testid_convention": "section-recently-played, section-for-you, section-genres"
   },
-  "implementation_steps": [
-    "1. Modify 'HomeScreen' to use 'useWindowDimensions' and new grid logic.",
-    "2. Update 'PlayerScreen' to scale artwork and adjust layout for Tablet.",
-    "3. Refactor 'StationCard' and 'GenreCard' to accept size props or adapt to context.",
-    "4. Verify 'DiscoverScreen' horizontal scrolls look good with larger items on Tablet.",
-    "5. Ensure all interactive elements have 'data-testid' attributes."
+  "instructions_to_main_agent": [
+    "Implement a reusable shared helper/component 'HorizontalScrollArrowCue' that attaches to scroll refs (similarScrollRef, popularScrollRef, recentScrollRef, forYouScrollRef, genreScrollRef).",
+    "Listen to scroll events on horizontal rows to update showLeft / showRight state dynamically based on boundary threshold (scrollLeft > 5 and scrollLeft < scrollWidth - clientWidth - 5).",
+    "Ensure arrows have data-testid='carousel-scroll-arrow-left' and data-testid='carousel-scroll-arrow-right' for test automation.",
+    "Do NOT alter the Türkiye capsule or favorite heart button geometry or positioning on RadioPlaying or Discover screens.",
+    "Do NOT steal D-pad focus from cards to arrows on TV remote input; keep cards as primary focus items while arrows provide pointer functionality and visual indication."
   ],
-  "universal_guidelines": [
-    "Maintain the Dark Theme aesthetic (Black/Dark Grey backgrounds).",
-    "Do NOT break the existing Phone layout. Use conditional logic (isTablet ? ... : ...).",
-    "Use 'useWindowDimensions' for all responsive calculations.",
-    "Respect existing file extensions (.tsx).",
-    "Avoid 'transition: all' in animations."
-  ],
-  "image_assets": {
-    "instructions": "Use existing image URLs or fallbacks. Do not replace working images."
-  }
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Never use generic centered layouts or unstyled default scrollbars.",
+    "Maintain high visual contrast for TV 10-foot readability.",
+    "All interactive elements MUST include data-testid attributes.",
+    "Ensure smooth transition effects (transition-all duration-200) without transition: all on universal wrappers."
+  ]
 }

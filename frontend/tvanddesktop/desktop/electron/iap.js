@@ -17,6 +17,7 @@
 const { inAppPurchase } = require('electron');
 const fs = require('fs');
 const https = require('https');
+const { fileURLToPath } = require('url');
 
 const API_BASE = 'https://api.themegaradio.com';
 
@@ -26,15 +27,28 @@ let listenerAttached = false;
 // callbacks can authenticate against the backend without round-tripping
 // through the renderer.
 let cachedToken = null;
+let authGeneration = 0;
+let purchaseBusy = false;
+let purchaseTimer = null;
+let restoreTimer = null;
+function clearTimers() {
+  clearTimeout(purchaseTimer); clearTimeout(restoreTimer);
+  purchaseTimer = null; restoreTimer = null;
+}
+const PRODUCTS = new Set(['megaradio_premium_yearly', 'megaradio_premium_monthly1', 'megaradio_premium_lifetime', 'megaradio_remove_ads_yearly1']);
+function setToken(token) {
+  const next = typeof token === 'string' && token ? token : null;
+  if (next !== cachedToken) { clearTimers(); cachedToken = next; authGeneration++; purchaseBusy = false; }
+}
 
 function isMac() {
-  return process.platform === 'darwin';
+  return process.platform === 'darwin' && process.mas === true;
 }
 
 function readReceiptB64() {
   try {
     const url = inAppPurchase.getReceiptURL();
-    const path = url ? url.replace('file://', '') : null;
+    const path = url ? (url.startsWith('file:') ? fileURLToPath(url) : url) : null;
     if (path && fs.existsSync(path)) {
       return fs.readFileSync(path).toString('base64');
     }
@@ -44,9 +58,9 @@ function readReceiptB64() {
   return null;
 }
 
-function postJson(pathname, body, token) {
+function postJson(pathname, body, token, method = 'POST') {
   return new Promise((resolve) => {
-    const data = JSON.stringify(body);
+    const data = method === 'GET' ? '' : JSON.stringify(body);
     const headers = {
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(data),
@@ -57,7 +71,7 @@ function postJson(pathname, body, token) {
         hostname: 'api.themegaradio.com',
         port: 443,
         path: pathname,
-        method: 'POST',
+        method,
         headers,
         timeout: 20000,
       },
@@ -99,7 +113,7 @@ async function verifyOnBackend({ productId, originalTransactionId, receiptB64, t
     autoRenewing: true,
   }, token);
 
-  if (status === 200) {
+  if (status === 200 && body && body.success !== false && !body.error && typeof body.plan === 'string' && body.plan) {
     return { ok: true, server: body };
   }
   // Map backend error codes (per HOTFIX 2026-05-07 contract)
@@ -132,15 +146,22 @@ function attachTransactionListener() {
       console.log('[IAP] tx', state, productId, tx.transactionIdentifier);
 
       if (state === 'purchased' || state === 'restored') {
+        const token = cachedToken;
+        const generation = authGeneration;
+        if (!token || !PRODUCTS.has(productId)) continue;
         const receiptB64 = readReceiptB64();
         const verify = await verifyOnBackend({
           productId,
           originalTransactionId: tx.originalTransactionIdentifier,
           receiptB64,
-          token: cachedToken,
+          token,
         });
+        if (generation !== authGeneration || token !== cachedToken) continue;
+        purchaseBusy = false;
+        clearTimeout(purchaseTimer); purchaseTimer = null;
 
         if (verify.ok) {
+          clearTimeout(restoreTimer); restoreTimer = null;
           send(state === 'restored' ? 'mr-iap-restored' : 'mr-iap-completed', {
             productId,
             transactionId: tx.transactionIdentifier,
@@ -148,6 +169,7 @@ function attachTransactionListener() {
             server: verify.server, // { plan, expiryDate, isActive, features }
             state,
           });
+          try { inAppPurchase.finishTransactionByDate(tx.transactionDate); } catch (_) {}
         } else {
           // Apple satışı tamamlandı ama backend doğrulayamadı.
           // Apple parayı çekmiş olabilir — kullanıcıya net bir hata göster.
@@ -160,8 +182,9 @@ function attachTransactionListener() {
             stage: 'backend_verify',
           });
         }
-        try { inAppPurchase.finishTransactionByDate(tx.transactionDate); } catch (_) {}
       } else if (state === 'failed') {
+        purchaseBusy = false;
+        clearTimeout(purchaseTimer); purchaseTimer = null;
         send('mr-iap-failed', {
           productId,
           error: tx.errorMessage || 'Purchase failed',
@@ -175,6 +198,9 @@ function attachTransactionListener() {
 }
 
 function registerIpc(ipcMain, getMainWindow) {
+  ipcMain.handle('mr-iap-set-auth', (_e, token) => { setToken(token); mainWindowRef = getMainWindow(); return { ok: true }; });
+  mainWindowRef = getMainWindow();
+  attachTransactionListener();
   ipcMain.handle('mr-iap-purchase', async (_e, payload) => {
     if (!isMac()) {
       return { ok: false, reason: 'not-mac', message: 'StoreKit only available on macOS App Store builds.' };
@@ -183,44 +209,51 @@ function registerIpc(ipcMain, getMainWindow) {
       return { ok: false, reason: 'cannot-pay', message: 'In-App Purchases are disabled on this device.' };
     }
     const { productId, token } = (typeof payload === 'string') ? { productId: payload } : (payload || {});
-    if (!productId) return { ok: false, reason: 'no-product' };
-    cachedToken = token || cachedToken;
+    if (!PRODUCTS.has(productId)) return { ok: false, reason: 'no-product', message: 'Unknown product' };
+    if (!token || token !== cachedToken) return { ok: false, reason: 'no-auth', message: 'Sign in again before purchasing.' };
+    if (purchaseBusy) return { ok: false, reason: 'busy', message: 'A purchase is already in progress.' };
+    purchaseBusy = true;
+    const generation = authGeneration;
+    purchaseTimer = setTimeout(() => {
+      if (generation !== authGeneration) return;
+      purchaseBusy = false; purchaseTimer = null;
+      send('mr-iap-failed', { code: 'TIMEOUT', message: 'No verified purchase result received. Please try Restore Purchases.' });
+    }, 120000);
     mainWindowRef = getMainWindow();
     attachTransactionListener();
     try {
+      const session = await postJson('/api/auth/tv/verify', null, token, 'GET');
+      if (session.status !== 200 || session.body?.valid === false || token !== cachedToken || generation !== authGeneration) {
+        purchaseBusy = false; clearTimeout(purchaseTimer); purchaseTimer = null;
+        return { ok: false, reason: 'session', message: 'Your session could not be verified. Please sign in again.' };
+      }
       const ok = await inAppPurchase.purchaseProduct(productId, 1);
+      if (!ok) { purchaseBusy = false; clearTimeout(purchaseTimer); purchaseTimer = null; }
       return { ok, productId };
     } catch (err) {
+      purchaseBusy = false;
+      clearTimeout(purchaseTimer); purchaseTimer = null;
       return { ok: false, reason: 'exception', message: String(err?.message || err) };
     }
   });
 
   ipcMain.handle('mr-iap-restore', async (_e, payload) => {
     if (!isMac()) return { ok: false, reason: 'not-mac' };
-    const token = (payload && payload.token) || cachedToken;
-    cachedToken = token;
+    const token = payload && payload.token;
+    if (!token || token !== cachedToken) return { ok: false, reason: 'no-auth', message: 'Sign in before restoring purchases.' };
+    if (restoreTimer) return { ok: false, reason: 'busy', message: 'Restore already in progress.' };
     mainWindowRef = getMainWindow();
     attachTransactionListener();
     try {
-      // Mac App Store flow: the receipt itself proves entitlement, so the
-      // simplest restore is to re-validate the existing receipt against
-      // our backend. The backend will mark the user premium for whatever
-      // products are active in that receipt.
-      const receiptB64 = readReceiptB64();
-      if (!receiptB64) {
-        return { ok: false, reason: 'no-receipt', message: 'Cihazda satın alma kaydı bulunamadı.' };
-      }
-      const verify = await verifyOnBackend({
-        productId: 'megaradio_premium_yearly', // backend infers from receipt; productId is required by API
-        receiptB64,
-        token,
-      });
-      if (verify.ok) {
-        send('mr-iap-restored', { server: verify.server, state: 'restored' });
-        return { ok: true, server: verify.server };
-      }
-      send('mr-iap-failed', { code: verify.code, status: verify.status, message: verify.message, stage: 'restore' });
-      return { ok: false, code: verify.code, message: verify.message };
+      // Actual restored transaction supplies its productIdentifier. Never label
+      // monthly/lifetime receipts as yearly. Entitlements arrive via verified event.
+      const generation = authGeneration;
+      restoreTimer = setTimeout(() => {
+        restoreTimer = null;
+        if (generation === authGeneration) send('mr-iap-failed', { code: 'RESTORE_TIMEOUT', message: 'No verified purchase was received. Check the store account and retry.' });
+      }, 20000);
+      inAppPurchase.restoreCompletedTransactions();
+      return { ok: true, pending: true };
     } catch (err) {
       return { ok: false, reason: 'exception', message: String(err?.message || err) };
     }
@@ -231,7 +264,8 @@ function registerIpc(ipcMain, getMainWindow) {
     // backend (Apple/Google manage billing). The server now returns 409
     // manage_in_store with a manageUrl — we just open it in the system browser.
     const { shell } = require('electron');
-    const token = (payload && payload.token) || cachedToken;
+    const token = payload && payload.token;
+    if (!token || token !== cachedToken) return { ok: false, reason: 'no-auth' };
     const { status, body } = await postJson('/api/user/subscription/cancel', {}, token);
     if (status === 409 && body?.code === 'manage_in_store' && body?.manageUrl) {
       shell.openExternal(body.manageUrl);

@@ -1,5 +1,163 @@
 # MegaRadio - Product Requirements Document
 
+## Güncel teslim — iteration58–60: hizalama, Geri/odak, şarkı bilgisi, yön okları
+- **Son kullanıcı kararları:** Türkiye yazısı hizası iptal edildi; kapsülün DIŞ SAĞ
+  kenarı kalbin DIŞ SAĞ çerçevesiyle hizalanacak. Üst ülke+equalizer gap19 korunur.
+  RadioPlaying Geri: kaynak sayfa + orijinal radyo odağı + arama/ülke/scroll/pagination.
+  Direkt link→Discover; yayın devam davranışı değişmez. Kullanıcı tüm işleri birlikte
+  onayladı; yatay satırlara hafif Netflix-benzeri pointer okları, D-pad kartlarda kalır.
+  TürkülerleTürkiye şarkı bilgisinin mobil/web ile karşılaştırılması özellikle istendi.
+- **Geometri:** RADIO_PLAYER_RIGHT=1841.002; header sağ inset78.998. Test58 üç boyutta
+  capsule/frame farkı<0.03stage px, gap19 PASS. Bu TEXT-edge hizası değildir.
+- **Router:** kurulu Wouter navigate query'yi hash ÖNCESİNE taşır ama direkt hashquery
+  rawmatch404 veriyordu. `normalizeHashQuery` startup/hashchange ile kanonikleştirir;
+  `RadioPlaying.useSearch` aynı-route query update'lerini izler. Her iki link biçimi
+  ve Search?q çalışır. Korumalı metro/env/config değiştirilmedi.
+- **Dönüş:** NavigationContext senkron ref + route-owned pop, kaynak ülke, DOM scroll
+  ve page snapshot taşır. Discover/GenreList batch+offset, Search query/layout/recents,
+  Favorites stable stationID restore. Radio originRef Next/Similar sırasında korunur.
+  Escape/Backspace/BrowserBack/GoBack ve461/10009/4 desteklenir; ülke modalı capture
+  listener ile önce dropdown/modalı kapatır, sonra kaynak ekrana döner. Search query
+  reset effect restore SONRASI index0 yapıyordu: ilk restored render reseti atlanır.
+  `restoreNavigationPosition` scroll/reveal+DOMfocus; tv-restored-card default beyaz
+  browser outline'ını bastırır, sayfanın pembe sanal TV odağı tek gösterge olur.
+- **Şarkı bilgisi RCA:** TürkülerleTürkiye id68a8c49fbd66579311ab78a1 raw url
+  listen.pls?sid=22 iken çözülmüş url stream/22/;. TV Radiolise'a PLS gönderiyordu.
+  Mobil nativeICY + canlı `/api/now-playing/{id}` yolunu kullanır. Canlı endpoint
+  flat `{title,artist,station,genre}`200 doğrulandı; yerel backend aynı isimli yol
+  genre fallback verdiğinden TV oraya bağlanmaz. Web sayfası/istasyon kontratı incelendi.
+  `useNowPlayingMetadata`: url_resolved/urlResolved önceliği, gerçek API ilk sorgu,
+  oynarken60sn yedek sorgu, geçerliICY önceliği, transient WS hatasında başlığı silmeme,
+  station değişiminde eski HTTP/WS cevabını yok sayma/cleanup. Native kod değişmedi.
+- **Oklar:** `HorizontalScrollCues` RadioSimilar/Popular + DiscoverRecent/ForYou/Genres;
+  48px/.35idle, hoverpembe, 600px veya dar satıra uyarlı kaydırma, sınırda gizleme,
+  tekil testIDler. Pointer click radyo açmaz; D-pad card modelini bozmaz. Radio totalItems
+  reserved30 popular aralığını artık doğru sayar; similar yoksa Down popular'a geçer.
+- **Test60:** önceki41+5+14 ve yeni17 metadata assertion PASS (toplam77 ayrı assert);
+  canlı metadata/API eşleşmesi (testte İzzetAltınmeşe–Senem, sonraki testte Yudum–Ayletme),
+  kaynak odak IDleri: Searchidx2, Genreidx30, Favoriteidx34 PASS; directURL/metadata
+  stale guards/arrows/boundaries/modal ownership PASS. Test-fixture yalnızca izole
+  tarayıcı localStorage; gerçek API hesaplarına yazma, production mock yok.
+- **Son test açığı kapandı:** test60 Searchrecent1 yalnız1kayıt nedeniyle denenemedi.
+  Main publicAPI'den3GERÇEK istasyonu sadece test tarayıcısının recentlyPlayed'ine
+  koydu. Recentidx1→Radio→remote10009 Back→aynıID/idx1 PASS; sonraDpadRight→idx2 PASS.
+  Log `/root/.emergent/automation_output/20260922_001251/console_20260922_001251.log`.
+- Test dosyaları değişiklikleri incelendi: issue54 test transpiler'i yeni metadatahook
+  import.meta için güncellendi (test-only); yeni17assert actualTS hooklarını çalıştırır.
+- **Açık sınırlar:** gerçek TV donanımı/native store/Watch/iOSAVPlayer bu tarayıcı
+  turunda çalıştırılmadı. Harici favicon/icon-proxy ara sıra403/502 tarihsel sorunu
+  bu tur çözülmüş sayılmadı. Recent service'in eski hardcoded APIhost'u ve büyükpage
+  dosyalarını bölme P2'de; auth/IAP/provider mimarisi bu ek turda değiştirilmedi.
+
+---
+
+## En son kullanıcı işi — iteration56–57: TV/Desktop yerleşim düzeltmeleri
+- Kullanıcı Equalizer presetlerinin sidebar'a taştığını (Vocal/Settings çakışması)
+  bildirdi. Ortak TV/Desktop ekranları, mevcut tasarım korunarak farklı boyutlar,
+  tıklama ve kumanda odağı dahil onaylandı. Native AppleTV görsel yeniden tasarımı
+  kapsam dışı. Kullanıcı **artık tarayıcı linki istiyor**; eski link paylaşma yasağı
+  geçersiz. Güncel frontend/.env host + `/api/tv-app/#/discover-no-user` ve
+  `/api/tv-app/#/equalizer` verildi. Root URL mobil Expo kabuğudur, TV değil.
+- Kök neden: EQ paddingLeft150, sidebar x48+width120=168; gerçek18px kesişme.
+  Ortak `lib/tvLayout.ts`: contentLeft236, right74, player155 +24gap. EQ flex
+  paneli/presetleri taşmıyor; son preset/reset/10band/hint görünür; slider hitbox44.
+- `useEqualizerNavigation.ts`: mevcut FocusRouter üzerinde preset/sidebar/band/reset
+  geçişleri; up/down ±1dB ve clamp, left/right band, Enter→reset, Escape→Settings;
+  Help ve DOM focus. Seçim pembe, odak beyaz. Sidebar optional onFocusItem ile
+  mevcut sayfa davranışını bozmadan link odak outline'ı alır. Native mantık değişmedi.
+- Favorites daha önce sabit absolute grid ile uzun listeleri gizliyordu. Ayrı
+  scroll viewport ve D-pad odak kaydırması; kartların orijinal x236/y316 konumu
+  korundu. `revealTvItem` scaled DOM rect / unscaled scrollTop farkını düzeltir.
+- Discover/Genres/GenreList/Favorites scroll sınırı mini-player y925 üstünde24px
+  boşluk bırakır. Genre flex minWidth0, Discover alt yükleme hizası düzeltildi.
+  Settings sağ74px safe margin, uzun açıklama wrap, bounded options flex scroll.
+- FavoritesContext duplicate hardcoded origin kaldırıldı; ortak exported
+  buildApiUrl kullanır (önizleme proxy, paketli mevcut directAPI). Auth değiştirilmedi;
+  ana servisin önceden var olan packaged default host/env migration işi ayrı P2.
+- Test56:5viewport (1280/1366/1920/2560/3840), EQ geometry no overlap, hit-testing,
+  D-pad ve ortak sidebar sayfa gezintisi PASS;41 önceki behavior assertion PASS.
+  Görsel analiz de son EQ ekranında kesişme/kırpma bulmadı.
+- Test57 eksik kapsamı kapattı:35favori browser-only fixture (canlı hesapta yazma
+  yok), derin satır D-pad/wheel, gerçek radyo seçimiyle currentStation; dört listede
+  stageBottom901,playerBackdrop925,gap24 doğrulandı. Ölçek hesabı5assertion PASS.
+  Kullanılan fixture sadece test tarayıcısında; uygulamaya debug/mock hook eklenmedi.
+- Test57 Python dosyası standalone test runner DEĞİL, Playwright page bağlamında
+  çalışacak kısmi akış snippet'i. Asıl geometry kanıtı rapor ve tarayıcı test çıktıları.
+  Node `regression_iteration57_reveal_tv_layout.cjs` doğrudan çalıştırılabilir.
+- Tüm değişen TV TS lint, isolated tsc ve Vite build PASS. Dış logo/icon proxy'lerinde
+  ara sıra403/CORS/502 test57'de görüldü; fallback mevcut. Harici kaynağın düzeldiği
+  veya native store/cihaz testlerinin yapıldığı iddia edilmedi.
+- P0 UI kapsamında açık blocker yok. P1 gerçek kumanda/TV donanımında kabul turu;
+  P2 büyük Discover/Settings dosyalarını parçalara ayırma. Önceki API README teslimi
+  tamamlandı; aşağıdaki iteration54–55 kayıtları diğer işlerin durumunu korur.
+
+---
+
+## Son doğrulanmış durum — iteration54–55 (önceki kayıtların önüne geçer)
+
+### Kullanıcı isteği ve kapsam
+Kullanıcı Türkçe devam edilmesini ve iteration53 kalan Desktop IAP/paywall, TV/Wear
+API sorunlarının düzeltilmesini; backend geliştiricisi için API README teslimini
+onayladı. Apple TV tasarım/focus parity ve New Architecture ertelendi. Native cihaz
+testleri kullanıcıda, mobil Expo önizlemesi bu turun dışında. Aşağıdaki eski
+"mobile untouched" notları bu sınırlı ortak AudioProvider/companion düzeltmesinin
+önüne geçmez; mevcut mobil oynatma algoritması değiştirilmedi.
+
+### Mimari ve gerçekleştirilenler
+- Expo RN mobil + Swift/Kotlin companion köprüleri; ayrı React/Vite TV/Desktop
+  core + Electron/native shells; yerel FastAPI önizleme proxy'si ve harici canlı
+  katalog/hesap API'si. Bu tur backend üretim kaynağı ve DB şeması değişmedi.
+- Devirdeki "Electron payload type" iddiası kesin değildi: JSON.stringify zaten
+  vardı, Electron tipi numeric quantity destekliyor. Gerçek hata DesktopPremium
+  geçersiz `subscription-page` ve PaywallContext try-scope bridge TDZ idi. Geçerli
+  `premium`, tek bridge/token snapshot ve await sonrası session kontrolü uygulandı.
+- UpdateBanner union dependency ve Equalizer Sidebar eksik callback parametreleri
+  düzeltildi. Deprecated slider-vertical yerine standart döndürülmüş range;
+  tasarım yeniden yapılmadı, slider yönü/sıfırlama tarayıcıda doğrulandı.
+- `src/utils/companionCountries.ts`: boot + requestCountries tek normalizasyon;
+  string/envelope/object/boş yanıt, dedup, gerçek kod varsa koruma; yoksa tam isim,
+  asla ilk iki harften ISO uydurmama. Wear ülke seçimi API'ye tam isim gönderir;
+  ülke/tür navigation parametreleri Uri.encode; boş/hata sonuçları eski listeyi temizler.
+- `streamRouting.ts`: yalnızca normal http(s) tarayıcı önizlemesi `/api/stream-*`
+  kullanır. Electron/AndroidTV/Tizen/WebOS/file ortamları doğrudan yayın/playlist
+  kullanır. Önceki `!isTV` kontrolü Electron/AndroidTV'yi yanlış proxy'ye sokuyordu.
+  `final_url` alias düzeltildi; PLS/M3U relative/absolute parser HLS'yi bozmaz,
+  HTML/ftp reddeder; fetch timeout korunur/eklenir.
+- `backend/tests/test_tv_desktop_endpoints.py`: açık `TV_PREVIEW_BACKEND_URL`;
+  katalog host'u ile karışmaz; legacy kullanılmayan SSE opt-in. 404 bulgusu yeni
+  production API endpoint'i gerektiği anlamına gelmez.
+- Root `README_API_UPDATES.md` yeni teslim/giriş belgesi; mevcut
+  `README_API_DEVELOPER.md` güncellendi. Gerçek sanitized GET örneği flat
+  `{plan:"none",expiryDate:null,isActive:false,features:[]}`. Bu ücretsiz hesap
+  gözlemidir, aktif paid POST/store doğrulamasının kanıtı değildir.
+
+### Kanıtlar ve sınırlar
+- iteration54: 14 backend PASS, 1 kullanılmayan SSE SKIP, 5 mevcut Node source
+  regresyon dosyası PASS, TV Equalizer/Settings/Discover smoke PASS.
+- iteration55: `tests/regression_issue54_behavior.cjs` 41 executable assertion
+  PASS; actual TS transpile + test doubles ile paywall/normalizer/stream helpers.
+  Sıkılaştırılmış 3 live readonly kontrat testi PASS; Equalizer drag-up/key/reset PASS.
+- TV isolated `tsc --noEmit`, Vite build, scoped lint PASS. Root mobile tsc tüm
+  eski hatalardan arındırıldı iddiası yok. Native Swift/Kotlin/StoreKit derlenmedi.
+- GlobalPlayer doğrudan onError retry callback event zinciri uçtan uca çalıştırılmadı;
+  platform helper'ları çalıştırıldı, retry kodu incelendi. Bu kapsam sınırı açık bırakıldı.
+- Testing agent yalnız test dosyaları ekledi/değiştirdi; raporlar ve kod incelendi.
+  Yeni production mock entegrasyon eklenmedi; VM stubları yalnızca test doubles.
+
+### Açık işler (P0/P1/P2)
+- P0 kullanıcı: yeni Xcode/Android build ile Best FM/offline cancel, CarPlay-first,
+  Android SoLoader ve eşleşmiş Watch/Wear cihaz turu; store sandbox purchase/restore.
+- P0 harici website: Android gerçek package+release signing assetlinks, iOS AASA
+  archive eşleşmesi ve no-app banner; cold/warm WhatsApp link kabul testi.
+- P1 harici backend/website: Community gerçek pagination/search, Best FM canonical
+  410 ve stream durumları; belgeli StoreKit JWS/Base64/Google receipt sözleşmeleri.
+- P1 harici logo: BigR favicon isteği test54'te403; fallback çalıştı, kaynağın
+  düzeldiği iddia edilmedi. Ana API host/key hardcoding teknik borcu bu tur taşınmadı.
+- P2: doğrudan retry event test harness, TV görsel/focus parity, New Architecture,
+  AudioProvider bölümlendirme. Mevcut native yapı ve korunan config dosyaları korundu.
+
+---
+
 ## Original Problem Statement
 MegaRadio: full-stack streaming radio app with **mobile** (iOS/Android — production), plus a **TV/Desktop multi-platform expansion** (Apple TV, macOS, Android TV, Fire TV, Tizen, webOS, Windows, Linux). Mobile codebase isolation: TV/Desktop must NOT touch `/app/frontend/app/` or `/app/frontend/src/`.
 

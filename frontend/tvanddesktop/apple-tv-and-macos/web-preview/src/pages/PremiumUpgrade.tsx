@@ -8,6 +8,7 @@ import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { assetPath } from "@/lib/assetPath";
 import { supportsNativeIap } from "@/lib/platform";
 import { PremiumUpgradeNative } from "./PremiumUpgradeNative";
+import { DesktopPremium } from './DesktopPremium';
 
 /**
  * Premium upgrade screen.
@@ -25,6 +26,7 @@ import { PremiumUpgradeNative } from "./PremiumUpgradeNative";
  * Premium it shows up identically across all platforms.
  */
 export function PremiumUpgrade(): JSX.Element {
+  if ((window as any).megaRadioNative?.supportsNativeIap === true) return <DesktopPremium />;
   if (supportsNativeIap()) {
     return <PremiumUpgradeNative />;
   }

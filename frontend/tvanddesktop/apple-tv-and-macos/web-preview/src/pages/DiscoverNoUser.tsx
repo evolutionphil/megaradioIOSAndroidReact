@@ -11,7 +11,10 @@ import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { useCountry } from "@/contexts/CountryContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useGlobalPlayer } from "@/contexts/GlobalPlayerContext";
-import { useNavigation } from "@/contexts/NavigationContext";
+import { contentBottomInset, revealTvItem } from '@/lib/tvLayout';
+import { useNavigation, useSavedNavigationData, usePageSnapshot } from "@/contexts/NavigationContext";
+import { restoreNavigationPosition } from '@/lib/navigationRestore';
+import { HorizontalScrollCues } from '@/components/HorizontalScrollCues';
 import { autoPlayService } from "@/services/autoPlayService";
 import { recentlyPlayedService } from "@/services/recentlyPlayedService";
 import { recommendationService } from "@/services/recommendationService";
@@ -24,15 +27,17 @@ import { useDragScroll } from "@/hooks/useDragScroll";
 export const DiscoverNoUser = (): JSX.Element => {
   const { t } = useLocalization();
   const { selectedCountry, selectedCountryCode, selectedCountryFlag, setCountry } = useCountry();
-  const { playStation, isPlaying } = useGlobalPlayer();
+  const { playStation, isPlaying, currentStation } = useGlobalPlayer();
   const { isAuthenticated, user } = useAuth();
   const [location, setLocation] = useLocation();
   const { setNavigationState, popNavigationState } = useNavigation();
+  const saved = useSavedNavigationData<{ country: string; showHeader: boolean; displayedStations: Station[];
+    currentOffset: number; hasMore: boolean; recentStations: Station[]; forYouStations: Station[] }>(location);
   const queryClient = useQueryClient();
   const [isCountrySelectorOpen, setIsCountrySelectorOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const [exitModalFocusIndex, setExitModalFocusIndex] = useState(0);
-  const [showHeader, setShowHeader] = useState(true);
+  const [showHeader, setShowHeader] = useState(saved?.showHeader ?? true);
   const [helpFocused, setHelpFocused] = useState(false);
   const [isCountryHeaderFocused, setIsCountryHeaderFocused] = useState(false);
   // Header Login button focus mode — mirrors isCountryHeaderFocused.
@@ -54,17 +59,20 @@ export const DiscoverNoUser = (): JSX.Element => {
   useDragScroll(recentScrollRef);
   useDragScroll(forYouScrollRef);
   useDragScroll(genreScrollRef);
-  const [recentStations, setRecentStations] = useState<Station[]>([]);
-  const [forYouStations, setForYouStations] = useState<Station[]>([]);
+  const [recentStations, setRecentStations] = useState<Station[]>(saved?.recentStations || []);
+  const [forYouStations, setForYouStations] = useState<Station[]>(saved?.forYouStations || []);
   const lastScrollY = useRef(0);
   const lastScrollTime = useRef(0); // Throttle scroll events
   const MAX_STATIONS = 200; // Prevent memory bloat on TV devices
   
   // Infinite scroll state for country stations - TRUE INFINITE SCROLL with API
-  const [displayedStations, setDisplayedStations] = useState<Station[]>([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
+  const [displayedStations, setDisplayedStations] = useState<Station[]>(saved?.displayedStations || []);
+  const [currentOffset, setCurrentOffset] = useState(saved?.currentOffset || 0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMoreCountryStations, setHasMoreCountryStations] = useState(true);
+  const [hasMoreCountryStations, setHasMoreCountryStations] = useState(saved?.hasMore ?? true);
+  const restoredCountry = useRef(saved?.country);
+  usePageSnapshot(location, () => ({ country: selectedCountryCode, showHeader, displayedStations,
+    currentOffset, hasMore: hasMoreCountryStations, recentStations, forYouStations }));
   const isLoadingRef = useRef(false);
   const loadMoreRef = useRef<(silent?: boolean) => void>(() => {});
   const STATIONS_PER_LOAD = 21;
@@ -730,6 +738,14 @@ export const DiscoverNoUser = (): JSX.Element => {
   // stomp the restored index when the user returns from RadioPlaying.
   const isFirstCountryEffect = useRef(true);
   useEffect(() => {
+    if (isFirstCountryEffect.current && saved?.country === selectedCountryCode) {
+      isFirstCountryEffect.current = false;
+      currentOffsetRef.current = saved.currentOffset;
+      hasMoreRef.current = saved.hasMore;
+      displayedCountRef.current = saved.displayedStations.length;
+      return;
+    }
+    restoredCountry.current = undefined;
     isLoadingRef.current = false;
     currentOffsetRef.current = 0;
     hasMoreRef.current = true;
@@ -748,6 +764,7 @@ export const DiscoverNoUser = (): JSX.Element => {
   // Initialize country stations when initial data is loaded
   const initialLoadDone = useRef(false);
   useEffect(() => {
+    if (restoredCountry.current === selectedCountryCode) return;
     if (initialStationsData?.stations && initialStationsData.stations.length > 0) {
       const stations = initialStationsData.stations;
       setDisplayedStations(stations);
@@ -758,7 +775,9 @@ export const DiscoverNoUser = (): JSX.Element => {
   }, [initialStationsData, selectedCountryCode]);
 
   // Load recently played stations on mount and after auth changes
+  const firstRecentLoad = useRef(true);
   useEffect(function() {
+    if (firstRecentLoad.current) { firstRecentLoad.current = false; if (saved) return; }
     if (isAuthenticated) {
       var timer = setTimeout(function() {
         var stations = recentlyPlayedService.getStations();
@@ -773,6 +792,7 @@ export const DiscoverNoUser = (): JSX.Element => {
 
   // Load personalized recommendations on mount
   useEffect(() => {
+    if (saved) return;
     const loadRecommendations = async () => {
       if (!recommendationService.hasEnoughData()) return;
       
@@ -813,13 +833,12 @@ export const DiscoverNoUser = (): JSX.Element => {
   const pendingNavStateRef = useRef<ReturnType<typeof popNavigationState>>(null);
   const hasResolvedNavStateRef = useRef(false);
   useEffect(() => {
-    const navState = popNavigationState(); // Pop and clear in one atomic operation
+    const navState = popNavigationState(location);
     if (navState && navState.returnFocusIndex !== null) {
       pendingNavStateRef.current = navState;
       hasResolvedNavStateRef.current = false;
       // Refresh recently played when returning from RadioPlaying
-      const stations = recentlyPlayedService.getStations();
-      setRecentStations(stations);
+      if (!saved) setRecentStations(recentlyPlayedService.getStations());
       // Fallback initial set in case re-resolution doesn't happen (e.g. no stationId saved).
       setFocusIndex(navState.returnFocusIndex);
     }
@@ -855,6 +874,7 @@ export const DiscoverNoUser = (): JSX.Element => {
       hasResolvedNavStateRef.current = true;
       pendingNavStateRef.current = null;
       setFocusIndex(target);
+      restoreNavigationPosition(navState);
     }
   }, [
     recentStations,
@@ -1067,25 +1087,7 @@ export const DiscoverNoUser = (): JSX.Element => {
       
       if (!focusedElement) return;
 
-      // 200px bottom-padding: the global player bar lives at top:925 / h:155
-      // (bottom 22-177 of the 1080 canvas), and our scroll container ends at
-      // y≈903. Without enough padding the focused row at the bottom-most
-      // visible slot sits visually under the player bar. 200 keeps a 22px
-      // visual gap. Top padding stays at 100 (header area). Currently 100
-      // for both — caused "focus under player bar" reports.
-      const TOP_PADDING = 100;
-      const BOTTOM_PADDING = 220;
-
-      const containerRect = scrollContainer.getBoundingClientRect();
-      const elementRect = focusedElement.getBoundingClientRect();
-
-      if (elementRect.top < containerRect.top + TOP_PADDING) {
-        const diff = containerRect.top + TOP_PADDING - elementRect.top;
-        scrollContainer.scrollTop = scrollContainer.scrollTop - diff;
-      } else if (elementRect.bottom > containerRect.bottom - BOTTOM_PADDING) {
-        const diff = elementRect.bottom - (containerRect.bottom - BOTTOM_PADDING);
-        scrollContainer.scrollTop = scrollContainer.scrollTop + diff;
-      }
+      revealTvItem(scrollContainer, focusedElement, 24, 24);
     });
 
     return () => {
@@ -1094,7 +1096,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         pendingScrollRef.current = null;
       }
     };
-  }, [focusIndex]);
+  }, [focusIndex, currentStation, showHeader]);
 
   const FALLBACK_IMAGE = assetPath('images/fallback-station.png');
 
@@ -1229,10 +1231,11 @@ export const DiscoverNoUser = (): JSX.Element => {
           the first horizontal list visually lines up with the first sidebar icon. */}
       <div 
         ref={scrollContainerRef}
+        data-testid="discover-scroll-area"
         className="absolute left-[162px] w-[1758px] overflow-y-auto overflow-x-hidden z-1 scrollbar-hide transition-all duration-300 ease-in-out"
         style={{
           top: showHeader ? '170px' : '64px',
-          height: showHeader ? '910px' : '1016px'
+          height: (showHeader ? 910 : 1016) - contentBottomInset(!!currentStation)
         }}
       >
         <div 
@@ -1249,6 +1252,7 @@ export const DiscoverNoUser = (): JSX.Element => {
             </p>
             <div 
               ref={recentScrollRef}
+              data-testid="discover-recent-scroll"
               className="absolute left-[74px] top-[50px] w-[1580px] overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth"
             >
               <div className="flex py-[10px] px-[10px]" style={{ gap: '16px' }}>
@@ -1259,6 +1263,7 @@ export const DiscoverNoUser = (): JSX.Element => {
                       key={`recent-${station._id}-${index}`}
                       className={`relative bg-[rgba(255,255,255,0.14)] h-[220px] overflow-clip rounded-[11px] w-[180px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors flex-shrink-0 ${getFocusClasses(isFocused(focusIdx))}`}
                       data-testid={`card-recent-station-${station._id}`}
+                      data-station-id={station._id} data-nav-section="recent"
                       data-focus-idx={focusIdx}
                       onClick={() => {
                         setNavigationState(location, focusIdx, station._id, 'recent');
@@ -1287,6 +1292,8 @@ export const DiscoverNoUser = (): JSX.Element => {
                 })}
               </div>
             </div>
+            <HorizontalScrollCues id="discover-recent" scrollRef={recentScrollRef} count={recentStations.length}
+              style={{ left: 74, top: 50, width: 1580, height: 240 }} onNavigate={index => setFocusIndex(recentStart + index)} />
           </div>
         )}
 
@@ -1298,6 +1305,7 @@ export const DiscoverNoUser = (): JSX.Element => {
             </p>
             <div 
               ref={forYouScrollRef}
+              data-testid="discover-for-you-scroll"
               className="absolute left-[74px] top-[50px] w-[1580px] overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth"
             >
               <div className="flex py-[10px] px-[10px]" style={{ gap: '16px' }}>
@@ -1308,6 +1316,7 @@ export const DiscoverNoUser = (): JSX.Element => {
                       key={`foryou-${station._id}-${index}`}
                       className={`relative bg-[rgba(255,255,255,0.14)] h-[220px] overflow-clip rounded-[11px] w-[180px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors flex-shrink-0 ${getFocusClasses(isFocused(focusIdx))}`}
                       data-testid={`card-foryou-station-${station._id}`}
+                      data-station-id={station._id} data-nav-section="forYou"
                       data-focus-idx={focusIdx}
                       onClick={() => {
                         setNavigationState(location, focusIdx, station._id, 'forYou');
@@ -1336,6 +1345,8 @@ export const DiscoverNoUser = (): JSX.Element => {
                 })}
               </div>
             </div>
+            <HorizontalScrollCues id="discover-for-you" scrollRef={forYouScrollRef} count={forYouStations.length}
+              style={{ left: 74, top: 50, width: 1580, height: 240 }} onNavigate={index => setFocusIndex(forYouStart + index)} />
           </div>
         )}
 
@@ -1350,6 +1361,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         {/* Genre Pills - Horizontal Scrollable */}
         <div 
           ref={genreScrollRef}
+          data-testid="discover-genres-scroll"
           className="absolute left-[74px] top-[59px] w-[1580px] overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth"
           data-genre-container
         >
@@ -1378,6 +1390,8 @@ export const DiscoverNoUser = (): JSX.Element => {
             })}
           </div>
         </div>
+        <HorizontalScrollCues id="discover-genres" scrollRef={genreScrollRef} count={genres.length} itemSelector="[data-genre-pill]"
+          style={{ left: 74, top: 59, width: 1580, height: 112 }} onNavigate={index => setFocusIndex(genresStart + index)} />
         </div>
 
         {/* Popular Radios Section */}
@@ -1424,6 +1438,7 @@ export const DiscoverNoUser = (): JSX.Element => {
             <Link 
               key={station._id || index} 
               href={`/radio-playing?station=${station._id}`}
+              data-station-id={station._id} data-nav-section="popular"
               onClick={() => {
                 setNavigationState(location, focusIdx, station._id, 'popular');
                 playStation(station);
@@ -1463,6 +1478,7 @@ export const DiscoverNoUser = (): JSX.Element => {
             <Link 
               key={station._id || index} 
               href={`/radio-playing?station=${station._id}`}
+              data-station-id={station._id} data-nav-section="popular"
               onClick={() => {
                 setNavigationState(location, focusIdx, station._id, 'popular');
                 playStation(station);
@@ -1503,7 +1519,7 @@ export const DiscoverNoUser = (): JSX.Element => {
         {/* Loading Spinner for lazy loading */}
         {isLoadingMore && displayedStations.length > 0 && (
           <div 
-            className="absolute left-[236px] w-[1580px] h-[80px] flex items-center justify-center gap-4"
+            className="absolute left-[74px] w-[1580px] h-[80px] flex items-center justify-center gap-4"
             style={{ top: `${1013 + recentOffset + forYouOffset + (Math.ceil(displayedStations.length / 7) * 294)}px` }}
           >
             <div className="animate-spin rounded-full h-10 w-10 border-t-3 border-b-3 border-[#ff4199]"></div>
@@ -1534,6 +1550,7 @@ export const DiscoverNoUser = (): JSX.Element => {
                   top: `${topPosition}px`
                 }}
                 data-testid={`card-country-station-${station._id}`}
+                data-station-id={station._id} data-nav-section="country"
                 data-focus-idx={focusIdx}
               >
                 <div className="absolute bg-white left-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px] top-[34px]">

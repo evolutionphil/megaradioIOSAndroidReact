@@ -32,7 +32,7 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
     //     the store policy AND a relative URL is cheaper to maintain.
     //     Route those users to `/premium-upgrade` instead, where they see
     //     a QR + 6-digit PIN that takes them to the website to pay.
-    const hasNativeBridge = !!(window as any).megaRadioNative?.purchase;
+    const hasNativeBridge = (window as any).megaRadioNative?.supportsNativeIap === true;
     if (!hasNativeBridge) {
       // Hash-based wouter router → use location.hash, not pushState.
       try { window.location.hash = '#/premium-upgrade'; } catch (_) { /* noop */ }
@@ -48,7 +48,7 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
   // Auto-show paywall after 45s on app launch (once per session, non-premium only).
   // Skipped on splash, login, paywall, and onboarding screens to avoid awkward overlap.
   useEffect(() => {
-    if (premium.isPremium) return;
+    if (!premium.ready || premium.isPremium) return;
     const SHOWN_KEY = 'mr_auto_paywall_shown_session';
     if (sessionStorage.getItem(SHOWN_KEY) === '1') return;
 
@@ -62,7 +62,7 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
 
       // Same routing rule as showPaywall — Tizen/WebOS/Desktop/Web go to
       // the QR upgrade screen, native-IAP platforms see the in-app paywall.
-      const hasNativeBridge = !!(window as any).megaRadioNative?.purchase;
+      const hasNativeBridge = (window as any).megaRadioNative?.supportsNativeIap === true;
       if (!hasNativeBridge) {
         try { window.location.hash = '#/premium-upgrade'; } catch (_) { /* noop */ }
         return;
@@ -72,38 +72,35 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
     }, 45_000);
 
     return () => clearTimeout(timer);
-  }, [premium.isPremium]);
+  }, [premium.isPremium, premium.ready]);
 
-  const onPurchase = useCallback((productId: string) => {
-    if (productId === 'restore') {
-      // Native bridge: ask the shell to restore purchases
-      const bridge = (window as any).megaRadioNative;
-      if (bridge?.restorePurchases) {
-        const token = localStorage.getItem('tv_auth_token') || undefined;
-        bridge.restorePurchases(token);
-      } else {
-        alert('Restore Purchases will be handled by the native shell on tvOS / Android TV / Desktop.');
-      }
-      return;
-    }
-
-    // Ask the native shell to trigger StoreKit / BillingClient / Electron IAP.
+  const onPurchase = useCallback(async (productId: string) => {
     const bridge = (window as any).megaRadioNative;
-    if (bridge?.purchase) {
-      // Pass auth token so the Mac App Store IAP receipt can be backend-verified.
-      const token = localStorage.getItem('tv_auth_token') || undefined;
-      if (!token) {
-        alert('Premium’u kalıcı olarak hesabınıza bağlamak için lütfen önce giriş yapın.');
+    const token = localStorage.getItem('tv_auth_token');
+    if (!bridge?.supportsNativeIap) { window.location.hash = '#/premium-upgrade'; return; }
+    if (!token) { alert('Please sign in before purchasing or restoring.'); return; }
+    try {
+      await bridge.setAuthToken(token);
+      // Keep the same session throughout this request, including native setup.
+      if (localStorage.getItem('tv_auth_token') !== token) return;
+      if (productId === 'restore') {
+        if (bridge.restorePurchases) {
+          const result = await bridge.restorePurchases(token);
+          if (!result?.ok) alert(result?.message || 'Restore could not start.');
+          else if (result.pending) alert('Restore requested. Store verification may take a moment.');
+        } else {
+          alert('Restore Purchases is unavailable in this app version.');
+        }
         return;
       }
-      bridge.purchase(productId, token);
-    } else {
-      // Preview / dev fallback: simulate success
-      premium.applyPurchase(productId);
-      setOpen(false);
-      alert(`✓ [Preview mode] Purchase ${productId} simulated. On device, native IAP will handle this.`);
-    }
-  }, [premium]);
+      if (bridge.purchase) {
+        const result = await bridge.purchase(productId, token);
+        if (!result?.ok) alert(result?.message || 'Purchase could not start.');
+      } else {
+        window.location.hash = '#/premium-upgrade';
+      }
+    } catch (error: any) { alert(error?.message || 'Purchase could not start.'); }
+  }, []);
 
   // Listen for native IAP events (Electron CustomEvents) and surface backend
   // errors + success to the user.
@@ -111,7 +108,7 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
     const onCompleted = (e: Event) => {
       const detail = (e as CustomEvent).detail || {};
       // Backend already verified — apply locally and close paywall
-      if (detail.productId) premium.applyPurchase(detail.productId);
+      if (detail.server) premium.applyVerified(detail.server);
       setOpen(false);
     };
     const onFailed = (e: Event) => {

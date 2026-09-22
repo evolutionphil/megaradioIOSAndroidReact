@@ -1,110 +1,58 @@
-// Premium state hook — shared across TV app
-// Source of truth: localStorage `premium_state_v1`
-// On native platforms, this will be synced with the App Store / Play Store
-// receipt via a postMessage bridge from the WKWebView / Android WebView shell.
+import { useCallback, useEffect, useState } from 'react';
+import { SUBSCRIPTION_API_URL } from '@/services/megaRadioApi';
 
-import { useEffect, useState, useCallback } from 'react';
-
-export interface PremiumState {
-  isPremium: boolean;
-  adsRemoved: boolean;
-  productId?: string;
-  purchasedAt?: number;
-  expiresAt?: number;  // undefined for lifetime
+export type PremiumState = { isPremium: boolean; adsRemoved: boolean; expiresAt: number | null; owner?: string };
+const empty = (): PremiumState => ({ isPremium: false, adsRemoved: false, expiresAt: null });
+function owner(): string {
+  try { const user = JSON.parse(localStorage.getItem('tv_auth_user') || 'null'); return user?.id || user?._id || ''; } catch { return ''; }
 }
+function token(): string { try { return localStorage.getItem('tv_auth_token') || ''; } catch { return ''; } }
 
-const KEY = 'premium_state_v1';
-
-function readState(): PremiumState {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return { isPremium: false, adsRemoved: false };
-    const p: PremiumState = JSON.parse(raw);
-    // Auto-expire
-    if (p.expiresAt && p.expiresAt < Date.now()) {
-      return { isPremium: false, adsRemoved: false };
-    }
-    return p;
-  } catch { return { isPremium: false, adsRemoved: false }; }
+// Never derive expiry from a clicked product ID or extend it by Date.now()+1year.
+export function premiumFromServer(data: any, userId: string, now = Date.now()): PremiumState {
+  if (!userId || data?.isActive !== true) return empty();
+  const plan = typeof data.plan === 'string' ? data.plan : '';
+  const lifetime = plan === 'premium_lifetime';
+  const rawExpiry = data.expiryDate || data.expiresAt || data.validUntil;
+  const expiresAt = rawExpiry ? new Date(rawExpiry).getTime() : null;
+  if (!lifetime && (!expiresAt || !Number.isFinite(expiresAt) || expiresAt <= now)) return empty();
+  const isPremium = ['premium', 'premium_monthly', 'premium_yearly', 'premium_lifetime'].includes(plan);
+  return { isPremium, adsRemoved: isPremium || plan === 'remove_ads', expiresAt: lifetime ? null : expiresAt, owner: userId };
 }
-
-function writeState(state: PremiumState) {
-  localStorage.setItem(KEY, JSON.stringify(state));
-  window.dispatchEvent(new CustomEvent('mr:premium-changed'));
-}
-
 export function usePremium() {
-  const [state, setState] = useState<PremiumState>(readState);
-
+  const [state, setState] = useState<PremiumState>(empty);
+  const [ready, setReady] = useState(false);
+  const applyVerified = useCallback((data: any) => {
+    const next = premiumFromServer(data, owner());
+    setState(next);
+    setReady(true);
+    window.dispatchEvent(new CustomEvent('mr:premium-changed', { detail: next }));
+  }, []);
   useEffect(() => {
-    const refresh = () => setState(readState());
-    window.addEventListener('mr:premium-changed', refresh);
-    window.addEventListener('storage', refresh);
-    return () => {
-      window.removeEventListener('mr:premium-changed', refresh);
-      window.removeEventListener('storage', refresh);
+    let active = true;
+    let controller: AbortController | null = null;
+    const refresh = async () => {
+      controller?.abort(); const requestController = new AbortController(); controller = requestController;
+      const signal = requestController.signal;
+      const requestOwner = owner(), requestToken = token();
+      setState(empty());
+      setReady(false);
+      // Unscoped legacy cache can belong to another account; never hydrate it.
+      try { localStorage.removeItem('premium_state_v1'); } catch {}
+      if (!requestOwner || !requestToken) { setReady(true); return; }
+      const timeout = setTimeout(() => requestController.abort(), 15000);
+      try {
+        const response = await fetch(SUBSCRIPTION_API_URL, { signal, headers: { Authorization: 'Bearer ' + requestToken } });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (active && !signal.aborted && owner() === requestOwner && token() === requestToken) applyVerified(data);
+      } catch {} finally { clearTimeout(timeout); }
     };
-  }, []);
-
-  const applyPurchase = useCallback((productId: string) => {
-    const now = Date.now();
-    const YEAR = 365 * 24 * 60 * 60 * 1000;
-    const MONTH = 30 * 24 * 60 * 60 * 1000;
-    let next: PremiumState;
-    switch (productId) {
-      case 'megaradio_premium_yearly':
-        next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + YEAR };
-        break;
-      case 'megaradio_premium_lifetime':
-        next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now };
-        break;
-      case 'megaradio_premium_monthly1':
-        next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + MONTH };
-        break;
-      case 'megaradio_remove_ads_yearly1':
-        next = { isPremium: false, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + YEAR };
-        break;
-      default:
-        return;
-    }
-    writeState(next);
-  }, []);
-
-  const clear = useCallback(() => writeState({ isPremium: false, adsRemoved: false }), []);
-
-  return { ...state, applyPurchase, clear };
-}
-
-// Native bridge (tvOS / Android TV / Electron) listener.
-// The native shell posts a message when an IAP completes on the device.
-// Two transport mechanisms are supported:
-//   1. window.postMessage({ type: 'mr-iap-completed', productId })  ← tvOS / Android TV WKScriptMessageHandler
-//   2. CustomEvent('mr-iap-completed', { detail: { productId } })   ← Electron preload bridge
-if (typeof window !== 'undefined') {
-  const applyFromBridge = (productId: string | undefined) => {
-    if (!productId) return;
-    const now = Date.now();
-    const YEAR = 365 * 24 * 60 * 60 * 1000;
-    const MONTH = 30 * 24 * 60 * 60 * 1000;
-    let next: PremiumState | null = null;
-    if (productId === 'megaradio_premium_yearly') next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + YEAR };
-    else if (productId === 'megaradio_premium_lifetime') next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now };
-    else if (productId === 'megaradio_premium_monthly1') next = { isPremium: true, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + MONTH };
-    else if (productId === 'megaradio_remove_ads_yearly1') next = { isPremium: false, adsRemoved: true, productId, purchasedAt: now, expiresAt: now + YEAR };
-    if (next) {
-      localStorage.setItem(KEY, JSON.stringify(next));
-      window.dispatchEvent(new CustomEvent('mr:premium-changed'));
-    }
-  };
-
-  window.addEventListener('message', (e) => {
-    const data = (e as MessageEvent).data;
-    if (data && data.type === 'mr-iap-completed' && data.productId) applyFromBridge(data.productId);
-  });
-
-  // Electron preload dispatches a CustomEvent — same payload shape, different channel.
-  window.addEventListener('mr-iap-completed', (e) => {
-    const detail = (e as CustomEvent).detail || {};
-    applyFromBridge(detail.productId);
-  });
+    const onVerified = () => { void refresh(); };
+    void refresh();
+    window.addEventListener('mr:auth-changed', onVerified);
+    window.addEventListener('mr:purchase', onVerified);
+    return () => { active = false; controller?.abort(); window.removeEventListener('mr:auth-changed', onVerified); window.removeEventListener('mr:purchase', onVerified); };
+  }, [applyVerified]);
+  return { state, ready, isPremium: state.isPremium, adsRemoved: state.adsRemoved, applyVerified };
 }

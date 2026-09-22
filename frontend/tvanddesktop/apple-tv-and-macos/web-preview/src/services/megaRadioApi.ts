@@ -6,6 +6,7 @@
 const __isPreview = typeof window !== 'undefined' && window.location && /preview\.emergentagent\.com$/i.test(window.location.hostname);
 const BASE_URL = __isPreview ? window.location.origin : 'https://api.themegaradio.com';
 const API_PREFIX = __isPreview ? '/api/tv-proxy' : '/api';
+export const SUBSCRIPTION_API_URL = BASE_URL + API_PREFIX + '/user/subscription';
 
 const isSamsungTV = typeof window !== 'undefined' && (
   navigator.userAgent.toLowerCase().includes('tizen') ||
@@ -172,7 +173,7 @@ const getCountryNameFromCode = (code: string): string => {
 };
 
 // Helper to add TV parameter for Samsung TV (signals backend to skip compression)
-function buildApiUrl(path: string, existingParams?: URLSearchParams): string {
+export function buildApiUrl(path: string, existingParams?: URLSearchParams): string {
   const url = `${BASE_URL}${API_PREFIX}${path}`;
   
   if (!isSamsungTV) {
@@ -419,7 +420,7 @@ export const megaRadioApi = {
 
   getStationMetadata: async (stationId: string): Promise<{ metadata: { title?: string; artist?: string; album?: string } }> => {
     try {
-      const url = buildApiUrl(`/stations/${stationId}/metadata`);
+      const url = buildApiUrl(`/now-playing/${encodeURIComponent(stationId)}`);
       const response = await fetchWithTimeout(url);
       
       if (!response.ok) {
@@ -428,7 +429,7 @@ export const megaRadioApi = {
       }
       
       const data = await response.json();
-      return data;
+      return { metadata: data.metadata || data };
     } catch (error) {
       console.error('[getStationMetadata] Error:', error instanceof Error ? error.message : String(error));
       return { metadata: {} };

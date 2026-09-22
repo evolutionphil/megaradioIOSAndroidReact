@@ -15,6 +15,7 @@ interface WearOSCommand {
 type WearOSCommandListener = (command: WearOSCommand) => void;
 
 class WearOSService {
+  initializeConnectivity() { WearDataLayer?.initialize?.(); }
   private eventEmitter: NativeEventEmitter | null = null;
   private commandListeners: Set<WearOSCommandListener> = new Set();
   private isInitialized = false;

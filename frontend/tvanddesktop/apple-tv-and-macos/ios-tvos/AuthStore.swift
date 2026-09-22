@@ -16,6 +16,8 @@ final class AuthStore: ObservableObject {
     private let userKey = "megaradio.tv.user"
     private let deviceIdKey = "megaradio.tv.deviceId"
     private var pollTimer: Timer?
+    private var generation = 0
+    private var checking = false
 
     var isAuthenticated: Bool { token != nil }
     var deviceId: String {
@@ -41,18 +43,23 @@ final class AuthStore: ObservableObject {
     // ─────────────────────────────────────────────────────────────────
 
     func startPairing() async {
+        stopPairing()
+        let request = generation
         do {
             lastError = nil
             let resp = try await APIClient.shared.requestTVCode(deviceId: deviceId)
+            guard request == generation else { return }
             pendingCode = resp.code
             beginPolling()
         } catch {
+            guard request == generation else { return }
             lastError = error.localizedDescription
             pendingCode = nil
         }
     }
 
     func stopPairing() {
+        generation += 1
         pollTimer?.invalidate()
         pollTimer = nil
         pendingCode = nil
@@ -68,9 +75,13 @@ final class AuthStore: ObservableObject {
     }
 
     private func pollOnce() async {
-        guard let code = pendingCode else { return }
+        guard let code = pendingCode, !checking else { return }
+        let request = generation
+        checking = true
+        defer { checking = false }
         do {
             let resp = try await APIClient.shared.checkTVCode(code, deviceId: deviceId)
+            guard request == generation, code == pendingCode else { return }
             switch resp.status {
             case "activated":
                 if let t = resp.token {
@@ -94,9 +105,28 @@ final class AuthStore: ObservableObject {
     }
 
     func signOut() {
+        stopPairing()
         token = nil
         user = nil
         UserDefaults.standard.removeObject(forKey: tokenKey)
         UserDefaults.standard.removeObject(forKey: userKey)
+    }
+
+    func refreshSession() async throws {
+        struct Verified: Decodable { let valid: Bool?; let user: TVUser? }
+        guard let token = token else { throw APIError.requestFailed(401) }
+        let request = generation
+        let response: Verified
+        do { response = try await APIClient.shared.get("/api/auth/tv/verify", token: token) }
+        catch APIError.requestFailed(let code) {
+            if code == 401 && self.token == token && generation == request { signOut() }
+            throw APIError.requestFailed(code)
+        }
+        guard self.token == token, generation == request else { throw APIError.requestFailed(401) }
+        if response.valid == false { signOut(); throw APIError.requestFailed(401) }
+        if let nextUser = response.user {
+            user = nextUser
+            if let data = try? JSONEncoder().encode(nextUser) { UserDefaults.standard.set(data, forKey: userKey) }
+        }
     }
 }

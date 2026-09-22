@@ -46,6 +46,28 @@ html, body {
   --animate-spin: spin 1s linear infinite;
 }
 
+/* Focus stays inside reserved layout space; selected preset is not keyboard focus. */
+.tv-sidebar-link { display: block; border-radius: 10px; }
+.tv-sidebar-link:focus, .tv-sidebar-help:focus,
+.eq-focus-control:focus, .eq-focus-control[data-eq-focused="true"] {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+.eq-focus-control { transition: outline-color 120ms, background-color 120ms; }
+.tv-restored-card:focus { outline: none; }
+
+.carousel-cues { position: absolute; inset: 0; pointer-events: none; z-index: 30; }
+.carousel-edge { position: absolute; top: 0; bottom: 0; width: 76px; pointer-events: none; }
+.carousel-edge-left { left: 0; background: linear-gradient(90deg, rgba(0,0,0,.3), transparent); }
+.carousel-edge-right { right: 0; background: linear-gradient(270deg, rgba(0,0,0,.3), transparent); }
+.carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;
+  background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.15); opacity: .35; pointer-events: auto;
+  transition: opacity .2s, background-color .2s, transform .2s; cursor: pointer; }
+.carousel-arrow-left { left: 12px; } .carousel-arrow-right { right: 12px; }
+.carousel-arrow:hover, .carousel-arrow:focus-visible { opacity: .95; background: rgba(255,65,153,.85); transform: translateY(-50%) scale(1.1); }
+.carousel-arrow:active { opacity: 1; transform: translateY(-50%) scale(.95); }
+
 .animate-fade-in {
   animation: fade-in 1s var(--animation-delay, 0s) ease forwards;
 }

@@ -168,6 +168,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-wearable:18.1.0")
 // @generated begin react-native-google-cast-dependencies - expo prebuild (DO NOT MODIFY) sync-3822a3c86222e7aca74039b551612aab7e75365d
     implementation "com.google.android.gms:play-services-cast-framework:${safeExtGet('castFrameworkVersion', '+')}"
 // @generated end react-native-google-cast-dependencies

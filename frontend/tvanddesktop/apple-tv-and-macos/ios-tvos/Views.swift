@@ -90,6 +90,7 @@ struct RootRouterView: View {
         case .countrySelect:         CountrySelectPage()
         case .settings:              SettingsPage()
         case .login:                 LoginPage()
+        case .premium:               PremiumPage()
         }
     }
 
@@ -106,6 +107,7 @@ struct RootRouterView: View {
         case .countrySelect:         return "country-select"
         case .settings:              return "settings"
         case .login:                 return "login"
+        case .premium:               return "premium"
         }
     }
 }

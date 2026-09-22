@@ -99,6 +99,7 @@ final class StoreKitIapService {
         }
 
         let result = try await product.purchase()
+        guard authToken == token else { throw APIError.requestFailed(401) }
         switch result {
         case .success(let verification):
             switch verification {
@@ -126,10 +127,13 @@ final class StoreKitIapService {
     // MARK: - Restore
 
     func restore() async throws -> [String: Any] {
+        guard let owner = authToken, !owner.isEmpty else { throw APIError.requestFailed(401) }
         try await AppStore.sync()
+        guard authToken == owner else { throw APIError.requestFailed(401) }
 
         for await result in StoreKit.Transaction.currentEntitlements {
             if case .verified(let txn) = result {
+                guard authToken == owner else { throw APIError.requestFailed(401) }
                 guard txn.revocationDate == nil,
                       txn.expirationDate.map({ $0 > Date() }) ?? true else { continue }
                 let plan = try await reportToBackend(transaction: txn, productId: txn.productID,

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { megaRadioApi } from '@/services/megaRadioApi';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import { assetPath } from '@/lib/assetPath';
+import { isTvBackKey } from '@/lib/navigationRestore';
 import { useNativeKeyboard } from '@/hooks/useNativeKeyboard';
 
 interface Country {
@@ -252,9 +253,8 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (keyboardDisabled) return;
+      if (keyboardDisabled || e.defaultPrevented) return;
       const key = (window as any).tvKey;
-      e.stopPropagation();
 
       const keyCode = e.keyCode;
       const isUp = keyCode === 38 || keyCode === key?.UP;
@@ -262,10 +262,12 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
       const isLeft = keyCode === 37 || keyCode === key?.LEFT;
       const isRight = keyCode === 39 || keyCode === key?.RIGHT;
       const isEnter = keyCode === 13 || keyCode === key?.ENTER;
-      const isBack = keyCode === 461 || keyCode === 10009 || keyCode === key?.RETURN;
+      const isBack = isTvBackKey(e) || keyCode === key?.RETURN;
+      if (isUp || isDown || isLeft || isRight || isEnter || isBack) e.stopPropagation();
 
       if (isBack) {
         e.preventDefault();
+        if (mode === 'modal') e.stopImmediatePropagation();
         if (dropdownOpen) {
           setDropdownOpen(false);
           setFocusZone('langButton');
@@ -385,8 +387,8 @@ export const CountrySelector = ({ isOpen, onClose, selectedCountry, onSelectCoun
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown, mode === 'modal');
+    return () => document.removeEventListener('keydown', handleKeyDown, mode === 'modal');
   }, [isOpen, focusZone, keyboardRow, keyboardCol, listFocusIndex, filteredCountries, onSelectCountry, onClose, handleKeyPress, keyboardDisabled, mode, onNavigateToSidebar, activeLayoutIndex, dropdownOpen, dropdownIndex, KEYBOARD_ROWS]);
 
   useEffect(() => {

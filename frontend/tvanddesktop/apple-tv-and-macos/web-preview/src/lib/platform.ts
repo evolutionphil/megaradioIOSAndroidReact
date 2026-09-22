@@ -24,6 +24,7 @@ export type TvPlatform =
   | 'web';
 
 export function detectPlatform(): TvPlatform {
+  if (typeof window !== 'undefined' && (window as any).megaRadioDesktop?.isDesktop) return 'electron';
   try {
     // 1. Native shell explicit announcement (preferred)
     const announced = (window as any).MegaRadioPlatform?.platform;

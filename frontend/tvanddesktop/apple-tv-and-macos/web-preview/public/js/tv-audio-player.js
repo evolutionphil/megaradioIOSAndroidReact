@@ -242,6 +242,7 @@
             });
             
             this.audioElement.addEventListener('error', function(e) {
+                if (self.isStopping || !self.currentUrl) return;
                 console.error('LG audio error:', e);
                 self.onError && self.onError(e);
             });

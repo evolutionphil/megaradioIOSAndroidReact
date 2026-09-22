@@ -1,6 +1,8 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useRef, useCallback, useEffect, ReactNode } from "react";
+import { useCountry } from './CountryContext';
+import { captureNavigationScroll } from '@/lib/navigationRestore';
 
-interface NavigationState {
+export interface NavigationState {
   previousPage: string;
   returnFocusIndex: number;
   /**
@@ -11,7 +13,10 @@ interface NavigationState {
    */
   returnStationId?: string;
   /** Which section the saved station belongs to. */
-  returnSection?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre';
+  returnSection?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre' | 'search' | 'favorites';
+  pageData?: unknown;
+  scroll?: Record<string, { top: number; left: number }>;
+  country?: { name: string; code: string; flag: string };
 }
 
 interface NavigationContextType {
@@ -20,48 +25,67 @@ interface NavigationContextType {
     page: string,
     focusIndex: number,
     stationId?: string,
-    section?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre'
+    section?: NavigationState['returnSection']
   ) => void;
   clearNavigationState: () => void;
   getPreviousPage: () => string | null;
   getReturnFocusIndex: () => number | null;
-  popNavigationState: () => NavigationState | null;
+  popNavigationState: (page?: string) => NavigationState | null;
+  registerSnapshot: (page: string, getter: () => unknown) => () => void;
+  readSnapshot: (page: string) => unknown;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
 export function NavigationProvider({ children }: { children: ReactNode }) {
   const [navigationState, setNavigationStateInternal] = useState<NavigationState | null>(null);
+  const stateRef = useRef<NavigationState | null>(null);
+  const snapshots = useRef(new Map<string, () => unknown>());
+  const { selectedCountry, selectedCountryCode, selectedCountryFlag } = useCountry();
+  const registerSnapshot = useCallback((page: string, getter: () => unknown) => {
+    snapshots.current.set(page, getter);
+    return () => { if (snapshots.current.get(page) === getter) snapshots.current.delete(page); };
+  }, []);
+  const readSnapshot = useCallback((page: string) =>
+    stateRef.current?.previousPage === page ? stateRef.current.pageData : undefined, []);
 
   const setNavigationState = (
     page: string,
     focusIndex: number,
     stationId?: string,
-    section?: 'recent' | 'forYou' | 'popular' | 'country' | 'genre'
+    section?: NavigationState['returnSection']
   ) => {
-    setNavigationStateInternal({
+    const state: NavigationState = {
       previousPage: page,
       returnFocusIndex: focusIndex,
       returnStationId: stationId,
       returnSection: section,
-    });
+      pageData: snapshots.current.get(page)?.(),
+      scroll: captureNavigationScroll(),
+      country: { name: selectedCountry, code: selectedCountryCode, flag: selectedCountryFlag },
+    };
+    stateRef.current = state;
+    setNavigationStateInternal(state);
   };
 
   const clearNavigationState = () => {
+    stateRef.current = null;
     setNavigationStateInternal(null);
   };
 
   const getPreviousPage = () => {
-    return navigationState?.previousPage || null;
+    return stateRef.current?.previousPage || null;
   };
 
   const getReturnFocusIndex = () => {
-    return navigationState?.returnFocusIndex ?? null;
+    return stateRef.current?.returnFocusIndex ?? null;
   };
 
-  const popNavigationState = () => {
-    const state = navigationState;
+  const popNavigationState = (page?: string) => {
+    const state = stateRef.current;
+    if (page && state?.previousPage !== page) return null;
     if (state) {
+      stateRef.current = null;
       setNavigationStateInternal(null);
     }
     return state;
@@ -76,6 +100,8 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
         getPreviousPage,
         getReturnFocusIndex,
         popNavigationState,
+        registerSnapshot,
+        readSnapshot,
       }}
     >
       {children}
@@ -89,4 +115,16 @@ export function useNavigation() {
     throw new Error("useNavigation must be used within a NavigationProvider");
   }
   return context;
+}
+
+export function useSavedNavigationData<T>(page: string): T | undefined {
+  const { readSnapshot } = useNavigation();
+  return useRef(readSnapshot(page) as T | undefined).current;
+}
+
+export function usePageSnapshot(page: string, getter: () => unknown) {
+  const { registerSnapshot } = useNavigation();
+  const latest = useRef(getter);
+  latest.current = getter;
+  useEffect(() => registerSnapshot(page, () => latest.current()), [page, registerSnapshot]);
 }

@@ -1,4 +1,4 @@
-import { useLocation, Link } from "wouter";
+import { useLocation, useSearch, Link } from "wouter";
 import { resolveStationImageUrl, handleStationImageError } from "@/lib/imageUtils";
 import { useQuery } from "@tanstack/react-query";
 import { megaRadioApi, type Station } from "@/services/megaRadioApi";
@@ -15,19 +15,23 @@ import { useIdleDetection } from "@/hooks/useIdleDetection";
 import { useImageColors } from "@/hooks/useImageColors";
 import { CountrySelector } from "@/components/CountrySelector";
 import { CountryTrigger } from "@/components/CountryTrigger";
+import { TV_LAYOUT, RADIO_PLAYER_CONTROLS, RADIO_PLAYER_RIGHT } from '@/lib/tvLayout';
 import { Sidebar } from "@/components/Sidebar";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
+import { isTvBackKey } from '@/lib/navigationRestore';
+import { HorizontalScrollCues } from '@/components/HorizontalScrollCues';
 
 
 export const RadioPlaying = (): JSX.Element => {
   const [location, setLocation] = useLocation();
+  const routeSearch = useSearch();
   const { t } = useLocalization();
   const { selectedCountry, selectedCountryCode, selectedCountryFlag, setCountry } = useCountry();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { playStation, togglePlayPause, isPlaying, isBuffering, currentStation, streamError, retryCurrentStation, clearStreamError, nowPlayingMetadata } = useGlobalPlayer();
   const { isTimerActive, remainingSeconds } = useSleepTimer();
-  const { getPreviousPage } = useNavigation();
+  const { navigationState } = useNavigation();
 
   const { isIdle } = useIdleDetection({ idleTime: 180000 });
 
@@ -132,7 +136,14 @@ export const RadioPlaying = (): JSX.Element => {
       console.error('Error parsing station ID from URL:', error);
       return null;
     }
-  }, [location, updateTrigger]);
+  }, [location, routeSearch, updateTrigger]);
+  // Keep the original list origin while Next/Similar changes the playing station.
+  const originRef = useRef(navigationState?.returnStationId === stationId ? navigationState : null);
+  const returnToSource = () => {
+    const origin = originRef.current;
+    if (origin?.country) setCountry(origin.country.name, origin.country.code, origin.country.flag);
+    setLocation(origin?.previousPage || '/discover-no-user', { replace: true });
+  };
   
   // Track station history when station ID changes
   useEffect(() => {
@@ -300,7 +311,7 @@ export const RadioPlaying = (): JSX.Element => {
 
   // Calculate totalItems: 5 (sidebar) + 1 (country) + 4 (playback) + similar stations (20) + popular stations
   const popularCount = popularStations.length;
-  const baseItems = 5 + 1 + 4 + Math.min(similarStations.length, 20) + popularCount;
+  const baseItems = Math.max(10, 10 + Math.min(similarStations.length, 20), popularCount ? 30 + popularCount : 0);
   const totalItems = streamError ? Math.max(baseItems, 101) : baseItems;
 
   // Define sidebar routes (NO PROFILE - 5 items)
@@ -362,6 +373,8 @@ export const RadioPlaying = (): JSX.Element => {
           newIndex = 100; // Jump to retry button when error is shown
         } else if (similarStations.length > 0) {
           newIndex = 10; // First similar station
+        } else if (popularCount > 0) {
+          newIndex = 30;
         }
       }
     }
@@ -374,6 +387,8 @@ export const RadioPlaying = (): JSX.Element => {
       } else if (direction === 'DOWN') {
         if (similarStations.length > 0) {
           newIndex = 10;
+        } else if (popularCount > 0) {
+          newIndex = 30;
         }
       }
     }
@@ -434,8 +449,10 @@ export const RadioPlaying = (): JSX.Element => {
 
   // Register RETURN key handler at the TOP - works even on loading screen
   usePageKeyHandler('/radio-playing', (e) => {
-    // Ignore all key events when country selector modal is open
+    if (e.defaultPrevented) return;
+    // CountrySelector owns keyboard events while its modal is open.
     if (isCountrySelectorOpen) {
+      if (isTvBackKey(e)) { e.preventDefault(); e.stopImmediatePropagation(); setIsCountrySelectorOpen(false); }
       return;
     }
 
@@ -445,16 +462,15 @@ export const RadioPlaying = (): JSX.Element => {
     if (helpOpenRef.current) {
       e.preventDefault();
       const _k = e.keyCode;
-      if (_k === 13 || _k === key?.ENTER || _k === 461 || _k === 10009 || _k === key?.RETURN) { closeHelp(); }
+      if (_k === 13 || _k === key?.ENTER || isTvBackKey(e) || _k === key?.RETURN) { closeHelp(); }
       return;
     }
     
     // RETURN key handler ALWAYS works, even when loading
-    if (e.keyCode === key?.RETURN || e.keyCode === 461 || e.keyCode === 10009) {
-      if (helpFocusedRef.current) { setHF(false); return; }
-      const previousPage = getPreviousPage();
-      const backTo = previousPage || '/discover-no-user';
-      setLocation(backTo);
+    if (isTvBackKey(e) || e.keyCode === key?.RETURN) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!e.repeat) returnToSource();
       return;
     }
     
@@ -558,11 +574,7 @@ export const RadioPlaying = (): JSX.Element => {
         }
       }
     },
-    onBack: () => {
-      const previousPage = getPreviousPage();
-      const backTo = previousPage || '/discover-no-user';
-      setLocation(backTo);
-    }
+    onBack: returnToSource
   });
 
   const scrollHorizontalIntoView = (ref: React.RefObject<HTMLDivElement>, stationIndex: number) => {
@@ -760,7 +772,7 @@ export const RadioPlaying = (): JSX.Element => {
       : 'XX';
 
   return (
-    <div className="absolute inset-0 w-[1920px] h-[1080px]" style={{ background: 'radial-gradient(181.15% 96.19% at 5.26% 9.31%, #0E0E0E 0%, #3F1660 29.6%, #0E0E0E 100%)' }}>
+    <div data-testid="page-radio-playing" className="absolute inset-0 w-[1920px] h-[1080px]" style={{ background: 'radial-gradient(181.15% 96.19% at 5.26% 9.31%, #0E0E0E 0%, #3F1660 29.6%, #0E0E0E 100%)' }}>
 
       {isIdle && currentStation && !streamError && (function() {
         var p = ambientColors.primary;
@@ -884,8 +896,11 @@ export const RadioPlaying = (): JSX.Element => {
         </div>
       </div>
 
+      {/* Country capsule and favorite frame share the same right edge. */}
+      <div data-testid="player-header-actions" className="absolute top-[67px] z-50 flex items-center gap-[19px]"
+        style={{ right: TV_LAYOUT.width - RADIO_PLAYER_RIGHT }}>
       {/* Equalizer Icon */}
-      <div className={`absolute left-[1383px] overflow-clip rounded-[30px] w-[51px] h-[51px] top-[67px] z-50 transition-colors ${isPlaying ? 'bg-[#ff4199]' : 'bg-[rgba(255,255,255,0.1)]'}`}>
+      <div data-testid="player-header-equalizer" className={`relative overflow-clip rounded-[30px] w-[51px] h-[51px] flex-shrink-0 transition-colors ${isPlaying ? 'bg-[#ff4199]' : 'bg-[rgba(255,255,255,0.1)]'}`}>
         <div className="absolute h-[25px] left-[13.75px] overflow-clip top-[13px] w-[23.75px]">
           <div className={`absolute bg-white left-0 rounded-[10px] top-0 w-[6.25px] ${isPlaying ? 'animate-equalizer-global-1' : 'h-[25px]'}`} style={{ height: isPlaying ? undefined : '25px' }} />
           <div className={`absolute bg-white left-[8.75px] rounded-[10px] top-[7.5px] w-[6.25px] ${isPlaying ? 'animate-equalizer-global-2' : 'h-[17.5px]'}`} style={{ height: isPlaying ? undefined : '17.5px' }} />
@@ -899,8 +914,8 @@ export const RadioPlaying = (): JSX.Element => {
         selectedCountryCode={selectedCountryCode}
         onClick={() => setIsCountrySelectorOpen(true)}
         focusClasses={getFocusClasses(isFocused(5))}
-        className="absolute left-[1453px] top-[67px] z-50"
       />
+      </div>
 
       {/* Left Menu / Sidebar */}
       <Sidebar activePage="discover" isFocused={helpFocused ? () => false : isFocused} getFocusClasses={getFocusClasses} isHelpFocused={helpFocused} />
@@ -932,7 +947,7 @@ export const RadioPlaying = (): JSX.Element => {
           Falls back to the i18n placeholder ("Now Playing" / "Jetzt spielen")
           when no metadata is available yet (server has no ICY, or socket still
           connecting). */}
-      <p className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[596px] not-italic text-[32px] text-white top-[356.71px] max-w-[700px] truncate">
+      <p data-testid="radio-now-playing" className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[596px] not-italic text-[32px] text-white top-[356.71px] max-w-[700px] truncate">
         {nowPlayingMetadata || t('now_playing') || 'Now Playing'}
       </p>
 
@@ -982,7 +997,8 @@ export const RadioPlaying = (): JSX.Element => {
       </div>
 
       {/* Player Controls */}
-      <div className="absolute h-[90.192px] left-[1372px] top-[356px] w-[469px]">
+      <div data-testid="radio-player-controls" className="absolute h-[90.192px] top-[356px]"
+        style={{ left: RADIO_PLAYER_CONTROLS.left, width: RADIO_PLAYER_RIGHT - RADIO_PLAYER_CONTROLS.left }}>
         {/* Previous Button */}
         <div 
           className={`absolute bg-black left-0 overflow-clip rounded-[45.096px] w-[90.192px] h-[90.192px] top-0 cursor-pointer hover:bg-gray-900 transition-all flex items-center justify-center ${
@@ -1042,13 +1058,16 @@ export const RadioPlaying = (): JSX.Element => {
 
         {/* Favorite Button */}
         <div 
-          className={`absolute border-[3.608px] border-solid left-[378.81px] rounded-[72.655px] w-[90.192px] h-[90.192px] top-0 cursor-pointer transition-all flex items-center justify-center ${
+          className={`absolute border-[3.608px] border-solid rounded-[72.655px] top-0 cursor-pointer transition-all flex items-center justify-center ${
             (station && station._id && isFavorite(station._id))
               ? 'bg-[#ff4199] border-[#ff4199] hover:bg-[#e0368a]' 
               : 'border-black hover:bg-[rgba(255,255,255,0.1)]'
           } ${isFocused(9) ? 'border-[#ff4199] animate-pulse-soft' : ''}`}
           style={{
-            boxShadow: isFocused(9) ? '0 0 30px rgba(255, 65, 153, 0.8)' : 'none'
+            boxShadow: isFocused(9) ? '0 0 30px rgba(255, 65, 153, 0.8)' : 'none',
+            left: RADIO_PLAYER_CONTROLS.favoriteOffset,
+            width: RADIO_PLAYER_CONTROLS.buttonSize,
+            height: RADIO_PLAYER_CONTROLS.buttonSize,
           }}
           onClick={() => {
             if (station && station._id) {
@@ -1111,7 +1130,8 @@ export const RadioPlaying = (): JSX.Element => {
           </p>
 
           {/* Similar Radios Horizontal Scroll */}
-          <div ref={similarScrollRef} className="flex overflow-x-auto scrollbar-hide scroll-smooth mb-[60px]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="relative mb-[60px]">
+          <div data-testid="radio-similar-scroll" ref={similarScrollRef} className="flex overflow-x-auto scrollbar-hide scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {similarStations.slice(0, 20).map((similarStation, index) => {
               const focusIdx = 10 + index;
               return (
@@ -1127,6 +1147,7 @@ export const RadioPlaying = (): JSX.Element => {
                   boxShadow: isFocused(focusIdx) ? '0 0 30px rgba(255, 65, 153, 0.8)' : 'inset 1.1px 1.1px 12.1px 0 rgba(255, 255, 255, 0.12)' 
                 }}
                 data-testid={`card-similar-${similarStation._id}`}
+                data-station-id={similarStation._id}
                 onClick={() => navigateToStation(similarStation)}
               >
                 <div className="bg-white mx-auto mt-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px]">
@@ -1148,13 +1169,17 @@ export const RadioPlaying = (): JSX.Element => {
             })}
           </div>
 
+          <HorizontalScrollCues id="radio-similar" scrollRef={similarScrollRef} count={similarStations.length} onNavigate={index => setFocusIndex(10 + index)} />
+          </div>
+
           {/* Popular Radios Section */}
           <p className="font-['Ubuntu',Helvetica] font-bold leading-normal not-italic text-[32px] text-white mb-[16px]">
             {t('popular_radios') || 'Popular Radios'}
           </p>
 
           {/* Popular Radios Horizontal Scroll */}
-          <div ref={popularScrollRef} className="flex overflow-x-auto scrollbar-hide scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="relative">
+          <div data-testid="radio-popular-scroll" ref={popularScrollRef} className="flex overflow-x-auto scrollbar-hide scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {popularStations.map((popularStation, index) => {
               const focusIdx = 30 + index; // Start after similar stations (10-29)
               return (
@@ -1170,6 +1195,7 @@ export const RadioPlaying = (): JSX.Element => {
                   boxShadow: isFocused(focusIdx) ? '0 0 30px rgba(255, 65, 153, 0.8)' : 'inset 1.1px 1.1px 12.1px 0 rgba(255, 255, 255, 0.12)' 
                 }}
                 data-testid={`card-popular-${popularStation._id}`}
+                data-station-id={popularStation._id}
                 onClick={() => navigateToStation(popularStation)}
               >
                 <div className="bg-white mx-auto mt-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px]">
@@ -1189,6 +1215,8 @@ export const RadioPlaying = (): JSX.Element => {
               </div>
               )
             })}
+          </div>
+          <HorizontalScrollCues id="radio-popular" scrollRef={popularScrollRef} count={popularStations.length} onNavigate={index => setFocusIndex(30 + index)} />
           </div>
         </div>
       </div>

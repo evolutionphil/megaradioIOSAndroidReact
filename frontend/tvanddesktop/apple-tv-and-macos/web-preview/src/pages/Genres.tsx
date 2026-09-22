@@ -7,6 +7,7 @@ import { useCountry } from "@/contexts/CountryContext";
 import { CountrySelector } from "@/components/CountrySelector";
 import { CountryTrigger } from "@/components/CountryTrigger";
 import { useGlobalPlayer } from "@/contexts/GlobalPlayerContext";
+import { contentBottomInset } from '@/lib/tvLayout';
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useFocusManager, getFocusClasses } from "@/hooks/useFocusManager";
 import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
@@ -17,7 +18,7 @@ import { useNavigation } from "@/contexts/NavigationContext";
 
 export const Genres = (): JSX.Element => {
   const { selectedCountry, selectedCountryCode, selectedCountryFlag, setCountry } = useCountry();
-  const { isPlaying } = useGlobalPlayer();
+  const { isPlaying, currentStation } = useGlobalPlayer();
   const { t } = useLocalization();
   const [location, setLocation] = useLocation();
   const { setNavigationState, popNavigationState } = useNavigation();
@@ -320,7 +321,7 @@ export const Genres = (): JSX.Element => {
       const row = Math.floor((focusIndex - 7) / 4);
       const elementTop = CONTENT_PADDING_TOP + POPULAR_TITLE_HEIGHT + (row * ROW_HEIGHT);
       const elementBottom = elementTop + CARD_HEIGHT;
-      const BOTTOM_PADDING = 140;
+      const BOTTOM_PADDING = 24;
       const viewTop = scrollContainer.scrollTop;
       const viewBottom = viewTop + scrollContainer.clientHeight - BOTTOM_PADDING;
 
@@ -337,12 +338,11 @@ export const Genres = (): JSX.Element => {
       const relIndex = focusIndex - 15;
       const row = Math.floor(relIndex / 4);
 
-      if (row === prevRowRef.current) return;
       prevRowRef.current = row;
 
       const elementTop = ALL_SECTION_START + (row * ROW_HEIGHT);
       const elementBottom = elementTop + CARD_HEIGHT;
-      const BOTTOM_PADDING = 140;
+      const BOTTOM_PADDING = 24;
       const viewTop = scrollContainer.scrollTop;
       const viewBottom = viewTop + scrollContainer.clientHeight - BOTTOM_PADDING;
 
@@ -352,7 +352,7 @@ export const Genres = (): JSX.Element => {
         scrollContainer.scrollTop = elementTop - scrollContainer.clientHeight + CARD_HEIGHT + BOTTOM_PADDING;
       }
     }
-  }, [focusIndex]);
+  }, [focusIndex, currentStation]);
 
   return (
     <div className="absolute inset-0 w-[1920px] h-[1080px] overflow-hidden" data-testid="page-genres">
@@ -417,8 +417,9 @@ export const Genres = (): JSX.Element => {
       {/* Scrollable Content Area - Only this part scrolls, edges hidden behind sidebar/header */}
       <div
         ref={scrollContainerRef}
+        data-testid="genres-scroll-area"
         className="absolute left-0 w-[1920px] top-[140px] overflow-y-auto overflow-x-hidden scrollbar-hide outline-none border-none z-10"
-        style={{ height: '940px' }}
+        style={{ height: 940 - contentBottomInset(!!currentStation) }}
       >
         <div className="relative pb-[100px] pt-[60px] pl-[237px] pr-[79px]" style={{ minHeight: `${60 + 100 + (2 * ROW_HEIGHT) + 80 + (Math.ceil(allGenres.length / 4) * ROW_HEIGHT) + 200}px` }}>
           {/* Popular Genres Title */}
@@ -431,7 +432,7 @@ export const Genres = (): JSX.Element => {
             {popularGenres.slice(0, 4).map((genre, index) => {
               const focusIdx = 7 + index;
               return (
-                <Link key={`pop1-${genre.slug || index}`} href={`/genre-list/${encodeURIComponent(genre.slug)}`} className="flex-1">
+                <Link key={`pop1-${genre.slug || index}`} href={`/genre-list/${encodeURIComponent(genre.slug)}`} className="flex-1 min-w-0">
                   <div
                     data-focus-idx={focusIdx}
                     className={`bg-[rgba(255,255,255,0.14)] box-border flex flex-col items-start justify-center h-[${CARD_HEIGHT}px] px-[40px] py-[28px] rounded-[20px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors ${getFocusClasses(isFocused(focusIdx))}`}
@@ -457,7 +458,7 @@ export const Genres = (): JSX.Element => {
             {popularGenres.slice(4, 8).map((genre, index) => {
               const focusIdx = 11 + index;
               return (
-                <Link key={`pop2-${genre.slug || index}`} href={`/genre-list/${encodeURIComponent(genre.slug)}`} className="flex-1">
+                <Link key={`pop2-${genre.slug || index}`} href={`/genre-list/${encodeURIComponent(genre.slug)}`} className="flex-1 min-w-0">
                   <div
                     data-focus-idx={focusIdx}
                     className={`bg-[rgba(255,255,255,0.14)] box-border flex flex-col items-start justify-center px-[40px] py-[28px] rounded-[20px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors ${getFocusClasses(isFocused(focusIdx))}`}
@@ -489,7 +490,7 @@ export const Genres = (): JSX.Element => {
               {allGenres.slice(rowIdx * 4, rowIdx * 4 + 4).map((genre, colIdx) => {
                 const focusIdx = 15 + (rowIdx * 4) + colIdx;
                 return (
-                  <Link key={`all-${rowIdx}-${genre.slug || colIdx}`} href={`/genre-list/${encodeURIComponent(genre.slug)}`} className="flex-1">
+                  <Link key={`all-${rowIdx}-${genre.slug || colIdx}`} href={`/genre-list/${encodeURIComponent(genre.slug)}`} className="flex-1 min-w-0">
                     <div
                       data-focus-idx={focusIdx}
                       className={`bg-[rgba(255,255,255,0.14)] box-border flex flex-col items-start justify-center px-[30px] py-[28px] rounded-[20px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors relative ${getFocusClasses(isFocused(focusIdx))}`}

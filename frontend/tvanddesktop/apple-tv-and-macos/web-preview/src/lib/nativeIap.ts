@@ -64,7 +64,9 @@ let nextId = 1;
     if (payload && payload.error) p.reject(new Error(String(payload.error)));
     else p.resolve(payload);
   };
-  (window as any).MegaRadioBridge = existing;
+  // Android's Java-injected property is not writable. Add the callback to the
+  // existing object; only assign a new object in a normal browser/WK host.
+  if (!(window as any).MegaRadioBridge) (window as any).MegaRadioBridge = existing;
 })();
 
 function call<T = any>(fn: string, args: Record<string, any> = {}, timeoutMs = 30000): Promise<T> {

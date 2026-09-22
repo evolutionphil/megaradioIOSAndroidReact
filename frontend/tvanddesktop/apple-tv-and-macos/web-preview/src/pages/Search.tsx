@@ -82,21 +82,27 @@ const getKbFlagUrl = (id: string): string => {
   return `https://flagcdn.com/w40/${map[id] || 'gb'}.png`;
 };
 
+import { useNavigation, usePageSnapshot, useSavedNavigationData } from '@/contexts/NavigationContext';
+import { restoreNavigationPosition } from '@/lib/navigationRestore';
+
 type FocusZone = 'sidebar' | 'keyboard' | 'list' | 'langButton' | 'langDropdown' | 'recent';
 
 export const Search = (): JSX.Element => {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { setNavigationState, popNavigationState, navigationState } = useNavigation();
+  const saved = useSavedNavigationData<{ query: string; debounced: string; recent: Station[]; keyboardRow: number; keyboardCol: number; layout: number }>(location);
   const { playStation } = useGlobalPlayer();
   const { t } = useLocalization();
 
   const [searchQuery, setSearchQuery] = useState(() => {
+    if (saved) return saved.query;
     // Android TV Assistant passes the spoken query in the hash route.
     const query = typeof window !== 'undefined' ? window.location.hash.split('?')[1] : '';
-    return new URLSearchParams(query || '').get('q') || '';
+    return new URLSearchParams(query || window.location.search).get('q') || '';
   });
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(saved?.debounced || '');
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [recentlyPlayedStations, setRecentlyPlayedStations] = useState<Station[]>([]);
+  const [recentlyPlayedStations, setRecentlyPlayedStations] = useState<Station[]>(saved?.recent || []);
 
   const { openHelp, closeHelp, helpOpen } = useHelp();
   const [helpFocused, setHelpFocused] = useState(false);
@@ -107,14 +113,15 @@ export const Search = (): JSX.Element => {
   const setHF = (v: boolean) => { helpFocusedRef.current = v; setHelpFocused(v); };
   const [focusZone, setFocusZone] = useState<FocusZone>('keyboard');
   const [sidebarIndex, setSidebarIndex] = useState(2);
-  const [keyboardRow, setKeyboardRow] = useState(0);
-  const [keyboardCol, setKeyboardCol] = useState(0);
+  const [keyboardRow, setKeyboardRow] = useState(saved?.keyboardRow || 0);
+  const [keyboardCol, setKeyboardCol] = useState(saved?.keyboardCol || 0);
   const [listFocusIndex, setListFocusIndex] = useState(0);
   const [recentFocusIndex, setRecentFocusIndex] = useState(0);
   const [activeLayoutIndex, setActiveLayoutIndex] = useState(() => {
-    const saved = localStorage.getItem('preferredKeyboard');
-    if (saved) {
-      const idx = KEYBOARD_LAYOUTS.findIndex(k => k.id === saved);
+    if (saved) return saved.layout;
+    const preferredKeyboard = localStorage.getItem('preferredKeyboard');
+    if (preferredKeyboard) {
+      const idx = KEYBOARD_LAYOUTS.findIndex(k => k.id === preferredKeyboard);
       if (idx >= 0) return idx;
     }
     return 0;
@@ -189,6 +196,7 @@ export const Search = (): JSX.Element => {
 
   useEffect(() => {
     try {
+      if (saved) return;
       const recent = recentlyPlayedService.getStations();
       if (Array.isArray(recent)) setRecentlyPlayedStations(recent);
       else setRecentlyPlayedStations([]);
@@ -198,6 +206,30 @@ export const Search = (): JSX.Element => {
   const recentStations = recentlyPlayedStations.length > 0
     ? recentlyPlayedStations
     : (popularStationsData?.stations || []);
+
+  usePageSnapshot(location, () => ({ query: searchQuery, debounced: debouncedSearchQuery,
+    recent: recentStations, keyboardRow, keyboardCol, layout: activeLayoutIndex }));
+  const openStation = (station: Station, index: number, section: 'search' | 'recent') => {
+    setNavigationState(location, index, station._id, section);
+    playStation(station);
+    setLocation(`/radio-playing?station=${encodeURIComponent(station._id)}`);
+  };
+  const returnRestored = useRef(false);
+  useEffect(() => {
+    if (returnRestored.current || navigationState?.previousPage !== location) return;
+    const recent = navigationState.returnSection === 'recent';
+    const list = recent ? recentStations : visibleSearchResults;
+    if (!list.length) return;
+    const state = popNavigationState(location);
+    if (!state) return;
+    returnRestored.current = true;
+    const found = list.findIndex(s => s._id === state.returnStationId);
+    const index = found >= 0 ? found : Math.min(state.returnFocusIndex, list.length - 1);
+    setFocusZone(recent ? 'recent' : 'list');
+    if (recent) setRecentFocusIndex(index);
+    else { setListFocusIndex(index); lastListPos.current = index; }
+    restoreNavigationPosition(state);
+  }, [navigationState, location, recentStations, visibleSearchResults]);
 
   const FALLBACK_IMAGE = assetPath('images/fallback-station.png');
 
@@ -267,7 +299,9 @@ export const Search = (): JSX.Element => {
     }
   }, [visibleSearchResults.length, listFocusIndex]);
 
+  const firstQueryReset = useRef(true);
   useEffect(() => {
+    if (firstQueryReset.current) { firstQueryReset.current = false; if (saved) return; }
     if (scrollContainerRef.current && searchQuery) {
       scrollContainerRef.current.scrollTop = 0;
       setListFocusIndex(0);
@@ -469,8 +503,7 @@ export const Search = (): JSX.Element => {
         e.preventDefault();
         const station = visibleSearchResults[listFocusIndex];
         if (station) {
-          playStation(station);
-          setLocation(`/radio-playing?station=${station._id}`);
+          openStation(station, listFocusIndex, 'search');
         }
       }
       return;
@@ -538,8 +571,7 @@ export const Search = (): JSX.Element => {
         e.preventDefault();
         const station = recentStations[recentFocusIndex];
         if (station) {
-          playStation(station);
-          setLocation(`/radio-playing?station=${station._id}`);
+          openStation(station, recentFocusIndex, 'recent');
         }
       }
       return;
@@ -601,6 +633,7 @@ export const Search = (): JSX.Element => {
       >
         <div
           ref={scrollContainerRef}
+          data-testid="search-results-scroll"
           className="absolute left-0 right-0 top-0 bottom-0 overflow-y-auto"
           style={{ scrollbarWidth: 'none' }}
         >
@@ -633,10 +666,10 @@ export const Search = (): JSX.Element => {
                     : 'none',
                 }}
                 data-testid={`search-result-${index}`}
+                data-station-id={station._id} data-nav-section="search" data-focused={isItemFocused}
                 onClick={() => {
                   if (station) {
-                    playStation(station);
-                    setLocation(`/radio-playing?station=${station._id}`);
+                    openStation(station, index, 'search');
                   }
                 }}
               >
@@ -809,10 +842,11 @@ export const Search = (): JSX.Element => {
                         : 'inset 1.1px 1.1px 12.1px 0px rgba(255,255,255,0.12)',
                     }}
                     data-testid={`recent-station-${index}`}
+                    data-station-id={station._id} data-nav-section="recent"
+                    data-focused={isStationFocused}
                     onClick={() => {
                       if (station) {
-                        playStation(station);
-                        setLocation(`/radio-playing?station=${station._id}`);
+                        openStation(station, index, 'recent');
                       }
                     }}
                   >

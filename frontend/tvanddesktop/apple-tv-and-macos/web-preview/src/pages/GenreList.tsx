@@ -9,8 +9,10 @@ import { useRef, useEffect, useState } from "react";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { useFocusManager, getFocusClasses } from "@/hooks/useFocusManager";
-import { useNavigation } from "@/contexts/NavigationContext";
+import { useNavigation, useSavedNavigationData, usePageSnapshot } from "@/contexts/NavigationContext";
+import { restoreNavigationPosition } from '@/lib/navigationRestore';
 import { useGlobalPlayer } from "@/contexts/GlobalPlayerContext";
+import { contentBottomInset } from '@/lib/tvLayout';
 import { assetPath } from "@/lib/assetPath";
 
 export const GenreList = (): JSX.Element => {
@@ -18,7 +20,8 @@ export const GenreList = (): JSX.Element => {
   const { selectedCountryCode } = useCountry();
   const { t } = useLocalization();
   const { setNavigationState, popNavigationState } = useNavigation();
-  const { playStation } = useGlobalPlayer();
+  const saved = useSavedNavigationData<{ country: string; displayedStations: Station[]; currentOffset: number; hasMore: boolean }>(location);
+  const { playStation, currentStation } = useGlobalPlayer();
   const queryClient = useQueryClient();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   
@@ -31,10 +34,12 @@ export const GenreList = (): JSX.Element => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-  const [displayedStations, setDisplayedStations] = useState<Station[]>([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
+  const [displayedStations, setDisplayedStations] = useState<Station[]>(saved?.displayedStations || []);
+  const [currentOffset, setCurrentOffset] = useState(saved?.currentOffset || 0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(saved?.hasMore ?? true);
+  const restoredDataKey = useRef(saved ? `${genreSlug}/${saved.country}` : undefined);
+  usePageSnapshot(location, () => ({ country: selectedCountryCode, displayedStations, currentOffset, hasMore }));
   const STATIONS_PER_LOAD = 28;
 
   const cachedGenreStations = (() => {
@@ -66,6 +71,8 @@ export const GenreList = (): JSX.Element => {
   // Note: No need for refetch useEffect - queryKey changes trigger automatic refetch
   useEffect(() => {
     // Guard stationsData?.stations before rendering
+    if (restoredDataKey.current === `${genreSlug}/${selectedCountryCode}`) return;
+    restoredDataKey.current = undefined;
     if (stationsData && stationsData.stations && Array.isArray(stationsData.stations)) {
       if (stationsData.stations.length > 0) {
         const stations = stationsData.stations;
@@ -296,7 +303,7 @@ export const GenreList = (): JSX.Element => {
         const stationIndex = index - stationsStart;
         const station = displayedStations[stationIndex];
         if (station) {
-          setNavigationState(location, index);
+          setNavigationState(location, index, station._id, 'genre');
           playStation(station);
           setLocation(`/radio-playing?station=${station._id}`);
         }
@@ -328,9 +335,11 @@ export const GenreList = (): JSX.Element => {
     if (displayedStations.length === 0) return; // wait for first batch
     initialFocusSetRef.current = true;
 
-    const navState = popNavigationState();
+    const navState = popNavigationState(location);
     if (navState && navState.returnFocusIndex !== null) {
-      setFocusIndex(navState.returnFocusIndex);
+      const found = displayedStations.findIndex(s => s._id === navState.returnStationId);
+      setFocusIndex(found >= 0 ? stationsStart + found : Math.min(navState.returnFocusIndex, totalItems - 1));
+      restoreNavigationPosition(navState);
     } else if (focusIndex < stationsStart) {
       setFocusIndex(stationsStart);
     }
@@ -356,7 +365,7 @@ export const GenreList = (): JSX.Element => {
         // laps focused cards at the bottom of the viewport. Matching the value
         // used in DiscoverNoUser.tsx ensures the focused card always sits a
         // visible gap above the player bar.
-        const BOTTOM_PADDING = 220;
+        const BOTTOM_PADDING = 24; // The viewport itself now stops above the player.
 
         const viewTop = container.scrollTop;
         const viewBottom = viewTop + container.clientHeight - BOTTOM_PADDING;
@@ -382,7 +391,7 @@ export const GenreList = (): JSX.Element => {
     });
 
     return () => cancelAnimationFrame(scrollRAF.current);
-  }, [focusIndex, stationsStart]);
+  }, [focusIndex, stationsStart, currentStation]);
 
   // TRUE INFINITE SCROLL trigger - Focus-based (when within last 28 items / 4 rows)
   // Load MORE stations BEFORE user reaches the end for seamless experience
@@ -444,7 +453,8 @@ export const GenreList = (): JSX.Element => {
 
   return (
     <AppLayout currentPage="genres" scrollContainerRef={scrollContainerRef} isFocused={isFocused}>
-      <div ref={scrollContainerRef} className="relative w-[1920px] h-[1080px] overflow-y-auto" data-testid="page-genre-list">
+      <div ref={scrollContainerRef} className="relative w-[1920px] overflow-y-auto overflow-x-hidden"
+        style={{ height: 1080 - contentBottomInset(!!currentStation) }} data-testid="page-genre-list">
         {/* Background Image */}
         <div className="absolute h-[1292px] left-[-10px] top-[-523px] w-[1939px]">
           <img
@@ -497,13 +507,15 @@ export const GenreList = (): JSX.Element => {
           const topPosition = 316 + (row * 294); // 316px start, 294px between rows
           
           return (
-            <Link key={station._id || index} href={`/radio-playing?station=${station._id}`}>
+            <Link key={station._id || index} href={`/radio-playing?station=${station._id}`}
+              onClick={() => { setNavigationState(location, stationsStart + index, station._id, 'genre'); playStation(station); }}>
               <div 
                 className={`absolute bg-[rgba(255,255,255,0.14)] h-[264px] overflow-clip rounded-[11px] w-[200px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors ${getFocusClasses(isFocused(index + stationsStart))}`}
                 style={{ left: `${leftPosition}px`, top: `${topPosition}px` }}
                 data-testid={`station-card-${index}`}
                 data-station-index={index}
-                onClick={() => setLocation(`/radio-playing?station=${station._id}`)}
+                data-station-id={station._id} data-nav-section="genre"
+                data-focused={isFocused(stationsStart + index)}
               >
                 <div className="absolute bg-white left-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px] top-[34px]">
                   <img

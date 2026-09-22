@@ -1,0 +1,67 @@
+{
+  "summary": "Frontend-only iteration56 verification completed for TV/Desktop equalizer/sidebar geometry, D-pad semantics, shared sidebar navigation IDs, small-landscape overflow, and public /api/tv-app/ asset availability.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Favorites >21 rows fixture validation (browser-only test harness)",
+        "issue": "Could not materialize >21 favorites cards in this run; deterministic fixture injection path is not currently available from test harness context, so deep-row D-pad/scroll validation remained unverified.",
+        "affected_testIDs": [
+          "favorites-scroll-area",
+          "station-card-*"
+        ]
+      },
+      {
+        "flow": "With-currentStation bottom-gap validation on Discover/Genres/GenreList/Favorites",
+        "issue": "Global player did not appear during this run (button-global-play-pause absent), so the required 925-top/24-gap assertions under active currentStation could not be fully validated.",
+        "affected_testIDs": [
+          "button-global-play-pause",
+          "genres-scroll-area",
+          "page-genre-list",
+          "favorites-scroll-area"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_issue54_behavior.cjs",
+    "/app/test_reports/artifacts_iter56_phase1/equalizer_load.jpeg",
+    "/app/test_reports/artifacts_iter56_equalizer/equalizer_1920x1080.jpeg",
+    "/app/test_reports/artifacts_iter56_equalizer/equalizer_1280x720.jpeg",
+    "/app/test_reports/artifacts_iter56_equalizer/equalizer_3840x2160.jpeg",
+    "/app/test_reports/artifacts_iter56_equalizer/equalizer_dpad_vocal.jpeg",
+    "/app/test_reports/artifacts_iter56_pages/settings_page.jpeg",
+    "/app/test_reports/artifacts_iter56_navchecks/",
+    "/app/test_reports/artifacts_iter56_linkcheck/",
+    "/app/test_reports/artifacts_iter56_playergap/"
+  ],
+  "action_items": [
+    "Add/keep a deterministic non-production favorites fixture hook for web-preview test harness (so >21 favorites rows and deep D-pad scrolling can be regressed reliably without mutating user account).",
+    "Expose a stable testID on Discover scroll container (like genres-scroll-area/favorites-scroll-area) to make bottom-gap assertions deterministic.",
+    "Enable one deterministic path to establish currentStation in preview tests (or expose a read-only seed) so player-overlap gap rules can be verified under active player state.",
+    "Review FavoritesContext API base URL usage for env compliance (see code review comments)."
+  ],
+  "critical_code_review_comments": [
+    "Env violation: /app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/contexts/FavoritesContext.tsx line 6 hardcodes API_BASE='https://api.themegaradio.com' instead of env-driven base URL.",
+    "Maintainability risk: /app/frontend/tvanddesktop/apple-tv-and-macos/web-preview/src/pages/DiscoverNoUser.tsx is very large (>1500 lines), and /src/pages/Settings.tsx is also very large (~1000 lines); split into smaller focused modules per guideline.",
+    "Testing reliability gap: Discover scroll container lacks dedicated data-testid unlike Genres/Favorites, making geometry regressions harder to automate robustly."
+  ],
+  "updated_files": [
+    "/app/test_reports/iteration_56.json"
+  ],
+  "success_rate": {
+    "backend": "NA (frontend-only scope)",
+    "frontend": "~85% of requested checks executed and passing; unresolved coverage on favorites>21 fixture and active-player bottom-gap scenario"
+  },
+  "seed_data_creation": "None in backend/live account. FAVORITES fixture attempts were test-harness-only and did not mutate production account data.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Equalizer geometry measured at 1920x1080, 1280x720, 1366x768, 2560x1080, 3840x2160. No sidebar/preset overlap detected; elementFromPoint center/edges on Settings passed. D-pad semantics passed (up/down gain step, left/right band navigation, Enter-on-band => reset focus). Tiny 1280/1366 numeric deltas (73.999/235.999) are floating-point precision around exact 74/236 boundaries, not visual overlap. Shared sidebar IDs are unique across tested pages. /api/tv-app/ and linked JS/CSS returned HTTP 200. regression_issue54_behavior.cjs passed (41 assertions).",
+  "rca_of_issue": "Primary unresolveds are testability/instrumentation related: (1) deterministic >21 favorites fixture path could not be activated from browser harness in this run, blocking deep-row favorites validation; (2) currentStation/player-bar visible state could not be deterministically established in tested flow, blocking full with-player bottom-gap assertions."
+}

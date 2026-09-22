@@ -5,6 +5,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
+import { useEqualizerNavigation } from '@/hooks/useEqualizerNavigation';
+import { TV_LAYOUT, contentBottomInset } from '@/lib/tvLayout';
+import { useGlobalPlayer } from '@/contexts/GlobalPlayerContext';
 
 const BANDS = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000] as const;
 
@@ -82,6 +85,11 @@ function applyGains(gains: number[]) {
 export function Equalizer() {
   const [state, setState] = useState(loadState);
   const activePreset = useMemo(() => PRESETS.find(p => p.id === state.presetId), [state.presetId]);
+  const { currentStation } = useGlobalPlayer();
+  const nav = useEqualizerNavigation(PRESETS.map(p => p.id), BANDS, (index, delta) => {
+    setState(old => ({ presetId: 'custom', gains: old.gains.map((gain, i) =>
+      i === index ? Math.max(-12, Math.min(12, gain + delta)) : gain) }));
+  });
 
   useEffect(() => {
     applyGains(state.gains);
@@ -105,24 +113,31 @@ export function Equalizer() {
     }}
       data-testid="equalizer-page"
     >
-      <Sidebar activePage="settings" />
+      <Sidebar activePage="settings" isFocused={index => nav.isFocused('sidebar', index)}
+        isHelpFocused={nav.isFocused('sidebar', 6)} onFocusItem={index => nav.focus('sidebar', index)} getFocusClasses={() => ''} />
 
-      <div style={{ paddingLeft: 150, paddingTop: 60, display: 'flex', gap: 40, height: 'calc(100% - 60px)' }}>
+      <div data-testid="equalizer-content" style={{ paddingLeft: TV_LAYOUT.contentLeft, paddingRight: TV_LAYOUT.contentRight,
+        paddingTop: 64, paddingBottom: Math.max(74, contentBottomInset(!!currentStation)),
+        display: 'flex', gap: 40, height: '100%', boxSizing: 'border-box' }}>
         {/* Left: presets */}
-        <div style={{ width: 360 }}>
-          <div style={{ fontSize: 36, fontWeight: 700, marginBottom: 28 }}>Equalizer</div>
-          <div style={{ fontSize: 18, opacity: 0.7, marginBottom: 20 }}>Presets</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 720, overflowY: 'auto' }}>
-            {PRESETS.map(p => (
+        <div data-testid="equalizer-presets-panel" style={{ width: 360, flexShrink: 0, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <div data-testid="equalizer-title" style={{ fontSize: 36, fontWeight: 700, marginBottom: 28 }}>Equalizer</div>
+          <div data-testid="equalizer-presets-title" style={{ fontSize: 18, opacity: 0.7, marginBottom: 20 }}>Presets</div>
+          <div data-testid="equalizer-presets-list" style={{ display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0, overflowY: 'auto', padding: 6, margin: -6 }}>
+            {PRESETS.map((p, index) => (
               <button
                 key={p.id}
                 onClick={() => onSelectPreset(p)}
+                onFocus={() => nav.focus('preset', index)}
+                aria-pressed={activePreset?.id === p.id}
+                className="eq-focus-control"
+                data-eq-focused={nav.isFocused('preset', index)}
                 data-testid={`eq-preset-${p.id}`}
                 style={{
-                  height: 56, borderRadius: 28, padding: '0 24px',
+                  height: 56, flexShrink: 0, borderRadius: 28, padding: '0 24px',
                   textAlign: 'left',
                   background: activePreset?.id === p.id ? 'rgba(255,65,153,0.2)' : 'rgba(40,40,40,0.9)',
-                  border: activePreset?.id === p.id ? '2px solid #FF4199' : '1px solid rgba(255,255,255,0.08)',
+                  border: activePreset?.id === p.id ? '2px solid #FF4199' : '2px solid rgba(255,255,255,0.08)',
                   color: '#fff', fontSize: 20, fontWeight: 500, cursor: 'pointer',
                   display: 'flex', alignItems: 'center',
                 }}
@@ -141,27 +156,32 @@ export function Equalizer() {
         </div>
 
         {/* Right: 10 sliders */}
-        <div style={{ flex: 1, background: 'rgba(20,20,20,0.6)', borderRadius: 24, padding: 40 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>10-Band EQ</div>
+        <div data-testid="equalizer-bands-panel" style={{ flex: 1, minWidth: 0, background: 'rgba(20,20,20,0.6)', borderRadius: 24, padding: 40 }}>
+          <div data-testid="equalizer-bands-title" style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>10-Band EQ</div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'flex-end', justifyContent: 'space-between', height: 440 }}>
             {BANDS.map((freq, idx) => (
-              <div key={freq} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, flex: 1 }}>
-                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
+              <div key={freq} data-testid={`eq-band-control-${freq}`} data-eq-focused={nav.isFocused('band', idx)} className="eq-focus-control"
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, borderRadius: 12, padding: '12px 0' }}>
+                <div data-testid={`eq-gain-${freq}`} style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
                   {state.gains[idx] > 0 ? '+' : ''}{state.gains[idx]?.toFixed(0) || 0}
                 </div>
+                <div style={{ position: 'relative', width: 44, height: 320 }}>
                 <input
                   type="range"
+                  aria-label={`${freq} Hz gain`}
                   min={-12} max={12} step={1}
                   value={state.gains[idx] || 0}
                   onChange={e => onBandChange(idx, parseInt(e.target.value, 10))}
+                  onFocus={() => nav.focus('band', idx)}
                   data-testid={`eq-band-${freq}`}
                   style={{
-                    writingMode: 'vertical-lr' as any,
-                    WebkitAppearance: 'slider-vertical',
-                    width: 8, height: 320, accentColor: '#FF4199',
-                  } as any}
+                    position: 'absolute', left: -138, top: 138, margin: 0, outline: 'none',
+                    transform: 'rotate(-90deg)', transformOrigin: 'center',
+                    width: 320, height: 44, accentColor: '#FF4199',
+                  }}
                 />
-                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
+                </div>
+                <div data-testid={`eq-frequency-${freq}`} style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
                   {freq >= 1000 ? `${freq / 1000}k` : freq}
                 </div>
               </div>
@@ -170,6 +190,9 @@ export function Equalizer() {
           <div style={{ marginTop: 32, display: 'flex', gap: 16 }}>
             <button
               onClick={() => onSelectPreset(PRESETS[0])}
+              onFocus={() => nav.focus('reset')}
+              className="eq-focus-control"
+              data-eq-focused={nav.isFocused('reset')}
               data-testid="eq-reset-btn"
               style={{
                 height: 52, padding: '0 32px', borderRadius: 26,
@@ -178,6 +201,9 @@ export function Equalizer() {
               }}
             >Reset to Flat</button>
           </div>
+          <p data-testid="equalizer-remote-hint" style={{ marginTop: 28, fontSize: 16, color: 'rgba(255,255,255,0.6)' }}>
+            Left / Right: move · Up / Down: adjust · OK on a band: go to Reset
+          </p>
         </div>
       </div>
     </div>

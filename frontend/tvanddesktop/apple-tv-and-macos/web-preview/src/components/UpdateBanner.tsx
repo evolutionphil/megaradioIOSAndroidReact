@@ -55,7 +55,7 @@ export function UpdateBanner() {
     // capture: true so we run before page-level listeners.
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [state.kind, state.storeUrl, softFocus]);
+  }, [state, softFocus]);
 
   if (state.kind === 'none') return null;
 

@@ -1,9 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useRef } from "react";
-import { Station } from "@/services/megaRadioApi";
+import { Station, buildApiUrl } from "@/services/megaRadioApi";
 import { trackFavoriteToggle } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 
-var API_BASE = 'https://api.themegaradio.com';
 var FAVORITES_STORAGE_KEY = "mega_radio_favorites";
 
 interface FavoritesContextType {
@@ -35,7 +34,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     if (!isAuthenticated || !token || hasSyncedRef.current) return;
     hasSyncedRef.current = true;
 
-    fetch(API_BASE + '/api/user/favorites', {
+    fetch(buildApiUrl('/user/favorites'), {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token }
     })
@@ -67,7 +66,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       apiFavorites.forEach(function(s: Station) { apiIds[s._id] = true; });
       localFavs.forEach(function(s: Station) {
         if (!apiIds[s._id]) {
-          fetch(API_BASE + '/api/user/favorites', {
+          fetch(buildApiUrl('/user/favorites'), {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify({ stationId: s._id })
@@ -101,7 +100,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       trackFavoriteToggle(station.name, true);
 
       if (isAuthenticated && token) {
-        fetch(API_BASE + '/api/user/favorites', {
+        fetch(buildApiUrl('/user/favorites'), {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
           body: JSON.stringify({ stationId: station._id })
@@ -122,7 +121,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       }
 
       if (isAuthenticated && token) {
-        fetch(API_BASE + '/api/user/favorites/' + stationId, {
+        fetch(buildApiUrl('/user/favorites/' + encodeURIComponent(stationId)), {
           method: 'DELETE',
           headers: { 'Authorization': 'Bearer ' + token }
         }).catch(function() {});

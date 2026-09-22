@@ -3,6 +3,7 @@
 
 package com.visiongo.megaradio.wear.presentation
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -88,7 +89,7 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
                 genres = genres,
                 onGenreClick = { genre ->
                     viewModel.requestStationsByGenre(genre.id)
-                    navController.navigate("genre_stations/${genre.id}/${genre.name}")
+                    navController.navigate("genre_stations/${Uri.encode(genre.id)}/${Uri.encode(genre.name)}")
                 }
             )
         }
@@ -112,8 +113,9 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
             CountriesScreen(
                 countries = countries,
                 onCountryClick = { country ->
-                    viewModel.requestStationsByCountry(country.code)
-                    navController.navigate("country_stations/${country.code}/${country.name}")
+                    // The catalog API filters by country name, not an inferred ISO code.
+                    viewModel.requestStationsByCountry(country.name)
+                    navController.navigate("country_stations/${Uri.encode(country.code)}/${Uri.encode(country.name)}")
                 }
             )
         }

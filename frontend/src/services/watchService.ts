@@ -42,6 +42,7 @@ interface WatchCommand {
 type WatchCommandListener = (command: WatchCommand) => void;
 
 class WatchService {
+  initializeConnectivity() { WatchConnectivityBridge?.initialize?.(); }
   private eventEmitter: NativeEventEmitter | null = null;
   private commandListeners: Set<WatchCommandListener> = new Set();
   private isInitialized = false;

@@ -3,6 +3,10 @@ import App from "./App";
 import "./index.css";
 import { initGA } from "./lib/analytics";
 import { scheduleBundleUpdate } from "./lib/bundleUpdater";
+import { normalizeHashQuery } from './lib/normalizeHashQuery';
+
+normalizeHashQuery();
+window.addEventListener('hashchange', normalizeHashQuery);
 
 // Initialize Google Analytics
 if (import.meta.env.VITE_GA_MEASUREMENT_ID) {

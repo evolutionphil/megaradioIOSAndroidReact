@@ -32,6 +32,7 @@ enum Route: Equatable, Hashable {
     case countrySelect
     case settings
     case login
+    case premium
 }
 
 @MainActor

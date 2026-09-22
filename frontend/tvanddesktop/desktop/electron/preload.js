@@ -2,11 +2,13 @@
 //   • megaRadioDesktop  → media-key shortcuts + platform info
 //   • megaRadioNative   → in-app purchase bridge (StoreKit on Mac App Store)
 const { contextBridge, ipcRenderer } = require('electron');
+const supportsNativeIap = process.argv.includes('--megaradio-mas=1');
 
 contextBridge.exposeInMainWorld('megaRadioDesktop', {
-  onShortcut: (cb) => ipcRenderer.on('mr-shortcut', (_e, key) => cb(key)),
+  onShortcut: (cb) => { const listener = (_e, key) => cb(key); ipcRenderer.on('mr-shortcut', listener); return () => ipcRenderer.removeListener('mr-shortcut', listener); },
   platform: process.platform,
   isDesktop: true,
+  supportsNativeIap,
 });
 
 // Native IAP bridge — matches the API expected by PaywallContext.tsx
@@ -20,6 +22,8 @@ contextBridge.exposeInMainWorld('megaRadioDesktop', {
 contextBridge.exposeInMainWorld('megaRadioNative', {
   isNativeShell: true,
   platform: process.platform,
+  supportsNativeIap,
+  setAuthToken: (token) => ipcRenderer.invoke('mr-iap-set-auth', token || null),
   // Mac App Store sürümünde StoreKit + backend doğrulama akışını çağırır.
   // token = renderer'ın localStorage.tv_auth_token değeri (kullanıcının giriş JWT'si).
   purchase: (productId, token) => ipcRenderer.invoke('mr-iap-purchase', { productId, token }),

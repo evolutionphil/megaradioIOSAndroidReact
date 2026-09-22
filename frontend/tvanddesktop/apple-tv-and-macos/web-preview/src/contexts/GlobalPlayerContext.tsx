@@ -1,17 +1,11 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react";
-import { createMetadataClient } from "@radiolise/metadata-client";
+import { useNowPlayingMetadata } from '@/hooks/useNowPlayingMetadata';
 import { Station, megaRadioApi } from "@/services/megaRadioApi";
 import { recentlyPlayedService } from "@/services/recentlyPlayedService";
 import { recommendationService } from "@/services/recommendationService";
 import { trackStationPlay, trackError } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
-import { detectPlatform } from '@/lib/platform';
-
-// Radiolise public ICY metadata WebSocket gateway.
-// Override via VITE_METADATA_WS for self-hosted instance.
-const METADATA_WS_URL =
-  (import.meta as any).env?.VITE_METADATA_WS ||
-  "wss://backend.radiolise.com/api/data-service";
+import { parseStationPlaylist, usesPreviewStreamRoutes } from '@/lib/streamRouting';
 
 interface GlobalPlayerContextType {
   currentStation: Station | null;
@@ -30,37 +24,39 @@ interface GlobalPlayerContextType {
 
 const GlobalPlayerContext = createContext<GlobalPlayerContextType | undefined>(undefined);
 
-const isTizen = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('tizen');
-const isWebOS = detectPlatform() === 'webos';
-const isTV = isTizen || isWebOS;
-
 function getProxiedUrl(url: string): string {
   if (!url) return url;
   const isHttpStream = url.startsWith('http://');
   const isPageHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
 
-  if (isHttpStream && isPageHttps && !isTV) {
+  if (isHttpStream && isPageHttps && usesPreviewStreamRoutes()) {
     return `/api/stream-proxy?url=${encodeURIComponent(url)}`;
   }
   return url;
 }
 
 async function resolveStreamUrl(url: string): Promise<{ resolvedUrl: string; isPlaylist: boolean; isHLS: boolean; error?: string }> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
   try {
-    const response = await fetch(`/api/stream-resolve?url=${encodeURIComponent(url)}`);
+    const response = await fetch(`/api/stream-resolve?url=${encodeURIComponent(url)}`, { signal: controller.signal });
     if (!response.ok) {
       return { resolvedUrl: url, isPlaylist: false, isHLS: false, error: `HTTP ${response.status}` };
     }
     const data = await response.json();
+    const finalUrl = data.resolvedUrl || data.final_url || url;
+    const isPlaylist = data.isPlaylist === true || /\.(pls|m3u)(?:[?#]|$)/i.test(finalUrl);
     return {
-      resolvedUrl: data.resolvedUrl || url,
-      isPlaylist: data.isPlaylist || false,
+      resolvedUrl: isPlaylist ? await resolvePlaylistOnTV(finalUrl, true) : finalUrl,
+      isPlaylist,
       isHLS: data.isHLS || false,
       error: data.error || undefined,
     };
   } catch (err: any) {
     console.warn('[RESOLVE] Failed to resolve URL, using original:', err.message);
     return { resolvedUrl: url, isPlaylist: false, isHLS: false, error: err.message };
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -72,25 +68,19 @@ async function resolveStreamUrl(url: string): Promise<{ resolvedUrl: string; isP
 // `.../listen.pls`) silently failed. Here we fetch the playlist text directly
 // (Tizen WRT allows cross-origin reads via `<access origin="*">` + network
 // privilege; CSP `connect-src http: https:`) and extract the first stream URL.
-async function resolvePlaylistOnTV(url: string): Promise<string> {
+async function resolvePlaylistOnTV(url: string, preview = false): Promise<string> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(url, { method: 'GET' });
+    const requestUrl = preview ? `/api/stream-proxy?url=${encodeURIComponent(url)}` : url;
+    const res = await fetch(requestUrl, { method: 'GET', signal: controller.signal });
+    if (!res.ok) return url;
     const text = await res.text();
-    const lines = text.split(/\r?\n/);
-
-    // .pls → File1=http://...  (case-insensitive, may be FileN)
-    for (const line of lines) {
-      const m = line.match(/^\s*File\d+\s*=\s*(\S+)/i);
-      if (m && /^https?:\/\//i.test(m[1])) return m[1].trim();
-    }
-    // .m3u / generic → first non-comment line that is an http(s) URL
-    for (const line of lines) {
-      const t = line.trim();
-      if (!t || t.startsWith('#')) continue;
-      if (/^https?:\/\//i.test(t)) return t;
-    }
+    return parseStationPlaylist(text, preview ? url : res.url || url);
   } catch (err: any) {
     console.warn('[RESOLVE-TV] playlist fetch failed, using original:', err?.message || err);
+  } finally {
+    clearTimeout(timer);
   }
   return url;
 }
@@ -100,7 +90,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   const [currentStation, setCurrentStation] = useState<Station | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
-  const [nowPlayingMetadata, setNowPlayingMetadata] = useState<string | null>(null);
+  const [nowPlayingMetadata, setNowPlayingMetadata] = useNowPlayingMetadata(currentStation, isPlaying);
   const [streamError, setStreamError] = useState<string | null>(null);
   const audioPlayerRef = useRef<any>(null);
   const metadataIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -112,6 +102,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentStationRef = useRef<Station | null>(null);
   const playGenerationRef = useRef(0);
+  const manuallyPausedRef = useRef(false);
+  const lastStartedStationIdRef = useRef<string | null>(null);
 
   // Initialize TV audio player once
   useEffect(() => {
@@ -122,6 +114,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
       audioPlayerRef.current = playerInstance;
       
       playerInstance.onPlay = () => {
+        if (!currentStationRef.current || manuallyPausedRef.current) return;
+        if (retryTimeoutRef.current) { clearTimeout(retryTimeoutRef.current); retryTimeoutRef.current = null; }
         console.log('[✅ EVENT] onPlay - Stream playing successfully');
         setIsPlaying(true);
         setIsBuffering(false);
@@ -150,6 +144,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
       };
       
       playerInstance.onError = (error: any) => {
+        if (!currentStationRef.current || manuallyPausedRef.current) return;
+        lastStartedStationIdRef.current = null;
         const stationName = currentStationRef.current?.name || 'Unknown';
         const stationUrl = currentStationRef.current?.url_resolved || currentStationRef.current?.url || 'no-url';
         const errorMsg = error?.message || error?.type || (typeof error === 'string' ? error : JSON.stringify(error));
@@ -177,7 +173,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
           console.log(`[🔄 RETRY] Will retry in ${delay}ms (attempt ${retryCountRef.current + 1}/${maxRetries})`);
           
           retryTimeoutRef.current = setTimeout(async () => {
-            if (currentStationRef.current !== currentStationToRetry) return;
+            if (currentStationRef.current !== currentStationToRetry || manuallyPausedRef.current) return;
             retryCountRef.current++;
             
             if (audioPlayerRef.current && currentStationToRetry) {
@@ -190,7 +186,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
                 rawUrl = currentStationToRetry.url_resolved || currentStationToRetry.url;
               }
 
-              if (retryCountRef.current >= 2 && !isTV) {
+              if (retryCountRef.current >= 2 && usesPreviewStreamRoutes()) {
                 const proxyUrl = `/api/stream-proxy?url=${encodeURIComponent(rawUrl)}`;
                 console.log(`[🔄 RETRY] Force-proxying on retry ${retryCountRef.current}`);
                 audioPlayerRef.current.play(proxyUrl);
@@ -246,63 +242,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // ICY metadata via Radiolise WebSocket gateway (@radiolise/metadata-client).
-  // The backend `/api/stations/:id/metadata` and `/api/stream-metadata` endpoints
-  // are unreliable / 404 on `api.themegaradio.com`, so we fetch "Now Playing"
-  // strings directly from the public Radiolise data-service. Same result as the
-  // iOS/Android native ICY parsers, no themegaradio.com dependency.
-  //
-  // One client instance per provider mount; `trackStream(undefined)` releases
-  // the upstream socket between stations without tearing the WS down.
-  const metadataClientRef = useRef<ReturnType<typeof createMetadataClient> | null>(null);
-
-  useEffect(() => {
-    const client = createMetadataClient({
-      url: METADATA_WS_URL,
-      reconnect: true,
-      reconnectDelay: 3000,
-    });
-    metadataClientRef.current = client;
-
-    const sub = client.subscribe(({ title, error }) => {
-      if (error) {
-        // NON_ICY_RESOURCE / SERVER_HTTP_ERROR / etc → just clear, don't spam.
-        setNowPlayingMetadata(null);
-        return;
-      }
-      const clean = (title || '').trim();
-      setNowPlayingMetadata(clean.length > 0 ? clean : null);
-    });
-
-    return () => {
-      try { sub.unsubscribe(); } catch (_) { /* noop */ }
-      try { client.terminate(); } catch (_) { /* noop */ }
-      metadataClientRef.current = null;
-    };
-  }, []);
-
-  // Switch the tracked stream URL whenever the active station changes.
-  useEffect(() => {
-    const client = metadataClientRef.current;
-    if (!client) return;
-
-    if (!currentStation || !isPlaying) {
-      setNowPlayingMetadata(null);
-      client.trackStream(undefined).catch(() => { /* noop */ });
-      return;
-    }
-
-    const rawUrl = currentStation.url || (currentStation as any).streamUrl;
-    if (!rawUrl) {
-      client.trackStream(undefined).catch(() => { /* noop */ });
-      return;
-    }
-
-    client.trackStream(rawUrl).catch((err) => {
-      // Network blip or malformed URL — fail silent, UI just shows no metadata.
-      console.warn('[metadata] trackStream failed:', err?.message || err);
-    });
-  }, [currentStation, isPlaying]);
+  // Now-playing lifecycle is isolated in useNowPlayingMetadata: resolved ICY + mobile REST fallback.
 
   // Screensaver prevention - Samsung TV certification requirement
   useEffect(() => {
@@ -380,6 +320,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
       return;
     }
     const generation = ++playGenerationRef.current;
+    manuallyPausedRef.current = false;
+    lastStartedStationIdRef.current = null;
     
     console.log('[🎵 PLAY] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('[🎵 PLAY] Station:', station.name);
@@ -413,7 +355,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
       console.log('[🎵 PLAY] Final play URL:', playUrl.substring(0, 120));
       
       setTimeout(() => {
-        if (audioPlayerRef.current && generation === playGenerationRef.current && currentStationRef.current?._id === station._id) {
+        if (audioPlayerRef.current && !manuallyPausedRef.current && generation === playGenerationRef.current && currentStationRef.current?._id === station._id) {
+          lastStartedStationIdRef.current = station._id;
           audioPlayerRef.current.play(playUrl);
         }
       }, 50);
@@ -423,8 +366,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
     const needsResolve = urlLower.endsWith('.m3u') || urlLower.endsWith('.pls') || 
       urlLower.includes('.m3u?') || urlLower.includes('.pls?');
 
-    if (needsResolve && isTV) {
-      // Samsung/webOS can't parse .pls/.m3u — resolve to a direct stream URL first.
+    if (needsResolve && !usesPreviewStreamRoutes()) {
+      // All packaged shells lack the preview backend (including Electron/Android TV).
       console.log('[🎵 PLAY] TV playlist detected — resolving client-side...');
       resolvePlaylistOnTV(rawUrl).then(direct => {
         if (generation !== playGenerationRef.current) return;
@@ -435,7 +378,7 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
           startPlayback(rawUrl);
         }
       });
-    } else if (needsResolve && !isTV) {
+    } else if (needsResolve && usesPreviewStreamRoutes()) {
       console.log('[🎵 PLAY] URL looks like a playlist, resolving first...');
       resolveStreamUrl(rawUrl).then(result => {
         if (generation !== playGenerationRef.current) return;
@@ -466,6 +409,9 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const pauseStation = () => {
+    manuallyPausedRef.current = true;
+    playGenerationRef.current++;
+    setIsBuffering(false);
     if (retryTimeoutRef.current) {
       clearTimeout(retryTimeoutRef.current);
       retryTimeoutRef.current = null;
@@ -476,6 +422,11 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const resumeStation = () => {
+    manuallyPausedRef.current = false;
+    if (currentStation && lastStartedStationIdRef.current !== currentStation._id) {
+      void playStation(currentStation);
+      return;
+    }
     if (audioPlayerRef.current && currentStation) {
       // Use resume() function instead of play() to continue from pause
       if (typeof audioPlayerRef.current.resume === 'function') {
@@ -489,6 +440,8 @@ export function GlobalPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const stopStation = () => {
+    manuallyPausedRef.current = true;
+    lastStartedStationIdRef.current = null;
     playGenerationRef.current++;
     currentStationRef.current = null;
     if (retryTimeoutRef.current) {

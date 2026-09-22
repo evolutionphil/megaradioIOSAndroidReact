@@ -1,0 +1,63 @@
+{
+  "summary": "Frontend-only iteration60 completed on TV web preview public endpoint. Required source suites passed (issue54=41, iteration57=5, iteration59=14) plus new now-playing metadata regression suite (17). Live browser checks confirmed now-playing parity with /api/tv-proxy/now-playing, correct back-restore IDs for Search result/Genre deep/Favorites deep, carousel arrow behavior, direct hash/query radio routes, and country-modal back ownership (dropdown closes first, then modal).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Search recent back-restore case using recent-station-1",
+        "issue": "Live state exposed only one recent card in Search during run, so recent-station-1 scenario could not be executed in that run window.",
+        "affected_testIDs": [
+          "recent-station-1"
+        ]
+      }
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/regression_issue54_behavior.cjs",
+    "/app/tests/regression_iteration57_reveal_tv_layout.cjs",
+    "/app/tests/regression_iteration59_navigation_helpers.cjs",
+    "/app/tests/regression_iteration60_now_playing_metadata.cjs",
+    "/app/test_reports/artifacts_iter60/tv_iter60_1920.jpeg",
+    "/app/test_reports/artifacts_iter60/tv_iter60_1280.jpeg",
+    "/root/.emergent/automation_output/20260922_000857/console_20260922_000857.log",
+    "/root/.emergent/automation_output/20260922_001026/console_20260922_001026.log",
+    "/root/.emergent/automation_output/20260922_001051/console_20260922_001051.log"
+  ],
+  "action_items": [
+    "Optional test-stability improvement: seed at least 2 recent items before Search recent-station-1 back-restore scenario.",
+    "Re-run recent-station-1 explicit flow once recent list has >=2 cards in live state."
+  ],
+  "critical_code_review_comments": [
+    "Now-playing hook and helper logic align with requested behavior: resolved URL preference, flat/wrapped payload normalization, transient WS error guard, and cleanup path verified by executable regression tests.",
+    "CountrySelector modal keyboard ownership works in tested path: nested language dropdown closes first on Escape; second Escape closes modal without premature route navigation."
+  ],
+  "updated_files": [
+    "/app/tests/regression_issue54_behavior.cjs",
+    "/app/tests/regression_iteration60_now_playing_metadata.cjs",
+    "/app/test_reports/iteration_60.json"
+  ],
+  "success_rate": {
+    "backend": "NA (frontend-only scope)",
+    "frontend": "96% (core requested flows pass; one data-availability-dependent recent-list case pending)"
+  },
+  "seed_data_creation": "TEST-ONLY browser localStorage fixture: 35 favorites (live station IDs where available) for deep Favorites restore validation. No production API mutation.",
+  "retest_needed": false,
+  "main_agent_followup": {
+    "search_recent_gap_resolved": true,
+    "fixture_scope": "Three real public station records placed only in isolated browser recentlyPlayed localStorage; no account or API writes.",
+    "checks": ["recent-station-1 -> RadioPlaying -> remote10009 returns same stationID and visualindex1", "Next D-pad ArrowRight moves visualfocus from restoredindex1 toindex2"],
+    "expected_and_actual_station_id": "68a8c46abd66579311aaf265",
+    "final_style_self_test": "20260922_001615: Search return idx2/ID verified, programmatic restored-card outlineStyle=none, next ArrowDown advanced toidx3. Final77assertions and TVtsc/build passed.",
+    "log": "/root/.emergent/automation_output/20260922_001251/console_20260922_001251.log",
+    "original_report_preserved": "The integration_issues entry above describes the original test run; this followup closes its data-availability gap."
+  },
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Executed against public TV preview host. Verified now-playing matched live API dynamically (example during run: expected=actual 'Yudum - Ayletme'). Search result restore expected/actual matched: id=68a8c483bd66579311ab315f idx=2. Genre deep restore expected/actual matched: id=6a07917abef34beb9148c430 idx=30. Favorites deep restore expected/actual matched: id=68a8c495bd66579311ab5da6 idx=34. Country modal ordering verified with keyboard path to language dropdown. Direct routes #/radio-playing?station=id and ?station=id#/radio-playing both load correctly; same-route station param update works.",
+  "rca_of_issue": "Pending item is not a confirmed code defect: Search recent flow expects recent-station-1 but live data had only one recent card in that run. Mitigation for deterministic QA is to seed >=2 recent entries before validating recent-station-1 specific back-restore assertion."
+}
