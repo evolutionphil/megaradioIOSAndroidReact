@@ -68,6 +68,14 @@ export function FocusRouterProvider({ children }: { children: ReactNode }) {
     
     if (handler) {
       handler(e);
+      // Page focus is state-based. After Back, browser focus may still be on a
+      // card in another carousel; its default arrow action would scroll that
+      // old container as well. Run the page first (some handlers inspect
+      // defaultPrevented), then consume browser scrolling for routed arrows.
+      const target = e.target as HTMLElement | null;
+      const editing = target?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName || '');
+      if (!editing && (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) ||
+          (e.keyCode >= 37 && e.keyCode <= 40))) e.preventDefault();
     }
   };
 
