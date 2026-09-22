@@ -52,7 +52,7 @@ jobs:
           yarn --cwd apple-tv-and-macos/web-preview install --frozen-lockfile --non-interactive
 
       - name: Test build and CDN verification
-        run: node --test cdn-ci/tests/build.test.cjs cdn-ci/tests/bundle.test.cjs cdn-ci/tests/verify.test.cjs cdn-ci/tests/version.test.cjs
+        run: node --test cdn-ci/tests/build.test.cjs cdn-ci/tests/bundle.test.cjs cdn-ci/tests/verify.test.cjs cdn-ci/tests/version.test.cjs cdn-ci/tests/navigation.test.cjs
 
       - name: Check credentials without displaying them
         if: inputs.dry_run != true

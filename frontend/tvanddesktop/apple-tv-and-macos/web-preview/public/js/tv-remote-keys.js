@@ -120,7 +120,7 @@
         var key = e.keyCode;
         var keyName = getKeyName(key);
         
-        console.log('[TV Keys] 🎮 Key pressed:', {
+        if (window.__MR_DEBUG_KEYS__) console.log('[TV Keys] 🎮 Key pressed:', {
             keyCode: key,
             keyName: keyName,
             key: e.key,
@@ -198,7 +198,7 @@
         // Dispatch to FocusRouter (set by React)
         // This matches LGTV pattern: switch(current_route) { case "login": login_page.HandleKey(e); }
         if (window.focusRouterDispatch) {
-            console.log('[TV Keys] 📤 Dispatching to FocusRouter');
+            if (window.__MR_DEBUG_KEYS__) console.log('[TV Keys] 📤 Dispatching to FocusRouter');
             // Don't preventDefault here - let pages handle it
             // Guide pages use their own keydown listeners
             window.focusRouterDispatch(e);
