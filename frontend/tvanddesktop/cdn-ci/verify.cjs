@@ -11,12 +11,13 @@ const TV_USER_AGENTS = {
 
 async function get(base, file, fetcher = fetch) {
   const url = new URL(file, base);
-  url.searchParams.set('_verify', Date.now().toString());
+  // Match bundleUpdater.ts: timestamp query without a custom Cache-Control header.
+  url.searchParams.set('_', Date.now().toString());
   const client = process.env.CDN_VERIFY_CLIENT || 'samsung';
   if (!TV_USER_AGENTS[client]) throw new Error('Unknown CDN_VERIFY_CLIENT');
   const response = await fetcher(url, {
     signal: AbortSignal.timeout(20000),
-    headers: { 'Cache-Control': 'no-cache', 'User-Agent': TV_USER_AGENTS[client], Origin: 'null', Accept: file.endsWith('.json') ? 'application/json' : '*/*' },
+    headers: { 'User-Agent': TV_USER_AGENTS[client], Origin: 'null', Accept: file.endsWith('.json') ? 'application/json' : '*/*' },
   });
   if (!response.ok) throw new Error(`${url.origin}/${file}: HTTP ${response.status}; mitigation=${response.headers.get('cf-mitigated') || 'none'}; ray=${response.headers.get('cf-ray') || 'none'}`);
   const bytes = Buffer.from(await response.arrayBuffer());
