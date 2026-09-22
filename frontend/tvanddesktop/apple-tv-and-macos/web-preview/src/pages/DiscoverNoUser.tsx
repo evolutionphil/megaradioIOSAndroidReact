@@ -1131,7 +1131,7 @@ export const DiscoverNoUser = (): JSX.Element => {
       <div 
         ref={scrollContainerRef}
         data-testid="discover-scroll-area"
-        className="absolute left-[162px] w-[1758px] overflow-y-auto overflow-x-hidden z-1 scrollbar-hide"
+        className="tv-scroll-viewport absolute left-[162px] w-[1758px] overflow-y-auto overflow-x-hidden z-1 scrollbar-hide"
         style={{
           // Keep the viewport stable while the header animates; resizing it
           // during a scroll forced repeated layout and moved unrelated rows.

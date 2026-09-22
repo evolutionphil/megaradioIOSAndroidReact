@@ -1090,7 +1090,7 @@ export const RadioPlaying = (): JSX.Element => {
       <div 
         ref={containerScrollRef}
         data-testid="radio-stations-scroll-area"
-        className="absolute left-[236px] top-[559px] w-[1610px] h-[521px] overflow-y-auto overflow-x-hidden scrollbar-hide"
+        className="tv-scroll-viewport absolute left-[236px] top-[559px] w-[1610px] h-[521px] overflow-y-auto overflow-x-hidden scrollbar-hide"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <div className="relative pb-[40px]">
