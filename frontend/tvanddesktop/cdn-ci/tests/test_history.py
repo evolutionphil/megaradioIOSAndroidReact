@@ -293,6 +293,27 @@ class HistoryReleaseSelectionAndGhTests(unittest.TestCase):
 
         self.assertEqual([c[1] for c in calls], ["create"])
 
+    def test_bootstrap_requires_successful_original_store_verification(self):
+        with tempfile.TemporaryDirectory() as td, patch.object(history, "gh", return_value="[[]]"), patch.dict(
+            os.environ, {"GITHUB_REPOSITORY": "acme/repo"}
+        ), patch.object(history.subprocess, "run", side_effect=RuntimeError("original unavailable")):
+            directory = Path(td) / "cdn-dist"
+            directory.mkdir()
+            marker = directory / "keep.txt"
+            marker.write_text("keep")
+            with self.assertRaisesRegex(RuntimeError, "original unavailable"):
+                history.restore(directory, allow_legacy_bootstrap=True)
+            self.assertTrue(marker.exists())
+
+    def test_bootstrap_refuses_incomplete_existing_checkpoint(self):
+        pages = [[{"tag_name": "tv-cdn-broken", "draft": False, "assets": []}]]
+        with tempfile.TemporaryDirectory() as td, patch.object(history, "gh", return_value=json.dumps(pages)), patch.dict(
+            os.environ, {"GITHUB_REPOSITORY": "acme/repo"}
+        ), patch.object(history.subprocess, "run") as bootstrap:
+            with self.assertRaises(ValueError):
+                history.restore(Path(td) / "cdn-dist", allow_legacy_bootstrap=True)
+            bootstrap.assert_not_called()
+
     def test_gh_wrapper_uses_exact_cli_shape(self):
         with patch.object(history.subprocess, "check_output", return_value="ok\n") as mocked:
             result = history.gh("api", "repos/acme/repo/releases")

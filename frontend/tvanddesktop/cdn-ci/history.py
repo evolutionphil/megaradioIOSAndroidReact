@@ -111,9 +111,21 @@ def choose_checkpoint(pages):
     return max(candidates, key=lambda release: release["id"])
 
 
-def restore(directory):
+def restore(directory, allow_legacy_bootstrap=False):
     repo = repository()
     pages = json.loads(gh("api", f"repos/{repo}/releases?per_page=100", "--paginate", "--slurp"))
+    # Only an entirely new migration may start without a cumulative archive.
+    # Never interpret a corrupt/incomplete/deleted checkpoint as a fresh start.
+    if allow_legacy_bootstrap and not any(
+        release.get("tag_name", "").startswith("tv-cdn-") for page in pages for release in page
+    ):
+        subprocess.run(["node", str(Path(__file__).with_name("migration.cjs")), "bootstrap"], check=True)
+        directory = Path(directory)
+        if directory.exists():
+            shutil.rmtree(directory)
+        directory.mkdir(parents=True)
+        print("First migration: original Cloudflare Worker retains ALL legacy assets; new history starts here.")
+        return
     release = choose_checkpoint(pages)
     with tempfile.TemporaryDirectory() as temp:
         gh("release", "download", release["tag_name"], "--repo", repo, "--pattern", ARCHIVE,
@@ -142,11 +154,12 @@ def main():
     parser.add_argument("mode", choices=["pack", "restore", "checkpoint"])
     parser.add_argument("--directory", default=str(Path(__file__).resolve().parents[1] / "cdn-dist"))
     parser.add_argument("--output", default="cdn-history-export")
+    parser.add_argument("--allow-legacy-bootstrap", action="store_true")
     args = parser.parse_args()
     if args.mode == "pack":
         print(pack(args.directory, args.output))
     elif args.mode == "restore":
-        restore(args.directory)
+        restore(args.directory, args.allow_legacy_bootstrap)
     else:
         checkpoint(args.directory)
 

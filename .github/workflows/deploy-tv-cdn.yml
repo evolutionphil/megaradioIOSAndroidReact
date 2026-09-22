@@ -73,8 +73,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python3 cdn-ci/history.py restore
-          node cdn-ci/verify.cjs history
+          python3 cdn-ci/history.py restore --allow-legacy-bootstrap
+          node cdn-ci/migration.cjs history
 
       - name: Type-check and build (no stale-build fallback)
         run: |
@@ -88,6 +88,10 @@ jobs:
         run: |
           node --test ../../tests/test_webos_legacy_bootstrap_regression.cjs
           npx --yes wrangler@4.136.2 deploy --dry-run --outdir .wrangler-dry-run
+
+      - name: Verify preserved original store and immutable URL collisions
+        if: inputs.dry_run != true
+        run: node cdn-ci/migration.cjs collisions
 
       - name: Save cumulative recovery checkpoint BEFORE publication
         if: inputs.dry_run != true
@@ -112,7 +116,9 @@ jobs:
 
       - name: Verify live version, entry files and CORS
         if: inputs.dry_run != true
-        run: node cdn-ci/verify.cjs live
+        run: |
+          node cdn-ci/verify.cjs live
+          node cdn-ci/migration.cjs live
 
       - name: Result
         if: always()
