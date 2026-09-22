@@ -103,6 +103,21 @@
 #====================================================================================================
 
 # Current fork — iteration54 (supersedes old scope/status below)
+# CURRENT TASK iteration61: user approved GitHubActions main relevantTV/CDNpath push
+# plus workflow_dispatch, CloudflareSecrets setup guide. TEMPLATE ONLY; no credentials
+# requested/chatted, NO GitHub release or Cloudflare production publication authorized here.
+# Implemented: deploy-tv-cdn.yml SHA-pinnedcheckout/setupnode,Node22,classicYarnlockeddeps,
+# strictCDNbuild/nofallback/noautoagepruning, persistent cumulative GitHubrelease history,
+# SHA256+safetar validation, failclosed missingseedhistory, draftthenpublish checkpoint
+# BEFOREatomicWranglerdeploy,mainHEADguard+serializedjobs,postlive version/hash/CORSchecks,
+# manualdryrun defaulttrue no mutation/secretneeded. FreshCI no ephemeralcacheashistory.
+# Need initial FULL previous-CDN backup importedastv-cdn-seed,2GitHubSecrets perguide.
+# Existing fixed-pathjs/css requirebackwardscompatibility; hashpreservation notuniversalJScompat.
+# MAIN checks: tsc+realCDNbuild55files+localvalidation+Wrangler4.136.2dryrun PASS (no upload).
+# Lints JS+PythonPASS. iteration61:13Python+12Node=25testsPASS; addedtoeachworkflowrun.
+# Officialrhysd/actionlint1.7.12 ARM64checksumverified+workflowlintPASS (mainfollowup).
+# No GitHubjob/Cloudflareauthpublication/nativeTVtestexecuted; userSecrets+fullseedrequired.
+# ScopeUIunchanged; noExpo/nativesmoke required. ExistingTVpackageworkflow untouched.
 # LATEST iteration60 combined approval: fix TürkülerleTürkiye missing now-playing by
 # comparing mobile+officialweb, finish Back/focus, add subtle carousel arrows5rows.
 # Verified root metadata: raw url=listen.pls?sid22; API urlResolved=stream/22/; TVwas
@@ -178,7 +193,7 @@
 # Source review alone cannot validate native playback/StoreKit/Play Billing/device bridges.
 # The handoff payload-type claim was inaccurate: Electron JSON serialization already present.
 
-user_problem_statement: "Latest combined work complete: Türkiye capsule outer-border/heart outer-border alignment (text-edge choice cancelled), RadioPlaying Back restores source+stationfocus+search/filter/scroll, subtle horizontal arrows, TürkülerleTürkiye real now-playing vs mobile/web. Shared TV/Desktop only. Test60+mainrecent followup verified. Browser links explicitly requested. Previous API README and TV layouts retained; native runtime/device tests still separate. Older task entries historical."
+user_problem_statement: "Latest: prepare automatic GitHub main relevantTV/CDN changes plus manual workflow for existing Samsung/LG CloudflareCDN. Workflow/helpers/docs prepared and offline checks passed iteration61; no credentialed publication or GitHub release executed. User must add2GitHubSecrets and fulllegacyCDNseedarchive, then runjob. PreviousTVUI/metadata/Back improvements retained; nativeTV/runtime separate. Older task entries historical."
 frontend:
   - task: "Android SoLoader native packaging mitigation"
     implemented: true
@@ -225,10 +240,12 @@ frontend:
         working: false
         comment: "Screenshot hangs at white Bundling... app/_layout.tsx despite bundle 200 (8.5MB,1s) and Watch/NativeCast/Onboarding logs. remoteLog CORS storm removed for web but NOT the primary root cause; 2 troubleshooter recommendations about sendLog were speculative. Need actual lazy route module/promise investigation. Do not modify protected metro/index main/env."
 test_plan:
-  current_focus: ["Iteration60 metadata/arrows/Back verified", "Main Searchrecent remote Back followup PASS", "Native device acceptance pending"]
+  current_focus: ["Iteration61 CDN automation25tests+nativeactionlint+dryrunPASS", "UserGitHubSecrets and fullseedarchive setup", "ActualGitHub/Cloudflare job and nativeTVacceptance pending"]
   test_all: false
   test_priority: high_first
 agent_communication:
+  - agent: main
+    message: "Iteration61 report and4testfiles read.13Python+12NodetestsPASS, nowwiredworkflow. RealCDNbuild/typecheck/localvalidation/WranglerdryrunPASS, officialactionlint1.7.12ARM64checksum+workflowlintPASS. No actualpublication. TwoGitHubSecrets+publishedtv-cdn-seedFULLhistorybackuprequired; missinghistoryfailsclosed. SourcechangeslimitedCDNbuildhelpers/docs/workflow; appUI/native/protectedenvunchanged."
   - agent: main
     message: "Latest iteration60 report+test modifications read. Live metadata verified against same API response;77 sourceassertions PASS, deep ID restoration andcarousels PASS. Main closed the sole data availability gap using3realpublicstationrecords inisolatedbrowser recentlyPlayed only:idx1 remote10009 Back sameID thenRightidx2 PASS. No native/runtimeallplatformguarantee. Last frame refinement suppresses default browserwhiteoutline on restoredcard, notTVpinkstate. Root API README+PRD updated; outstanding upstreamfaviconnoise unchanged."
   - agent: main

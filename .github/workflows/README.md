@@ -1,5 +1,14 @@
 # 🚀 GitHub Actions — TV Build Pipeline
 
+## Paket değiştirmeden Samsung/LG web arayüzü güncelleme
+
+Yeni, **ayrı** akış: `.github/workflows/deploy-tv-cdn.yml` → **Update Samsung-LG CDN**.
+İlgili dosyalar `main` dalına gelince otomatik; Actions üzerinden elle de çalışır.
+İlk kullanımda dry_run=true ile kontrol edin. Cloudflare Secrets ve tam eski CDN
+arşivi için [CDN_GITHUB_ACTIONS.md](../../frontend/tvanddesktop/CDN_GITHUB_ACTIONS.md).
+Bu CDN workflow'u aşağıdaki `.wgt`/`.ipk` paketleme akışını değiştirmez veya onun
+başarılı çalıştığına dair yeni bir doğrulama iddiasında bulunmaz.
+
 Otomatik **Samsung Tizen `.wgt`** ve **LG WebOS `.ipk`** üretimi için CI/CD pipeline.
 
 Workflow: `.github/workflows/build-tv-packages.yml`

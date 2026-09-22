@@ -1,0 +1,118 @@
+name: Update Samsung-LG CDN
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/tvanddesktop/apple-tv-and-macos/web-preview/**'
+      - '!frontend/tvanddesktop/apple-tv-and-macos/web-preview/**/*.md'
+      - 'frontend/tvanddesktop/build-cdn.js'
+      - 'frontend/tvanddesktop/cdn-ci/**'
+      - 'frontend/tvanddesktop/cdn-config.json'
+      - 'frontend/tvanddesktop/wrangler.jsonc'
+      - '.github/workflows/deploy-tv-cdn.yml'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only build/validate; do not change GitHub releases or Cloudflare'
+        type: boolean
+        default: true
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: megaradio-tv-cdn-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: write # Cumulative recovery releases, never a personal access token.
+    defaults:
+      run:
+        shell: bash
+        working-directory: frontend/tvanddesktop
+    env:
+      CDN_BUILD_VERSION: gha-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
+      CDN_CHECKPOINT_TAG: tv-cdn-${{ github.run_id }}-${{ github.run_attempt }}
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Install pinned Yarn and TV dependencies
+        run: |
+          npm install --global --force yarn@1.22.22
+          yarn --cwd apple-tv-and-macos/web-preview install --frozen-lockfile --non-interactive
+
+      - name: Test archive safety and publication guards
+        run: |
+          python3 -m unittest discover -s cdn-ci/tests -p 'test_*.py' -v
+          node --test cdn-ci/tests/*.test.cjs
+
+      - name: Check credentials without displaying them
+        if: inputs.dry_run != true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { printf '%s\n' 'Missing CLOUDFLARE_API_TOKEN in GitHub Secrets'; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { printf '%s\n' 'Missing CLOUDFLARE_ACCOUNT_ID in GitHub Secrets'; exit 1; }
+
+      - name: Restore durable history (required on existing CDN)
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 cdn-ci/history.py restore
+          node cdn-ci/verify.cjs history
+
+      - name: Type-check and build (no stale-build fallback)
+        run: |
+          apple-tv-and-macos/web-preview/node_modules/.bin/tsc --project apple-tv-and-macos/web-preview/tsconfig.json --noEmit
+          node build-cdn.js
+          node cdn-ci/verify.cjs local
+
+      - name: Validate Cloudflare packaging without publication
+        run: npx --yes wrangler@4.136.2 deploy --dry-run --outdir .wrangler-dry-run
+
+      - name: Save cumulative recovery checkpoint BEFORE publication
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 cdn-ci/history.py checkpoint
+
+      - name: Reject an outdated main commit
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          test "$current" = "$GITHUB_SHA" || { printf '%s\n' 'main changed; publish its newest run instead. CDN unchanged by this run.'; exit 1; }
+
+      - name: Publish complete Worker asset version atomically
+        if: inputs.dry_run != true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4.136.2 deploy --keep-vars
+
+      - name: Verify live version, entry files and CORS
+        if: inputs.dry_run != true
+        run: node cdn-ci/verify.cjs live
+
+      - name: Result
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          printf '## Samsung/LG CDN\nResult: %s\n\nBuild: `%s`\n\nDry run: `%s`\n\nA checkpoint alone is NOT a successful publication. See the live verification step.\n' "$RESULT" "$CDN_BUILD_VERSION" "$DRY_RUN" >> "$GITHUB_STEP_SUMMARY"

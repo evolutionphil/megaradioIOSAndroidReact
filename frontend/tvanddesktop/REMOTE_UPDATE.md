@@ -1,8 +1,14 @@
 # MegaRadio TV — Remote (CDN) Update System
 
-Tizen (Samsung) ve WebOS (LG) uygulamasını **mağaza onayı beklemeden** güncellemek için.
-Mantık: mağaza paketi = ince **bootstrap** + **tam yerel yedek**. Açılışta CDN'den
-çalışır; CDN yoksa yerel yedeğe düşer.
+Tizen (Samsung) ve WebOS (LG) uygulamasının web katmanını, mağaza kurallarının ve
+onaylı uygulama kapsamının izin verdiği sınırlar içinde güncellemek için.
+Mantık: mağaza paketi = **bootstrap** + **tam yerel yedek**. İlk açılış yerel;
+önceden CDN HTML'si saklanmışsa cache'ten başlar. Arka plan güncellemesi sonraki
+açılış içindir; CDN kaynağı yüklenemezse yerel yedeğe düşer.
+
+**GitHub otomasyonu hazır dosyaları:** [CDN_GITHUB_ACTIONS.md](CDN_GITHUB_ACTIONS.md).
+`main` ilgili kaynak değişikliği + elle tetikleme; secret ve ilk tam CDN geçmişi
+kurulmadan canlı aktarım yapılmaz. Bu belge mağaza incelemesini atlama garantisi değildir.
 
 ```
 Mağaza paketi (.wgt / .ipk)
@@ -11,7 +17,7 @@ Mağaza paketi (.wgt / .ipk)
 │   └── version.json
 ├── config.xml / appinfo.json + ikonlar
 
-CDN (cdn.themegaradio.com/tv/)   ← güncellemeyi buraya yüklersiniz
+CDN (cdn.themegaradio.com/)      ← güncellemeyi köke yüklersiniz
 ├── index.html  +  assets/...    ← gerçek uygulama
 └── version.json   { version, killSwitch }
 ```
@@ -24,7 +30,7 @@ CDN (cdn.themegaradio.com/tv/)   ← güncellemeyi buraya yüklersiniz
 
 ## 🔁 GÜNCELLEME YAYINLAMA (sık — her değişiklikte)
 
-Yeni özellik, çıkarma, tasarım — ne olursa olsun:
+Web katmanında uyumlu bir tasarım/işlev düzeltmesi için:
 
 ```powershell
 cd frontend\tvanddesktop
@@ -34,14 +40,18 @@ node build-cdn.js
 ```
 `cdn-dist/` klasörünün tamamını CDN köküne (`cdnBase`) yükleyin:
 ```powershell
-# Cloudflare Pages örneği:
-wrangler pages deploy cdn-dist --project-name=megaradio-tv
+# Mevcut Cloudflare Worker Static Assets yapılandırması:
+wrangler deploy --keep-vars
 ```
-Tüm TV'ler bir sonraki açılışta yeni sürümü alır. **Mağaza işlemi YOK.**
+TV açıkken manifest kontrolü yapılıp yeni HTML saklandıktan **sonraki açılışta**
+güncelleme kullanılır. Kurulu paket bootstrap içermeli. Native değişiklikler ve
+mağazanın inceleme gerektirdiği güncellemeler için yeni paket/onay gerekebilir.
 
 ### Acil geri alma (killSwitch)
 `cdn-config.json` → `"killSwitch": true` → `node build-cdn.js` → sadece `version.json`'ı
-yükleyin. Tüm TV'ler mağazadaki yerel yedeğe döner.
+yükleyin. Sinyali alan güncelleyici cache'i temizler; sonraki açılış yerel yedeğe döner.
+GitHub otomasyonunda tüm dosyalar tek Worker yayınında atomik olarak aktarılır;
+`version.json` elle ve otomasyonla eşzamanlı değiştirilmemeli.
 
 ---
 
@@ -84,7 +94,7 @@ dokümanını app context olarak tutar ve CDN'den yalnızca JS/CSS/asset'leri **
 eder**:
 - Doküman `file://` kaldığı için Samsung `tizen`/`webapis` ve LG `webOS` global'leri
   korunur → **ses (`webapis.avplay`) + renk/Back tuşları (`tizen.tvinputdevice`) çalışır.**
-- Kod yine CDN'den geldiği için **anlık OTA güncelleme** korunur.
+- Kod CDN'den gelir; yeni sürüm kontrolü ve **sonraki açılışta kullanım** korunur.
 - `build-cdn.js`, CDN paketini **mutlak base** (`cdnBase`) ile derler; bootstrap
   `window.__MR_ASSET_BASE__ = cdnBase` set eder → resim/font'lar da CDN'den gelir.
 - CDN düşerse / `killSwitch=true` → yerel `./app/` kopyasına düşer (offline-güvenli).

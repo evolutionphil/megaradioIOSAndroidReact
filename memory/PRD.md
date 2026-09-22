@@ -1,5 +1,64 @@
 # MegaRadio - Product Requirements Document
 
+## Güncel iş — iteration61: GitHub Actions → Samsung/LG CDN
+
+### İstek / onay
+Kullanıcı mevcut Cloudflare CDN'ye GitHub'dan otomatik aktarım istedi; **main dalında
+ilgili TV/CDN kaynak değişiklikleri + elle tetikleme** onaylandı. Burada yalnızca
+workflow/kod/belge hazırlama ve yayınsız test yapıldı. Cloudflare/GitHub anahtarı
+istenmedi, herhangi bir canlı Worker/Release/tag yayımlanmadı.
+
+### Uygulananlar
+- `.github/workflows/deploy-tv-cdn.yml` (**Update Samsung-LG CDN**): SHA-pinned
+  checkout/setup-node, Node22, Yarn1.22.22 frozen lock; yalnız ortak Vite TV web/CDN
+  ilgili yollar, main gate. Elle dry_run varsayılantrue (secret/seed gerekmez).
+- Normal yayın:13Python+12Node regression → secret preflight → tam geçmiş restore
+  → canlı entryhash coverage → TV tsc/build/localvalidate → Wrangler4.136.2dryrun
+  → kalıcı arşiv PRE-RELEASE → mainHEADguard → atomik WorkerStaticAssets deploy
+  → canlıversion/HTML/JS/CSS/hash/CORS/cache doğrulaması. concurrency seri, cancelfalse.
+- `build-cdn.js` yeniden düzenlendi: gerçek Vite build başarısızken eski distfallback
+  YOK; ayrıtmpoutput, güvenli CDNkökü/version; eskihash dosyaları tarihinebakılarak
+  silinmez; aynıhashpathfarklıbyte reddedilir. `_headers`:versionno-store/indexno-cache,
+  hashedassetsimmutable, sabitjs/cssno-cache, TVfileorigin içinCORS*. Paketleme/Expo
+  config/env/native/auth kodlarına dokunulmadı.
+- `cdn-ci/{bundle.cjs,verify.cjs,history.py}`: cumulative fullbackup GitHubRelease,
+  SHA256tarchecksum; links/traversal/duplicate/oversize reddi, seçimmaxreleaseID+
+  tv-cdn-prefix+publishedbothassets. Draftuploadsonrasıpublish, Cloudflareöncesi;
+  jobdeploymentsonrasıkesilse de history mevcut. Normaldesktop/TVpackage releases
+  ve volatileActionscache tarihçe olarak kullanılmaz. Bozuklatest fallbackyapmaz.
+- Yeni Turkishguide `frontend/tvanddesktop/CDN_GITHUB_ACTIONS.md`; `.github/workflows/README.md`
+  ve `REMOTE_UPDATE.md` güncellendi: CDNkökadres, WorkerStaticAssets(notPages),
+  cachefirst/sonrakiaçılış, mağazapolitikaları. `.gitignore` yeniCIgeneratedartifacts.
+
+### Doğrulama ve sınırlar
+- `test_reports/iteration_61.json` okundu; testingagent yalnız4testdosyası+rapor
+  ekledi, productionediti yok. Testler incelenip herjob'a eklendi.
+- **25 test:**13Pythonunittest+12Nodenode:test PASS; scopedJS/PythonlintPASS;
+  TVtsc+gerçek CDNbuild+localvalidate+Wrangler4.136.2 `deploy --dry-run` PASS.
+- Main ek doğrulama: resmi rhysd/actionlint1.7.12 ARM64releasechecksumverified,
+  tam workflow lintPASS. İlkamd64binarybuARM64poddaexecformat verdi, uygunbinary
+  indirilipdoğrulandı; repository/CIubuntuamd64 ayarı değişmedi.
+- Test unitdoubles sadece offlineGH/HTTP/Viteassertions; yeniapplicationmockflowyok.
+  **Gerçek GitHub job, credential'lı Cloudflare aktarımı ve fiziksel TVtesti yapılmadı.**
+  YeniCDNbuild yereldeoluşturuldu, mevcutcanlıCDN/RailwayUIyayını değişmedi.
+
+### Açık kurulum / takip
+- P0 kullanıcı: GitHubSecrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; hiçbir
+  değeri sohbete/source/VITEenv'e yazma. ExistingWorkeraccount doğrulanmalı.
+- P0 ilkgeçiş: **tam soncanlıCDN+eskihashliassets yedeği**→pack helper→GitHubpublished
+  prerelease **tv-cdn-seed**, ikiasset `tv-cdn-history.tar.gz` ve `.sha256`.
+  Arşivyoksajobfailclosed; bilinmeyeneskihashleruzaktankendiliğindenkeşfedilemez.
+  Rastgele repo cdn-dist snapshot'ı canlıbaşlangıçarşivi diye varsayılmamalı.
+- P0 sonrayapılacak: Actionsmanualdry_runtrue→gerçekpublishfalse→canlıkontrol→
+  eşleşmişbootstrap'liSamsung/LG cihazkabul. Buoturumcanlıyayınkanıtısunmaz.
+- P1 uyumluluk: hashedassetskorunur ama sabit /js,/css/images değişiklikleri
+  geçmişJSileuyumluolmalı; tümnativefonksiyonlarıpaketsizgüncellenirgarantisiyok.
+- P2 ölçek:20kfile/25MiBsingle/1GiBhistorylimit failclosed; otomatikpruneyok,
+  gelecektekontrollüretentionplanı. Branchprotection/releaseimmutabilityönerilir.
+- ÖncekiUI/metadatanavigation işleri korunur; currentuserUIdeğişikliği istemedi.
+
+---
+
 ## Güncel teslim — iteration58–60: hizalama, Geri/odak, şarkı bilgisi, yön okları
 - **Son kullanıcı kararları:** Türkiye yazısı hizası iptal edildi; kapsülün DIŞ SAĞ
   kenarı kalbin DIŞ SAĞ çerçevesiyle hizalanacak. Üst ülke+equalizer gap19 korunur.
