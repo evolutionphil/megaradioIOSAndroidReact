@@ -35,6 +35,9 @@ jobs:
             const deployments = await api('original Worker access', `accounts/${process.env.CF_ACCOUNT}/workers/scripts/megaradio-tv/deployments`);
             if (!deployments) process.exitCode = 1;
             const zones = await api('zone lookup', 'zones?name=themegaradio.com');
+            console.log(JSON.stringify({ zones: zones?.map(z => ({ id: z.id, name: z.name, status: z.status, paused: z.paused, name_servers: z.name_servers })) }));
+            const domains = await api('Worker custom domains', `accounts/${process.env.CF_ACCOUNT}/workers/domains`);
+            console.log(JSON.stringify({ cdnDomain: domains?.filter(d => d.hostname === 'cdn.themegaradio.com') }));
             if (zones?.length === 1) {
               const bots = await api('bot configuration', `zones/${zones[0].id}/bot_management`);
               if (bots) console.log(JSON.stringify({ botSettings: bots }));
@@ -68,5 +71,15 @@ jobs:
               headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MegaRadioCDNVerifier/1.0)' }, signal: AbortSignal.timeout(20000),
             });
             console.log(JSON.stringify({ check: 'public CDN', status: live.status, mitigation: live.headers.get('cf-mitigated'), ray: live.headers.get('cf-ray') }));
+            for (const [client, agent] of [
+              ['Samsung', 'Mozilla/5.0 (SMART-TV; LINUX; Tizen 5.5) AppleWebKit/537.36 (KHTML, like Gecko) 69.0.3497.106/5.5 TV Safari/537.36'],
+              ['LG', 'Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.34 Safari/537.36 WebAppManager'],
+            ]) {
+              const response = await fetch('https://cdn.themegaradio.com/version.json?client=' + client + '&probe=' + Date.now(), {
+                headers: { 'User-Agent': agent, Origin: 'null', Accept: 'application/json' }, signal: AbortSignal.timeout(20000),
+              });
+              console.log(JSON.stringify({ client, status: response.status, mitigation: response.headers.get('cf-mitigated'), ray: response.headers.get('cf-ray') }));
+            }
+
           })().catch(error => { console.error(error.message); process.exitCode = 1; });
           NODE
