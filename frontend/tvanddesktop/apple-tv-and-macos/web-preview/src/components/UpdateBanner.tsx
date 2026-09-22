@@ -18,8 +18,8 @@ export function UpdateBanner() {
     if (state.kind === 'forced' && primaryBtnRef.current) {
       primaryBtnRef.current.focus();
     }
-    if (state.kind === 'soft') setSoftFocus(0);
-  }, [state.kind]);
+    if (state.kind === 'soft') setSoftFocus(state.storeUrl ? 0 : 1);
+  }, [state]);
 
   // Soft banner D-pad handler — captures BEFORE the page-level FocusRouter
   // so LEFT/RIGHT/ENTER work even when the user is on Discover with the
@@ -30,13 +30,13 @@ export function UpdateBanner() {
       const kc = e.keyCode || 0;
       const key = e.key;
       // Left/Right toggle between the two buttons.
-      if (kc === 37 || key === 'ArrowLeft')  { e.preventDefault(); e.stopImmediatePropagation(); setSoftFocus(0); return; }
+      if (kc === 37 || key === 'ArrowLeft')  { e.preventDefault(); e.stopImmediatePropagation(); setSoftFocus(state.storeUrl ? 0 : 1); return; }
       if (kc === 39 || key === 'ArrowRight') { e.preventDefault(); e.stopImmediatePropagation(); setSoftFocus(1); return; }
       // OK / Enter — trigger the focused button.
       if (kc === 13 || key === 'Enter') {
         e.preventDefault();
         e.stopImmediatePropagation();
-        if (softFocus === 0) {
+        if (softFocus === 0 && state.storeUrl) {
           if (state.storeUrl) window.open(state.storeUrl, '_blank');
         } else {
           dismissSoftUpdate();
@@ -99,7 +99,12 @@ export function UpdateBanner() {
               {state.notes}
             </div>
           )}
-          <button
+          {!state.storeUrl && (
+            <p style={{ fontSize: 18, lineHeight: 1.5 }}>
+              TV’nizin uygulama mağazasını açıp MegaRadio’yu güncelleyin.
+            </p>
+          )}
+          {state.storeUrl && <button
             ref={primaryBtnRef}
             data-testid="update-banner-forced-store-btn"
             onClick={() => state.storeUrl && window.open(state.storeUrl, '_blank')}
@@ -112,7 +117,7 @@ export function UpdateBanner() {
             }}
           >
             Mağazaya Git ve Güncelle
-          </button>
+          </button>}
         </div>
       </div>
     );
@@ -147,8 +152,13 @@ export function UpdateBanner() {
       <p style={{ fontSize: 14, lineHeight: 1.5, color: 'rgba(255,255,255,0.7)', margin: '0 0 16px' }}>
         {state.notes || 'Mağazadan güncelleyerek yeni özelliklerden faydalanın.'}
       </p>
+      {!state.storeUrl && (
+        <p style={{ fontSize: 14, lineHeight: 1.5, margin: '0 0 16px' }}>
+          TV’nizin uygulama mağazasını açıp MegaRadio’yu güncelleyebilirsiniz.
+        </p>
+      )}
       <div style={{ display: 'flex', gap: 10 }}>
-        <button
+        {state.storeUrl && <button
           data-testid="update-banner-soft-store-btn"
           onClick={() => state.storeUrl && window.open(state.storeUrl, '_blank')}
           style={{
@@ -162,7 +172,7 @@ export function UpdateBanner() {
           }}
         >
           Mağazaya Git
-        </button>
+        </button>}
         <button
           data-testid="update-banner-soft-dismiss-btn"
           onClick={() => { dismissSoftUpdate(); window.location.reload(); }}
