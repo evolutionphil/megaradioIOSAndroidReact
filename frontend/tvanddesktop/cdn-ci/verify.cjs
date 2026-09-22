@@ -35,6 +35,9 @@ async function verify(mode, directory, base, fetcher = fetch) {
   if (digest(remoteHtml.bytes) !== digest(Buffer.from(local.html))) throw new Error('Live HTML differs from this build');
   const cache = manifestResponse.response.headers.get('cache-control') || '';
   if (!/no-cache|no-store/.test(cache)) throw new Error('version.json must not be persistently cached');
+  for (const [file, result] of [['version.json', manifestResponse], ['index.html', remoteHtml]]) {
+    if (result.response.headers.get('access-control-allow-origin') !== '*') throw new Error(`Missing file:// CORS: ${file}`);
+  }
   const old = local.files.find(file => file.startsWith('assets/') && !local.references.includes(file));
   for (const file of new Set([...local.references, ...(old ? [old] : [])])) {
     const { response, bytes } = await get(base, file, fetcher);
