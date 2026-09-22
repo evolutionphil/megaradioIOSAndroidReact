@@ -42,6 +42,18 @@ jobs:
                 const value = await api(setting, `zones/${zones[0].id}/settings/${setting}`);
                 if (value) console.log(JSON.stringify({ setting, value: value.value }));
               }
+              for (const phase of ['http_request_firewall_custom', 'http_request_sbfm', 'http_config_settings']) {
+                const ruleset = await api(phase, `zones/${zones[0].id}/rulesets/phases/${phase}/entrypoint`);
+                if (ruleset) console.log(JSON.stringify({ phase, rules: ruleset.rules?.map(r => ({ id: r.id, action: r.action, expression: r.expression, enabled: r.enabled, action_parameters: r.action_parameters })) }));
+              }
+              const query = 'query Events($zoneTag: string, $filter: FirewallEventsAdaptiveFilter_InputObject) { viewer { zones(filter: {zoneTag: $zoneTag}) { firewallEventsAdaptive(filter: $filter, limit: 12, orderBy: [datetime_DESC]) { action datetime source ruleId rayName clientRequestHTTPHost clientRequestPath } } } }';
+              const analytics = await fetch('https://api.cloudflare.com/client/v4/graphql', {
+                method: 'POST', headers: { Authorization: 'Bearer ' + process.env.CF_TOKEN, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query, variables: { zoneTag: zones[0].id, filter: { datetime_geq: new Date(Date.now() - 3600000).toISOString(), datetime_leq: new Date().toISOString(), clientRequestHTTPHost: 'cdn.themegaradio.com' } } }),
+                signal: AbortSignal.timeout(20000),
+              });
+              const events = await analytics.json();
+              console.log(JSON.stringify({ securityEvents: events.data?.viewer?.zones, analyticsErrors: events.errors?.map(e => e.message) }));
               if (process.env.DISABLE_BOT_FIGHT_MODE === 'true') {
                 const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${zones[0].id}/bot_management`, {
                   method: 'PUT', headers: { Authorization: 'Bearer ' + process.env.CF_TOKEN, 'Content-Type': 'application/json' },
