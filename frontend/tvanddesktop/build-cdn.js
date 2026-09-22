@@ -26,8 +26,8 @@ function build({ here = __dirname, run = execFileSync, env = process.env } = {})
     fs.writeFileSync(path.join(tmp, 'version.json'), JSON.stringify(manifest, null, 2) + '\n');
     fs.writeFileSync(path.join(tmp, '_headers'),
       '/*\n  Access-Control-Allow-Origin: *\n' +
-      '/\n  Cache-Control: no-cache, max-age=0, must-revalidate\n' +
-      '/index.html\n  Cache-Control: no-cache, max-age=0, must-revalidate\n' +
+      '/\n  Cache-Control: no-cache, max-age=0, must-revalidate, no-transform\n' +
+      '/index.html\n  Cache-Control: no-cache, max-age=0, must-revalidate, no-transform\n' +
       '/version.json\n  Cache-Control: no-cache, no-store, must-revalidate\n' +
       '/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n' +
       '/js/*\n  Cache-Control: no-cache, max-age=0, must-revalidate\n' +

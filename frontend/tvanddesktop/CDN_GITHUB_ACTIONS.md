@@ -1,33 +1,17 @@
-# Samsung/LG CDN publishing
+# Samsung/LG CDN automatic upload
 
-Push TV web changes to `main`. `.github/workflows/deploy-tv-cdn.yml` builds, validates, checkpoints, deploys, and verifies the live app. `workflow_dispatch` defaults to a dry run; choose `dry_run=false` for publication. Required repository secrets: `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. The token must permit Worker deployment and the `themegaradio.com` Worker route.
+Changes pushed to `main` in the TV web source or CDN build configuration trigger `.github/workflows/deploy-tv-cdn.yml`.
 
-## Existing installations and the September 2026 migration
+1. Install the locked dependencies in `apple-tv-and-macos/web-preview`.
+2. Type-check, then run the existing `node build-cdn.js` Vite build with `cdn-config.json`.
+3. Validate the freshly generated `cdn-dist` folder and Cloudflare packaging.
+4. Upload that folder with Wrangler to the existing **megaradio-tv** Worker.
+5. Check the live version, HTML, assets and CORS for Samsung and LG clients.
 
-The original `megaradio-tv` Worker remains intact and owns the `cdn.themegaradio.com` custom domain and ALL pre-migration assets. Do not deploy to, delete, or reconnect automated builds to this original Worker.
+The production URL stays **https://cdn.themegaradio.com/**. There is one Worker and one current bundle for all TVs. No legacy Worker, service binding, migration baseline or GitHub release archive is required by this workflow. The manual upload is replaced by the build-and-upload job; WGT/IPK packages are not rebuilt or submitted.
 
-The publishing target is now `megaradio-tv-cdn`. Its `cdn.themegaradio.com/*` route runs in front of the original custom-domain Worker. New files come from its ASSETS binding. A missing file is fetched through its LEGACY_CDN service binding to `megaradio-tv`. Unknown old files therefore remain available even without an exhaustive downloadable archive. This is not a claim that the locally recovered partial archive is complete.
+GitHub Actions uses the existing `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets. Cloudflare Workers Builds is disconnected to avoid a second publisher. Build failure stops publication. A failed post-publication check means the job needs investigation; inspect whether the upload step already succeeded.
 
-`cdn-ci/migration.cjs` checks the target configuration, the preserved original version and known legacy hashes, and immutable path collisions. A changed original Worker stops publication. Live verification checks both the newly built entry/assets and legacy assets through the production domain.
+The app retains its existing background update behavior: it checks the version, downloads the new bundle, and uses cached HTML on a subsequent launch. An already running TV is not forcibly refreshed.
 
-Only the very first migration can begin without a `tv-cdn-*` checkpoint, and only while the public CDN and original Worker both still match the recorded legacy baseline. Subsequent builds require a valid cumulative GitHub release archive. Corrupt/incomplete releases or a migrated live version cannot silently reset history. The archive contains all post-migration hashed assets; pre-migration history continues to reside in the preserved original Worker.
-
-## Publication sequence
-
-1. Install locked dependencies; run archive, routing and publication tests.
-2. Restore the latest cumulative checkpoint, or validate the one-time preserved-Worker migration.
-3. Type-check, build, validate legacy JavaScript compatibility and packaging.
-4. Check old immutable paths for collisions.
-5. Save `tv-cdn-history.tar.gz` and SHA-256 in a `tv-cdn-*` prerelease BEFORE publication.
-6. Reject a stale main commit; deploy to the new Worker.
-7. Verify live version, exact HTML and asset hashes, cache policy, CORS and legacy fallback.
-
-A saved checkpoint or a successful build alone is not proof of publication. The live verification step must pass. `version.json` identifies the live build. Root/index and manifest are revalidated; hashed assets remain immutable. Entry HTML uses `no-transform` to preserve the TV bootstrap bytes.
-
-## Recovery
-
-Keep all cumulative checkpoint releases and the original Worker. To restore a downloaded checkpoint, use the validated unpack routine in `cdn-ci/history.py`; never replace it with a fresh Vite build or partial historical download.
-
-For immediate rollback of the initial migration, remove only the new `cdn.themegaradio.com/*` route: the original custom-domain Worker remains underneath. For later releases, roll back the new Worker to a verified prior version, retaining cumulative asset history. Never delete the original service or historical assets merely to fix a failed build.
-
-WGT/IPK shells are separate store packages. CDN publication updates the hosted UI. Changes to package permissions, native capabilities or bootstrap requirements can still require a new store package and platform review.
+For a manual run, open Actions → Update Samsung-LG CDN → Run workflow. Leave `dry_run` enabled for validation only, or disable it to publish the latest main commit. Source pushes publish automatically.
