@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
         id="http://themegaradio.com/MegaRadioTV"
-        version="1.0.2"
+        version="1.0.3"
         viewmodes="maximized">
     <tizen:application id="lJoKY533ah.MegaRadioTV" package="lJoKY533ah" required_version="2.3"/>
     <content src="index.html"/>
     <access origin="*" subdomains="true"/>
 
-    <!-- REMOTE-UPDATE: The bootstrap (index.html) navigates the top-level document
-         to the CDN copy (https://cdn.themegaradio.com/index.html). On Tizen, main-
-         resource navigation to an EXTERNAL origin is BLOCKED unless that origin is
-         whitelisted here. allow-navigation also makes the Tizen WRT keep injecting
-         the `tizen`/`webapis` globals into the navigated page, so tvinputdevice
-         (color keys / MediaPlay / Back) keeps working on the CDN-served app. -->
+    <!-- The packaged bootstrap keeps the local native context and loads the
+         shared CDN bundle. This package includes the OTA loader; subsequent
+         web UI updates are published to the existing CDN Worker. -->
     <tizen:allow-navigation>*.themegaradio.com themegaradio.com</tizen:allow-navigation>
 
     <feature name="http://tizen.org/feature/screen.size.normal.1080.1920"/>
