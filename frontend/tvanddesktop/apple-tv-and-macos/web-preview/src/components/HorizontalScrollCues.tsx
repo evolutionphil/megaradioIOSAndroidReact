@@ -16,7 +16,11 @@ export function HorizontalScrollCues({ id, scrollRef, count, onNavigate, itemSel
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const update = () => setEdges({ left: el.scrollLeft > 5, right: el.scrollWidth - el.clientWidth - el.scrollLeft > 5 });
+    const update = () => {
+      const left = el.scrollLeft > 5;
+      const right = el.scrollWidth - el.clientWidth - el.scrollLeft > 5;
+      setEdges(previous => previous.left === left && previous.right === right ? previous : { left, right });
+    };
     const frame = requestAnimationFrame(update);
     el.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
@@ -34,8 +38,8 @@ export function HorizontalScrollCues({ id, scrollRef, count, onNavigate, itemSel
     const scale = bounds.width / el.clientWidth || 1;
     const items = Array.from(el.querySelectorAll<HTMLElement>(itemSelector));
     const index = items.findIndex(item => (item.getBoundingClientRect().left - bounds.left) / scale + el.scrollLeft >= left - 2);
-    if (items.length) onNavigate?.(index >= 0 ? index : items.length - 1);
-    el.scrollTo({ left, behavior: 'smooth' });
+    if (items.length && onNavigate) onNavigate(index >= 0 ? index : items.length - 1);
+    else el.scrollTo({ left, behavior: 'smooth' });
   };
   return <div data-testid={`${id}-scroll-cues`} className="carousel-cues" style={style}>
     {(['left', 'right'] as const).map(side => edges[side] && <div key={side} className={`carousel-edge carousel-edge-${side}`}>
