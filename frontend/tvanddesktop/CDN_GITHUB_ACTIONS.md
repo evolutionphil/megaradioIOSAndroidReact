@@ -79,6 +79,11 @@ kilitli TV bağımlılıkları → Python/Node regresyon testleri → secret kon
 → eski main commit'ini reddet → tek atomik Cloudflare yayını → canlı doğrulama
 ```
 
+Eski webOS koruması ayrıca çalışır: legacy bundle + public helper'lar ES5 parser
+kontrolünden geçer; yeni CDN HTML'si üzerinde bootstrap/timeout/fallback runtime
+testleri çalışır. Testler `lg-webos/dist` gibi runner'da bulunmayan yerel çıktılara
+bağlı değildir. Bu kontroller gerçek TV donanım sertifikası yerine geçmez.
+
 İlgili yollar workflow'da açıkça listeli. `remote-bootstrap.html`, Tizen `config.xml`
 ve LG `appinfo.json` gibi **paket dosyası** değişiklikleri tek başına CDN güncellemesi
 değildir; yeni TV paketi gerekir. Bu nedenle otomatik CDN tetikleyicisine katılmadılar.
@@ -139,6 +144,8 @@ node build-cdn.js
 node cdn-ci/verify.cjs local
 python3 -m unittest discover -s cdn-ci/tests -p 'test_*.py' -v
 node --test cdn-ci/tests/*.test.cjs
+node apple-tv-and-macos/web-preview/compat/check-legacy.cjs cdn-dist
+node --test ../../tests/test_webos_legacy_bootstrap_regression.cjs
 npx --yes wrangler@4.136.2 deploy --dry-run --outdir .wrangler-dry-run
 ```
 

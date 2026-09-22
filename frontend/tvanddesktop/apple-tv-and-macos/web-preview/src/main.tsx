@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { useEffect } from 'react';
 import App from "./App";
 import "./index.css";
 import { initGA } from "./lib/analytics";
@@ -27,7 +28,16 @@ window.addEventListener("resize", applyTvScale);
 window.addEventListener("orientationchange", applyTvScale);
 applyTvScale();
 
-createRoot(document.getElementById("root")!).render(<App />);
+function ReadyApp() {
+  useEffect(() => {
+    (window as any).__MR_APP_READY__ = true;
+    const event = document.createEvent('Event');
+    event.initEvent('megaradio-ready', false, false);
+    document.dispatchEvent(event);
+  }, []);
+  return <App />;
+}
+createRoot(document.getElementById("root")!).render(<ReadyApp />);
 
 // Background OTA for the packaged TV apps (cache-first; no-op on web/Electron).
 scheduleBundleUpdate();

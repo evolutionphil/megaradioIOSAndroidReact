@@ -18,6 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { rewritePackagedAssets } = require('../_shared/packaged-assets');
+const { activateLegacyEntry } = require('../_shared/legacy-entry');
 
 const REPO_ROOT  = path.resolve(__dirname, '..', '..', '..');
 const TV_SRC_DIR = path.join(REPO_ROOT, 'frontend', 'tvanddesktop', 'apple-tv-and-macos', 'web-preview');
@@ -136,6 +137,9 @@ function walkAndRewrite(dir) {
   }
 }
 walkAndRewrite(APP_DIR);
+const localEntry = path.join(APP_DIR, 'index.html');
+fs.writeFileSync(localEntry, activateLegacyEntry(fs.readFileSync(localEntry, 'utf8')));
+require('../apple-tv-and-macos/web-preview/compat/check-legacy.cjs').checkLegacy(APP_DIR);
 
 console.log('\n✅ Tizen project ready at:', OUT_DIR);
 console.log('   Import this folder into Tizen Studio:');

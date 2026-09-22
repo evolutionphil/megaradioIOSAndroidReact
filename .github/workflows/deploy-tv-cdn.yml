@@ -11,6 +11,7 @@ on:
       - 'frontend/tvanddesktop/cdn-config.json'
       - 'frontend/tvanddesktop/wrangler.jsonc'
       - '.github/workflows/deploy-tv-cdn.yml'
+      - 'tests/test_webos_legacy_bootstrap_regression.cjs'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -80,9 +81,13 @@ jobs:
           apple-tv-and-macos/web-preview/node_modules/.bin/tsc --project apple-tv-and-macos/web-preview/tsconfig.json --noEmit
           node build-cdn.js
           node cdn-ci/verify.cjs local
+          node apple-tv-and-macos/web-preview/compat/check-legacy.cjs cdn-dist
 
       - name: Validate Cloudflare packaging without publication
-        run: npx --yes wrangler@4.136.2 deploy --dry-run --outdir .wrangler-dry-run
+        # Runtime suite consumes the fresh CDN HTML (no native dist dependency).
+        run: |
+          node --test ../../tests/test_webos_legacy_bootstrap_regression.cjs
+          npx --yes wrangler@4.136.2 deploy --dry-run --outdir .wrangler-dry-run
 
       - name: Save cumulative recovery checkpoint BEFORE publication
         if: inputs.dry_run != true

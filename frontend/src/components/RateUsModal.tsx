@@ -24,7 +24,9 @@ const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=com.megaradio';
 
 export const RateUsModal: React.FC<Props> = ({ visible, onClose, onRated }) => {
-  const { t } = useTranslation();
+  // This modal is mounted even while hidden. Suspending before RootLayout's
+  // i18n initialization effect commits would deadlock the entire app startup.
+  const { t } = useTranslation(undefined, { useSuspense: false });
 
   const handleRate = async () => {
     try {
