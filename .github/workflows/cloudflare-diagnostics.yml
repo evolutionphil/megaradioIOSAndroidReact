@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       disable_bot_fight_mode:
-        description: 'Reapply the approved Bot Fight Mode disable operation for themegaradio.com'
+        description: 'Disable approved Bot Fight Mode and its JavaScript detections for themegaradio.com'
         type: boolean
         default: false
         required: true
@@ -57,11 +57,11 @@ jobs:
               if (process.env.DISABLE_BOT_FIGHT_MODE === 'true') {
                 const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${zones[0].id}/bot_management`, {
                   method: 'PUT', headers: { Authorization: 'Bearer ' + process.env.CF_TOKEN, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ fight_mode: false }), signal: AbortSignal.timeout(20000),
+                  body: JSON.stringify({ fight_mode: false, enable_js: false }), signal: AbortSignal.timeout(20000),
                 });
                 const body = await response.json();
                 console.log(JSON.stringify({ check: 'approved Bot Fight Mode disable', status: response.status, success: body.success, errorCodes: (body.errors || []).map(e => e.code) }));
-                if (!body.success || body.result?.fight_mode !== false) throw new Error('Bot Fight Mode disable failed');
+                if (!body.success || body.result?.fight_mode !== false || body.result?.enable_js !== false) throw new Error('Bot Fight Mode disable failed');
               }
             }
             const live = await fetch('https://cdn.themegaradio.com/version.json?diagnostic=' + Date.now(), {
