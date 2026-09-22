@@ -117,7 +117,8 @@ jobs:
       - name: Verify live version, entry files and CORS
         if: inputs.dry_run != true
         run: |
-          node cdn-ci/verify.cjs live
+          CDN_VERIFY_CLIENT=samsung node cdn-ci/verify.cjs live
+          CDN_VERIFY_CLIENT=lg node cdn-ci/verify.cjs live
           node cdn-ci/migration.cjs live
 
       - name: Result
