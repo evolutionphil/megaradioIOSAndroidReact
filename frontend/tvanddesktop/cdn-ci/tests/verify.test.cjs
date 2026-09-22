@@ -23,7 +23,7 @@ function writeLocalBundle(dir, version = 'v1') {
 }
 
 function response(body, status = 200, headers = {}) {
-  return new Response(body, { status, headers });
+  return new Response(body, { status, headers: { 'access-control-allow-origin': '*', ...headers } });
 }
 
 test('get rejects SPA fallback HTML for JS asset', async () => {
@@ -113,3 +113,21 @@ test('history mode allows newer remote version if live hashed refs exist, reject
     /History does not contain live asset/
   );
 });
+
+for (const file of ['version.json', 'index.html', 'assets/main.hash.js']) {
+  for (const cors of ['', '*, *']) {
+    test(`live verification rejects CORS ${JSON.stringify(cors)} on ${file}`, async () => {
+      const dir = mkdtemp();
+      try {
+        writeLocalBundle(dir);
+        await assert.rejects(() => verify('live', dir, 'https://cdn.themegaradio.com/', async url => {
+          const requested = new URL(url).pathname.slice(1);
+          return response(fs.readFileSync(path.join(dir, requested)), 200, {
+            'cache-control': 'no-store',
+            'access-control-allow-origin': requested === file ? cors : '*',
+          });
+        }), /Missing file:\/\/ CORS/);
+      } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+    });
+  }
+}
