@@ -15,7 +15,7 @@ import { useIdleDetection } from "@/hooks/useIdleDetection";
 import { useImageColors } from "@/hooks/useImageColors";
 import { CountrySelector } from "@/components/CountrySelector";
 import { CountryTrigger } from "@/components/CountryTrigger";
-import { TV_LAYOUT, RADIO_PLAYER_CONTROLS, RADIO_PLAYER_RIGHT } from '@/lib/tvLayout';
+import { TV_LAYOUT, RADIO_PLAYER_CONTROLS, RADIO_PLAYER_RIGHT, revealTvItem, revealTvItemHorizontally } from '@/lib/tvLayout';
 import { Sidebar } from "@/components/Sidebar";
 import { assetPath } from "@/lib/assetPath";
 import { useHelp } from "@/contexts/HelpContext";
@@ -577,54 +577,23 @@ export const RadioPlaying = (): JSX.Element => {
     onBack: returnToSource
   });
 
-  const scrollHorizontalIntoView = (ref: React.RefObject<HTMLDivElement>, stationIndex: number) => {
-    if (!ref.current) return;
-    
-    const cardWidth = 200;
-    const gap = 24;
-    const itemLeft = stationIndex * (cardWidth + gap);
-    const itemRight = itemLeft + cardWidth;
-    const containerWidth = ref.current.clientWidth;
-    const currentScroll = ref.current.scrollLeft;
-    
-    if (itemRight > currentScroll + containerWidth) {
-      ref.current.scrollTo({
-        left: itemRight - containerWidth + gap,
-        behavior: 'smooth'
-      });
-    } else if (itemLeft < currentScroll) {
-      ref.current.scrollTo({
-        left: itemLeft,
-        behavior: 'smooth'
-      });
-    }
-  };
-
+  const revealedRowRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (focusIndex >= 10 && focusIndex <= 29) {
-      const stationIndex = focusIndex - 10;
-      scrollHorizontalIntoView(similarScrollRef as React.RefObject<HTMLDivElement>, stationIndex);
-      
-      if (containerScrollRef.current) {
-        containerScrollRef.current.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+    const container = containerScrollRef.current;
+    const row = focusIndex >= 10 && focusIndex <= 29 ? similarScrollRef.current
+      : focusIndex >= 30 && !(streamError && focusIndex === 100) ? popularScrollRef.current : null;
+    if (!container || !row) { revealedRowRef.current = null; return; }
+    const frame = requestAnimationFrame(() => {
+      const card = row.querySelector<HTMLElement>(`[data-focus-idx="${focusIndex}"]`);
+      if (!card) return;
+      if (revealedRowRef.current !== row) {
+        revealTvItem(container, row, 24, 24, 'smooth');
+        revealedRowRef.current = row;
       }
-    }
-    
-    if (focusIndex >= 30) {
-      const stationIndex = focusIndex - 30;
-      scrollHorizontalIntoView(popularScrollRef as React.RefObject<HTMLDivElement>, stationIndex);
-      
-      if (containerScrollRef.current) {
-        containerScrollRef.current.scrollTo({
-          top: 350,
-          behavior: 'smooth'
-        });
-      }
-    }
-  }, [focusIndex]);
+      revealTvItemHorizontally(row, card);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [focusIndex, similarStations.length, popularCount, streamError]);
 
   // Auto-play when station loads using global player
   useEffect(() => {
@@ -1120,6 +1089,7 @@ export const RadioPlaying = (): JSX.Element => {
       {/* Scrollable Content Area for Similar & Popular Radios */}
       <div 
         ref={containerScrollRef}
+        data-testid="radio-stations-scroll-area"
         className="absolute left-[236px] top-[559px] w-[1610px] h-[521px] overflow-y-auto overflow-x-hidden scrollbar-hide"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
@@ -1137,7 +1107,7 @@ export const RadioPlaying = (): JSX.Element => {
               return (
               <div
                 key={similarStation._id || index}
-                className={`flex-shrink-0 bg-[rgba(255,255,255,0.14)] h-[264px] overflow-clip rounded-[11px] w-[200px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-all duration-200 relative ${
+                className={`flex-shrink-0 bg-[rgba(255,255,255,0.14)] h-[264px] overflow-clip rounded-[11px] w-[200px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors duration-150 relative ${
                   isFocused(focusIdx) 
                     ? 'border-[4px] border-[#ff4199] shadow-[0_0_30px_rgba(255,65,153,0.8)]' 
                     : 'border-[4px] border-transparent'
@@ -1148,11 +1118,14 @@ export const RadioPlaying = (): JSX.Element => {
                 }}
                 data-testid={`card-similar-${similarStation._id}`}
                 data-station-id={similarStation._id}
+                data-focus-idx={focusIdx}
                 onClick={() => navigateToStation(similarStation)}
               >
                 <div className="bg-white mx-auto mt-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px]">
                   <img
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                     alt={similarStation.name}
                     src={getStationImage(similarStation)}
                     onError={(e) => handleStationImageError(e, similarStation?.faviconFallback, FALLBACK_IMAGE)}
@@ -1185,7 +1158,7 @@ export const RadioPlaying = (): JSX.Element => {
               return (
               <div
                 key={popularStation._id || index}
-                className={`flex-shrink-0 bg-[rgba(255,255,255,0.14)] h-[264px] overflow-clip rounded-[11px] w-[200px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-all duration-200 relative ${
+                className={`flex-shrink-0 bg-[rgba(255,255,255,0.14)] h-[264px] overflow-clip rounded-[11px] w-[200px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors duration-150 relative ${
                   isFocused(focusIdx) 
                     ? 'border-[4px] border-[#ff4199] shadow-[0_0_30px_rgba(255,65,153,0.8)]' 
                     : 'border-[4px] border-transparent'
@@ -1196,11 +1169,14 @@ export const RadioPlaying = (): JSX.Element => {
                 }}
                 data-testid={`card-popular-${popularStation._id}`}
                 data-station-id={popularStation._id}
+                data-focus-idx={focusIdx}
                 onClick={() => navigateToStation(popularStation)}
               >
                 <div className="bg-white mx-auto mt-[34px] overflow-clip rounded-[6.6px] w-[132px] h-[132px]">
                   <img
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                     alt={popularStation.name}
                     src={getStationImage(popularStation)}
                     onError={(e) => handleStationImageError(e, popularStation?.faviconFallback, FALLBACK_IMAGE)}

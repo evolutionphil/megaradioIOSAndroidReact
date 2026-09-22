@@ -11,7 +11,7 @@ import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { useCountry } from "@/contexts/CountryContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useGlobalPlayer } from "@/contexts/GlobalPlayerContext";
-import { contentBottomInset, revealTvItem } from '@/lib/tvLayout';
+import { contentBottomInset, revealTvItem, revealTvItemHorizontally } from '@/lib/tvLayout';
 import { useNavigation, useSavedNavigationData, usePageSnapshot } from "@/contexts/NavigationContext";
 import { restoreNavigationPosition } from '@/lib/navigationRestore';
 import { HorizontalScrollCues } from '@/components/HorizontalScrollCues';
@@ -209,89 +209,6 @@ export const DiscoverNoUser = (): JSX.Element => {
   // Define sidebar routes (NO PROFILE - 5 items: Discover, Genres, Search, Favorites, Settings)
   const sidebarRoutes = ['/discover-no-user', '/genres', '/search', '/favorites', '/country-select', '/settings'];
 
-  const scrollRecentIntoView = (recentIndex: number) => {
-    if (!recentScrollRef.current) return;
-
-    // DOM yapısı: <div ref><div className="flex">{cards}</div></div>
-    // children[0] dış flex wrapper, asıl kartlar onun children'ında.
-    const inner = recentScrollRef.current.children[0] as HTMLElement | undefined;
-    if (!inner) return;
-    const children = inner.children;
-    if (recentIndex < 0 || recentIndex >= children.length) return;
-    
-    const child = children[recentIndex] as HTMLElement;
-    const containerWidth = recentScrollRef.current.clientWidth;
-    const currentScroll = recentScrollRef.current.scrollLeft;
-    const itemLeft = child.offsetLeft;
-    const itemRight = itemLeft + child.offsetWidth;
-    
-    if (itemRight > currentScroll + containerWidth) {
-      recentScrollRef.current.scrollTo({
-        left: itemRight - containerWidth + 20,
-        behavior: 'smooth'
-      });
-    } else if (itemLeft < currentScroll) {
-      recentScrollRef.current.scrollTo({
-        left: itemLeft,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const scrollForYouIntoView = (forYouIndex: number) => {
-    if (!forYouScrollRef.current) return;
-
-    const inner = forYouScrollRef.current.children[0] as HTMLElement | undefined;
-    if (!inner) return;
-    const children = inner.children;
-    if (forYouIndex < 0 || forYouIndex >= children.length) return;
-    
-    const child = children[forYouIndex] as HTMLElement;
-    const containerWidth = forYouScrollRef.current.clientWidth;
-    const currentScroll = forYouScrollRef.current.scrollLeft;
-    const itemLeft = child.offsetLeft;
-    const itemRight = itemLeft + child.offsetWidth;
-    
-    if (itemRight > currentScroll + containerWidth) {
-      forYouScrollRef.current.scrollTo({
-        left: itemRight - containerWidth + 20,
-        behavior: 'smooth'
-      });
-    } else if (itemLeft < currentScroll) {
-      forYouScrollRef.current.scrollTo({
-        left: itemLeft,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const scrollGenreIntoView = (genreIndex: number) => {
-    if (!genreScrollRef.current) return;
-
-    const inner = genreScrollRef.current.children[0] as HTMLElement | undefined;
-    if (!inner) return;
-    const children = inner.children;
-    if (genreIndex < 0 || genreIndex >= children.length) return;
-    
-    const child = children[genreIndex] as HTMLElement;
-    const containerWidth = genreScrollRef.current.clientWidth;
-    const currentScroll = genreScrollRef.current.scrollLeft;
-    const itemLeft = child.offsetLeft;
-    const itemRight = itemLeft + child.offsetWidth;
-    
-    if (itemRight > currentScroll + containerWidth) {
-      genreScrollRef.current.scrollTo({
-        left: itemRight - containerWidth + 20,
-        behavior: 'smooth'
-      });
-    } else if (itemLeft < currentScroll) {
-      genreScrollRef.current.scrollTo({
-        left: itemLeft,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   // Custom navigation logic for complex multi-section layout
   const customHandleNavigation = (direction: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT') => {
     const current = focusIndex;
@@ -351,13 +268,10 @@ export const DiscoverNoUser = (): JSX.Element => {
         if (current === 0 || current === 1) {
           if (recentCount > 0) {
             newIndex = recentStart;
-            scrollRecentIntoView(0);
           } else if (forYouCount > 0) {
             newIndex = forYouStart;
-            scrollForYouIntoView(0);
           } else {
             newIndex = genresStart;
-            scrollGenreIntoView(0);
           }
         } else {
           newIndex = popularStationsStart;
@@ -385,24 +299,20 @@ export const DiscoverNoUser = (): JSX.Element => {
       if (direction === 'LEFT') {
         if (col > 0) {
           newIndex = current - 1;
-          scrollRecentIntoView(col - 1);
         } else {
           newIndex = 0;
         }
       } else if (direction === 'RIGHT') {
         if (col < recentCount - 1) {
           newIndex = current + 1;
-          scrollRecentIntoView(col + 1);
         }
       } else if (direction === 'UP') {
         setIsCountryHeaderFocused(true); newIndex = 5;
       } else if (direction === 'DOWN') {
         if (forYouCount > 0) {
           newIndex = forYouStart;
-          scrollForYouIntoView(0);
         } else {
           newIndex = genresStart;
-          scrollGenreIntoView(0);
         }
       }
     }
@@ -413,25 +323,21 @@ export const DiscoverNoUser = (): JSX.Element => {
       if (direction === 'LEFT') {
         if (col > 0) {
           newIndex = current - 1;
-          scrollForYouIntoView(col - 1);
         } else {
           newIndex = 0;
         }
       } else if (direction === 'RIGHT') {
         if (col < forYouCount - 1) {
           newIndex = current + 1;
-          scrollForYouIntoView(col + 1);
         }
       } else if (direction === 'UP') {
         if (recentCount > 0) {
           newIndex = recentStart + Math.min(col, recentCount - 1);
-          scrollRecentIntoView(Math.min(col, recentCount - 1));
         } else {
           setIsCountryHeaderFocused(true); newIndex = 5;
         }
       } else if (direction === 'DOWN') {
         newIndex = genresStart;
-        scrollGenreIntoView(0);
       }
     }
     // Genres section - dynamic boundaries (horizontal scrolling)
@@ -441,22 +347,18 @@ export const DiscoverNoUser = (): JSX.Element => {
       if (direction === 'LEFT') {
         if (col > 0) {
           newIndex = current - 1;
-          scrollGenreIntoView(col - 1);
         } else {
           newIndex = 0;
         }
       } else if (direction === 'RIGHT') {
         if (col < genres.length - 1) {
           newIndex = current + 1;
-          scrollGenreIntoView(col + 1);
         }
       } else if (direction === 'UP') {
         if (forYouCount > 0) {
           newIndex = forYouStart + Math.min(col, forYouCount - 1);
-          scrollForYouIntoView(Math.min(col, forYouCount - 1));
         } else if (recentCount > 0) {
           newIndex = recentStart + Math.min(col, recentCount - 1);
-          scrollRecentIntoView(Math.min(col, recentCount - 1));
         } else {
           setIsCountryHeaderFocused(true); newIndex = 5;
         }
@@ -1064,39 +966,36 @@ export const DiscoverNoUser = (): JSX.Element => {
     }
   }, [focusIndex, countryStationsStart, displayedStations.length]);
 
-  // Auto-scroll focused element into view - uses instant scroll for TV remote reliability
-  const pendingScrollRef = useRef<number | null>(null);
+  // Only the selected content row may scroll. Sidebar/header focus preserves
+  // every content offset, and horizontal moves never restart a vertical scroll.
+  const revealedRowRef = useRef('');
   useEffect(() => {
-    if (pendingScrollRef.current) cancelAnimationFrame(pendingScrollRef.current);
-    
-    pendingScrollRef.current = requestAnimationFrame(() => {
-      if (!scrollContainerRef.current) return;
-      
-      const scrollContainer = scrollContainerRef.current;
-      let focusedElement: HTMLElement | null = null;
-      
-      if (recentCount > 0 && focusIndex >= recentStart && focusIndex <= recentEnd) {
-        focusedElement = scrollContainer.querySelector('[data-testid="section-recently-played"]') as HTMLElement;
-      } else if (forYouCount > 0 && focusIndex >= forYouStart && focusIndex <= forYouEnd) {
-        focusedElement = scrollContainer.querySelector('[data-testid="section-for-you"]') as HTMLElement;
-      } else if (focusIndex >= genresStart && focusIndex <= genresEnd) {
-        focusedElement = scrollContainer.querySelector('[data-testid="section-genres"]') as HTMLElement;
-      } else {
-        focusedElement = scrollContainer.querySelector(`[data-focus-idx="${focusIndex}"]`) as HTMLElement;
+    const container = scrollContainerRef.current;
+    if (isCountryHeaderFocused || isLoginHeaderFocused) setShowHeader(true);
+    if (!container || focusIndex < recentStart || helpFocused || isCountryHeaderFocused || isLoginHeaderFocused) {
+      revealedRowRef.current = '';
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      const card = container.querySelector<HTMLElement>(`[data-focus-idx="${focusIndex}"]`);
+      if (!card) return;
+      let horizontal: HTMLDivElement | null = null;
+      let row: string;
+      if (focusIndex <= recentEnd) { horizontal = recentScrollRef.current; row = 'recent'; }
+      else if (focusIndex <= forYouEnd) { horizontal = forYouScrollRef.current; row = 'forYou'; }
+      else if (focusIndex <= genresEnd) { horizontal = genreScrollRef.current; row = 'genres'; }
+      else if (focusIndex <= popularStationsEnd) row = `popular-${Math.floor((focusIndex - popularStationsStart) / 7)}`;
+      else row = `country-${Math.floor((focusIndex - countryStationsStart) / 7)}`;
+      const layout = `${row}-${container.clientHeight}-${recentCount}-${forYouCount}`;
+      if (revealedRowRef.current !== layout) {
+        revealTvItem(container, card, 24, 24, 'smooth');
+        revealedRowRef.current = layout;
       }
-      
-      if (!focusedElement) return;
-
-      revealTvItem(scrollContainer, focusedElement, 24, 24);
+      if (horizontal) revealTvItemHorizontally(horizontal, card);
     });
-
-    return () => {
-      if (pendingScrollRef.current) {
-        cancelAnimationFrame(pendingScrollRef.current);
-        pendingScrollRef.current = null;
-      }
-    };
-  }, [focusIndex, currentStation, showHeader]);
+    return () => cancelAnimationFrame(frame);
+  }, [focusIndex, currentStation, recentCount, forYouCount, genres.length, popularStations.length,
+    helpFocused, isCountryHeaderFocused, isLoginHeaderFocused]);
 
   const FALLBACK_IMAGE = assetPath('images/fallback-station.png');
 
@@ -1232,10 +1131,12 @@ export const DiscoverNoUser = (): JSX.Element => {
       <div 
         ref={scrollContainerRef}
         data-testid="discover-scroll-area"
-        className="absolute left-[162px] w-[1758px] overflow-y-auto overflow-x-hidden z-1 scrollbar-hide transition-all duration-300 ease-in-out"
+        className="absolute left-[162px] w-[1758px] overflow-y-auto overflow-x-hidden z-1 scrollbar-hide"
         style={{
-          top: showHeader ? '170px' : '64px',
-          height: (showHeader ? 910 : 1016) - contentBottomInset(!!currentStation)
+          // Keep the viewport stable while the header animates; resizing it
+          // during a scroll forced repeated layout and moved unrelated rows.
+          top: '170px',
+          height: 910 - contentBottomInset(!!currentStation)
         }}
       >
         <div 
@@ -1378,6 +1279,7 @@ export const DiscoverNoUser = (): JSX.Element => {
                     className={`relative bg-[rgba(255,255,255,0.14)] flex gap-[10px] items-center px-[72px] py-[28px] rounded-[20px] cursor-pointer hover:bg-[rgba(255,255,255,0.2)] transition-colors ${getFocusClasses(isFocused(focusIdx))}`}
                     data-testid={genre.slug}
                     data-genre-pill
+                    data-focus-idx={focusIdx}
                     style={{ display: 'inline-flex', whiteSpace: 'nowrap' }}
                   >
                     <p className="font-['Ubuntu',Helvetica] font-medium leading-normal not-italic text-[22px] text-center text-white whitespace-nowrap">

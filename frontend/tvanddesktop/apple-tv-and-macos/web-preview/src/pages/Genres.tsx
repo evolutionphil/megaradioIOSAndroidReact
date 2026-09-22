@@ -311,8 +311,8 @@ export const Genres = (): JSX.Element => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
 
-    if (focusIndex <= 7) {
-      scrollContainer.scrollTop = 0;
+    if (focusIndex < 7) {
+      // Sidebar/header navigation must not reset the content position.
       prevRowRef.current = -1;
       return;
     }
