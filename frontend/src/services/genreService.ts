@@ -25,7 +25,7 @@ export const genreService = {
     try {
       console.log('[genreService] getPrecomputedGenres - country:', country, 'limit:', limit);
       const response = await api.get(API_ENDPOINTS.genres.precomputed, {
-        params: { countrycode: country, tv: 1, limit },
+        params: { country, tv: 1, limit },
       });
       console.log('[genreService] getPrecomputedGenres result:', response.data?.data?.length || 0, 'genres');
       return response.data;

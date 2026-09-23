@@ -77,6 +77,16 @@ test('product API sends platform and Bearer without cookies or an embedded API k
 test('foreign origins are rejected before a request can send the Bearer',async()=>{
   const f=fixture();const count=f.calls.length;await assert.rejects(f.load('src/services/api.ts').default.get('https://external.invalid/test'));assert.equal(f.calls.length,count);
 });
+test('genres uses the canonical API with page and country preserved',async()=>{
+  const f=fixture();f.network(async()=>({data:{data:[{slug:'pop',name:'Pop'}],total:82,page:2,limit:30,totalPages:3}}));
+  const result=await f.load('src/services/genreService.ts').genreService.getGenres(2,30,'TR');
+  const request=f.calls.at(-1);assert.equal(request.baseURL,'https://api.themegaradio.com');assert.equal(request.url,'/api/genres');
+  assert.equal(request.params.page,2);assert.equal(request.params.country,'TR');assert.equal(result.data[0].slug,'pop');
+});
+test('precomputed genres sends the backend-supported country parameter',async()=>{
+  const f=fixture();await f.load('src/services/genreService.ts').genreService.getPrecomputedGenres('TR');
+  assert.equal(f.calls.at(-1).params.country,'TR');assert.equal(f.calls.at(-1).params.countrycode,undefined);
+});
 test('account changes cancel old successful API responses',async()=>{
   const f=fixture(),gate=deferred();f.network(()=>gate.promise);
   const request=f.load('src/services/api.ts').default.get('/api/user/favorites');
