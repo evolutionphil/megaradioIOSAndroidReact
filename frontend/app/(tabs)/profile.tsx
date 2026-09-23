@@ -101,7 +101,31 @@ export default function ProfileScreen() {
     ? TAB_BAR_HEIGHT + MINI_PLAYER_HEIGHT + insets.bottom + 20
     : TAB_BAR_HEIGHT + insets.bottom + 20;
 
-  const [notifications, setNotifications] = useState(true);
+  const [notifications, setNotifications] = useState(false);
+  const [notificationsLoading, setNotificationsLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    setNotifications(false);
+    setNotificationsLoading(true);
+    if (!user?._id || Platform.OS === 'web') { setNotificationsLoading(false); return; }
+    import('../../src/services/pushNotificationService').then(async ({ default: service }) => {
+      const enabled = await service.isNotificationsEnabled();
+      if (active) setNotifications(enabled);
+    }).catch(() => {}).finally(() => { if (active) setNotificationsLoading(false); });
+    return () => { active = false; };
+  }, [user?._id]);
+  const handleNotificationsToggle = async (enabled: boolean) => {
+    if (!user?._id) { router.push('/auth-options'); return; }
+    const token = useAuthStore.getState().token;
+    setNotificationsLoading(true);
+    try {
+      const service = (await import('../../src/services/pushNotificationService')).default;
+      await service.setNotificationsEnabled(enabled);
+      if (useAuthStore.getState().token === token) setNotifications(enabled);
+    } catch {
+      if (useAuthStore.getState().token === token) Alert.alert(t('error', 'Error'), t('notification_settings_failed', 'Notification preferences could not be saved. Please try again.'));
+    } finally { if (useAuthStore.getState().token === token) setNotificationsLoading(false); }
+  };
   const [privateProfile, setPrivateProfile] = useState(false);
   const [privateProfileLoading, setPrivateProfileLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<'main' | 'account' | 'country'>('main');
@@ -981,7 +1005,7 @@ export default function ProfileScreen() {
 
         <View style={s.row}>
           <Text style={s.rowTitle}>{t('notifications_setting', 'Notifications')}</Text>
-          <Switch value={notifications} onValueChange={setNotifications} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
+          <Switch value={notifications} onValueChange={handleNotificationsToggle} disabled={notificationsLoading || Platform.OS === 'web'} trackColor={{ false: '#333', true: '#FF4199' }} thumbColor="#FFF" />
         </View>
         <View style={s.divider} />
         <View style={s.row}>

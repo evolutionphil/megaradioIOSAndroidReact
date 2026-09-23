@@ -7,7 +7,8 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider, focusManager } from '@tanstack/react-query';
+import { queryClient } from '../src/services/queryClient';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, StyleSheet, Platform, AppState, AppStateStatus, Text, InteractionManager } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -109,27 +110,6 @@ import crashlyticsService from '../src/services/crashlyticsService';
 // CarPlay - Re-enabled after fixing native delegate issues
 import { CarPlayHandler } from '../src/components/CarPlayHandler';
 
-
-// Create a client with optimized defaults for performance (based on backend recommendations)
-let queryClient: QueryClient;
-try {
-  queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 10 * 60 * 1000, // 10 minutes - default for most data
-        gcTime: 30 * 60 * 1000, // 30 minutes - keep unused data in cache
-        retry: 2,
-        refetchOnWindowFocus: false, // Don't refetch when app comes to foreground
-        refetchOnReconnect: true, // Refetch when network reconnects
-        refetchOnMount: false, // Don't refetch if data exists in cache
-        networkMode: 'offlineFirst', // Use cached data first, then fetch
-      },
-    },
-  });
-} catch (e: any) {
-  // Create minimal client as fallback
-  queryClient = new QueryClient();
-}
 
 const ONBOARDING_COMPLETE_KEY = '@megaradio_onboarding_complete';
 // FlowAlive DISABLED - NPM package bug
@@ -334,10 +314,6 @@ export default function RootLayout() {
   // IAP/StoreKit init is DEFERRED — it was competing with launch and blocking
   // the native module queue for 15s+ on cold start
   useEffect(() => {
-    usePremiumStore.getState().loadPremiumStatus()
-      .then(() => console.log('[Layout] Premium status loaded:', usePremiumStore.getState().plan))
-      .catch((error) => console.log('[Layout] Premium load error:', error));
-
     if (Platform.OS === 'web') return;
 
     // Defer IAP init until UI is interactive (4s after mount + interactions done)
@@ -553,9 +529,12 @@ export default function RootLayout() {
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
-        console.log('[Layout] App came to foreground');
+        focusManager.setFocused(true);
+        void useAuthStore.getState().revalidateSession();
+        void import('../src/services/authRevocationService').then(service => service.revokeSession()).catch(() => {});
+        void import('../src/services/iapService').then(service => service.iapService.syncSubscriptionFromBackend()).catch(() => {});
       } else if (nextAppState === 'background') {
-        console.log('[Layout] App went to background');
+        focusManager.setFocused(false);
       }
     };
 

@@ -16,7 +16,7 @@ export const genreService = {
       return response.data;
     } catch (error) {
       console.error('[genreService] getGenres error:', error);
-      return { genres: [], totalCount: 0, page, limit, totalPages: 0 };
+      throw error;
     }
   },
 
@@ -31,7 +31,7 @@ export const genreService = {
       return response.data;
     } catch (error) {
       console.error('[genreService] getPrecomputedGenres error:', error);
-      return { success: false, data: [] };
+      throw error;
     }
   },
 
@@ -45,7 +45,7 @@ export const genreService = {
       return data || [];
     } catch (error) {
       console.error('[genreService] getDiscoverableGenres error:', error);
-      return [];
+      throw error;
     }
   },
 
@@ -57,7 +57,7 @@ export const genreService = {
       return response.data;
     } catch (error) {
       console.error('[genreService] getGenreBySlug error:', error);
-      return null;
+      throw error;
     }
   },
 

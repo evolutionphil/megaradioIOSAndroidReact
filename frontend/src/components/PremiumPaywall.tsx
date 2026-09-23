@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { usePremiumStore } from '../store/premiumStore';
+import { useAuthStore } from '../store/authStore';
 import { useTranslation } from 'react-i18next';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -98,7 +99,15 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
     initIAP();
   }, [visible]);
 
+  const requireLogin = () => {
+    if (useAuthStore.getState().token) return true;
+    onClose();
+    router.push('/auth-options');
+    return false;
+  };
+
   const handleSubscribe = useCallback(async () => {
+    if (!requireLogin()) return;
     const iap = getIAPService();
     const PIDS = getProductIds();
     
@@ -154,17 +163,8 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
         result = await iap.purchaseSubscription(productId);
       }
       
-      // If purchase was initiated successfully, close paywall
-      // purchaseUpdatedListener in iapService handles the actual success
-      if (result) {
-        onClose();
-      } else {
-        Alert.alert(
-          t('purchase_error', 'Purchase Error'),
-          t('purchase_not_initiated', 'Could not initiate purchase. Please check your store connection and try again.'),
-          [{ text: 'OK' }]
-        );
-      }
+      // The service resolves only after backend verification and transaction completion.
+      if (result) onClose();
     } catch (error: any) {
       if (error.code !== 'E_USER_CANCELLED') {
         Alert.alert(
@@ -179,6 +179,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
   }, [mode, selectedPlan, t, onClose]);
 
   const handleRestore = useCallback(async () => {
+    if (!requireLogin()) return;
     const iap = getIAPService();
     if (!iap) return;
     
@@ -243,11 +244,11 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
 
             <View style={styles.removeAdsPriceBox}>
               <Text style={styles.removeAdsPriceText}>
-                {prices.remove_ads || '€ 5.99'}/{t('yearly_lc', 'yearly')}, {t('cancel_anytime', 'cancel anytime')}
+                {prices.remove_ads || '—'}/{t('yearly_lc', 'yearly')}, {t('cancel_anytime', 'cancel anytime')}
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.ctaButton} onPress={handleSubscribe} disabled={isLoading} data-testid="remove-ads-subscribe-btn">
+            <TouchableOpacity style={styles.ctaButton} onPress={handleSubscribe} disabled={isLoading || !prices.remove_ads} data-testid="remove-ads-subscribe-btn">
               {isLoading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.ctaText}>{t('remove_ads_btn', 'Remove Ads')}</Text>}
             </TouchableOpacity>
 
@@ -341,7 +342,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
                 </View>
                 <Text style={styles.priceSub}>{t('cancel_anytime', 'cancel anytime')}</Text>
               </View>
-              <Text style={styles.priceAmount}>{prices.yearly || '€29.99'}</Text>
+              <Text style={styles.priceAmount}>{prices.yearly || '—'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -356,7 +357,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
                 <Text style={styles.priceLabel}>{t('lifetime', 'Lifetime')}</Text>
                 <Text style={styles.priceSub}>{t('one_time_payment', 'one-time payment')}</Text>
               </View>
-              <Text style={styles.priceAmount}>{prices.lifetime || '€59.99'}</Text>
+              <Text style={styles.priceAmount}>{prices.lifetime || '—'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -370,34 +371,28 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
               <View style={styles.priceInfo}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <Text style={styles.priceLabel}>{t('monthly', 'Monthly')}</Text>
-                  <View style={styles.trialBadge}>
-                    <Text style={styles.trialBadgeText}>{t('free_trial_badge', '7 Days Free')}</Text>
-                  </View>
                 </View>
-                <Text style={styles.priceSub}>{t('trial_then_price', '7 days free, then €3.99/mo')}</Text>
+                <Text style={styles.priceSub}>{t('monthly_subscription', 'Monthly subscription')}</Text>
               </View>
-              <Text style={styles.priceAmount}>{prices.monthly || '€3.99'}</Text>
+              <Text style={styles.priceAmount}>{prices.monthly || '—'}</Text>
             </TouchableOpacity>
           </View>
 
           {/* CTA */}
-          <TouchableOpacity style={styles.ctaButton} onPress={handleSubscribe} disabled={isLoading} data-testid="premium-subscribe-btn">
+          <TouchableOpacity style={styles.ctaButton} onPress={handleSubscribe} disabled={isLoading || !iapReady || !prices[selectedPlan]} data-testid="premium-subscribe-btn">
             {isLoading ? (
               <ActivityIndicator color="#FFF" />
             ) : (
               <Text style={styles.ctaText}>
-                {selectedPlan === 'monthly' 
-                  ? t('start_free_trial', 'Start Free Trial')
-                  : t('subscribe_now', 'Subscribe Now')
-                }
+                {t('subscribe_now', 'Subscribe Now')}
               </Text>
             )}
           </TouchableOpacity>
 
-          {/* Trial Info Text */}
+          {/* The native store sheet is authoritative for offers and renewal terms. */}
           {selectedPlan === 'monthly' && (
             <Text style={styles.trialInfoText}>
-              {t('trial_info', '7 days free, then auto-renews at €3.99/month. Cancel anytime.')}
+              {t('subscription_store_terms', 'The store shows the final price and renewal terms before you confirm.')}
             </Text>
           )}
 
