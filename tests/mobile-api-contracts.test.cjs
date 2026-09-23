@@ -180,6 +180,7 @@ test('503 remains an error and does not overwrite the last successful catalog ca
 });
 test('disk keys distinguish filters, limits and endpoints and old data refetches',async()=>{
   const f=fixture(),hooks=f.load('src/hooks/useQueries.ts');
+  assert.notEqual(JSON.stringify(hooks.usePrecomputedStations('TR','Turkey').queryKey),JSON.stringify(hooks.usePrecomputedStations('TR','Türkiye').queryKey));
   assert.notEqual(hooks.catalogCacheKey('stations',{country:'AT',limit:21}),hooks.catalogCacheKey('stations',{country:'AT',limit:100}));
   assert.notEqual(hooks.catalogCacheKey('stations',{genre:'rock'}),hooks.catalogCacheKey('stations',{genre:'pop'}));
   assert.notEqual(hooks.catalogCacheKey('stations',{page:1}),hooks.catalogCacheKey('precomputed',{page:1}));

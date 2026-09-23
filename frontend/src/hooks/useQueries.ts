@@ -123,7 +123,7 @@ export const usePrecomputedStations = (
   const dKey = catalogCacheKey('precomputed', { country: country || 'global', countryName, page, limit });
   
   return useQuery({
-    queryKey: [...queryKeys.precomputedStations(country), page, limit],
+    queryKey: [...queryKeys.precomputedStations(country), countryName, page, limit],
     queryFn: async () => {
       const result = await stationService.getPrecomputedStations(country, countryName, page, limit);
       diskCache.set(dKey, result);
@@ -229,7 +229,7 @@ export const useGenreStations = (
   const dKey = catalogCacheKey('genreStations', { slug, page, limit, countryEnglish, countryNative, sort, order });
   
   return useQuery({
-    queryKey: [...queryKeys.genreStations(slug), page, limit, country, sort, order],
+    queryKey: [...queryKeys.genreStations(slug), page, limit, countryEnglish, countryNative, sort, order],
     queryFn: async () => {
       const result = await genreService.getGenreStations(slug, page, limit, countryEnglish, sort, order, countryNative);
       diskCache.set(dKey, result);
