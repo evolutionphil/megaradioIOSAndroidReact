@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
-import authService from '../src/services/authService';
+import authService, { authErrorMessage } from '../src/services/authService';
 import { useAuthStore } from '../src/store/authStore';
 
 // Input icons
@@ -52,8 +52,8 @@ export default function SignupScreen() {
       setHasError(true);
       return false;
     }
-    if (password.length < 6) {
-      setError(t('password_hint', 'Password must be at least 6 characters'));
+    if (password.length < 8) {
+      setError(t('password_min_length', { count: 8, defaultValue: 'Password must be at least 8 characters' }));
       setHasError(true);
       return false;
     }
@@ -76,9 +76,9 @@ export default function SignupScreen() {
         throw new Error('Invalid response from server');
       }
     } catch (err: any) {
-      console.error('Signup error:', err);
+      console.error('Signup failed:', err.response?.status || err.code);
       setHasError(true);
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Signup failed. Please try again.';
+      const errorMessage = authErrorMessage(err, 'Signup failed. Please try again.');
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -185,7 +185,7 @@ export default function SignupScreen() {
               </View>
 
               {/* Password hint */}
-              <Text style={styles.passwordHint}>{t('password_hint', 'Password must be at least 6 characters.')}</Text>
+              <Text style={styles.passwordHint}>{t('password_min_length', { count: 8, defaultValue: 'Password must be at least 8 characters.' })}</Text>
 
               {/* Signup Button */}
               <TouchableOpacity

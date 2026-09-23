@@ -78,15 +78,7 @@ export default function AuthOptionsScreen() {
       
       if (result.success && result.token && result.user) {
         // Save auth and navigate
-        await saveAuth(
-          {
-            id: result.user.id,
-            email: result.user.email,
-            name: result.user.name,
-            avatar: result.user.avatar,
-          } as any,
-          result.token
-        );
+        await saveAuth(result.user, result.token);
         navigateAfterLogin();
       } else if (result.error === 'Authentication cancelled') {
         // User cancelled - do nothing

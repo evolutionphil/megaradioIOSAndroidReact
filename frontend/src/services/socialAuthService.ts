@@ -4,8 +4,8 @@
 
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
-import { useAuthStore } from '../store/authStore';
-import authService from './authService';
+import type { User } from '../types';
+import authService, { authErrorMessage } from './authService';
 
 // OAuth provider types
 export type SocialProvider = 'google' | 'apple' | 'facebook';
@@ -14,12 +14,7 @@ export type SocialProvider = 'google' | 'apple' | 'facebook';
 interface SocialAuthResponse {
   success: boolean;
   token?: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    avatar?: string;
-  };
+  user?: User;
   error?: string;
 }
 
@@ -33,6 +28,7 @@ const GOOGLE_IOS_CLIENT_ID = '957628580421-664s6dft9n8kp91futrnpsugd4fcsonn.apps
 // Lazy-load GoogleSignin to avoid crash on web
 let GoogleSignin: any = null;
 let statusCodes: any = null;
+let googleConfigured = false;
 
 const getGoogleSignin = () => {
   if (!GoogleSignin && Platform.OS !== 'web') {
@@ -65,7 +61,7 @@ export const socialAuthService = {
         iosClientId: Platform.OS === 'ios' ? GOOGLE_IOS_CLIENT_ID : undefined,
         offlineAccess: false,
       });
-      console.log('[SocialAuth] Google Sign-In configured (native SDK)');
+      googleConfigured = true;
     } catch (e: any) {
       console.warn('[SocialAuth] Google Sign-In configure error:', e.message);
     }
@@ -84,12 +80,16 @@ export const socialAuthService = {
         return { success: false, error: 'Google Sign-In not available on this platform' };
       }
 
+      if (!googleConfigured) this.configureGoogle();
+
       // Check Play Services (Android)
       await gs.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
       // Perform native sign-in
       const signInResult = await gs.signIn();
-      console.log('[SocialAuth] Native sign-in result type:', signInResult?.type);
+      if (signInResult?.type === 'cancelled') {
+        return { success: false, error: 'Authentication cancelled' };
+      }
 
       // Handle different result formats (v12+ returns { type, data })
       let idToken: string | null = null;
@@ -116,7 +116,6 @@ export const socialAuthService = {
       }
 
       console.log('[SocialAuth] idToken present:', !!idToken);
-      console.log('[SocialAuth] User:', userInfo?.email);
 
       if (!idToken) {
         return { success: false, error: 'No ID token received from Google' };
@@ -140,22 +139,17 @@ export const socialAuthService = {
           return {
             success: true,
             token: backendResponse.token,
-            user: {
-              id: backendResponse.user._id,
-              email: backendResponse.user.email,
-              name: backendResponse.user.fullName || backendResponse.user.name,
-              avatar: backendResponse.user.avatar,
-            },
+            user: backendResponse.user,
           };
         }
 
         return { success: false, error: 'Unexpected backend response' };
       } catch (backendErr: any) {
         console.error('[SocialAuth] Backend auth error:', backendErr.message);
-        return { success: false, error: backendErr.message || 'Backend authentication failed' };
+        return { success: false, error: authErrorMessage(backendErr, 'Backend authentication failed') };
       }
     } catch (error: any) {
-      console.error('[SocialAuth] Google Sign-In error:', error);
+      console.error('[SocialAuth] Google Sign-In error code:', error.code);
 
       // Handle specific error codes
       if (statusCodes) {
@@ -233,25 +227,20 @@ export const socialAuthService = {
           return {
             success: true,
             token: backendResponse.token,
-            user: {
-              id: backendResponse.user._id,
-              email: backendResponse.user.email,
-              name: backendResponse.user.fullName,
-              avatar: backendResponse.user.avatar,
-            },
+            user: backendResponse.user,
           };
         }
       } catch (backendError: any) {
-        console.error('[SocialAuth] Backend error:', backendError);
+        console.error('[SocialAuth] Backend error:', backendError.response?.status);
         return {
           success: false,
-          error: backendError.message || 'Backend authentication failed',
+          error: authErrorMessage(backendError, 'Backend authentication failed'),
         };
       }
 
       return { success: false, error: 'Backend authentication failed' };
     } catch (error: any) {
-      console.error('[SocialAuth] Apple Sign-In error:', error);
+      console.error('[SocialAuth] Apple Sign-In error code:', error.code);
       
       // Handle specific Apple errors
       if (error.code === 'ERR_REQUEST_CANCELED' || error.code === 'ERR_CANCELED') {
@@ -284,15 +273,6 @@ export const socialAuthService = {
     } catch {
       return false;
     }
-  },
-
-  /**
-   * Get the redirect URI that needs to be configured in Google Cloud Console
-   */
-  getGoogleRedirectUriForConsole(): string {
-    const uri = this.getRedirectUri();
-    console.log('[SocialAuth] Configure this URI in Google Cloud Console:', uri);
-    return uri;
   },
 };
 

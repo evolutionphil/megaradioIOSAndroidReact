@@ -20,6 +20,24 @@ interface GoogleLoginParams {
   avatar?: string;
 }
 
+// All native entry points persist the same user and token shape.
+function mobileAuthResponse(data: any): MobileLoginResponse {
+  const id = data?.user?._id || data?.user?.id;
+  if (data?.success === false || typeof data?.token !== 'string' || !data.token || !id) {
+    throw new Error(data?.error || data?.message || 'Invalid authentication response from server');
+  }
+  return {
+    success: true,
+    token: data.token,
+    user: { ...data.user, _id: id, id, name: data.user.fullName || data.user.name || '' },
+    message: data.message,
+  };
+}
+
+export function authErrorMessage(error: any, fallback: string): string {
+  return error?.response?.data?.error || error?.response?.data?.message || error?.message || fallback;
+}
+
 export const authService = {
   // ─── WEB AUTH (Session-based) ───
 
@@ -86,38 +104,14 @@ export const authService = {
    */
   async mobileLogin(email: string, password: string): Promise<MobileLoginResponse> {
     const { deviceInfo } = useAuthStore.getState();
-    
-    // Use mobile login endpoint for all platforms to get real JWT token
-    // This works for both web and native since it returns a Bearer token
-    // that can be used for API calls without CORS cookie issues
-    // IMPORTANT: Always send deviceType as 'mobile' to get JWT token
-    // The external API returns web_session_* tokens for 'tablet' which don't work with API calls
-    const response = await fetch(`${API_BASE}/api/auth/mobile/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        deviceType: 'mobile', // Always 'mobile' to get JWT token (API returns web_session for 'tablet')
-        deviceName: deviceInfo.deviceName || 'Web Browser',
-      }),
+    const response = await api.post(`${API_BASE}/api/auth/mobile/login`, {
+      email: email.trim(),
+      password,
+      // The token contract is mobile even on iPad/web preview.
+      deviceType: 'mobile',
+      deviceName: deviceInfo.deviceName || 'Mobile Device',
     });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || errorData.error || 'Login failed');
-    }
-    
-    const data = await response.json();
-    return {
-      success: true,
-      token: data.token,
-      user: data.user,
-      message: data.message,
-    };
+    return mobileAuthResponse(response.data);
   },
 
   /**
@@ -236,27 +230,18 @@ export const authService = {
     password: string,
     fullName: string
   ): Promise<MobileLoginResponse> {
-    const { deviceInfo } = useAuthStore.getState();
-    
-    // First, register using web signup endpoint
-    // Generate username from email (before @)
-    const username = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
+    // Signup has no username field in the UI. Keep the generated name within
+    // the server's 3–30 character limit and avoid clashes across email domains.
+    const base = normalizedEmail.split('@')[0].replace(/[^a-z0-9_]/g, '').slice(0, 16) || 'user';
+    const username = `${base}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
     await api.post(`${API_BASE}/api/auth/signup`, {
-      email,
+      email: normalizedEmail,
       password,
-      fullName,
+      fullName: fullName.trim(),
       username,
     });
-    
-    // Then login via mobile endpoint to get token
-    const loginResponse = await api.post(`${API_BASE}/api/auth/mobile/login`, {
-      email,
-      password,
-      deviceType: deviceInfo.deviceType,
-      deviceName: deviceInfo.deviceName,
-    });
-    
-    return loginResponse.data;
+    return this.mobileLogin(normalizedEmail, password);
   },
 
   // ─── SOCIAL LOGIN (Mobile) ───
@@ -273,37 +258,14 @@ export const authService = {
     idToken: string,
     userInfo?: { email?: string; name?: string; googleId?: string }
   ): Promise<MobileLoginResponse> {
-    console.log('[AuthService] Google Sign-In with token:', idToken.substring(0, 50) + '...');
-    
-    const response = await fetch(`${API_BASE}/api/auth/google`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-        'X-Device-Type': 'mobile',
-      },
-      body: JSON.stringify({
-        idToken,
-        email: userInfo?.email,
-        name: userInfo?.name,
-        googleId: userInfo?.googleId,
-        platform: 'mobile',
-      }),
+    const response = await api.post(`${API_BASE}/api/auth/google`, {
+      idToken,
+      email: userInfo?.email,
+      name: userInfo?.name,
+      googleId: userInfo?.googleId,
+      platform: 'mobile',
     });
-
-    const data = await response.json();
-    console.log('[AuthService] Google Sign-In response status:', response.status);
-    
-    if (!response.ok || !data.success) {
-      throw new Error(data.error || data.message || 'Google Sign-In failed');
-    }
-    
-    return {
-      success: true,
-      token: data.token,
-      user: data.user,
-      message: data.message,
-    };
+    return mobileAuthResponse(response.data);
   },
 
   /**
@@ -324,38 +286,15 @@ export const authService = {
     email?: string | null,
     appleUserId?: string
   ): Promise<MobileLoginResponse> {
-    console.log('[AuthService] Apple Sign-In');
-    
-    const response = await fetch(`${API_BASE}/api/auth/apple`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': 'mr_VUzdIUHuXaagvWUC208Vzi_3lqEV1Vzw',
-        'X-Device-Type': 'mobile',
-      },
-      body: JSON.stringify({
-        identityToken,
-        authorizationCode,
-        fullName: fullName || undefined,
-        email: email || undefined,
-        user: appleUserId || undefined,
-        platform: 'mobile',
-      }),
+    const response = await api.post(`${API_BASE}/api/auth/apple`, {
+      identityToken,
+      authorizationCode,
+      fullName: fullName || undefined,
+      email: email || undefined,
+      user: appleUserId || undefined,
+      platform: 'mobile',
     });
-
-    const data = await response.json();
-    console.log('[AuthService] Apple Sign-In response status:', response.status);
-    
-    if (!response.ok || !data.success) {
-      throw new Error(data.error || data.message || 'Apple Sign-In failed');
-    }
-    
-    return {
-      success: true,
-      token: data.token,
-      user: data.user,
-      message: data.message,
-    };
+    return mobileAuthResponse(response.data);
   },
 };
 
