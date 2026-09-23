@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, borderRadius, typography } from '../src/constants/theme';
-import authService from '../src/services/authService';
+import authService, { authErrorMessage } from '../src/services/authService';
 import { useAuthStore } from '../src/store/authStore';
 
 // Input icons
@@ -76,10 +76,7 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       const response = await authService.mobileLogin(email.trim(), password);
-      
-      console.log('Login response:', JSON.stringify(response, null, 2));
-      
-      // API returns { message: "Login successful", token, user } not { success: true }
+      // Persist the normalized mobile session.
       if (response && response.token && response.user) {
         const apiUser = response.user;
         
@@ -113,12 +110,11 @@ export default function LoginScreen() {
           navigateAfterLogin();
         }, 100);
       } else {
-        console.error('Invalid response structure:', response);
+        console.error('Invalid authentication response');
         throw new Error('Invalid response from server');
       }
     } catch (err: any) {
-      console.error('Login error:', err);
-      console.error('Error response:', err.response?.data);
+      console.error('Login failed:', err.response?.status || err.code);
       setHasError(true);
       
       // Handle specific error cases
@@ -126,10 +122,10 @@ export default function LoginScreen() {
         setError(t('wrong_credentials', 'Wrong email or password! Try again'));
       } else if (err.response?.data?.error || err.response?.data?.message) {
         setError(err.response.data.error || err.response.data.message);
-      } else if (err.code === 'NETWORK_ERROR' || !err.response) {
+      } else if (err.code === 'ERR_NETWORK' || err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT') {
         setError(t('network_error', 'Network error. Please check your connection.'));
       } else {
-        setError(t('login_error', 'Login failed. Please try again.'));
+        setError(authErrorMessage(err, t('login_error', 'Login failed. Please try again.')));
       }
     } finally {
       setIsLoading(false);
