@@ -134,6 +134,13 @@ export default function RootLayout() {
   const preloadStarted = useRef(false);
   const [splashHidden, setSplashHidden] = useState(false);
   const [showRateUs, setShowRateUs] = useState(false);
+  const subscriptionAccount = useAuthStore(state => state.token);
+
+  // Account entitlement does not depend on StoreKit product loading.
+  useEffect(() => {
+    if (!subscriptionAccount) return;
+    void import('../src/services/iapService').then(({ iapService }) => iapService.syncSubscriptionFromBackend()).catch(() => {});
+  }, [subscriptionAccount]);
   
   const segments = useSegments();
   const navigationState = useRootNavigationState();
@@ -300,12 +307,6 @@ export default function RootLayout() {
           const result = await iapService.initialize();
           console.log('[Layout] IAP initialized (deferred):', result);
 
-          // Sync subscription from backend (if user is logged in)
-          const { isAuthenticated } = useAuthStore.getState();
-          if (isAuthenticated) {
-            await iapService.syncSubscriptionFromBackend();
-            console.log('[Layout] Backend subscription sync complete');
-          }
         } catch (iapError) {
           console.log('[Layout] IAP deferred init error (expected on simulator):', iapError);
         }

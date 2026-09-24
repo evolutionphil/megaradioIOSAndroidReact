@@ -16,7 +16,7 @@ const inactive = {plan:'none',isActive:false,expiryDate:null,features:[]};
 const purchase = {productId:'megaradio_premium_monthly1',transactionId:'txn-1',id:'txn-1',purchaseToken:'storekit2.jws.signature',purchaseState:'purchased',transactionDate:Date.now()};
 const deferred = () => {let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return{promise,resolve,reject};};
 
-function fixture({platform='ios'}={}) {
+function fixture({platform='ios',storeTimeoutMs}={}) {
   const disk=new Map(), secure=new Map(), calls=[], modules=new Map();
   const storage={getItem:async k=>disk.get(k)||null,setItem:async(k,v)=>{disk.set(k,v);},removeItem:async k=>{disk.delete(k);},multiRemove:async keys=>keys.forEach(k=>disk.delete(k)),getAllKeys:async()=>[...disk.keys()],multiGet:async keys=>keys.map(k=>[k,disk.get(k)])};
   let handle=async config=>({status:200,data:config.url.includes('subscription')?inactive:[]});
@@ -35,7 +35,7 @@ function fixture({platform='ios'}={}) {
     purchaseUpdatedListener:fn=>(iap.listener=fn,{remove(){}}),purchaseErrorListener:fn=>(iap.errorListener=fn,{remove(){}}),
     requestPurchase:async request=>{iap.request=request;return purchase;},
     getReceiptIOS:async()=> 'ZmFrZS1yZWNlaXB0',requestReceiptRefreshIOS:async()=> 'cmVmcmVzaGVk',
-    finishTransaction:async()=>{iap.finishes++;},finishes:0,getAvailablePurchases:async()=>[purchase],
+    finishTransaction:async()=>{iap.finishes++;},finishes:0,getAvailablePurchases:async()=>[],
   };
   const queryClient=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
   const mocks={
@@ -58,7 +58,8 @@ function fixture({platform='ios'}={}) {
     const exports={};modules.set(file,exports);
     const source=fs.readFileSync(file,'utf8');
     const output=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true,jsx:ts.JsxEmit.ReactJSX}}).outputText;
-    vm.runInNewContext(output,{exports,console:quiet,URL,AbortController,Date,Promise,setTimeout,clearTimeout,Buffer,
+    vm.runInNewContext(output,{exports,console:quiet,URL,AbortController,Date,Promise,
+      setTimeout:storeTimeoutMs ? (fn,ms)=>setTimeout(fn,ms>=10000?storeTimeoutMs:ms) : setTimeout,clearTimeout,Buffer,
       require(name){if(name in mocks)return mocks[name];if(name.startsWith('.'))return load(path.resolve(path.dirname(file),name));throw Error('Unmocked import: '+name);},
     },{filename:file});
     return exports;
@@ -237,9 +238,100 @@ test('SDK callback plus returned purchase verifies and finishes exactly once',as
 test('restore revalidates a previously approved purchase and respects a later conflict',async()=>{
   const f=fixture();f.network(async()=>({data:active()}));const service=f.load('src/services/iapService.ts').iapService;
   await service.purchaseSubscription(purchase.productId);
+  f.iap.getAvailablePurchases=async()=>[purchase];
   f.network(async()=>({status:409,data:{error:'Receipt belongs to another account'}}));
   await assert.rejects(service.restorePurchases());assert.equal(f.iap.finishes,1);
   assert.equal(f.calls.filter(c=>c.method==='post').length,2);
+});
+
+test('active yearly Premium never opens another purchase sheet, including Remove Ads',async()=>{
+  const f=fixture(),premium=f.load('src/store/premiumStore.ts').usePremiumStore;
+  await premium.getState().applyEntitlement(active('premium_yearly'),'a');
+  const {iapService,PRODUCT_IDS}=f.load('src/services/iapService.ts');
+  for(const id of Object.values(PRODUCT_IDS))assert.equal(await iapService.purchaseSubscription(id),true);
+  assert.equal(f.iap.request,undefined);assert.equal(f.calls.length,0);
+});
+test('ad-free annual ownership blocks its own repurchase but permits Premium upgrade',async()=>{
+  const f=fixture(),premium=f.load('src/store/premiumStore.ts').usePremiumStore;
+  await premium.getState().applyEntitlement(active('remove_ads'),'a');
+  const {iapService,PRODUCT_IDS}=f.load('src/services/iapService.ts');
+  assert.equal(await iapService.purchaseSubscription(PRODUCT_IDS.REMOVE_ADS_YEARLY),true);
+  assert.equal(f.iap.request,undefined);
+  f.network(async()=>({data:active()}));
+  assert.equal(await iapService.purchaseSubscription(purchase.productId),true);
+  assert.ok(f.iap.request);
+});
+test('StoreKit ownership after interrupted checkout verifies without a second payment sheet',async()=>{
+  const f=fixture();f.iap.getAvailablePurchases=async()=>[purchase];f.network(async()=>({data:active()}));
+  assert.equal(await f.load('src/services/iapService.ts').iapService.purchaseSubscription(purchase.productId),true);
+  assert.equal(f.iap.request,undefined);assert.equal(f.iap.finishes,1);
+  assert.equal(f.load('src/store/premiumStore.ts').usePremiumStore.getState().isPremium,true);
+});
+test('StoreKit-owned subscription still cannot bypass backend receipt ownership checks',async()=>{
+  const f=fixture();f.iap.getAvailablePurchases=async()=>[purchase];f.network(async()=>({status:409,data:{error:'receipt_replay'}}));
+  await assert.rejects(f.load('src/services/iapService.ts').iapService.purchaseSubscription(purchase.productId),e=>e.response?.status===409);
+  assert.equal(f.iap.request,undefined);assert.equal(f.iap.finishes,0);
+  assert.equal(f.load('src/store/premiumStore.ts').usePremiumStore.getState().isPremium,false);
+});
+test('two rapid taps cannot start overlapping ownership checks or payment sheets',async()=>{
+  const f=fixture(),gate=deferred();f.iap.getAvailablePurchases=()=>gate.promise;f.network(async()=>({data:active()}));
+  const service=f.load('src/services/iapService.ts').iapService;
+  const first=service.purchaseSubscription(purchase.productId);
+  await assert.rejects(service.purchaseSubscription(purchase.productId),/already in progress/);
+  await assert.rejects(service.restorePurchases(),/already in progress/);
+  gate.resolve([]);assert.equal(await first,true);
+});
+test('late inactive subscription GET cannot undo a newly verified purchase',async()=>{
+  const f=fixture(),gate=deferred();f.network(c=>c.method==='get'?gate.promise:Promise.resolve({data:active()}));
+  const service=f.load('src/services/iapService.ts').iapService;
+  const sync=service.syncSubscriptionFromBackend();await new Promise(r=>setImmediate(r));
+  await service.purchaseSubscription(purchase.productId);gate.resolve({data:inactive});await sync;
+  assert.equal(f.load('src/store/premiumStore.ts').usePremiumStore.getState().isPremium,true);
+});
+test('a cache hydrated during subscription sync does not hide a server cancellation',async()=>{
+  const f=fixture(),gate=deferred();f.network(()=>gate.promise);
+  const service=f.load('src/services/iapService.ts').iapService,premium=f.load('src/store/premiumStore.ts').usePremiumStore;
+  const sync=service.syncSubscriptionFromBackend();await new Promise(r=>setImmediate(r));
+  f.disk.set('megaradio_verified_premium_v2:a',JSON.stringify({...active('premium_yearly'),ownerId:'a',verifiedAt:Date.now()-60000}));
+  await premium.getState().loadPremiumStatus();assert.equal(premium.getState().isPremium,true);
+  gate.resolve({data:inactive});await sync;assert.equal(premium.getState().isPremium,false);
+});
+test('restore with no store transactions recognizes a verified server subscription',async()=>{
+  const f=fixture();f.network(async()=>({data:active('premium_yearly')}));
+  assert.equal(await f.load('src/services/iapService.ts').iapService.restorePurchases(),true);
+  assert.equal(f.iap.finishes,0);
+});
+test('already-owned store error recovers rather than leaving checkout loading',async()=>{
+  const f=fixture();let reads=0;
+  f.iap.getAvailablePurchases=async()=>++reads===1?[]:[purchase];
+  f.iap.requestPurchase=async()=>{throw Object.assign(new Error('Owned'),{code:'already-owned'});};
+  f.network(async()=>({data:active()}));
+  assert.equal(await f.load('src/services/iapService.ts').iapService.purchaseSubscription(purchase.productId),true);
+  assert.equal(f.iap.finishes,1);
+});
+test('already-owned error callback also reconciles the existing entitlement',async()=>{
+  const f=fixture();let reads=0;
+  f.iap.getAvailablePurchases=async()=>++reads===1?[]:[purchase];
+  f.iap.requestPurchase=async()=>{f.iap.errorListener({code:'already-owned'});return null;};
+  f.network(async()=>({data:active()}));
+  assert.equal(await f.load('src/services/iapService.ts').iapService.purchaseSubscription(purchase.productId),true);
+  assert.equal(f.iap.finishes,1);
+});
+test('a stalled StoreKit ownership lookup ends and the next attempt can proceed',async()=>{
+  const f=fixture({storeTimeoutMs:20});f.iap.getAvailablePurchases=()=>new Promise(()=>{});
+  const service=f.load('src/services/iapService.ts').iapService;
+  await assert.rejects(service.restorePurchases(),/did not return/);
+  f.iap.getAvailablePurchases=async()=>[];f.network(async()=>({data:inactive}));
+  assert.equal(await service.restorePurchases(),false);
+});
+test('a stalled Apple receipt refresh cannot leave Restore loading indefinitely',async()=>{
+  const f=fixture({storeTimeoutMs:20});f.iap.getAvailablePurchases=async()=>[purchase];
+  f.iap.getReceiptIOS=async()=>'';f.iap.requestReceiptRefreshIOS=()=>new Promise(()=>{});
+  const service=f.load('src/services/iapService.ts').iapService;
+  await assert.rejects(service.restorePurchases(),/receipt verification is pending/);
+  assert.equal(f.iap.finishes,0);
+  f.iap.getReceiptIOS=async()=>'ZmFrZS1yZWNlaXB0';f.network(async()=>({data:active()}));
+  assert.equal(await service.restorePurchases(),true);
 });
 test('premium flags expire while the application stays open',async()=>{
   const f=fixture(),premium=f.load('src/store/premiumStore.ts').usePremiumStore;

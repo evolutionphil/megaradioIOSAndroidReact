@@ -1,0 +1,24 @@
+{
+  "tests": 79,
+  "passed": 79,
+  "failed": 0,
+  "mobileTypeDiagnostics": {
+    "previous": 44,
+    "current": 42,
+    "new": []
+  },
+  "simulator": {
+    "device": "iPad Pro 13-inch (M5), iOS 26.4",
+    "reviewAccountEmailLogin": "passed",
+    "premiumActiveProfile": "passed",
+    "goPremiumHidden": "passed",
+    "removeAdsHidden": "passed",
+    "rewardedAdOfferHidden": "passed",
+    "afterTerminateAndRelaunch": "same verified Premium status; purchase offers still hidden",
+    "guestRestore": "requires account sign-in"
+  },
+  "limits": [
+    "Simulator observation is not a physical-device Apple/Google sign-in test.",
+    "No new paid subscription was purchased during this run; receipt/error/timeout paths have automated tests."
+  ]
+}

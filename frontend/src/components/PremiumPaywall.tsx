@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -66,6 +66,9 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
   const [isLoading, setIsLoading] = useState(false);
   const [prices, setPrices] = useState<Record<string, string>>({});
   const [iapReady, setIapReady] = useState(false);
+  const operation = useRef(false);
+  const { isPremium, isRemoveAds, plan } = usePremiumStore();
+  const covered = isPremium || (mode === 'remove_ads' && isRemoveAds);
 
   // Initialize IAP and load real prices
   useEffect(() => {
@@ -76,6 +79,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
       if (!iap) return;
       
       try {
+        void iap.syncSubscriptionFromBackend().catch(() => {});
         await iap.initialize();
         const products = iap.getProducts();
         const PIDS = getProductIds();
@@ -107,6 +111,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
   };
 
   const handleSubscribe = useCallback(async () => {
+    if (operation.current) return;
     if (!requireLogin()) return;
     const iap = getIAPService();
     const PIDS = getProductIds();
@@ -120,6 +125,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
       return;
     }
 
+    operation.current = true;
     setIsLoading(true);
 
     try {
@@ -174,15 +180,18 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
         );
       }
     } finally {
+      operation.current = false;
       setIsLoading(false);
     }
   }, [mode, selectedPlan, t, onClose]);
 
   const handleRestore = useCallback(async () => {
+    if (operation.current) return;
     if (!requireLogin()) return;
     const iap = getIAPService();
     if (!iap) return;
     
+    operation.current = true;
     setIsLoading(true);
     try {
       const restored = await iap.restorePurchases();
@@ -202,11 +211,36 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
     } catch (error: any) {
       Alert.alert(t('error', 'Error'), error.message);
     } finally {
+      operation.current = false;
       setIsLoading(false);
     }
   }, [t, onClose]);
 
   if (!visible) return null;
+
+  // A confirmed entitlement replaces the offer, including after an interrupted checkout.
+  if (covered) {
+    return (
+      <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
+        <View style={[styles.container, { padding: 28, paddingTop: insets.top + 60, justifyContent: 'center', gap: 24 }]}>
+          <Ionicons name="checkmark-circle" size={64} color="#4CAF50" style={{ alignSelf: 'center' }} />
+          <Text style={styles.premiumTitle}>{isPremium ? t('premium_active', 'Premium Active') : t('ad_free_active', 'Ad-free Active')}</Text>
+          <Text style={[styles.premiumSubtitle, { textAlign: 'center' }]}>{t('subscription_already_active', 'Your subscription is active. No new purchase is needed.')}</Text>
+          {plan !== 'premium_lifetime' && (
+            <TouchableOpacity style={styles.ctaButton} onPress={async () => {
+              try { await getIAPService()?.manageSubscriptions(); }
+              catch (error: any) { Alert.alert(t('error', 'Error'), error.message); }
+            }} testID="premium-manage-subscription">
+              <Text style={styles.ctaText}>{t('manage_subscription', 'Manage subscription')}</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.ctaButton} onPress={onClose} testID="premium-active-done">
+            <Text style={styles.ctaText}>{t('done', 'Done')}</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    );
+  }
 
   // ─── Remove Ads Paywall (Simple) ───
   if (mode === 'remove_ads') {
@@ -253,8 +287,8 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
             </TouchableOpacity>
 
             <View style={styles.footerLinks}>
-              <TouchableOpacity onPress={handleRestore}>
-                <Text style={styles.footerLink}>{t('already_paid', 'Already paid?')}</Text>
+              <TouchableOpacity onPress={handleRestore} disabled={isLoading}>
+                <Text style={styles.footerLink}>{t('restore_purchases', 'Restore purchases')}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => { 
                 onClose(); 
@@ -398,8 +432,8 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ visible, onClose
 
           {/* Footer */}
           <View style={styles.footerLinks}>
-            <TouchableOpacity onPress={handleRestore}>
-              <Text style={styles.footerLink}>{t('already_paid', 'Already paid?')}</Text>
+            <TouchableOpacity onPress={handleRestore} disabled={isLoading}>
+              <Text style={styles.footerLink}>{t('restore_purchases', 'Restore purchases')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { 
               onClose(); 

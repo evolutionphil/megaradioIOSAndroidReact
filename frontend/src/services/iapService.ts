@@ -21,6 +21,19 @@ const getIAP = () => {
   try { return require('react-native-iap'); } catch { return null; }
 };
 const cancelled = (error: any) => ['user-cancelled', 'E_USER_CANCELLED'].includes(error?.code);
+const alreadyOwned = (error: any) => ['already-owned', 'E_ALREADY_OWNED'].includes(error?.code);
+const PLAN_PRODUCTS: Record<string, string> = {
+  remove_ads: PRODUCT_IDS.REMOVE_ADS_YEARLY, premium_monthly: PRODUCT_IDS.PREMIUM_MONTHLY,
+  premium_yearly: PRODUCT_IDS.PREMIUM_YEARLY, premium_lifetime: PRODUCT_IDS.PREMIUM_LIFETIME,
+};
+export function hasPurchasedAccess(productId: string): boolean {
+  const state = usePremiumStore.getState();
+  const userId = useAuthStore.getState().user?._id;
+  if (!userId || state.ownerId !== userId || !state.verifiedAt || Date.now() - state.verifiedAt > 86400000) return false;
+  if (state.plan !== 'premium_lifetime' && (!state.expiryDate || Date.parse(state.expiryDate) <= Date.now())) return false;
+  // Changing an existing Premium billing period belongs in the store's management sheet.
+  return state.isPremium || (productId === PRODUCT_IDS.REMOVE_ADS_YEARLY && state.isRemoveAds);
+}
 const owner = () => {
   const { token, user } = useAuthStore.getState();
   if (!token || !user?._id) throw new Error('Sign in to purchase or restore your subscription.');
@@ -49,7 +62,8 @@ class IAPService {
   private purchaseUpdateSub: any = null;
   private purchaseErrorSub: any = null;
   private processing = new Map<string, Promise<void>>();
-  private checkout: { productId: string; owner: Owner; resolve: (value: boolean) => void; reject: (error: Error) => void } | null = null;
+  private operation: 'purchase' | 'restore' | null = null;
+  private checkout: { productId: string; owner: Owner; recovery?: Promise<boolean>; resolve: (value: boolean) => void; reject: (error: Error) => void } | null = null;
 
   async initialize(): Promise<boolean> {
     if (this.isConnected) {
@@ -94,14 +108,25 @@ class IAPService {
       }
     });
     this.purchaseErrorSub = iap.purchaseErrorListener((error: any) => {
-      if (cancelled(error)) this.checkout?.resolve(false);
-      else this.checkout?.reject(new Error(error.message || 'Purchase failed.'));
+      if (this.checkout) void this.handleCheckoutError(error, this.checkout, iap);
     });
   }
 
   private removeListeners() {
     this.purchaseUpdateSub?.remove(); this.purchaseUpdateSub = null;
     this.purchaseErrorSub?.remove(); this.purchaseErrorSub = null;
+  }
+
+  private async handleCheckoutError(error: any, checkout: NonNullable<IAPService['checkout']>, iap: any) {
+    if (this.checkout !== checkout) return;
+    if (cancelled(error)) { checkout.resolve(false); return; }
+    if (alreadyOwned(error)) {
+      try {
+        checkout.recovery ??= this.recoverOwnedPurchase(iap, checkout.owner, checkout.productId);
+        if (await checkout.recovery) { checkout.resolve(true); return; }
+      } catch (recoveryError: any) { checkout.reject(recoveryError); return; }
+    }
+    checkout.reject(new Error(error.message || 'Purchase failed.'));
   }
 
   async loadProducts(iapModule?: any): Promise<IAPProduct[]> {
@@ -118,11 +143,24 @@ class IAPService {
   getProduct(productId: string) { return this.products.find(p => p.productId === productId); }
 
   private async purchase(productId: string, type: 'subs' | 'in-app'): Promise<boolean> {
+    if (this.operation) throw new Error('A store operation is already in progress.');
+    this.operation = 'purchase';
+    try { return await this.performPurchase(productId, type); }
+    finally { this.operation = null; }
+  }
+
+  private async performPurchase(productId: string, type: 'subs' | 'in-app'): Promise<boolean> {
     const account = owner();
+    if (!ALL_SKUS.includes(productId)) throw new Error('Unknown store product.');
+    if (hasPurchasedAccess(productId)) return true;
     const iap = getIAP();
     if (!iap || !await this.initialize()) throw new Error('The store is unavailable. Please try again.');
     assertOwner(account);
     if (this.checkout) throw new Error('A purchase is already in progress.');
+    // StoreKit can return no new transaction for a subscription already owned.
+    // Reconcile that entitlement before opening another payment sheet.
+    if (Platform.OS === 'ios' && await this.recoverOwnedPurchase(iap, account, productId)) return true;
+    assertOwner(account);
     if (!this.getProduct(productId)) {
       await this.loadProducts(iap);
       if (!this.getProduct(productId)) throw new Error('This product is not available in your store.');
@@ -152,12 +190,42 @@ class IAPService {
         await this.completePurchase(purchase, iap, account);
         checkout.resolve(true);
       }
-    }).catch(error => cancelled(error) ? checkout.resolve(false) : checkout.reject(error));
+    }).catch(error => this.handleCheckoutError(error, checkout, iap));
     try { return await verified; }
     finally { if (this.checkout === checkout) this.checkout = null; }
   }
   purchaseSubscription(productId: string) { return this.purchase(productId, 'subs'); }
   purchaseProduct(productId: string) { return this.purchase(productId, 'in-app'); }
+
+  private async availablePurchases(iap: any): Promise<any[]> {
+    return withTimeout<any[]>(iap.getAvailablePurchases({ onlyIncludeActiveItemsIOS: true, alsoPublishToEventListenerIOS: false }),
+      12000, 'The store did not return your subscriptions. Please try Restore again.');
+  }
+
+  private async recoverOwnedPurchase(iap: any, account: Owner, productId: string): Promise<boolean> {
+    const purchases = await this.availablePurchases(iap);
+    assertOwner(account);
+    const candidates = purchases.filter(p => RANK[p.productId] && p.purchaseState === 'purchased' &&
+      (p.productId === productId || p.productId !== PRODUCT_IDS.REMOVE_ADS_YEARLY))
+      .sort((a, b) => RANK[b.productId] - RANK[a.productId] || Number(b.transactionDate) - Number(a.transactionDate));
+    if (!candidates.length) return false;
+    const purchase = candidates[0];
+    this.processing.delete(`${account.version}:${purchase.transactionId || purchase.id}`);
+    await this.completePurchase(purchase, iap, account);
+    return true;
+  }
+
+  async manageSubscriptions(): Promise<void> {
+    if (Platform.OS === 'ios') {
+      const iap = getIAP();
+      if (!iap?.showManageSubscriptionsIOS) throw new Error('Subscription management is unavailable.');
+      await iap.showManageSubscriptionsIOS();
+    } else if (Platform.OS === 'android') {
+      const { Linking } = require('react-native');
+      await Linking.openURL('https://play.google.com/store/account/subscriptions');
+    } else throw new Error('Open subscription management in the store where you subscribed.');
+    await this.syncSubscriptionFromBackend();
+  }
 
   private async reportToBackend(purchase: any, iap: any, account: Owner) {
     assertOwner(account);
@@ -167,8 +235,8 @@ class IAPService {
     if (Platform.OS === 'ios') {
       // v14 purchaseToken is StoreKit 2 JWS. The server expects the app's base64 receipt.
       let receipt: string | null = null;
-      try { receipt = await iap.getReceiptIOS(); } catch { /* Refresh below for a missing app receipt. */ }
-      if (!receipt) receipt = await iap.requestReceiptRefreshIOS();
+      try { receipt = await withTimeout<string>(iap.getReceiptIOS(), 10000, 'Apple receipt lookup timed out.'); } catch { /* Refresh below for a missing app receipt. */ }
+      if (!receipt) receipt = await withTimeout<string>(iap.requestReceiptRefreshIOS(), 20000, 'Apple receipt verification is pending. Please try Restore.');
       if (typeof receipt !== 'string' || !receipt.trim() || receipt.includes('.')) throw new Error('The Apple receipt is unavailable. Please try Restore.');
       body.receipt = receipt;
     } else {
@@ -197,7 +265,8 @@ class IAPService {
       await usePremiumStore.getState().applyEntitlement(entitlement, account.userId);
       assertOwner(account);
       // Invalid/conflicting/unavailable backend responses never finish the transaction.
-      await iap.finishTransaction({ purchase, isConsumable: false });
+      await withTimeout(iap.finishTransaction({ purchase, isConsumable: false }), 15000,
+        'Your subscription is verified. The store will finish processing it when you restore.');
     })();
     this.processing.set(key, job);
     try { await job; }
@@ -208,25 +277,41 @@ class IAPService {
   async syncSubscriptionFromBackend(): Promise<void> {
     if (!useAuthStore.getState().token) return;
     const account = owner();
+    const previous = usePremiumStore.getState();
+    const requestedAt = Date.now();
     const response = await api.get('/api/user/subscription');
     assertOwner(account);
+    const current = usePremiumStore.getState();
+    // An older GET must not undo a purchase/restore verified while it was in flight.
+    if (current.verifiedAt >= requestedAt && (current.verifiedAt !== previous.verifiedAt || current.plan !== previous.plan)) return;
     await usePremiumStore.getState().applyEntitlement(parseEntitlement(response.data), account.userId);
   }
 
   async restorePurchases(iapModule?: any): Promise<boolean> {
+    if (this.operation) throw new Error('A store operation is already in progress.');
+    this.operation = 'restore';
+    try { return await this.performRestore(iapModule); }
+    finally { this.operation = null; }
+  }
+
+  private async performRestore(iapModule?: any): Promise<boolean> {
     const account = owner();
     if (this.checkout) throw new Error('A purchase is already in progress.');
     const iap = iapModule || getIAP();
     if (!iap || (!this.isConnected && !await this.initialize())) throw new Error('The store is unavailable.');
-    const purchases: any[] = await iap.getAvailablePurchases({ onlyIncludeActiveItemsIOS: true });
+    const purchases: any[] = await this.availablePurchases(iap);
     assertOwner(account);
     const candidates = purchases.filter(p => RANK[p.productId] && p.purchaseState === 'purchased')
       .sort((a, b) => RANK[b.productId] - RANK[a.productId] || Number(b.transactionDate) - Number(a.transactionDate));
-    if (!candidates.length) { await this.syncSubscriptionFromBackend(); return false; }
+    if (!candidates.length) {
+      await this.syncSubscriptionFromBackend();
+      return hasPurchasedAccess(PLAN_PRODUCTS[usePremiumStore.getState().plan]);
+    }
     // Never invent expiry from transactionDate or activate a purchase without verification.
     this.processing.delete(`${account.version}:${candidates[0].transactionId || candidates[0].id}`);
     await this.completePurchase(candidates[0], iap, account);
-    await this.syncSubscriptionFromBackend();
+    // POST already returned the authoritative entitlement. A lagging GET replica
+    // must not immediately replace the successful restore with an inactive plan.
     return true;
   }
   async destroy() {

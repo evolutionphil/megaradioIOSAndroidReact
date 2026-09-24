@@ -18,7 +18,7 @@ import {
 import { Image } from 'expo-image';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,18 +42,6 @@ import { PremiumPaywall } from '../../src/components/PremiumPaywall';
 import { RateUsModal } from '../../src/components/RateUsModal';
 import { rateUsService } from '../../src/services/rateUsService';
 
-/**
- * Social proof counter — slowly grows over time so the number
- * feels alive without requiring a backend endpoint.
- * Base: 4,800 on 2026-01-01, +6 per day.
- */
-const getLovedByCount = (): string => {
-  const base = 4800;
-  const startDate = new Date(2026, 0, 1).getTime();
-  const daysSince = Math.max(0, Math.floor((Date.now() - startDate) / (1000 * 60 * 60 * 24)));
-  const count = base + daysSince * 6;
-  return count.toLocaleString('en-US');
-};
 import { useSongHistoryStore } from '../../src/store/songHistoryStore';
 import appService, { AppInfo } from '../../src/services/appService';
 
@@ -163,7 +151,18 @@ export default function ProfileScreen() {
   // Premium
   const [showPremiumPaywall, setShowPremiumPaywall] = useState(false);
   const [showRemoveAdsPaywall, setShowRemoveAdsPaywall] = useState(false);
-  const { isPremium, isRemoveAds, plan, loadPremiumStatus } = usePremiumStore();
+  const { isPremium, isRemoveAds, plan } = usePremiumStore();
+  useFocusEffect(useCallback(() => {
+    if (user?._id) {
+      void import('../../src/services/iapService').then(({ iapService }) => iapService.syncSubscriptionFromBackend()).catch(() => {});
+    }
+  }, [user?._id]));
+  const manageSubscription = async () => {
+    try {
+      const { iapService } = await import('../../src/services/iapService');
+      await iapService.manageSubscriptions();
+    } catch (error: any) { Alert.alert(t('error', 'Error'), error.message); }
+  };
   const songHistoryEntries = useSongHistoryStore((s) => s.entries);
   
   // Avatar upload
@@ -672,7 +671,7 @@ export default function ProfileScreen() {
             <View style={s.divider} />
             
             {/* Remove Ads */}
-            {!isRemoveAds && (
+            {!isPremium && !isRemoveAds && (
               <>
                 <TouchableOpacity
                   style={s.row}
@@ -765,7 +764,7 @@ export default function ProfileScreen() {
               <Ionicons name="star-outline" size={22} color="#FFF" style={s.rowIcon} />
               <View style={{ flex: 1 }}>
                 <Text style={s.rowText}>{t('rate_us', 'Rate Us')}</Text>
-                <Text style={s.rowSubtext}>{t('rate_us_sub', 'Loved by {{count}}+ users', { count: getLovedByCount() })}</Text>
+                <Text style={s.rowSubtext}>{t('rate_us_invite', 'Share your experience')}</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color="#666" />
             </TouchableOpacity>
@@ -916,19 +915,25 @@ export default function ProfileScreen() {
               <Ionicons name="chevron-forward" size={20} color="#FFD700" />
             </TouchableOpacity>
           )}
-          {isPremium && (
+          {(isPremium || isRemoveAds) && (
             <View style={[s.row, { backgroundColor: 'rgba(255,215,0,0.06)' }]}>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, gap: 10 }}>
                 <Ionicons name="diamond" size={20} color="#FFD700" />
-                <Text style={[s.rowTitle, { color: '#FFD700' }]}>Premium Active</Text>
+                <Text style={[s.rowTitle, { color: '#FFD700' }]}>{isPremium ? t('premium_active', 'Premium Active') : t('ad_free_active', 'Ad-free Active')}</Text>
               </View>
               <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
             </View>
           )}
+          {(isPremium || isRemoveAds) && plan !== 'premium_lifetime' && Platform.OS !== 'web' && (
+            <TouchableOpacity style={s.row} onPress={manageSubscription} testID="manage-subscription-btn">
+              <Text style={[s.rowTitle, { flex: 1 }]}>{t('manage_subscription', 'Manage subscription')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
+          )}
           <View style={s.divider} />
 
           {/* Remove Ads (only for non-premium, non-removeAds users) */}
-          {!isRemoveAds && (
+          {!isPremium && !isRemoveAds && (
             <>
               <TouchableOpacity
                 style={s.row}
@@ -1028,7 +1033,7 @@ export default function ProfileScreen() {
         >
           <View style={{ flex: 1 }}>
             <Text style={s.rowTitle}>{t('rate_us', 'Rate Us')}</Text>
-            <Text style={s.rowSubtext}>{t('rate_us_sub', 'Loved by {{count}}+ users', { count: getLovedByCount() })}</Text>
+            <Text style={s.rowSubtext}>{t('rate_us_invite', 'Share your experience')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#666" />
         </TouchableOpacity>

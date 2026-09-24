@@ -20,7 +20,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
       "associatedDomains": ["applinks:themegaradio.com"],
-      "buildNumber": "5",
+      "buildNumber": "6",
       "usesAppleSignIn": true,
       "splash": {
         "image": "./assets/images/splash.png",
