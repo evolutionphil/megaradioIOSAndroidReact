@@ -3,7 +3,7 @@
 ## iOS submitted
 
 iOS **1.0.70 (6)** was submitted on September 24, 2026 at 13:29 Europe/Vienna.
-App Store Connect shows **Waiting for Review**. Automatic release after approval
+App Store Connect shows **In Review** as of 15:26 Europe/Vienna. Automatic release after approval
 is enabled. This is a completed submission, not an Apple approval or a live release.
 
 Submission ID: `2a04470f-1d8e-43c0-8e71-538d9e909cc2`.
@@ -48,3 +48,11 @@ verified; no new terms were written. Content-rights declarations remain untouche
 
 No ASO or screenshot upload remains pending. Apple review is the next external
 step; no approval date or outcome is guaranteed.
+
+## Subsequent iPad design request
+
+A separate replacement set using four real iPad screens is ready in all 50
+locales (200 RGB PNGs). Current store images and the review submission were
+not modified. Uploading this proposed artwork now requires withdrawing and
+resubmitting the version; the user is choosing whether to do that or save it
+for a subsequent release. See `ipad-redesign-validation.json`.

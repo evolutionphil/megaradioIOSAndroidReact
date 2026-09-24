@@ -1,0 +1,902 @@
+{
+  "tr": {
+    "discover": [
+      "Canlı Radyo",
+      "Türkiye’den ve dünyadan radyoları keşfet."
+    ],
+    "player": [
+      "Canlı yayına kulak ver",
+      "Sevdiğin yayın, tüm kontrol sende."
+    ],
+    "genres": [
+      "Tarzına göre keşfet",
+      "Pop, rock, caz… Tarzına göre dinle."
+    ],
+    "country": [
+      "Dünyadan sesler",
+      "Ülkeni seç, yeni seslerle tanış."
+    ]
+  },
+  "de-DE": {
+    "discover": [
+      "Radio & Webradio",
+      "Entdecke Radiosender aus aller Welt."
+    ],
+    "player": [
+      "Dein Radio. Jetzt live.",
+      "Dein Sender. Dein Moment."
+    ],
+    "genres": [
+      "Musik für deinen Geschmack",
+      "Pop, Rock, Jazz: Finde deinen Sound."
+    ],
+    "country": [
+      "Sender aus aller Welt",
+      "Wähle ein Land. Entdecke neue Stimmen."
+    ]
+  },
+  "en-US": {
+    "discover": [
+      "Live Radio",
+      "Discover stations from around the world."
+    ],
+    "player": [
+      "Your station, live",
+      "Live sound. Simple controls."
+    ],
+    "genres": [
+      "Find your kind of music",
+      "Pop, rock, jazz and more. Find your mood."
+    ],
+    "country": [
+      "Explore radio worldwide",
+      "Explore local voices, country by country."
+    ]
+  },
+  "fr-FR": {
+    "discover": [
+      "Radio en direct",
+      "Découvrez des radios du monde entier."
+    ],
+    "player": [
+      "Votre radio, en direct",
+      "Votre station, votre moment."
+    ],
+    "genres": [
+      "À chaque envie, sa musique",
+      "Pop, rock, jazz : trouvez votre ambiance."
+    ],
+    "country": [
+      "Les radios du monde",
+      "Choisissez un pays. Écoutez ses radios."
+    ]
+  },
+  "es-ES": {
+    "discover": [
+      "Radio en directo",
+      "Descubre emisoras de todo el mundo."
+    ],
+    "player": [
+      "Tu radio, en directo",
+      "Tu emisora, tu momento."
+    ],
+    "genres": [
+      "Encuentra tu estilo",
+      "Pop, rock, jazz… Encuentra tu estilo."
+    ],
+    "country": [
+      "Emisoras sin fronteras",
+      "Elige un país y descubre sus radios."
+    ]
+  },
+  "it": {
+    "discover": [
+      "Radio in diretta",
+      "Scopri le radio di tutto il mondo."
+    ],
+    "player": [
+      "La tua radio, in diretta",
+      "La tua radio, il tuo momento."
+    ],
+    "genres": [
+      "La musica che ti somiglia",
+      "Pop, rock, jazz: trova il tuo sound."
+    ],
+    "country": [
+      "Radio da tutto il mondo",
+      "Scegli un paese e scopri le sue radio."
+    ]
+  },
+  "pt-PT": {
+    "discover": [
+      "Rádio em direto",
+      "Descobre rádios de Portugal e do mundo."
+    ],
+    "player": [
+      "A tua rádio, em direto",
+      "A tua rádio, o teu momento."
+    ],
+    "genres": [
+      "Encontra o teu estilo",
+      "Pop, rock, jazz: encontra o teu ritmo."
+    ],
+    "country": [
+      "Rádios de todo o mundo",
+      "Escolhe um país e descobre as suas rádios."
+    ]
+  },
+  "ru": {
+    "discover": [
+      "Радио онлайн",
+      "Прямой эфир FM и AM станций"
+    ],
+    "player": [
+      "Ваше радио в прямом эфире",
+      "Прямой эфир FM и AM станций"
+    ],
+    "genres": [
+      "Музыка на ваш вкус",
+      "Прямой эфир FM и AM станций"
+    ],
+    "country": [
+      "Радиостанции со всего мира",
+      "Прямой эфир FM и AM станций"
+    ]
+  },
+  "ja": {
+    "discover": [
+      "ラジオを聴く",
+      "世界中のラジオ局と出会おう。"
+    ],
+    "player": [
+      "好きなラジオをライブで",
+      "お気に入りの放送を、シンプルな操作で。"
+    ],
+    "genres": [
+      "気分に合うジャンルを発見",
+      "ポップ、ロック、ジャズ。気分に合う音楽を。"
+    ],
+    "country": [
+      "世界の放送局へ",
+      "国を選んで、その土地の放送を聴こう。"
+    ]
+  },
+  "zh-Hant": {
+    "discover": [
+      "即時網路電台",
+      "探索來自世界各地的電台。"
+    ],
+    "player": [
+      "喜歡的電台，即時收聽",
+      "喜愛的直播，輕鬆掌握。"
+    ],
+    "genres": [
+      "找到合你口味的音樂",
+      "流行、搖滾、爵士，找到你的風格。"
+    ],
+    "country": [
+      "聽見世界各地的聲音",
+      "選擇國家，聆聽當地的聲音。"
+    ]
+  },
+  "he": {
+    "discover": [
+      "רדיו בשידור חי",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "player": [
+      "הרדיו שלך בשידור חי",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "genres": [
+      "מוזיקה שמתאימה לך",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "country": [
+      "תחנות מכל העולם",
+      "תחנות FM ו-AM מכל העולם"
+    ]
+  },
+  "ar-SA": {
+    "discover": [
+      "راديو مباشر",
+      "محطات FM وAM من حول العالم"
+    ],
+    "player": [
+      "راديوك على الهواء مباشرة",
+      "محطات FM وAM من حول العالم"
+    ],
+    "genres": [
+      "موسيقى تناسب ذوقك",
+      "محطات FM وAM من حول العالم"
+    ],
+    "country": [
+      "محطات من حول العالم",
+      "محطات FM وAM من حول العالم"
+    ]
+  },
+  "en-GB": {
+    "discover": [
+      "Live Radio",
+      "Discover stations from around the world."
+    ],
+    "player": [
+      "Tune in to your day",
+      "Live sound. Simple controls."
+    ],
+    "genres": [
+      "A genre for every mood",
+      "Pop, rock, jazz and more. Find your mood."
+    ],
+    "country": [
+      "Radio beyond borders",
+      "Explore local voices, country by country."
+    ]
+  },
+  "en-AU": {
+    "discover": [
+      "Live Radio",
+      "Discover stations from around the world."
+    ],
+    "player": [
+      "Your radio, wherever you are",
+      "Live sound. Simple controls."
+    ],
+    "genres": [
+      "Find your next sound",
+      "Pop, rock, jazz and more. Find your mood."
+    ],
+    "country": [
+      "From Australia to the world",
+      "Explore local voices, country by country."
+    ]
+  },
+  "fr-CA": {
+    "discover": [
+      "Radio en direct",
+      "Découvrez des radios du monde entier."
+    ],
+    "player": [
+      "Vos radios, en direct",
+      "Votre station, votre moment."
+    ],
+    "genres": [
+      "De la musique à votre goût",
+      "Pop, rock, jazz : trouvez votre ambiance."
+    ],
+    "country": [
+      "Du Québec au monde entier",
+      "Choisissez un pays. Écoutez ses radios."
+    ]
+  },
+  "es-MX": {
+    "discover": [
+      "Radio en vivo",
+      "Descubre emisoras de todo el mundo."
+    ],
+    "player": [
+      "Tu estación, en vivo",
+      "Tu emisora, tu momento."
+    ],
+    "genres": [
+      "El ritmo que va contigo",
+      "Pop, rock, jazz… Encuentra tu estilo."
+    ],
+    "country": [
+      "De México al mundo",
+      "Elige un país y descubre sus radios."
+    ]
+  },
+  "pt-BR": {
+    "discover": [
+      "Rádio ao vivo",
+      "Descubra rádios do Brasil e do mundo."
+    ],
+    "player": [
+      "Sua rádio, ao vivo",
+      "Sua rádio, seu momento."
+    ],
+    "genres": [
+      "Encontre seu ritmo",
+      "Pop, rock, jazz: encontre seu ritmo."
+    ],
+    "country": [
+      "Do Brasil para o mundo",
+      "Escolha um país e descubra suas rádios."
+    ]
+  },
+  "nl-NL": {
+    "discover": [
+      "Radio luisteren",
+      "Live FM, AM en wereldzenders"
+    ],
+    "player": [
+      "Jouw radio, nu live",
+      "Live FM, AM en wereldzenders"
+    ],
+    "genres": [
+      "Muziek die bij je past",
+      "Live FM, AM en wereldzenders"
+    ],
+    "country": [
+      "Zenders over de grens",
+      "Live FM, AM en wereldzenders"
+    ]
+  },
+  "sv": {
+    "discover": [
+      "Radio Sverige",
+      "Webbradio, musik och nyheter"
+    ],
+    "player": [
+      "Din radio, direkt",
+      "Webbradio, musik och nyheter"
+    ],
+    "genres": [
+      "Hitta din musikstil",
+      "Webbradio, musik och nyheter"
+    ],
+    "country": [
+      "Kanaler från hela världen",
+      "Webbradio, musik och nyheter"
+    ]
+  },
+  "no": {
+    "discover": [
+      "Nettradio & musikk",
+      "FM, AM og kanaler fra verden"
+    ],
+    "player": [
+      "Din radio, direkte",
+      "FM, AM og kanaler fra verden"
+    ],
+    "genres": [
+      "Finn musikken du liker",
+      "FM, AM og kanaler fra verden"
+    ],
+    "country": [
+      "Kanaler fra hele verden",
+      "FM, AM og kanaler fra verden"
+    ]
+  },
+  "da": {
+    "discover": [
+      "Dansk netradio",
+      "Live radio fra hele verden"
+    ],
+    "player": [
+      "Din radio, direkte",
+      "Live radio fra hele verden"
+    ],
+    "genres": [
+      "Find din musikstil",
+      "Live radio fra hele verden"
+    ],
+    "country": [
+      "Kanaler fra hele verden",
+      "Live radio fra hele verden"
+    ]
+  },
+  "fi": {
+    "discover": [
+      "Kuuntele radiota",
+      "Suomen ja maailman nettiradio"
+    ],
+    "player": [
+      "Oma radiosi suorana",
+      "Suomen ja maailman nettiradio"
+    ],
+    "genres": [
+      "Löydä oma musiikkisi",
+      "Suomen ja maailman nettiradio"
+    ],
+    "country": [
+      "Kanavia ympäri maailman",
+      "Suomen ja maailman nettiradio"
+    ]
+  },
+  "pl": {
+    "discover": [
+      "Radio internetowe",
+      "Stacje FM i AM na żywo"
+    ],
+    "player": [
+      "Twoje radio na żywo",
+      "Stacje FM i AM na żywo"
+    ],
+    "genres": [
+      "Muzyka w Twoim stylu",
+      "Stacje FM i AM na żywo"
+    ],
+    "country": [
+      "Stacje z całego świata",
+      "Stacje FM i AM na żywo"
+    ]
+  },
+  "cs": {
+    "discover": [
+      "Rádio online",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "player": [
+      "Vaše rádio živě",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "genres": [
+      "Hudba podle vašeho vkusu",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "country": [
+      "Stanice z celého světa",
+      "Živé vysílání FM a AM stanic"
+    ]
+  },
+  "sk": {
+    "discover": [
+      "Rádio naživo",
+      "Online stanice FM a AM"
+    ],
+    "player": [
+      "Vaše rádio naživo",
+      "Online stanice FM a AM"
+    ],
+    "genres": [
+      "Hudba podľa vášho vkusu",
+      "Online stanice FM a AM"
+    ],
+    "country": [
+      "Stanice z celého sveta",
+      "Online stanice FM a AM"
+    ]
+  },
+  "hu": {
+    "discover": [
+      "Online rádió",
+      "Élő FM és AM adók a világból"
+    ],
+    "player": [
+      "A rádiód, élőben",
+      "Élő FM és AM adók a világból"
+    ],
+    "genres": [
+      "Zene a te ízlésed szerint",
+      "Élő FM és AM adók a világból"
+    ],
+    "country": [
+      "Adók a világ minden tájáról",
+      "Élő FM és AM adók a világból"
+    ]
+  },
+  "ro": {
+    "discover": [
+      "Radio online",
+      "Posturi FM și AM în direct"
+    ],
+    "player": [
+      "Radioul tău, în direct",
+      "Posturi FM și AM în direct"
+    ],
+    "genres": [
+      "Muzică pe gustul tău",
+      "Posturi FM și AM în direct"
+    ],
+    "country": [
+      "Posturi din întreaga lume",
+      "Posturi FM și AM în direct"
+    ]
+  },
+  "hr": {
+    "discover": [
+      "Radio uživo",
+      "FM i AM postaje iz svijeta"
+    ],
+    "player": [
+      "Vaš radio uživo",
+      "FM i AM postaje iz svijeta"
+    ],
+    "genres": [
+      "Glazba po vašem ukusu",
+      "FM i AM postaje iz svijeta"
+    ],
+    "country": [
+      "Postaje iz cijelog svijeta",
+      "FM i AM postaje iz svijeta"
+    ]
+  },
+  "el": {
+    "discover": [
+      "Ραδιόφωνο live",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "player": [
+      "Το ραδιόφωνό σου, ζωντανά",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "genres": [
+      "Μουσική για κάθε διάθεση",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "country": [
+      "Σταθμοί από όλο τον κόσμο",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ]
+  },
+  "uk": {
+    "discover": [
+      "Радіо онлайн",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "player": [
+      "Ваше радіо наживо",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "genres": [
+      "Музика на ваш смак",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "country": [
+      "Радіостанції з усього світу",
+      "Прямий ефір FM та AM станцій"
+    ]
+  },
+  "ca": {
+    "discover": [
+      "Ràdio en directe",
+      "Emissores FM i AM del món"
+    ],
+    "player": [
+      "La teva ràdio, en directe",
+      "Emissores FM i AM del món"
+    ],
+    "genres": [
+      "La música que va amb tu",
+      "Emissores FM i AM del món"
+    ],
+    "country": [
+      "Emissores d’arreu del món",
+      "Emissores FM i AM del món"
+    ]
+  },
+  "zh-Hans": {
+    "discover": [
+      "在线广播电台",
+      "发现来自世界各地的电台。"
+    ],
+    "player": [
+      "喜欢的电台，实时收听",
+      "喜爱的直播，轻松掌控。"
+    ],
+    "genres": [
+      "发现合你口味的音乐",
+      "流行、摇滚、爵士，找到你的风格。"
+    ],
+    "country": [
+      "聆听世界各地的声音",
+      "选择国家，聆听当地的声音。"
+    ]
+  },
+  "ko": {
+    "discover": [
+      "실시간 라디오",
+      "전 세계의 라디오를 만나 보세요."
+    ],
+    "player": [
+      "좋아하는 방송을 실시간으로",
+      "좋아하는 방송을 간편하게 즐기세요."
+    ],
+    "genres": [
+      "내 취향에 맞는 음악",
+      "팝, 록, 재즈까지. 취향대로 골라 보세요."
+    ],
+    "country": [
+      "세계의 라디오를 만나세요",
+      "나라를 고르고 현지 라디오를 들어 보세요."
+    ]
+  },
+  "id": {
+    "discover": [
+      "Radio Online",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "player": [
+      "Radio pilihanmu, langsung",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "genres": [
+      "Musik sesuai seleramu",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "country": [
+      "Jelajahi radio dunia",
+      "Dengar siaran langsung FM & AM"
+    ]
+  },
+  "ms": {
+    "discover": [
+      "Radio Dalam Talian",
+      "Siaran langsung FM dan AM"
+    ],
+    "player": [
+      "Radio pilihan anda, langsung",
+      "Siaran langsung FM dan AM"
+    ],
+    "genres": [
+      "Muzik mengikut cita rasa",
+      "Siaran langsung FM dan AM"
+    ],
+    "country": [
+      "Terokai radio seluruh dunia",
+      "Siaran langsung FM dan AM"
+    ]
+  },
+  "th": {
+    "discover": [
+      "วิทยุออนไลน์",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "player": [
+      "สถานีที่ชอบ ฟังสดได้เลย",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "genres": [
+      "ค้นหาเพลงในแนวที่ใช่",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "country": [
+      "เปิดโลกสถานีวิทยุ",
+      "ฟังสด FM AM จากทั่วโลก"
+    ]
+  },
+  "vi": {
+    "discover": [
+      "Nghe radio online",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "player": [
+      "Đài yêu thích, phát trực tiếp",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "genres": [
+      "Âm nhạc đúng gu của bạn",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "country": [
+      "Nghe radio khắp thế giới",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ]
+  },
+  "hi": {
+    "discover": [
+      "लाइव रेडियो",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "player": [
+      "आपका रेडियो, सीधे प्रसारण में",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "genres": [
+      "अपनी पसंद का संगीत खोजें",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "country": [
+      "दुनिया भर की आवाज़ें",
+      "भारत और दुनिया के FM, AM"
+    ]
+  },
+  "en-CA": {
+    "discover": [
+      "Canadian Radio",
+      "Discover stations from around the world."
+    ],
+    "player": [
+      "Tune in, coast to coast",
+      "Live sound. Simple controls."
+    ],
+    "genres": [
+      "Find a sound you love",
+      "Pop, rock, jazz and more. Find your mood."
+    ],
+    "country": [
+      "Local voices. World radio.",
+      "Explore local voices, country by country."
+    ]
+  },
+  "bn": {
+    "discover": [
+      "বিশ্ব রেডিও শুনুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "player": [
+      "আপনার রেডিও, সরাসরি",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "genres": [
+      "নিজের পছন্দের সুর খুঁজুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "country": [
+      "বিশ্বজুড়ে রেডিও শুনুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ]
+  },
+  "gu": {
+    "discover": [
+      "લાઇવ રેડિયો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "player": [
+      "તમારો રેડિયો, લાઇવ",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "genres": [
+      "તમારી પસંદનું સંગીત શોધો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "country": [
+      "વિશ્વભરના અવાજો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ]
+  },
+  "kn": {
+    "discover": [
+      "ಕನ್ನಡ ರೇಡಿಯೋ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "player": [
+      "ನಿಮ್ಮ ರೇಡಿಯೋ, ನೇರ ಪ್ರಸಾರ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "genres": [
+      "ನಿಮ್ಮ ಅಭಿರುಚಿಯ ಸಂಗೀತ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "country": [
+      "ಜಗತ್ತಿನ ಧ್ವನಿಗಳನ್ನು ಕೇಳಿ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ]
+  },
+  "ml": {
+    "discover": [
+      "ലൈവ് റേഡിയോ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "player": [
+      "നിങ്ങളുടെ റേഡിയോ തത്സമയം",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "genres": [
+      "ഇഷ്ടമുള്ള സംഗീതം കണ്ടെത്തൂ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "country": [
+      "ലോകത്തിന്റെ ശബ്ദങ്ങൾ കേൾക്കൂ",
+      "മലയാളവും ലോകവും FM, AM"
+    ]
+  },
+  "mr": {
+    "discover": [
+      "लाइव्ह रेडिओ",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "player": [
+      "तुमचा रेडिओ, थेट प्रसारण",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "genres": [
+      "आवडीचे संगीत शोधा",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "country": [
+      "जगभरातील आवाज ऐका",
+      "मराठी व जगभरातील FM, AM"
+    ]
+  },
+  "or": {
+    "discover": [
+      "ଲାଇଭ୍ ରେଡିଓ",
+      "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM"
+    ],
+    "player": [
+      "ଆପଣଙ୍କ ରେଡିଓ, ସିଧା ପ୍ରସାରଣ",
+      "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM"
+    ],
+    "genres": [
+      "ପସନ୍ଦର ସଙ୍ଗୀତ ଖୋଜନ୍ତୁ",
+      "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM"
+    ],
+    "country": [
+      "ସାରା ବିଶ୍ୱର ସ୍ୱର ଶୁଣନ୍ତୁ",
+      "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM"
+    ]
+  },
+  "pa": {
+    "discover": [
+      "ਲਾਈਵ ਰੇਡੀਓ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "player": [
+      "ਤੁਹਾਡਾ ਰੇਡੀਓ, ਸਿੱਧਾ ਪ੍ਰਸਾਰਣ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "genres": [
+      "ਆਪਣੀ ਪਸੰਦ ਦਾ ਸੰਗੀਤ ਲੱਭੋ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "country": [
+      "ਦੁਨੀਆ ਭਰ ਦੀਆਂ ਆਵਾਜ਼ਾਂ ਸੁਣੋ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ]
+  },
+  "ta": {
+    "discover": [
+      "தமிழ் வானொலி",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "player": [
+      "உங்கள் வானொலி நேரலையில்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "genres": [
+      "உங்கள் விருப்ப இசையைத் தேடுங்கள்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "country": [
+      "உலகின் குரல்களைக் கேளுங்கள்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ]
+  },
+  "te": {
+    "discover": [
+      "లైవ్ రేడియో",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "player": [
+      "మీ రేడియో ప్రత్యక్ష ప్రసారంలో",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "genres": [
+      "మీకు నచ్చిన సంగీతం కనుగొనండి",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "country": [
+      "ప్రపంచ స్వరాలను వినండి",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ]
+  },
+  "ur": {
+    "discover": [
+      "لائیو ریڈیو",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "player": [
+      "آپ کا ریڈیو، براہ راست",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "genres": [
+      "اپنی پسند کی موسیقی تلاش کریں",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "country": [
+      "دنیا بھر کی آوازیں سنیں",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ]
+  },
+  "sl": {
+    "discover": [
+      "Radio v živo",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "player": [
+      "Vaš radio v živo",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "genres": [
+      "Glasba po vašem okusu",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "country": [
+      "Postaje z vsega sveta",
+      "Postaje FM in AM z vsega sveta"
+    ]
+  }
+}
