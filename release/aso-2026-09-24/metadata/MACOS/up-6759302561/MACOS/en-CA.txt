@@ -1,11 +1,26 @@
-"promotionalText" = "Stay close to local voices or explore a station from further away. Find Canadian and international radio, browse by genre and save your favourites.";
-"description" = "A familiar Canadian station, news from home or a different sound across the border. MegaRadio helps you explore live radio from Canada and around the world.
+"promotionalText" = "From local Canadian voices to worldwide discoveries: explore live radio by country and genre, follow news and music, and save the stations you love.";
+"description" = "Listen to Canadian radio online, from local news and talk to music from across the country and around the world. MegaRadio helps you find live FM, AM and internet stations by name, country and genre, then keep your favourites close.
 
-CHOOSE YOUR NEXT LISTEN
-Find a station by name or browse countries and genres. Discover English- and French-language broadcasts alongside music, news, sports and talk from many other places.
+A LOCAL START, A WIDER WORLD
+Choose Canada to start exploring the directory, then search for a station you know or browse available genres. English- and French-language broadcasts offer different perspectives on the day. If you live away from the community you grew up in, a familiar online station can be a way to reconnect with its music and conversation.
 
-BUILD YOUR FAVOURITES
-Save stations so you can return without searching again. Listen online to FM, AM and internet-only stations, from country and rock to jazz and classical.
+MUSIC BEYOND YOUR USUAL QUEUE
+Explore country, rock, pop, jazz, classical and other formats in the catalogue. Instead of choosing every track yourself, tune in to a broadcaster's live programme. You may find a presenter, a discussion or a song that becomes part of your listening routine. Stations and genres vary with your selected country.
+
+SEARCH WHEN YOU KNOW, BROWSE WHEN YOU DON'T
+Type a station name for a direct route to its player. Open a genre when you know the kind of music you want. Change countries to explore international programmes or broadcasts in another language. The same station directory makes it easy to move between these different ways of listening.
+
+YOUR OWN COLLECTION OF FAVOURITES
+Keep local updates, workday music and international discoveries together. Saving stations helps you return without repeating a search or remembering every name. Your collection can grow as you explore new genres and find new programmes.
+
+LISTEN WITH CLEAR EXPECTATIONS
+Start and pause live playback in the station player. Artist and song information is shown only when it is supplied by the stream. FM and AM stations are accessed through their online broadcasts, not through an offline radio tuner. Some streams may be unavailable in your region or at a particular time.
+
+MAKE YOUR FIRST DISCOVERY
+Choose a country, select a station or genre and listen. Save the stations that fit your day, then come back to them whenever you want another live programme.
+
+OPTIONAL IN-APP PURCHASES
+Optional plans show their benefits, duration and current price before purchase. Removing app advertising cannot remove commercials included in a radio station's broadcast. Manage Apple subscriptions in your Apple Account and use Restore Purchases in the app to verify an existing purchase.
 
 Internet access is required; mobile data charges may apply. Broadcasts and track information vary by station and region. MegaRadio is a directory; broadcasters provide their own content.
 
@@ -13,6 +28,6 @@ Listen on your Mac during your workday or a quiet evening.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "listen,internet,online,stations,local,news,sports,talk,jazz,country,rock,favourites";
+"keywords" = "listen,internet,online,local,news,sports,talk,jazz,country,rock,favourites,music,canada,indie,oldies";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

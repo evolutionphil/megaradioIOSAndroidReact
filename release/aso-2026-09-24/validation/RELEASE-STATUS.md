@@ -1,22 +1,39 @@
-# Apple upload status — 2026-09-24
+# Apple release status — 2026-09-24
 
-All three uploaded builds passed package validation and Apple processing. The final server state is VALID / BETA_INTERNAL_TESTING (see the per-platform processing JSON files).
+## Verified build and device results
 
-- iOS 1.0.70 (5), including iPad and embedded watchOS app.
-- macOS 1.0.3, Electron 44.4.5 universal MAS package.
-- tvOS 1.0.0 (1), native SwiftUI app.
+- iOS 1.0.70 (6), including iPad and Watch: archive, Apple package validation,
+  upload and processing passed. API reports VALID / APP_STORE_ELIGIBLE.
+- macOS 1.0.3 universal MAS and native tvOS 1.0.0 (1): processed and available
+  to the existing internal TestFlight group. Their draft build selections are saved.
+- iOS build 6 is installed on the physical iPhone. The user confirmed active
+  Premium, hidden purchase offers and successful Apple and Google sign-in.
+- 79 automated tests pass. Simulator email login and entitlement persistence pass.
+  A new paid or sandbox purchase was not performed.
 
-App Store review submission is still pending metadata and screenshot verification. Upload/processing success does not mean App Review approval. Physical-device Apple/Google sign-in and sandbox purchases have not been verified in this release run.
+## ASO and image delivery in progress
 
-App Store draft build associations were saved: iOS 1.0.70 → build 5, macOS 1.0.3 → build 1.0.3, tvOS 1.0.0 → build 1.
+All 50 locale copy sets have expanded descriptions and promotional text, local
+keyword refinement, and platform-specific feature paragraphs. All names retain
+MegaRadio. All 150 generated platform records meet Apple's field limits.
 
-All 50 localized app names and subtitles were read back from Safari after reload and exactly matched copy.json. Brand prefix MegaRadio is unchanged. See app-info-remote-verification.json.
+The earlier metadata revision passed 250-record readback. The expanded revision
+is still being delivered and must receive its own complete comparison. Apple
+returned HTTP 429 with a Retry-After value; the uploader waits for the specified
+quota reset without changing keys or accounts.
 
-The public privacy and support URLs were opened successfully in Safari. The privacy URL redirects from /en/pages/privacy-policy to /en/privacy-policy.
+The complete local image package contains 1,950 PNGs in 350 sets: 7 images in
+each of three iPhone sizes, 4 iPad, 6 Watch, 4 Mac and 4 Apple TV per locale.
+Captions are localized; native app UI inside the captures is retained.
+Counts, dimensions and opacity passed local validation. Uploaded sets are
+tracked by processed state, checksum, order and current local fingerprint.
 
-Remaining before iOS review submission:
-- Upload version metadata for 12 locales unsupported by altool: en-CA, bn, gu, kn, ml, mr, or, pa, ta, te, ur, sl (across iOS, macOS and tvOS).
-- Upload and verify localized screenshots. 450 generated PNG files are available outside Git in /Users/mumiix/Downloads/MegaRadio-ASO-2026-09-24. None of the new assets have been uploaded yet.
-- Final remote metadata and screenshot delivery validation, then iOS App Review submission.
+## Remaining before review submission
 
-A Marketing-only App Store Connect key named MegaRadio ASO Release 2026 is prepared in Safari, but creation is pending explicit user approval. No new key has been created. Existing user/content-rights declarations were left untouched.
+1. Complete expanded-copy upload and compare all 250 remote records.
+2. Complete all 350 screenshot sets and verify current checksums and order.
+3. Select and verify iOS build 6 for the 1.0.70 version.
+4. Check representative saved pages in Safari and submit iOS for App Review.
+
+No App Review submission has been completed in this release run. Existing
+content-rights declarations remain untouched as requested by the user.

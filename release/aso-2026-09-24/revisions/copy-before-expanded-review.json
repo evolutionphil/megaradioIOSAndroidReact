@@ -1,0 +1,652 @@
+{
+  "tr": {
+    "name": "MegaRadio: Canlı Radyo",
+    "subtitle": "Türkiye ve dünyadan FM, AM",
+    "keywords": "dinle,türkçe,online,istasyon,arabesk,türkü,haber,spor,pop,rock,caz,klasik,yerel,favori",
+    "promotionalText": "Sevdiğin radyoyu bul, favorilerine ekle ve dinlemeye başla. Türkiye'den ve dünyadan canlı yayınları ülkeye veya türe göre keşfet.",
+    "description": "Türkiye'den bir ses, dünyanın başka bir yerinden yeni bir ritim. MegaRadio ile canlı radyo dinle; sevdiğin istasyonları ve henüz tanışmadığın yayınları tek yerde keşfet.\n\nSANA UYAN YAYINI BUL\nİstasyon adına göre ara, ülke seç veya müzik türlerine göz at. Türkçe pop, arabesk, türkü, rock ve cazdan haber, spor ve sohbet yayınlarına kadar farklı seçenekler keşfet.\n\nFAVORİLERİN ELİNİN ALTINDA\nSevdiğin radyoları favorilerine ekle. Bir sonraki dinleyişinde aramayı baştan yapmadan istasyonuna ulaş.\n\nYERELDEN DÜNYAYA\nTürkiye'deki yayınların yanında farklı ülkelerin FM, AM ve internet radyolarını çevrimiçi dinle. Yeni müzikler ve farklı dillerde yayınlarla dinleme alışkanlığını genişlet.\n\nDinlemek için internet bağlantısı gerekir; mobil veri ücretleri uygulanabilir. Yayınların ve şarkı bilgilerinin erişilebilirliği istasyona ve bölgeye bağlıdır. MegaRadio bir radyo rehberidir; yayın içeriklerini ilgili istasyonlar sağlar.",
+    "platform": {
+      "IOS": "iPhone ve iPad'de radyolarını yanında taşı.",
+      "MACOS": "Mac'inde çalışırken veya dinlenirken sevdiğin radyoları aç.",
+      "TVOS": "Apple TV'de kumandayla istasyonlar arasında gezin ve oturma odanı canlı yayınlarla doldur."
+    },
+    "whatsNew": "Tür listelerini, radyo görsellerini ve son dinlenenler düzenini iyileştirdik. Giriş yapma, hesap değiştirme ve abonelikleri geri yükleme işlemlerinde güvenilirliği artırdık."
+  },
+  "de-DE": {
+    "name": "MegaRadio: Radio & Webradio",
+    "subtitle": "Live-Sender aus aller Welt",
+    "keywords": "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop",
+    "promotionalText": "Dein Lieblingssender und neue Entdeckungen: Höre Radio aus Deutschland, Österreich, der Schweiz und aller Welt. Nach Land oder Genre stöbern, Favoriten speichern.",
+    "description": "Vertraute Stimmen aus der Heimat oder neue Musik aus aller Welt: Mit MegaRadio hörst du Radiosender live über das Internet und findest den passenden Sender für deinen Tag.\n\nDEIN WEG ZUM LIEBLINGSSENDER\nSuche nach Sendernamen oder entdecke das Angebot nach Land und Genre. Ob Pop, Rock, Jazz, Klassik, Nachrichten, Sport oder Talk – wähle, was du gerade hören möchtest.\n\nFAVORITEN SCHNELL WIEDERFINDEN\nSpeichere deine Lieblingssender, damit du beim nächsten Mal direkt wieder einsteigen kannst.\n\nRADIO ÜBER GRENZEN HINWEG\nEntdecke Sender aus Deutschland, Österreich und der Schweiz sowie internationale FM-, AM- und Internetradios. Höre lokale Programme oder lerne neue Klänge und Sprachen kennen.\n\nEine Internetverbindung ist erforderlich. Es können mobile Datenkosten entstehen. Die Verfügbarkeit von Streams und Titelinformationen hängt vom Sender und deinem Standort ab. MegaRadio ist ein Radioverzeichnis; die Inhalte stammen von den jeweiligen Sendern.",
+    "platform": {
+      "IOS": "Nimm deine Radiosender auf iPhone und iPad mit.",
+      "MACOS": "Begleite deinen Arbeitsalltag und deine Pausen mit Radio auf dem Mac.",
+      "TVOS": "Entdecke Radiosender mit deiner Apple TV Fernbedienung und höre sie im Wohnzimmer."
+    },
+    "whatsNew": "Wir haben Genrelisten, Senderbilder und die Anordnung der zuletzt gehörten Sender verbessert. Anmeldung, Kontowechsel und das Wiederherstellen von Abonnements funktionieren zuverlässiger."
+  },
+  "en-US": {
+    "name": "MegaRadio: Live Radio",
+    "subtitle": "FM, AM & stations worldwide",
+    "keywords": "internet,online,local,news,talk,sports,jazz,classical,country,pop,rock,favorites,tuner",
+    "promotionalText": "Find a familiar station or discover a new sound. Explore live radio by country and genre, save your favorites, and make room for something new.",
+    "description": "A local voice. A favorite song. A new sound from the other side of the world. MegaRadio brings live radio discovery and listening together in one place.\n\nFIND YOUR NEXT STATION\nSearch by station name or browse by country and genre. Explore pop, rock, jazz and classical music alongside news, sports and talk stations.\n\nKEEP YOUR FAVORITES CLOSE\nSave the stations you enjoy and return to them without starting your search again.\n\nLISTEN LOCALLY, EXPLORE GLOBALLY\nDiscover stations from the United States and around the world. Listen to FM, AM and internet radio streams, from familiar local programs to broadcasts in other languages.\n\nAn internet connection is required. Mobile data charges may apply. Stream and song information availability varies by station and region. MegaRadio is a radio directory; broadcast content is provided by the respective stations.",
+    "platform": {
+      "IOS": "Take your radio listening with you on iPhone and iPad.",
+      "MACOS": "Bring live radio to your workday or downtime on your Mac.",
+      "TVOS": "Browse with your Apple TV remote and enjoy live radio in your living room."
+    },
+    "whatsNew": "Improved genre lists, station artwork and the recently played layout. This update also makes sign-in, account switching and subscription restoration more reliable."
+  },
+  "fr-FR": {
+    "name": "MegaRadio: Radio en direct",
+    "subtitle": "Stations FM, AM du monde",
+    "keywords": "écouter,internet,en ligne,france,locales,actualités,sport,jazz,classique,pop,rock,favoris",
+    "promotionalText": "Retrouvez vos radios préférées et découvrez de nouvelles voix. Explorez les stations par pays ou genre, puis gardez vos découvertes dans vos favoris.",
+    "description": "Une voix familière, votre musique préférée ou une nouvelle découverte : MegaRadio vous accompagne dans l'univers de la radio en direct.\n\nTROUVEZ LA STATION QUI VOUS RESSEMBLE\nRecherchez une radio par son nom ou explorez les stations par pays et genre. Pop, rock, jazz, classique, actualités, sport et débats : choisissez selon vos envies.\n\nVOS FAVORIS À PORTÉE DE MAIN\nEnregistrez les stations que vous aimez pour les retrouver sans recommencer votre recherche.\n\nDE LA FRANCE AU RESTE DU MONDE\nÉcoutez les flux en ligne des radios FM, AM et internet de France et d'ailleurs. Retrouvez les programmes locaux ou découvrez des émissions dans d'autres langues.\n\nUne connexion internet est nécessaire. Des frais de données mobiles peuvent s'appliquer. La disponibilité des flux et des titres dépend de la station et de votre région. MegaRadio est un annuaire ; les contenus sont fournis par les radios concernées.",
+    "platform": {
+      "IOS": "Emportez vos radios sur iPhone et iPad.",
+      "MACOS": "Écoutez la radio sur votre Mac, au travail ou pendant vos pauses.",
+      "TVOS": "Parcourez les stations avec la télécommande de votre Apple TV et écoutez-les dans votre salon."
+    },
+    "whatsNew": "Amélioration des listes de genres, des images des stations et de l'affichage des écoutes récentes. Connexion, changement de compte et restauration des abonnements sont plus fiables."
+  },
+  "es-ES": {
+    "name": "MegaRadio: Radio en directo",
+    "subtitle": "Emisoras FM y AM del mundo",
+    "keywords": "escuchar,internet,online,españa,local,noticias,deportes,jazz,clásica,pop,rock,favoritos",
+    "promotionalText": "Tus emisoras de siempre y nuevas voces por descubrir. Explora radios por país o género, guarda tus favoritas y encuentra qué escuchar hoy.",
+    "description": "Una voz cercana, tu música favorita o un sonido que llega de lejos. MegaRadio reúne emisoras de España y de todo el mundo para escuchar radio en directo.\n\nENCUENTRA TU EMISORA\nBusca por nombre o explora por país y género. Descubre pop, rock, jazz y música clásica, además de noticias, deportes y programas de conversación.\n\nVUELVE A TUS FAVORITAS\nGuarda las emisoras que te gustan y encuéntralas en tu próxima escucha sin repetir la búsqueda.\n\nRADIO SIN FRONTERAS\nEscucha por internet emisoras FM, AM y radios online. Sigue los programas locales o descubre emisiones de otros países e idiomas.\n\nSe necesita conexión a internet. Pueden aplicarse cargos por datos móviles. La disponibilidad de las emisiones y la información de las canciones depende de la emisora y de la región. MegaRadio es un directorio; cada emisora proporciona sus contenidos.",
+    "platform": {
+      "IOS": "Lleva tus emisoras contigo en el iPhone y el iPad.",
+      "MACOS": "Escucha radio en tu Mac mientras trabajas o descansas.",
+      "TVOS": "Explora las emisoras con el mando del Apple TV y disfruta de la radio en el salón."
+    },
+    "whatsNew": "Mejoras en las listas de géneros, las imágenes de las emisoras y las escuchas recientes. Mayor fiabilidad al iniciar sesión, cambiar de cuenta y restaurar suscripciones."
+  },
+  "it": {
+    "name": "MegaRadio: Radio in diretta",
+    "subtitle": "Stazioni FM e AM dal mondo",
+    "keywords": "ascoltare,internet,online,italia,locali,notizie,sport,jazz,classica,pop,rock,preferiti",
+    "promotionalText": "Ritrova le tue radio preferite e scopri nuove voci. Esplora le stazioni per paese e genere e salva quelle che vuoi ascoltare di nuovo.",
+    "description": "Una voce di casa o un nuovo suono dal mondo: con MegaRadio scopri e ascolti la radio in diretta.\n\nTROVA LA TUA STAZIONE\nCerca per nome oppure esplora per paese e genere. Scegli tra pop, rock, jazz, classica, notizie, sport e programmi di conversazione.\n\nI PREFERITI SEMPRE A PORTATA\nSalva le stazioni che ami e ritrovale al prossimo ascolto senza ripetere la ricerca.\n\nDALL'ITALIA AL MONDO\nAscolta via internet radio FM, AM e stazioni online italiane e internazionali. Segui i programmi locali o scopri trasmissioni in altre lingue.\n\nÈ necessaria una connessione internet. Potrebbero essere applicati costi per i dati mobili. La disponibilità degli stream e dei titoli dipende dalla stazione e dalla regione. MegaRadio è una directory; i contenuti sono forniti dalle rispettive emittenti.",
+    "platform": {
+      "IOS": "Porta le tue radio con te su iPhone e iPad.",
+      "MACOS": "Ascolta la radio sul Mac mentre lavori o ti rilassi.",
+      "TVOS": "Sfoglia le stazioni con il telecomando di Apple TV e ascolta la radio in salotto."
+    },
+    "whatsNew": "Migliorati gli elenchi dei generi, le immagini delle stazioni e gli ascolti recenti. Accesso, cambio di account e ripristino degli abbonamenti sono più affidabili."
+  },
+  "pt-PT": {
+    "name": "MegaRadio: Rádio em direto",
+    "subtitle": "Estações FM e AM do mundo",
+    "keywords": "ouvir,internet,online,portugal,local,notícias,desporto,jazz,clássica,pop,rock,favoritos",
+    "promotionalText": "As rádios de sempre e novas descobertas. Explore estações por país e género, guarde as suas favoritas e escolha o que quer ouvir hoje.",
+    "description": "Uma voz familiar ou um som de outro país. Com a MegaRadio, descubra e ouça rádio em direto, de Portugal e do resto do mundo.\n\nENCONTRE A SUA ESTAÇÃO\nPesquise pelo nome ou explore por país e género. Descubra pop, rock, jazz, música clássica, notícias, desporto e programas de conversa.\n\nOS SEUS FAVORITOS POR PERTO\nGuarde as estações de que gosta para as encontrar na próxima vez, sem repetir a pesquisa.\n\nDESCUBRA NOVOS HORIZONTES\nOuça pela internet emissões de rádios FM, AM e online. Siga programas locais e descubra estações de outros países e idiomas.\n\nÉ necessária uma ligação à internet. Podem aplicar-se custos de dados móveis. A disponibilidade das emissões e da informação das músicas depende da estação e da região. A MegaRadio é um diretório; os conteúdos são fornecidos pelas respetivas estações.",
+    "platform": {
+      "IOS": "Leve as suas rádios consigo no iPhone e no iPad.",
+      "MACOS": "Ouça rádio no Mac enquanto trabalha ou descansa.",
+      "TVOS": "Explore estações com o comando da Apple TV e ouça rádio na sala."
+    },
+    "whatsNew": "Melhorámos as listas de géneros, as imagens das estações e as escutas recentes. O início de sessão, a mudança de conta e o restauro de assinaturas estão mais fiáveis."
+  },
+  "ru": {
+    "name": "MegaRadio: Радио онлайн",
+    "subtitle": "Прямой эфир FM и AM станций",
+    "keywords": "слушать,интернет,россия,мировое,новости,спорт,джаз,классика,поп,рок,избранное",
+    "promotionalText": "Знакомые голоса и новые открытия. Ищите радиостанции по стране и жанру, сохраняйте любимые и выбирайте, что слушать сегодня.",
+    "description": "Любимая радиостанция или новое звучание из другой страны — MegaRadio помогает находить и слушать радио в прямом эфире.\n\nНАЙДИТЕ СВОЮ СТАНЦИЮ\nИщите по названию или выбирайте страну и жанр. Поп, рок, джаз, классика, новости, спорт и разговорные программы — найдите эфир по настроению.\n\nЛЮБИМЫЕ СТАНЦИИ РЯДОМ\nДобавляйте станции в избранное, чтобы возвращаться к ним без повторного поиска.\n\nОТ МЕСТНЫХ ЭФИРОВ К МИРОВЫМ\nСлушайте интернет-трансляции FM, AM и онлайн-радиостанций. Открывайте передачи из разных стран и на разных языках.\n\nДля прослушивания требуется интернет. Возможна плата за мобильный трафик. Доступность эфиров и информации о композициях зависит от станции и региона. MegaRadio — каталог радиостанций; содержание эфира предоставляют вещатели.",
+    "platform": {
+      "IOS": "Слушайте свои станции на iPhone и iPad.",
+      "MACOS": "Включайте радио на Mac во время работы или отдыха.",
+      "TVOS": "Выбирайте станции пультом Apple TV и слушайте радио в гостиной."
+    },
+    "whatsNew": "Улучшены списки жанров, изображения станций и отображение недавних прослушиваний. Повышена надёжность входа, смены аккаунта и восстановления подписок."
+  },
+  "ja": {
+    "name": "MegaRadio: ラジオを聴く",
+    "subtitle": "日本と世界のFM・AMをライブで",
+    "keywords": "インターネット,ネットラジオ,放送局,オンライン,ニュース,スポーツ,ジャズ,クラシック,ポップ,ロック,お気に入り",
+    "promotionalText": "いつもの放送局も、まだ知らない世界の音も。国やジャンルからラジオを探して、お気に入りの局を保存しましょう。",
+    "description": "身近な声から世界の新しい音楽まで。MegaRadioで、日本や海外のラジオ放送をインターネットで楽しみましょう。\n\n聴きたい放送局を見つける\n放送局名で検索したり、国やジャンルから探したりできます。ポップ、ロック、ジャズ、クラシック、ニュース、スポーツ、トークなど、気分に合う番組を見つけてください。\n\nお気に入りをすぐに再生\n好きな放送局を保存すれば、次に聴くときも検索し直す必要がありません。\n\nラジオで世界を広げる\nFM・AM放送局のネット配信やインターネットラジオを再生。地元の番組を聴いたり、海外の言葉や音楽に触れたりできます。\n\nインターネット接続が必要です。モバイルデータ通信料がかかる場合があります。配信や曲情報の提供状況は放送局と地域によって異なります。MegaRadioはラジオ局のディレクトリで、番組内容は各放送局が提供します。",
+    "platform": {
+      "IOS": "iPhoneやiPadで、ラジオをいつも身近に。",
+      "MACOS": "仕事中や休憩中も、Macでラジオを楽しめます。",
+      "TVOS": "Apple TVのリモコンで放送局を選び、リビングでラジオを楽しめます。"
+    },
+    "whatsNew": "ジャンル一覧、放送局の画像、最近聴いた局の表示を改善しました。ログイン、アカウント切り替え、サブスクリプション復元の信頼性も向上しました。"
+  },
+  "zh-Hant": {
+    "name": "MegaRadio: 即時網路電台",
+    "subtitle": "收聽台灣香港與世界FM、AM廣播",
+    "keywords": "線上,收音機,直播,新聞,體育,爵士,古典,流行,搖滾,音樂台,最愛,頻道,國際",
+    "promotionalText": "熟悉的聲音，新的聆聽發現。依國家或類型探索電台，將喜歡的頻道加入最愛，輕鬆開始收聽。",
+    "description": "從熟悉的在地聲音到世界各地的新音樂，MegaRadio讓你透過網路探索並收聽即時廣播。\n\n找到想聽的電台\n搜尋電台名稱，或依國家和類型瀏覽。流行、搖滾、爵士、古典、新聞、體育與談話節目，依照心情選擇。\n\n喜愛的電台隨手可及\n將喜歡的電台加入最愛，下次收聽時不必重新搜尋。\n\n從在地走向世界\n收聽台灣、香港及世界各地的FM、AM網路串流與網路電台。追蹤熟悉的節目，也探索不同語言的聲音。\n\n使用本服務需要網路連線，可能產生行動數據費用。廣播及歌曲資訊的可用性依電台和地區而異。MegaRadio是電台目錄；節目內容由各電台提供。",
+    "platform": {
+      "IOS": "在iPhone和iPad上，讓喜愛的廣播陪伴你。",
+      "MACOS": "工作或休息時，都能在Mac上聽廣播。",
+      "TVOS": "使用Apple TV遙控器瀏覽電台，在客廳享受即時廣播。"
+    },
+    "whatsNew": "改善類型清單、電台圖片與最近收聽的排列方式，並提升登入、切換帳號及回復訂閱的可靠性。"
+  },
+  "he": {
+    "name": "MegaRadio: רדיו בשידור חי",
+    "subtitle": "תחנות FM ו-AM מכל העולם",
+    "keywords": "האזנה,אינטרנט,אונליין,ישראל,חדשות,ספורט,ג׳אז,קלאסי,פופ,רוק,מועדפים",
+    "promotionalText": "התחנות המוכרות וקולות חדשים לגלות. חפשו לפי מדינה או ז'אנר, שמרו את התחנות האהובות ובחרו מה לשמוע היום.",
+    "description": "קול מוכר מהבית או צליל חדש מהעולם: עם MegaRadio אפשר לגלות תחנות ולהאזין לרדיו בשידור חי.\n\nמוצאים את התחנה המתאימה\nחפשו לפי שם או דפדפו לפי מדינה וז'אנר. גלו פופ, רוק, ג'אז ומוזיקה קלאסית לצד חדשות, ספורט ותוכניות שיחה.\n\nהמועדפים קרובים\nשמרו תחנות שאהבתם וחזרו אליהן בפעם הבאה בלי לחפש מחדש.\n\nמישראל אל העולם\nהאזינו דרך האינטרנט לשידורי FM, AM ותחנות מקוונות מישראל וממדינות נוספות. גלו תוכניות מקומיות ושידורים בשפות אחרות.\n\nנדרש חיבור לאינטרנט. ייתכנו חיובים על נתונים סלולריים. זמינות השידורים ופרטי השירים תלויה בתחנה ובאזור. MegaRadio הוא מדריך תחנות; התוכן מסופק על ידי התחנות עצמן.",
+    "platform": {
+      "IOS": "קחו את התחנות שלכם איתכם ב-iPhone וב-iPad.",
+      "MACOS": "האזינו לרדיו ב-Mac בזמן העבודה או המנוחה.",
+      "TVOS": "דפדפו בין התחנות עם שלט Apple TV והאזינו בסלון."
+    },
+    "whatsNew": "שיפרנו את רשימות הז'אנרים, תמונות התחנות ותצוגת ההאזנות האחרונות. שיפרנו גם את אמינות הכניסה, מעבר בין חשבונות ושחזור מינויים."
+  },
+  "ar-SA": {
+    "name": "MegaRadio: راديو مباشر",
+    "subtitle": "محطات FM وAM من حول العالم",
+    "keywords": "استماع,إذاعة,انترنت,عربي,السعودية,أخبار,رياضة,جاز,كلاسيك,بوب,روك,مفضلة",
+    "promotionalText": "محطاتك المألوفة وأصوات جديدة تستحق الاكتشاف. تصفّح حسب البلد أو النوع، واحفظ محطاتك المفضلة واختر ما تستمع إليه اليوم.",
+    "description": "صوت مألوف من بلدك أو موسيقى جديدة من العالم. مع MegaRadio يمكنك اكتشاف محطات الراديو والاستماع إلى البث المباشر عبر الإنترنت.\n\nاعثر على محطتك\nابحث باسم المحطة أو تصفّح حسب البلد والنوع. اكتشف البوب والروك والجاز والموسيقى الكلاسيكية، إلى جانب الأخبار والرياضة والبرامج الحوارية.\n\nمفضلاتك قريبة منك\nاحفظ المحطات التي تحبها لتعود إليها في المرة القادمة دون إعادة البحث.\n\nمن منطقتك إلى العالم\nاستمع إلى بث محطات FM وAM ومحطات الإنترنت من السعودية والمنطقة ومختلف البلدان. تابع البرامج المحلية واكتشف أصواتًا ولغات جديدة.\n\nيلزم اتصال بالإنترنت وقد تُطبق رسوم بيانات الهاتف. يختلف توفر البث ومعلومات الأغاني حسب المحطة والمنطقة. MegaRadio دليل للمحطات؛ وتوفر الجهات الإذاعية محتوى البث.",
+    "platform": {
+      "IOS": "اصطحب محطاتك على iPhone وiPad.",
+      "MACOS": "استمع إلى الراديو على Mac أثناء العمل أو الاستراحة.",
+      "TVOS": "تصفّح المحطات بريموت Apple TV واستمتع بالراديو في غرفة المعيشة."
+    },
+    "whatsNew": "حسّنا قوائم الأنواع وصور المحطات وترتيب المحطات المشغّلة مؤخرًا، مع تحسين موثوقية تسجيل الدخول وتبديل الحسابات واستعادة الاشتراكات."
+  },
+  "en-GB": {
+    "name": "MegaRadio: Live Radio",
+    "subtitle": "FM, AM & worldwide stations",
+    "keywords": "internet,online,uk,british,local,news,sport,talk,jazz,classical,indie,rock,favourites",
+    "promotionalText": "Your local voices, a favourite show or something further afield. Explore UK and international radio, then keep the stations you enjoy in your favourites.",
+    "description": "Start with a familiar UK station, then see where your listening takes you. MegaRadio brings local broadcasts and international radio streams into one easy-to-browse directory.\n\nFIND SOMETHING FOR YOUR DAY\nSearch for a station by name, browse by country or explore genres from indie and rock to jazz and classical. Catch news, sport and conversation or let music accompany your day.\n\nMAKE IT YOUR RADIO COLLECTION\nKeep your favourite stations together and return to them without another search. Explore FM, AM and internet stations from the UK and around the world.\n\nInternet access is required and mobile data charges may apply. Broadcast and track information availability varies by station and region. Stations provide their own programmes; MegaRadio is a directory.",
+    "platform": {
+      "IOS": "Listen on your iPhone or iPad, at home or on the go.",
+      "MACOS": "Keep radio close while you work or relax on your Mac.",
+      "TVOS": "Choose a station with your Apple TV remote and bring live radio into the living room."
+    },
+    "whatsNew": "Improved genre browsing, station artwork and recently played layouts, with more reliable sign-in, account switching and subscription restoration."
+  },
+  "en-AU": {
+    "name": "MegaRadio: Live Radio",
+    "subtitle": "Australian & global FM, AM",
+    "keywords": "listen,internet,online,stations,local,news,sport,talk,jazz,country,rock,pop,favourites",
+    "promotionalText": "A local station over breakfast or a new sound from overseas. Find Australian and international radio by country or genre and save your favourites.",
+    "description": "Keep a familiar Australian station close or tune into a different part of the world. MegaRadio helps you discover live radio streams to suit your day.\n\nLOCAL VOICES, GLOBAL CHOICE\nLook up a station by name or browse the Australian selection alongside broadcasts from other countries. Follow news, sport and talk, or explore country, rock, pop and jazz.\n\nLESS SEARCHING, MORE LISTENING\nSave stations to your favourites and find them again when you're ready to listen. FM and AM broadcasters stream alongside internet-only stations.\n\nYou need an internet connection. Mobile data charges may apply. Streams and song information depend on the broadcaster and region. MegaRadio is a directory; individual stations provide the programmes.",
+    "platform": {
+      "IOS": "Listen on iPhone and iPad wherever you have an internet connection.",
+      "MACOS": "Bring your favourite radio stations to your Mac.",
+      "TVOS": "Explore stations with your Apple TV remote and listen at home."
+    },
+    "whatsNew": "Better genre lists, station images and recently played layouts. Sign-in, switching accounts and restoring subscriptions are more reliable."
+  },
+  "fr-CA": {
+    "name": "MegaRadio: Radio en direct",
+    "subtitle": "Stations du Québec et du monde",
+    "keywords": "écouter,fm,am,internet,en ligne,canada,francophone,nouvelles,sports,jazz,country,favoris",
+    "promotionalText": "Des voix d'ici et des découvertes d'ailleurs. Retrouvez des radios du Québec, du Canada et du monde, puis gardez vos stations préférées dans vos favoris.",
+    "description": "Votre rendez-vous avec une voix d'ici, une émission francophone ou une station à l'autre bout du monde. MegaRadio permet d'explorer la radio en direct selon vos envies.\n\nUN POINT DE DÉPART CANADIEN\nCherchez une station par son nom ou parcourez l'offre par pays et genre. Nouvelles, sports, émissions parlées, pop, country ou jazz : choisissez ce qui vous accompagne aujourd'hui.\n\nUNE COLLECTION À VOTRE IMAGE\nAjoutez vos stations aux favoris pour les retrouver facilement. Découvrez les diffusions en ligne de radios FM, AM et de stations internet du Canada et d'ailleurs.\n\nUne connexion internet est requise et des frais de données mobiles peuvent s'appliquer. Les diffusions et les renseignements sur les chansons varient selon la station et la région. Les stations fournissent leurs contenus ; MegaRadio est un répertoire.",
+    "platform": {
+      "IOS": "Écoutez vos radios sur iPhone et iPad.",
+      "MACOS": "Gardez la radio à portée de main sur votre Mac.",
+      "TVOS": "Choisissez une station avec la télécommande de votre Apple TV et écoutez dans votre salon."
+    },
+    "whatsNew": "Améliorations des genres, des images des stations et des écoutes récentes. Connexion, changement de compte et restauration des abonnements plus fiables."
+  },
+  "es-MX": {
+    "name": "MegaRadio: Radio en vivo",
+    "subtitle": "Emisoras de México y el mundo",
+    "keywords": "escuchar,fm,am,internet,online,estaciones,noticias,deportes,regional,banda,pop,favoritos",
+    "promotionalText": "Tu estación de siempre y nuevas voces de México y el mundo. Busca por nombre, explora por género y guarda las radios que quieras volver a escuchar.",
+    "description": "Una estación local para empezar el día o música que te conecta con casa. MegaRadio te ayuda a encontrar radio en vivo de México, Latinoamérica y otras partes del mundo.\n\nELIGE QUÉ ESCUCHAR\nBusca una estación por su nombre o explora por país y género. Descubre música regional, pop, rock y más, junto con noticias, deportes y programas de conversación.\n\nTUS ESTACIONES, A LA MANO\nAgrégalas a favoritos para volver a ellas sin repetir la búsqueda. Escucha por internet transmisiones FM, AM y estaciones que emiten en línea.\n\nNecesitas conexión a internet; tu operador puede cobrar por datos móviles. La disponibilidad de transmisiones y títulos de canciones depende de la estación y tu región. MegaRadio es un directorio; cada emisora proporciona su contenido.",
+    "platform": {
+      "IOS": "Lleva tus radios en el iPhone y el iPad.",
+      "MACOS": "Pon tu estación favorita en la Mac mientras trabajas o descansas.",
+      "TVOS": "Navega con el control remoto de Apple TV y disfruta la radio en tu sala."
+    },
+    "whatsNew": "Mejoramos géneros, imágenes de estaciones y escuchas recientes. También hicimos más confiables el inicio de sesión, el cambio de cuenta y la restauración de suscripciones."
+  },
+  "pt-BR": {
+    "name": "MegaRadio: Rádio ao vivo",
+    "subtitle": "Emissoras FM e AM do mundo",
+    "keywords": "ouvir,online,internet,brasil,sertanejo,gospel,pagode,samba,notícias,esportes,favoritos",
+    "promotionalText": "Do sertanejo às notícias do dia: encontre rádios do Brasil e do mundo, explore novos estilos e deixe suas emissoras preferidas nos favoritos.",
+    "description": "O som que lembra sua cidade, a companhia durante o trabalho ou um ritmo que você ainda não conhecia. Com o MegaRadio, descubra rádios ao vivo do Brasil e de outros países.\n\nENCONTRE SUA VIBE\nPesquise pelo nome da emissora ou explore por país e estilo. Procure sertanejo, gospel, samba, pagode, pop e rock, além de notícias, esportes e programas de conversa.\n\nSUAS RÁDIOS SEMPRE POR PERTO\nAdicione emissoras aos favoritos e volte a ouvir sem refazer a busca. Descubra transmissões de rádios FM, AM e estações online.\n\nÉ preciso ter conexão com a internet. Podem ser cobrados dados móveis. A disponibilidade das transmissões e das informações das músicas varia por emissora e região. O MegaRadio é um diretório; o conteúdo é fornecido pelas próprias rádios.",
+    "platform": {
+      "IOS": "Leve suas rádios no iPhone e no iPad.",
+      "MACOS": "Ouça rádio no Mac durante o trabalho ou nas horas de descanso.",
+      "TVOS": "Escolha sua rádio com o controle da Apple TV e curta o som na sala."
+    },
+    "whatsNew": "Melhoramos as listas de gêneros, as imagens das rádios e as reproduções recentes. Login, troca de conta e restauração de assinaturas estão mais confiáveis."
+  },
+  "nl-NL": {
+    "name": "MegaRadio: Radio luisteren",
+    "subtitle": "Live FM, AM en wereldzenders",
+    "keywords": "internetradio,online,nederland,belgië,vlaams,lokaal,nieuws,sport,jazz,klassiek,favorieten",
+    "promotionalText": "Een vertrouwde stem of een nieuwe ontdekking. Vind Nederlandse, Vlaamse en internationale radiozenders en bewaar wat je graag hoort.",
+    "description": "Begin met een vertrouwde Nederlandse of Vlaamse zender en ontdek daarna de rest van de radiowereld. MegaRadio maakt live radio vinden en luisteren eenvoudig.\n\nWAT WIL JE VANDAAG HOREN?\nZoek op zendernaam of blader door landen en genres. Van Nederlandstalige muziek, pop en dance tot jazz, nieuws, sport en gesprekken: kies wat bij je dag past.\n\nBEWAAR JE FAVORIETEN\nSla zenders op zodat je ze later snel terugvindt. Luister via internet naar FM-, AM- en onlinezenders uit binnen- en buitenland.\n\nEen internetverbinding is nodig; mobiele datakosten kunnen gelden. Streams en informatie over nummers zijn afhankelijk van de zender en regio. MegaRadio is een radiogids; de omroepen verzorgen de inhoud.",
+    "platform": {
+      "IOS": "Neem je radiozenders mee op iPhone en iPad.",
+      "MACOS": "Luister op je Mac tijdens het werken of ontspannen.",
+      "TVOS": "Kies zenders met je Apple TV-afstandsbediening en luister in de woonkamer."
+    },
+    "whatsNew": "Verbeterde genrelijsten, zenderafbeeldingen en recent beluisterde zenders. Inloggen, accounts wisselen en abonnementen herstellen werken betrouwbaarder."
+  },
+  "sv": {
+    "name": "MegaRadio: Radio Sverige",
+    "subtitle": "Webbradio, musik och nyheter",
+    "keywords": "lyssna,nätradio,fm,am,online,lokalt,sport,jazz,klassisk,pop,rock,favoriter",
+    "promotionalText": "En lokal favorit eller nya ljud från världen. Hitta svenska och internationella radiokanaler, utforska genrer och spara det du gillar.",
+    "description": "Morgonens nyheter, musik under dagen eller en röst hemifrån. MegaRadio hjälper dig att hitta direktsänd radio från Sverige och resten av världen.\n\nSÖK, UTFORSKA, LYSSNA\nSök efter kanalens namn eller bläddra bland länder och genrer. Upptäck pop, rock, jazz och klassiskt, tillsammans med nyheter, sport och samtal.\n\nDINA FAVORITER SAMLAS HÄR\nSpara kanaler så att du hittar tillbaka utan en ny sökning. Lyssna på FM-, AM- och webbradiokanaler via internet.\n\nInternetanslutning krävs och avgifter för mobildata kan tillkomma. Sändningar och låtinformation varierar mellan kanaler och regioner. MegaRadio är en radiokatalog; innehållet kommer från respektive kanal.",
+    "platform": {
+      "IOS": "Ta med radion på iPhone och iPad.",
+      "MACOS": "Låt radion följa arbetsdagen på din Mac.",
+      "TVOS": "Välj kanal med Apple TV-fjärrkontrollen och lyssna i vardagsrummet."
+    },
+    "whatsNew": "Förbättrade genrelistor, kanalbilder och senast spelade kanaler. Inloggning, kontobyten och återställning av prenumerationer är tillförlitligare."
+  },
+  "no": {
+    "name": "MegaRadio: Nettradio & musikk",
+    "subtitle": "FM, AM og kanaler fra verden",
+    "keywords": "nettradio,norsk,norge,online,lokal,nyheter,sport,jazz,klassisk,pop,rock,favoritter",
+    "promotionalText": "Lokale stemmer og nye favoritter fra utlandet. Finn radiokanaler etter land og sjanger, og lagre kanalene du vil høre igjen.",
+    "description": "En kjent norsk stemme eller musikk fra et annet land? Med MegaRadio finner du direktesendt radio som passer dagen din.\n\nVELG DIN KANAL\nSøk etter navn eller utforsk land og sjangre. Hør pop, rock, jazz og klassisk, eller velg nyheter, sport og samtaleprogrammer.\n\nTA VARE PÅ FAVORITTENE\nLagre kanalene du liker og finn dem igjen uten å søke på nytt. Utforsk FM-, AM- og nettradio fra Norge og resten av verden.\n\nDu trenger internett. Mobildatakostnader kan påløpe. Tilgjengelige sendinger og låtopplysninger varierer etter kanal og region. MegaRadio er en radiokatalog; kanalene leverer innholdet.",
+    "platform": {
+      "IOS": "Ha radioen med deg på iPhone og iPad.",
+      "MACOS": "Hør radio på Mac mens du jobber eller slapper av.",
+      "TVOS": "Bla med Apple TV-fjernkontrollen og nyt radio i stua."
+    },
+    "whatsNew": "Bedre sjangerlister, kanalbilder og oversikt over nylig spilte kanaler. Mer pålitelig innlogging, kontobytte og gjenoppretting av abonnementer."
+  },
+  "da": {
+    "name": "MegaRadio: Dansk netradio",
+    "subtitle": "Live radio fra hele verden",
+    "keywords": "lyt,webradio,fm,am,danmark,online,lokal,nyheder,sport,jazz,klassisk,pop,favoritter",
+    "promotionalText": "Find din lokale radiokanal eller gå på opdagelse i verden. Vælg land og genre, og gem de kanaler, du gerne vil høre igen.",
+    "description": "Nyheder til morgenkaffen eller musik til resten af dagen. MegaRadio giver dig en indgang til danske og internationale radiokanaler.\n\nFIND DEN RETTE LYD\nSøg på kanalens navn eller gå på opdagelse efter land og genre. Vælg mellem pop, rock, jazz, klassisk, nyheder, sport og samtaler.\n\nFAVORITTER UDEN NY SØGNING\nGem dine foretrukne kanaler, og find dem hurtigt igen. Lyt via internet til FM-, AM- og netradiokanaler fra Danmark og udlandet.\n\nInternetforbindelse er nødvendig. Der kan være udgifter til mobildata. Udsendelser og sangoplysninger afhænger af kanal og område. MegaRadio er en radioguide; kanalerne leverer indholdet.",
+    "platform": {
+      "IOS": "Tag radioen med på iPhone og iPad.",
+      "MACOS": "Lyt på din Mac under arbejde eller afslapning.",
+      "TVOS": "Vælg kanaler med Apple TV-fjernbetjeningen, og lyt i stuen."
+    },
+    "whatsNew": "Bedre genrelister, kanalbilleder og senest afspillede kanaler. Mere pålideligt login, kontoskift og gendannelse af abonnementer."
+  },
+  "fi": {
+    "name": "MegaRadio: Kuuntele radiota",
+    "subtitle": "Suomen ja maailman nettiradio",
+    "keywords": "suomi,fm,am,verkkoradio,suorat,kanavat,uutiset,urheilu,jazz,klassinen,pop,rock,suosikit",
+    "promotionalText": "Tuttu kotimainen kanava tai uusia ääniä maailmalta. Löydä radiokanavia maan ja tyylilajin mukaan ja tallenna omat suosikkisi.",
+    "description": "Uutisia aamun alkuun, musiikkia työpäivään tai tuttu ääni kotimaasta. MegaRadiolla löydät suoria radiolähetyksiä Suomesta ja maailmalta.\n\nETSI OMA KANAVASI\nHae kanavan nimellä tai selaa maita ja tyylilajeja. Valitse popia, rockia, jazzia, klassista, uutisia, urheilua tai puheohjelmia.\n\nSUOSIKIT TALTEEN\nTallenna pitämäsi kanavat, jotta löydät ne seuraavalla kerralla ilman uutta hakua. Kuuntele FM-, AM- ja nettiradiokanavia internetin kautta.\n\nKuuntelu vaatii internetyhteyden. Mobiilidatasta voi aiheutua maksuja. Lähetysten ja kappaletietojen saatavuus riippuu kanavasta ja alueesta. MegaRadio on radiohakemisto; kanavat vastaavat ohjelmasisällöstä.",
+    "platform": {
+      "IOS": "Ota radio mukaan iPhoneen ja iPadiin.",
+      "MACOS": "Kuuntele radiota Macilla työn tai levon lomassa.",
+      "TVOS": "Valitse kanava Apple TV:n kaukosäätimellä ja kuuntele olohuoneessa."
+    },
+    "whatsNew": "Parannettu tyylilajilistoja, kanavakuvia ja viimeksi kuunneltujen näkymää. Kirjautuminen, tilinvaihto ja tilausten palautus ovat luotettavampia."
+  },
+  "pl": {
+    "name": "MegaRadio: Radio internetowe",
+    "subtitle": "Stacje FM i AM na żywo",
+    "keywords": "słuchaj,online,polska,polskie,lokalne,wiadomości,sport,jazz,klasyka,pop,rock,ulubione",
+    "promotionalText": "Polskie stacje i nowe dźwięki ze świata. Szukaj radia według kraju lub gatunku, zapisuj ulubione i wybieraj, czego chcesz dziś słuchać.",
+    "description": "Znany głos z polskiego radia czy nowa muzyka z zagranicy? MegaRadio ułatwia odkrywanie stacji i słuchanie ich na żywo przez internet.\n\nRADIO NA TWÓJ DZIEŃ\nWyszukaj stację po nazwie albo przeglądaj kraje i gatunki. Odkrywaj pop, rock, jazz, muzykę klasyczną, wiadomości, sport i audycje rozmów.\n\nZAPISZ ULUBIONE\nZachowaj stacje, do których chcesz wracać, bez ponownego szukania. Słuchaj internetowych transmisji FM, AM i rozgłośni online z Polski oraz innych krajów.\n\nWymagane jest połączenie internetowe. Mogą obowiązywać opłaty za transmisję danych. Dostępność audycji i informacji o utworach zależy od stacji i regionu. MegaRadio to katalog; treści dostarczają nadawcy.",
+    "platform": {
+      "IOS": "Miej radio przy sobie na iPhonie i iPadzie.",
+      "MACOS": "Słuchaj na Macu podczas pracy lub odpoczynku.",
+      "TVOS": "Wybieraj stacje pilotem Apple TV i słuchaj w salonie."
+    },
+    "whatsNew": "Ulepszyliśmy listy gatunków, grafiki stacji i ostatnio słuchane. Logowanie, zmiana konta oraz przywracanie subskrypcji są bardziej niezawodne."
+  },
+  "cs": {
+    "name": "MegaRadio: Rádio online",
+    "subtitle": "Živé vysílání FM a AM stanic",
+    "keywords": "poslech,internetové,české,česko,svět,zprávy,sport,jazz,klasika,pop,rock,oblíbené",
+    "promotionalText": "České stanice i nové hlasy ze světa. Hledejte podle země či žánru a uložte si rádia, ke kterým se chcete vracet.",
+    "description": "Ranní zprávy, hudba k práci nebo známý hlas z domova. MegaRadio vám pomůže objevit živé rozhlasové vysílání z Česka i zahraničí.\n\nVYBERTE SI PODLE NÁLADY\nHledejte stanici podle názvu nebo procházejte země a žánry. Pop, rock, jazz, klasika, zprávy, sport i mluvené pořady na jednom místě.\n\nOBLÍBENÉ VŽDY PO RUCE\nUložte si stanice pro příští poslech bez nového hledání. Poslouchejte internetové přenosy FM, AM a online rádií.\n\nJe nutné připojení k internetu a mohou se účtovat mobilní data. Dostupnost vysílání a názvů skladeb závisí na stanici a regionu. MegaRadio je katalog; obsah zajišťují vysílatelé.",
+    "platform": {
+      "IOS": "Vezměte si rádio s sebou na iPhonu a iPadu.",
+      "MACOS": "Poslouchejte rádio na Macu při práci i odpočinku.",
+      "TVOS": "Procházejte stanice ovladačem Apple TV a poslouchejte v obývacím pokoji."
+    },
+    "whatsNew": "Vylepšili jsme žánry, obrázky stanic a nedávno přehrávané stanice. Přihlášení, přepínání účtů a obnovení předplatného jsou spolehlivější."
+  },
+  "sk": {
+    "name": "MegaRadio: Rádio naživo",
+    "subtitle": "Online stanice FM a AM",
+    "keywords": "počúvať,internetové,slovensko,slovenské,svet,správy,šport,jazz,klasika,pop,rock,obľúbené",
+    "promotionalText": "Domáce rádiá aj nové zvuky zo zahraničia. Vyhľadávajte podľa krajiny a žánru a uložte si stanice na ďalšie počúvanie.",
+    "description": "Obľúbené slovenské rádio alebo nová stanica zo sveta. MegaRadio spája vyhľadávanie a počúvanie živého vysielania cez internet.\n\nNÁJDITE SVOJU STANICU\nHľadajte podľa názvu, krajiny alebo žánru. Objavte pop, rock, jazz, klasiku, správy, šport a hovorené programy.\n\nVRÁŤTE SA K OBĽÚBENÝM\nUložte si stanice, ktoré chcete počúvať znova. FM, AM a internetové rádiá zo Slovenska aj ďalších krajín máte v jednom katalógu.\n\nPotrebujete internetové pripojenie; môžu sa účtovať mobilné dáta. Dostupnosť vysielania a informácií o skladbách závisí od stanice a regiónu. Obsah poskytujú jednotliví vysielatelia.",
+    "platform": {
+      "IOS": "Počúvajte na iPhone a iPade.",
+      "MACOS": "Zapnite si rádio na Macu pri práci či oddychu.",
+      "TVOS": "Vyberajte stanice ovládačom Apple TV a počúvajte v obývačke."
+    },
+    "whatsNew": "Vylepšené žánre, obrázky staníc a nedávne prehrávanie. Spoľahlivejšie prihlásenie, prepínanie účtov a obnova predplatného."
+  },
+  "hu": {
+    "name": "MegaRadio: Online rádió",
+    "subtitle": "Élő FM és AM adók a világból",
+    "keywords": "hallgatás,internetes,magyar,magyarország,hírek,sport,jazz,klasszikus,pop,rock,kedvencek",
+    "promotionalText": "Ismerős magyar adók és új hangok a nagyvilágból. Keress ország vagy műfaj szerint, és mentsd el kedvenc rádióidat.",
+    "description": "Reggeli hírek, zene munka közben vagy egy ismerős hang otthonról. A MegaRadio segítségével magyar és nemzetközi rádióadókat fedezhetsz fel és hallgathatsz élőben.\n\nTALÁLD MEG A HOZZÁD ILLŐ ADÓT\nKeress név alapján, vagy böngéssz országok és műfajok között. Pop, rock, jazz, klasszikus zene, hírek, sport és beszélgetések várnak.\n\nKEDVENCEID EGY HELYEN\nMentsd el az adókat, hogy legközelebb új keresés nélkül visszatérhess hozzájuk. Hallgass FM-, AM- és internetes rádiókat.\n\nInternetkapcsolat szükséges; mobiladat-díjak merülhetnek fel. Az adások és a számadatok elérhetősége adónként és régiónként eltér. A MegaRadio rádiókatalógus; a műsort az adók szolgáltatják.",
+    "platform": {
+      "IOS": "Vidd magaddal rádióidat iPhone-on és iPaden.",
+      "MACOS": "Hallgass rádiót a Macen munka vagy pihenés közben.",
+      "TVOS": "Válassz adót az Apple TV távirányítójával, és hallgasd a nappaliban."
+    },
+    "whatsNew": "Javítottuk a műfajlistákat, az adóképeket és az előzmények elrendezését. Megbízhatóbb bejelentkezés, fiókváltás és előfizetés-visszaállítás."
+  },
+  "ro": {
+    "name": "MegaRadio: Radio online",
+    "subtitle": "Posturi FM și AM în direct",
+    "keywords": "ascultă,internet,românia,românesc,știri,sport,populară,dance,jazz,rock,favorite",
+    "promotionalText": "Vocile cunoscute de acasă și posturi noi din lume. Caută după țară sau gen și păstrează radiourile preferate la îndemână.",
+    "description": "Un post românesc pentru dimineață sau muzică nouă din altă țară. MegaRadio te ajută să descoperi și să asculți radio în direct prin internet.\n\nALEGE CE ȚI SE POTRIVEȘTE\nCaută după numele postului ori explorează țări și genuri. Descoperă pop, dance, rock, jazz, muzică populară, știri, sport și emisiuni de discuții.\n\nREVINO LA FAVORITE\nSalvează posturile dorite pentru a le regăsi fără o nouă căutare. Ascultă transmisii FM, AM și posturi online din România și din lume.\n\nAi nevoie de internet; pot exista costuri de date mobile. Disponibilitatea transmisiilor și a informațiilor despre melodii variază după post și regiune. MegaRadio este un director; conținutul aparține radiodifuzorilor.",
+    "platform": {
+      "IOS": "Ia radioul cu tine pe iPhone și iPad.",
+      "MACOS": "Ascultă pe Mac când lucrezi sau te relaxezi.",
+      "TVOS": "Alege posturi cu telecomanda Apple TV și ascultă în sufragerie."
+    },
+    "whatsNew": "Am îmbunătățit genurile, imaginile posturilor și ascultările recente. Autentificarea, schimbarea contului și restaurarea abonamentelor sunt mai fiabile."
+  },
+  "hr": {
+    "name": "MegaRadio: Radio uživo",
+    "subtitle": "FM i AM postaje iz svijeta",
+    "keywords": "slušaj,internet,online,hrvatska,domaće,vijesti,sport,jazz,klasika,pop,rock,omiljene",
+    "promotionalText": "Domaće postaje i novi zvukovi iz svijeta. Pronađite radio prema zemlji ili žanru i spremite postaje koje želite ponovno slušati.",
+    "description": "Poznati glas iz Hrvatske ili glazba iz nekog drugog kraja. MegaRadio olakšava otkrivanje i slušanje radijskih postaja uživo.\n\nPRONAĐITE ZVUK ZA SVOJ DAN\nTražite prema nazivu postaje ili pregledajte zemlje i žanrove. Pop, rock, jazz, klasika, vijesti, sport i razgovorne emisije — odaberite što vam odgovara.\n\nOMILJENE NA JEDNOM MJESTU\nSpremite postaje i vratite im se bez ponovnog pretraživanja. Slušajte internetske prijenose FM, AM i online radija.\n\nPotrebna je internetska veza. Mogući su troškovi mobilnih podataka. Dostupnost prijenosa i podataka o pjesmama ovisi o postaji i regiji. MegaRadio je imenik; sadržaj pružaju postaje.",
+    "platform": {
+      "IOS": "Nosite radio sa sobom na iPhoneu i iPadu.",
+      "MACOS": "Slušajte radio na Macu tijekom rada ili odmora.",
+      "TVOS": "Birajte postaje daljinskim upravljačem Apple TV-a i slušajte u dnevnoj sobi."
+    },
+    "whatsNew": "Poboljšani su žanrovi, slike postaja i nedavna slušanja. Pouzdanija prijava, promjena računa i obnova pretplata."
+  },
+  "el": {
+    "name": "MegaRadio: Ραδιόφωνο live",
+    "subtitle": "Σταθμοί FM και AM παγκοσμίως",
+    "keywords": "ακούστε,ίντερνετ,online,ελλάδα,ελληνικά,νέα,αθλητικά,λαϊκά,τζαζ,ροκ,αγαπημένα",
+    "promotionalText": "Γνώριμες ελληνικές φωνές και νέοι ήχοι από τον κόσμο. Βρείτε σταθμούς ανά χώρα και είδος και κρατήστε τους αγαπημένους σας.",
+    "description": "Ελληνική μουσική, ενημέρωση ή ένας σταθμός από την άλλη άκρη του κόσμου. Το MegaRadio σας βοηθά να ανακαλύψετε και να ακούσετε ζωντανό ραδιόφωνο.\n\nΒΡΕΙΤΕ ΤΟΝ ΣΤΑΘΜΟ ΣΑΣ\nΑναζητήστε με το όνομα ή περιηγηθείτε ανά χώρα και είδος. Ανακαλύψτε λαϊκά, ποπ, ροκ, τζαζ, κλασική μουσική, ειδήσεις και αθλητικά.\n\nΤΑ ΑΓΑΠΗΜΕΝΑ ΚΟΝΤΑ ΣΑΣ\nΑποθηκεύστε σταθμούς για να τους βρίσκετε ξανά χωρίς νέα αναζήτηση. Ακούστε διαδικτυακές μεταδόσεις FM, AM και internet radio.\n\nΑπαιτείται σύνδεση στο διαδίκτυο και ενδέχεται να ισχύουν χρεώσεις δεδομένων. Οι μεταδόσεις και οι πληροφορίες τραγουδιών εξαρτώνται από τον σταθμό και την περιοχή. Το MegaRadio είναι κατάλογος· το περιεχόμενο παρέχεται από τους σταθμούς.",
+    "platform": {
+      "IOS": "Πάρτε το ραδιόφωνό σας στο iPhone και το iPad.",
+      "MACOS": "Ακούστε στο Mac στην εργασία ή την ξεκούραση.",
+      "TVOS": "Επιλέξτε σταθμούς με το τηλεχειριστήριο Apple TV και ακούστε στο σαλόνι."
+    },
+    "whatsNew": "Βελτιώσαμε είδη, εικόνες σταθμών και πρόσφατες ακροάσεις. Πιο αξιόπιστη σύνδεση, αλλαγή λογαριασμού και επαναφορά συνδρομών."
+  },
+  "uk": {
+    "name": "MegaRadio: Радіо онлайн",
+    "subtitle": "Прямий ефір FM та AM станцій",
+    "keywords": "слухати,інтернет,україна,українське,новини,спорт,джаз,класика,поп,рок,обране",
+    "promotionalText": "Знайомі українські голоси та нові відкриття зі світу. Шукайте станції за країною й жанром і зберігайте улюблені.",
+    "description": "Українська музика, новини чи нове звучання з іншої країни. MegaRadio допомагає знаходити радіостанції та слухати їх наживо через інтернет.\n\nОБЕРІТЬ СТАНЦІЮ ДО НАСТРОЮ\nШукайте за назвою або переглядайте країни й жанри. Відкривайте поп, рок, джаз, класику, новини, спорт і розмовні програми.\n\nУЛЮБЛЕНІ ЗАВЖДИ ПОРУЧ\nДодавайте станції до обраного, щоб повертатися без повторного пошуку. Слухайте інтернет-трансляції FM, AM та онлайн-станцій з України і світу.\n\nПотрібен інтернет; можлива плата за мобільні дані. Доступність ефірів та інформації про пісні залежить від станції й регіону. MegaRadio — каталог, а вміст надають мовники.",
+    "platform": {
+      "IOS": "Слухайте свої станції на iPhone та iPad.",
+      "MACOS": "Увімкніть радіо на Mac під час роботи чи відпочинку.",
+      "TVOS": "Обирайте станції пультом Apple TV і слухайте у вітальні."
+    },
+    "whatsNew": "Поліпшено жанри, зображення станцій і нещодавні прослуховування. Надійніший вхід, зміна облікового запису та відновлення підписок."
+  },
+  "ca": {
+    "name": "MegaRadio: Ràdio en directe",
+    "subtitle": "Emissores FM i AM del món",
+    "keywords": "escoltar,internet,online,català,catalunya,notícies,esports,jazz,clàssica,pop,rock,preferits",
+    "promotionalText": "Veus properes i noves descobertes. Troba emissores per país o gènere i desa les teves preferides per tornar-hi quan vulguis.",
+    "description": "Una veu propera en català o música d'un altre racó del món. MegaRadio t'ajuda a descobrir emissores i escoltar ràdio en directe per internet.\n\nTRIA QUÈ VOLS ESCOLTAR\nCerca pel nom de l'emissora o explora països i gèneres. Pop, rock, jazz, clàssica, notícies, esports i programes de conversa per a cada moment.\n\nLES TEVES PREFERIDES, A MÀ\nDesa emissores per trobar-les de nou sense repetir la cerca. Escolta transmissions FM, AM i ràdios en línia de prop i de lluny.\n\nCal connexió a internet i es poden aplicar càrrecs de dades mòbils. La disponibilitat de les emissions i dels títols depèn de l'emissora i la regió. MegaRadio és un directori; les emissores proporcionen els continguts.",
+    "platform": {
+      "IOS": "Porta les teves ràdios a l'iPhone i l'iPad.",
+      "MACOS": "Escolta ràdio al Mac mentre treballes o descanses.",
+      "TVOS": "Tria emissores amb el comandament de l'Apple TV i escolta-les a la sala."
+    },
+    "whatsNew": "Millores als gèneres, les imatges de les emissores i les escoltes recents. Més fiabilitat en iniciar sessió, canviar de compte i restaurar subscripcions."
+  },
+  "zh-Hans": {
+    "name": "MegaRadio: 在线广播电台",
+    "subtitle": "收听世界各地的FM与AM直播",
+    "keywords": "网络收音机,互联网,中文,新闻,体育,爵士,古典,流行,摇滚,收藏,频道,国际,音乐台",
+    "promotionalText": "熟悉的声音，也有新的发现。按国家或类型探索电台，收藏喜欢的频道，找到适合此刻的广播。",
+    "description": "从熟悉的中文节目到不同国家的音乐，MegaRadio带你探索全球广播电台。\n\n找到你想听的内容\n按电台名称搜索，或按国家和类型浏览。流行、摇滚、爵士、古典、新闻、体育与访谈节目，让每次收听都有新选择。\n\n喜欢的电台随手可及\n收藏常听的电台，下次打开时无需重新搜索。通过互联网收听FM、AM电台的在线直播和网络广播。\n\n使用需要网络连接，可能产生移动数据费用。广播和歌曲信息的可用性因电台及地区而异。MegaRadio是电台目录，节目内容由各广播机构提供。",
+    "platform": {
+      "IOS": "在iPhone和iPad上，随时找到想听的电台。",
+      "MACOS": "工作或休息时，在Mac上收听广播。",
+      "TVOS": "用Apple TV遥控器浏览电台，在客厅享受广播。"
+    },
+    "whatsNew": "改进了类型列表、电台图片和最近收听的布局，并提升了登录、切换账户及恢复订阅的可靠性。"
+  },
+  "ko": {
+    "name": "MegaRadio: 실시간 라디오",
+    "subtitle": "한국과 세계의 FM·AM 방송 듣기",
+    "keywords": "인터넷,온라인,방송국,뉴스,스포츠,재즈,클래식,팝,록,즐겨찾기,음악방송,해외",
+    "promotionalText": "익숙한 목소리부터 해외의 새로운 음악까지. 국가와 장르별로 방송국을 찾고, 좋아하는 채널을 즐겨찾기에 모아 보세요.",
+    "description": "하루를 함께할 목소리나 아직 모르는 음악을 찾고 있나요? MegaRadio에서 한국과 세계 여러 나라의 실시간 라디오를 탐색해 보세요.\n\n듣고 싶은 방송 찾기\n방송국 이름으로 검색하거나 국가와 장르별로 둘러보세요. 팝, 록, 재즈, 클래식, 뉴스, 스포츠와 토크 프로그램 중에서 선택할 수 있습니다.\n\n좋아하는 채널을 한곳에\n즐겨찾기에 저장한 방송국은 다음에 다시 검색할 필요 없이 찾을 수 있습니다. 인터넷으로 FM·AM 방송과 온라인 전용 라디오를 들어 보세요.\n\n인터넷 연결이 필요하며 모바일 데이터 요금이 부과될 수 있습니다. 방송과 곡 정보 제공 여부는 방송국과 지역에 따라 다릅니다. MegaRadio는 방송국 목록을 제공하며 방송 콘텐츠는 각 방송사가 제공합니다.",
+    "platform": {
+      "IOS": "iPhone과 iPad에서 좋아하는 라디오를 가까이 두세요.",
+      "MACOS": "일하거나 쉬는 동안 Mac에서 라디오를 들어 보세요.",
+      "TVOS": "Apple TV 리모컨으로 방송국을 선택하고 거실에서 라디오를 즐겨 보세요."
+    },
+    "whatsNew": "장르 목록, 방송국 이미지와 최근 청취 목록을 개선했습니다. 로그인, 계정 전환 및 구독 복원의 안정성도 높였습니다."
+  },
+  "id": {
+    "name": "MegaRadio: Radio Online",
+    "subtitle": "Dengar siaran langsung FM & AM",
+    "keywords": "indonesia,lokal,internet,berita,olahraga,dangdut,pop,jazz,rock,favorit,stasiun",
+    "promotionalText": "Suara akrab dari daerahmu atau musik baru dari luar negeri. Jelajahi stasiun menurut negara dan genre, lalu simpan radio favoritmu.",
+    "description": "Teman saat bekerja, kabar dari daerah asal, atau musik untuk menemani hari. MegaRadio membantumu menemukan siaran radio Indonesia dan dunia.\n\nPILIH SUARA YANG KAMU SUKA\nCari nama stasiun atau telusuri negara dan genre. Temukan dangdut, pop, rock, jazz, berita, olahraga, dan acara bincang-bincang.\n\nFAVORITMU MUDAH DITEMUKAN\nSimpan stasiun yang kamu suka agar tidak perlu mencari lagi. Dengarkan siaran FM, AM dan radio online melalui internet.\n\nKoneksi internet diperlukan; biaya data seluler dapat berlaku. Ketersediaan siaran dan informasi lagu bergantung pada stasiun serta wilayah. MegaRadio adalah direktori; isi siaran disediakan oleh masing-masing stasiun.",
+    "platform": {
+      "IOS": "Bawa radio favoritmu di iPhone dan iPad.",
+      "MACOS": "Dengarkan radio di Mac saat bekerja atau bersantai.",
+      "TVOS": "Pilih stasiun dengan remote Apple TV dan nikmati radio di ruang keluarga."
+    },
+    "whatsNew": "Daftar genre, gambar stasiun, dan tampilan riwayat putar ditingkatkan. Login, pergantian akun, serta pemulihan langganan kini lebih andal."
+  },
+  "ms": {
+    "name": "MegaRadio: Radio Dalam Talian",
+    "subtitle": "Siaran langsung FM dan AM",
+    "keywords": "dengar,internet,malaysia,melayu,stesen,tempatan,berita,sukan,pop,jazz,rock,kegemaran",
+    "promotionalText": "Suara tempatan dan penemuan baharu dari seluruh dunia. Cari stesen mengikut negara atau genre, kemudian simpan radio kegemaran anda.",
+    "description": "Berita pagi, muzik untuk menemani kerja atau suara yang mengingatkan anda pada rumah. MegaRadio membantu anda menemukan radio dari Malaysia dan luar negara.\n\nCARI SIARAN PILIHAN ANDA\nCari nama stesen atau terokai negara dan genre. Pilih pop Melayu, rock, jazz, berita, sukan dan rancangan bual bicara.\n\nKEGEMARAN MUDAH DICAPAI\nSimpan stesen untuk mendengarnya semula tanpa mengulangi carian. Dengar siaran FM, AM dan radio dalam talian melalui internet.\n\nSambungan internet diperlukan dan caj data mudah alih mungkin dikenakan. Ketersediaan siaran serta maklumat lagu bergantung pada stesen dan rantau. MegaRadio ialah direktori; kandungan disediakan oleh stesen masing-masing.",
+    "platform": {
+      "IOS": "Bawa radio anda pada iPhone dan iPad.",
+      "MACOS": "Dengar radio pada Mac semasa bekerja atau berehat.",
+      "TVOS": "Pilih stesen dengan alat kawalan jauh Apple TV dan dengar di ruang tamu."
+    },
+    "whatsNew": "Senarai genre, imej stesen dan paparan mainan terkini ditambah baik. Log masuk, pertukaran akaun dan pemulihan langganan lebih boleh dipercayai."
+  },
+  "th": {
+    "name": "MegaRadio: วิทยุออนไลน์",
+    "subtitle": "ฟังสด FM AM จากทั่วโลก",
+    "keywords": "สถานี,ไทย,อินเทอร์เน็ต,ข่าว,กีฬา,ลูกทุ่ง,ป๊อป,แจ๊ส,คลาสสิก,รายการโปรด",
+    "promotionalText": "เสียงคุ้นเคยจากสถานีไทยและเพลงใหม่จากต่างประเทศ ค้นหาตามประเทศหรือแนวเพลง แล้วบันทึกสถานีที่ชอบไว้ฟังอีกครั้ง",
+    "description": "เริ่มวันด้วยข่าว ฟังเพลงระหว่างทำงาน หรือเปิดสถานีที่คุ้นเคยจากบ้านเกิด MegaRadio ช่วยให้คุณค้นพบวิทยุไทยและสถานีจากทั่วโลก\n\nเลือกสิ่งที่อยากฟัง\nค้นหาชื่อสถานี หรือเลือกตามประเทศและแนวเพลง ทั้งลูกทุ่ง ป๊อป ร็อก แจ๊ส คลาสสิก ข่าว กีฬา และรายการพูดคุย\n\nสถานีโปรดอยู่ใกล้มือ\nบันทึกสถานีที่ชอบไว้ เพื่อกลับมาฟังโดยไม่ต้องค้นหาใหม่ ฟังสัญญาณ FM, AM และสถานีออนไลน์ผ่านอินเทอร์เน็ต\n\nต้องเชื่อมต่ออินเทอร์เน็ต และอาจมีค่าบริการข้อมูลมือถือ การรับฟังและข้อมูลเพลงขึ้นอยู่กับสถานีและภูมิภาค MegaRadio เป็นไดเรกทอรีสถานี เนื้อหารายการมาจากผู้แพร่ภาพกระจายเสียงแต่ละราย",
+    "platform": {
+      "IOS": "พกวิทยุที่ชอบไปกับ iPhone และ iPad",
+      "MACOS": "ฟังวิทยุบน Mac ขณะทำงานหรือพักผ่อน",
+      "TVOS": "เลือกสถานีด้วยรีโมต Apple TV แล้วฟังวิทยุในห้องนั่งเล่น"
+    },
+    "whatsNew": "ปรับปรุงรายการแนวเพลง ภาพสถานี และรายการที่ฟังล่าสุด พร้อมเพิ่มความเสถียรของการเข้าสู่ระบบ การสลับบัญชี และการกู้คืนการสมัครรับ"
+  },
+  "vi": {
+    "name": "MegaRadio: Nghe radio online",
+    "subtitle": "Đài FM, AM trực tiếp toàn cầu",
+    "keywords": "phát thanh,internet,việt nam,tin tức,thể thao,nhạc trẻ,trữ tình,jazz,yêu thích",
+    "promotionalText": "Giọng nói quen thuộc và âm thanh mới từ khắp nơi. Tìm đài theo quốc gia hoặc thể loại, rồi lưu những đài bạn muốn nghe lại.",
+    "description": "Tin tức buổi sáng, chương trình trò chuyện hay âm nhạc để thư giãn. MegaRadio giúp bạn khám phá đài phát thanh Việt Nam và các quốc gia khác.\n\nTÌM NỘI DUNG MUỐN NGHE\nTìm theo tên đài hoặc duyệt theo quốc gia và thể loại. Khám phá nhạc trẻ, trữ tình, pop, jazz, tin tức, thể thao và chương trình trò chuyện.\n\nGIỮ ĐÀI YÊU THÍCH TRONG TẦM TAY\nLưu đài để lần sau không cần tìm lại. Nghe các luồng phát FM, AM và radio trực tuyến qua internet.\n\nCần kết nối internet; có thể phát sinh phí dữ liệu di động. Khả năng phát và thông tin bài hát tùy thuộc vào đài và khu vực. MegaRadio là danh bạ đài; nội dung do từng đơn vị phát thanh cung cấp.",
+    "platform": {
+      "IOS": "Mang theo radio trên iPhone và iPad.",
+      "MACOS": "Nghe radio trên Mac khi làm việc hoặc nghỉ ngơi.",
+      "TVOS": "Chọn đài bằng điều khiển Apple TV và nghe trong phòng khách."
+    },
+    "whatsNew": "Cải thiện danh sách thể loại, hình ảnh đài và mục nghe gần đây. Đăng nhập, đổi tài khoản và khôi phục đăng ký ổn định hơn."
+  },
+  "hi": {
+    "name": "MegaRadio: लाइव रेडियो",
+    "subtitle": "भारत और दुनिया के FM, AM",
+    "keywords": "सुनें,ऑनलाइन,इंटरनेट,हिंदी,स्टेशन,समाचार,खेल,गाने,बॉलीवुड,भक्ति,पसंदीदा",
+    "promotionalText": "अपने शहर की आवाज़ या दुनिया का नया संगीत। देश और शैली के अनुसार स्टेशन खोजें और अपने पसंदीदा रेडियो सहेजें।",
+    "description": "सुबह की खबरें, काम के बीच संगीत या घर की याद दिलाने वाली आवाज़। MegaRadio से भारत और दुनिया के लाइव रेडियो स्टेशन खोजें।\n\nअपनी पसंद का स्टेशन ढूँढें\nनाम से खोजें या देश और शैली के अनुसार देखें। हिंदी संगीत, बॉलीवुड, भक्ति, पॉप और जैज़ के साथ समाचार, खेल और बातचीत वाले कार्यक्रम खोजें।\n\nपसंदीदा स्टेशन पास रखें\nस्टेशन सहेजें ताकि अगली बार दोबारा खोजने की ज़रूरत न पड़े। FM, AM और ऑनलाइन रेडियो का इंटरनेट प्रसारण सुनें।\n\nइंटरनेट कनेक्शन ज़रूरी है और मोबाइल डेटा शुल्क लग सकता है। प्रसारण और गानों की जानकारी स्टेशन तथा क्षेत्र पर निर्भर करती है। MegaRadio एक स्टेशन डायरेक्टरी है; कार्यक्रम संबंधित प्रसारक उपलब्ध कराते हैं।",
+    "platform": {
+      "IOS": "iPhone और iPad पर अपना रेडियो साथ रखें।",
+      "MACOS": "काम या आराम के दौरान Mac पर रेडियो सुनें।",
+      "TVOS": "Apple TV रिमोट से स्टेशन चुनें और बैठक में रेडियो का आनंद लें।"
+    },
+    "whatsNew": "शैली सूची, स्टेशन की तस्वीरों और हाल में सुने गए स्टेशनों का लेआउट बेहतर किया। साइन-इन, खाता बदलना और सदस्यता बहाल करना अधिक भरोसेमंद हुआ है।"
+  },
+  "en-CA": {
+    "name": "MegaRadio: Canadian Radio",
+    "subtitle": "Live FM, AM & world stations",
+    "keywords": "listen,internet,online,stations,local,news,sports,talk,jazz,country,rock,favourites",
+    "promotionalText": "Stay close to local voices or explore a station from further away. Find Canadian and international radio, browse by genre and save your favourites.",
+    "description": "A familiar Canadian station, news from home or a different sound across the border. MegaRadio helps you explore live radio from Canada and around the world.\n\nCHOOSE YOUR NEXT LISTEN\nFind a station by name or browse countries and genres. Discover English- and French-language broadcasts alongside music, news, sports and talk from many other places.\n\nBUILD YOUR FAVOURITES\nSave stations so you can return without searching again. Listen online to FM, AM and internet-only stations, from country and rock to jazz and classical.\n\nInternet access is required; mobile data charges may apply. Broadcasts and track information vary by station and region. MegaRadio is a directory; broadcasters provide their own content.",
+    "platform": {
+      "IOS": "Keep your radio favourites with you on iPhone and iPad.",
+      "MACOS": "Listen on your Mac during your workday or a quiet evening.",
+      "TVOS": "Explore with your Apple TV remote and enjoy radio in the living room."
+    },
+    "whatsNew": "Improved genre lists, station artwork and recently played layouts, with more reliable sign-in, account switching and subscription restoration."
+  },
+  "bn": {
+    "name": "MegaRadio: বিশ্ব রেডিও শুনুন",
+    "subtitle": "বাংলা ও বিশ্বের রেডিও শুনুন",
+    "keywords": "অনলাইন,ইন্টারনেট,স্টেশন,খবর,খেলা,গান,সংগীত,পছন্দের,বাংলাদেশ,ভারত",
+    "promotionalText": "পরিচিত বাংলা কণ্ঠ থেকে বিশ্বের নতুন সুর। দেশ ও ধরন অনুযায়ী স্টেশন খুঁজুন, পছন্দের রেডিও সংরক্ষণ করুন এবং শুনতে শুরু করুন।",
+    "description": "সকালের খবর, বাংলা গান বা দূরে থেকেও পরিচিত কণ্ঠ। MegaRadio-তে দেশ ও বিশ্বের লাইভ রেডিও স্টেশন খুঁজে শুনুন।\n\nস্টেশনের নাম লিখে খুঁজুন, অথবা দেশ ও ধরন বেছে নিন। বাংলা অনুষ্ঠান, পপ, লোকসংগীত, জ্যাজ, খবর, খেলা ও আড্ডার অনুষ্ঠান আবিষ্কার করুন। পছন্দের স্টেশন সংরক্ষণ করলে পরের বার আবার খুঁজতে হবে না।\n\nFM, AM ও অনলাইন স্টেশনের ইন্টারনেট সম্প্রচার শুনতে নেট সংযোগ প্রয়োজন। মোবাইল ডেটার খরচ হতে পারে। সম্প্রচার ও গানের তথ্য স্টেশন এবং অঞ্চলভেদে বদলায়। MegaRadio একটি স্টেশন নির্দেশিকা; অনুষ্ঠান সংশ্লিষ্ট সম্প্রচারক প্রদান করে।",
+    "platform": {
+      "IOS": "iPhone ও iPad-এ পছন্দের রেডিও সঙ্গে রাখুন।",
+      "MACOS": "কাজ বা বিশ্রামের সময় Mac-এ রেডিও শুনুন।",
+      "TVOS": "Apple TV রিমোট দিয়ে স্টেশন বেছে বসার ঘরে রেডিও শুনুন।"
+    },
+    "whatsNew": "ধরনের তালিকা, স্টেশনের ছবি ও সম্প্রতি শোনা স্টেশনের বিন্যাস উন্নত হয়েছে। লগইন, অ্যাকাউন্ট বদল ও সাবস্ক্রিপশন পুনরুদ্ধার আরও নির্ভরযোগ্য হয়েছে।"
+  },
+  "gu": {
+    "name": "MegaRadio: લાઇવ રેડિયો",
+    "subtitle": "ગુજરાતી અને વિશ્વના FM, AM",
+    "keywords": "સાંભળો,ઓનલાઇન,ઇન્ટરનેટ,સ્ટેશન,સમાચાર,રમત,ગીત,ગુજરાત,મનપસંદ",
+    "promotionalText": "પરિચિત ગુજરાતી અવાજો અને દુનિયાના નવા સૂર. દેશ કે શૈલી મુજબ સ્ટેશન શોધો અને મનપસંદ રેડિયો સાચવો.",
+    "description": "ગુજરાતી કાર્યક્રમ, સવારના સમાચાર કે દિવસભરનો સંગીત સાથ. MegaRadio સાથે સ્થાનિક અને આંતરરાષ્ટ્રીય રેડિયોનું જીવંત પ્રસારણ શોધો.\n\nનામથી સ્ટેશન શોધો અથવા દેશ અને શૈલી મુજબ જુઓ. ગુજરાતી ગીતો, પોપ, લોકસંગીત, સમાચાર, રમતગમત અને વાતચીતના કાર્યક્રમો શોધી શકો છો. મનપસંદ સ્ટેશન સાચવો જેથી ફરી શોધવું ન પડે.\n\nFM, AM અને ઓનલાઇન રેડિયો ઇન્ટરનેટ દ્વારા સંભળાય છે. ઇન્ટરનેટ જરૂરી છે અને મોબાઇલ ડેટાનો ખર્ચ થઈ શકે છે. પ્રસારણ અને ગીતની માહિતી સ્ટેશન તથા વિસ્તાર મુજબ બદલાય છે. MegaRadio એક રેડિયો સૂચિ છે; સામગ્રી પ્રસારકો આપે છે.",
+    "platform": {
+      "IOS": "iPhone અને iPad પર રેડિયો સાથે રાખો.",
+      "MACOS": "કામ કે આરામ દરમિયાન Mac પર રેડિયો સાંભળો.",
+      "TVOS": "Apple TV રિમોટથી સ્ટેશન પસંદ કરો અને બેઠકખંડમાં સાંભળો."
+    },
+    "whatsNew": "શૈલીની યાદી, સ્ટેશનના ચિત્રો અને તાજેતરમાં સાંભળેલા સ્ટેશન સુધાર્યા. લોગિન, ખાતું બદલવું અને સબ્સ્ક્રિપ્શન પુનઃસ્થાપિત કરવું વધુ વિશ્વસનીય બન્યું."
+  },
+  "kn": {
+    "name": "MegaRadio: ಕನ್ನಡ ರೇಡಿಯೋ",
+    "subtitle": "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM",
+    "keywords": "ಕೇಳಿ,ಆನ್‌ಲೈನ್,ಇಂಟರ್ನೆಟ್,ನಿಲ್ದಾಣ,ಸುದ್ದಿ,ಕ್ರೀಡೆ,ಹಾಡು,ಕರ್ನಾಟಕ,ನೆಚ್ಚಿನ",
+    "promotionalText": "ಪರಿಚಿತ ಕನ್ನಡ ಧ್ವನಿಗಳು ಮತ್ತು ಜಗತ್ತಿನ ಹೊಸ ಸಂಗೀತ. ದೇಶ ಅಥವಾ ಪ್ರಕಾರದ ಮೂಲಕ ನಿಲ್ದಾಣ ಹುಡುಕಿ, ನೆಚ್ಚಿನ ರೇಡಿಯೋ ಉಳಿಸಿಕೊಳ್ಳಿ.",
+    "description": "ಕನ್ನಡ ಹಾಡು, ಬೆಳಗಿನ ಸುದ್ದಿ ಅಥವಾ ಊರಿನ ಪರಿಚಿತ ಧ್ವನಿ. MegaRadio ಮೂಲಕ ಸ್ಥಳೀಯ ಮತ್ತು ಜಗತ್ತಿನ ರೇಡಿಯೋ ನಿಲ್ದಾಣಗಳ ನೇರ ಪ್ರಸಾರ ಕೇಳಿ.\n\nನಿಲ್ದಾಣದ ಹೆಸರಿನಿಂದ ಹುಡುಕಿ ಅಥವಾ ದೇಶ ಮತ್ತು ಸಂಗೀತ ಪ್ರಕಾರಗಳನ್ನು ನೋಡಿ. ಕನ್ನಡ ಕಾರ್ಯಕ್ರಮಗಳು, ಪಾಪ್, ಜಾನಪದ, ಸುದ್ದಿ, ಕ್ರೀಡೆ ಮತ್ತು ಮಾತುಕತೆಗಳನ್ನು ಅನ್ವೇಷಿಸಿ. ನೆಚ್ಚಿನ ನಿಲ್ದಾಣ ಉಳಿಸಿದರೆ ಮುಂದಿನ ಬಾರಿ ಮತ್ತೆ ಹುಡುಕಬೇಕಿಲ್ಲ.\n\nFM, AM ಮತ್ತು ಆನ್‌ಲೈನ್ ನಿಲ್ದಾಣಗಳನ್ನು ಕೇಳಲು ಇಂಟರ್ನೆಟ್ ಅಗತ್ಯ. ಮೊಬೈಲ್ ಡೇಟಾ ಶುಲ್ಕ ಅನ್ವಯಿಸಬಹುದು. ಪ್ರಸಾರ ಮತ್ತು ಹಾಡಿನ ಮಾಹಿತಿ ನಿಲ್ದಾಣ ಹಾಗೂ ಪ್ರದೇಶಕ್ಕೆ ಅನುಗುಣವಾಗಿ ಬದಲಾಗುತ್ತದೆ. MegaRadio ಒಂದು ನಿರ್ದೇಶಿಕೆ; ಪ್ರಸಾರಕರು ವಿಷಯವನ್ನು ಒದಗಿಸುತ್ತಾರೆ.",
+    "platform": {
+      "IOS": "iPhone ಮತ್ತು iPadನಲ್ಲಿ ರೇಡಿಯೋ ನಿಮ್ಮ ಜೊತೆ ಇರಲಿ.",
+      "MACOS": "ಕೆಲಸ ಅಥವಾ ವಿಶ್ರಾಂತಿಯ ವೇಳೆ Macನಲ್ಲಿ ರೇಡಿಯೋ ಕೇಳಿ.",
+      "TVOS": "Apple TV ರಿಮೋಟ್‌ನಿಂದ ನಿಲ್ದಾಣ ಆಯ್ದು ಮನೆಯಲ್ಲಿ ಕೇಳಿ."
+    },
+    "whatsNew": "ಪ್ರಕಾರಗಳ ಪಟ್ಟಿ, ನಿಲ್ದಾಣ ಚಿತ್ರಗಳು ಮತ್ತು ಇತ್ತೀಚಿನ ಆಲಿಸುವಿಕೆ ಸುಧಾರಿಸಲಾಗಿದೆ. ಲಾಗಿನ್, ಖಾತೆ ಬದಲಾವಣೆ ಮತ್ತು ಚಂದಾ ಮರುಸ್ಥಾಪನೆ ಹೆಚ್ಚು ವಿಶ್ವಾಸಾರ್ಹವಾಗಿದೆ."
+  },
+  "ml": {
+    "name": "MegaRadio: ലൈവ് റേഡിയോ",
+    "subtitle": "മലയാളവും ലോകവും FM, AM",
+    "keywords": "കേൾക്കൂ,ഓൺലൈൻ,ഇന്റർനെറ്റ്,നിലയം,വാർത്ത,കായികം,പാട്ട്,കേരളം,പ്രിയപ്പെട്ടവ",
+    "promotionalText": "പരിചിതമായ മലയാള ശബ്ദങ്ങളും ലോകത്തിന്റെ പുതിയ ഈണങ്ങളും. രാജ്യവും വിഭാഗവും തിരഞ്ഞെടുത്ത് നിലയങ്ങൾ കണ്ടെത്തൂ, ഇഷ്ടപ്പെട്ടവ സൂക്ഷിക്കൂ.",
+    "description": "മലയാളം പാട്ടുകളോ രാവിലെ വാർത്തകളോ നാട്ടിലെ പരിചിത ശബ്ദമോ. MegaRadio ഉപയോഗിച്ച് നാട്ടിലെയും ലോകത്തെയും റേഡിയോ നിലയങ്ങൾ കണ്ടെത്തി തത്സമയം കേൾക്കാം.\n\nപേര് നൽകി നിലയം തിരയുക, അല്ലെങ്കിൽ രാജ്യവും സംഗീതവിഭാഗവും നോക്കുക. മലയാള പരിപാടികൾ, പോപ്പ്, നാടൻപാട്ടുകൾ, വാർത്തകൾ, കായികം, സംഭാഷണങ്ങൾ എന്നിവ കണ്ടെത്താം. ഇഷ്ടപ്പെട്ട നിലയങ്ങൾ സൂക്ഷിച്ചാൽ വീണ്ടും തിരയേണ്ടതില്ല.\n\nFM, AM, ഓൺലൈൻ റേഡിയോ കേൾക്കാൻ ഇന്റർനെറ്റ് വേണം; മൊബൈൽ ഡാറ്റ നിരക്കുകൾ ബാധകമായേക്കാം. പ്രക്ഷേപണവും പാട്ടിന്റെ വിവരങ്ങളും നിലയത്തിനും പ്രദേശത്തിനും അനുസരിച്ചിരിക്കും. MegaRadio ഒരു ഡയറക്ടറിയാണ്; ഉള്ളടക്കം പ്രക്ഷേപകർ നൽകുന്നു.",
+    "platform": {
+      "IOS": "iPhone, iPad എന്നിവയിൽ റേഡിയോ ഒപ്പം കൊണ്ടുപോകൂ.",
+      "MACOS": "ജോലിയിലും വിശ്രമത്തിലും Macൽ റേഡിയോ കേൾക്കൂ.",
+      "TVOS": "Apple TV റിമോട്ടിലൂടെ നിലയം തിരഞ്ഞെടുത്ത് സ്വീകരണമുറിയിൽ കേൾക്കൂ."
+    },
+    "whatsNew": "വിഭാഗപ്പട്ടികകൾ, നിലയചിത്രങ്ങൾ, അടുത്തിടെ കേട്ടവയുടെ ക്രമീകരണം എന്നിവ മെച്ചപ്പെടുത്തി. ലോഗിൻ, അക്കൗണ്ട് മാറ്റം, സബ്സ്ക്രിപ്ഷൻ പുനഃസ്ഥാപിക്കൽ കൂടുതൽ വിശ്വസനീയമായി."
+  },
+  "mr": {
+    "name": "MegaRadio: लाइव्ह रेडिओ",
+    "subtitle": "मराठी व जगभरातील FM, AM",
+    "keywords": "ऐका,ऑनलाइन,इंटरनेट,केंद्र,बातम्या,क्रीडा,गाणी,महाराष्ट्र,आवडते",
+    "promotionalText": "ओळखीचे मराठी आवाज आणि जगभरातील नवीन सूर. देश किंवा प्रकारानुसार केंद्र शोधा आणि आवडते रेडिओ जतन करा.",
+    "description": "सकाळच्या बातम्या, मराठी गाणी किंवा घरची आठवण करून देणारा आवाज. MegaRadio वर स्थानिक व आंतरराष्ट्रीय रेडिओचे थेट प्रसारण शोधा.\n\nकेंद्राच्या नावाने शोधा किंवा देश आणि संगीतप्रकार निवडा. मराठी कार्यक्रम, लोकसंगीत, पॉप, बातम्या, क्रीडा व गप्पांचे कार्यक्रम ऐका. आवडती केंद्रे जतन केल्यावर पुढच्या वेळी पुन्हा शोधण्याची गरज नाही.\n\nFM, AM व ऑनलाइन रेडिओ इंटरनेटद्वारे ऐकता येतो. इंटरनेट जोडणी आवश्यक असून मोबाइल डेटाचे शुल्क लागू होऊ शकते. प्रसारण व गाण्याची माहिती केंद्र आणि प्रदेशानुसार बदलते. MegaRadio ही निर्देशिका आहे; कार्यक्रम संबंधित प्रसारक देतात.",
+    "platform": {
+      "IOS": "iPhone आणि iPad वर रेडिओ सोबत ठेवा.",
+      "MACOS": "काम किंवा विश्रांतीदरम्यान Mac वर रेडिओ ऐका.",
+      "TVOS": "Apple TV रिमोटने केंद्र निवडा आणि बैठकीच्या खोलीत रेडिओ ऐका."
+    },
+    "whatsNew": "प्रकारांच्या याद्या, केंद्रांची चित्रे आणि अलीकडे ऐकलेल्या केंद्रांची मांडणी सुधारली. लॉगिन, खाते बदल आणि सदस्यता पुनर्स्थापना अधिक विश्वासार्ह झाली."
+  },
+  "or": {
+    "name": "MegaRadio: ଲାଇଭ୍ ରେଡିଓ",
+    "subtitle": "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM",
+    "keywords": "ଶୁଣନ୍ତୁ,ଅନଲାଇନ୍,ଇଣ୍ଟରନେଟ୍,ଷ୍ଟେସନ୍,ଖବର,କ୍ରୀଡ଼ା,ଗୀତ,ଓଡ଼ିଶା,ପସନ୍ଦ",
+    "promotionalText": "ପରିଚିତ ଓଡ଼ିଆ ସ୍ୱର ଓ ବିଶ୍ୱର ନୂଆ ସଙ୍ଗୀତ। ଦେଶ କିମ୍ବା ପ୍ରକାର ଅନୁସାରେ ଷ୍ଟେସନ୍ ଖୋଜନ୍ତୁ ଏବଂ ପସନ୍ଦର ରେଡିଓ ସଞ୍ଚୟ କରନ୍ତୁ।",
+    "description": "ସକାଳର ଖବର, ଓଡ଼ିଆ ଗୀତ କିମ୍ବା ଘରର ପରିଚିତ ସ୍ୱର। MegaRadio ସହିତ ସ୍ଥାନୀୟ ଓ ବିଶ୍ୱର ରେଡିଓ ଷ୍ଟେସନ୍ ଖୋଜି ସିଧା ପ୍ରସାରଣ ଶୁଣନ୍ତୁ।\n\nନାମରେ ଷ୍ଟେସନ୍ ଖୋଜନ୍ତୁ କିମ୍ବା ଦେଶ ଓ ପ୍ରକାର ବାଛନ୍ତୁ। ଓଡ଼ିଆ କାର୍ଯ୍ୟକ୍ରମ, ଲୋକସଙ୍ଗୀତ, ପପ୍, ଖବର, କ୍ରୀଡ଼ା ଓ ଆଲୋଚନା ଆବିଷ୍କାର କରନ୍ତୁ। ପସନ୍ଦର ଷ୍ଟେସନ୍ ସଞ୍ଚୟ କଲେ ପରେ ପୁଣି ଖୋଜିବାକୁ ପଡ଼ିବ ନାହିଁ।\n\nFM, AM ଓ ଅନଲାଇନ୍ ପ୍ରସାରଣ ପାଇଁ ଇଣ୍ଟରନେଟ୍ ଦରକାର। ମୋବାଇଲ୍ ଡାଟା ଖର୍ଚ୍ଚ ହୋଇପାରେ। ପ୍ରସାରଣ ଓ ଗୀତର ତଥ୍ୟ ଷ୍ଟେସନ୍ ଏବଂ ଅଞ୍ଚଳ ଉପରେ ନିର୍ଭର କରେ। MegaRadio ଏକ ତାଲିକା; ବିଷୟବସ୍ତୁ ପ୍ରସାରକମାନେ ପ୍ରଦାନ କରନ୍ତି।",
+    "platform": {
+      "IOS": "iPhone ଓ iPadରେ ରେଡିଓ ସାଙ୍ଗରେ ରଖନ୍ତୁ।",
+      "MACOS": "କାମ ବା ବିଶ୍ରାମ ସମୟରେ Macରେ ରେଡିଓ ଶୁଣନ୍ତୁ।",
+      "TVOS": "Apple TV ରିମୋଟ୍‌ରେ ଷ୍ଟେସନ୍ ବାଛି ବସିବା ଘରେ ଶୁଣନ୍ତୁ।"
+    },
+    "whatsNew": "ପ୍ରକାର ତାଲିକା, ଷ୍ଟେସନ୍ ଛବି ଓ ନିକଟରେ ଶୁଣିଥିବା ଷ୍ଟେସନ୍ ସୁଧାରିଛୁ। ଲଗଇନ୍, ଆକାଉଣ୍ଟ ବଦଳ ଓ ସଦସ୍ୟତା ପୁନରୁଦ୍ଧାର ଅଧିକ ନିର୍ଭରଯୋଗ୍ୟ।"
+  },
+  "pa": {
+    "name": "MegaRadio: ਲਾਈਵ ਰੇਡੀਓ",
+    "subtitle": "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM",
+    "keywords": "ਸੁਣੋ,ਆਨਲਾਈਨ,ਇੰਟਰਨੈੱਟ,ਸਟੇਸ਼ਨ,ਖ਼ਬਰਾਂ,ਖੇਡਾਂ,ਗੀਤ,ਪੰਜਾਬ,ਮਨਪਸੰਦ",
+    "promotionalText": "ਜਾਣੇ-ਪਛਾਣੇ ਪੰਜਾਬੀ ਬੋਲ ਅਤੇ ਦੁਨੀਆ ਦੀਆਂ ਨਵੀਆਂ ਧੁਨਾਂ। ਦੇਸ਼ ਜਾਂ ਸ਼ੈਲੀ ਮੁਤਾਬਕ ਸਟੇਸ਼ਨ ਲੱਭੋ ਅਤੇ ਮਨਪਸੰਦ ਰੇਡੀਓ ਸੰਭਾਲੋ।",
+    "description": "ਪੰਜਾਬੀ ਗੀਤ, ਸਵੇਰ ਦੀਆਂ ਖ਼ਬਰਾਂ ਜਾਂ ਘਰ ਦੀ ਯਾਦ ਦਿਵਾਉਂਦੀ ਆਵਾਜ਼। MegaRadio ਨਾਲ ਸਥਾਨਕ ਅਤੇ ਦੁਨੀਆ ਭਰ ਦੇ ਰੇਡੀਓ ਸਟੇਸ਼ਨ ਲੱਭ ਕੇ ਲਾਈਵ ਸੁਣੋ।\n\nਨਾਂ ਨਾਲ ਖੋਜੋ ਜਾਂ ਦੇਸ਼ ਅਤੇ ਸੰਗੀਤ ਦੀ ਸ਼ੈਲੀ ਚੁਣੋ। ਪੰਜਾਬੀ ਪ੍ਰੋਗਰਾਮ, ਲੋਕਗੀਤ, ਪੌਪ, ਖ਼ਬਰਾਂ, ਖੇਡਾਂ ਅਤੇ ਗੱਲਬਾਤ ਖੋਜੋ। ਮਨਪਸੰਦ ਸਟੇਸ਼ਨ ਸੰਭਾਲੋ ਤਾਂ ਜੋ ਅਗਲੀ ਵਾਰ ਮੁੜ ਖੋਜ ਨਾ ਕਰਨੀ ਪਵੇ।\n\nFM, AM ਅਤੇ ਆਨਲਾਈਨ ਰੇਡੀਓ ਲਈ ਇੰਟਰਨੈੱਟ ਲੋੜੀਂਦਾ ਹੈ। ਮੋਬਾਈਲ ਡਾਟਾ ਖ਼ਰਚਾ ਲਾਗੂ ਹੋ ਸਕਦਾ ਹੈ। ਪ੍ਰਸਾਰਣ ਅਤੇ ਗੀਤ ਦੀ ਜਾਣਕਾਰੀ ਸਟੇਸ਼ਨ ਤੇ ਇਲਾਕੇ ਅਨੁਸਾਰ ਬਦਲਦੀ ਹੈ। MegaRadio ਇੱਕ ਡਾਇਰੈਕਟਰੀ ਹੈ; ਸਮੱਗਰੀ ਪ੍ਰਸਾਰਕ ਦਿੰਦੇ ਹਨ।",
+    "platform": {
+      "IOS": "iPhone ਅਤੇ iPad ਉੱਤੇ ਰੇਡੀਓ ਨਾਲ ਰੱਖੋ।",
+      "MACOS": "ਕੰਮ ਜਾਂ ਆਰਾਮ ਵੇਲੇ Mac ਉੱਤੇ ਰੇਡੀਓ ਸੁਣੋ।",
+      "TVOS": "Apple TV ਰਿਮੋਟ ਨਾਲ ਸਟੇਸ਼ਨ ਚੁਣ ਕੇ ਬੈਠਕ ਵਿੱਚ ਸੁਣੋ।"
+    },
+    "whatsNew": "ਸ਼ੈਲੀਆਂ ਦੀ ਸੂਚੀ, ਸਟੇਸ਼ਨ ਤਸਵੀਰਾਂ ਅਤੇ ਹਾਲ ਵਿੱਚ ਸੁਣੇ ਸਟੇਸ਼ਨ ਸੁਧਾਰੇ। ਲਾਗਇਨ, ਖਾਤਾ ਬਦਲਣਾ ਅਤੇ ਗਾਹਕੀ ਬਹਾਲ ਕਰਨਾ ਹੋਰ ਭਰੋਸੇਯੋਗ ਬਣਿਆ।"
+  },
+  "ta": {
+    "name": "MegaRadio: தமிழ் வானொலி",
+    "subtitle": "உலக FM, AM நேரலை கேளுங்கள்",
+    "keywords": "ரேடியோ,ஆன்லைன்,இணையம்,நிலையம்,செய்தி,விளையாட்டு,பாடல்,பிடித்தவை",
+    "promotionalText": "பழகிய தமிழ் குரல்களும் உலகின் புதிய இசையும். நாடு அல்லது வகையின்படி நிலையங்களைத் தேடி, பிடித்த வானொலிகளைச் சேமியுங்கள்.",
+    "description": "தமிழ்ப் பாடல், காலையிலான செய்தி அல்லது வீட்டை நினைவூட்டும் குரல். MegaRadio மூலம் உள்ளூர் மற்றும் உலக வானொலி நிலையங்களின் நேரலையைக் கேளுங்கள்.\n\nபெயரால் தேடுங்கள் அல்லது நாடு மற்றும் இசை வகையைத் தேர்ந்தெடுங்கள். தமிழ் நிகழ்ச்சிகள், நாட்டுப்புற இசை, பாப், செய்திகள், விளையாட்டு மற்றும் உரையாடல்களைக் கண்டறியுங்கள். பிடித்த நிலையங்களைச் சேமித்தால் மீண்டும் தேட வேண்டியதில்லை.\n\nFM, AM மற்றும் ஆன்லைன் ஒலிபரப்புக்கு இணையம் தேவை. மொபைல் தரவுக் கட்டணம் ஏற்படலாம். ஒலிபரப்பும் பாடல் தகவலும் நிலையம் மற்றும் பிராந்தியத்தைப் பொறுத்தது. MegaRadio ஒரு நிலையப் பட்டியல்; நிகழ்ச்சிகளை ஒலிபரப்பாளர்கள் வழங்குகிறார்கள்.",
+    "platform": {
+      "IOS": "iPhone மற்றும் iPad-இல் வானொலியை உடன் எடுத்துச் செல்லுங்கள்.",
+      "MACOS": "வேலை அல்லது ஓய்வின்போது Mac-இல் வானொலி கேளுங்கள்.",
+      "TVOS": "Apple TV ரிமோட்டில் நிலையத்தைத் தேர்ந்தெடுத்து வரவேற்பறையில் கேளுங்கள்."
+    },
+    "whatsNew": "வகைப் பட்டியல், நிலையப் படங்கள் மற்றும் அண்மையில் கேட்டவற்றின் அமைப்பை மேம்படுத்தினோம். உள்நுழைவு, கணக்கு மாற்றம், சந்தா மீட்டமைப்பு மேலும் நம்பகமாகியுள்ளன."
+  },
+  "te": {
+    "name": "MegaRadio: లైవ్ రేడియో",
+    "subtitle": "తెలుగు, ప్రపంచ FM, AM వినండి",
+    "keywords": "ఆన్‌లైన్,ఇంటర్నెట్,స్టేషన్,వార్తలు,క్రీడలు,పాటలు,ఇష్టమైనవి,సంగీతం",
+    "promotionalText": "పరిచయమైన తెలుగు గొంతులు, ప్రపంచంలోని కొత్త స్వరాలు. దేశం లేదా శైలి ప్రకారం స్టేషన్లను వెతికి, ఇష్టమైన రేడియోలను సేవ్ చేసుకోండి.",
+    "description": "తెలుగు పాటలు, ఉదయపు వార్తలు లేదా ఇంటిని గుర్తుచేసే స్వరం. MegaRadio ద్వారా స్థానిక, అంతర్జాతీయ రేడియో స్టేషన్లను కనుగొని ప్రత్యక్ష ప్రసారం వినండి.\n\nస్టేషన్ పేరుతో వెతకండి లేదా దేశం, సంగీత శైలి ఎంచుకోండి. తెలుగు కార్యక్రమాలు, జానపదం, పాప్, వార్తలు, క్రీడలు, చర్చలు కనుగొనండి. ఇష్టమైన స్టేషన్లను సేవ్ చేస్తే మళ్లీ వెతకాల్సిన అవసరం లేదు.\n\nFM, AM, ఆన్‌లైన్ ప్రసారాలు వినడానికి ఇంటర్నెట్ అవసరం. మొబైల్ డేటా ఛార్జీలు వర్తించవచ్చు. ప్రసారం, పాటల వివరాలు స్టేషన్ మరియు ప్రాంతాన్ని బట్టి మారుతాయి. MegaRadio ఒక డైరెక్టరీ; కార్యక్రమాలను ప్రసారకర్తలు అందిస్తారు.",
+    "platform": {
+      "IOS": "iPhone, iPadలో రేడియోను మీతో ఉంచుకోండి.",
+      "MACOS": "పని లేదా విశ్రాంతి సమయంలో Macలో రేడియో వినండి.",
+      "TVOS": "Apple TV రిమోట్‌తో స్టేషన్ ఎంచుకుని హాల్లో వినండి."
+    },
+    "whatsNew": "శైలి జాబితాలు, స్టేషన్ చిత్రాలు, ఇటీవల విన్న స్టేషన్ల అమరికను మెరుగుపరిచాం. లాగిన్, ఖాతా మార్పు, సభ్యత్వ పునరుద్ధరణ మరింత నమ్మకంగా పనిచేస్తాయి."
+  },
+  "ur": {
+    "name": "MegaRadio: لائیو ریڈیو",
+    "subtitle": "اردو اور دنیا کے FM، AM سنیں",
+    "keywords": "آن لائن,انٹرنیٹ,اسٹیشن,پاکستان,خبریں,کھیل,گانے,پسندیدہ,نشریات",
+    "promotionalText": "مانوس اردو آوازیں اور دنیا کی نئی دھنیں۔ ملک یا صنف کے مطابق اسٹیشن تلاش کریں اور اپنے پسندیدہ ریڈیو محفوظ کریں۔",
+    "description": "صبح کی خبریں، اردو پروگرام یا گھر کی یاد دلانے والی آواز۔ MegaRadio پر پاکستان اور دنیا کے ریڈیو اسٹیشن تلاش کرکے براہ راست سنیں۔\n\nاسٹیشن کے نام سے تلاش کریں یا ملک اور صنف منتخب کریں۔ گانے، پاپ، جاز، خبریں، کھیل اور گفتگو کے پروگرام دریافت کریں۔ پسندیدہ اسٹیشن محفوظ کریں تاکہ اگلی بار دوبارہ تلاش نہ کرنا پڑے۔\n\nFM، AM اور آن لائن نشریات سننے کے لیے انٹرنیٹ درکار ہے۔ موبائل ڈیٹا کی فیس لگ سکتی ہے۔ نشریات اور گانوں کی معلومات اسٹیشن اور علاقے پر منحصر ہیں۔ MegaRadio ایک ڈائریکٹری ہے؛ مواد متعلقہ نشریاتی ادارے فراہم کرتے ہیں۔",
+    "platform": {
+      "IOS": "iPhone اور iPad پر اپنا ریڈیو ساتھ رکھیں۔",
+      "MACOS": "کام یا آرام کے دوران Mac پر ریڈیو سنیں۔",
+      "TVOS": "Apple TV ریموٹ سے اسٹیشن منتخب کریں اور بیٹھک میں ریڈیو سنیں۔"
+    },
+    "whatsNew": "اصناف کی فہرست، اسٹیشن کی تصاویر اور حالیہ سماعت کی ترتیب بہتر بنائی۔ لاگ ان، اکاؤنٹ کی تبدیلی اور سبسکرپشن بحال کرنا زیادہ قابل اعتماد ہوا ہے۔"
+  },
+  "sl": {
+    "name": "MegaRadio: Radio v živo",
+    "subtitle": "Postaje FM in AM z vsega sveta",
+    "keywords": "poslušaj,spletni,internet,slovenija,slovenski,novice,šport,jazz,klasika,pop,priljubljene",
+    "promotionalText": "Domači glasovi in novi zvoki iz sveta. Poiščite postaje po državi ali zvrsti in shranite radie, ki jih želite poslušati znova.",
+    "description": "Slovenska glasba, jutranje novice ali oddaja iz drugega dela sveta. MegaRadio vam pomaga najti radijske postaje in jih poslušati v živo prek interneta.\n\nPoiščite postajo po imenu ali raziščite države in zvrsti. Izbirajte med popom, rockom, jazzom, klasiko, novicami, športom in pogovornimi oddajami. Priljubljene postaje shranite, da jih naslednjič najdete brez novega iskanja.\n\nZa poslušanje FM, AM in spletnih postaj potrebujete internet. Lahko nastanejo stroški mobilnih podatkov. Oddaje in podatki o skladbah so odvisni od postaje in območja. MegaRadio je imenik; vsebino zagotavljajo izdajatelji.",
+    "platform": {
+      "IOS": "Vzemite radio s seboj na iPhonu in iPadu.",
+      "MACOS": "Poslušajte radio na Macu med delom ali počitkom.",
+      "TVOS": "Izberite postajo z daljincem Apple TV in poslušajte v dnevni sobi."
+    },
+    "whatsNew": "Izboljšali smo zvrsti, slike postaj in nedavna poslušanja. Prijava, menjava računa in obnovitev naročnin so zanesljivejše."
+  }
+}

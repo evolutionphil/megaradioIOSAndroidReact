@@ -1,0 +1,15 @@
+Running altool at path '/Applications/Xcode.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources/altool'...
+
+2026-09-24 10:35:26.454  INFO: [ContentDelivery.Uploader.97C808B80]
+==========================================
+VERIFY SUCCEEDED with no errors
+==========================================
+{
+  "details" : {
+
+  },
+  "os-version" : "Version 26.6.2 (Build 25G83)",
+  "success-message" : "No errors validating archive at '/tmp/megaradio-apple-release/ios-iap6-export/MegaRadio.ipa'.",
+  "tool-path" : "/Applications/Xcode.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources",
+  "tool-version" : "26.30.4 (173004)"
+}

@@ -22,7 +22,8 @@ func fit(_ text: String, rect: NSRect, maxSize: CGFloat, minSize: CGFloat) throw
     throw NSError(domain:"ScreenshotTextOverflow",code:1,userInfo:[NSLocalizedDescriptionKey:text])
 }
 for (locale, copy) in captions.sorted(by: {$0.key < $1.key}) {
-    for (index, kind, filename) in [(1,"discover","2.png"),(2,"favorites","6.png")] {
+    for kind in copy.keys.sorted() {
+        let filename = kind + ".png"
 
         let rep=NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:1284,pixelsHigh:540,bitsPerSample:8,samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:0,bitsPerPixel:0)!
         let ctx=NSGraphicsContext(bitmapImageRep:rep)!.cgContext

@@ -1,0 +1,50 @@
+[
+  {
+    "platform": "MAC_OS",
+    "locale": "en-US",
+    "device": "mac",
+    "count": 1,
+    "verified": true,
+    "setId": "3c5e3dc4-c2cb-40af-8cc9-3a2ca231b852"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "iphone6.9",
+    "count": 2,
+    "verified": true,
+    "setId": "66b56b8b-37a4-47da-b375-31f5c8ef5788"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "iphone6.5",
+    "count": 2,
+    "verified": true,
+    "setId": "6815cfc1-f6ec-4dde-bbeb-785227a8ce74"
+  },
+  {
+    "platform": "TV_OS",
+    "locale": "en-US",
+    "device": "appletv",
+    "count": 1,
+    "verified": true,
+    "setId": "bbc9245c-aadd-4b6d-aada-58586b3506e4"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "ipad13",
+    "count": 1,
+    "verified": true,
+    "setId": "ec905277-bc37-4c1b-8ec8-cab571a50bf4"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "iphone5.5",
+    "count": 2,
+    "verified": true,
+    "setId": "96aaeb5b-61a7-44c4-9394-2580c7ba15f9"
+  }
+]

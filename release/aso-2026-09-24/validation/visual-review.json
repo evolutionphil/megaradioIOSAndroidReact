@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-24",
+  "localImages": 1950,
+  "sets": 350,
+  "captionSheetsViewed": 5,
+  "localizedCaptionsViewed": 350,
+  "fullSetSamples": [
+    "tr/iphone6.5",
+    "tr/ipad13",
+    "ar-SA/iphone6.5",
+    "ja/iphone6.5",
+    "ml/ipad13",
+    "de-DE/mac",
+    "tr/appletv"
+  ],
+  "corrections": [
+    "Preserved flag strip in the second phone slide",
+    "Removed unsupported recording and HD claims",
+    "Replaced recording slide with an actual Genres capture",
+    "Expanded full phone, iPad and Watch counts using iOS 1.0.3 assets",
+    "Matched desktop app screenshot scale across all four slides"
+  ],
+  "limits": [
+    "Native UI inside source captures is preserved; it is not translated into all 50 locales.",
+    "Local image validation is separate from successful Apple asset delivery."
+  ]
+}

@@ -1,22 +1,29 @@
-"promotionalText" = "Retrouvez vos radios préférées et découvrez de nouvelles voix. Explorez les stations par pays ou genre, puis gardez vos découvertes dans vos favoris.";
-"description" = "Une voix familière, votre musique préférée ou une nouvelle découverte : MegaRadio vous accompagne dans l'univers de la radio en direct.
+"promotionalText" = "De vos radios françaises aux découvertes du monde : écoutez en direct, explorez les genres musicaux et retrouvez vos stations préférées dans vos favoris.";
+"description" = "Écoutez la radio en direct avec MegaRadio : retrouvez les radios françaises en ligne, explorez les stations FM et AM du monde et gardez vos favoris à portée de main. Musique, actualités, sport ou débats : choisissez votre prochain programme par station, pays ou genre.
 
-TROUVEZ LA STATION QUI VOUS RESSEMBLE
-Recherchez une radio par son nom ou explorez les stations par pays et genre. Pop, rock, jazz, classique, actualités, sport et débats : choisissez selon vos envies.
+UNE RADIO POUR CHAQUE MOMENT
+Le journal du matin, de la musique pendant le travail ou une émission pour accompagner la soirée : la radio suit vos habitudes sans vous demander de composer chaque morceau d'une playlist. Sélectionnez la France pour commencer par des programmes familiers, puis changez de pays pour entendre d'autres voix. À l'étranger, recherchez le flux internet d'une station de votre région.
 
-VOS FAVORIS À PORTÉE DE MAIN
-Enregistrez les stations que vous aimez pour les retrouver sans recommencer votre recherche.
+VARIEZ LES AMBIANCES
+Parcourez les genres proposés : pop, chanson, rock, jazz, musique classique ou électronique. Une station peut vous faire découvrir un titre que vous n'auriez pas choisi vous-même. Les radios d'information et de débat ouvrent d'autres portes sur l'actualité. Le programme reste celui du diffuseur ; les catégories et stations disponibles dépendent du pays sélectionné.
 
-DE LA FRANCE AU RESTE DU MONDE
-Écoutez les flux en ligne des radios FM, AM et internet de France et d'ailleurs. Retrouvez les programmes locaux ou découvrez des émissions dans d'autres langues.
+UNE COLLECTION QUI VOUS RESSEMBLE
+Enregistrez une radio dès qu'elle vous plaît. Rassemblez vos rendez-vous habituels et quelques découvertes dans les favoris, puis retrouvez-les sans mémoriser chaque nom. Vous pouvez garder une station pour les nouvelles, une autre pour vous concentrer et une sélection pour les moments de détente.
+
+COMPRENDRE LE DIRECT
+Ouvrez le lecteur pour lancer ou interrompre l'écoute. Les titres et artistes s'affichent lorsque la station transmet ces informations. FM et AM désignent ici les flux en ligne des diffuseurs : l'application ne remplace pas un récepteur radio sans internet. Une station peut être momentanément indisponible ou limiter son accès selon la région.
+
+ACHATS FACULTATIFS
+Des achats intégrés sont proposés. Chaque offre précise ses avantages, sa durée et son prix avant validation. Une formule sans publicité dans l'application ne supprime pas les annonces diffusées par les stations. Les abonnements Apple se gèrent dans votre compte Apple ; les achats existants peuvent être restaurés depuis l'application.
 
 Une connexion internet est nécessaire. Des frais de données mobiles peuvent s'appliquer. La disponibilité des flux et des titres dépend de la station et de votre région. MegaRadio est un annuaire ; les contenus sont fournis par les radios concernées.
 
-Emportez vos radios sur iPhone et iPad.
+SUR IPHONE ET IPAD
+Continuez l'écoute en arrière-plan et utilisez les commandes de l'écran verrouillé. Programmez l'arrêt avec la minuterie de sommeil. Le mode voiture propose de grandes commandes de lecture : préparez votre station avant de conduire et restez attentif à la route.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "écouter,internet,en ligne,france,locales,actualités,sport,jazz,classique,pop,rock,favoris";
+"keywords" = "écouter,internet,en ligne,france,locales,actualités,sport,jazz,classique,pop,rock,favoris,chanson";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";
 "whatsNew" = "Amélioration des listes de genres, des images des stations et de l'affichage des écoutes récentes. Connexion, changement de compte et restauration des abonnements sont plus fiables.";

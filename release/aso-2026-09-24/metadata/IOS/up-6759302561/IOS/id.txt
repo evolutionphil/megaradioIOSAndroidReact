@@ -1,19 +1,32 @@
-"promotionalText" = "Suara akrab dari daerahmu atau musik baru dari luar negeri. Jelajahi stasiun menurut negara dan genre, lalu simpan radio favoritmu.";
-"description" = "Teman saat bekerja, kabar dari daerah asal, atau musik untuk menemani hari. MegaRadio membantumu menemukan siaran radio Indonesia dan dunia.
+"promotionalText" = "Dari pop Indonesia dan dangdut hingga berita dan musik dunia: dengarkan radio langsung, jelajahi genre, lalu simpan stasiun pilihanmu di favorit.";
+"description" = "Dengarkan radio online langsung dengan MegaRadio. Temukan stasiun Indonesia, jelajahi siaran FM dan AM dari negara lain, lalu pilih musik, berita atau obrolan untuk menemani harimu. Cari berdasarkan nama dan simpan stasiun favorit.
 
-PILIH SUARA YANG KAMU SUKA
-Cari nama stasiun atau telusuri negara dan genre. Temukan dangdut, pop, rock, jazz, berita, olahraga, dan acara bincang-bincang.
+RADIO UNTUK KEGIATAN SEHARI-HARI
+Mulai pagi dengan berita, dengarkan musik saat bekerja atau ikuti obrolan santai di waktu istirahat. Pilih Indonesia sebagai titik awal dan cari nama stasiun yang kamu kenal. Jika tinggal di luar negeri, siaran berbahasa Indonesia yang tersedia bisa menghadirkan suara dari rumah. Ganti negara saat ingin mengenal program dan bahasa lain.
 
-FAVORITMU MUDAH DITEMUKAN
-Simpan stasiun yang kamu suka agar tidak perlu mencari lagi. Dengarkan siaran FM, AM dan radio online melalui internet.
+DARI DANGDUT KE PENEMUAN BARU
+Jelajahi pop, dangdut, rock, jazz, musik klasik dan kategori lain yang tersedia di katalog. Stasiun menyusun acaranya sendiri, jadi kamu tidak perlu memilih setiap lagu dalam daftar putar. Penyiar, wawancara dan siaran langsung memberi pengalaman yang berbeda. Genre dan program yang tersedia dapat berubah menurut negara dan stasiun.
+
+KOLEKSI STASIUN PILIHANMU
+Simpan stasiun begitu kamu ingin mendengarkannya lagi. Kumpulkan sumber berita pagi, musik untuk menemani kerja dan temuan baru untuk akhir pekan. Favorit membantu kamu kembali tanpa mengingat semua nama atau mengulang pencarian yang sama. Tambahkan pilihan baru ketika seleramu berkembang.
+
+PAHAMI SIARAN YANG DIPUTAR
+Mulai atau jeda audio melalui pemutar. Judul lagu dan nama artis tampil jika stasiun mengirimkan informasinya. Tidak semua siaran menyertakan data musik. FM dan AM berarti siaran stasiun melalui internet, bukan penerimaan frekuensi dengan antena tanpa koneksi. Akses suatu stream bisa terbatas menurut wilayah atau kondisi siaran.
+
+MULAI DARI SATU STASIUN
+Pilih negara, buka genre atau cari nama yang sudah kamu kenal. Tekan putar, simpan yang kamu sukai, lalu lanjutkan menjelajah ketika ingin suasana baru.
+
+PEMBELIAN OPSIONAL
+Tersedia pembelian dalam aplikasi. Manfaat, durasi dan harga ditampilkan sebelum pembelian. Paket tanpa iklan aplikasi tidak menghapus iklan yang disiarkan stasiun radio. Kelola langganan Apple melalui Akun Apple dan pulihkan pembelian sebelumnya dari aplikasi.
 
 Koneksi internet diperlukan; biaya data seluler dapat berlaku. Ketersediaan siaran dan informasi lagu bergantung pada stasiun serta wilayah. MegaRadio adalah direktori; isi siaran disediakan oleh masing-masing stasiun.
 
-Bawa radio favoritmu di iPhone dan iPad.
+DI IPHONE DAN IPAD
+Dengarkan di latar belakang dan kendalikan pemutaran dari layar terkunci. Atur pengatur waktu tidur untuk berhenti nanti. Mode mobil memiliki tombol lebih besar. Pilih stasiun sebelum berkendara dan tetap fokus di jalan.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "indonesia,lokal,internet,berita,olahraga,dangdut,pop,jazz,rock,favorit,stasiun";
+"keywords" = "indonesia,lokal,internet,berita,olahraga,dangdut,pop,jazz,rock,favorit,stasiun,musik,lagu,klasik";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";
 "whatsNew" = "Daftar genre, gambar stasiun, dan tampilan riwayat putar ditingkatkan. Login, pergantian akun, serta pemulihan langganan kini lebih andal.";

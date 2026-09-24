@@ -1,11 +1,20 @@
-"promotionalText" = "Polskie stacje i nowe dźwięki ze świata. Szukaj radia według kraju lub gatunku, zapisuj ulubione i wybieraj, czego chcesz dziś słuchać.";
-"description" = "Znany głos z polskiego radia czy nowa muzyka z zagranicy? MegaRadio ułatwia odkrywanie stacji i słuchanie ich na żywo przez internet.
+"promotionalText" = "Polskie stacje i nowe brzmienia z całego świata: słuchaj radia na żywo, odkrywaj gatunki muzyczne i zapisuj ulubione rozgłośnie na kolejny dzień.";
+"description" = "Słuchaj radia internetowego na żywo z MegaRadio. Znajdź polskie stacje FM i AM online, odkrywaj muzykę, wiadomości i audycje z innych krajów. Wyszukuj po nazwie, przeglądaj gatunki i zapisuj ulubione rozgłośnie.
 
-RADIO NA TWÓJ DZIEŃ
-Wyszukaj stację po nazwie albo przeglądaj kraje i gatunki. Odkrywaj pop, rock, jazz, muzykę klasyczną, wiadomości, sport i audycje rozmów.
+RADIO W TWOIM RYTMIE
+Wiadomości przy śniadaniu, muzyka podczas pracy albo rozmowy wieczorem: wybierz stację pasującą do chwili. Ustaw Polskę jako kraj, aby zacząć od znajomych głosów. Jeśli mieszkasz za granicą, wyszukaj internetową transmisję rozgłośni z domu. Zmień kraj, gdy chcesz poznać inne języki i spojrzenie na codzienność.
 
-ZAPISZ ULUBIONE
-Zachowaj stacje, do których chcesz wracać, bez ponownego szukania. Słuchaj internetowych transmisji FM, AM i rozgłośni online z Polski oraz innych krajów.
+OD POPU PO MUZYKĘ KLASYCZNĄ
+Odkrywaj pop, rock, disco polo, jazz, muzykę elektroniczną i inne gatunki dostępne w katalogu. To stacja układa program, więc nie musisz wybierać każdego utworu do playlisty. Prezenterzy i audycje na żywo mogą przynieść coś, czego samodzielnie nie udałoby się znaleźć. Kategorie i programy zależą od kraju oraz nadawcy.
+
+ZAPISUJ DOBRE ODKRYCIA
+Dodawaj stacje do ulubionych, kiedy zechcesz do nich wrócić. Połącz poranne informacje, muzykę do skupienia i nowe odkrycia na weekend w osobistą kolekcję. Nie trzeba wtedy pamiętać wszystkich nazw ani powtarzać wyszukiwania przy każdym uruchomieniu.
+
+CO WIDAĆ W ODTWARZACZU
+Rozpocznij lub wstrzymaj transmisję i sprawdź informacje dostarczane przez rozgłośnię. Tytuł utworu i wykonawca pojawiają się, gdy zawiera je strumień. Nie każda stacja udostępnia te dane. FM i AM oznaczają tutaj emisję przez internet, a nie odbiór antenowy bez połączenia. Dostępność może się zmieniać zależnie od regionu i nadawcy.
+
+OPCJONALNE ZAKUPY
+Aplikacja oferuje zakupy wewnętrzne. Korzyści, okres i cena są wyświetlane przed zakupem. Usunięcie reklam aplikacji nie usuwa reklam nadawanych przez stacje. Subskrypcjami Apple zarządzasz na koncie Apple; wcześniejsze zakupy można przywrócić w aplikacji.
 
 Wymagane jest połączenie internetowe. Mogą obowiązywać opłaty za transmisję danych. Dostępność audycji i informacji o utworach zależy od stacji i regionu. MegaRadio to katalog; treści dostarczają nadawcy.
 
@@ -13,6 +22,6 @@ Słuchaj na Macu podczas pracy lub odpoczynku.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "słuchaj,online,polska,polskie,lokalne,wiadomości,sport,jazz,klasyka,pop,rock,ulubione";
+"keywords" = "słuchaj,online,polska,polskie,lokalne,wiadomości,sport,jazz,klasyka,pop,rock,ulubione,muzyka,retro";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

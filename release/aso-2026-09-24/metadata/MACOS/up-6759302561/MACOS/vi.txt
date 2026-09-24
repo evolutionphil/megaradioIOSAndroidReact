@@ -1,11 +1,20 @@
-"promotionalText" = "Giọng nói quen thuộc và âm thanh mới từ khắp nơi. Tìm đài theo quốc gia hoặc thể loại, rồi lưu những đài bạn muốn nghe lại.";
-"description" = "Tin tức buổi sáng, chương trình trò chuyện hay âm nhạc để thư giãn. MegaRadio giúp bạn khám phá đài phát thanh Việt Nam và các quốc gia khác.
+"promotionalText" = "Từ tiếng Việt thân quen đến âm nhạc thế giới: nghe radio trực tiếp, khám phá đài theo quốc gia và thể loại, lưu những lựa chọn muốn nghe lại.";
+"description" = "Nghe radio trực tiếp với MegaRadio. Tìm các đài phát thanh Việt Nam, khám phá đài FM và AM trên internet từ nhiều quốc gia, rồi chọn âm nhạc, tin tức hoặc trò chuyện. Tìm theo tên, quốc gia hay thể loại và lưu đài yêu thích.
 
-TÌM NỘI DUNG MUỐN NGHE
-Tìm theo tên đài hoặc duyệt theo quốc gia và thể loại. Khám phá nhạc trẻ, trữ tình, pop, jazz, tin tức, thể thao và chương trình trò chuyện.
+RADIO CHO NHỊP SỐNG CỦA BẠN
+Tin tức buổi sáng, âm nhạc khi làm việc hay một cuộc trò chuyện lúc nghỉ ngơi: chọn đài phù hợp với từng thời điểm. Bắt đầu bằng Việt Nam hoặc tìm tên đài bạn đã biết. Khi sống xa nhà, một chương trình tiếng Việt đang phát trực tuyến có thể mang lại cảm giác gần gũi. Đổi quốc gia nếu muốn nghe ngôn ngữ và góc nhìn khác.
 
-GIỮ ĐÀI YÊU THÍCH TRONG TẦM TAY
-Lưu đài để lần sau không cần tìm lại. Nghe các luồng phát FM, AM và radio trực tuyến qua internet.
+KHÁM PHÁ NGOÀI DANH SÁCH QUEN THUỘC
+Tìm hiểu các thể loại có trong danh mục như nhạc pop, rock, jazz, cổ điển và điện tử. Đài tự chọn bài hát và chương trình, vì vậy bạn không cần quyết định từng bản nhạc kế tiếp. Người dẫn, phỏng vấn và nội dung trực tiếp tạo nên trải nghiệm riêng của radio. Danh mục và chương trình có thể khác nhau giữa các quốc gia.
+
+TẠO BỘ SƯU TẬP ĐÀI CỦA RIÊNG MÌNH
+Lưu một đài ngay khi bạn muốn nghe lại. Tập hợp nguồn tin buổi sáng, âm nhạc giúp tập trung và những khám phá cho cuối tuần. Mục yêu thích giúp quay lại mà không phải nhớ mọi tên đài hoặc tìm kiếm từ đầu. Bạn có thể bổ sung lựa chọn khi sở thích thay đổi.
+
+HIỂU THÔNG TIN ĐANG HIỂN THỊ
+Bắt đầu hoặc tạm dừng âm thanh trong trình phát. Tên bài hát và nghệ sĩ xuất hiện khi đài cung cấp dữ liệu; không phải luồng phát nào cũng có thông tin này. FM và AM chỉ các chương trình phát qua internet của đài, không phải thu sóng bằng ăng-ten khi ngoại tuyến. Một số luồng có thể tạm ngừng hoặc bị giới hạn theo khu vực.
+
+MUA HÀNG TÙY CHỌN
+Ứng dụng có các lựa chọn mua trong ứng dụng. Quyền lợi, thời hạn và giá được hiển thị trước khi mua. Gói loại bỏ quảng cáo của ứng dụng không loại bỏ quảng cáo do đài phát trong chương trình. Quản lý đăng ký Apple trong Tài khoản Apple và khôi phục giao dịch đã mua trong ứng dụng.
 
 Cần kết nối internet; có thể phát sinh phí dữ liệu di động. Khả năng phát và thông tin bài hát tùy thuộc vào đài và khu vực. MegaRadio là danh bạ đài; nội dung do từng đơn vị phát thanh cung cấp.
 
@@ -13,6 +22,6 @@ Nghe radio trên Mac khi làm việc hoặc nghỉ ngơi.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "phát thanh,internet,việt nam,tin tức,thể thao,nhạc trẻ,trữ tình,jazz,yêu thích";
+"keywords" = "phát thanh,internet,việt nam,tin tức,thể thao,nhạc trẻ,trữ tình,jazz,yêu thích,âm nhạc,ca khúc,kênh";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

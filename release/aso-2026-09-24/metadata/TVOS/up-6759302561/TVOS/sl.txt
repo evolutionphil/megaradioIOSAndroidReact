@@ -1,7 +1,20 @@
-"promotionalText" = "Domači glasovi in novi zvoki iz sveta. Poiščite postaje po državi ali zvrsti in shranite radie, ki jih želite poslušati znova.";
-"description" = "Slovenska glasba, jutranje novice ali oddaja iz drugega dela sveta. MegaRadio vam pomaga najti radijske postaje in jih poslušati v živo prek interneta.
+"promotionalText" = "Slovenski radio in novi glasovi sveta: poslušajte v živo, raziskujte glasbene zvrsti ter shranite postaje, h katerim se želite vrniti.";
+"description" = "Poslušajte radio v živo z MegaRadio. Poiščite slovenske postaje na spletu, odkrijte spletne prenose FM in AM iz drugih držav ter izberite glasbo, novice ali pogovorne oddaje. Iščite po imenu in shranite priljubljene postaje.
 
-Poiščite postajo po imenu ali raziščite države in zvrsti. Izbirajte med popom, rockom, jazzom, klasiko, novicami, športom in pogovornimi oddajami. Priljubljene postaje shranite, da jih naslednjič najdete brez novega iskanja.
+RADIJSKI PROGRAM ZA VAŠ VSAKDAN
+Novice ob zajtrku, glasba med delom ali pogovor zvečer: za vsak trenutek lahko izberete drugo postajo. Začnite z izbiro Slovenije in poiščite znano ime. Če živite v tujini, poiščite spletni prenos domače postaje. Druga država lahko prinese nove jezike, zvoke in načine pripovedovanja.
+
+RAZISKOVANJE PO GLASBENEM OKUSU
+Pop, rock, narodnozabavna glasba, jazz, klasika in druge zvrsti so izhodišča za raziskovanje, kadar so na voljo v katalogu. Program izbira postaja, zato vam ni treba sestaviti lastnega seznama vsake skladbe. Voditelji in oddaje v živo lahko ponudijo tudi nepričakovano odkritje. Razpoložljive kategorije in vsebine se razlikujejo po državah.
+
+VAŠA ZBIRKA PRILJUBLJENIH
+Shranite postajo takoj, ko ugotovite, da bi jo radi poslušali znova. Združite novice, glasbo za zbranost in odkritja za prosti čas. Ob naslednjem obisku jih boste našli brez ponovnega iskanja ali pomnjenja vseh imen. Zbirko lahko prilagajate svojim navadam.
+
+SPLETNI PRENOS V ŽIVO
+V predvajalniku začnite ali začasno ustavite poslušanje. Ime skladbe in izvajalca je prikazano, če te podatke posreduje postaja. FM in AM pomenita spletne prenose teh radiev, ne sprejema z anteno brez interneta. Posamezni prenosi so lahko občasno ali krajevno nedostopni.
+
+IZBIRNI NAKUPI
+Aplikacija ponuja izbirne nakupe. Pred nakupom so prikazane ugodnosti, trajanje in cena. Paket brez oglasov aplikacije ne odstrani oglasov v radijskem programu. Naročnine Apple upravljate v računu Apple, obstoječe nakupe pa obnovite v aplikaciji.
 
 Za poslušanje FM, AM in spletnih postaj potrebujete internet. Lahko nastanejo stroški mobilnih podatkov. Oddaje in podatki o skladbah so odvisni od postaje in območja. MegaRadio je imenik; vsebino zagotavljajo izdajatelji.
 
@@ -9,6 +22,6 @@ Izberite postajo z daljincem Apple TV in poslušajte v dnevni sobi.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "poslušaj,spletni,internet,slovenija,slovenski,novice,šport,jazz,klasika,pop,priljubljene";
+"keywords" = "poslušaj,spletni,internet,slovenija,slovenski,novice,šport,jazz,klasika,pop,priljubljene,glasba,rock";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

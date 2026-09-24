@@ -1,0 +1,1506 @@
+{
+  "observedAt": "2026-09-24T08:06:47Z",
+  "records": [
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "sl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo",
+      "id": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "sl",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "MAC_OS",
+      "locale": "sl",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "IOS",
+      "locale": "sl",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "version",
+      "platform": "TV_OS",
+      "locale": "sl",
+      "mismatches": []
+    }
+  ],
+  "mismatches": []
+}

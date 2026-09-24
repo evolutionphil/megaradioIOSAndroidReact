@@ -1,19 +1,32 @@
-"promotionalText" = "A local station over breakfast or a new sound from overseas. Find Australian and international radio by country or genre and save your favourites.";
-"description" = "Keep a familiar Australian station close or tune into a different part of the world. MegaRadio helps you discover live radio streams to suit your day.
+"promotionalText" = "Your local voices and a world of music: explore Australian and international live radio, browse genres, and save a station collection that feels like yours.";
+"description" = "Find Australian radio online and explore live stations from around the world with MegaRadio. From local news and talkback to music for your day, browse by country or genre and save the stations you want to hear again.
 
-LOCAL VOICES, GLOBAL CHOICE
-Look up a station by name or browse the Australian selection alongside broadcasts from other countries. Follow news, sport and talk, or explore country, rock, pop and jazz.
+AUSTRALIAN RADIO, YOUR OWN ROUTINE
+Choose Australia as your starting point and look for the stations that fit your day. Follow local voices over breakfast, put on music while you work, or open a talk station when you want conversation. Travelling or living overseas? Search for a familiar station's internet stream and keep a connection with programmes from home.
 
-LESS SEARCHING, MORE LISTENING
-Save stations to your favourites and find them again when you're ready to listen. FM and AM broadcasters stream alongside internet-only stations.
+ROOM FOR A DIFFERENT SOUND
+Country, rock, pop, electronic music, jazz and classical formats offer different ways into the directory. You can stay with a genre you know or try a station from another country. The broadcaster chooses the live programme, giving you a chance to hear something beyond a playlist you have already built. Catalogues and categories differ between countries.
+
+FIND THE STATION, THEN PRESS PLAY
+Search by name if you know the broadcaster. If you are still deciding, start with a genre or change the country selection. MegaRadio brings those routes into one app, so finding local stations and exploring international radio use the same simple steps.
+
+KEEP THE GOOD FINDS
+Save a station to favourites as you listen. Build a selection for the working week, quieter evenings or the weekend. Returning to favourites means you do not need to remember each station name or start a new search every time.
+
+WHAT YOU HEAR IS THE LIVE STREAM
+Playback controls let you start or pause the station. Song and artist details depend on the information sent by the broadcaster and are not available on every stream. FM and AM describe the stations you can find online; MegaRadio does not use an offline antenna receiver. Streaming requires a connection, including when listening away from Wi-Fi.
+
+OPTIONAL PLANS
+In-app purchases are optional. The purchase screen shows each offer's features, duration and price. An ad-free app plan does not remove advertising broadcast by the radio station itself. Apple subscriptions are managed through your Apple Account; existing purchases can be checked with Restore Purchases in the app.
 
 You need an internet connection. Mobile data charges may apply. Streams and song information depend on the broadcaster and region. MegaRadio is a directory; individual stations provide the programmes.
 
-Listen on iPhone and iPad wherever you have an internet connection.
+IPHONE AND IPAD LISTENING
+Keep radio playing in the background, use lock-screen controls and set a sleep timer when you want playback to finish. The mobile app also includes car mode with larger playback controls. Choose your station before you drive and stay focused on the road.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "listen,internet,online,stations,local,news,sport,talk,jazz,country,rock,pop,favourites";
+"keywords" = "listen,internet,online,stations,local,news,sport,talk,jazz,country,rock,pop,favourites,music,oldies";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";
 "whatsNew" = "Better genre lists, station images and recently played layouts. Sign-in, switching accounts and restoring subscriptions are more reliable.";

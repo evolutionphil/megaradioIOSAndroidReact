@@ -1,11 +1,26 @@
-"promotionalText" = "Your local voices, a favourite show or something further afield. Explore UK and international radio, then keep the stations you enjoy in your favourites.";
-"description" = "Start with a familiar UK station, then see where your listening takes you. MegaRadio brings local broadcasts and international radio streams into one easy-to-browse directory.
+"promotionalText" = "Find your local sound, then explore further. Listen to live UK and worldwide radio, browse music genres and keep your favourite stations ready for the next listen.";
+"description" = "Listen to live radio from the UK and beyond with MegaRadio. Find familiar local stations online, follow news and conversation, and explore music from around the world with a radio player built around stations, countries and genres.
 
-FIND SOMETHING FOR YOUR DAY
-Search for a station by name, browse by country or explore genres from indie and rock to jazz and classical. Catch news, sport and conversation or let music accompany your day.
+FROM THE BREAKFAST SHOW TO THE EVENING WIND-DOWN
+Radio has its own place in the day: a voice over breakfast, music while you work, or conversation as you relax. Choose the United Kingdom in the country selector to begin with familiar programmes, or look further afield for a different perspective. If you are away from home, search for the online stream of a station you know.
 
-MAKE IT YOUR RADIO COLLECTION
-Keep your favourite stations together and return to them without another search. Explore FM, AM and internet stations from the UK and around the world.
+FOLLOW YOUR TASTE, NOT A FIXED PLAYLIST
+Browse pop, rock, indie, dance, jazz and classical formats in the directory. Each station brings its own presenters and programme choices, so there is always room to hear something you would not have queued yourself. News, sports and talk stations provide another way to listen; their programmes and broadcast availability remain under the station's control.
+
+A SHORT ROUTE TO THE RIGHT STATION
+Search by station name when you know what you want. Explore a genre when you have a mood in mind. Choose a different country when you want to hear local voices from elsewhere. These routes let you move between familiar favourites and new discoveries without collecting a separate app for every station.
+
+MAKE YOUR FAVOURITES USEFUL
+Save the stations you want to return to: morning news, music for studying, a weekend favourite or a new international discovery. Your collection gives you a convenient starting point the next time you open MegaRadio. Add new stations as your listening habits change.
+
+LIVE PROGRAMMES, CLEAR CONTROLS
+Open a station to start or pause playback and view the information supplied with its stream. Song titles and artists appear where the broadcaster provides them. FM and AM stations are played through their internet streams; this is online radio, not reception through an offline FM tuner.
+
+START WITH ONE STATION
+Select a country or genre, choose a station and listen. If you like what you hear, save it before browsing further. Whether you stay local or explore overseas, your next programme is a station choice away.
+
+OPTIONAL IN-APP PURCHASES
+Optional plans are offered in the app. Features, duration and price are shown before purchase. Removing app adverts does not remove adverts within a broadcaster's own stream. Manage subscriptions bought through Apple in your Apple Account; use Restore Purchases to verify an existing purchase.
 
 Internet access is required and mobile data charges may apply. Broadcast and track information availability varies by station and region. Stations provide their own programmes; MegaRadio is a directory.
 
@@ -13,6 +28,6 @@ Keep radio close while you work or relax on your Mac.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "internet,online,uk,british,local,news,sport,talk,jazz,classical,indie,rock,favourites";
+"keywords" = "internet,online,uk,british,local,news,sport,talk,jazz,classical,indie,rock,favourites,music,oldies";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

@@ -23,7 +23,19 @@ class ASC:
   if self.exp-time.time()<90:
    now=int(time.time());self.exp=now+900
    self.token=jwt.encode({'iss':self.issuer,'iat':now,'exp':self.exp,'aud':'appstoreconnect-v1'},self.key,algorithm='ES256',headers={'kid':self.key_id,'typ':'JWT'})
-  r=self.session.request(method,url,headers={'Authorization':'Bearer '+self.token,'Content-Type':'application/json'},timeout=60,**kw)
+  for attempt in range(61):
+   if self.exp-time.time()<90:
+    now=int(time.time());self.exp=now+900
+    self.token=jwt.encode({'iss':self.issuer,'iat':now,'exp':self.exp,'aud':'appstoreconnect-v1'},self.key,algorithm='ES256',headers={'kid':self.key_id,'typ':'JWT'})
+   r=self.session.request(method,url,headers={'Authorization':'Bearer '+self.token,'Content-Type':'application/json'},timeout=60,**kw)
+   if r.status_code==429 and attempt<60:
+    # Respect Apple's quota; no credential or signed URL appears in output.
+    retry_at=time.time()+max(1,int(r.headers.get('Retry-After','60')))
+    while time.time()<retry_at:time.sleep(min(60,retry_at-time.time()))
+    continue
+   if r.status_code>=500 and method in ('GET','PATCH','DELETE') and attempt<3:
+    time.sleep(2**attempt);continue
+   break
   if not r.ok:
    try:errors=r.json().get('errors',[])
    except ValueError:errors=[{'detail':'Non-JSON response'}]

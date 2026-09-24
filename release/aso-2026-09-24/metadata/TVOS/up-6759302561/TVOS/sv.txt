@@ -1,11 +1,20 @@
-"promotionalText" = "En lokal favorit eller nya ljud från världen. Hitta svenska och internationella radiokanaler, utforska genrer och spara det du gillar.";
-"description" = "Morgonens nyheter, musik under dagen eller en röst hemifrån. MegaRadio hjälper dig att hitta direktsänd radio från Sverige och resten av världen.
+"promotionalText" = "Svenska röster och nya ljud från världen: lyssna på radio live, hitta musik efter genre och samla kanalerna du gärna vill återvända till.";
+"description" = "Lyssna på radio live med MegaRadio. Hitta svenska radiokanaler på nätet, utforska webbradio från andra länder och välj musik, nyheter eller samtal för din dag. Sök efter en kanal, bläddra bland genrer och spara dina favoriter.
 
-SÖK, UTFORSKA, LYSSNA
-Sök efter kanalens namn eller bläddra bland länder och genrer. Upptäck pop, rock, jazz och klassiskt, tillsammans med nyheter, sport och samtal.
+RADIO FÖR VARDAGENS OLIKA STUNDER
+Nyheter till frukosten, musik under arbetsdagen eller ett samtal på kvällen: välj en kanal som passar stunden. Börja med Sverige i landväljaren för att hitta bekanta program. Är du utomlands kan en svensk kanals internetström ge en känsla av hemma. Byt land när du vill upptäcka andra röster och perspektiv.
 
-DINA FAVORITER SAMLAS HÄR
-Spara kanaler så att du hittar tillbaka utan en ny sökning. Lyssna på FM-, AM- och webbradiokanaler via internet.
+LÅT PROGRAMMET ÖVERRASKA DIG
+Utforska pop, rock, dansband, jazz, klassisk musik och andra genrer som finns i katalogen. Radiokanalen väljer musiken och programmen, så du behöver inte bygga en egen låtlista. Du kan också leta efter nyheter, sport och samtal. Utbudet och kategorierna varierar mellan länder och kanaler.
+
+BYGG EN EGEN KANALSAMLING
+Spara en favorit när du hör något du gillar. Samla morgonens nyheter, arbetsdagens musik och helgens upptäckter på ett ställe. Favoriterna gör det lättare att komma tillbaka utan att minnas varje namn eller göra om sökningen.
+
+SÅ FUNGERAR DIREKTSÄNDNINGEN
+Starta eller pausa ljudet i spelaren. Låt- och artistinformation visas när kanalen skickar med den; alla strömmar innehåller inte sådana uppgifter. FM och AM avser här stationernas sändningar via internet, inte mottagning med en offline-antenn. Tillgången kan påverkas av din region och av kanalens egna val.
+
+VALFRIA KÖP I APPEN
+Appen erbjuder valfria köp. Innehåll, period och pris visas innan du köper. Ett reklamfritt appalternativ tar inte bort reklam som kanalen sänder i sitt program. Hantera Apple-prenumerationer i ditt Apple-konto och återställ befintliga köp i appen.
 
 Internetanslutning krävs och avgifter för mobildata kan tillkomma. Sändningar och låtinformation varierar mellan kanaler och regioner. MegaRadio är en radiokatalog; innehållet kommer från respektive kanal.
 
@@ -13,6 +22,6 @@ Välj kanal med Apple TV-fjärrkontrollen och lyssna i vardagsrummet.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "lyssna,nätradio,fm,am,online,lokalt,sport,jazz,klassisk,pop,rock,favoriter";
+"keywords" = "lyssna,nätradio,fm,am,online,lokalt,sport,jazz,klassisk,pop,rock,favoriter,dansband,retro,kanaler";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

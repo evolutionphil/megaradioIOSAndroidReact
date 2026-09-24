@@ -1,19 +1,29 @@
-"promotionalText" = "Suara tempatan dan penemuan baharu dari seluruh dunia. Cari stesen mengikut negara atau genre, kemudian simpan radio kegemaran anda.";
-"description" = "Berita pagi, muzik untuk menemani kerja atau suara yang mengingatkan anda pada rumah. MegaRadio membantu anda menemukan radio dari Malaysia dan luar negara.
+"promotionalText" = "Suara Malaysia dan muzik dari seluruh dunia: dengar radio langsung, terokai genre dan simpan stesen yang ingin anda dengar lagi dalam kegemaran.";
+"description" = "Dengar radio dalam talian secara langsung dengan MegaRadio. Cari stesen Malaysia, terokai siaran FM dan AM dari negara lain, serta pilih muzik, berita atau bual bicara. Cari mengikut nama, negara atau genre dan simpan stesen kegemaran.
 
-CARI SIARAN PILIHAN ANDA
-Cari nama stesen atau terokai negara dan genre. Pilih pop Melayu, rock, jazz, berita, sukan dan rancangan bual bicara.
+PILIH SUARA UNTUK HARI ANDA
+Berita pada waktu pagi, muzik semasa bekerja atau perbualan ketika berehat: pilih stesen mengikut suasana. Mulakan dengan Malaysia untuk mencari siaran yang dekat dengan anda. Program berbahasa Melayu, Inggeris, Cina atau Tamil boleh menjadi pilihan mengikut stesen yang tersedia. Jika berada di luar negara, cari siaran internet stesen yang biasa didengar.
 
-KEGEMARAN MUDAH DICAPAI
-Simpan stesen untuk mendengarnya semula tanpa mengulangi carian. Dengar siaran FM, AM dan radio dalam talian melalui internet.
+TEROKAI RENTAK YANG BERBEZA
+Pop, rock, balada, jazz, muzik klasik dan genre lain membuka pelbagai laluan dalam katalog. Setiap stesen menyusun lagu dan programnya sendiri, jadi anda tidak perlu memilih setiap lagu dalam senarai main. Penyampai dan rancangan langsung boleh membawa penemuan baharu. Kategori serta ketersediaan program berbeza mengikut negara dan penyiar.
+
+KUMPULKAN KEGEMARAN ANDA
+Simpan stesen apabila anda mahu mendengarnya lagi. Satukan sumber berita, muzik untuk tumpuan dan penemuan hujung minggu dalam koleksi sendiri. Kegemaran memudahkan anda kembali tanpa mengingati setiap nama atau mengulangi carian. Koleksi boleh berkembang bersama minat anda.
+
+SIARAN LANGSUNG MELALUI INTERNET
+Mulakan atau jedakan audio pada pemain. Nama lagu dan artis dipaparkan apabila stesen membekalkan maklumat tersebut. FM dan AM merujuk kepada siaran stesen dalam talian, bukan penerimaan antena tanpa internet. Sesetengah strim mungkin tidak tersedia buat sementara waktu atau di kawasan tertentu.
+
+PEMBELIAN PILIHAN
+Aplikasi menawarkan pembelian pilihan. Faedah, tempoh dan harga dipaparkan sebelum pembelian. Pelan tanpa iklan aplikasi tidak membuang iklan dalam siaran stesen. Urus langganan Apple melalui Akaun Apple dan pulihkan pembelian sedia ada dalam aplikasi.
 
 Sambungan internet diperlukan dan caj data mudah alih mungkin dikenakan. Ketersediaan siaran serta maklumat lagu bergantung pada stesen dan rantau. MegaRadio ialah direktori; kandungan disediakan oleh stesen masing-masing.
 
-Bawa radio anda pada iPhone dan iPad.
+PADA IPHONE DAN IPAD
+Dengar di latar belakang dan kawal main balik melalui skrin kunci. Tetapkan pemasa tidur untuk berhenti kemudian. Mod kereta menyediakan butang lebih besar. Pilih stesen sebelum memandu dan fokus pada jalan raya.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "dengar,internet,malaysia,melayu,stesen,tempatan,berita,sukan,pop,jazz,rock,kegemaran";
+"keywords" = "dengar,internet,malaysia,melayu,stesen,tempatan,berita,sukan,pop,jazz,rock,kegemaran,muzik,lagu";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";
 "whatsNew" = "Senarai genre, imej stesen dan paparan mainan terkini ditambah baik. Log masuk, pertukaran akaun dan pemulihan langganan lebih boleh dipercayai.";

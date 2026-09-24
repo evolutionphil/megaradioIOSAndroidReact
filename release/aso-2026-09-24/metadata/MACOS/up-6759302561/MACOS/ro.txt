@@ -1,11 +1,20 @@
-"promotionalText" = "Vocile cunoscute de acasă și posturi noi din lume. Caută după țară sau gen și păstrează radiourile preferate la îndemână.";
-"description" = "Un post românesc pentru dimineață sau muzică nouă din altă țară. MegaRadio te ajută să descoperi și să asculți radio în direct prin internet.
+"promotionalText" = "Posturi românești și descoperiri din toată lumea: ascultă radio în direct, explorează genurile muzicale și salvează stațiile la care vrei să revii.";
+"description" = "Ascultă radio online în direct cu MegaRadio. Găsește posturi din România, descoperă stații FM și AM din alte țări și alege muzică, știri sau emisiuni de discuții. Caută după nume, explorează genurile și păstrează-ți favoritele aproape.
 
-ALEGE CE ȚI SE POTRIVEȘTE
-Caută după numele postului ori explorează țări și genuri. Descoperă pop, dance, rock, jazz, muzică populară, știri, sport și emisiuni de discuții.
+UN POST PENTRU FIECARE MOMENT
+Știri la micul dejun, muzică în timpul lucrului sau o conversație seara: alege ce se potrivește zilei tale. Selectează România pentru a porni de la voci cunoscute. Dacă locuiești în străinătate, caută transmisia online a unui post de acasă. Schimbă țara când vrei să auzi alte limbi și alte perspective.
 
-REVINO LA FAVORITE
-Salvează posturile dorite pentru a le regăsi fără o nouă căutare. Ascultă transmisii FM, AM și posturi online din România și din lume.
+LASĂ PROGRAMUL SĂ TE SURPRINDĂ
+Pop, rock, muzică populară, dance, jazz și clasică oferă puncte de plecare diferite în catalog. Fiecare post își alcătuiește programul, iar tu nu trebuie să alegi fiecare melodie dintr-o listă. Prezentatorii, știrile și emisiunile aduc diversitate ascultării. Genurile și transmisiunile disponibile depind de țară și de postul respectiv.
+
+FAVORITE PENTRU URMĂTOAREA ASCULTARE
+Salvează o stație imediat ce găsești ceva ce îți place. Poți aduna o sursă de știri, muzică pentru concentrare și descoperiri pentru weekend. Favoritele te ajută să revii fără să reiei căutarea sau să memorezi fiecare nume.
+
+TRANSMISII LIVE PRIN INTERNET
+Pornește sau pune pe pauză fluxul din player. Titlul melodiei și artistul apar dacă postul transmite aceste informații; nu toate fluxurile le includ. FM și AM se referă la transmisiile online ale stațiilor, nu la recepție fără internet prin antenă. Unele posturi pot fi indisponibile temporar sau în anumite regiuni.
+
+ACHIZIȚII OPȚIONALE
+Aplicația oferă achiziții opționale. Beneficiile, durata și prețul sunt afișate înainte de cumpărare. Eliminarea reclamelor aplicației nu elimină publicitatea difuzată de posturi. Gestionează abonamentele Apple din contul Apple și restaurează achizițiile existente în aplicație.
 
 Ai nevoie de internet; pot exista costuri de date mobile. Disponibilitatea transmisiilor și a informațiilor despre melodii variază după post și regiune. MegaRadio este un director; conținutul aparține radiodifuzorilor.
 
@@ -13,6 +22,6 @@ Ascultă pe Mac când lucrezi sau te relaxezi.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "ascultă,internet,românia,românesc,știri,sport,populară,dance,jazz,rock,favorite";
+"keywords" = "ascultă,internet,românia,românesc,știri,sport,populară,dance,jazz,rock,favorite,muzică,pop,clasică";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

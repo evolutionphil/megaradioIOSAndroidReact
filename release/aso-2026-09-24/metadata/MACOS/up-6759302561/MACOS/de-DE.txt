@@ -1,14 +1,23 @@
-"promotionalText" = "Dein Lieblingssender und neue Entdeckungen: Höre Radio aus Deutschland, Österreich, der Schweiz und aller Welt. Nach Land oder Genre stöbern, Favoriten speichern.";
-"description" = "Vertraute Stimmen aus der Heimat oder neue Musik aus aller Welt: Mit MegaRadio hörst du Radiosender live über das Internet und findest den passenden Sender für deinen Tag.
+"promotionalText" = "Webradio für deinen Alltag: Sender aus Deutschland, Österreich, der Schweiz und aller Welt entdecken, nach Genre stöbern und Lieblingssender griffbereit speichern.";
+"description" = "Radio hören, Lieblingssender finden und neue Webradios entdecken: MegaRadio verbindet Live-Radio aus Deutschland, Österreich und der Schweiz mit Internetradio aus aller Welt. Wähle lokale Stimmen, aktuelle Nachrichten oder Musik, die zu deinem Tag passt.
 
-DEIN WEG ZUM LIEBLINGSSENDER
-Suche nach Sendernamen oder entdecke das Angebot nach Land und Genre. Ob Pop, Rock, Jazz, Klassik, Nachrichten, Sport oder Talk – wähle, was du gerade hören möchtest.
+DEIN ALLTAG HAT SEINEN EIGENEN SOUND
+Morgens Nachrichten, beim Arbeiten Musik und abends eine vertraute Stimme: Stelle dir eine Auswahl zusammen, die zu deinen Hörgewohnheiten passt. Ob du in Deutschland wohnst, österreichische Programme suchst oder Schweizer Radio hören möchtest: Über die Länderauswahl findest du einen passenden Einstieg. Auch im Ausland kannst du nach den Internetstreams deiner Heimatregion suchen.
 
-FAVORITEN SCHNELL WIEDERFINDEN
-Speichere deine Lieblingssender, damit du beim nächsten Mal direkt wieder einsteigen kannst.
+VON SCHLAGER BIS JAZZ
+Entdecke Pop, Rock, Schlager, Klassik, elektronische Musik und weitere Genres im Senderverzeichnis. Du musst keine eigene Wiedergabeliste zusammenstellen: Die Redaktion des jeweiligen Radiosenders bestimmt das laufende Programm. So bleibt Platz für Musik, die du selbst noch nicht ausgewählt hättest. Angebot und Kategorien können je nach Land variieren.
 
-RADIO ÜBER GRENZEN HINWEG
-Entdecke Sender aus Deutschland, Österreich und der Schweiz sowie internationale FM-, AM- und Internetradios. Höre lokale Programme oder lerne neue Klänge und Sprachen kennen.
+SUCHEN ODER STÖBERN? DU ENTSCHEIDEST
+Kennst du bereits einen Sender, suche nach seinem Namen. Willst du etwas Neues hören, beginne mit einem Genre oder einem anderen Land. Zwischen vertrauten Radios und internationalen Programmen kannst du dir eine persönliche Auswahl aufbauen, ohne für jede Station eine eigene App suchen zu müssen.
+
+WENIGER SUCHEN, MEHR ZUHÖREN
+Speichere interessante Sender in deinen Favoriten. So findest du deine Nachrichtenquelle, die Musik für den Feierabend oder einen neu entdeckten Jazzsender wieder. Deine Auswahl muss nicht immer gleich bleiben: Ergänze sie, wenn du beim Stöbern einen neuen Favoriten findest.
+
+WISSEN, WAS GERADE LÄUFT
+Öffne einen Sender im Player und steuere die Wiedergabe. Verfügbare Sender- und Titelinformationen helfen dir bei der Orientierung. Nicht jeder Stream übermittelt Künstler oder Songtitel; fehlende Daten werden nicht als vollständiges Musikprogramm versprochen. FM und AM bezeichnen hier die online verfügbaren Programme dieser Radiosender, keinen Offline-Empfang über eine Antenne.
+
+OPTIONALE IN-APP-KÄUFE
+Die App bietet optionale Käufe und Abonnements. Leistungen, Laufzeit und Preis des gewählten Angebots werden vor dem Kauf angezeigt. Ein werbefreier App-Tarif entfernt keine Werbung, die ein Radiosender selbst in sein Programm einbaut. Über Apple abgeschlossene Abonnements verwaltest du in deinem Apple Account. Bestehende Käufe lassen sich in der App wiederherstellen.
 
 Eine Internetverbindung ist erforderlich. Es können mobile Datenkosten entstehen. Die Verfügbarkeit von Streams und Titelinformationen hängt vom Sender und deinem Standort ab. MegaRadio ist ein Radioverzeichnis; die Inhalte stammen von den jeweiligen Sendern.
 
@@ -16,6 +25,6 @@ Begleite deinen Arbeitsalltag und deine Pausen mit Radio auf dem Mac.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop";
+"keywords" = "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop,schlager";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

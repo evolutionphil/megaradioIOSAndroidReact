@@ -1,11 +1,20 @@
-"promotionalText" = "Een vertrouwde stem of een nieuwe ontdekking. Vind Nederlandse, Vlaamse en internationale radiozenders en bewaar wat je graag hoort.";
-"description" = "Begin met een vertrouwde Nederlandse of Vlaamse zender en ontdek daarna de rest van de radiowereld. MegaRadio maakt live radio vinden en luisteren eenvoudig.
+"promotionalText" = "Van Nederlandse radio tot nieuwe wereldzenders: luister live, ontdek muziek per genre en bewaar de stations die je graag opnieuw wilt horen.";
+"description" = "Luister live radio met MegaRadio. Vind Nederlandse zenders online, ontdek FM- en AM-stations uit andere landen en kies muziek, nieuws of gesprekken voor jouw dag. Zoek op zendernaam, blader door genres en bewaar je favorieten.
 
-WAT WIL JE VANDAAG HOREN?
-Zoek op zendernaam of blader door landen en genres. Van Nederlandstalige muziek, pop en dance tot jazz, nieuws, sport en gesprekken: kies wat bij je dag past.
+EEN ZENDER VOOR JOUW MOMENT
+Nieuws bij het ontbijt, muziek tijdens het werken of een gesprek aan het einde van de dag: radio past op verschillende manieren in je routine. Begin met Nederland als landkeuze en zoek een vertrouwde naam. Woon je in het buitenland, dan kun je naar de internetstream van een bekende zender zoeken. Wissel van land voor een ander geluid.
 
-BEWAAR JE FAVORIETEN
-Sla zenders op zodat je ze later snel terugvindt. Luister via internet naar FM-, AM- en onlinezenders uit binnen- en buitenland.
+LAAT JE VERRASSEN DOOR MUZIEK
+Bekijk de beschikbare genres, van Nederlandstalig en pop tot rock, dance, jazz en klassiek. Je hoeft niet zelf ieder nummer uit te kiezen: de zender bepaalt het programma. Dat geeft ruimte aan presentatoren, nieuwe muziek en onverwachte ontdekkingen. Nieuws- en sportuitzendingen volgen het schema van de betreffende omroep; het aanbod verschilt per land.
+
+MAAK FAVORIETEN DIE JE ECHT GEBRUIKT
+Bewaar een station zodra je ernaar wilt terugkeren. Verzamel je vaste nieuwsbron, muziek voor een rustige avond en zenders die je net hebt ontdekt. Zo hoef je hun namen niet telkens opnieuw op te zoeken. Je verzameling kan meegroeien met je smaak.
+
+WEET WAT JE AANZET
+Start of pauzeer de stream in de speler en bekijk de informatie die de zender meestuurt. Artiest en titel zijn alleen beschikbaar als de stream deze gegevens bevat. FM en AM verwijzen naar online uitzendingen; de app ontvangt geen radiofrequenties via een offline antenne. Streams kunnen tijdelijk of regionaal niet beschikbaar zijn.
+
+OPTIONELE AANKOPEN
+De app biedt optionele in-app aankopen. Voordelen, looptijd en prijs staan vóór aankoop op het aankoopscherm. Het verwijderen van appadvertenties verwijdert geen reclame in de uitzending van een zender. Beheer Apple-abonnementen via je Apple Account en herstel bestaande aankopen in de app.
 
 Een internetverbinding is nodig; mobiele datakosten kunnen gelden. Streams en informatie over nummers zijn afhankelijk van de zender en regio. MegaRadio is een radiogids; de omroepen verzorgen de inhoud.
 
@@ -13,6 +22,6 @@ Luister op je Mac tijdens het werken of ontspannen.
 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 https://themegaradio.com/en/pages/privacy-policy";
-"keywords" = "internetradio,online,nederland,belgië,vlaams,lokaal,nieuws,sport,jazz,klassiek,favorieten";
+"keywords" = "internetradio,online,nederland,belgië,vlaams,lokaal,nieuws,sport,jazz,klassiek,favorieten,muziek,pop";
 "supportUrl" = "https://themegaradio.com/en/contact";
 "marketingUrl" = "https://themegaradio.com";

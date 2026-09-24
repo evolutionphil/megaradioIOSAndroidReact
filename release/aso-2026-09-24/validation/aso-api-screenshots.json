@@ -1,0 +1,524 @@
+[
+  {
+    "platform": "MAC_OS",
+    "locale": "pt-PT",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "25ec47f6-8ac0-4301-9cd9-a625f5fe1f50",
+    "localFingerprint": "90d671174c50fe5551c172a36f5d5b5f5975e480f8e3ab4d8312a94c93298acb"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "tr",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "2da4fd6a-9ff8-43b7-a559-3de158e50c34",
+    "localFingerprint": "c9b8662dc697ec359575b1e1da978830f060f6d9b797aaa6bcdab89d5e3f6180"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "en-US",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "3c5e3dc4-c2cb-40af-8cc9-3a2ca231b852",
+    "localFingerprint": "2d5f4fc598793b926956d3caa94ded3ce6696c9edfb2dd5e4e1f8fdb2744fa63"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "zh-Hant",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "d2c3135c-b2b9-4b8a-891b-88c38ef71817",
+    "localFingerprint": "9bd767cc7a5e8937e31cceb3596dd36d48f639e6af8c01c027f2430266054605"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ja",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "1d18f053-6dd3-4d8b-b1ec-34c768144e73",
+    "localFingerprint": "91bb6fdf925b4d7a7aae82d8b1d14c48fcb94ab8a4284795951c474f7b5a1a32"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ru",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "d939d6a8-a187-4510-b107-1f74a8a47404",
+    "localFingerprint": "722d762d3fe014f865541a4e8f0ce63d24de6b8615b1dc823a7251a4e18ab7e8"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "it",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "3339e51e-f1aa-428d-b1aa-fc00ecbd3b17",
+    "localFingerprint": "e5b028b11e00fcfe7b58fc89004384e784254187b54537c20b1776de9bc8087a"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "de-DE",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "adfbd1ed-1d1b-4b65-ac3c-a98656d6b407",
+    "localFingerprint": "0c0c904af2c423a7033c87202f7a34ecfcc0129eca8676d4c30dd156d1e902ca"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "es-ES",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "af91af74-aa17-4b0c-80e2-bf46e9c07fc8",
+    "localFingerprint": "2973b2c69d11bd10479ca78c04db03baaec4e283b3f35798da441beec1c81a04"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "fr-FR",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "79a8f091-e296-4ed4-894d-d7dfab56e999",
+    "localFingerprint": "906394ec3822eb0ba9ac05c58655957e195dd1e770d1f04cd1c10d73b033d787"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "he",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "96f6659b-f0e9-42de-a100-b5b48f5bb7e4",
+    "localFingerprint": "b8ec2fea925646b412685b41fcce459af3222493aa6a2f0bb1dbbddaed4f824b"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "en-AU",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "0f6545d6-1592-4566-a4f9-a99b7bab70e8",
+    "localFingerprint": "0ebe34f6202212b263339f826eeb8424c86ea045398c4e113df39f39373052f6"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ar-SA",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "594c5ff1-8638-4c8f-8ba8-97d0961d9d47",
+    "localFingerprint": "d6f247e951aa940e571f3f97983b70d94b06ce29ef1bac5a85f3025e5b7de674"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "pt-BR",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "8f0e8623-a323-4d2b-b65c-b9742bb125c8",
+    "localFingerprint": "5bdfb55f9bbce05a44f64450b25e87183f985813877231109f481eef87519882"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "es-MX",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "9cd1b59b-df34-492e-8ddd-633200b4592a",
+    "localFingerprint": "efe14ed69fcc8e13d71dd488af3ec61b7e2b1f0acffc2f375183b80cf62cce8b"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "sv",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "62d39ff1-9851-4c39-81e2-4f61326e8303",
+    "localFingerprint": "295180b36034218fad17aa53d2899e7f01eba09b42ae5450426d0a0ad5622171"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "fr-CA",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "8f8cd86d-b716-47ad-9c1e-22cceb53ad28",
+    "localFingerprint": "e951bb5540990ad46f8a58dc489222e8dbbedf8be9c53e19cd09acede53dc883"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "no",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "91b5ab75-bc70-4ea4-9811-7439cefeedcb",
+    "localFingerprint": "f74ce1abaa35b5f8c4652750b887f09ce47b1b54cbf5e550d3287dfa40ea7469"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "nl-NL",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "8b5dddac-cc90-441d-a377-4841f531612f",
+    "localFingerprint": "c096e03e3939d66935798d385dbebb1030d9577186d2a838f929c51161629513"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "en-GB",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "3e9675ea-3aaf-4d77-8adc-1965d8d24a06",
+    "localFingerprint": "fff3c475ab168108d9ecfe79fdf09a8e20ec80df67a4f53b4d492bbf18f651a1"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "fi",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "04337e40-5deb-4f65-89fb-1c0c5597e6a1",
+    "localFingerprint": "7a29f828994ffc81ad65c76713822c54ce3bd6cb912ee6d3813bc4a183eb3e5a"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "da",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "efc1ec04-714a-4725-9eca-c38b6f338c1a",
+    "localFingerprint": "8af8a29992ab3c26f6ea4db2e06c46ebd38feba789c97ab387645b25f9a291d8"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "pl",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "4de37260-a8e3-4af9-95e7-c7d0921abf7c",
+    "localFingerprint": "298680888f98e6a8c9f1bed57d9478fc6421e074b02c4933cf77e2cf26110930"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "sk",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "d925c4ce-5e4d-4c25-80e5-2fb5636c5f98",
+    "localFingerprint": "d9260d27b5a24d7a0058a705f6fb5fef2b411d893fa002b920b6fee2405c3a67"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ro",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "512824aa-c757-4721-a765-1307f7ccdf9e",
+    "localFingerprint": "cb9963fdf7eba901ca43d5208d30e560c0215c44286c672fdc3a81e8c6425203"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "cs",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "f9a98810-c56a-4b15-985e-1730a3fd795f",
+    "localFingerprint": "f637c2276c29d72465d1ee056e746b8d0ada12e6f7490fc41aaeb0373433c249"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "hu",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "b9578784-5553-4dad-85e2-c90cde187da8",
+    "localFingerprint": "9b87cd288efc3f5bbd42e84be4ee6227dd4c7264d4619bd450d89b268ba986d3"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "hr",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "8fcbc622-ce2e-4d3e-8924-12e01869865a",
+    "localFingerprint": "c8780a5686b98f9408e555e9cb52ab7dafe7c95ac96283f8dda51aea142cd252"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "el",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "ed3beab5-f12a-4185-86c0-24c613c1da28",
+    "localFingerprint": "18e261b1ad9b5355c04ecc59f87d3c299f80b3691948079f2a16d337b31e2c53"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "uk",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "bb9a65a0-f763-44a0-8331-09b308a78a7d",
+    "localFingerprint": "a4539d5ab6358ddddc8246d2b73d94dc62d088a2533a21ef47eafad808dd9a25"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ca",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "ddb83d66-d40d-4b30-83c2-e49ea839727a",
+    "localFingerprint": "583ebef98073d12f2b77c65444981dd28f78cf125f3b9e5e36553ab265a240be"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "id",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "cc084b0b-8c87-44ae-a5e5-d3d78c89f5a2",
+    "localFingerprint": "ee1eb7c7e67a87b3cac4182ca44ddf5067b241ac49b59641573c808ca14677b7"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ko",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "2f271ecb-5d9c-49ec-ace2-d10d44b6dc01",
+    "localFingerprint": "2bfc7272508ab5c6f9809bc3e6ce0c929654d83ef6f15c46d38d646fa95158f6"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "zh-Hans",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "33d7b540-bacd-4e2e-982c-ca9be41cfb0f",
+    "localFingerprint": "2e9da918f8a6a20cde1780202bf6af6b1624e85a085709a1681eef9878679e8a"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ms",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "e66bce90-8f8c-4914-9336-4320d7f02767",
+    "localFingerprint": "b9a4de8dd5227c3267eef4801a441f2095af3e646f347e769bbc0249e5abcf72"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "en-CA",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "638aba15-b27f-4ede-8130-6f1177eca926",
+    "localFingerprint": "9e2fca9b1a1655a51a099abfe876b13e54f354b2f969134abb4e7b7075986cd6"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "hi",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "82292ba5-61bb-4f77-b56c-9d5d9391ebdf",
+    "localFingerprint": "039afcbecc64eefe7cc878bca551b3a0f003cdb09d646f39cf2f9243bb125873"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "th",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "10082183-bd18-4e13-b602-98a48e622376",
+    "localFingerprint": "cf1742a07b81a3591402726c3467d4ff25a42563f977130e064dff1a1328bba0"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "bn",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "78c6bb66-e943-4aae-8f52-4acb41a56cf3",
+    "localFingerprint": "85f8c319ee17fc81cbb4d3f2fc4ee9dbf0f75e2851b049cb20bc900bbacf4d64"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "vi",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "9b67bc4d-d8f4-4b70-b391-f0c0f3d2ce99",
+    "localFingerprint": "ca18885f3d5880cd12186bbad9a454bd86c506fb78a247afb52431cb616e6e74"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "gu",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "f2b235ea-2dd6-4b53-bb42-356852105798",
+    "localFingerprint": "752afda0a79fc75da81faa4e36c38a8b958eec6b5888cff8100fb094c9cf4b64"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "kn",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "a63bcb9d-bccc-4d7c-942c-a19e12fad2f3",
+    "localFingerprint": "7c9b461073b8e37280edc68c6ec4e5d46d4aac8acd862a0c89a8f59137585ad3"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "mr",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "d1a906dc-7b11-4a43-88df-9d76e4d8b0d1",
+    "localFingerprint": "e56f077a490eb77b6cb433663af4258e82869ff8724252f6ed0239887bd360eb"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "or",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "e1620e27-c505-40f7-8aac-8bfa2b160466",
+    "localFingerprint": "8a914784611b5bbd1e5d199b9aaf6c65bc13a20010c092d29c69d04d5eeef1ef"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ml",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "718fce06-4c4a-417b-8350-19771882c872",
+    "localFingerprint": "b3f8a9aa2cf8760466f5b33051a84973693952a191ca24e6b30c04dc8bc95bd0"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "te",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "029dccc5-9899-49f3-9f9b-7b7b1a62532c",
+    "localFingerprint": "e147be5dedd54d6ca7335112851d1a4807f6928d5902a03bd47c4881fb41053a"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "sl",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "3ce4bdf0-2d24-49ec-a5d8-4ee697d4046f",
+    "localFingerprint": "78c5ccd03c159d63758c98e2d5af9c75fb3b4654ea981f5f052c5e7864027901"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ta",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "bd963675-7fd6-4ca8-b043-114bcbf64956",
+    "localFingerprint": "ff23a18963b510d117f4f86271a816703d169113156a3a2851aa57d9884422f6"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "pa",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "2a32b680-7caf-471b-bb47-456ce6dbaefc",
+    "localFingerprint": "4819028f11c3eeff07492f63ff6945109812b8d05a58c4f15d86a6881498b43a"
+  },
+  {
+    "platform": "MAC_OS",
+    "locale": "ur",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "91865cbb-5f73-4122-8b1b-c3b23435d481",
+    "localFingerprint": "f030aa862d7bbae6625e03abd460222c27a47f781c790c24b07db91c43c105c3"
+  },
+  {
+    "platform": "IOS",
+    "locale": "tr",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "0fea5698-d277-422a-bf50-4419541472d5",
+    "localFingerprint": "3db8ee0a3de27fbcec6e8414513e9b252d838970269c3f5894822291d0e2808a"
+  },
+  {
+    "platform": "IOS",
+    "locale": "de-DE",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "9aed00bf-b7ad-473d-b3b1-a2a17467b093",
+    "localFingerprint": "9f0955fdba91a7b1b68c31c314a7986c73f6934f549d3499e6b4fb00300c4578"
+  },
+  {
+    "platform": "IOS",
+    "locale": "tr",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "5f1a58df-aad7-4f48-861f-05bbbf890616",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "de-DE",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "a0acac28-e823-4bce-9369-b8c175ec8903",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "tr",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "f1d75ae4-41ad-4c6b-b295-efa76b61552b",
+    "localFingerprint": "62f48d984266b7a6d6fdba518ea016e74abafc6817472b084c92067ce834c80d"
+  },
+  {
+    "platform": "IOS",
+    "locale": "tr",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "56875f37-0ebf-4a05-b586-1b9a6556aa7f",
+    "localFingerprint": "03f27130f684c82a36f7801b20fdcacd13fbfc2853330daa5eddea75a0d74051"
+  },
+  {
+    "platform": "IOS",
+    "locale": "tr",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "d2a722d3-aeae-4bb6-8282-96bc17e5f0c1",
+    "localFingerprint": "dddd3d4169fb8dfc46e804356437b75cd4f049633581879c2ae9b24ee6340120"
+  },
+  {
+    "platform": "IOS",
+    "locale": "de-DE",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "19fcd7aa-a58e-4f3a-b9c3-b9f2245c9f80",
+    "localFingerprint": "f5f3f2028e3ad5b1e6b7a0fd3e2b4e889fa735d5d6b0d0518ffc27dd6bf35800"
+  }
+]
