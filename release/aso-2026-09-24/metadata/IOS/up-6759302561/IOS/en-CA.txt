@@ -1,0 +1,19 @@
+"promotionalText" = "Stay close to local voices or explore a station from further away. Find Canadian and international radio, browse by genre and save your favourites.";
+"description" = "A familiar Canadian station, news from home or a different sound across the border. MegaRadio helps you explore live radio from Canada and around the world.
+
+CHOOSE YOUR NEXT LISTEN
+Find a station by name or browse countries and genres. Discover English- and French-language broadcasts alongside music, news, sports and talk from many other places.
+
+BUILD YOUR FAVOURITES
+Save stations so you can return without searching again. Listen online to FM, AM and internet-only stations, from country and rock to jazz and classical.
+
+Internet access is required; mobile data charges may apply. Broadcasts and track information vary by station and region. MegaRadio is a directory; broadcasters provide their own content.
+
+Keep your radio favourites with you on iPhone and iPad.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "listen,internet,online,stations,local,news,sports,talk,jazz,country,rock,favourites";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Improved genre lists, station artwork and recently played layouts, with more reliable sign-in, account switching and subscription restoration.";

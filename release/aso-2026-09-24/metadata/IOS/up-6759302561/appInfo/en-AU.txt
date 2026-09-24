@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Live Radio";
+"subtitle" = "Australian & global FM, AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

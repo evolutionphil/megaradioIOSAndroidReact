@@ -1,0 +1,21 @@
+"promotionalText" = "熟悉的聲音，新的聆聽發現。依國家或類型探索電台，將喜歡的頻道加入最愛，輕鬆開始收聽。";
+"description" = "從熟悉的在地聲音到世界各地的新音樂，MegaRadio讓你透過網路探索並收聽即時廣播。
+
+找到想聽的電台
+搜尋電台名稱，或依國家和類型瀏覽。流行、搖滾、爵士、古典、新聞、體育與談話節目，依照心情選擇。
+
+喜愛的電台隨手可及
+將喜歡的電台加入最愛，下次收聽時不必重新搜尋。
+
+從在地走向世界
+收聽台灣、香港及世界各地的FM、AM網路串流與網路電台。追蹤熟悉的節目，也探索不同語言的聲音。
+
+使用本服務需要網路連線，可能產生行動數據費用。廣播及歌曲資訊的可用性依電台和地區而異。MegaRadio是電台目錄；節目內容由各電台提供。
+
+使用Apple TV遙控器瀏覽電台，在客廳享受即時廣播。
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "線上,收音機,直播,新聞,體育,爵士,古典,流行,搖滾,音樂台,最愛,頻道,國際";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

@@ -1,0 +1,19 @@
+"promotionalText" = "Tuttu kotimainen kanava tai uusia ääniä maailmalta. Löydä radiokanavia maan ja tyylilajin mukaan ja tallenna omat suosikkisi.";
+"description" = "Uutisia aamun alkuun, musiikkia työpäivään tai tuttu ääni kotimaasta. MegaRadiolla löydät suoria radiolähetyksiä Suomesta ja maailmalta.
+
+ETSI OMA KANAVASI
+Hae kanavan nimellä tai selaa maita ja tyylilajeja. Valitse popia, rockia, jazzia, klassista, uutisia, urheilua tai puheohjelmia.
+
+SUOSIKIT TALTEEN
+Tallenna pitämäsi kanavat, jotta löydät ne seuraavalla kerralla ilman uutta hakua. Kuuntele FM-, AM- ja nettiradiokanavia internetin kautta.
+
+Kuuntelu vaatii internetyhteyden. Mobiilidatasta voi aiheutua maksuja. Lähetysten ja kappaletietojen saatavuus riippuu kanavasta ja alueesta. MegaRadio on radiohakemisto; kanavat vastaavat ohjelmasisällöstä.
+
+Ota radio mukaan iPhoneen ja iPadiin.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "suomi,fm,am,verkkoradio,suorat,kanavat,uutiset,urheilu,jazz,klassinen,pop,rock,suosikit";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Parannettu tyylilajilistoja, kanavakuvia ja viimeksi kuunneltujen näkymää. Kirjautuminen, tilinvaihto ja tilausten palautus ovat luotettavampia.";

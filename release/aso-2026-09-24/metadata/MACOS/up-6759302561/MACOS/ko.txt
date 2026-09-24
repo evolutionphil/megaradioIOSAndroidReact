@@ -1,0 +1,18 @@
+"promotionalText" = "익숙한 목소리부터 해외의 새로운 음악까지. 국가와 장르별로 방송국을 찾고, 좋아하는 채널을 즐겨찾기에 모아 보세요.";
+"description" = "하루를 함께할 목소리나 아직 모르는 음악을 찾고 있나요? MegaRadio에서 한국과 세계 여러 나라의 실시간 라디오를 탐색해 보세요.
+
+듣고 싶은 방송 찾기
+방송국 이름으로 검색하거나 국가와 장르별로 둘러보세요. 팝, 록, 재즈, 클래식, 뉴스, 스포츠와 토크 프로그램 중에서 선택할 수 있습니다.
+
+좋아하는 채널을 한곳에
+즐겨찾기에 저장한 방송국은 다음에 다시 검색할 필요 없이 찾을 수 있습니다. 인터넷으로 FM·AM 방송과 온라인 전용 라디오를 들어 보세요.
+
+인터넷 연결이 필요하며 모바일 데이터 요금이 부과될 수 있습니다. 방송과 곡 정보 제공 여부는 방송국과 지역에 따라 다릅니다. MegaRadio는 방송국 목록을 제공하며 방송 콘텐츠는 각 방송사가 제공합니다.
+
+일하거나 쉬는 동안 Mac에서 라디오를 들어 보세요.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "인터넷,온라인,방송국,뉴스,스포츠,재즈,클래식,팝,록,즐겨찾기,음악방송,해외";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

@@ -1,0 +1,19 @@
+"promotionalText" = "En lokal favorit eller nya ljud från världen. Hitta svenska och internationella radiokanaler, utforska genrer och spara det du gillar.";
+"description" = "Morgonens nyheter, musik under dagen eller en röst hemifrån. MegaRadio hjälper dig att hitta direktsänd radio från Sverige och resten av världen.
+
+SÖK, UTFORSKA, LYSSNA
+Sök efter kanalens namn eller bläddra bland länder och genrer. Upptäck pop, rock, jazz och klassiskt, tillsammans med nyheter, sport och samtal.
+
+DINA FAVORITER SAMLAS HÄR
+Spara kanaler så att du hittar tillbaka utan en ny sökning. Lyssna på FM-, AM- och webbradiokanaler via internet.
+
+Internetanslutning krävs och avgifter för mobildata kan tillkomma. Sändningar och låtinformation varierar mellan kanaler och regioner. MegaRadio är en radiokatalog; innehållet kommer från respektive kanal.
+
+Ta med radion på iPhone och iPad.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "lyssna,nätradio,fm,am,online,lokalt,sport,jazz,klassisk,pop,rock,favoriter";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Förbättrade genrelistor, kanalbilder och senast spelade kanaler. Inloggning, kontobyten och återställning av prenumerationer är tillförlitligare.";

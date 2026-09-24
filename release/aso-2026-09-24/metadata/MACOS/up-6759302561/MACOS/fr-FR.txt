@@ -1,0 +1,21 @@
+"promotionalText" = "Retrouvez vos radios préférées et découvrez de nouvelles voix. Explorez les stations par pays ou genre, puis gardez vos découvertes dans vos favoris.";
+"description" = "Une voix familière, votre musique préférée ou une nouvelle découverte : MegaRadio vous accompagne dans l'univers de la radio en direct.
+
+TROUVEZ LA STATION QUI VOUS RESSEMBLE
+Recherchez une radio par son nom ou explorez les stations par pays et genre. Pop, rock, jazz, classique, actualités, sport et débats : choisissez selon vos envies.
+
+VOS FAVORIS À PORTÉE DE MAIN
+Enregistrez les stations que vous aimez pour les retrouver sans recommencer votre recherche.
+
+DE LA FRANCE AU RESTE DU MONDE
+Écoutez les flux en ligne des radios FM, AM et internet de France et d'ailleurs. Retrouvez les programmes locaux ou découvrez des émissions dans d'autres langues.
+
+Une connexion internet est nécessaire. Des frais de données mobiles peuvent s'appliquer. La disponibilité des flux et des titres dépend de la station et de votre région. MegaRadio est un annuaire ; les contenus sont fournis par les radios concernées.
+
+Écoutez la radio sur votre Mac, au travail ou pendant vos pauses.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "écouter,internet,en ligne,france,locales,actualités,sport,jazz,classique,pop,rock,favoris";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

@@ -1,0 +1,21 @@
+"promotionalText" = "Find a familiar station or discover a new sound. Explore live radio by country and genre, save your favorites, and make room for something new.";
+"description" = "A local voice. A favorite song. A new sound from the other side of the world. MegaRadio brings live radio discovery and listening together in one place.
+
+FIND YOUR NEXT STATION
+Search by station name or browse by country and genre. Explore pop, rock, jazz and classical music alongside news, sports and talk stations.
+
+KEEP YOUR FAVORITES CLOSE
+Save the stations you enjoy and return to them without starting your search again.
+
+LISTEN LOCALLY, EXPLORE GLOBALLY
+Discover stations from the United States and around the world. Listen to FM, AM and internet radio streams, from familiar local programs to broadcasts in other languages.
+
+An internet connection is required. Mobile data charges may apply. Stream and song information availability varies by station and region. MegaRadio is a radio directory; broadcast content is provided by the respective stations.
+
+Browse with your Apple TV remote and enjoy live radio in your living room.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "internet,online,local,news,talk,sports,jazz,classical,country,pop,rock,favorites,tuner";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

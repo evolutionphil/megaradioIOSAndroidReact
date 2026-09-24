@@ -1,0 +1,3 @@
+"name" = "MegaRadio: लाइव रेडियो";
+"subtitle" = "भारत और दुनिया के FM, AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

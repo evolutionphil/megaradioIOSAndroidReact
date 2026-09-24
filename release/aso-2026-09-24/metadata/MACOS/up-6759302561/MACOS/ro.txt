@@ -1,0 +1,18 @@
+"promotionalText" = "Vocile cunoscute de acasă și posturi noi din lume. Caută după țară sau gen și păstrează radiourile preferate la îndemână.";
+"description" = "Un post românesc pentru dimineață sau muzică nouă din altă țară. MegaRadio te ajută să descoperi și să asculți radio în direct prin internet.
+
+ALEGE CE ȚI SE POTRIVEȘTE
+Caută după numele postului ori explorează țări și genuri. Descoperă pop, dance, rock, jazz, muzică populară, știri, sport și emisiuni de discuții.
+
+REVINO LA FAVORITE
+Salvează posturile dorite pentru a le regăsi fără o nouă căutare. Ascultă transmisii FM, AM și posturi online din România și din lume.
+
+Ai nevoie de internet; pot exista costuri de date mobile. Disponibilitatea transmisiilor și a informațiilor despre melodii variază după post și regiune. MegaRadio este un director; conținutul aparține radiodifuzorilor.
+
+Ascultă pe Mac când lucrezi sau te relaxezi.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ascultă,internet,românia,românesc,știri,sport,populară,dance,jazz,rock,favorite";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

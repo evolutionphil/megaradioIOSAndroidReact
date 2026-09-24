@@ -1,0 +1,19 @@
+"promotionalText" = "Ismerős magyar adók és új hangok a nagyvilágból. Keress ország vagy műfaj szerint, és mentsd el kedvenc rádióidat.";
+"description" = "Reggeli hírek, zene munka közben vagy egy ismerős hang otthonról. A MegaRadio segítségével magyar és nemzetközi rádióadókat fedezhetsz fel és hallgathatsz élőben.
+
+TALÁLD MEG A HOZZÁD ILLŐ ADÓT
+Keress név alapján, vagy böngéssz országok és műfajok között. Pop, rock, jazz, klasszikus zene, hírek, sport és beszélgetések várnak.
+
+KEDVENCEID EGY HELYEN
+Mentsd el az adókat, hogy legközelebb új keresés nélkül visszatérhess hozzájuk. Hallgass FM-, AM- és internetes rádiókat.
+
+Internetkapcsolat szükséges; mobiladat-díjak merülhetnek fel. Az adások és a számadatok elérhetősége adónként és régiónként eltér. A MegaRadio rádiókatalógus; a műsort az adók szolgáltatják.
+
+Vidd magaddal rádióidat iPhone-on és iPaden.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "hallgatás,internetes,magyar,magyarország,hírek,sport,jazz,klasszikus,pop,rock,kedvencek";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Javítottuk a műfajlistákat, az adóképeket és az előzmények elrendezését. Megbízhatóbb bejelentkezés, fiókváltás és előfizetés-visszaállítás.";

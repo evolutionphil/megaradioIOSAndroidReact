@@ -1,0 +1,19 @@
+"promotionalText" = "Polskie stacje i nowe dźwięki ze świata. Szukaj radia według kraju lub gatunku, zapisuj ulubione i wybieraj, czego chcesz dziś słuchać.";
+"description" = "Znany głos z polskiego radia czy nowa muzyka z zagranicy? MegaRadio ułatwia odkrywanie stacji i słuchanie ich na żywo przez internet.
+
+RADIO NA TWÓJ DZIEŃ
+Wyszukaj stację po nazwie albo przeglądaj kraje i gatunki. Odkrywaj pop, rock, jazz, muzykę klasyczną, wiadomości, sport i audycje rozmów.
+
+ZAPISZ ULUBIONE
+Zachowaj stacje, do których chcesz wracać, bez ponownego szukania. Słuchaj internetowych transmisji FM, AM i rozgłośni online z Polski oraz innych krajów.
+
+Wymagane jest połączenie internetowe. Mogą obowiązywać opłaty za transmisję danych. Dostępność audycji i informacji o utworach zależy od stacji i regionu. MegaRadio to katalog; treści dostarczają nadawcy.
+
+Miej radio przy sobie na iPhonie i iPadzie.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "słuchaj,online,polska,polskie,lokalne,wiadomości,sport,jazz,klasyka,pop,rock,ulubione";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Ulepszyliśmy listy gatunków, grafiki stacji i ostatnio słuchane. Logowanie, zmiana konta oraz przywracanie subskrypcji są bardziej niezawodne.";

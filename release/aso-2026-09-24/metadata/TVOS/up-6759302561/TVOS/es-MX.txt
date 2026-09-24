@@ -1,0 +1,18 @@
+"promotionalText" = "Tu estación de siempre y nuevas voces de México y el mundo. Busca por nombre, explora por género y guarda las radios que quieras volver a escuchar.";
+"description" = "Una estación local para empezar el día o música que te conecta con casa. MegaRadio te ayuda a encontrar radio en vivo de México, Latinoamérica y otras partes del mundo.
+
+ELIGE QUÉ ESCUCHAR
+Busca una estación por su nombre o explora por país y género. Descubre música regional, pop, rock y más, junto con noticias, deportes y programas de conversación.
+
+TUS ESTACIONES, A LA MANO
+Agrégalas a favoritos para volver a ellas sin repetir la búsqueda. Escucha por internet transmisiones FM, AM y estaciones que emiten en línea.
+
+Necesitas conexión a internet; tu operador puede cobrar por datos móviles. La disponibilidad de transmisiones y títulos de canciones depende de la estación y tu región. MegaRadio es un directorio; cada emisora proporciona su contenido.
+
+Navega con el control remoto de Apple TV y disfruta la radio en tu sala.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "escuchar,fm,am,internet,online,estaciones,noticias,deportes,regional,banda,pop,favoritos";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

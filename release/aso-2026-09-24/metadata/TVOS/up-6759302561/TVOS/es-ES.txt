@@ -1,0 +1,21 @@
+"promotionalText" = "Tus emisoras de siempre y nuevas voces por descubrir. Explora radios por país o género, guarda tus favoritas y encuentra qué escuchar hoy.";
+"description" = "Una voz cercana, tu música favorita o un sonido que llega de lejos. MegaRadio reúne emisoras de España y de todo el mundo para escuchar radio en directo.
+
+ENCUENTRA TU EMISORA
+Busca por nombre o explora por país y género. Descubre pop, rock, jazz y música clásica, además de noticias, deportes y programas de conversación.
+
+VUELVE A TUS FAVORITAS
+Guarda las emisoras que te gustan y encuéntralas en tu próxima escucha sin repetir la búsqueda.
+
+RADIO SIN FRONTERAS
+Escucha por internet emisoras FM, AM y radios online. Sigue los programas locales o descubre emisiones de otros países e idiomas.
+
+Se necesita conexión a internet. Pueden aplicarse cargos por datos móviles. La disponibilidad de las emisiones y la información de las canciones depende de la emisora y de la región. MegaRadio es un directorio; cada emisora proporciona sus contenidos.
+
+Explora las emisoras con el mando del Apple TV y disfruta de la radio en el salón.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "escuchar,internet,online,españa,local,noticias,deportes,jazz,clásica,pop,rock,favoritos";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

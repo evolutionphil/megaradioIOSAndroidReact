@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio in diretta";
+"subtitle" = "Stazioni FM e AM dal mondo";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

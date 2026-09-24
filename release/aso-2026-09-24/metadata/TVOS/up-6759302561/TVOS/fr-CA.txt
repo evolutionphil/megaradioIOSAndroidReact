@@ -1,0 +1,18 @@
+"promotionalText" = "Des voix d'ici et des découvertes d'ailleurs. Retrouvez des radios du Québec, du Canada et du monde, puis gardez vos stations préférées dans vos favoris.";
+"description" = "Votre rendez-vous avec une voix d'ici, une émission francophone ou une station à l'autre bout du monde. MegaRadio permet d'explorer la radio en direct selon vos envies.
+
+UN POINT DE DÉPART CANADIEN
+Cherchez une station par son nom ou parcourez l'offre par pays et genre. Nouvelles, sports, émissions parlées, pop, country ou jazz : choisissez ce qui vous accompagne aujourd'hui.
+
+UNE COLLECTION À VOTRE IMAGE
+Ajoutez vos stations aux favoris pour les retrouver facilement. Découvrez les diffusions en ligne de radios FM, AM et de stations internet du Canada et d'ailleurs.
+
+Une connexion internet est requise et des frais de données mobiles peuvent s'appliquer. Les diffusions et les renseignements sur les chansons varient selon la station et la région. Les stations fournissent leurs contenus ; MegaRadio est un répertoire.
+
+Choisissez une station avec la télécommande de votre Apple TV et écoutez dans votre salon.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "écouter,fm,am,internet,en ligne,canada,francophone,nouvelles,sports,jazz,country,favoris";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

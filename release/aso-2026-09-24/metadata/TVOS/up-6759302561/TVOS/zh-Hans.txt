@@ -1,0 +1,18 @@
+"promotionalText" = "熟悉的声音，也有新的发现。按国家或类型探索电台，收藏喜欢的频道，找到适合此刻的广播。";
+"description" = "从熟悉的中文节目到不同国家的音乐，MegaRadio带你探索全球广播电台。
+
+找到你想听的内容
+按电台名称搜索，或按国家和类型浏览。流行、摇滚、爵士、古典、新闻、体育与访谈节目，让每次收听都有新选择。
+
+喜欢的电台随手可及
+收藏常听的电台，下次打开时无需重新搜索。通过互联网收听FM、AM电台的在线直播和网络广播。
+
+使用需要网络连接，可能产生移动数据费用。广播和歌曲信息的可用性因电台及地区而异。MegaRadio是电台目录，节目内容由各广播机构提供。
+
+用Apple TV遥控器浏览电台，在客厅享受广播。
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "网络收音机,互联网,中文,新闻,体育,爵士,古典,流行,摇滚,收藏,频道,国际,音乐台";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

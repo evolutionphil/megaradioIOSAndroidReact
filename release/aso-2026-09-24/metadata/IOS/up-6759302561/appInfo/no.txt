@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Nettradio & musikk";
+"subtitle" = "FM, AM og kanaler fra verden";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

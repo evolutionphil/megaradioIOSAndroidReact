@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio Dalam Talian";
+"subtitle" = "Siaran langsung FM dan AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

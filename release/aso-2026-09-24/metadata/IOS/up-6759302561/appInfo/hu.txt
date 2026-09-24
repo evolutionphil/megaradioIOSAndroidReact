@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Online rádió";
+"subtitle" = "Élő FM és AM adók a világból";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

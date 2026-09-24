@@ -1,0 +1,3 @@
+"name" = "MegaRadio: ラジオを聴く";
+"subtitle" = "日本と世界のFM・AMをライブで";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

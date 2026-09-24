@@ -1,0 +1,3 @@
+"name" = "MegaRadio: لائیو ریڈیو";
+"subtitle" = "اردو اور دنیا کے FM، AM سنیں";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

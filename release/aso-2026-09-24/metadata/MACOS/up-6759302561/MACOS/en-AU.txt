@@ -1,0 +1,18 @@
+"promotionalText" = "A local station over breakfast or a new sound from overseas. Find Australian and international radio by country or genre and save your favourites.";
+"description" = "Keep a familiar Australian station close or tune into a different part of the world. MegaRadio helps you discover live radio streams to suit your day.
+
+LOCAL VOICES, GLOBAL CHOICE
+Look up a station by name or browse the Australian selection alongside broadcasts from other countries. Follow news, sport and talk, or explore country, rock, pop and jazz.
+
+LESS SEARCHING, MORE LISTENING
+Save stations to your favourites and find them again when you're ready to listen. FM and AM broadcasters stream alongside internet-only stations.
+
+You need an internet connection. Mobile data charges may apply. Streams and song information depend on the broadcaster and region. MegaRadio is a directory; individual stations provide the programmes.
+
+Bring your favourite radio stations to your Mac.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "listen,internet,online,stations,local,news,sport,talk,jazz,country,rock,pop,favourites";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

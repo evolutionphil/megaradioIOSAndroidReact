@@ -1,0 +1,19 @@
+"promotionalText" = "Suara akrab dari daerahmu atau musik baru dari luar negeri. Jelajahi stasiun menurut negara dan genre, lalu simpan radio favoritmu.";
+"description" = "Teman saat bekerja, kabar dari daerah asal, atau musik untuk menemani hari. MegaRadio membantumu menemukan siaran radio Indonesia dan dunia.
+
+PILIH SUARA YANG KAMU SUKA
+Cari nama stasiun atau telusuri negara dan genre. Temukan dangdut, pop, rock, jazz, berita, olahraga, dan acara bincang-bincang.
+
+FAVORITMU MUDAH DITEMUKAN
+Simpan stasiun yang kamu suka agar tidak perlu mencari lagi. Dengarkan siaran FM, AM dan radio online melalui internet.
+
+Koneksi internet diperlukan; biaya data seluler dapat berlaku. Ketersediaan siaran dan informasi lagu bergantung pada stasiun serta wilayah. MegaRadio adalah direktori; isi siaran disediakan oleh masing-masing stasiun.
+
+Bawa radio favoritmu di iPhone dan iPad.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "indonesia,lokal,internet,berita,olahraga,dangdut,pop,jazz,rock,favorit,stasiun";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Daftar genre, gambar stasiun, dan tampilan riwayat putar ditingkatkan. Login, pergantian akun, serta pemulihan langganan kini lebih andal.";

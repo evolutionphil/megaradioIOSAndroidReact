@@ -1,0 +1,18 @@
+"promotionalText" = "Your local voices, a favourite show or something further afield. Explore UK and international radio, then keep the stations you enjoy in your favourites.";
+"description" = "Start with a familiar UK station, then see where your listening takes you. MegaRadio brings local broadcasts and international radio streams into one easy-to-browse directory.
+
+FIND SOMETHING FOR YOUR DAY
+Search for a station by name, browse by country or explore genres from indie and rock to jazz and classical. Catch news, sport and conversation or let music accompany your day.
+
+MAKE IT YOUR RADIO COLLECTION
+Keep your favourite stations together and return to them without another search. Explore FM, AM and internet stations from the UK and around the world.
+
+Internet access is required and mobile data charges may apply. Broadcast and track information availability varies by station and region. Stations provide their own programmes; MegaRadio is a directory.
+
+Choose a station with your Apple TV remote and bring live radio into the living room.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "internet,online,uk,british,local,news,sport,talk,jazz,classical,indie,rock,favourites";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

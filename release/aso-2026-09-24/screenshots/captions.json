@@ -1,0 +1,502 @@
+{
+  "tr": {
+    "discover": [
+      "Canlı Radyo",
+      "Türkiye ve dünyadan FM, AM"
+    ],
+    "favorites": [
+      "Favori radyoların",
+      "Sevdiğin istasyonlara kolayca ulaş"
+    ]
+  },
+  "de-DE": {
+    "discover": [
+      "Radio & Webradio",
+      "Live-Sender aus aller Welt"
+    ],
+    "favorites": [
+      "Deine Lieblingssender",
+      "Schnell finden. Direkt einschalten."
+    ]
+  },
+  "en-US": {
+    "discover": [
+      "Live Radio",
+      "FM, AM & stations worldwide"
+    ],
+    "favorites": [
+      "Your favorite stations",
+      "Save them. Find them. Press play."
+    ]
+  },
+  "fr-FR": {
+    "discover": [
+      "Radio en direct",
+      "Stations FM, AM du monde"
+    ],
+    "favorites": [
+      "Vos radios favorites",
+      "Retrouvez vos stations en un instant"
+    ]
+  },
+  "es-ES": {
+    "discover": [
+      "Radio en directo",
+      "Emisoras FM y AM del mundo"
+    ],
+    "favorites": [
+      "Tus emisoras favoritas",
+      "Encuentra tu radio y dale al play"
+    ]
+  },
+  "it": {
+    "discover": [
+      "Radio in diretta",
+      "Stazioni FM e AM dal mondo"
+    ],
+    "favorites": [
+      "Le tue radio preferite",
+      "Ritrovale e mettiti in ascolto"
+    ]
+  },
+  "pt-PT": {
+    "discover": [
+      "Rádio em direto",
+      "Estações FM e AM do mundo"
+    ],
+    "favorites": [
+      "As tuas rádios favoritas",
+      "Encontra a tua estação e começa a ouvir"
+    ]
+  },
+  "ru": {
+    "discover": [
+      "Радио онлайн",
+      "Прямой эфир FM и AM станций"
+    ],
+    "favorites": [
+      "Любимые радиостанции",
+      "Сохраните и находите их быстрее"
+    ]
+  },
+  "ja": {
+    "discover": [
+      "ラジオを聴く",
+      "日本と世界のFM・AMをライブで"
+    ],
+    "favorites": [
+      "お気に入りのラジオ局",
+      "保存した放送局にすぐアクセス"
+    ]
+  },
+  "zh-Hant": {
+    "discover": [
+      "即時網路電台",
+      "收聽台灣香港與世界FM、AM廣播"
+    ],
+    "favorites": [
+      "收藏喜愛的電台",
+      "輕鬆找到，隨時收聽"
+    ]
+  },
+  "he": {
+    "discover": [
+      "רדיו בשידור חי",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "favorites": [
+      "תחנות הרדיו האהובות",
+      "שמרו אותן וחזרו להאזין בקלות"
+    ]
+  },
+  "ar-SA": {
+    "discover": [
+      "راديو مباشر",
+      "محطات FM وAM من حول العالم"
+    ],
+    "favorites": [
+      "محطاتك المفضلة",
+      "احفظ محطاتك واعثر عليها بسهولة"
+    ]
+  },
+  "en-GB": {
+    "discover": [
+      "Live Radio",
+      "FM, AM & worldwide stations"
+    ],
+    "favorites": [
+      "Your favourite stations",
+      "Keep the radio you love close"
+    ]
+  },
+  "en-AU": {
+    "discover": [
+      "Live Radio",
+      "Australian & global FM, AM"
+    ],
+    "favorites": [
+      "Your favourite stations",
+      "Local favourites. A world of radio."
+    ]
+  },
+  "fr-CA": {
+    "discover": [
+      "Radio en direct",
+      "Stations du Québec et du monde"
+    ],
+    "favorites": [
+      "Vos radios préférées",
+      "Vos stations du Québec et d’ailleurs"
+    ]
+  },
+  "es-MX": {
+    "discover": [
+      "Radio en vivo",
+      "Emisoras de México y el mundo"
+    ],
+    "favorites": [
+      "Tus estaciones favoritas",
+      "Tu radio de siempre, a un toque"
+    ]
+  },
+  "pt-BR": {
+    "discover": [
+      "Rádio ao vivo",
+      "Emissoras FM e AM do mundo"
+    ],
+    "favorites": [
+      "Suas rádios favoritas",
+      "Salve suas emissoras e dê o play"
+    ]
+  },
+  "nl-NL": {
+    "discover": [
+      "Radio luisteren",
+      "Live FM, AM en wereldzenders"
+    ],
+    "favorites": [
+      "Je favoriete zenders",
+      "Bewaar ze en luister meteen"
+    ]
+  },
+  "sv": {
+    "discover": [
+      "Radio Sverige",
+      "Webbradio, musik och nyheter"
+    ],
+    "favorites": [
+      "Dina favoritkanaler",
+      "Spara och hitta tillbaka direkt"
+    ]
+  },
+  "no": {
+    "discover": [
+      "Nettradio & musikk",
+      "FM, AM og kanaler fra verden"
+    ],
+    "favorites": [
+      "Dine favorittkanaler",
+      "Lagre dem og lytt når du vil"
+    ]
+  },
+  "da": {
+    "discover": [
+      "Dansk netradio",
+      "Live radio fra hele verden"
+    ],
+    "favorites": [
+      "Dine favoritkanaler",
+      "Gem dem, og lyt med det samme"
+    ]
+  },
+  "fi": {
+    "discover": [
+      "Kuuntele radiota",
+      "Suomen ja maailman nettiradio"
+    ],
+    "favorites": [
+      "Suosikkikanavasi",
+      "Tallenna ja löydä helposti uudelleen"
+    ]
+  },
+  "pl": {
+    "discover": [
+      "Radio internetowe",
+      "Stacje FM i AM na żywo"
+    ],
+    "favorites": [
+      "Twoje ulubione stacje",
+      "Zapisz je i wracaj do słuchania"
+    ]
+  },
+  "cs": {
+    "discover": [
+      "Rádio online",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "favorites": [
+      "Oblíbené stanice",
+      "Uložte si je a snadno je najděte"
+    ]
+  },
+  "sk": {
+    "discover": [
+      "Rádio naživo",
+      "Online stanice FM a AM"
+    ],
+    "favorites": [
+      "Obľúbené stanice",
+      "Uložte si ich a počúvajte znova"
+    ]
+  },
+  "hu": {
+    "discover": [
+      "Online rádió",
+      "Élő FM és AM adók a világból"
+    ],
+    "favorites": [
+      "Kedvenc rádióid",
+      "Mentsd el, és hallgasd újra"
+    ]
+  },
+  "ro": {
+    "discover": [
+      "Radio online",
+      "Posturi FM și AM în direct"
+    ],
+    "favorites": [
+      "Posturile tale preferate",
+      "Salvează-le și ascultă ușor"
+    ]
+  },
+  "hr": {
+    "discover": [
+      "Radio uživo",
+      "FM i AM postaje iz svijeta"
+    ],
+    "favorites": [
+      "Omiljene postaje",
+      "Spremite ih i jednostavno slušajte"
+    ]
+  },
+  "el": {
+    "discover": [
+      "Ραδιόφωνο live",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "favorites": [
+      "Οι αγαπημένοι σου σταθμοί",
+      "Αποθήκευσε και άκουσε εύκολα"
+    ]
+  },
+  "uk": {
+    "discover": [
+      "Радіо онлайн",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "favorites": [
+      "Улюблені радіостанції",
+      "Зберігайте та знаходьте їх швидше"
+    ]
+  },
+  "ca": {
+    "discover": [
+      "Ràdio en directe",
+      "Emissores FM i AM del món"
+    ],
+    "favorites": [
+      "Les teves ràdios preferides",
+      "Desa-les i torna-hi fàcilment"
+    ]
+  },
+  "zh-Hans": {
+    "discover": [
+      "在线广播电台",
+      "收听世界各地的FM与AM直播"
+    ],
+    "favorites": [
+      "收藏喜爱的电台",
+      "轻松找到，随时收听"
+    ]
+  },
+  "ko": {
+    "discover": [
+      "실시간 라디오",
+      "한국과 세계의 FM·AM 방송 듣기"
+    ],
+    "favorites": [
+      "즐겨찾는 라디오 방송",
+      "저장하고 간편하게 다시 듣기"
+    ]
+  },
+  "id": {
+    "discover": [
+      "Radio Online",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "favorites": [
+      "Stasiun favoritmu",
+      "Simpan dan dengarkan dengan mudah"
+    ]
+  },
+  "ms": {
+    "discover": [
+      "Radio Dalam Talian",
+      "Siaran langsung FM dan AM"
+    ],
+    "favorites": [
+      "Stesen kegemaran anda",
+      "Simpan dan dengar dengan mudah"
+    ]
+  },
+  "th": {
+    "discover": [
+      "วิทยุออนไลน์",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "favorites": [
+      "สถานีโปรดของคุณ",
+      "บันทึกไว้แล้วกลับมาฟังได้ง่าย"
+    ]
+  },
+  "vi": {
+    "discover": [
+      "Nghe radio online",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "favorites": [
+      "Đài phát thanh yêu thích",
+      "Lưu lại và tìm nghe dễ dàng"
+    ]
+  },
+  "hi": {
+    "discover": [
+      "लाइव रेडियो",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "favorites": [
+      "आपके पसंदीदा स्टेशन",
+      "सहेजें और आसानी से फिर सुनें"
+    ]
+  },
+  "en-CA": {
+    "discover": [
+      "Canadian Radio",
+      "Live FM, AM & world stations"
+    ],
+    "favorites": [
+      "Your favourite stations",
+      "From local radio to the world"
+    ]
+  },
+  "bn": {
+    "discover": [
+      "বিশ্ব রেডিও শুনুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "favorites": [
+      "আপনার পছন্দের স্টেশন",
+      "সংরক্ষণ করুন, সহজে আবার শুনুন"
+    ]
+  },
+  "gu": {
+    "discover": [
+      "લાઇવ રેડિયો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "favorites": [
+      "તમારા મનપસંદ સ્ટેશન",
+      "સાચવો અને સરળતાથી ફરી સાંભળો"
+    ]
+  },
+  "kn": {
+    "discover": [
+      "ಕನ್ನಡ ರೇಡಿಯೋ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "favorites": [
+      "ನಿಮ್ಮ ನೆಚ್ಚಿನ ನಿಲ್ದಾಣಗಳು",
+      "ಉಳಿಸಿ ಮತ್ತು ಸುಲಭವಾಗಿ ಮತ್ತೆ ಕೇಳಿ"
+    ]
+  },
+  "ml": {
+    "discover": [
+      "ലൈവ് റേഡിയോ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "favorites": [
+      "നിങ്ങളുടെ പ്രിയപ്പെട്ട നിലയങ്ങൾ",
+      "സൂക്ഷിച്ച് എളുപ്പത്തിൽ വീണ്ടും കേൾക്കൂ"
+    ]
+  },
+  "mr": {
+    "discover": [
+      "लाइव्ह रेडिओ",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "favorites": [
+      "तुमची आवडती केंद्रे",
+      "जतन करा आणि सहज पुन्हा ऐका"
+    ]
+  },
+  "or": {
+    "discover": [
+      "ଲାଇଭ୍ ରେଡିଓ",
+      "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM"
+    ],
+    "favorites": [
+      "ଆପଣଙ୍କ ପସନ୍ଦର ଷ୍ଟେସନ୍",
+      "ସଞ୍ଚୟ କରନ୍ତୁ ଏବଂ ସହଜରେ ପୁଣି ଶୁଣନ୍ତୁ"
+    ]
+  },
+  "pa": {
+    "discover": [
+      "ਲਾਈਵ ਰੇਡੀਓ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "favorites": [
+      "ਤੁਹਾਡੇ ਮਨਪਸੰਦ ਸਟੇਸ਼ਨ",
+      "ਸੰਭਾਲੋ ਅਤੇ ਆਸਾਨੀ ਨਾਲ ਦੁਬਾਰਾ ਸੁਣੋ"
+    ]
+  },
+  "ta": {
+    "discover": [
+      "தமிழ் வானொலி",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "favorites": [
+      "உங்கள் பிடித்த நிலையங்கள்",
+      "சேமித்து எளிதாக மீண்டும் கேளுங்கள்"
+    ]
+  },
+  "te": {
+    "discover": [
+      "లైవ్ రేడియో",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "favorites": [
+      "మీకు ఇష్టమైన స్టేషన్లు",
+      "సేవ్ చేసి సులభంగా మళ్లీ వినండి"
+    ]
+  },
+  "ur": {
+    "discover": [
+      "لائیو ریڈیو",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "favorites": [
+      "آپ کے پسندیدہ اسٹیشن",
+      "محفوظ کریں اور آسانی سے دوبارہ سنیں"
+    ]
+  },
+  "sl": {
+    "discover": [
+      "Radio v živo",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "favorites": [
+      "Vaše priljubljene postaje",
+      "Shranite jih in preprosto poslušajte"
+    ]
+  }
+}

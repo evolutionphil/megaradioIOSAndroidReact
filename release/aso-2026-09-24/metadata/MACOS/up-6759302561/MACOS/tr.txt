@@ -1,0 +1,21 @@
+"promotionalText" = "Sevdiğin radyoyu bul, favorilerine ekle ve dinlemeye başla. Türkiye'den ve dünyadan canlı yayınları ülkeye veya türe göre keşfet.";
+"description" = "Türkiye'den bir ses, dünyanın başka bir yerinden yeni bir ritim. MegaRadio ile canlı radyo dinle; sevdiğin istasyonları ve henüz tanışmadığın yayınları tek yerde keşfet.
+
+SANA UYAN YAYINI BUL
+İstasyon adına göre ara, ülke seç veya müzik türlerine göz at. Türkçe pop, arabesk, türkü, rock ve cazdan haber, spor ve sohbet yayınlarına kadar farklı seçenekler keşfet.
+
+FAVORİLERİN ELİNİN ALTINDA
+Sevdiğin radyoları favorilerine ekle. Bir sonraki dinleyişinde aramayı baştan yapmadan istasyonuna ulaş.
+
+YERELDEN DÜNYAYA
+Türkiye'deki yayınların yanında farklı ülkelerin FM, AM ve internet radyolarını çevrimiçi dinle. Yeni müzikler ve farklı dillerde yayınlarla dinleme alışkanlığını genişlet.
+
+Dinlemek için internet bağlantısı gerekir; mobil veri ücretleri uygulanabilir. Yayınların ve şarkı bilgilerinin erişilebilirliği istasyona ve bölgeye bağlıdır. MegaRadio bir radyo rehberidir; yayın içeriklerini ilgili istasyonlar sağlar.
+
+Mac'inde çalışırken veya dinlenirken sevdiğin radyoları aç.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "dinle,türkçe,online,istasyon,arabesk,türkü,haber,spor,pop,rock,caz,klasik,yerel,favori";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

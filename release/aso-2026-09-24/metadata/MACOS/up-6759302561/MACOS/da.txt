@@ -1,0 +1,18 @@
+"promotionalText" = "Find din lokale radiokanal eller gå på opdagelse i verden. Vælg land og genre, og gem de kanaler, du gerne vil høre igen.";
+"description" = "Nyheder til morgenkaffen eller musik til resten af dagen. MegaRadio giver dig en indgang til danske og internationale radiokanaler.
+
+FIND DEN RETTE LYD
+Søg på kanalens navn eller gå på opdagelse efter land og genre. Vælg mellem pop, rock, jazz, klassisk, nyheder, sport og samtaler.
+
+FAVORITTER UDEN NY SØGNING
+Gem dine foretrukne kanaler, og find dem hurtigt igen. Lyt via internet til FM-, AM- og netradiokanaler fra Danmark og udlandet.
+
+Internetforbindelse er nødvendig. Der kan være udgifter til mobildata. Udsendelser og sangoplysninger afhænger af kanal og område. MegaRadio er en radioguide; kanalerne leverer indholdet.
+
+Lyt på din Mac under arbejde eller afslapning.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "lyt,webradio,fm,am,danmark,online,lokal,nyheder,sport,jazz,klassisk,pop,favoritter";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

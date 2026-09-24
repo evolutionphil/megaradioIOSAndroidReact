@@ -1,0 +1,18 @@
+"promotionalText" = "Een vertrouwde stem of een nieuwe ontdekking. Vind Nederlandse, Vlaamse en internationale radiozenders en bewaar wat je graag hoort.";
+"description" = "Begin met een vertrouwde Nederlandse of Vlaamse zender en ontdek daarna de rest van de radiowereld. MegaRadio maakt live radio vinden en luisteren eenvoudig.
+
+WAT WIL JE VANDAAG HOREN?
+Zoek op zendernaam of blader door landen en genres. Van Nederlandstalige muziek, pop en dance tot jazz, nieuws, sport en gesprekken: kies wat bij je dag past.
+
+BEWAAR JE FAVORIETEN
+Sla zenders op zodat je ze later snel terugvindt. Luister via internet naar FM-, AM- en onlinezenders uit binnen- en buitenland.
+
+Een internetverbinding is nodig; mobiele datakosten kunnen gelden. Streams en informatie over nummers zijn afhankelijk van de zender en regio. MegaRadio is een radiogids; de omroepen verzorgen de inhoud.
+
+Luister op je Mac tijdens het werken of ontspannen.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "internetradio,online,nederland,belgië,vlaams,lokaal,nieuws,sport,jazz,klassiek,favorieten";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

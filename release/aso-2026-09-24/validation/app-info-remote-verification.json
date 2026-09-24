@@ -1,0 +1,210 @@
+{
+  "checkedAt": "2026-09-24T01:27:26.627727+00:00",
+  "method": "App Store Connect App Information reloaded, then all 50 locale Name and Subtitle fields read via Safari accessibility and compared exactly to copy.json.",
+  "appId": "6759302561",
+  "checkedLocales": 50,
+  "mismatches": [],
+  "brandPreserved": true,
+  "records": {
+    "tr": {
+      "name": "MegaRadio: Canlı Radyo",
+      "subtitle": "Türkiye ve dünyadan FM, AM"
+    },
+    "de-DE": {
+      "name": "MegaRadio: Radio & Webradio",
+      "subtitle": "Live-Sender aus aller Welt"
+    },
+    "en-US": {
+      "name": "MegaRadio: Live Radio",
+      "subtitle": "FM, AM & stations worldwide"
+    },
+    "fr-FR": {
+      "name": "MegaRadio: Radio en direct",
+      "subtitle": "Stations FM, AM du monde"
+    },
+    "es-ES": {
+      "name": "MegaRadio: Radio en directo",
+      "subtitle": "Emisoras FM y AM del mundo"
+    },
+    "it": {
+      "name": "MegaRadio: Radio in diretta",
+      "subtitle": "Stazioni FM e AM dal mondo"
+    },
+    "pt-PT": {
+      "name": "MegaRadio: Rádio em direto",
+      "subtitle": "Estações FM e AM do mundo"
+    },
+    "ru": {
+      "name": "MegaRadio: Радио онлайн",
+      "subtitle": "Прямой эфир FM и AM станций"
+    },
+    "ja": {
+      "name": "MegaRadio: ラジオを聴く",
+      "subtitle": "日本と世界のFM・AMをライブで"
+    },
+    "zh-Hant": {
+      "name": "MegaRadio: 即時網路電台",
+      "subtitle": "收聽台灣香港與世界FM、AM廣播"
+    },
+    "he": {
+      "name": "MegaRadio: רדיו בשידור חי",
+      "subtitle": "תחנות FM ו-AM מכל העולם"
+    },
+    "ar-SA": {
+      "name": "MegaRadio: راديو مباشر",
+      "subtitle": "محطات FM وAM من حول العالم"
+    },
+    "en-GB": {
+      "name": "MegaRadio: Live Radio",
+      "subtitle": "FM, AM & worldwide stations"
+    },
+    "en-AU": {
+      "name": "MegaRadio: Live Radio",
+      "subtitle": "Australian & global FM, AM"
+    },
+    "fr-CA": {
+      "name": "MegaRadio: Radio en direct",
+      "subtitle": "Stations du Québec et du monde"
+    },
+    "es-MX": {
+      "name": "MegaRadio: Radio en vivo",
+      "subtitle": "Emisoras de México y el mundo"
+    },
+    "pt-BR": {
+      "name": "MegaRadio: Rádio ao vivo",
+      "subtitle": "Emissoras FM e AM do mundo"
+    },
+    "nl-NL": {
+      "name": "MegaRadio: Radio luisteren",
+      "subtitle": "Live FM, AM en wereldzenders"
+    },
+    "sv": {
+      "name": "MegaRadio: Radio Sverige",
+      "subtitle": "Webbradio, musik och nyheter"
+    },
+    "no": {
+      "name": "MegaRadio: Nettradio & musikk",
+      "subtitle": "FM, AM og kanaler fra verden"
+    },
+    "da": {
+      "name": "MegaRadio: Dansk netradio",
+      "subtitle": "Live radio fra hele verden"
+    },
+    "fi": {
+      "name": "MegaRadio: Kuuntele radiota",
+      "subtitle": "Suomen ja maailman nettiradio"
+    },
+    "pl": {
+      "name": "MegaRadio: Radio internetowe",
+      "subtitle": "Stacje FM i AM na żywo"
+    },
+    "cs": {
+      "name": "MegaRadio: Rádio online",
+      "subtitle": "Živé vysílání FM a AM stanic"
+    },
+    "sk": {
+      "name": "MegaRadio: Rádio naživo",
+      "subtitle": "Online stanice FM a AM"
+    },
+    "hu": {
+      "name": "MegaRadio: Online rádió",
+      "subtitle": "Élő FM és AM adók a világból"
+    },
+    "ro": {
+      "name": "MegaRadio: Radio online",
+      "subtitle": "Posturi FM și AM în direct"
+    },
+    "hr": {
+      "name": "MegaRadio: Radio uživo",
+      "subtitle": "FM i AM postaje iz svijeta"
+    },
+    "el": {
+      "name": "MegaRadio: Ραδιόφωνο live",
+      "subtitle": "Σταθμοί FM και AM παγκοσμίως"
+    },
+    "uk": {
+      "name": "MegaRadio: Радіо онлайн",
+      "subtitle": "Прямий ефір FM та AM станцій"
+    },
+    "ca": {
+      "name": "MegaRadio: Ràdio en directe",
+      "subtitle": "Emissores FM i AM del món"
+    },
+    "zh-Hans": {
+      "name": "MegaRadio: 在线广播电台",
+      "subtitle": "收听世界各地的FM与AM直播"
+    },
+    "ko": {
+      "name": "MegaRadio: 실시간 라디오",
+      "subtitle": "한국과 세계의 FM·AM 방송 듣기"
+    },
+    "id": {
+      "name": "MegaRadio: Radio Online",
+      "subtitle": "Dengar siaran langsung FM & AM"
+    },
+    "ms": {
+      "name": "MegaRadio: Radio Dalam Talian",
+      "subtitle": "Siaran langsung FM dan AM"
+    },
+    "th": {
+      "name": "MegaRadio: วิทยุออนไลน์",
+      "subtitle": "ฟังสด FM AM จากทั่วโลก"
+    },
+    "vi": {
+      "name": "MegaRadio: Nghe radio online",
+      "subtitle": "Đài FM, AM trực tiếp toàn cầu"
+    },
+    "hi": {
+      "name": "MegaRadio: लाइव रेडियो",
+      "subtitle": "भारत और दुनिया के FM, AM"
+    },
+    "en-CA": {
+      "name": "MegaRadio: Canadian Radio",
+      "subtitle": "Live FM, AM & world stations"
+    },
+    "bn": {
+      "name": "MegaRadio: বিশ্ব রেডিও শুনুন",
+      "subtitle": "বাংলা ও বিশ্বের রেডিও শুনুন"
+    },
+    "gu": {
+      "name": "MegaRadio: લાઇવ રેડિયો",
+      "subtitle": "ગુજરાતી અને વિશ્વના FM, AM"
+    },
+    "kn": {
+      "name": "MegaRadio: ಕನ್ನಡ ರೇಡಿಯೋ",
+      "subtitle": "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    },
+    "ml": {
+      "name": "MegaRadio: ലൈവ് റേഡിയോ",
+      "subtitle": "മലയാളവും ലോകവും FM, AM"
+    },
+    "mr": {
+      "name": "MegaRadio: लाइव्ह रेडिओ",
+      "subtitle": "मराठी व जगभरातील FM, AM"
+    },
+    "or": {
+      "name": "MegaRadio: ଲାଇଭ୍ ରେଡିଓ",
+      "subtitle": "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM"
+    },
+    "pa": {
+      "name": "MegaRadio: ਲਾਈਵ ਰੇਡੀਓ",
+      "subtitle": "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    },
+    "ta": {
+      "name": "MegaRadio: தமிழ் வானொலி",
+      "subtitle": "உலக FM, AM நேரலை கேளுங்கள்"
+    },
+    "te": {
+      "name": "MegaRadio: లైవ్ రేడియో",
+      "subtitle": "తెలుగు, ప్రపంచ FM, AM వినండి"
+    },
+    "ur": {
+      "name": "MegaRadio: لائیو ریڈیو",
+      "subtitle": "اردو اور دنیا کے FM، AM سنیں"
+    },
+    "sl": {
+      "name": "MegaRadio: Radio v živo",
+      "subtitle": "Postaje FM in AM z vsega sveta"
+    }
+  }
+}

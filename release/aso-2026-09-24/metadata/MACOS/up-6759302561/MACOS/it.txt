@@ -1,0 +1,21 @@
+"promotionalText" = "Ritrova le tue radio preferite e scopri nuove voci. Esplora le stazioni per paese e genere e salva quelle che vuoi ascoltare di nuovo.";
+"description" = "Una voce di casa o un nuovo suono dal mondo: con MegaRadio scopri e ascolti la radio in diretta.
+
+TROVA LA TUA STAZIONE
+Cerca per nome oppure esplora per paese e genere. Scegli tra pop, rock, jazz, classica, notizie, sport e programmi di conversazione.
+
+I PREFERITI SEMPRE A PORTATA
+Salva le stazioni che ami e ritrovale al prossimo ascolto senza ripetere la ricerca.
+
+DALL'ITALIA AL MONDO
+Ascolta via internet radio FM, AM e stazioni online italiane e internazionali. Segui i programmi locali o scopri trasmissioni in altre lingue.
+
+È necessaria una connessione internet. Potrebbero essere applicati costi per i dati mobili. La disponibilità degli stream e dei titoli dipende dalla stazione e dalla regione. MegaRadio è una directory; i contenuti sono forniti dalle rispettive emittenti.
+
+Ascolta la radio sul Mac mentre lavori o ti rilassi.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ascoltare,internet,online,italia,locali,notizie,sport,jazz,classica,pop,rock,preferiti";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

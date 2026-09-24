@@ -1,0 +1,18 @@
+"promotionalText" = "Domáce rádiá aj nové zvuky zo zahraničia. Vyhľadávajte podľa krajiny a žánru a uložte si stanice na ďalšie počúvanie.";
+"description" = "Obľúbené slovenské rádio alebo nová stanica zo sveta. MegaRadio spája vyhľadávanie a počúvanie živého vysielania cez internet.
+
+NÁJDITE SVOJU STANICU
+Hľadajte podľa názvu, krajiny alebo žánru. Objavte pop, rock, jazz, klasiku, správy, šport a hovorené programy.
+
+VRÁŤTE SA K OBĽÚBENÝM
+Uložte si stanice, ktoré chcete počúvať znova. FM, AM a internetové rádiá zo Slovenska aj ďalších krajín máte v jednom katalógu.
+
+Potrebujete internetové pripojenie; môžu sa účtovať mobilné dáta. Dostupnosť vysielania a informácií o skladbách závisí od stanice a regiónu. Obsah poskytujú jednotliví vysielatelia.
+
+Zapnite si rádio na Macu pri práci či oddychu.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "počúvať,internetové,slovensko,slovenské,svet,správy,šport,jazz,klasika,pop,rock,obľúbené";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

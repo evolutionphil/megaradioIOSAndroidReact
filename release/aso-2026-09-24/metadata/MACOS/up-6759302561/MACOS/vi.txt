@@ -1,0 +1,18 @@
+"promotionalText" = "Giọng nói quen thuộc và âm thanh mới từ khắp nơi. Tìm đài theo quốc gia hoặc thể loại, rồi lưu những đài bạn muốn nghe lại.";
+"description" = "Tin tức buổi sáng, chương trình trò chuyện hay âm nhạc để thư giãn. MegaRadio giúp bạn khám phá đài phát thanh Việt Nam và các quốc gia khác.
+
+TÌM NỘI DUNG MUỐN NGHE
+Tìm theo tên đài hoặc duyệt theo quốc gia và thể loại. Khám phá nhạc trẻ, trữ tình, pop, jazz, tin tức, thể thao và chương trình trò chuyện.
+
+GIỮ ĐÀI YÊU THÍCH TRONG TẦM TAY
+Lưu đài để lần sau không cần tìm lại. Nghe các luồng phát FM, AM và radio trực tuyến qua internet.
+
+Cần kết nối internet; có thể phát sinh phí dữ liệu di động. Khả năng phát và thông tin bài hát tùy thuộc vào đài và khu vực. MegaRadio là danh bạ đài; nội dung do từng đơn vị phát thanh cung cấp.
+
+Nghe radio trên Mac khi làm việc hoặc nghỉ ngơi.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "phát thanh,internet,việt nam,tin tức,thể thao,nhạc trẻ,trữ tình,jazz,yêu thích";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

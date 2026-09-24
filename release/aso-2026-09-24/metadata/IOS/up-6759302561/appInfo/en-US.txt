@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Live Radio";
+"subtitle" = "FM, AM & stations worldwide";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

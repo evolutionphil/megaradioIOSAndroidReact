@@ -1,0 +1,18 @@
+"promotionalText" = "Lokale stemmer og nye favoritter fra utlandet. Finn radiokanaler etter land og sjanger, og lagre kanalene du vil høre igjen.";
+"description" = "En kjent norsk stemme eller musikk fra et annet land? Med MegaRadio finner du direktesendt radio som passer dagen din.
+
+VELG DIN KANAL
+Søk etter navn eller utforsk land og sjangre. Hør pop, rock, jazz og klassisk, eller velg nyheter, sport og samtaleprogrammer.
+
+TA VARE PÅ FAVORITTENE
+Lagre kanalene du liker og finn dem igjen uten å søke på nytt. Utforsk FM-, AM- og nettradio fra Norge og resten av verden.
+
+Du trenger internett. Mobildatakostnader kan påløpe. Tilgjengelige sendinger og låtopplysninger varierer etter kanal og region. MegaRadio er en radiokatalog; kanalene leverer innholdet.
+
+Hør radio på Mac mens du jobber eller slapper av.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "nettradio,norsk,norge,online,lokal,nyheter,sport,jazz,klassisk,pop,rock,favoritter";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

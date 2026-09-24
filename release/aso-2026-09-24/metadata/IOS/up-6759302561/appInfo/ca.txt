@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Ràdio en directe";
+"subtitle" = "Emissores FM i AM del món";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

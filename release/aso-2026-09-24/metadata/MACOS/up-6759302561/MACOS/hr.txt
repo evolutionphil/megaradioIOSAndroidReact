@@ -1,0 +1,18 @@
+"promotionalText" = "Domaće postaje i novi zvukovi iz svijeta. Pronađite radio prema zemlji ili žanru i spremite postaje koje želite ponovno slušati.";
+"description" = "Poznati glas iz Hrvatske ili glazba iz nekog drugog kraja. MegaRadio olakšava otkrivanje i slušanje radijskih postaja uživo.
+
+PRONAĐITE ZVUK ZA SVOJ DAN
+Tražite prema nazivu postaje ili pregledajte zemlje i žanrove. Pop, rock, jazz, klasika, vijesti, sport i razgovorne emisije — odaberite što vam odgovara.
+
+OMILJENE NA JEDNOM MJESTU
+Spremite postaje i vratite im se bez ponovnog pretraživanja. Slušajte internetske prijenose FM, AM i online radija.
+
+Potrebna je internetska veza. Mogući su troškovi mobilnih podataka. Dostupnost prijenosa i podataka o pjesmama ovisi o postaji i regiji. MegaRadio je imenik; sadržaj pružaju postaje.
+
+Slušajte radio na Macu tijekom rada ili odmora.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "slušaj,internet,online,hrvatska,domaće,vijesti,sport,jazz,klasika,pop,rock,omiljene";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

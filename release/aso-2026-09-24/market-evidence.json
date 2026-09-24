@@ -1,0 +1,1542 @@
+{
+  "tr": {
+    "market": "tr",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radyo+dinle&entity=software&limit=40&country=tr",
+      "observedAt": "2026-09-23T23:19:43.888897+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 31,
+    "examples": [
+      {
+        "name": "Turkish FM Radios: Music, News",
+        "url": "https://apps.apple.com/tr/app/turkish-fm-radios-music-news/id1619859433?uo=4"
+      },
+      {
+        "name": "Radyo Dinle - Turkish Radios",
+        "url": "https://apps.apple.com/tr/app/radyo-dinle-turkish-radios/id1386218143?uo=4"
+      },
+      {
+        "name": "Karnaval: Radio & Podcast",
+        "url": "https://apps.apple.com/tr/app/karnaval-radio-podcast/id549513333?uo=4"
+      },
+      {
+        "name": "Radyo Dinle ►",
+        "url": "https://apps.apple.com/tr/app/radyo-dinle/id1061476673?uo=4"
+      },
+      {
+        "name": "Radio Tuner app: Music & News",
+        "url": "https://apps.apple.com/tr/app/radio-tuner-app-music-news/id1441517450?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "de-DE": {
+    "market": "de",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+h%C3%B6ren&entity=software&limit=40&country=de",
+      "observedAt": "2026-09-23T23:19:52.043432+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 39,
+    "examples": [
+      {
+        "name": "Radio FM Deutschland: Radios / Internetradio DE",
+        "url": "https://apps.apple.com/de/app/radio-fm-deutschland-radios-internetradio-de/id966266633?uo=4"
+      },
+      {
+        "name": "RadioApp - Einfach Radio",
+        "url": "https://apps.apple.com/de/app/radioapp-einfach-radio/id720291153?uo=4"
+      },
+      {
+        "name": "radio.de - Radio und Podcast",
+        "url": "https://apps.apple.com/de/app/radio-de-radio-und-podcast/id311762416?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: FM Musik & Sport",
+        "url": "https://apps.apple.com/de/app/tunein-radio-fm-musik-sport/id418987775?uo=4"
+      },
+      {
+        "name": "Radioplayer - Radio & Podcast",
+        "url": "https://apps.apple.com/de/app/radioplayer-radio-podcast/id6443602613?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "en-US": {
+    "market": "us",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=live+radio&entity=software&limit=40&country=us",
+      "observedAt": "2026-09-23T23:20:09.144367+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "TuneIn Radio: Music & Sports",
+        "url": "https://apps.apple.com/us/app/tunein-radio-music-sports/id418987775?uo=4"
+      },
+      {
+        "name": "RadioApp - A Simple Radio App",
+        "url": "https://apps.apple.com/us/app/radioapp-a-simple-radio-app/id720291153?uo=4"
+      },
+      {
+        "name": "iHeart: Radio, Music, Podcasts",
+        "url": "https://apps.apple.com/us/app/iheart-radio-music-podcasts/id290638154?uo=4"
+      },
+      {
+        "name": "Simple Radio - FM AM Stations",
+        "url": "https://apps.apple.com/us/app/simple-radio-fm-am-stations/id891132290?uo=4"
+      },
+      {
+        "name": "Live Radio: Online FM",
+        "url": "https://apps.apple.com/us/app/live-radio-online-fm/id6762454453?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "fr-FR": {
+    "market": "fr",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+en+direct&entity=software&limit=40&country=fr",
+      "observedAt": "2026-09-23T23:20:34.379503+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 39,
+    "examples": [
+      {
+        "name": "Radios France - FM en Direct",
+        "url": "https://apps.apple.com/fr/app/radios-france-fm-en-direct/id956219729?uo=4"
+      },
+      {
+        "name": "Radio FM • France Radio",
+        "url": "https://apps.apple.com/fr/app/radio-fm-france-radio/id1106960081?uo=4"
+      },
+      {
+        "name": "Radio FM - Simple Radio",
+        "url": "https://apps.apple.com/fr/app/radio-fm-simple-radio/id891132290?uo=4"
+      },
+      {
+        "name": "Radioplayer - Radio & Podcast",
+        "url": "https://apps.apple.com/fr/app/radioplayer-radio-podcast/id6443602613?uo=4"
+      },
+      {
+        "name": "Radio FM: Music, News & Sports",
+        "url": "https://apps.apple.com/fr/app/radio-fm-music-news-sports/id951362406?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "es-ES": {
+    "market": "es",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=es",
+      "observedAt": "2026-09-23T23:20:51.307985+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "Radio Online España: Radios FM",
+        "url": "https://apps.apple.com/es/app/radio-online-espa%C3%B1a-radios-fm/id1065470482?uo=4"
+      },
+      {
+        "name": "Radio iPhone: myTuner Radio FM",
+        "url": "https://apps.apple.com/es/app/radio-iphone-mytuner-radio-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radio Online România",
+        "url": "https://apps.apple.com/es/app/radio-online-rom%C3%A2nia/id1287183470?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: noticias AM FM",
+        "url": "https://apps.apple.com/es/app/tunein-radio-noticias-am-fm/id418987775?uo=4"
+      },
+      {
+        "name": "Radio Online ManyFM",
+        "url": "https://apps.apple.com/es/app/radio-online-manyfm/id1490109245?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "it": {
+    "market": "it",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+in+diretta&entity=software&limit=40&country=it",
+      "observedAt": "2026-09-23T23:21:23.925373+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 40,
+    "examples": [
+      {
+        "name": "TuneIn Radio: musica e notizie",
+        "url": "https://apps.apple.com/it/app/tunein-radio-musica-e-notizie/id418987775?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Music & Sports",
+        "url": "https://apps.apple.com/it/app/tunein-radio-music-sports/id319295332?uo=4"
+      },
+      {
+        "name": "Simple Radio - Stazioni FM AM",
+        "url": "https://apps.apple.com/it/app/simple-radio-stazioni-fm-am/id891132290?uo=4"
+      },
+      {
+        "name": "Radio FM - Radio Italia",
+        "url": "https://apps.apple.com/it/app/radio-fm-radio-italia/id1118545894?uo=4"
+      },
+      {
+        "name": "myTuner Radio Italia FM",
+        "url": "https://apps.apple.com/it/app/mytuner-radio-italia-fm/id520502858?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "pt-PT": {
+    "market": "pt",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+online&entity=software&limit=40&country=pt",
+      "observedAt": "2026-09-23T23:21:15.571551+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 35,
+    "examples": [
+      {
+        "name": "Radio Online ManyFM",
+        "url": "https://apps.apple.com/pt/app/radio-online-manyfm/id1490109245?uo=4"
+      },
+      {
+        "name": "myTuner Radio Portugal Online",
+        "url": "https://apps.apple.com/pt/app/mytuner-radio-portugal-online/id520502858?uo=4"
+      },
+      {
+        "name": "Rádio online. Música, notícias",
+        "url": "https://apps.apple.com/pt/app/r%C3%A1dio-online-m%C3%BAsica-not%C3%ADcias/id1487603435?uo=4"
+      },
+      {
+        "name": "Simple Rádio - Rádios FM & AM",
+        "url": "https://apps.apple.com/pt/app/simple-r%C3%A1dio-r%C3%A1dios-fm-am/id891132290?uo=4"
+      },
+      {
+        "name": "Radio FM AM: Live Stream Music",
+        "url": "https://apps.apple.com/pt/app/radio-fm-am-live-stream-music/id6475052628?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ru": {
+    "market": "ru",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D1%80%D0%B0%D0%B4%D0%B8%D0%BE+%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD&entity=software&limit=40&country=ru",
+      "observedAt": "2026-09-23T23:23:28.203923+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "Радио - Музыка Онлайн (Radio)",
+        "url": "https://apps.apple.com/ru/app/%D1%80%D0%B0%D0%B4%D0%B8%D0%BE-%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D0%B0-%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD-radio/id1087161387?uo=4"
+      },
+      {
+        "name": "Яндекс Радио — все станции",
+        "url": "https://apps.apple.com/ru/app/%D1%8F%D0%BD%D0%B4%D0%B5%D0%BA%D1%81-%D1%80%D0%B0%D0%B4%D0%B8%D0%BE-%D0%B2%D1%81%D0%B5-%D1%81%D1%82%D0%B0%D0%BD%D1%86%D0%B8%D0%B8/id6748958021?uo=4"
+      },
+      {
+        "name": "Радио",
+        "url": "https://apps.apple.com/ru/app/%D1%80%D0%B0%D0%B4%D0%B8%D0%BE/id633970005?uo=4"
+      },
+      {
+        "name": "Радио Онлайн ManyFM",
+        "url": "https://apps.apple.com/ru/app/%D1%80%D0%B0%D0%B4%D0%B8%D0%BE-%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD-manyfm/id1490109245?uo=4"
+      },
+      {
+        "name": "радио Россия: Top Radios",
+        "url": "https://apps.apple.com/ru/app/%D1%80%D0%B0%D0%B4%D0%B8%D0%BE-%D1%80%D0%BE%D1%81%D1%81%D0%B8%D1%8F-top-radios/id1130722310?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ja": {
+    "market": "jp",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E3%83%A9%E3%82%B8%E3%82%AA&entity=software&limit=40&country=jp",
+      "observedAt": "2026-09-23T23:24:44.195491+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 30,
+    "examples": [
+      {
+        "name": "radiko",
+        "url": "https://apps.apple.com/jp/app/radiko/id370515585?uo=4"
+      },
+      {
+        "name": "myTuner Radio ラジオ日本 FM / AM",
+        "url": "https://apps.apple.com/jp/app/mytuner-radio-%E3%83%A9%E3%82%B8%E3%82%AA%E6%97%A5%E6%9C%AC-fm-am/id520502858?uo=4"
+      },
+      {
+        "name": "NHK ONE らじるらじる ラジオ配信アプリ",
+        "url": "https://apps.apple.com/jp/app/nhk-one-%E3%82%89%E3%81%98%E3%82%8B%E3%82%89%E3%81%98%E3%82%8B-%E3%83%A9%E3%82%B8%E3%82%AA%E9%85%8D%E4%BF%A1%E3%82%A2%E3%83%97%E3%83%AA/id473937342?uo=4"
+      },
+      {
+        "name": "FM ラジオ",
+        "url": "https://apps.apple.com/jp/app/fm-%E3%83%A9%E3%82%B8%E3%82%AA/id1566586505?uo=4"
+      },
+      {
+        "name": "Apple Podcast",
+        "url": "https://apps.apple.com/jp/app/apple-podcast/id525463029?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "zh-Hant": {
+    "market": "tw",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E7%B6%B2%E8%B7%AF%E9%9B%BB%E5%8F%B0&entity=software&limit=40&country=tw",
+      "observedAt": "2026-09-23T23:25:08.956693+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Radio Taiwan 台灣電台",
+        "url": "https://apps.apple.com/tw/app/radio-taiwan-%E5%8F%B0%E7%81%A3%E9%9B%BB%E5%8F%B0/id1067894136?uo=4"
+      },
+      {
+        "name": "myTuner Radio 收音機",
+        "url": "https://apps.apple.com/tw/app/mytuner-radio-%E6%94%B6%E9%9F%B3%E6%A9%9F/id520502858?uo=4"
+      },
+      {
+        "name": "TuneIn 電台：音樂和即時新聞。",
+        "url": "https://apps.apple.com/tw/app/tunein-%E9%9B%BB%E5%8F%B0-%E9%9F%B3%E6%A8%82%E5%92%8C%E5%8D%B3%E6%99%82%E6%96%B0%E8%81%9E/id418987775?uo=4"
+      },
+      {
+        "name": "收音機 FM Radio",
+        "url": "https://apps.apple.com/tw/app/%E6%94%B6%E9%9F%B3%E6%A9%9F-fm-radio/id1566586505?uo=4"
+      },
+      {
+        "name": "台灣廣播電台直播: 網絡收音機",
+        "url": "https://apps.apple.com/tw/app/%E5%8F%B0%E7%81%A3%E5%BB%A3%E6%92%AD%E9%9B%BB%E5%8F%B0%E7%9B%B4%E6%92%AD-%E7%B6%B2%E7%B5%A1%E6%94%B6%E9%9F%B3%E6%A9%9F/id1313803214?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "he": {
+    "market": "il",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D7%A8%D7%93%D7%99%D7%95&entity=software&limit=40&country=il",
+      "observedAt": "2026-09-23T23:23:44.996266+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "RLive: Radio Live Israel radio",
+        "url": "https://apps.apple.com/il/app/rlive-radio-live-israel-radio/id451252423?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/il/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "All-FM:  Live Israeli Radio",
+        "url": "https://apps.apple.com/il/app/all-fm-live-israeli-radio/id1513127387?uo=4"
+      },
+      {
+        "name": "רדיו ישראלי אונליין - רדיו הד",
+        "url": "https://apps.apple.com/il/app/%D7%A8%D7%93%D7%99%D7%95-%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99-%D7%90%D7%95%D7%A0%D7%9C%D7%99%D7%99%D7%9F-%D7%A8%D7%93%D7%99%D7%95-%D7%94%D7%93/id1542372084?uo=4"
+      },
+      {
+        "name": "Radius 100FM",
+        "url": "https://apps.apple.com/il/app/radius-100fm/id946941095?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ar-SA": {
+    "market": "sa",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D8%B1%D8%A7%D8%AF%D9%8A%D9%88+%D9%85%D8%A8%D8%A7%D8%B4%D8%B1&entity=software&limit=40&country=sa",
+      "observedAt": "2026-09-23T23:23:53.387392+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/sa/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radio FM – Live Radio Stations",
+        "url": "https://apps.apple.com/sa/app/radio-fm-live-radio-stations/id6763191514?uo=4"
+      },
+      {
+        "name": "JACO جاكو: Live Streaming",
+        "url": "https://apps.apple.com/sa/app/jaco-%D8%AC%D8%A7%D9%83%D9%88-live-streaming/id6447761097?uo=4"
+      },
+      {
+        "name": "World Radio App - Online FM AM",
+        "url": "https://apps.apple.com/sa/app/world-radio-app-online-fm-am/id6758719944?uo=4"
+      },
+      {
+        "name": "Saudi Arabia Radio Stations",
+        "url": "https://apps.apple.com/sa/app/saudi-arabia-radio-stations/id6782944353?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "en-GB": {
+    "market": "gb",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+stations&entity=software&limit=40&country=gb",
+      "observedAt": "2026-09-23T23:20:17.468969+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Radio Stations UK - Live FM",
+        "url": "https://apps.apple.com/gb/app/radio-stations-uk-live-fm/id1052718459?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/gb/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Global Player Radio & Podcasts",
+        "url": "https://apps.apple.com/gb/app/global-player-radio-podcasts/id1142951331?uo=4"
+      },
+      {
+        "name": "Radios UK FM (British Radio)",
+        "url": "https://apps.apple.com/gb/app/radios-uk-fm-british-radio/id946054280?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Music & Sports",
+        "url": "https://apps.apple.com/gb/app/tunein-radio-music-sports/id418987775?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "en-AU": {
+    "market": "au",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+live&entity=software&limit=40&country=au",
+      "observedAt": "2026-09-23T23:20:25.920246+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "myTuner Radio App Australia",
+        "url": "https://apps.apple.com/au/app/mytuner-radio-app-australia/id520502858?uo=4"
+      },
+      {
+        "name": "Radio: Live FM AM",
+        "url": "https://apps.apple.com/au/app/radio-live-fm-am/id1638327032?uo=4"
+      },
+      {
+        "name": "Radio App・FM AM Stations",
+        "url": "https://apps.apple.com/au/app/radio-app-fm-am-stations/id6466401575?uo=4"
+      },
+      {
+        "name": "Simple Radio - FM AM Stations",
+        "url": "https://apps.apple.com/au/app/simple-radio-fm-am-stations/id891132290?uo=4"
+      },
+      {
+        "name": "RLive: Radio Live Israel radio",
+        "url": "https://apps.apple.com/au/app/rlive-radio-live-israel-radio/id451252423?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "fr-CA": {
+    "market": "ca",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+en+direct&entity=software&limit=40&country=ca",
+      "observedAt": "2026-09-23T23:20:42.731502+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Simple Radio – Live AM FM App",
+        "url": "https://apps.apple.com/ca/app/simple-radio-live-am-fm-app/id891132290?uo=4"
+      },
+      {
+        "name": "iHeart: Radio, Music, Podcasts",
+        "url": "https://apps.apple.com/ca/app/iheart-radio-music-podcasts/id290638154?uo=4"
+      },
+      {
+        "name": "Radioplayer - Radio & Podcast",
+        "url": "https://apps.apple.com/ca/app/radioplayer-radio-podcast/id6443602613?uo=4"
+      },
+      {
+        "name": "myTuner Radio Canada - Live FM",
+        "url": "https://apps.apple.com/ca/app/mytuner-radio-canada-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radios France: Live FM",
+        "url": "https://apps.apple.com/ca/app/radios-france-live-fm/id956219729?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "es-MX": {
+    "market": "mx",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+en+vivo&entity=software&limit=40&country=mx",
+      "observedAt": "2026-09-23T23:20:59.513716+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Radio FM México en Vivo",
+        "url": "https://apps.apple.com/mx/app/radio-fm-m%C3%A9xico-en-vivo/id1042301779?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: noticias, música",
+        "url": "https://apps.apple.com/mx/app/tunein-radio-noticias-m%C3%BAsica/id418987775?uo=4"
+      },
+      {
+        "name": "Simple Radio - FM & AM en Vivo",
+        "url": "https://apps.apple.com/mx/app/simple-radio-fm-am-en-vivo/id891132290?uo=4"
+      },
+      {
+        "name": "myTuner Radio: Radios de FM AM",
+        "url": "https://apps.apple.com/mx/app/mytuner-radio-radios-de-fm-am/id520502858?uo=4"
+      },
+      {
+        "name": "RadioApp - A Simple Radio",
+        "url": "https://apps.apple.com/mx/app/radioapp-a-simple-radio/id720291153?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "pt-BR": {
+    "market": "br",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+ao+vivo&entity=software&limit=40&country=br",
+      "observedAt": "2026-09-23T23:21:07.575513+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Rádio Brasil: FM ao Vivo",
+        "url": "https://apps.apple.com/br/app/r%C3%A1dio-brasil-fm-ao-vivo/id1042302690?uo=4"
+      },
+      {
+        "name": "Simple Rádio - Rádios FM & AM",
+        "url": "https://apps.apple.com/br/app/simple-r%C3%A1dio-r%C3%A1dios-fm-am/id891132290?uo=4"
+      },
+      {
+        "name": "RadiosNet",
+        "url": "https://apps.apple.com/br/app/radiosnet/id1089290449?uo=4"
+      },
+      {
+        "name": "Radio FM para iPhone: myTuner",
+        "url": "https://apps.apple.com/br/app/radio-fm-para-iphone-mytuner/id520502858?uo=4"
+      },
+      {
+        "name": "Rádio FM – Estações Ao Vivo",
+        "url": "https://apps.apple.com/br/app/r%C3%A1dio-fm-esta%C3%A7%C3%B5es-ao-vivo/id6575377602?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "nl-NL": {
+    "market": "nl",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+luisteren&entity=software&limit=40&country=nl",
+      "observedAt": "2026-09-23T23:21:32.106394+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "Radio Luisteren",
+        "url": "https://apps.apple.com/nl/app/radio-luisteren/id6737446191?uo=4"
+      },
+      {
+        "name": "Nederland.FM Radio",
+        "url": "https://apps.apple.com/nl/app/nederland-fm-radio/id520828337?uo=4"
+      },
+      {
+        "name": "Radio Nederland App: Online FM",
+        "url": "https://apps.apple.com/nl/app/radio-nederland-app-online-fm/id1063246747?uo=4"
+      },
+      {
+        "name": "Radio Nederland",
+        "url": "https://apps.apple.com/nl/app/radio-nederland/id687082516?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Muziek, Nieuws",
+        "url": "https://apps.apple.com/nl/app/tunein-radio-muziek-nieuws/id418987775?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "sv": {
+    "market": "se",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=lyssna+radio&entity=software&limit=40&country=se",
+      "observedAt": "2026-09-23T23:22:05.586803+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 39,
+    "examples": [
+      {
+        "name": "Radio Sverige FM / Webbradio",
+        "url": "https://apps.apple.com/se/app/radio-sverige-fm-webbradio/id1079439155?uo=4"
+      },
+      {
+        "name": "Sveriges Radio",
+        "url": "https://apps.apple.com/se/app/sveriges-radio/id300548244?uo=4"
+      },
+      {
+        "name": "myTuner Radio: Play FM Sverige",
+        "url": "https://apps.apple.com/se/app/mytuner-radio-play-fm-sverige/id520502858?uo=4"
+      },
+      {
+        "name": "FM Radio Sverige - Webbradio",
+        "url": "https://apps.apple.com/se/app/fm-radio-sverige-webbradio/id6763191514?uo=4"
+      },
+      {
+        "name": "RadioPlay",
+        "url": "https://apps.apple.com/se/app/radioplay/id551552218?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "no": {
+    "market": "no",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio&entity=software&limit=40&country=no",
+      "observedAt": "2026-09-23T23:22:13.931637+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "Radio Norge / Radio Norway FM",
+        "url": "https://apps.apple.com/no/app/radio-norge-radio-norway-fm/id1138284260?uo=4"
+      },
+      {
+        "name": "NRK Radio",
+        "url": "https://apps.apple.com/no/app/nrk-radio/id401928833?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/no/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Music & Sports",
+        "url": "https://apps.apple.com/no/app/tunein-radio-music-sports/id418987775?uo=4"
+      },
+      {
+        "name": "Radioplayer - Radio & Podcast",
+        "url": "https://apps.apple.com/no/app/radioplayer-radio-podcast/id6443602613?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "da": {
+    "market": "dk",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio&entity=software&limit=40&country=dk",
+      "observedAt": "2026-09-23T23:21:57.204855+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/dk/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Denmark Radio - Live DR Radios",
+        "url": "https://apps.apple.com/dk/app/denmark-radio-live-dr-radios/id1079439722?uo=4"
+      },
+      {
+        "name": "DR LYD",
+        "url": "https://apps.apple.com/dk/app/dr-lyd/id433155921?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Music & Sports",
+        "url": "https://apps.apple.com/dk/app/tunein-radio-music-sports/id418987775?uo=4"
+      },
+      {
+        "name": "Rayo",
+        "url": "https://apps.apple.com/dk/app/rayo/id492664619?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "fi": {
+    "market": "fi",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=nettiradio&entity=software&limit=40&country=fi",
+      "observedAt": "2026-09-23T23:22:21.988090+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 34,
+    "examples": [
+      {
+        "name": "Radio Finland FM",
+        "url": "https://apps.apple.com/fi/app/radio-finland-fm/id1482649111?uo=4"
+      },
+      {
+        "name": "Radioplayer - Radio & Podcast",
+        "url": "https://apps.apple.com/fi/app/radioplayer-radio-podcast/id6443602613?uo=4"
+      },
+      {
+        "name": "Radio Finland FM Live Online",
+        "url": "https://apps.apple.com/fi/app/radio-finland-fm-live-online/id6502574640?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/fi/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Rayo",
+        "url": "https://apps.apple.com/fi/app/rayo/id1320851772?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "pl": {
+    "market": "pl",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+internetowe&entity=software&limit=40&country=pl",
+      "observedAt": "2026-09-23T23:22:30.096195+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/pl/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Open FM",
+        "url": "https://apps.apple.com/pl/app/open-fm/id407293210?uo=4"
+      },
+      {
+        "name": "Radio Tuner app: Music & News",
+        "url": "https://apps.apple.com/pl/app/radio-tuner-app-music-news/id1441517450?uo=4"
+      },
+      {
+        "name": "Radio Internetowe",
+        "url": "https://apps.apple.com/pl/app/radio-internetowe/id1387321265?uo=4"
+      },
+      {
+        "name": "radio.pl - radio and podcast",
+        "url": "https://apps.apple.com/pl/app/radio-pl-radio-and-podcast/id1008799932?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "cs": {
+    "market": "cz",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+online&entity=software&limit=40&country=cz",
+      "observedAt": "2026-09-23T23:22:38.163403+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "Rádio Online Česká",
+        "url": "https://apps.apple.com/cz/app/r%C3%A1dio-online-%C4%8Desk%C3%A1/id1356597119?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/cz/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radio Online ManyFM",
+        "url": "https://apps.apple.com/cz/app/radio-online-manyfm/id1490109245?uo=4"
+      },
+      {
+        "name": "Radio FM: Music, News & Sports",
+        "url": "https://apps.apple.com/cz/app/radio-fm-music-news-sports/id951362406?uo=4"
+      },
+      {
+        "name": "Radio online. FM, music, news",
+        "url": "https://apps.apple.com/cz/app/radio-online-fm-music-news/id1487603435?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "sk": {
+    "market": "sk",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+online&entity=software&limit=40&country=sk",
+      "observedAt": "2026-09-23T23:22:46.447438+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Radio Online ManyFM",
+        "url": "https://apps.apple.com/sk/app/radio-online-manyfm/id1490109245?uo=4"
+      },
+      {
+        "name": "FM Radio Player: Online Music",
+        "url": "https://apps.apple.com/sk/app/fm-radio-player-online-music/id6475052628?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/sk/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Rádio Online Česká",
+        "url": "https://apps.apple.com/sk/app/r%C3%A1dio-online-%C4%8Desk%C3%A1/id1356597119?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Music & Sports",
+        "url": "https://apps.apple.com/sk/app/tunein-radio-music-sports/id418987775?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "hu": {
+    "market": "hu",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1di%C3%B3+online&entity=software&limit=40&country=hu",
+      "observedAt": "2026-09-23T23:22:54.940879+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "Radio Online ManyFM",
+        "url": "https://apps.apple.com/hu/app/radio-online-manyfm/id1490109245?uo=4"
+      },
+      {
+        "name": "FM Radio Player: Online Music",
+        "url": "https://apps.apple.com/hu/app/fm-radio-player-online-music/id6475052628?uo=4"
+      },
+      {
+        "name": "Radio online. FM, music, news",
+        "url": "https://apps.apple.com/hu/app/radio-online-fm-music-news/id1487603435?uo=4"
+      },
+      {
+        "name": "Radio Vibe: Live FM & Music",
+        "url": "https://apps.apple.com/hu/app/radio-vibe-live-fm-music/id1670770698?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/hu/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ro": {
+    "market": "ro",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=ro",
+      "observedAt": "2026-09-23T23:23:03.087825+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 35,
+    "examples": [
+      {
+        "name": "Radio Online România",
+        "url": "https://apps.apple.com/ro/app/radio-online-rom%C3%A2nia/id1287183470?uo=4"
+      },
+      {
+        "name": "My Radio Online - România Live",
+        "url": "https://apps.apple.com/ro/app/my-radio-online-rom%C3%A2nia-live/id1462911469?uo=4"
+      },
+      {
+        "name": "Radio România Online FM",
+        "url": "https://apps.apple.com/ro/app/radio-rom%C3%A2nia-online-fm/id1662981802?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/ro/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radio Romania Live Online FM",
+        "url": "https://apps.apple.com/ro/app/radio-romania-live-online-fm/id6741426845?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "hr": {
+    "market": "hr",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+u%C5%BEivo&entity=software&limit=40&country=hr",
+      "observedAt": "2026-09-23T23:23:11.328703+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Radio Uzivo Srbija",
+        "url": "https://apps.apple.com/hr/app/radio-uzivo-srbija/id1244801013?uo=4"
+      },
+      {
+        "name": "Radio FM – Live Radio Stations",
+        "url": "https://apps.apple.com/hr/app/radio-fm-live-radio-stations/id6763191514?uo=4"
+      },
+      {
+        "name": "ExYu Radio stanice uzivo",
+        "url": "https://apps.apple.com/hr/app/exyu-radio-stanice-uzivo/id981628378?uo=4"
+      },
+      {
+        "name": "Balkan Radio Stanice",
+        "url": "https://apps.apple.com/hr/app/balkan-radio-stanice/id1111120355?uo=4"
+      },
+      {
+        "name": "Hrvatski Radio Uživo FM - HR",
+        "url": "https://apps.apple.com/hr/app/hrvatski-radio-u%C5%BEivo-fm-hr/id1662225298?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "el": {
+    "market": "gr",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%CF%81%CE%B1%CE%B4%CE%B9%CF%8C%CF%86%CF%89%CE%BD%CE%BF&entity=software&limit=40&country=gr",
+      "observedAt": "2026-09-23T23:23:19.743809+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "Elliniká Radiófona",
+        "url": "https://apps.apple.com/gr/app/ellinik%C3%A1-radi%C3%B3fona/id1396002490?uo=4"
+      },
+      {
+        "name": "E-Radio - Stream greek music",
+        "url": "https://apps.apple.com/gr/app/e-radio-stream-greek-music/id776881885?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/gr/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "RadioPhone: Live Radio Station",
+        "url": "https://apps.apple.com/gr/app/radiophone-live-radio-station/id1029686747?uo=4"
+      },
+      {
+        "name": "Radio Greece FM AM Live",
+        "url": "https://apps.apple.com/gr/app/radio-greece-fm-am-live/id6448749487?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "uk": {
+    "market": "ua",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D1%80%D0%B0%D0%B4%D1%96%D0%BE+%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD&entity=software&limit=40&country=ua",
+      "observedAt": "2026-09-23T23:23:36.591892+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 38,
+    "examples": [
+      {
+        "name": "Radio Tuner app: Music & News",
+        "url": "https://apps.apple.com/ua/app/radio-tuner-app-music-news/id1441517450?uo=4"
+      },
+      {
+        "name": "RadioPlayer: FM-radio online",
+        "url": "https://apps.apple.com/ua/app/radioplayer-fm-radio-online/id1444878430?uo=4"
+      },
+      {
+        "name": "Radio Ukraine FM & AM Online",
+        "url": "https://apps.apple.com/ua/app/radio-ukraine-fm-am-online/id6478116106?uo=4"
+      },
+      {
+        "name": "Radio and Music Online (Радио)",
+        "url": "https://apps.apple.com/ua/app/radio-and-music-online-%D1%80%D0%B0%D0%B4%D0%B8%D0%BE/id1087161387?uo=4"
+      },
+      {
+        "name": "Слухай UA: Radio FM Ukraine",
+        "url": "https://apps.apple.com/ua/app/%D1%81%D0%BB%D1%83%D1%85%D0%B0%D0%B9-ua-radio-fm-ukraine/id6670308818?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ca": {
+    "market": "es",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A0dio+en+directe&country=es&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:14.053982+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 27,
+    "examples": [
+      {
+        "name": "Radio FM en vivo - Podcast",
+        "url": "https://apps.apple.com/es/app/radio-fm-en-vivo-podcast/id1503702307?uo=4"
+      },
+      {
+        "name": "Radio FM: Radios del Mundo",
+        "url": "https://apps.apple.com/es/app/radio-fm-radios-del-mundo/id6763191514?uo=4"
+      },
+      {
+        "name": "RAC1 Oficial",
+        "url": "https://apps.apple.com/es/app/rac1-oficial/id413261937?uo=4"
+      },
+      {
+        "name": "Radio España – En Directo",
+        "url": "https://apps.apple.com/es/app/radio-espa%C3%B1a-en-directo/id1662279328?uo=4"
+      },
+      {
+        "name": "Radio iPhone: myTuner Radio FM",
+        "url": "https://apps.apple.com/es/app/radio-iphone-mytuner-radio-fm/id520502858?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "zh-Hans": {
+    "market": "cn",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E7%BD%91%E7%BB%9C%E7%94%B5%E5%8F%B0&entity=software&limit=40&country=cn",
+      "observedAt": "2026-09-23T23:25:00.912941+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "收音机-FM广播电台大全",
+        "url": "https://apps.apple.com/cn/app/%E6%94%B6%E9%9F%B3%E6%9C%BA-fm%E5%B9%BF%E6%92%AD%E7%94%B5%E5%8F%B0%E5%A4%A7%E5%85%A8/id1367759819?uo=4"
+      },
+      {
+        "name": "蜻蜓FM「听小说新闻广播电台收音机」相声评书",
+        "url": "https://apps.apple.com/cn/app/%E8%9C%BB%E8%9C%93fm-%E5%90%AC%E5%B0%8F%E8%AF%B4%E6%96%B0%E9%97%BB%E5%B9%BF%E6%92%AD%E7%94%B5%E5%8F%B0%E6%94%B6%E9%9F%B3%E6%9C%BA-%E7%9B%B8%E5%A3%B0%E8%AF%84%E4%B9%A6/id506685538?uo=4"
+      },
+      {
+        "name": "收音机FM-全国广播电台随时听",
+        "url": "https://apps.apple.com/cn/app/%E6%94%B6%E9%9F%B3%E6%9C%BAfm-%E5%85%A8%E5%9B%BD%E5%B9%BF%E6%92%AD%E7%94%B5%E5%8F%B0%E9%9A%8F%E6%97%B6%E5%90%AC/id1184894311?uo=4"
+      },
+      {
+        "name": "收音机 - 网络FM默认系统广播电台",
+        "url": "https://apps.apple.com/cn/app/%E6%94%B6%E9%9F%B3%E6%9C%BA-%E7%BD%91%E7%BB%9Cfm%E9%BB%98%E8%AE%A4%E7%B3%BB%E7%BB%9F%E5%B9%BF%E6%92%AD%E7%94%B5%E5%8F%B0/id1230479789?uo=4"
+      },
+      {
+        "name": "喜马拉雅「听书社区」电台有声小说相声评书",
+        "url": "https://apps.apple.com/cn/app/%E5%96%9C%E9%A9%AC%E6%8B%89%E9%9B%85-%E5%90%AC%E4%B9%A6%E7%A4%BE%E5%8C%BA-%E7%94%B5%E5%8F%B0%E6%9C%89%E5%A3%B0%E5%B0%8F%E8%AF%B4%E7%9B%B8%E5%A3%B0%E8%AF%84%E4%B9%A6/id876336838?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ko": {
+    "market": "kr",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%EB%9D%BC%EB%94%94%EC%98%A4&entity=software&limit=40&country=kr",
+      "observedAt": "2026-09-23T23:24:52.386528+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 32,
+    "examples": [
+      {
+        "name": "myTuner Radio 한국 - 의 라디오 방송국",
+        "url": "https://apps.apple.com/kr/app/mytuner-radio-%ED%95%9C%EA%B5%AD-%EC%9D%98-%EB%9D%BC%EB%94%94%EC%98%A4-%EB%B0%A9%EC%86%A1%EA%B5%AD/id520502858?uo=4"
+      },
+      {
+        "name": "MBC mini",
+        "url": "https://apps.apple.com/kr/app/mbc-mini/id384041016?uo=4"
+      },
+      {
+        "name": "SBS 고릴라",
+        "url": "https://apps.apple.com/kr/app/sbs-%EA%B3%A0%EB%A6%B4%EB%9D%BC/id406456433?uo=4"
+      },
+      {
+        "name": "KBS KONG",
+        "url": "https://apps.apple.com/kr/app/kbs-kong/id928368733?uo=4"
+      },
+      {
+        "name": "RadioApp - 간단한 라디오",
+        "url": "https://apps.apple.com/kr/app/radioapp-%EA%B0%84%EB%8B%A8%ED%95%9C-%EB%9D%BC%EB%94%94%EC%98%A4/id720291153?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "id": {
+    "market": "id",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=id",
+      "observedAt": "2026-09-23T23:24:10.451706+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "Radio FM Indonesia",
+        "url": "https://apps.apple.com/id/app/radio-fm-indonesia/id1482638512?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/id/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radio FM: Music, News & Sports",
+        "url": "https://apps.apple.com/id/app/radio-fm-music-news-sports/id951362406?uo=4"
+      },
+      {
+        "name": "Online Radio Box: FM Radio App",
+        "url": "https://apps.apple.com/id/app/online-radio-box-fm-radio-app/id1101437391?uo=4"
+      },
+      {
+        "name": "Radio Online ManyFM",
+        "url": "https://apps.apple.com/id/app/radio-online-manyfm/id1490109245?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "ms": {
+    "market": "my",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=my",
+      "observedAt": "2026-09-23T23:24:18.855070+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 37,
+    "examples": [
+      {
+        "name": "Radio Malaysia - MY FM Online",
+        "url": "https://apps.apple.com/my/app/radio-malaysia-my-fm-online/id6502572212?uo=4"
+      },
+      {
+        "name": "SYOK - Radio, Music & Podcast",
+        "url": "https://apps.apple.com/my/app/syok-radio-music-podcast/id325022755?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/my/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "FM Radio",
+        "url": "https://apps.apple.com/my/app/fm-radio/id1566586505?uo=4"
+      },
+      {
+        "name": "Malaysia Radio Station - MY FM",
+        "url": "https://apps.apple.com/my/app/malaysia-radio-station-my-fm/id1316015939?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "th": {
+    "market": "th",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B8%E0%B8%AD%E0%B8%AD%E0%B8%99%E0%B9%84%E0%B8%A5%E0%B8%99%E0%B9%8C&entity=software&limit=40&country=th",
+      "observedAt": "2026-09-23T23:24:27.191987+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 36,
+    "examples": [
+      {
+        "name": "Radio Thai / วิทยุ ประเทศไทย",
+        "url": "https://apps.apple.com/th/app/radio-thai-%E0%B8%A7-%E0%B8%97%E0%B8%A2-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B9%84%E0%B8%97%E0%B8%A2/id1061052184?uo=4"
+      },
+      {
+        "name": "Thai Radio วิทยุ & พอดแคสต์",
+        "url": "https://apps.apple.com/th/app/thai-radio-%E0%B8%A7-%E0%B8%97%E0%B8%A2-%E0%B8%9E%E0%B8%AD%E0%B8%94%E0%B9%81%E0%B8%84%E0%B8%AA%E0%B8%95/id522314360?uo=4"
+      },
+      {
+        "name": "myTuner Radio Player - Live FM",
+        "url": "https://apps.apple.com/th/app/mytuner-radio-player-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Radio Thailand FM Live Online",
+        "url": "https://apps.apple.com/th/app/radio-thailand-fm-live-online/id6502574715?uo=4"
+      },
+      {
+        "name": "Radio Tuner app: Music & News",
+        "url": "https://apps.apple.com/th/app/radio-tuner-app-music-news/id1441517450?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "vi": {
+    "market": "vn",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%C4%91%C3%A0i+ph%C3%A1t+thanh&entity=software&limit=40&country=vn",
+      "observedAt": "2026-09-23T23:24:35.771983+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 31,
+    "examples": [
+      {
+        "name": "Radio Viet Nam Online",
+        "url": "https://apps.apple.com/vn/app/radio-viet-nam-online/id1467170966?uo=4"
+      },
+      {
+        "name": "Vietnamese Radio: Live Online",
+        "url": "https://apps.apple.com/vn/app/vietnamese-radio-live-online/id6782945782?uo=4"
+      },
+      {
+        "name": "FM Radio - Radio Stations Live",
+        "url": "https://apps.apple.com/vn/app/fm-radio-radio-stations-live/id1329379740?uo=4"
+      },
+      {
+        "name": "Radio App - FM Radio Stations",
+        "url": "https://apps.apple.com/vn/app/radio-app-fm-radio-stations/id6648771859?uo=4"
+      },
+      {
+        "name": "Podcasts Music Radio FM: Podio",
+        "url": "https://apps.apple.com/vn/app/podcasts-music-radio-fm-podio/id6478092334?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "hi": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A4%B0%E0%A5%87%E0%A4%A1%E0%A4%BF%E0%A4%AF%E0%A5%8B&entity=software&limit=40&country=in",
+      "observedAt": "2026-09-23T23:24:01.987950+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    },
+    "resultCount": 39,
+    "examples": [
+      {
+        "name": "FM Radio",
+        "url": "https://apps.apple.com/in/app/fm-radio/id1566586505?uo=4"
+      },
+      {
+        "name": "All India Radios: FM & News",
+        "url": "https://apps.apple.com/in/app/all-india-radios-fm-news/id6749832767?uo=4"
+      },
+      {
+        "name": "India Radio Online: AIR Radio",
+        "url": "https://apps.apple.com/in/app/india-radio-online-air-radio/id6502572187?uo=4"
+      },
+      {
+        "name": "Radio App",
+        "url": "https://apps.apple.com/in/app/radio-app/id720291153?uo=4"
+      },
+      {
+        "name": "FM Radio - AM, FM, Radio Tuner",
+        "url": "https://apps.apple.com/in/app/fm-radio-am-fm-radio-tuner/id1440995773?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "en-CA": {
+    "market": "ca",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+canada+live&country=ca&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:58.340931+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 28,
+    "examples": [
+      {
+        "name": "Radio Canada: Live AM FM Tuner",
+        "url": "https://apps.apple.com/ca/app/radio-canada-live-am-fm-tuner/id1048083224?uo=4"
+      },
+      {
+        "name": "Radio Canada - Live !",
+        "url": "https://apps.apple.com/ca/app/radio-canada-live/id1276021777?uo=4"
+      },
+      {
+        "name": "myTuner Radio Canada - Live FM",
+        "url": "https://apps.apple.com/ca/app/mytuner-radio-canada-live-fm/id520502858?uo=4"
+      },
+      {
+        "name": "Simple Radio – Live AM FM App",
+        "url": "https://apps.apple.com/ca/app/simple-radio-live-am-fm-app/id891132290?uo=4"
+      },
+      {
+        "name": "TuneIn Radio: Sports & Music",
+        "url": "https://apps.apple.com/ca/app/tunein-radio-sports-music/id418987775?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "bn": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE+%E0%A6%B0%E0%A7%87%E0%A6%A1%E0%A6%BF%E0%A6%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:17.589226+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 1,
+    "examples": [
+      {
+        "name": "Bangladesh Radio Live Player (Bengali / Bangla Stations)",
+        "url": "https://apps.apple.com/in/app/bangladesh-radio-live-player-bengali-bangla-stations/id871662793?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=bangla+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:49.568325+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 17,
+      "examples": [
+        "Bangla Radio",
+        "Bangla Radio *",
+        "Bangla Radio Canberra",
+        "Bangladesh Radio Station Live",
+        "Bangladesh Radio"
+      ]
+    }
+  },
+  "gu": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%AA%97%E0%AB%81%E0%AA%9C%E0%AA%B0%E0%AA%BE%E0%AA%A4%E0%AB%80+%E0%AA%B0%E0%AB%87%E0%AA%A1%E0%AA%BF%E0%AA%AF%E0%AB%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:21.154856+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=gujarati+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:49.761982+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 25,
+      "examples": [
+        "Gujarati Bible Radio",
+        "Gujarati News by Divya Bhaskar",
+        "Gujarati Calendar Panchang",
+        "Desh Gujarati Keyboard",
+        "Gujarati Calendar 2026"
+      ]
+    }
+  },
+  "kn": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B2%95%E0%B2%A8%E0%B3%8D%E0%B2%A8%E0%B2%A1+%E0%B2%B0%E0%B3%87%E0%B2%A1%E0%B2%BF%E0%B2%AF%E0%B3%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:24.662782+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=kannada+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:50.625381+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 25,
+      "examples": [
+        "NammRadio-Kannada online Radio",
+        "All India Radios: FM & News",
+        "India Radios HD",
+        "Radio FM !",
+        "OneIndia Radio - Indian Radio"
+      ]
+    }
+  },
+  "ml": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B4%AE%E0%B4%B2%E0%B4%AF%E0%B4%BE%E0%B4%B3%E0%B4%82+%E0%B4%B1%E0%B5%87%E0%B4%A1%E0%B4%BF%E0%B4%AF%E0%B5%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:28.233526+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=malayalam+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:50.774118+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 25,
+      "examples": [
+        "Malayalam Fm Radio HD Songs",
+        "Malayalam FM Radio - India",
+        "Radio Mango",
+        "Malayalam Radio - India FM",
+        "FM Radio - AM, FM, Radio Tuner"
+      ]
+    }
+  },
+  "mr": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A4%AE%E0%A4%B0%E0%A4%BE%E0%A4%A0%E0%A5%80+%E0%A4%B0%E0%A5%87%E0%A4%A1%E0%A4%BF%E0%A4%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:31.817193+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=marathi+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:51.654248+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 25,
+      "examples": [
+        "Radio FM !",
+        "FMIndia",
+        "Radio India FM & AM - Live Radio Stations Online",
+        "All India Radios: FM & News",
+        "myTuner Radio Player - Live FM"
+      ]
+    }
+  },
+  "or": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86+%E0%AC%B0%E0%AD%87%E0%AC%A1%E0%AC%BF%E0%AC%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:35.471421+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=odia+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:51.263547+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 6,
+      "examples": [
+        "Radio Garden Live",
+        "TTB Odia",
+        "Radio TeleTaxi - oficial",
+        "Simple Radio: FM & AM Stations",
+        "Cricket Live Commentary Radio"
+      ]
+    }
+  },
+  "pa": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A8%AA%E0%A9%B0%E0%A8%9C%E0%A8%BE%E0%A8%AC%E0%A9%80+%E0%A8%B0%E0%A9%87%E0%A8%A1%E0%A9%80%E0%A8%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:38.967751+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=punjabi+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:52.276505+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 25,
+      "examples": [
+        "All Punjabi Radios",
+        "Punjabi Radios All",
+        "Desi Radio - Indian Stations",
+        "Punjabi Radio USA!",
+        "Punjabi Radio - Punjabi Songs"
+      ]
+    }
+  },
+  "ta": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%AE%A4%E0%AE%AE%E0%AE%BF%E0%AE%B4%E0%AF%8D+%E0%AE%B5%E0%AE%BE%E0%AE%A9%E0%AF%8A%E0%AE%B2%E0%AE%BF&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:42.569696+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 1,
+    "examples": [
+      {
+        "name": "India Radio Live Player (Tamil / Hindi / Indian)",
+        "url": "https://apps.apple.com/in/app/india-radio-live-player-tamil-hindi-indian/id871892616?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=tamil+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:52.830645+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 23,
+      "examples": [
+        "Tamil Fm Radio HD Tamil songs",
+        "Southradios Tamil Radio Online",
+        "Tamil Radio FM - Tamil Songs",
+        "Tamil Fm Radio 4k",
+        "Tamil Radios FM HD"
+      ]
+    }
+  },
+  "te": {
+    "market": "in",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B0%A4%E0%B1%86%E0%B0%B2%E0%B1%81%E0%B0%97%E0%B1%81+%E0%B0%B0%E0%B1%87%E0%B0%A1%E0%B0%BF%E0%B0%AF%E0%B1%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:46.159235+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 0,
+    "examples": [],
+    "confidence": "exploratory, no volume data",
+    "romanized": {
+      "source": {
+        "url": "https://itunes.apple.com/search?term=telugu+radio&country=in&entity=software&limit=25",
+        "observedAt": "2026-09-24T00:09:53.442046+00:00",
+        "note": "Romanized local-language query; public result sample, not search volume."
+      },
+      "resultCount": 25,
+      "examples": [
+        "Telugu Radios FM HD",
+        "Telugu Radio FM - Telugu Songs",
+        "All India Radio Stations Live",
+        "FM Radio - AM, FM, Radio Tuner",
+        "Desi Radio - Indian Stations"
+      ]
+    }
+  },
+  "ur": {
+    "market": "pk",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D8%A7%D8%B1%D8%AF%D9%88+%D8%B1%DB%8C%DA%88%DB%8C%D9%88&country=pk&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:50.464551+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 27,
+    "examples": [
+      {
+        "name": "Candle - Ultra Real Blow Out",
+        "url": "https://apps.apple.com/pk/app/candle-ultra-real-blow-out/id434064534?uo=4"
+      },
+      {
+        "name": "Background Blur - Photo Focus Edit.or for Blur.red BG Effect.s & censor or hide face",
+        "url": "https://apps.apple.com/pk/app/background-blur-photo-focus-edit-or-for-blur-red-bg/id1139376937?uo=4"
+      },
+      {
+        "name": "Road Surfers Dash - A Real Car Race Sim Endless Racing Rush",
+        "url": "https://apps.apple.com/pk/app/road-surfers-dash-a-real-car-race-sim-endless-racing-rush/id947843728?uo=4"
+      },
+      {
+        "name": "RV & Boat Towing Parking Simulator Real Road Car Racing Driving",
+        "url": "https://apps.apple.com/pk/app/rv-boat-towing-parking-simulator-real-road-car-racing/id1048580049?uo=4"
+      },
+      {
+        "name": "Quran Urdu قرآن اردو",
+        "url": "https://apps.apple.com/pk/app/quran-urdu-%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D8%B1%D8%AF%D9%88/id965619723?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  },
+  "sl": {
+    "market": "si",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+v+%C5%BEivo&country=si&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:53.987539+00:00",
+      "note": "Public API sample; no search volume or download count."
+    },
+    "resultCount": 1,
+    "examples": [
+      {
+        "name": "podcast24",
+        "url": "https://apps.apple.com/si/app/podcast24/id6758622476?uo=4"
+      }
+    ],
+    "confidence": "exploratory, no volume data"
+  }
+}

@@ -1,0 +1,3 @@
+"name" = "MegaRadio: ലൈവ് റേഡിയോ";
+"subtitle" = "മലയാളവും ലോകവും FM, AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

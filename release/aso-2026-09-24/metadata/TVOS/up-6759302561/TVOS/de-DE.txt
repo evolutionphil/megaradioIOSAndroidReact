@@ -1,0 +1,21 @@
+"promotionalText" = "Dein Lieblingssender und neue Entdeckungen: Höre Radio aus Deutschland, Österreich, der Schweiz und aller Welt. Nach Land oder Genre stöbern, Favoriten speichern.";
+"description" = "Vertraute Stimmen aus der Heimat oder neue Musik aus aller Welt: Mit MegaRadio hörst du Radiosender live über das Internet und findest den passenden Sender für deinen Tag.
+
+DEIN WEG ZUM LIEBLINGSSENDER
+Suche nach Sendernamen oder entdecke das Angebot nach Land und Genre. Ob Pop, Rock, Jazz, Klassik, Nachrichten, Sport oder Talk – wähle, was du gerade hören möchtest.
+
+FAVORITEN SCHNELL WIEDERFINDEN
+Speichere deine Lieblingssender, damit du beim nächsten Mal direkt wieder einsteigen kannst.
+
+RADIO ÜBER GRENZEN HINWEG
+Entdecke Sender aus Deutschland, Österreich und der Schweiz sowie internationale FM-, AM- und Internetradios. Höre lokale Programme oder lerne neue Klänge und Sprachen kennen.
+
+Eine Internetverbindung ist erforderlich. Es können mobile Datenkosten entstehen. Die Verfügbarkeit von Streams und Titelinformationen hängt vom Sender und deinem Standort ab. MegaRadio ist ein Radioverzeichnis; die Inhalte stammen von den jeweiligen Sendern.
+
+Entdecke Radiosender mit deiner Apple TV Fernbedienung und höre sie im Wohnzimmer.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

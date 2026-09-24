@@ -1,0 +1,1511 @@
+{
+  "checks": [
+    {
+      "platform": "IOS",
+      "locale": "tr",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 90,
+      "promotion": 129,
+      "description": 1087
+    },
+    {
+      "platform": "IOS",
+      "locale": "de-DE",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 91,
+      "keywords_utf8_bytes": 93,
+      "promotion": 162,
+      "description": 1122
+    },
+    {
+      "platform": "IOS",
+      "locale": "en-US",
+      "name": 21,
+      "subtitle": 27,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 143,
+      "description": 1033
+    },
+    {
+      "platform": "IOS",
+      "locale": "fr-FR",
+      "name": 26,
+      "subtitle": 24,
+      "keywords": 89,
+      "keywords_utf8_bytes": 91,
+      "promotion": 149,
+      "description": 1065
+    },
+    {
+      "platform": "IOS",
+      "locale": "es-ES",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 87,
+      "keywords_utf8_bytes": 89,
+      "promotion": 138,
+      "description": 1014
+    },
+    {
+      "platform": "IOS",
+      "locale": "it",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 134,
+      "description": 949
+    },
+    {
+      "platform": "IOS",
+      "locale": "pt-PT",
+      "name": 26,
+      "subtitle": 25,
+      "keywords": 87,
+      "keywords_utf8_bytes": 89,
+      "promotion": 134,
+      "description": 974
+    },
+    {
+      "platform": "IOS",
+      "locale": "ru",
+      "name": 23,
+      "subtitle": 27,
+      "keywords": 77,
+      "keywords_utf8_bytes": 144,
+      "promotion": 124,
+      "description": 912
+    },
+    {
+      "platform": "IOS",
+      "locale": "ja",
+      "name": 17,
+      "subtitle": 16,
+      "keywords": 58,
+      "keywords_utf8_bytes": 154,
+      "promotion": 53,
+      "description": 517
+    },
+    {
+      "platform": "IOS",
+      "locale": "zh-Hant",
+      "name": 17,
+      "subtitle": 16,
+      "keywords": 40,
+      "keywords_utf8_bytes": 96,
+      "promotion": 42,
+      "description": 405
+    },
+    {
+      "platform": "IOS",
+      "locale": "he",
+      "name": 25,
+      "subtitle": 23,
+      "keywords": 66,
+      "keywords_utf8_bytes": 122,
+      "promotion": 103,
+      "description": 748
+    },
+    {
+      "platform": "IOS",
+      "locale": "ar-SA",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 70,
+      "keywords_utf8_bytes": 129,
+      "promotion": 118,
+      "description": 829
+    },
+    {
+      "platform": "IOS",
+      "locale": "en-GB",
+      "name": 21,
+      "subtitle": 27,
+      "keywords": 85,
+      "keywords_utf8_bytes": 85,
+      "promotion": 153,
+      "description": 938
+    },
+    {
+      "platform": "IOS",
+      "locale": "en-AU",
+      "name": 21,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 146,
+      "description": 917
+    },
+    {
+      "platform": "IOS",
+      "locale": "fr-CA",
+      "name": 26,
+      "subtitle": 30,
+      "keywords": 88,
+      "keywords_utf8_bytes": 89,
+      "promotion": 153,
+      "description": 981
+    },
+    {
+      "platform": "IOS",
+      "locale": "es-MX",
+      "name": 24,
+      "subtitle": 29,
+      "keywords": 88,
+      "keywords_utf8_bytes": 88,
+      "promotion": 147,
+      "description": 916
+    },
+    {
+      "platform": "IOS",
+      "locale": "pt-BR",
+      "name": 24,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 87,
+      "promotion": 141,
+      "description": 910
+    },
+    {
+      "platform": "IOS",
+      "locale": "nl-NL",
+      "name": 26,
+      "subtitle": 28,
+      "keywords": 89,
+      "keywords_utf8_bytes": 90,
+      "promotion": 132,
+      "description": 860
+    },
+    {
+      "platform": "IOS",
+      "locale": "sv",
+      "name": 24,
+      "subtitle": 28,
+      "keywords": 74,
+      "keywords_utf8_bytes": 75,
+      "promotion": 134,
+      "description": 812
+    },
+    {
+      "platform": "IOS",
+      "locale": "no",
+      "name": 29,
+      "subtitle": 28,
+      "keywords": 82,
+      "keywords_utf8_bytes": 82,
+      "promotion": 124,
+      "description": 751
+    },
+    {
+      "platform": "IOS",
+      "locale": "da",
+      "name": 25,
+      "subtitle": 26,
+      "keywords": 82,
+      "keywords_utf8_bytes": 82,
+      "promotion": 121,
+      "description": 780
+    },
+    {
+      "platform": "IOS",
+      "locale": "fi",
+      "name": 27,
+      "subtitle": 29,
+      "keywords": 87,
+      "keywords_utf8_bytes": 87,
+      "promotion": 125,
+      "description": 808
+    },
+    {
+      "platform": "IOS",
+      "locale": "pl",
+      "name": 28,
+      "subtitle": 22,
+      "keywords": 85,
+      "keywords_utf8_bytes": 87,
+      "promotion": 135,
+      "description": 832
+    },
+    {
+      "platform": "IOS",
+      "locale": "cs",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 80,
+      "keywords_utf8_bytes": 88,
+      "promotion": 112,
+      "description": 764
+    },
+    {
+      "platform": "IOS",
+      "locale": "sk",
+      "name": 23,
+      "subtitle": 22,
+      "keywords": 88,
+      "keywords_utf8_bytes": 98,
+      "promotion": 117,
+      "description": 743
+    },
+    {
+      "platform": "IOS",
+      "locale": "hu",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 87,
+      "keywords_utf8_bytes": 90,
+      "promotion": 114,
+      "description": 826
+    },
+    {
+      "platform": "IOS",
+      "locale": "ro",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 79,
+      "keywords_utf8_bytes": 84,
+      "promotion": 121,
+      "description": 845
+    },
+    {
+      "platform": "IOS",
+      "locale": "hr",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 83,
+      "keywords_utf8_bytes": 85,
+      "promotion": 128,
+      "description": 793
+    },
+    {
+      "platform": "IOS",
+      "locale": "el",
+      "name": 25,
+      "subtitle": 28,
+      "keywords": 77,
+      "keywords_utf8_bytes": 138,
+      "promotion": 123,
+      "description": 855
+    },
+    {
+      "platform": "IOS",
+      "locale": "uk",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 76,
+      "keywords_utf8_bytes": 142,
+      "promotion": 112,
+      "description": 786
+    },
+    {
+      "platform": "IOS",
+      "locale": "ca",
+      "name": 27,
+      "subtitle": 25,
+      "keywords": 91,
+      "keywords_utf8_bytes": 94,
+      "promotion": 124,
+      "description": 846
+    },
+    {
+      "platform": "IOS",
+      "locale": "zh-Hans",
+      "name": 17,
+      "subtitle": 14,
+      "keywords": 43,
+      "keywords_utf8_bytes": 105,
+      "promotion": 42,
+      "description": 369
+    },
+    {
+      "platform": "IOS",
+      "locale": "ko",
+      "name": 18,
+      "subtitle": 19,
+      "keywords": 42,
+      "keywords_utf8_bytes": 104,
+      "promotion": 64,
+      "description": 529
+    },
+    {
+      "platform": "IOS",
+      "locale": "id",
+      "name": 23,
+      "subtitle": 30,
+      "keywords": 78,
+      "keywords_utf8_bytes": 78,
+      "promotion": 131,
+      "description": 822
+    },
+    {
+      "platform": "IOS",
+      "locale": "ms",
+      "name": 29,
+      "subtitle": 25,
+      "keywords": 84,
+      "keywords_utf8_bytes": 84,
+      "promotion": 132,
+      "description": 832
+    },
+    {
+      "platform": "IOS",
+      "locale": "th",
+      "name": 23,
+      "subtitle": 22,
+      "keywords": 69,
+      "keywords_utf8_bytes": 189,
+      "promotion": 109,
+      "description": 710
+    },
+    {
+      "platform": "IOS",
+      "locale": "vi",
+      "name": 28,
+      "subtitle": 29,
+      "keywords": 78,
+      "keywords_utf8_bytes": 94,
+      "promotion": 123,
+      "description": 789
+    },
+    {
+      "platform": "IOS",
+      "locale": "hi",
+      "name": 22,
+      "subtitle": 24,
+      "keywords": 71,
+      "keywords_utf8_bytes": 193,
+      "promotion": 107,
+      "description": 781
+    },
+    {
+      "platform": "IOS",
+      "locale": "en-CA",
+      "name": 25,
+      "subtitle": 28,
+      "keywords": 83,
+      "keywords_utf8_bytes": 83,
+      "promotion": 147,
+      "description": 886
+    },
+    {
+      "platform": "IOS",
+      "locale": "bn",
+      "name": 28,
+      "subtitle": 27,
+      "keywords": 64,
+      "keywords_utf8_bytes": 174,
+      "promotion": 122,
+      "description": 682
+    },
+    {
+      "platform": "IOS",
+      "locale": "gu",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 58,
+      "keywords_utf8_bytes": 158,
+      "promotion": 96,
+      "description": 669
+    },
+    {
+      "platform": "IOS",
+      "locale": "kn",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 66,
+      "keywords_utf8_bytes": 182,
+      "promotion": 112,
+      "description": 713
+    },
+    {
+      "platform": "IOS",
+      "locale": "ml",
+      "name": 22,
+      "subtitle": 22,
+      "keywords": 72,
+      "keywords_utf8_bytes": 200,
+      "promotion": 131,
+      "description": 746
+    },
+    {
+      "platform": "IOS",
+      "locale": "mr",
+      "name": 23,
+      "subtitle": 23,
+      "keywords": 62,
+      "keywords_utf8_bytes": 170,
+      "promotion": 100,
+      "description": 705
+    },
+    {
+      "platform": "IOS",
+      "locale": "or",
+      "name": 22,
+      "subtitle": 21,
+      "keywords": 62,
+      "keywords_utf8_bytes": 170,
+      "promotion": 111,
+      "description": 644
+    },
+    {
+      "platform": "IOS",
+      "locale": "pa",
+      "name": 21,
+      "subtitle": 25,
+      "keywords": 57,
+      "keywords_utf8_bytes": 155,
+      "promotion": 108,
+      "description": 643
+    },
+    {
+      "platform": "IOS",
+      "locale": "ta",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 63,
+      "keywords_utf8_bytes": 175,
+      "promotion": 119,
+      "description": 781
+    },
+    {
+      "platform": "IOS",
+      "locale": "te",
+      "name": 22,
+      "subtitle": 28,
+      "keywords": 65,
+      "keywords_utf8_bytes": 181,
+      "promotion": 127,
+      "description": 708
+    },
+    {
+      "platform": "IOS",
+      "locale": "ur",
+      "name": 22,
+      "subtitle": 28,
+      "keywords": 61,
+      "keywords_utf8_bytes": 113,
+      "promotion": 112,
+      "description": 687
+    },
+    {
+      "platform": "IOS",
+      "locale": "sl",
+      "name": 23,
+      "subtitle": 30,
+      "keywords": 88,
+      "keywords_utf8_bytes": 90,
+      "promotion": 126,
+      "description": 760
+    },
+    {
+      "platform": "MACOS",
+      "locale": "tr",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 90,
+      "promotion": 129,
+      "description": 1103
+    },
+    {
+      "platform": "MACOS",
+      "locale": "de-DE",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 91,
+      "keywords_utf8_bytes": 93,
+      "promotion": 162,
+      "description": 1144
+    },
+    {
+      "platform": "MACOS",
+      "locale": "en-US",
+      "name": 21,
+      "subtitle": 27,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 143,
+      "description": 1036
+    },
+    {
+      "platform": "MACOS",
+      "locale": "fr-FR",
+      "name": 26,
+      "subtitle": 24,
+      "keywords": 89,
+      "keywords_utf8_bytes": 91,
+      "promotion": 149,
+      "description": 1091
+    },
+    {
+      "platform": "MACOS",
+      "locale": "es-ES",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 87,
+      "keywords_utf8_bytes": 89,
+      "promotion": 138,
+      "description": 1018
+    },
+    {
+      "platform": "MACOS",
+      "locale": "it",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 134,
+      "description": 958
+    },
+    {
+      "platform": "MACOS",
+      "locale": "pt-PT",
+      "name": 26,
+      "subtitle": 25,
+      "keywords": 87,
+      "keywords_utf8_bytes": 89,
+      "promotion": 134,
+      "description": 974
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ru",
+      "name": 23,
+      "subtitle": 27,
+      "keywords": 77,
+      "keywords_utf8_bytes": 144,
+      "promotion": 124,
+      "description": 923
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ja",
+      "name": 17,
+      "subtitle": 16,
+      "keywords": 58,
+      "keywords_utf8_bytes": 154,
+      "promotion": 53,
+      "description": 516
+    },
+    {
+      "platform": "MACOS",
+      "locale": "zh-Hant",
+      "name": 17,
+      "subtitle": 16,
+      "keywords": 40,
+      "keywords_utf8_bytes": 96,
+      "promotion": 42,
+      "description": 399
+    },
+    {
+      "platform": "MACOS",
+      "locale": "he",
+      "name": 25,
+      "subtitle": 23,
+      "keywords": 66,
+      "keywords_utf8_bytes": 122,
+      "promotion": 103,
+      "description": 747
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ar-SA",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 70,
+      "keywords_utf8_bytes": 129,
+      "promotion": 118,
+      "description": 850
+    },
+    {
+      "platform": "MACOS",
+      "locale": "en-GB",
+      "name": 21,
+      "subtitle": 27,
+      "keywords": 85,
+      "keywords_utf8_bytes": 85,
+      "promotion": 153,
+      "description": 939
+    },
+    {
+      "platform": "MACOS",
+      "locale": "en-AU",
+      "name": 21,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 146,
+      "description": 898
+    },
+    {
+      "platform": "MACOS",
+      "locale": "fr-CA",
+      "name": 26,
+      "subtitle": 30,
+      "keywords": 88,
+      "keywords_utf8_bytes": 89,
+      "promotion": 153,
+      "description": 990
+    },
+    {
+      "platform": "MACOS",
+      "locale": "es-MX",
+      "name": 24,
+      "subtitle": 29,
+      "keywords": 88,
+      "keywords_utf8_bytes": 88,
+      "promotion": 147,
+      "description": 941
+    },
+    {
+      "platform": "MACOS",
+      "locale": "pt-BR",
+      "name": 24,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 87,
+      "promotion": 141,
+      "description": 935
+    },
+    {
+      "platform": "MACOS",
+      "locale": "nl-NL",
+      "name": 26,
+      "subtitle": 28,
+      "keywords": 89,
+      "keywords_utf8_bytes": 90,
+      "promotion": 132,
+      "description": 868
+    },
+    {
+      "platform": "MACOS",
+      "locale": "sv",
+      "name": 24,
+      "subtitle": 28,
+      "keywords": 74,
+      "keywords_utf8_bytes": 75,
+      "promotion": 134,
+      "description": 819
+    },
+    {
+      "platform": "MACOS",
+      "locale": "no",
+      "name": 29,
+      "subtitle": 28,
+      "keywords": 82,
+      "keywords_utf8_bytes": 82,
+      "promotion": 124,
+      "description": 763
+    },
+    {
+      "platform": "MACOS",
+      "locale": "da",
+      "name": 25,
+      "subtitle": 26,
+      "keywords": 82,
+      "keywords_utf8_bytes": 82,
+      "promotion": 121,
+      "description": 792
+    },
+    {
+      "platform": "MACOS",
+      "locale": "fi",
+      "name": 27,
+      "subtitle": 29,
+      "keywords": 87,
+      "keywords_utf8_bytes": 87,
+      "promotion": 125,
+      "description": 819
+    },
+    {
+      "platform": "MACOS",
+      "locale": "pl",
+      "name": 28,
+      "subtitle": 22,
+      "keywords": 85,
+      "keywords_utf8_bytes": 87,
+      "promotion": 135,
+      "description": 834
+    },
+    {
+      "platform": "MACOS",
+      "locale": "cs",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 80,
+      "keywords_utf8_bytes": 88,
+      "promotion": 112,
+      "description": 770
+    },
+    {
+      "platform": "MACOS",
+      "locale": "sk",
+      "name": 23,
+      "subtitle": 22,
+      "keywords": 88,
+      "keywords_utf8_bytes": 98,
+      "promotion": 117,
+      "description": 761
+    },
+    {
+      "platform": "MACOS",
+      "locale": "hu",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 87,
+      "keywords_utf8_bytes": 90,
+      "promotion": 114,
+      "description": 832
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ro",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 79,
+      "keywords_utf8_bytes": 84,
+      "promotion": 121,
+      "description": 852
+    },
+    {
+      "platform": "MACOS",
+      "locale": "hr",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 83,
+      "keywords_utf8_bytes": 85,
+      "promotion": 128,
+      "description": 799
+    },
+    {
+      "platform": "MACOS",
+      "locale": "el",
+      "name": 25,
+      "subtitle": 28,
+      "keywords": 77,
+      "keywords_utf8_bytes": 138,
+      "promotion": 123,
+      "description": 854
+    },
+    {
+      "platform": "MACOS",
+      "locale": "uk",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 76,
+      "keywords_utf8_bytes": 142,
+      "promotion": 112,
+      "description": 798
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ca",
+      "name": 27,
+      "subtitle": 25,
+      "keywords": 91,
+      "keywords_utf8_bytes": 94,
+      "promotion": 124,
+      "description": 853
+    },
+    {
+      "platform": "MACOS",
+      "locale": "zh-Hans",
+      "name": 17,
+      "subtitle": 14,
+      "keywords": 43,
+      "keywords_utf8_bytes": 105,
+      "promotion": 42,
+      "description": 362
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ko",
+      "name": 18,
+      "subtitle": 19,
+      "keywords": 42,
+      "keywords_utf8_bytes": 104,
+      "promotion": 64,
+      "description": 525
+    },
+    {
+      "platform": "MACOS",
+      "locale": "id",
+      "name": 23,
+      "subtitle": 30,
+      "keywords": 78,
+      "keywords_utf8_bytes": 78,
+      "promotion": 131,
+      "description": 833
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ms",
+      "name": 29,
+      "subtitle": 25,
+      "keywords": 84,
+      "keywords_utf8_bytes": 84,
+      "promotion": 132,
+      "description": 845
+    },
+    {
+      "platform": "MACOS",
+      "locale": "th",
+      "name": 23,
+      "subtitle": 22,
+      "keywords": 69,
+      "keywords_utf8_bytes": 189,
+      "promotion": 109,
+      "description": 710
+    },
+    {
+      "platform": "MACOS",
+      "locale": "vi",
+      "name": 28,
+      "subtitle": 29,
+      "keywords": 78,
+      "keywords_utf8_bytes": 94,
+      "promotion": 123,
+      "description": 801
+    },
+    {
+      "platform": "MACOS",
+      "locale": "hi",
+      "name": 22,
+      "subtitle": 24,
+      "keywords": 71,
+      "keywords_utf8_bytes": 193,
+      "promotion": 107,
+      "description": 783
+    },
+    {
+      "platform": "MACOS",
+      "locale": "en-CA",
+      "name": 25,
+      "subtitle": 28,
+      "keywords": 83,
+      "keywords_utf8_bytes": 83,
+      "promotion": 147,
+      "description": 889
+    },
+    {
+      "platform": "MACOS",
+      "locale": "bn",
+      "name": 28,
+      "subtitle": 27,
+      "keywords": 64,
+      "keywords_utf8_bytes": 174,
+      "promotion": 122,
+      "description": 680
+    },
+    {
+      "platform": "MACOS",
+      "locale": "gu",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 58,
+      "keywords_utf8_bytes": 158,
+      "promotion": 96,
+      "description": 674
+    },
+    {
+      "platform": "MACOS",
+      "locale": "kn",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 66,
+      "keywords_utf8_bytes": 182,
+      "promotion": 112,
+      "description": 714
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ml",
+      "name": 22,
+      "subtitle": 22,
+      "keywords": 72,
+      "keywords_utf8_bytes": 200,
+      "promotion": 131,
+      "description": 743
+    },
+    {
+      "platform": "MACOS",
+      "locale": "mr",
+      "name": 23,
+      "subtitle": 23,
+      "keywords": 62,
+      "keywords_utf8_bytes": 170,
+      "promotion": 100,
+      "description": 714
+    },
+    {
+      "platform": "MACOS",
+      "locale": "or",
+      "name": 22,
+      "subtitle": 21,
+      "keywords": 62,
+      "keywords_utf8_bytes": 170,
+      "promotion": 111,
+      "description": 648
+    },
+    {
+      "platform": "MACOS",
+      "locale": "pa",
+      "name": 21,
+      "subtitle": 25,
+      "keywords": 57,
+      "keywords_utf8_bytes": 155,
+      "promotion": 108,
+      "description": 645
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ta",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 63,
+      "keywords_utf8_bytes": 175,
+      "promotion": 119,
+      "description": 770
+    },
+    {
+      "platform": "MACOS",
+      "locale": "te",
+      "name": 22,
+      "subtitle": 28,
+      "keywords": 65,
+      "keywords_utf8_bytes": 181,
+      "promotion": 127,
+      "description": 715
+    },
+    {
+      "platform": "MACOS",
+      "locale": "ur",
+      "name": 22,
+      "subtitle": 28,
+      "keywords": 61,
+      "keywords_utf8_bytes": 113,
+      "promotion": 112,
+      "description": 685
+    },
+    {
+      "platform": "MACOS",
+      "locale": "sl",
+      "name": 23,
+      "subtitle": 30,
+      "keywords": 88,
+      "keywords_utf8_bytes": 90,
+      "promotion": 126,
+      "description": 767
+    },
+    {
+      "platform": "TVOS",
+      "locale": "tr",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 90,
+      "promotion": 129,
+      "description": 1134
+    },
+    {
+      "platform": "TVOS",
+      "locale": "de-DE",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 91,
+      "keywords_utf8_bytes": 93,
+      "promotion": 162,
+      "description": 1157
+    },
+    {
+      "platform": "TVOS",
+      "locale": "en-US",
+      "name": 21,
+      "subtitle": 27,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 143,
+      "description": 1053
+    },
+    {
+      "platform": "TVOS",
+      "locale": "fr-FR",
+      "name": 26,
+      "subtitle": 24,
+      "keywords": 89,
+      "keywords_utf8_bytes": 91,
+      "promotion": 149,
+      "description": 1120
+    },
+    {
+      "platform": "TVOS",
+      "locale": "es-ES",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 87,
+      "keywords_utf8_bytes": 89,
+      "promotion": 138,
+      "description": 1046
+    },
+    {
+      "platform": "TVOS",
+      "locale": "it",
+      "name": 27,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 134,
+      "description": 987
+    },
+    {
+      "platform": "TVOS",
+      "locale": "pt-PT",
+      "name": 26,
+      "subtitle": 25,
+      "keywords": 87,
+      "keywords_utf8_bytes": 89,
+      "promotion": 134,
+      "description": 990
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ru",
+      "name": 23,
+      "subtitle": 27,
+      "keywords": 77,
+      "keywords_utf8_bytes": 144,
+      "promotion": 124,
+      "description": 936
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ja",
+      "name": 17,
+      "subtitle": 16,
+      "keywords": 58,
+      "keywords_utf8_bytes": 154,
+      "promotion": 53,
+      "description": 529
+    },
+    {
+      "platform": "TVOS",
+      "locale": "zh-Hant",
+      "name": 17,
+      "subtitle": 16,
+      "keywords": 40,
+      "keywords_utf8_bytes": 96,
+      "promotion": 42,
+      "description": 409
+    },
+    {
+      "platform": "TVOS",
+      "locale": "he",
+      "name": 25,
+      "subtitle": 23,
+      "keywords": 66,
+      "keywords_utf8_bytes": 122,
+      "promotion": 103,
+      "description": 753
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ar-SA",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 70,
+      "keywords_utf8_bytes": 129,
+      "promotion": 118,
+      "description": 862
+    },
+    {
+      "platform": "TVOS",
+      "locale": "en-GB",
+      "name": 21,
+      "subtitle": 27,
+      "keywords": 85,
+      "keywords_utf8_bytes": 85,
+      "promotion": 153,
+      "description": 971
+    },
+    {
+      "platform": "TVOS",
+      "locale": "en-AU",
+      "name": 21,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 86,
+      "promotion": 146,
+      "description": 912
+    },
+    {
+      "platform": "TVOS",
+      "locale": "fr-CA",
+      "name": 26,
+      "subtitle": 30,
+      "keywords": 88,
+      "keywords_utf8_bytes": 89,
+      "promotion": 153,
+      "description": 1033
+    },
+    {
+      "platform": "TVOS",
+      "locale": "es-MX",
+      "name": 24,
+      "subtitle": 29,
+      "keywords": 88,
+      "keywords_utf8_bytes": 88,
+      "promotion": 147,
+      "description": 948
+    },
+    {
+      "platform": "TVOS",
+      "locale": "pt-BR",
+      "name": 24,
+      "subtitle": 26,
+      "keywords": 86,
+      "keywords_utf8_bytes": 87,
+      "promotion": 141,
+      "description": 940
+    },
+    {
+      "platform": "TVOS",
+      "locale": "nl-NL",
+      "name": 26,
+      "subtitle": 28,
+      "keywords": 89,
+      "keywords_utf8_bytes": 90,
+      "promotion": 132,
+      "description": 891
+    },
+    {
+      "platform": "TVOS",
+      "locale": "sv",
+      "name": 24,
+      "subtitle": 28,
+      "keywords": 74,
+      "keywords_utf8_bytes": 75,
+      "promotion": 134,
+      "description": 846
+    },
+    {
+      "platform": "TVOS",
+      "locale": "no",
+      "name": 29,
+      "subtitle": 28,
+      "keywords": 82,
+      "keywords_utf8_bytes": 82,
+      "promotion": 124,
+      "description": 767
+    },
+    {
+      "platform": "TVOS",
+      "locale": "da",
+      "name": 25,
+      "subtitle": 26,
+      "keywords": 82,
+      "keywords_utf8_bytes": 82,
+      "promotion": 121,
+      "description": 805
+    },
+    {
+      "platform": "TVOS",
+      "locale": "fi",
+      "name": 27,
+      "subtitle": 29,
+      "keywords": 87,
+      "keywords_utf8_bytes": 87,
+      "promotion": 125,
+      "description": 838
+    },
+    {
+      "platform": "TVOS",
+      "locale": "pl",
+      "name": 28,
+      "subtitle": 22,
+      "keywords": 85,
+      "keywords_utf8_bytes": 87,
+      "promotion": 135,
+      "description": 842
+    },
+    {
+      "platform": "TVOS",
+      "locale": "cs",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 80,
+      "keywords_utf8_bytes": 88,
+      "promotion": 112,
+      "description": 793
+    },
+    {
+      "platform": "TVOS",
+      "locale": "sk",
+      "name": 23,
+      "subtitle": 22,
+      "keywords": 88,
+      "keywords_utf8_bytes": 98,
+      "promotion": 117,
+      "description": 775
+    },
+    {
+      "platform": "TVOS",
+      "locale": "hu",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 87,
+      "keywords_utf8_bytes": 90,
+      "promotion": 114,
+      "description": 850
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ro",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 79,
+      "keywords_utf8_bytes": 84,
+      "promotion": 121,
+      "description": 871
+    },
+    {
+      "platform": "TVOS",
+      "locale": "hr",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 83,
+      "keywords_utf8_bytes": 85,
+      "promotion": 128,
+      "description": 828
+    },
+    {
+      "platform": "TVOS",
+      "locale": "el",
+      "name": 25,
+      "subtitle": 28,
+      "keywords": 77,
+      "keywords_utf8_bytes": 138,
+      "promotion": 123,
+      "description": 881
+    },
+    {
+      "platform": "TVOS",
+      "locale": "uk",
+      "name": 23,
+      "subtitle": 28,
+      "keywords": 76,
+      "keywords_utf8_bytes": 142,
+      "promotion": 112,
+      "description": 802
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ca",
+      "name": 27,
+      "subtitle": 25,
+      "keywords": 91,
+      "keywords_utf8_bytes": 94,
+      "promotion": 124,
+      "description": 875
+    },
+    {
+      "platform": "TVOS",
+      "locale": "zh-Hans",
+      "name": 17,
+      "subtitle": 14,
+      "keywords": 43,
+      "keywords_utf8_bytes": 105,
+      "promotion": 42,
+      "description": 370
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ko",
+      "name": 18,
+      "subtitle": 19,
+      "keywords": 42,
+      "keywords_utf8_bytes": 104,
+      "promotion": 64,
+      "description": 538
+    },
+    {
+      "platform": "TVOS",
+      "locale": "id",
+      "name": 23,
+      "subtitle": 30,
+      "keywords": 78,
+      "keywords_utf8_bytes": 78,
+      "promotion": 131,
+      "description": 855
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ms",
+      "name": 29,
+      "subtitle": 25,
+      "keywords": 84,
+      "keywords_utf8_bytes": 84,
+      "promotion": 132,
+      "description": 867
+    },
+    {
+      "platform": "TVOS",
+      "locale": "th",
+      "name": 23,
+      "subtitle": 22,
+      "keywords": 69,
+      "keywords_utf8_bytes": 189,
+      "promotion": 109,
+      "description": 731
+    },
+    {
+      "platform": "TVOS",
+      "locale": "vi",
+      "name": 28,
+      "subtitle": 29,
+      "keywords": 78,
+      "keywords_utf8_bytes": 94,
+      "promotion": 123,
+      "description": 813
+    },
+    {
+      "platform": "TVOS",
+      "locale": "hi",
+      "name": 22,
+      "subtitle": 24,
+      "keywords": 71,
+      "keywords_utf8_bytes": 193,
+      "promotion": 107,
+      "description": 804
+    },
+    {
+      "platform": "TVOS",
+      "locale": "en-CA",
+      "name": 25,
+      "subtitle": 28,
+      "keywords": 83,
+      "keywords_utf8_bytes": 83,
+      "promotion": 147,
+      "description": 900
+    },
+    {
+      "platform": "TVOS",
+      "locale": "bn",
+      "name": 28,
+      "subtitle": 27,
+      "keywords": 64,
+      "keywords_utf8_bytes": 174,
+      "promotion": 122,
+      "description": 694
+    },
+    {
+      "platform": "TVOS",
+      "locale": "gu",
+      "name": 22,
+      "subtitle": 26,
+      "keywords": 58,
+      "keywords_utf8_bytes": 158,
+      "promotion": 96,
+      "description": 688
+    },
+    {
+      "platform": "TVOS",
+      "locale": "kn",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 66,
+      "keywords_utf8_bytes": 182,
+      "promotion": 112,
+      "description": 716
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ml",
+      "name": 22,
+      "subtitle": 22,
+      "keywords": 72,
+      "keywords_utf8_bytes": 200,
+      "promotion": 131,
+      "description": 764
+    },
+    {
+      "platform": "TVOS",
+      "locale": "mr",
+      "name": 23,
+      "subtitle": 23,
+      "keywords": 62,
+      "keywords_utf8_bytes": 170,
+      "promotion": 100,
+      "description": 730
+    },
+    {
+      "platform": "TVOS",
+      "locale": "or",
+      "name": 22,
+      "subtitle": 21,
+      "keywords": 62,
+      "keywords_utf8_bytes": 170,
+      "promotion": 111,
+      "description": 657
+    },
+    {
+      "platform": "TVOS",
+      "locale": "pa",
+      "name": 21,
+      "subtitle": 25,
+      "keywords": 57,
+      "keywords_utf8_bytes": 155,
+      "promotion": 108,
+      "description": 655
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ta",
+      "name": 23,
+      "subtitle": 26,
+      "keywords": 63,
+      "keywords_utf8_bytes": 175,
+      "promotion": 119,
+      "description": 792
+    },
+    {
+      "platform": "TVOS",
+      "locale": "te",
+      "name": 22,
+      "subtitle": 28,
+      "keywords": 65,
+      "keywords_utf8_bytes": 181,
+      "promotion": 127,
+      "description": 719
+    },
+    {
+      "platform": "TVOS",
+      "locale": "ur",
+      "name": 22,
+      "subtitle": 28,
+      "keywords": 61,
+      "keywords_utf8_bytes": 113,
+      "promotion": 112,
+      "description": 707
+    },
+    {
+      "platform": "TVOS",
+      "locale": "sl",
+      "name": 23,
+      "subtitle": 30,
+      "keywords": 88,
+      "keywords_utf8_bytes": 90,
+      "promotion": 126,
+      "description": 785
+    }
+  ],
+  "validatedLocales": 50,
+  "platforms": {
+    "IOS": "1.0.70",
+    "MACOS": "1.0.3",
+    "TVOS": "1.0.0"
+  },
+  "status": "Local field validation passed. Upload and remote verification pending."
+}

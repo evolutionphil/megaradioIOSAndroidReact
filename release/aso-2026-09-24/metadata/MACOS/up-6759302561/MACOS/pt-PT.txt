@@ -1,0 +1,21 @@
+"promotionalText" = "As rádios de sempre e novas descobertas. Explore estações por país e género, guarde as suas favoritas e escolha o que quer ouvir hoje.";
+"description" = "Uma voz familiar ou um som de outro país. Com a MegaRadio, descubra e ouça rádio em direto, de Portugal e do resto do mundo.
+
+ENCONTRE A SUA ESTAÇÃO
+Pesquise pelo nome ou explore por país e género. Descubra pop, rock, jazz, música clássica, notícias, desporto e programas de conversa.
+
+OS SEUS FAVORITOS POR PERTO
+Guarde as estações de que gosta para as encontrar na próxima vez, sem repetir a pesquisa.
+
+DESCUBRA NOVOS HORIZONTES
+Ouça pela internet emissões de rádios FM, AM e online. Siga programas locais e descubra estações de outros países e idiomas.
+
+É necessária uma ligação à internet. Podem aplicar-se custos de dados móveis. A disponibilidade das emissões e da informação das músicas depende da estação e da região. A MegaRadio é um diretório; os conteúdos são fornecidos pelas respetivas estações.
+
+Ouça rádio no Mac enquanto trabalha ou descansa.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ouvir,internet,online,portugal,local,notícias,desporto,jazz,clássica,pop,rock,favoritos";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

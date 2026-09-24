@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio internetowe";
+"subtitle" = "Stacje FM i AM na żywo";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

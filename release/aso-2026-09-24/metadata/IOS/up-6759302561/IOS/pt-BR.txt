@@ -1,0 +1,19 @@
+"promotionalText" = "Do sertanejo às notícias do dia: encontre rádios do Brasil e do mundo, explore novos estilos e deixe suas emissoras preferidas nos favoritos.";
+"description" = "O som que lembra sua cidade, a companhia durante o trabalho ou um ritmo que você ainda não conhecia. Com o MegaRadio, descubra rádios ao vivo do Brasil e de outros países.
+
+ENCONTRE SUA VIBE
+Pesquise pelo nome da emissora ou explore por país e estilo. Procure sertanejo, gospel, samba, pagode, pop e rock, além de notícias, esportes e programas de conversa.
+
+SUAS RÁDIOS SEMPRE POR PERTO
+Adicione emissoras aos favoritos e volte a ouvir sem refazer a busca. Descubra transmissões de rádios FM, AM e estações online.
+
+É preciso ter conexão com a internet. Podem ser cobrados dados móveis. A disponibilidade das transmissões e das informações das músicas varia por emissora e região. O MegaRadio é um diretório; o conteúdo é fornecido pelas próprias rádios.
+
+Leve suas rádios no iPhone e no iPad.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ouvir,online,internet,brasil,sertanejo,gospel,pagode,samba,notícias,esportes,favoritos";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Melhoramos as listas de gêneros, as imagens das rádios e as reproduções recentes. Login, troca de conta e restauração de assinaturas estão mais confiáveis.";

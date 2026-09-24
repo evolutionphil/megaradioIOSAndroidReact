@@ -1,0 +1,18 @@
+"promotionalText" = "Suara tempatan dan penemuan baharu dari seluruh dunia. Cari stesen mengikut negara atau genre, kemudian simpan radio kegemaran anda.";
+"description" = "Berita pagi, muzik untuk menemani kerja atau suara yang mengingatkan anda pada rumah. MegaRadio membantu anda menemukan radio dari Malaysia dan luar negara.
+
+CARI SIARAN PILIHAN ANDA
+Cari nama stesen atau terokai negara dan genre. Pilih pop Melayu, rock, jazz, berita, sukan dan rancangan bual bicara.
+
+KEGEMARAN MUDAH DICAPAI
+Simpan stesen untuk mendengarnya semula tanpa mengulangi carian. Dengar siaran FM, AM dan radio dalam talian melalui internet.
+
+Sambungan internet diperlukan dan caj data mudah alih mungkin dikenakan. Ketersediaan siaran serta maklumat lagu bergantung pada stesen dan rantau. MegaRadio ialah direktori; kandungan disediakan oleh stesen masing-masing.
+
+Pilih stesen dengan alat kawalan jauh Apple TV dan dengar di ruang tamu.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "dengar,internet,malaysia,melayu,stesen,tempatan,berita,sukan,pop,jazz,rock,kegemaran";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

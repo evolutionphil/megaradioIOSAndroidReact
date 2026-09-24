@@ -1,0 +1,19 @@
+"promotionalText" = "České stanice i nové hlasy ze světa. Hledejte podle země či žánru a uložte si rádia, ke kterým se chcete vracet.";
+"description" = "Ranní zprávy, hudba k práci nebo známý hlas z domova. MegaRadio vám pomůže objevit živé rozhlasové vysílání z Česka i zahraničí.
+
+VYBERTE SI PODLE NÁLADY
+Hledejte stanici podle názvu nebo procházejte země a žánry. Pop, rock, jazz, klasika, zprávy, sport i mluvené pořady na jednom místě.
+
+OBLÍBENÉ VŽDY PO RUCE
+Uložte si stanice pro příští poslech bez nového hledání. Poslouchejte internetové přenosy FM, AM a online rádií.
+
+Je nutné připojení k internetu a mohou se účtovat mobilní data. Dostupnost vysílání a názvů skladeb závisí na stanici a regionu. MegaRadio je katalog; obsah zajišťují vysílatelé.
+
+Vezměte si rádio s sebou na iPhonu a iPadu.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "poslech,internetové,české,česko,svět,zprávy,sport,jazz,klasika,pop,rock,oblíbené";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Vylepšili jsme žánry, obrázky stanic a nedávno přehrávané stanice. Přihlášení, přepínání účtů a obnovení předplatného jsou spolehlivější.";

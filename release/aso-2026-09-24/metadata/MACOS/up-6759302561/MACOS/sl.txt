@@ -1,0 +1,14 @@
+"promotionalText" = "Domači glasovi in novi zvoki iz sveta. Poiščite postaje po državi ali zvrsti in shranite radie, ki jih želite poslušati znova.";
+"description" = "Slovenska glasba, jutranje novice ali oddaja iz drugega dela sveta. MegaRadio vam pomaga najti radijske postaje in jih poslušati v živo prek interneta.
+
+Poiščite postajo po imenu ali raziščite države in zvrsti. Izbirajte med popom, rockom, jazzom, klasiko, novicami, športom in pogovornimi oddajami. Priljubljene postaje shranite, da jih naslednjič najdete brez novega iskanja.
+
+Za poslušanje FM, AM in spletnih postaj potrebujete internet. Lahko nastanejo stroški mobilnih podatkov. Oddaje in podatki o skladbah so odvisni od postaje in območja. MegaRadio je imenik; vsebino zagotavljajo izdajatelji.
+
+Poslušajte radio na Macu med delom ali počitkom.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "poslušaj,spletni,internet,slovenija,slovenski,novice,šport,jazz,klasika,pop,priljubljene";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
