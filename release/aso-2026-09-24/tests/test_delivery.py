@@ -36,8 +36,10 @@ class FakeApple:
             return {'data': copy.deepcopy(item)}
         if method == 'DELETE':
             # Existing assets must survive until every replacement is processed.
-            new = [x for x in self.shots if x['id'].startswith('new-')]
-            assert new and all(x['attributes']['assetDeliveryState']['state'] == 'COMPLETE' for x in new)
+            target = next(x for x in self.shots if x['id'] == path.rsplit('/', 1)[1])
+            if target['attributes']['assetDeliveryState']['state'] == 'COMPLETE':
+                new = [x for x in self.shots if x['id'].startswith('new-')]
+                assert new and all(x['attributes']['assetDeliveryState']['state'] == 'COMPLETE' for x in new)
             self.shots = [x for x in self.shots if x['id'] != path.rsplit('/', 1)[1]]
         elif method == 'PATCH':
             by_id = {x['id']: x for x in self.shots}
@@ -65,11 +67,11 @@ class DeliverySafety(unittest.TestCase):
             self.checksums.append(hashlib.md5(data).hexdigest())
         self.addCleanup(self.temp.cleanup)
 
-    def deliver(self, api):
+    def deliver(self, api, refresh_stalled=False):
         sets = [{'id': 'set-1', 'attributes': {'screenshotDisplayType': 'APP_DESKTOP'}}]
         with patch.object(delivery, 'ASSETS', self.assets), patch.object(delivery.client, 'ASC', return_value=api), \
              patch.object(delivery, 'backup'), patch.object(delivery.time, 'sleep'):
-            return delivery.deliver_set(('MAC_OS', 'en-US', 'localization-1', 'mac', 'APP_DESKTOP', sets), True)
+            return delivery.deliver_set(('MAC_OS', 'en-US', 'localization-1', 'mac', 'APP_DESKTOP', sets), True, refresh_stalled)
 
     def test_processed_matching_images_are_reused_without_mutation(self):
         api = FakeApple([shot(str(n), c) for n, c in enumerate(self.checksums)])
@@ -98,6 +100,23 @@ class DeliverySafety(unittest.TestCase):
         self.assertTrue(self.deliver(api)['verified'])
         self.assertEqual([x['id'] for x in api.shots], ['0', '1'])
         self.assertFalse(any(method in ('POST', 'DELETE', 'COMMIT') for method, _ in api.mutations))
+
+    def test_uploaded_bytes_are_finalized_after_interrupted_commit(self):
+        pending = shot('pending', None, 'UPLOAD_COMPLETE')
+        pending['attributes']['fileName'] = f'MegaRadio-en-US-mac-{self.checksums[0][:10]}-01.png'
+        api = FakeApple([pending, shot('second', self.checksums[1])])
+        self.assertTrue(self.deliver(api)['verified'])
+        self.assertIn(('COMMIT', 'pending'), api.mutations)
+        self.assertFalse(any(method in ('POST', 'DELETE') for method, _ in api.mutations))
+
+    def test_stalled_reservation_can_be_replaced_without_removing_original(self):
+        pending = shot('pending', None, 'UPLOAD_COMPLETE')
+        pending['attributes']['fileName'] = f'MegaRadio-en-US-mac-{self.checksums[0][:10]}-01.png'
+        api = FakeApple([shot('old', 'original-checksum'), pending, shot('second', self.checksums[1])], 'processing')
+        with self.assertRaisesRegex(RuntimeError, 'processing failed'):
+            self.deliver(api, refresh_stalled=True)
+        self.assertIn('old', [x['id'] for x in api.shots])
+        self.assertNotIn('pending', [x['id'] for x in api.shots])
 
 
 if __name__ == '__main__':

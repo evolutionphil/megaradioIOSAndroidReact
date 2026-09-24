@@ -99,7 +99,7 @@ def metadata(api, mutate):
     record('aso-api-text-verification.json',report)
     print(json.dumps({'records':len(results),'mismatches':report['mismatches']}),flush=True)
 
-def deliver_set(job, mutate):
+def deliver_set(job, mutate, refresh_stalled=False):
     platform,locale,loc_id,device,display,sets=job
     api=client.ASC()
     matched=[s for s in sets if s['attributes']['screenshotDisplayType']==display]
@@ -122,6 +122,12 @@ def deliver_set(job, mutate):
             # Resume an already uploaded reservation with the same filename.
             shot=next((s for s in existing if s['attributes'].get('fileName')==filename
                        and s['attributes'].get('assetDeliveryState',{}).get('state') not in ('FAILED','COMPLETE')),None)
+            if shot and refresh_stalled and shot['attributes'].get('assetDeliveryState',{}).get('state') in ('AWAITING_UPLOAD','UPLOAD_COMPLETE'):
+                # Explicit recovery of a previously timed-out reservation. Keep
+                # processed originals; only this unprocessed upload is replaced.
+                api.request('DELETE',f'/v1/appScreenshots/{shot["id"]}')
+                existing=[x for x in existing if x['id']!=shot['id']]
+                shot=None
             if not shot: shot=create(api,'appScreenshots',{'fileName':filename,'fileSize':len(data)},'appScreenshotSet','appScreenshotSets',set_id)
             state=shot['attributes'].get('assetDeliveryState',{}).get('state')
             if state=='AWAITING_UPLOAD':
@@ -139,6 +145,9 @@ def deliver_set(job, mutate):
                         except requests.RequestException:
                             if attempt==2:raise RuntimeError('Asset transfer connection failed') from None
                     else:raise RuntimeError('Asset transfer failed with HTTP '+str(response.status_code))
+            # A stopped run may finish the byte transfer before committing its
+            # checksum. UPLOAD_COMPLETE still needs Apple's finalization PATCH.
+            if state in ('AWAITING_UPLOAD','UPLOAD_COMPLETE'):
                 api.patch('appScreenshots',shot['id'],{'uploaded':True,'sourceFileChecksum':checksum})
         if not shot:
             return {'platform':platform,'locale':locale,'device':device,'error':'missing image','file':file.name}
@@ -146,7 +155,7 @@ def deliver_set(job, mutate):
     assert wanted,'No local screenshot files'
     # Reserve/upload the entire set before polling: one set read checks all images
     # and avoids consuming the API quota with one polling loop per screenshot.
-    for attempt in range(40 if mutate else 1):
+    for attempt in range(20 if mutate else 1):
         current=api.all(f'/v1/appScreenshotSets/{set_id}/appScreenshots',params={'limit':200})
         current_by_id={x['id']:x['attributes'] for x in current}
         failed=[sid for sid in wanted if current_by_id.get(sid,{}).get('assetDeliveryState',{}).get('state')=='FAILED']
@@ -155,7 +164,7 @@ def deliver_set(job, mutate):
                   and current_by_id[sid].get('sourceFileChecksum')==checksum
                   for sid,checksum in expected_checksums.items())
         if ready:break
-        if mutate:time.sleep(3)
+        if mutate:time.sleep(10)
     if not ready:return {'platform':platform,'locale':locale,'device':device,'error':'processing or checksum verification incomplete','setId':set_id}
     # Replace only after every new image is processed and checksum-verified.
     removed=False;reordered=False
@@ -178,7 +187,7 @@ def set_fingerprint(locale,device):
         h.update(p.name.encode());h.update(hashlib.md5(p.read_bytes()).digest())
     return h.hexdigest()
 
-def screenshots(api, mutate, locale_filter, workers, retry_failed):
+def screenshots(api, mutate, locale_filter, workers, retry_failed, refresh_stalled=False):
     report_name='aso-api-screenshots'+('-'+locale_filter if locale_filter else '')+'.json'
     previous=json.loads((ROOT/'validation'/report_name).read_text()) if retry_failed else []
     by_job={(x['platform'],x['locale'],x['device']):x for x in previous}
@@ -200,7 +209,7 @@ def screenshots(api, mutate, locale_filter, workers, retry_failed):
                 jobs.extend((*job,sets) for job in locale_jobs)
     results=previous
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futures={pool.submit(deliver_set,job,mutate):job for job in jobs}
+        futures={pool.submit(deliver_set,job,mutate,refresh_stalled):job for job in jobs}
         for future in as_completed(futures):
             job=futures[future]
             try:result=future.result()
@@ -212,7 +221,7 @@ def screenshots(api, mutate, locale_filter, workers, retry_failed):
                       'images':sum(x.get('count',0) for x in results),'errors':sum(bool(x.get('error')) for x in results)}),flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=['text','screenshots']);p.add_argument('--apply',action='store_true');p.add_argument('--locale');p.add_argument('--workers',type=int,default=6);p.add_argument('--retry-failed',action='store_true')
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=['text','screenshots']);p.add_argument('--apply',action='store_true');p.add_argument('--locale');p.add_argument('--workers',type=int,default=6);p.add_argument('--retry-failed',action='store_true');p.add_argument('--refresh-stalled',action='store_true')
     args=p.parse_args();api=client.ASC()
     if args.mode=='text':metadata(api,args.apply)
-    else:screenshots(api,args.apply,args.locale,args.workers,args.retry_failed)
+    else:screenshots(api,args.apply,args.locale,args.workers,args.retry_failed,args.refresh_stalled)

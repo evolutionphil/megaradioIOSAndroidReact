@@ -17,10 +17,12 @@ All 50 locale copy sets have expanded descriptions and promotional text, local
 keyword refinement, and platform-specific feature paragraphs. All names retain
 MegaRadio. All 150 generated platform records meet Apple's field limits.
 
-The earlier metadata revision passed 250-record readback. The expanded revision
-is still being delivered and must receive its own complete comparison. Apple
-returned HTTP 429 with a Retry-After value; the uploader waits for the specified
-quota reset without changing keys or accounts.
+The expanded metadata revision passed a separate read-only 250-record API
+comparison with zero mismatches and the current copy fingerprint. Screenshot
+delivery is waiting for the next Apple quota window at 11:00 UTC (13:00 Vienna).
+150 sets / 819 images have complete delivery evidence; the remaining sets are
+queued with interruption recovery. Apple quota limits are respected without
+changing keys or accounts.
 
 The complete local image package contains 1,950 PNGs in 350 sets: 7 images in
 each of three iPhone sizes, 4 iPad, 6 Watch, 4 Mac and 4 Apple TV per locale.
@@ -30,9 +32,9 @@ tracked by processed state, checksum, order and current local fingerprint.
 
 ## Remaining before review submission
 
-1. Complete expanded-copy upload and compare all 250 remote records.
+1. Expanded-copy upload and all 250 comparisons are complete.
 2. Complete all 350 screenshot sets and verify current checksums and order.
-3. Select and verify iOS build 6 for the 1.0.70 version.
+3. iOS build 6 selection is saved in Safari; include it in the final version check.
 4. Check representative saved pages in Safari and submit iOS for App Review.
 
 No App Review submission has been completed in this release run. Existing

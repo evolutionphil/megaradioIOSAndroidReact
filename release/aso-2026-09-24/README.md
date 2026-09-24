@@ -7,17 +7,16 @@ Search volumes and ranking guarantees are not claimed.
 
 ## Current delivery
 
-Expanded descriptions, promotional text and refined keywords are prepared for
-all 150 platform localizations. `validation.json` checks the local field limits.
-The final upload is in progress and respects Apple's hourly API quota. Use the
-latest timestamp in `validation/aso-api-text-verification.json` to distinguish
-an earlier copy revision from the expanded revision. Successful verification
-requires 250 remote records (two App Information records and three versions)
-with zero mismatches against the current copy.
+Expanded descriptions, promotional text and refined keywords are uploaded for
+all 150 platform localizations. Final read-only API verification compared
+250 records with zero mismatches against the current copy fingerprint (two
+editable App Information records and three version records). Local field-limit
+checks also pass. Screenshot delivery is still in progress and respects Apple's
+hourly API quota.
 
 The iOS 1.0.70 (6) archive passed validation, upload and Apple processing
-(`VALID`, `APP_STORE_ELIGIBLE`). Selection of build 6 and final App Review
-submission remain pending. macOS 1.0.3 and tvOS 1.0.0 (1) passed processing and
+(`VALID`, `APP_STORE_ELIGIBLE`). Build 6 is selected in the iOS draft; final App Review
+submission remains pending. macOS 1.0.3 and tvOS 1.0.0 (1) passed processing and
 are available to the existing internal TestFlight group. See
 `validation/RELEASE-STATUS.md` for the latest verified release state.
 
@@ -99,6 +98,15 @@ from processed images and local fingerprints. Original sets are backed up
 before replacement; old images are removed only after new images are processed
 and checksummed. Asset uploads never receive the ASC JWT. Apple's Retry-After
 is respected and authentication is refreshed after a long quota wait.
+`--refresh-stalled` replaces only unfinished reservations from an interrupted
+run; processed originals remain until their replacements are ready. A pending
+byte transfer is finalized even if a previous run stopped before its checksum
+commit. Seven offline delivery tests cover reuse, ordering, interruption, and
+preservation of originals after failed processing or checksum validation.
+
+Run `python3 release/aso-2026-09-24/check-delivery.py` before the final UI review.
+It rejects stale metadata or screenshot evidence and verifies all current file
+fingerprints, complete counts and the iOS build association.
 
 ## iOS subscription and device validation
 

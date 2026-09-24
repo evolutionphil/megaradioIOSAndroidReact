@@ -31,6 +31,7 @@ class ASC:
    if r.status_code==429 and attempt<60:
     # Respect Apple's quota; no credential or signed URL appears in output.
     retry_at=time.time()+max(1,int(r.headers.get('Retry-After','60')))
+    print(json.dumps({'event':'apple_quota_wait','retryAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(retry_at))}),flush=True)
     while time.time()<retry_at:time.sleep(min(60,retry_at-time.time()))
     continue
    if r.status_code>=500 and method in ('GET','PATCH','DELETE') and attempt<3:

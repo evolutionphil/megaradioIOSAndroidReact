@@ -6,7 +6,8 @@
     "count": 4,
     "verified": true,
     "setId": "25ec47f6-8ac0-4301-9cd9-a625f5fe1f50",
-    "localFingerprint": "90d671174c50fe5551c172a36f5d5b5f5975e480f8e3ab4d8312a94c93298acb"
+    "observedAt": "2026-09-24T10:04:02Z",
+    "localFingerprint": "1bc530aa7b63df06aab42bd878a870772b6fd8a8a397d7d3d6ce574f938dc7fc"
   },
   {
     "platform": "MAC_OS",
@@ -15,7 +16,8 @@
     "count": 4,
     "verified": true,
     "setId": "2da4fd6a-9ff8-43b7-a559-3de158e50c34",
-    "localFingerprint": "c9b8662dc697ec359575b1e1da978830f060f6d9b797aaa6bcdab89d5e3f6180"
+    "observedAt": "2026-09-24T10:04:02Z",
+    "localFingerprint": "1710801aed2d1c226c468a00ed9ad1baf40ec3c8b7ff9448914ae86f0c9b87ee"
   },
   {
     "platform": "MAC_OS",
@@ -24,7 +26,8 @@
     "count": 4,
     "verified": true,
     "setId": "3c5e3dc4-c2cb-40af-8cc9-3a2ca231b852",
-    "localFingerprint": "2d5f4fc598793b926956d3caa94ded3ce6696c9edfb2dd5e4e1f8fdb2744fa63"
+    "observedAt": "2026-09-24T10:04:02Z",
+    "localFingerprint": "c437ab65d892408ce119e0e0fd22f3117ebfe5435ff719b546effcba5bde35d2"
   },
   {
     "platform": "MAC_OS",
@@ -33,7 +36,8 @@
     "count": 4,
     "verified": true,
     "setId": "d2c3135c-b2b9-4b8a-891b-88c38ef71817",
-    "localFingerprint": "9bd767cc7a5e8937e31cceb3596dd36d48f639e6af8c01c027f2430266054605"
+    "observedAt": "2026-09-24T10:04:07Z",
+    "localFingerprint": "aaf6a031d08d4954c540c9ee309d70d3e0d3ef9292a49fb1f968d3a6484f7bac"
   },
   {
     "platform": "MAC_OS",
@@ -42,7 +46,8 @@
     "count": 4,
     "verified": true,
     "setId": "1d18f053-6dd3-4d8b-b1ec-34c768144e73",
-    "localFingerprint": "91bb6fdf925b4d7a7aae82d8b1d14c48fcb94ab8a4284795951c474f7b5a1a32"
+    "observedAt": "2026-09-24T10:04:03Z",
+    "localFingerprint": "981b918fe00fb40132ea894b401138b65ed9342c6067c9c418dd3b0436041831"
   },
   {
     "platform": "MAC_OS",
@@ -51,7 +56,8 @@
     "count": 4,
     "verified": true,
     "setId": "d939d6a8-a187-4510-b107-1f74a8a47404",
-    "localFingerprint": "722d762d3fe014f865541a4e8f0ce63d24de6b8615b1dc823a7251a4e18ab7e8"
+    "observedAt": "2026-09-24T10:04:02Z",
+    "localFingerprint": "5635774da6b6446b9b4acd95fd69159b30e543cb519943f325d256c4822a2aa3"
   },
   {
     "platform": "MAC_OS",
@@ -60,7 +66,8 @@
     "count": 4,
     "verified": true,
     "setId": "3339e51e-f1aa-428d-b1aa-fc00ecbd3b17",
-    "localFingerprint": "e5b028b11e00fcfe7b58fc89004384e784254187b54537c20b1776de9bc8087a"
+    "observedAt": "2026-09-24T10:04:03Z",
+    "localFingerprint": "c34e80aae994287e9cb91014d2214c26fbd4cef9297fc9d67481135d282167ca"
   },
   {
     "platform": "MAC_OS",
@@ -69,7 +76,8 @@
     "count": 4,
     "verified": true,
     "setId": "adfbd1ed-1d1b-4b65-ac3c-a98656d6b407",
-    "localFingerprint": "0c0c904af2c423a7033c87202f7a34ecfcc0129eca8676d4c30dd156d1e902ca"
+    "observedAt": "2026-09-24T10:04:04Z",
+    "localFingerprint": "8ae62924c42a824c5f4e0e97065048c7d9eeb579a6bc4952d0b0f10054f9c9f8"
   },
   {
     "platform": "MAC_OS",
@@ -78,7 +86,8 @@
     "count": 4,
     "verified": true,
     "setId": "af91af74-aa17-4b0c-80e2-bf46e9c07fc8",
-    "localFingerprint": "2973b2c69d11bd10479ca78c04db03baaec4e283b3f35798da441beec1c81a04"
+    "observedAt": "2026-09-24T10:04:04Z",
+    "localFingerprint": "ce0e24402f16055a300e9d9109e1207ea2455e9512fa73a0919377f31866de8f"
   },
   {
     "platform": "MAC_OS",
@@ -87,7 +96,8 @@
     "count": 4,
     "verified": true,
     "setId": "79a8f091-e296-4ed4-894d-d7dfab56e999",
-    "localFingerprint": "906394ec3822eb0ba9ac05c58655957e195dd1e770d1f04cd1c10d73b033d787"
+    "observedAt": "2026-09-24T10:04:03Z",
+    "localFingerprint": "f9652899049bb7eaed2246e9e29e3935260a50f8a2044429a35e2ba77ac9e1ce"
   },
   {
     "platform": "MAC_OS",
@@ -96,7 +106,8 @@
     "count": 4,
     "verified": true,
     "setId": "96f6659b-f0e9-42de-a100-b5b48f5bb7e4",
-    "localFingerprint": "b8ec2fea925646b412685b41fcce459af3222493aa6a2f0bb1dbbddaed4f824b"
+    "observedAt": "2026-09-24T10:04:28Z",
+    "localFingerprint": "6c5500d3d38748d3b3a9ae223e335f37afb2beb09cf3445198bf9e68b2b687fc"
   },
   {
     "platform": "MAC_OS",
@@ -105,7 +116,8 @@
     "count": 4,
     "verified": true,
     "setId": "0f6545d6-1592-4566-a4f9-a99b7bab70e8",
-    "localFingerprint": "0ebe34f6202212b263339f826eeb8424c86ea045398c4e113df39f39373052f6"
+    "observedAt": "2026-09-24T10:04:30Z",
+    "localFingerprint": "823d1e3b15c9621d58cbbc00dc6ed10d85c614ec6c6b7d22acc8c2a9394e7a77"
   },
   {
     "platform": "MAC_OS",
@@ -114,7 +126,8 @@
     "count": 4,
     "verified": true,
     "setId": "594c5ff1-8638-4c8f-8ba8-97d0961d9d47",
-    "localFingerprint": "d6f247e951aa940e571f3f97983b70d94b06ce29ef1bac5a85f3025e5b7de674"
+    "observedAt": "2026-09-24T10:04:33Z",
+    "localFingerprint": "44054e12a61a1a14647e7c298facdc7089e2a99ef3d9fd378d369b5659a16127"
   },
   {
     "platform": "MAC_OS",
@@ -123,7 +136,8 @@
     "count": 4,
     "verified": true,
     "setId": "8f0e8623-a323-4d2b-b65c-b9742bb125c8",
-    "localFingerprint": "5bdfb55f9bbce05a44f64450b25e87183f985813877231109f481eef87519882"
+    "observedAt": "2026-09-24T10:04:30Z",
+    "localFingerprint": "60d8e2186b0416835557f4bcfff7340cb9bf9b765c67ea8067074400db338cc6"
   },
   {
     "platform": "MAC_OS",
@@ -132,7 +146,8 @@
     "count": 4,
     "verified": true,
     "setId": "9cd1b59b-df34-492e-8ddd-633200b4592a",
-    "localFingerprint": "efe14ed69fcc8e13d71dd488af3ec61b7e2b1f0acffc2f375183b80cf62cce8b"
+    "observedAt": "2026-09-24T10:04:30Z",
+    "localFingerprint": "a01a4c8957621d9875b5ce52710a3d2adf036e032fcbd1c4667837a3164314e1"
   },
   {
     "platform": "MAC_OS",
@@ -141,7 +156,8 @@
     "count": 4,
     "verified": true,
     "setId": "62d39ff1-9851-4c39-81e2-4f61326e8303",
-    "localFingerprint": "295180b36034218fad17aa53d2899e7f01eba09b42ae5450426d0a0ad5622171"
+    "observedAt": "2026-09-24T10:04:31Z",
+    "localFingerprint": "ad2a0dd7e8098897a73a974b65de34c6d65f1843cec3d08aa534e7215d755388"
   },
   {
     "platform": "MAC_OS",
@@ -150,7 +166,8 @@
     "count": 4,
     "verified": true,
     "setId": "8f8cd86d-b716-47ad-9c1e-22cceb53ad28",
-    "localFingerprint": "e951bb5540990ad46f8a58dc489222e8dbbedf8be9c53e19cd09acede53dc883"
+    "observedAt": "2026-09-24T10:04:29Z",
+    "localFingerprint": "3ba6e57bff21737104d9e1e141d3c5c858edc82ed9a08f6ff5d0663ad31242b3"
   },
   {
     "platform": "MAC_OS",
@@ -159,7 +176,8 @@
     "count": 4,
     "verified": true,
     "setId": "91b5ab75-bc70-4ea4-9811-7439cefeedcb",
-    "localFingerprint": "f74ce1abaa35b5f8c4652750b887f09ce47b1b54cbf5e550d3287dfa40ea7469"
+    "observedAt": "2026-09-24T10:04:34Z",
+    "localFingerprint": "5daf9e92ac5533aef29e8454d20ba6050e448f8dabfeba4783dcccf63d0bb9c6"
   },
   {
     "platform": "MAC_OS",
@@ -168,7 +186,8 @@
     "count": 4,
     "verified": true,
     "setId": "8b5dddac-cc90-441d-a377-4841f531612f",
-    "localFingerprint": "c096e03e3939d66935798d385dbebb1030d9577186d2a838f929c51161629513"
+    "observedAt": "2026-09-24T10:04:32Z",
+    "localFingerprint": "ac280e0a7e958edb74b4e73131bda640185cf0026ac3b1aa0611ee63df729172"
   },
   {
     "platform": "MAC_OS",
@@ -177,7 +196,8 @@
     "count": 4,
     "verified": true,
     "setId": "3e9675ea-3aaf-4d77-8adc-1965d8d24a06",
-    "localFingerprint": "fff3c475ab168108d9ecfe79fdf09a8e20ec80df67a4f53b4d492bbf18f651a1"
+    "observedAt": "2026-09-24T10:04:29Z",
+    "localFingerprint": "83e5dc42150aa68099346a11556497b2c213c57ba2639eff8b6430b8f6e2fd34"
   },
   {
     "platform": "MAC_OS",
@@ -186,7 +206,8 @@
     "count": 4,
     "verified": true,
     "setId": "04337e40-5deb-4f65-89fb-1c0c5597e6a1",
-    "localFingerprint": "7a29f828994ffc81ad65c76713822c54ce3bd6cb912ee6d3813bc4a183eb3e5a"
+    "observedAt": "2026-09-24T10:04:56Z",
+    "localFingerprint": "3630470c64f96854aae16cc070c7d5c85ca0d08869303689cdbe99203be7258f"
   },
   {
     "platform": "MAC_OS",
@@ -195,7 +216,8 @@
     "count": 4,
     "verified": true,
     "setId": "efc1ec04-714a-4725-9eca-c38b6f338c1a",
-    "localFingerprint": "8af8a29992ab3c26f6ea4db2e06c46ebd38feba789c97ab387645b25f9a291d8"
+    "observedAt": "2026-09-24T10:04:55Z",
+    "localFingerprint": "b3905f9dc16960789c1c53dc669ded0691425b84755b4b0a2a182a0af9286ff9"
   },
   {
     "platform": "MAC_OS",
@@ -204,7 +226,8 @@
     "count": 4,
     "verified": true,
     "setId": "4de37260-a8e3-4af9-95e7-c7d0921abf7c",
-    "localFingerprint": "298680888f98e6a8c9f1bed57d9478fc6421e074b02c4933cf77e2cf26110930"
+    "observedAt": "2026-09-24T10:04:59Z",
+    "localFingerprint": "5626f973ec595c47cd1c9207fd306a50a9b55a20970b2d32f11e1dc41ab9baac"
   },
   {
     "platform": "MAC_OS",
@@ -213,7 +236,8 @@
     "count": 4,
     "verified": true,
     "setId": "d925c4ce-5e4d-4c25-80e5-2fb5636c5f98",
-    "localFingerprint": "d9260d27b5a24d7a0058a705f6fb5fef2b411d893fa002b920b6fee2405c3a67"
+    "observedAt": "2026-09-24T10:04:57Z",
+    "localFingerprint": "69c2e90e1b4cfdf62e2ed7deb3494e77d6ff743fd31ea094f87e943e3da01c55"
   },
   {
     "platform": "MAC_OS",
@@ -222,7 +246,8 @@
     "count": 4,
     "verified": true,
     "setId": "512824aa-c757-4721-a765-1307f7ccdf9e",
-    "localFingerprint": "cb9963fdf7eba901ca43d5208d30e560c0215c44286c672fdc3a81e8c6425203"
+    "observedAt": "2026-09-24T10:05:05Z",
+    "localFingerprint": "f356721675ded5da32c1d07a25eeec90a0ce4af40f3f0d48daad45eb2410b290"
   },
   {
     "platform": "MAC_OS",
@@ -231,7 +256,8 @@
     "count": 4,
     "verified": true,
     "setId": "f9a98810-c56a-4b15-985e-1730a3fd795f",
-    "localFingerprint": "f637c2276c29d72465d1ee056e746b8d0ada12e6f7490fc41aaeb0373433c249"
+    "observedAt": "2026-09-24T10:04:56Z",
+    "localFingerprint": "5d5a98632449edbd2ae4b0a5fda4f127039d19d2729d033b0ec14ad5353086f8"
   },
   {
     "platform": "MAC_OS",
@@ -240,16 +266,15 @@
     "count": 4,
     "verified": true,
     "setId": "b9578784-5553-4dad-85e2-c90cde187da8",
-    "localFingerprint": "9b87cd288efc3f5bbd42e84be4ee6227dd4c7264d4619bd450d89b268ba986d3"
+    "observedAt": "2026-09-24T10:05:00Z",
+    "localFingerprint": "46045b3a8d58c9b7b506273834a3de6bacf35e5d06c91245340b4f54744f7186"
   },
   {
     "platform": "MAC_OS",
     "locale": "hr",
     "device": "mac",
-    "count": 4,
-    "verified": true,
-    "setId": "8fcbc622-ce2e-4d3e-8924-12e01869865a",
-    "localFingerprint": "c8780a5686b98f9408e555e9cb52ab7dafe7c95ac96283f8dda51aea142cd252"
+    "error": "processing or checksum verification incomplete",
+    "setId": "8fcbc622-ce2e-4d3e-8924-12e01869865a"
   },
   {
     "platform": "MAC_OS",
@@ -258,7 +283,8 @@
     "count": 4,
     "verified": true,
     "setId": "ed3beab5-f12a-4185-86c0-24c613c1da28",
-    "localFingerprint": "18e261b1ad9b5355c04ecc59f87d3c299f80b3691948079f2a16d337b31e2c53"
+    "observedAt": "2026-09-24T10:04:59Z",
+    "localFingerprint": "aa7bbb5da6554ac8d2bcbabe82e92c7df33afb2874a744ab5672a21430a2660f"
   },
   {
     "platform": "MAC_OS",
@@ -267,7 +293,8 @@
     "count": 4,
     "verified": true,
     "setId": "bb9a65a0-f763-44a0-8331-09b308a78a7d",
-    "localFingerprint": "a4539d5ab6358ddddc8246d2b73d94dc62d088a2533a21ef47eafad808dd9a25"
+    "observedAt": "2026-09-24T10:05:23Z",
+    "localFingerprint": "95d2a4d28379cba0272e6cac08657605eefa9e119842ac730632d162e46df4d4"
   },
   {
     "platform": "MAC_OS",
@@ -276,7 +303,8 @@
     "count": 4,
     "verified": true,
     "setId": "ddb83d66-d40d-4b30-83c2-e49ea839727a",
-    "localFingerprint": "583ebef98073d12f2b77c65444981dd28f78cf125f3b9e5e36553ab265a240be"
+    "observedAt": "2026-09-24T10:05:35Z",
+    "localFingerprint": "b717fd4689969ef48f17e62d3dee4c0cc83b049a9ede33bb1aeaeaa36db745f4"
   },
   {
     "platform": "MAC_OS",
@@ -285,7 +313,8 @@
     "count": 4,
     "verified": true,
     "setId": "cc084b0b-8c87-44ae-a5e5-d3d78c89f5a2",
-    "localFingerprint": "ee1eb7c7e67a87b3cac4182ca44ddf5067b241ac49b59641573c808ca14677b7"
+    "observedAt": "2026-09-24T10:05:35Z",
+    "localFingerprint": "5fe3cd1709b6b4577e00d2b61bc6f84a959b6b9a11d6f378efa29d0cf33ff1ae"
   },
   {
     "platform": "MAC_OS",
@@ -294,7 +323,8 @@
     "count": 4,
     "verified": true,
     "setId": "2f271ecb-5d9c-49ec-ace2-d10d44b6dc01",
-    "localFingerprint": "2bfc7272508ab5c6f9809bc3e6ce0c929654d83ef6f15c46d38d646fa95158f6"
+    "observedAt": "2026-09-24T10:05:33Z",
+    "localFingerprint": "efe9e3efa89ac6ef099e4280cebf8eb39bcffc07d480abcd83f75ef0eaa92ccc"
   },
   {
     "platform": "MAC_OS",
@@ -303,7 +333,8 @@
     "count": 4,
     "verified": true,
     "setId": "33d7b540-bacd-4e2e-982c-ca9be41cfb0f",
-    "localFingerprint": "2e9da918f8a6a20cde1780202bf6af6b1624e85a085709a1681eef9878679e8a"
+    "observedAt": "2026-09-24T10:05:41Z",
+    "localFingerprint": "98ac3211040c70c1d22f0adb6e74486f158651d779d7ada82c6b55ddfeb6b87f"
   },
   {
     "platform": "MAC_OS",
@@ -312,7 +343,8 @@
     "count": 4,
     "verified": true,
     "setId": "e66bce90-8f8c-4914-9336-4320d7f02767",
-    "localFingerprint": "b9a4de8dd5227c3267eef4801a441f2095af3e646f347e769bbc0249e5abcf72"
+    "observedAt": "2026-09-24T10:05:34Z",
+    "localFingerprint": "b1c788b14e625fa9f05afedf19e0c3cbac93117c0392f904afdb4ef3cd8c610c"
   },
   {
     "platform": "MAC_OS",
@@ -321,7 +353,8 @@
     "count": 4,
     "verified": true,
     "setId": "638aba15-b27f-4ede-8130-6f1177eca926",
-    "localFingerprint": "9e2fca9b1a1655a51a099abfe876b13e54f354b2f969134abb4e7b7075986cd6"
+    "observedAt": "2026-09-24T10:05:55Z",
+    "localFingerprint": "3a125953f221a6df15b4dc79f6df7d0cae21b16919c87cc9c7ecf3245bd9fd83"
   },
   {
     "platform": "MAC_OS",
@@ -330,7 +363,8 @@
     "count": 4,
     "verified": true,
     "setId": "82292ba5-61bb-4f77-b56c-9d5d9391ebdf",
-    "localFingerprint": "039afcbecc64eefe7cc878bca551b3a0f003cdb09d646f39cf2f9243bb125873"
+    "observedAt": "2026-09-24T10:05:37Z",
+    "localFingerprint": "75f4dece9c6b6a4ecb1cd588c285f3a3c0fc59aa421dc650f79b344b3e5ec0ee"
   },
   {
     "platform": "MAC_OS",
@@ -339,7 +373,8 @@
     "count": 4,
     "verified": true,
     "setId": "10082183-bd18-4e13-b602-98a48e622376",
-    "localFingerprint": "cf1742a07b81a3591402726c3467d4ff25a42563f977130e064dff1a1328bba0"
+    "observedAt": "2026-09-24T10:05:41Z",
+    "localFingerprint": "61cc34743c51fdd9051bce0fcb2410a6e5fee9b971dc6e203a83086dfb7460d1"
   },
   {
     "platform": "MAC_OS",
@@ -348,7 +383,8 @@
     "count": 4,
     "verified": true,
     "setId": "78c6bb66-e943-4aae-8f52-4acb41a56cf3",
-    "localFingerprint": "85f8c319ee17fc81cbb4d3f2fc4ee9dbf0f75e2851b049cb20bc900bbacf4d64"
+    "observedAt": "2026-09-24T10:06:00Z",
+    "localFingerprint": "9e7247456b09937cdb9ff94d70a9d1a7a452c198ce05b0b5f3777f2bfa78a3f4"
   },
   {
     "platform": "MAC_OS",
@@ -357,7 +393,8 @@
     "count": 4,
     "verified": true,
     "setId": "9b67bc4d-d8f4-4b70-b391-f0c0f3d2ce99",
-    "localFingerprint": "ca18885f3d5880cd12186bbad9a454bd86c506fb78a247afb52431cb616e6e74"
+    "observedAt": "2026-09-24T10:05:41Z",
+    "localFingerprint": "9fa505cc7e03f8f612bfe0ea759662ab6513552418e35c6770f7a618deb88bb7"
   },
   {
     "platform": "MAC_OS",
@@ -366,7 +403,8 @@
     "count": 4,
     "verified": true,
     "setId": "f2b235ea-2dd6-4b53-bb42-356852105798",
-    "localFingerprint": "752afda0a79fc75da81faa4e36c38a8b958eec6b5888cff8100fb094c9cf4b64"
+    "observedAt": "2026-09-24T10:06:01Z",
+    "localFingerprint": "9f640d9a1255b109712a7925f0170dd16d92b0984de10391eb70ab728e209c39"
   },
   {
     "platform": "MAC_OS",
@@ -375,7 +413,8 @@
     "count": 4,
     "verified": true,
     "setId": "a63bcb9d-bccc-4d7c-942c-a19e12fad2f3",
-    "localFingerprint": "7c9b461073b8e37280edc68c6ec4e5d46d4aac8acd862a0c89a8f59137585ad3"
+    "observedAt": "2026-09-24T10:06:01Z",
+    "localFingerprint": "b774f50f4fa174433d622a95159b729bb3136c0b8722821d3b690092953f8256"
   },
   {
     "platform": "MAC_OS",
@@ -384,7 +423,8 @@
     "count": 4,
     "verified": true,
     "setId": "d1a906dc-7b11-4a43-88df-9d76e4d8b0d1",
-    "localFingerprint": "e56f077a490eb77b6cb433663af4258e82869ff8724252f6ed0239887bd360eb"
+    "observedAt": "2026-09-24T10:06:05Z",
+    "localFingerprint": "d61f3a8c986e2cc815a325d8e5401147ea9f1b4f2bc49ebb2c55d91e7c454dbf"
   },
   {
     "platform": "MAC_OS",
@@ -393,7 +433,8 @@
     "count": 4,
     "verified": true,
     "setId": "e1620e27-c505-40f7-8aac-8bfa2b160466",
-    "localFingerprint": "8a914784611b5bbd1e5d199b9aaf6c65bc13a20010c092d29c69d04d5eeef1ef"
+    "observedAt": "2026-09-24T10:06:08Z",
+    "localFingerprint": "3fab0736e4b28d5b6f5aacff94a08af19701cd413edf8d8aaf4280579d0d7e50"
   },
   {
     "platform": "MAC_OS",
@@ -402,7 +443,8 @@
     "count": 4,
     "verified": true,
     "setId": "718fce06-4c4a-417b-8350-19771882c872",
-    "localFingerprint": "b3f8a9aa2cf8760466f5b33051a84973693952a191ca24e6b30c04dc8bc95bd0"
+    "observedAt": "2026-09-24T10:06:03Z",
+    "localFingerprint": "c0156fc186f3a41641435e0d3d6c4283e07f2229815ae2f9fccbed2741d303cf"
   },
   {
     "platform": "MAC_OS",
@@ -411,7 +453,8 @@
     "count": 4,
     "verified": true,
     "setId": "029dccc5-9899-49f3-9f9b-7b7b1a62532c",
-    "localFingerprint": "e147be5dedd54d6ca7335112851d1a4807f6928d5902a03bd47c4881fb41053a"
+    "observedAt": "2026-09-24T10:06:22Z",
+    "localFingerprint": "160e8476d7c9453566279538a5963dab48a7a8d1fac7544d9106bbf9b779f2c7"
   },
   {
     "platform": "MAC_OS",
@@ -420,7 +463,8 @@
     "count": 4,
     "verified": true,
     "setId": "3ce4bdf0-2d24-49ec-a5d8-4ee697d4046f",
-    "localFingerprint": "78c5ccd03c159d63758c98e2d5af9c75fb3b4654ea981f5f052c5e7864027901"
+    "observedAt": "2026-09-24T10:06:29Z",
+    "localFingerprint": "135b4c6db9e59f318cce9e44c5173a313d33e73bca96f81d9d48acdb2223cab0"
   },
   {
     "platform": "MAC_OS",
@@ -429,7 +473,8 @@
     "count": 4,
     "verified": true,
     "setId": "bd963675-7fd6-4ca8-b043-114bcbf64956",
-    "localFingerprint": "ff23a18963b510d117f4f86271a816703d169113156a3a2851aa57d9884422f6"
+    "observedAt": "2026-09-24T10:06:08Z",
+    "localFingerprint": "ed35c263766abccb2972b8ae98a3f7d555aea9b316d4398aa5df3aa630799095"
   },
   {
     "platform": "MAC_OS",
@@ -438,7 +483,8 @@
     "count": 4,
     "verified": true,
     "setId": "2a32b680-7caf-471b-bb47-456ce6dbaefc",
-    "localFingerprint": "4819028f11c3eeff07492f63ff6945109812b8d05a58c4f15d86a6881498b43a"
+    "observedAt": "2026-09-24T10:06:08Z",
+    "localFingerprint": "507fb45621294d85fcc6fe2270a7a0e25d4e35f1948214796cd8f592292abd7c"
   },
   {
     "platform": "MAC_OS",
@@ -447,7 +493,8 @@
     "count": 4,
     "verified": true,
     "setId": "91865cbb-5f73-4122-8b1b-c3b23435d481",
-    "localFingerprint": "f030aa862d7bbae6625e03abd460222c27a47f781c790c24b07db91c43c105c3"
+    "observedAt": "2026-09-24T10:06:28Z",
+    "localFingerprint": "8ff1adb880ae4f277bdc5348376a000bb526d8ac1c77aa8f8e87eaa1960216e7"
   },
   {
     "platform": "IOS",
@@ -520,5 +567,963 @@
     "verified": true,
     "setId": "19fcd7aa-a58e-4f3a-b9c3-b9f2245c9f80",
     "localFingerprint": "f5f3f2028e3ad5b1e6b7a0fd3e2b4e889fa735d5d6b0d0518ffc27dd6bf35800"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "ec905277-bc37-4c1b-8ec8-cab571a50bf4",
+    "observedAt": "2026-09-24T10:06:09Z",
+    "localFingerprint": "66f93f72c8ef13f2ea0ca07d67ec017b61755f608233442ae1dfc38e575efe28"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "ec74783c-2921-4ded-ae0e-2e901107a4dd",
+    "observedAt": "2026-09-24T10:09:35Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "96aaeb5b-61a7-44c4-9394-2580c7ba15f9",
+    "observedAt": "2026-09-24T10:06:31Z",
+    "localFingerprint": "d75023b0ce7d7a1a911ce10bba98cd9ee00c12547549919c6c41e9f4bc9f5c96"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-FR",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "b1c8d58a-3506-491b-b78a-25ac51ace650",
+    "observedAt": "2026-09-24T10:06:37Z",
+    "localFingerprint": "36abaec10b0061bcbc9cda0cb2b1f02ae49caa12c6decdc5d2cfbed83b76e58a"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-FR",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "51c013e2-e706-4878-93e3-1d795e37549e",
+    "observedAt": "2026-09-24T10:06:49Z",
+    "localFingerprint": "ee5d6646b869660bdc5bf28eb6d382f3349a456511b27ab2ae4c61318e9ddca7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-FR",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "d02b48be-bf55-49cc-adaf-109eb73629bd",
+    "observedAt": "2026-09-24T10:06:59Z",
+    "localFingerprint": "af14f7c8b683c34de0b4b6e115482677fc6562dfef6e43d8039873d685a285f9"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-FR",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "2e1e5a7d-a72d-46aa-8f53-582a5432363a",
+    "observedAt": "2026-09-24T10:07:01Z",
+    "localFingerprint": "17fc8d72c65af77e90c81083b0dd5abb8103f030065ef0a1f84d91c04d616675"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-FR",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "c8044cda-372d-45b5-9143-2028489bcf36",
+    "observedAt": "2026-09-24T10:07:05Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-ES",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "cddad7d0-7b82-4fd3-8c9a-f54a97e4bf56",
+    "observedAt": "2026-09-24T10:07:20Z",
+    "localFingerprint": "75408b936738bd037a46476a66ee5227d47c05adc4635e493646d1b6c419e726"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-ES",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "de7165fe-df44-4c6c-b582-feaefb13f3dc",
+    "observedAt": "2026-09-24T10:07:31Z",
+    "localFingerprint": "51a3cf840031f08c286b47e831f0e8f48af6c911df4c75f5a3c37bca8b7de1ae"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-ES",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "aa55ba3b-56b4-4b47-a2fe-e1c16c959254",
+    "observedAt": "2026-09-24T10:07:32Z",
+    "localFingerprint": "558c1c15293a5b9576d0615d5ef4aaea167df8183aaa8cb53caf981e411cbbe1"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-ES",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "2ee18afe-e5da-44b8-8b5f-4a35a420801d",
+    "observedAt": "2026-09-24T10:07:38Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-ES",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "20bfc894-6652-4568-b65a-7a39548de0de",
+    "observedAt": "2026-09-24T10:07:41Z",
+    "localFingerprint": "cc1c745520c141848f3c377500f627c9b64e4bb7f3105dd4d121816c689283d5"
+  },
+  {
+    "platform": "IOS",
+    "locale": "it",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "e20455ce-c51e-43a7-afb9-ab95d486e7f0",
+    "observedAt": "2026-09-24T10:07:49Z",
+    "localFingerprint": "89925ab7809d391a3e2ead8097b862fb8715fd83acd890a0a65e2cdf8ae3c26e"
+  },
+  {
+    "platform": "IOS",
+    "locale": "it",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "2367528b-11c2-492f-9951-7c8c9014d06b",
+    "observedAt": "2026-09-24T10:08:02Z",
+    "localFingerprint": "d2b51cc3e7ab13ab7af9e84396ad7ef44a574c9c6c44a9fc2f1e79d7de0c8932"
+  },
+  {
+    "platform": "IOS",
+    "locale": "it",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "b3fd3aa0-3c3c-4803-8f86-0a320695e5ac",
+    "observedAt": "2026-09-24T10:08:04Z",
+    "localFingerprint": "6333e1570c9b30bda5f838f02bb6398f640fd7cce30e3c8480b1fb47279b93f8"
+  },
+  {
+    "platform": "IOS",
+    "locale": "it",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "bc39cba6-e744-4277-a683-a7cebd168987",
+    "observedAt": "2026-09-24T10:08:11Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "it",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "da525cae-b2f4-4571-978e-a1bb83d839c7",
+    "observedAt": "2026-09-24T10:08:13Z",
+    "localFingerprint": "0320b8198b77ca8e00567a8ab69fcaa99601a022400c01ae8fd6d90d1b7d7166"
+  },
+  {
+    "platform": "IOS",
+    "locale": "de-DE",
+    "device": "iphone5.5",
+    "error": "processing or checksum verification incomplete",
+    "setId": "fd3cf785-36a2-4b7f-9049-4a31b5d53c99"
+  },
+  {
+    "platform": "IOS",
+    "locale": "de-DE",
+    "device": "iphone6.9",
+    "error": "processing or checksum verification incomplete",
+    "setId": "f0e10e27-a857-475a-946c-1554a84bb74a"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-PT",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "39680092-71d1-4a57-83a7-c26df603483a",
+    "observedAt": "2026-09-24T10:08:29Z",
+    "localFingerprint": "a400a42709d1d58a016f4920f4f5fde2e3e234729a065511fc27e88a335ca6e0"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-PT",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "e6dbbd56-91fc-4f76-a916-8116b5dad5c5",
+    "observedAt": "2026-09-24T10:08:32Z",
+    "localFingerprint": "5c43cae2ae4d468c7f33f889b2603afec4d8f0cae57ca05159cba241deb92eb9"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-PT",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "357a3626-0c16-4b7e-a729-01b1b85d7d94",
+    "observedAt": "2026-09-24T10:08:36Z",
+    "localFingerprint": "8a5bc37a5d21161573cefe8ca5bfae0f8b7ce9bb8c4247c760e071c6a043086f"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "iphone6.5",
+    "error": "processing or checksum verification incomplete",
+    "setId": "6815cfc1-f6ec-4dde-bbeb-785227a8ce74"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-PT",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "a47fb57a-a7a0-4d53-8568-799b43b931eb",
+    "observedAt": "2026-09-24T10:08:45Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "device": "iphone6.9",
+    "error": "processing or checksum verification incomplete",
+    "setId": "66b56b8b-37a4-47da-b375-31f5c8ef5788"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-PT",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "2b00f365-0e27-4c72-94cb-478c6c85122b",
+    "observedAt": "2026-09-24T10:08:50Z",
+    "localFingerprint": "ec87c097365d74a25a34f0052031b35b325440db2717073ee9e9ddf26769b06d"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ru",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "5d91ed77-4eea-44a1-bce1-828785082bca",
+    "observedAt": "2026-09-24T10:09:01Z",
+    "localFingerprint": "bfc5b0bed54b816542d75ea1787ded88ab3f476b7629a3c440dbaa1172fad8de"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ru",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "12b2c050-cfd8-4b56-817e-73dc744cfe48",
+    "observedAt": "2026-09-24T10:09:01Z",
+    "localFingerprint": "fed4b91a6923873507db2767ba3af2f6a02617e91dbeec30db43d04d6f59f004"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ru",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "00f20dbf-56ab-43da-9c05-ade920b4c9f4",
+    "observedAt": "2026-09-24T10:09:06Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ru",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "63c7901f-92ea-4a8d-9f7b-8b7c3d9e4422",
+    "observedAt": "2026-09-24T10:09:06Z",
+    "localFingerprint": "8412dc45def5042f37a1ade1049048866741244d0ad8cf30bc4716b50ef291c6"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ru",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "4bf6baff-2c31-4228-8256-d751df92e838",
+    "observedAt": "2026-09-24T10:09:08Z",
+    "localFingerprint": "d7476e83533c34a2598bb220816025f655c82824b1daa7a984139f50b12e2304"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ja",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "3ce2f891-c6af-422a-b42f-7fad68a59877",
+    "observedAt": "2026-09-24T10:09:18Z",
+    "localFingerprint": "03acf06e829e3de31296492c2aec1d718265d5ef55200f04a5ab0786fece377a"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ja",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "d1c8b444-b34d-4a10-9010-d98ea1b45d87",
+    "observedAt": "2026-09-24T10:09:19Z",
+    "localFingerprint": "c5985506e0528f988bc2d1730eaf60c9c18b6d37289dfad80429ef6bfec7a7df"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ja",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "16105962-dff9-44e1-83fe-1f7edb383cb4",
+    "observedAt": "2026-09-24T10:09:23Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ja",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "5b5361e4-7ace-49c2-a767-ce778d119784",
+    "observedAt": "2026-09-24T10:09:25Z",
+    "localFingerprint": "65f41f792cbd52ba0d4f40dca4b22b80d7602444bb693457af3c541d1a63d8fb"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ja",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "77a31949-2b8e-491e-9c60-a1498cd765c5",
+    "observedAt": "2026-09-24T10:09:28Z",
+    "localFingerprint": "478d3961002c7b756918045401c655b894fdc0641115bb9dae81dd23253ea8ea"
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hant",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "15497c6d-4759-417a-9a36-32a8bd6c678a",
+    "observedAt": "2026-09-24T10:09:42Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hant",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "8cc34d0f-ec48-4073-bf00-af86335dbbf3",
+    "observedAt": "2026-09-24T10:09:42Z",
+    "localFingerprint": "92e86291a9c63aefbc82278b3733a0e92457ecd45acb8ba80e8f9ab6e5995a2b"
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hant",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "a5988faa-0304-41d9-a96d-bf1a39e98365",
+    "observedAt": "2026-09-24T10:09:44Z",
+    "localFingerprint": "1896b0a1f671a2c27c885f5e58aedd60b39935d726567e43dbccac13104566d2"
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hant",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "5312fc60-4a9c-4883-ad1c-9509d29806d4",
+    "observedAt": "2026-09-24T10:09:44Z",
+    "localFingerprint": "4255c7f028f83dd6e05c9c882d9dcb0c1a594368cfa4dab97b9adb620b555363"
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hant",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "d429b58d-1f48-4c8e-bf99-0d6bfdd3c825",
+    "observedAt": "2026-09-24T10:09:49Z",
+    "localFingerprint": "1c4eee8474881ca793f022d196d185a008e7780d8c67b33f837ef88346afd0ff"
+  },
+  {
+    "platform": "IOS",
+    "locale": "he",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "e3bc8007-2f1f-481f-9d76-34e79280e2de",
+    "observedAt": "2026-09-24T10:10:00Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "he",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "9a0bb85f-d3c0-4f2d-ae5c-b9f7396782c4",
+    "observedAt": "2026-09-24T10:10:00Z",
+    "localFingerprint": "9a3c16711ed799656cab78c47dda474dc29efbd909456a24dccb95bc784d13f0"
+  },
+  {
+    "platform": "IOS",
+    "locale": "he",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "76d4b518-8009-4a96-bc11-b5b855cffe7a",
+    "observedAt": "2026-09-24T10:10:02Z",
+    "localFingerprint": "080618456890a0c32df97cc9bb2f701d3b51e3ce754045ff60c1db20facdcfb9"
+  },
+  {
+    "platform": "IOS",
+    "locale": "he",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "64e1921d-9751-4839-b280-513a56e74f0a",
+    "observedAt": "2026-09-24T10:10:07Z",
+    "localFingerprint": "2b42a6ec672702a8cc4bcb5e370dcb4cd52c1fa13ea4638f2c3118ecf45adf65"
+  },
+  {
+    "platform": "IOS",
+    "locale": "he",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "af9e820a-ca61-4538-af47-e7f867d09dae",
+    "observedAt": "2026-09-24T10:10:07Z",
+    "localFingerprint": "9fab2c5730afe5ae7fd808adc445618d71d13ecc22372bf5417548fa5d351e19"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ar-SA",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "01fad836-7882-4357-9ddd-691fa09248d3",
+    "observedAt": "2026-09-24T10:10:17Z",
+    "localFingerprint": "c563e400030f7bf27ca0b0f30d53011a5f509c42e9483828fea3357f1f321d22"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ar-SA",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "697c8494-a286-426f-a69e-96f7838182bc",
+    "observedAt": "2026-09-24T10:10:23Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ar-SA",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "534d49ec-8655-4e58-8c20-95da3db2ca42",
+    "observedAt": "2026-09-24T10:10:26Z",
+    "localFingerprint": "0d8b6ce572d66ffc6458dc67b49df16a3c7b8327e2faa1f60e9132ec93f4b024"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ar-SA",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "9112f867-0368-48bb-a720-0dcd06059597",
+    "observedAt": "2026-09-24T10:10:27Z",
+    "localFingerprint": "1e1eca700879c97f5fa4e0908b3abbac426f0acb6a4689efc1eafe205a461e8c"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ar-SA",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "35408a39-cd19-43fa-9067-8aa211b93cae",
+    "observedAt": "2026-09-24T10:10:27Z",
+    "localFingerprint": "1c75861d3901c0d0fe85e96f62416853b278ab30e8f063ee6dcded0b34570c85"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-GB",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "b31ec69e-8c64-4650-90c5-e7aace80eaa3",
+    "observedAt": "2026-09-24T10:10:42Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-GB",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "6a233e80-3709-4a01-b9ac-681d94c99c87",
+    "observedAt": "2026-09-24T10:10:44Z",
+    "localFingerprint": "43683159f18813fd0c9ef8c064bca1c6179fc474cdf071ee7433ed44a12949e1"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-GB",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "982f1880-18f5-43c1-a90f-a9825040e8e4",
+    "observedAt": "2026-09-24T10:10:47Z",
+    "localFingerprint": "db43d7eb25527428b8ddf6fa1a95041150efe7c0d7f9576edca32c24457deaab"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-GB",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "541a5c43-a61d-477f-8d03-03bafc2ceaa5",
+    "observedAt": "2026-09-24T10:10:48Z",
+    "localFingerprint": "915ce6237f9dfdf03e4b4e74708d1df08e8e114af98458df53f9572a86c43afd"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-GB",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "ddd430df-09e0-4c2c-8a9b-033386ff6c35",
+    "observedAt": "2026-09-24T10:10:49Z",
+    "localFingerprint": "19963321dc573c4c57eba2908c8a087552cd23a99f0afbaa5c9c77b2a8b2eaef"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-AU",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "fd326525-35ca-4c2e-a531-2893c8e0ae4e",
+    "observedAt": "2026-09-24T10:11:00Z",
+    "localFingerprint": "e5a062c443e8ba3ed8836a94f9fff0531f2867dac2ba93f8e2a7c01c5e266891"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-AU",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "9ca00d69-5cba-4be7-931d-8ae1d021e6ea",
+    "observedAt": "2026-09-24T10:11:01Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-AU",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "0c6fa158-97d4-4bf0-a4ce-86dffaccf661",
+    "observedAt": "2026-09-24T10:11:08Z",
+    "localFingerprint": "34949f4748761071bcb7d33b2d8e65b84a08cbf848f5e3dd6594fc2660775638"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-AU",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "e9251f25-cc7b-4fb0-a91b-73371b1ef0e1",
+    "observedAt": "2026-09-24T10:11:09Z",
+    "localFingerprint": "5f7114d48340fb03e49092dbf236c685469331194fef42df92d16a5060ee4293"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-AU",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "ba270b54-3644-444d-be6d-0993a5a68309",
+    "observedAt": "2026-09-24T10:11:10Z",
+    "localFingerprint": "f0ea89d96262e19e9169dce6f2116e2b8a683c1600a725126fbe50f678c88dbd"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-CA",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "e6c09ff5-5493-422a-b867-2a9825942862",
+    "observedAt": "2026-09-24T10:11:24Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-CA",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "6cec254d-8d35-48dd-8574-3c2ce2bb28ed",
+    "observedAt": "2026-09-24T10:11:29Z",
+    "localFingerprint": "ef0e16b2425b2f5899bb7da011d3c172bde394d502b20c237e54dea0b8e49120"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-CA",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "d58016cf-2a47-455b-ac47-730997abc65f",
+    "observedAt": "2026-09-24T10:11:32Z",
+    "localFingerprint": "4cf99933620914da9b467f07e9aad4d49b55bee222f68b5d1728b57b2db59877"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-CA",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "e6bcd9bc-2e72-4c48-b77d-5de7f0523cd3",
+    "observedAt": "2026-09-24T10:11:32Z",
+    "localFingerprint": "7cfd59242fcec0485ce2d4bc9afe2a1573744574aec1345a13bd2adbadda20b9"
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-CA",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "47218159-0f13-40b7-8ffe-cede89ec1a6b",
+    "observedAt": "2026-09-24T10:11:36Z",
+    "localFingerprint": "1b05732140b3f616d3523c83c73a0d38a11451aa8f45bc2a45753dbd80990fdc"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-MX",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "08eb8d91-296d-45de-8271-ca88697ba8ac",
+    "observedAt": "2026-09-24T10:11:41Z",
+    "localFingerprint": "03dbf5000db8ebc536f65d9aeb5f60068f868e0912640f5e3ee2a811493c27cd"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-MX",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "4077e6cf-e869-4c84-81f1-09db0905a424",
+    "observedAt": "2026-09-24T10:11:43Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-MX",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "b81d6a6b-5215-4343-955f-ddd354b47e08",
+    "observedAt": "2026-09-24T10:11:45Z",
+    "localFingerprint": "6a259d78130c50dc3df6916f46656e28e9b3eb9a18ef76c088f07ea1f02e05d3"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-MX",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "714ee648-d002-4288-ae4d-37e323166a43",
+    "observedAt": "2026-09-24T10:11:47Z",
+    "localFingerprint": "6a8289436f04ff15fc863062baeae0cca6aedaf7a5ef2d16ead6fde8f11a3cb7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-MX",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "5f6f4bb6-9706-4838-b864-d7f0e1f8fd60",
+    "observedAt": "2026-09-24T10:11:52Z",
+    "localFingerprint": "83c636819ea46dd1f3ab2e41b09252281b53012f4b8fa3122516d07879188eba"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-BR",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "f1139313-4b97-4edb-95bf-087043c9b723",
+    "observedAt": "2026-09-24T10:12:05Z",
+    "localFingerprint": "5d63147003611bdc2acc851b717d903be991b6aba42ece8581d720d2256b95e8"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-BR",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "505fa99e-42da-460f-bfcc-c168a2823839",
+    "observedAt": "2026-09-24T10:12:10Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-BR",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "4de05e51-f0d2-4241-bdbe-cf0b9dfec07e",
+    "observedAt": "2026-09-24T10:12:10Z",
+    "localFingerprint": "1148d4d1519f82f2697474b53ac2f3296a4103ad1541f633371e1f87621bd9e1"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-BR",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "3f3b6828-46b5-4747-b0fa-24119cc4788b",
+    "observedAt": "2026-09-24T10:12:14Z",
+    "localFingerprint": "551e62ee7d58b61dc5134d46dcd5b3823fa4590585497315048c2190403b6462"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-BR",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "09d88710-4fc8-46a0-b2b1-9a55838469ae",
+    "observedAt": "2026-09-24T10:12:15Z",
+    "localFingerprint": "012ac65cdd07fb400982dcf6a2b6d0e4c58989986381437c2a02216f73370a36"
+  },
+  {
+    "platform": "IOS",
+    "locale": "nl-NL",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "a0a67570-3e03-4fbf-bc2b-51e19a773150",
+    "observedAt": "2026-09-24T10:12:19Z",
+    "localFingerprint": "44080066dcd854c3c6cf17af565dc137a5a80cbd49f06589b1306359569b781c"
+  },
+  {
+    "platform": "IOS",
+    "locale": "nl-NL",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "044a8564-6e5f-4096-be17-78a733461f6d",
+    "observedAt": "2026-09-24T10:12:25Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "nl-NL",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "577ccb43-b88e-4146-a898-87ae225283ae",
+    "observedAt": "2026-09-24T10:12:27Z",
+    "localFingerprint": "0bde8c02b9c6491016e971551e6a0a1c5a23d149df779c27c532afb3cf7e9d25"
+  },
+  {
+    "platform": "IOS",
+    "locale": "nl-NL",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "e646413c-5535-41f9-9b7a-13bad8dc7914",
+    "observedAt": "2026-09-24T10:12:28Z",
+    "localFingerprint": "3a4b07110aef5b156ca909b8be9bf2147f273422d81cd289c058587baa0107ee"
+  },
+  {
+    "platform": "IOS",
+    "locale": "nl-NL",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "c5376421-ee57-46d6-851c-3610a0408435",
+    "observedAt": "2026-09-24T10:12:28Z",
+    "localFingerprint": "54b4c1633209a6517225ab4f8b68c5e70c605832caa195b5d42189dddc053a86"
+  },
+  {
+    "platform": "IOS",
+    "locale": "sv",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "7f5148e8-5169-4f0e-8907-f6f1b265e618",
+    "observedAt": "2026-09-24T10:12:45Z",
+    "localFingerprint": "5758c20107e78429bb29acb8321e59825820b51c7c8d69a825719a365e49d0d7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "sv",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "41181deb-1474-44fc-bd47-151854832c06",
+    "observedAt": "2026-09-24T10:12:49Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "sv",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "8144201e-357c-4275-aa26-0a736f42bceb",
+    "observedAt": "2026-09-24T10:12:49Z",
+    "localFingerprint": "3bb91bd5579e7d9dbfc61cf83b008b2e23dce266fe11753dd01616ecc0fb0e0b"
+  },
+  {
+    "platform": "IOS",
+    "locale": "sv",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "3faa8a00-7866-4400-9f9f-b60f883c7f5f",
+    "observedAt": "2026-09-24T10:12:53Z",
+    "localFingerprint": "dbd08680bc54573f7019d6a1c4538c38d8339278b6f0dddb99bcdb4c85661788"
+  },
+  {
+    "platform": "IOS",
+    "locale": "sv",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "4f630c9a-3ddd-4aa8-a7ed-de30562f29a4",
+    "observedAt": "2026-09-24T10:12:58Z",
+    "localFingerprint": "8bb2eb4c7f5a967b3da0a0cafc1a1ee184a031f89604e3742731122a01635eb8"
+  },
+  {
+    "platform": "IOS",
+    "locale": "no",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "96705937-f056-41e6-ba9a-0d47d3191a44",
+    "observedAt": "2026-09-24T10:12:59Z",
+    "localFingerprint": "6c22f6d5202a67e1151726932233203bef6b4503a0a9a915ed675406da27c655"
+  },
+  {
+    "platform": "IOS",
+    "locale": "no",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "bf60e5cb-8f0b-4215-aeff-277b14784356",
+    "observedAt": "2026-09-24T10:13:02Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "no",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "b1191fc6-9e59-4380-b19c-688ceae20efe",
+    "observedAt": "2026-09-24T10:13:04Z",
+    "localFingerprint": "4cbee8c0134e4ddd59e08eb7c3ca9aa152c8ed352c66119dc48506dff864d260"
+  },
+  {
+    "platform": "IOS",
+    "locale": "no",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "57291ca1-770e-461b-9bf4-362199a6158d",
+    "observedAt": "2026-09-24T10:13:09Z",
+    "localFingerprint": "999e66c1636af098a74880feaf6117529c97c38c97033aafaf020a0e307ff7d9"
+  },
+  {
+    "platform": "IOS",
+    "locale": "no",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "3b944aed-f845-47cd-bfe7-55b33602666d",
+    "observedAt": "2026-09-24T10:13:11Z",
+    "localFingerprint": "26660268a58ab91f4fd7a81a128bafed2dbea4d0a85e8ff120b9817cd5cf17f5"
+  },
+  {
+    "platform": "IOS",
+    "locale": "da",
+    "device": "ipad13",
+    "count": 4,
+    "verified": true,
+    "setId": "5c28e7b7-7af1-476e-ab69-36c0296f0761",
+    "observedAt": "2026-09-24T10:13:25Z",
+    "localFingerprint": "94a44b7153e38d1b200096d654c1e189f3c1dd2ef08fc53310dad0d7405aedac"
+  },
+  {
+    "platform": "IOS",
+    "locale": "da",
+    "device": "iphone6.5",
+    "count": 7,
+    "verified": true,
+    "setId": "e91ce302-9347-4ff5-8f31-5be8c649e1b2",
+    "observedAt": "2026-09-24T10:13:27Z",
+    "localFingerprint": "e2e6bbf4e8c45524149c10cbb293c6b38ef02a0d052ef0d0695cb6a68da7016f"
+  },
+  {
+    "platform": "IOS",
+    "locale": "da",
+    "device": "watch",
+    "count": 6,
+    "verified": true,
+    "setId": "48df06b0-c12e-42eb-bb7d-2d6dc6d19e5a",
+    "observedAt": "2026-09-24T10:13:30Z",
+    "localFingerprint": "4cf98fa2e0a9486973f987bbeeb0f0c311a65c8e8cb6869f29da1d28a68013b7"
+  },
+  {
+    "platform": "IOS",
+    "locale": "da",
+    "device": "iphone5.5",
+    "count": 7,
+    "verified": true,
+    "setId": "a0420074-75f5-4af5-b60a-7ebd056e73a1",
+    "observedAt": "2026-09-24T10:13:32Z",
+    "localFingerprint": "c77dc89279d220c765eb0e19df86f67fe37b3b0c8a3683af8ca3065251a89d09"
+  },
+  {
+    "platform": "IOS",
+    "locale": "da",
+    "device": "iphone6.9",
+    "count": 7,
+    "verified": true,
+    "setId": "a7c6a902-c6df-4f74-91d4-ef823c4352c3",
+    "observedAt": "2026-09-24T10:13:35Z",
+    "localFingerprint": "6a6e12ce90d16ae04165a85e83a9eb287bac9088422f4b4f71f8c6a2217f33ee"
   }
 ]
