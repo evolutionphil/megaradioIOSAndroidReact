@@ -1,6 +1,6 @@
 {
   "name": "megaradio-desktop",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MegaRadio Desktop App (Windows / Linux / macOS) — Electron wrapper around the TV web build",
   "private": true,
   "author": {
@@ -19,17 +19,17 @@
     "build:linux": "electron-builder --linux AppImage deb",
     "build:win": "electron-builder --win nsis portable",
     "build:mac": "electron-builder --mac dmg --universal",
-    "build:mas": "electron-builder --mac mas --universal",
-    "build:mas-dev": "electron-builder --mac mas-dev --universal",
+    "build:mas": "electron-builder --config electron-builder.config.js --mac mas --universal",
+    "build:mas-dev": "electron-builder --config electron-builder.config.js --mac mas-dev --universal",
     "build:all": "electron-builder -mwl"
   },
   "devDependencies": {
-    "electron": "^31.4.0",
-    "electron-builder": "^24.13.3"
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
   },
   "dependencies": {
-    "electron-updater": "^6.3.9",
-    "electron-log": "^5.2.0"
+    "electron-log": "^5.2.0",
+    "electron-updater": "^6.3.9"
   },
   "build": {
     "appId": "com.visiongo.megaradio",
@@ -53,15 +53,35 @@
       "category": "AudioVideo",
       "icon": "build/icon.png",
       "target": [
-        { "target": "AppImage", "arch": ["x64"] },
-        { "target": "deb", "arch": ["x64"] }
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
       ]
     },
     "win": {
       "icon": "build/icon.ico",
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ]
     },
     "nsis": {
@@ -89,13 +109,18 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "target": [
-        { "target": "dmg", "arch": ["universal"] }
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
       ]
     },
     "mas": {
       "category": "public.app-category.music",
       "type": "distribution",
-      "identity": "Apple Distribution: Vision Go GmbH (M6T85HP76P)",
+      "identity": "Vision Go GmbH (M6T85HP76P)",
       "hardenedRuntime": false,
       "entitlements": "build/entitlements.mas.plist",
       "entitlementsInherit": "build/entitlements.mas.inherit.plist",
@@ -104,7 +129,12 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "target": [
-        { "target": "mas", "arch": ["universal"] }
+        {
+          "target": "mas",
+          "arch": [
+            "universal"
+          ]
+        }
       ]
     },
     "masDev": {

@@ -9,7 +9,7 @@ function prepareRenderer() {
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'megaradio-renderer-'));
   const target = path.join(root, 'renderer');
   execFileSync(process.platform === 'win32' ? 'yarn.cmd' : 'yarn', ['build', '--base', './', '--outDir', dist], {
-    cwd: source, stdio: 'inherit', env: { ...process.env, TV_BASE_PATH: './', VITE_APP_VERSION: require('../package.json').version },
+    cwd: source, stdio: 'inherit', env: { ...process.env, TV_BASE_PATH: './', TV_BUILD_TARGET: 'desktop', VITE_APP_VERSION: require('../package.json').version },
   });
   if (!fs.existsSync(path.join(dist, 'index.html'))) throw new Error('Desktop renderer build has no index.html');
   fs.rmSync(target, { recursive: true, force: true });

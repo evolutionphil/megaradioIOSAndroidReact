@@ -70,32 +70,8 @@ class RootErrorBoundary extends React.Component<{ children: React.ReactNode }, {
   }
 }
 
-// Error boundary to prevent native module crashes from causing white screen
-class AudioErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  
-  componentDidCatch(error: Error, errorInfo: any) {
-    console.error('[AudioErrorBoundary] Caught error:', error.message, errorInfo);
-    // Report to Firebase Crashlytics
-    crashlyticsService.recordError(error, 'AudioErrorBoundary');
-  }
-  
-  render() {
-    if (this.state.hasError) {
-      // Render children without AudioProvider - app works but no audio
-      console.warn('[AudioErrorBoundary] AudioProvider crashed, rendering without audio');
-      return this.props.children;
-    }
-    return <AudioProvider>{this.props.children}</AudioProvider>;
-  }
-}
+// The root boundary owns failures for the whole audio subtree. Rendering its
+// consumers without AudioProvider would throw again and hide the original error.
 import { MiniPlayer } from '../src/components/MiniPlayer';
 import { usePlayerStore } from '../src/store/playerStore';
 import { PlayAtLoginHandler } from '../src/components/PlayAtLoginHandler';
@@ -644,7 +620,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
       <I18nextProvider i18n={i18n}>
           <QueryClientProvider client={queryClient}>
-            <AudioErrorBoundary>
+            <AudioProvider>
               <PlayAtLoginHandler />
               <QuickActionsHandler />
               <NotificationHandler />
@@ -703,7 +679,7 @@ export default function RootLayout() {
                   }}
                 />
               </View>
-            </AudioErrorBoundary>
+            </AudioProvider>
           </QueryClientProvider>
         </I18nextProvider>
     </GestureHandlerRootView>

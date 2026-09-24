@@ -24,12 +24,6 @@ const AD_UNITS = {
   },
 };
 
-// Test Ad Unit IDs (for development)
-const TEST_AD_UNITS = {
-  interstitial: 'ca-app-pub-3940256099942544/1033173712',
-  rewarded: 'ca-app-pub-3940256099942544/5224354917',
-};
-
 class AdMobService {
   private interstitialAd: any = null;
   private rewardedAd: any = null;
@@ -46,8 +40,10 @@ class AdMobService {
   // Get the correct ad unit ID based on platform and environment
   getAdUnitId(type: 'interstitial' | 'rewarded' | 'appOpenInterstitial'): string {
     if (__DEV__) {
-      // Test ads don't have appOpenInterstitial, use regular interstitial
-      return TEST_AD_UNITS[type === 'appOpenInterstitial' ? 'interstitial' : type];
+      const { TestIds } = require('react-native-google-mobile-ads');
+      return type === 'appOpenInterstitial' ? TestIds.APP_OPEN
+        : type === 'rewarded' ? TestIds.REWARDED_INTERSTITIAL
+        : TestIds.INTERSTITIAL;
     }
     
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';

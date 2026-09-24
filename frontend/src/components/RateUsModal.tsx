@@ -26,7 +26,7 @@ const PLAY_STORE_URL =
 export const RateUsModal: React.FC<Props> = ({ visible, onClose, onRated }) => {
   // This modal is mounted even while hidden. Suspending before RootLayout's
   // i18n initialization effect commits would deadlock the entire app startup.
-  const { t } = useTranslation(undefined, { useSuspense: false });
+  const { t, ready } = useTranslation(undefined, { useSuspense: false });
 
   const handleRate = async () => {
     try {
@@ -50,6 +50,10 @@ export const RateUsModal: React.FC<Props> = ({ visible, onClose, onRated }) => {
       onClose();
     }
   };
+
+  // RootLayout initializes translations in an effect. A hidden modal must not
+  // translate during the first render, before i18next has initialized.
+  if (!visible || !ready) return null;
 
   // 5 stars arranged in arc (V-shape ascending then descending)
   const starOffsets = [-12, -6, 0, -6, -12];

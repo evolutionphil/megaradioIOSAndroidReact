@@ -4,8 +4,27 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePageKeyHandler } from "@/contexts/FocusRouterContext";
 import { QRCodeSVG } from "qrcode.react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { assetPath } from "@/lib/assetPath";
+import { supportsNativeIap } from "@/lib/platform";
+
+function CompleteNativeOnboarding(): null {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    localStorage.setItem('onboardingCompleted', 'true');
+    setLocation('/discover-no-user');
+  }, [setLocation]);
+  return null;
+}
+
+export function OnboardingPremium(): JSX.Element {
+  // Native store builds offer their StoreKit/Billing paywall from Discover.
+  // The web checkout onboarding must never be shown in these builds.
+  if ((window as any).megaRadioNative?.supportsNativeIap === true || supportsNativeIap()) {
+    return <CompleteNativeOnboarding />;
+  }
+  return <QrOnboardingPremium />;
+}
 
 /**
  * Final onboarding step — Premium upsell with QR code + 6-digit PIN.
@@ -23,7 +42,7 @@ import { assetPath } from "@/lib/assetPath";
  *   - On activation OR skip, marks `onboardingCompleted=true` so the user
  *     never sees this screen again.
  */
-export const OnboardingPremium = (): JSX.Element => {
+const QrOnboardingPremium = (): JSX.Element => {
   const [, setLocation] = useLocation();
   const { t } = useLocalization();
   const auth = useAuth();
