@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parent
 ASSETS = Path('/Users/mumiix/Downloads/MegaRadio-ASO-2026-09-24')
@@ -21,6 +22,9 @@ errors = []
 fingerprint = hashlib.sha256(json.dumps(copy, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 if text.get('copyFingerprint') != fingerprint:
     errors.append('Metadata readback does not identify the current copy revision')
+policy_fingerprint=hashlib.sha256((ROOT/'published-privacy-policy.txt').read_bytes()).hexdigest()
+if text.get('privacyPolicyFingerprint') != policy_fingerprint:
+    errors.append('Required Apple TV privacy text has not been verified against the published policy copy')
 if len(text.get('records', [])) != 250 or text.get('mismatches'):
     errors.append('Metadata must have 250 successful comparisons')
 for platform in expected_devices:
@@ -46,7 +50,8 @@ for platform, devices in expected_devices.items():
                 verified += 1
 if not (build.get('version') == '1.0.70' and build.get('build') == '6' and build.get('verified')):
     errors.append('iOS 1.0.70 build 6 association is not verified')
-result = {'readyForFinalUIReview': not errors, 'metadataRecords': len(text.get('records', [])),
+result = {'observedAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
+          'readyForFinalUIReview': not errors, 'metadataRecords': len(text.get('records', [])),
           'currentScreenshotSets': verified, 'expectedScreenshotSets': 350,
           'expectedImages': 1950, 'iosBuild': build.get('build'), 'errors': errors}
 (ROOT / 'validation/delivery-preflight.json').write_text(json.dumps(result, indent=2) + '\n')

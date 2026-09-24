@@ -11,14 +11,22 @@ Expanded descriptions, promotional text and refined keywords are uploaded for
 all 150 platform localizations. Final read-only API verification compared
 250 records with zero mismatches against the current copy fingerprint (two
 editable App Information records and three version records). Local field-limit
-checks also pass. Screenshot delivery is still in progress and respects Apple's
-hourly API quota.
+checks also pass. All 350 screenshot sets / 1,950 images are delivered and
+verified against the current local files, Apple's COMPLETE processing state,
+checksums and display order. The final preflight reports zero errors.
 
 The iOS 1.0.70 (6) archive passed validation, upload and Apple processing
-(`VALID`, `APP_STORE_ELIGIBLE`). Build 6 is selected in the iOS draft; final App Review
-submission remains pending. macOS 1.0.3 and tvOS 1.0.0 (1) passed processing and
+(`VALID`, `APP_STORE_ELIGIBLE`). iOS 1.0.70 (6) was submitted on September 24,
+2026 at 13:29 Europe/Vienna and is **Waiting for Review**, with automatic release
+after approval. macOS 1.0.3 and tvOS 1.0.0 (1) passed processing and
 are available to the existing internal TestFlight group. See
 `validation/RELEASE-STATUS.md` for the latest verified release state.
+
+Apple required the shared Apple TV privacy-policy text before accepting the
+iOS submission. `published-privacy-policy.txt` copies the existing published
+English policy at https://themegaradio.com/en/privacy-policy without introducing
+new terms or translating legal text. Both editable App Information records
+were verified against that copy; content-rights declarations were untouched.
 
 ## Regenerate copy
 
@@ -107,6 +115,11 @@ preservation of originals after failed processing or checksum validation.
 Run `python3 release/aso-2026-09-24/check-delivery.py` before the final UI review.
 It rejects stale metadata or screenshot evidence and verifies all current file
 fingerprints, complete counts and the iOS build association.
+
+The scoped uploader intentionally requires editable PREPARE_FOR_SUBMISSION
+versions. After submission, preserve the final verification evidence instead of
+rerunning a mutation against a version under review. The final UI submission
+and Waiting for Review state are recorded in `validation/ios-review-submission.json`.
 
 ## iOS subscription and device validation
 

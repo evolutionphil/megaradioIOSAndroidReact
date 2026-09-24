@@ -20,6 +20,7 @@ SIZES = {'IOS':{'iphone6.5':'APP_IPHONE_65','iphone6.9':'APP_IPHONE_67',
          'MAC_OS':{'mac':'APP_DESKTOP'},'TV_OS':{'appletv':'APP_APPLE_TV'}}
 ASSETS = Path('/Users/mumiix/Downloads/MegaRadio-ASO-2026-09-24')
 PRIVACY = 'https://themegaradio.com/en/pages/privacy-policy'
+PRIVACY_TEXT = (ROOT/'published-privacy-policy.txt').read_text()
 TERMS = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
 BACKUPS = ROOT / 'remote-backups'
 BACKUPS.mkdir(exist_ok=True)
@@ -30,6 +31,23 @@ def record(name, data):
 def backup(name, data):
     p = BACKUPS/name
     if not p.exists(): p.write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n')
+
+def screenshot_sets(api, loc_id):
+    # Apple's documented include avoids one separate read for every display set.
+    path=f'/v1/appStoreVersionLocalizations/{loc_id}/appScreenshotSets'
+    params={'limit':200,'include':'appScreenshots','limit[appScreenshots]':50}
+    sets=[]
+    while path:
+        response=api.request('GET',path,params=params)
+        included={x['id']:x for x in response.get('included',[]) if x['type']=='appScreenshots'}
+        for item in response['data']:
+            relation=item.get('relationships',{}).get('appScreenshots',{})
+            links=relation.get('data')
+            if links is not None and not relation.get('links',{}).get('next') and all(x['id'] in included for x in links):
+                item['_existingScreenshots']=[included[x['id']] for x in links]
+            sets.append(item)
+        path=response.get('links',{}).get('next');params={}
+    return sets
 
 def targets(api):
     app = api.request('GET',f'/v1/apps/{client.APP}')['data']
@@ -64,6 +82,7 @@ def metadata(api, mutate):
             remote_locale=LOCALES.get(locale,locale)
             attrs={k:c[k] for k in ['name','subtitle']}
             attrs['privacyPolicyUrl']=PRIVACY
+            attrs['privacyPolicyText']=PRIVACY_TEXT
             loc=by_locale.get(remote_locale)
             changed=not loc or any(loc['attributes'].get(k)!=v for k,v in attrs.items())
             if mutate and changed:
@@ -95,6 +114,7 @@ def metadata(api, mutate):
         print(json.dumps({'platform':platform,'checked':50}),flush=True)
     report={'observedAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
             'copyFingerprint':hashlib.sha256(json.dumps(COPY,ensure_ascii=False,sort_keys=True).encode()).hexdigest(),'records':results,
+            'privacyPolicyFingerprint':hashlib.sha256(PRIVACY_TEXT.encode()).hexdigest(),
             'mismatches':[x for x in results if x['mismatches']]}
     record('aso-api-text-verification.json',report)
     print(json.dumps({'records':len(results),'mismatches':report['mismatches']}),flush=True)
@@ -109,7 +129,8 @@ def deliver_set(job, mutate, refresh_stalled=False):
         shot_set=create(api,'appScreenshotSets',{'screenshotDisplayType':display},'appStoreVersionLocalization','appStoreVersionLocalizations',loc_id)
     else: shot_set=matched[0]
     set_id=shot_set['id']
-    existing=api.all(f'/v1/appScreenshotSets/{set_id}/appScreenshots',params={'limit':200})
+    existing=shot_set.get('_existingScreenshots')
+    if existing is None:existing=api.all(f'/v1/appScreenshotSets/{set_id}/appScreenshots',params={'limit':200})
     # Store originals before replacement. Local original images are also retained.
     backup('screens-'+set_id+'.json',existing)
     wanted=[]; expected_checksums={}
@@ -205,7 +226,7 @@ def screenshots(api, mutate, locale_filter, workers, retry_failed, refresh_stall
                 locale_jobs.append((p,locale,locs[LOCALES.get(locale,locale)],device,display))
             if locale_jobs:
                 loc_id=locale_jobs[0][2]
-                sets=api.all(f'/v1/appStoreVersionLocalizations/{loc_id}/appScreenshotSets',params={'limit':200})
+                sets=screenshot_sets(api,loc_id)
                 jobs.extend((*job,sets) for job in locale_jobs)
     results=previous
     with ThreadPoolExecutor(max_workers=workers) as pool:

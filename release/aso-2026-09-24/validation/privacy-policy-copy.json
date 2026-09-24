@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-09-24T11:24:23.342925+00:00",
+  "sourceUrl": "https://themegaradio.com/en/privacy-policy",
+  "policyCharacters": 2642,
+  "policySha256": "4b64ea45baa4a4e4ef90e900a4f58620283a831a6065f22b905e9a6aee58e31d",
+  "action": "Copy existing published English privacy policy into required Apple TV text field; no new terms or translation",
+  "records": [
+    {
+      "appInfoId": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locales": 50,
+      "matchesPublishedPolicy": true,
+      "otherLocalizationFieldsUnchanged": true
+    },
+    {
+      "appInfoId": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locales": 50,
+      "matchesPublishedPolicy": true,
+      "otherLocalizationFieldsUnchanged": true
+    }
+  ],
+  "contentRightsDeclarationChanged": false
+}

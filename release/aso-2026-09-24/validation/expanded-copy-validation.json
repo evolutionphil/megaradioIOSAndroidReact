@@ -26,7 +26,7 @@
   {
     "locale": "de-DE",
     "platform": "IOS",
-    "characters": 3229,
+    "characters": 3162,
     "promotionCharacters": 163,
     "brandUnchanged": true,
     "review": "localized opening and market context; relevant features; no volume or rank claim"
@@ -34,7 +34,7 @@
   {
     "locale": "de-DE",
     "platform": "MACOS",
-    "characters": 2947,
+    "characters": 2880,
     "promotionCharacters": 163,
     "brandUnchanged": true,
     "review": "localized opening and market context; relevant features; no volume or rank claim"
@@ -42,7 +42,7 @@
   {
     "locale": "de-DE",
     "platform": "TVOS",
-    "characters": 2960,
+    "characters": 2893,
     "promotionCharacters": 163,
     "brandUnchanged": true,
     "review": "localized opening and market context; relevant features; no volume or rank claim"

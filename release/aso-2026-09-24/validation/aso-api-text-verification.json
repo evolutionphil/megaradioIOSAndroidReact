@@ -1,6 +1,6 @@
 {
-  "observedAt": "2026-09-24T10:03:05Z",
-  "copyFingerprint": "3258fabe7ef99373ba141a7ffe3e891b4bdf16b8d0b2720c014fc52efecc50f2",
+  "observedAt": "2026-09-24T11:27:42Z",
+  "copyFingerprint": "e1da5d850c47be861845c70b82a4855e17481fed2ad770fb220681b0cb7ceb69",
   "records": [
     {
       "kind": "appInfo",
@@ -1503,5 +1503,6 @@
       "mismatches": []
     }
   ],
+  "privacyPolicyFingerprint": "4b64ea45baa4a4e4ef90e900a4f58620283a831a6065f22b905e9a6aee58e31d",
   "mismatches": []
 }

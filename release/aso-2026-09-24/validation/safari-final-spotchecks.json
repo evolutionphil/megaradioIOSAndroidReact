@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-09-24T10:05:48.406984+00:00",
+  "observedAt": "2026-09-24T11:18:09.569894+00:00",
   "IOS": {
     "version": "1.0.70",
     "selectedBuild": "6",
@@ -19,5 +19,29 @@
       }
     }
   },
-  "remaining": "Full delivery continues for other locales; final release state is not submitted."
+  "remaining": "Submit iOS after all delivery checks pass.",
+  "MAC_OS": {
+    "version": "1.0.3",
+    "en-US": {
+      "descriptionAndPromoVisible": true,
+      "screenshots": 4
+    },
+    "de-DE": {
+      "descriptionAndPromoVisible": true,
+      "screenshots": 4,
+      "uploadedScreenshotLayoutVisuallyChecked": true
+    }
+  },
+  "TV_OS": {
+    "version": "1.0.0",
+    "en-US": {
+      "descriptionAndPromoVisible": true,
+      "screenshots": 4
+    },
+    "tr": {
+      "descriptionAndPromoVisible": true,
+      "screenshots": 4,
+      "uploadedScreenshotLayoutVisuallyChecked": true
+    }
+  }
 }

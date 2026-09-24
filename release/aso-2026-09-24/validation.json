@@ -18,7 +18,7 @@
       "keywords": 100,
       "keywords_utf8_bytes": 102,
       "promotion": 163,
-      "description": 3229
+      "description": 3162
     },
     {
       "platform": "IOS",
@@ -518,7 +518,7 @@
       "keywords": 100,
       "keywords_utf8_bytes": 102,
       "promotion": 163,
-      "description": 2947
+      "description": 2880
     },
     {
       "platform": "MACOS",
@@ -1018,7 +1018,7 @@
       "keywords": 100,
       "keywords_utf8_bytes": 102,
       "promotion": 163,
-      "description": 2960
+      "description": 2893
     },
     {
       "platform": "TVOS",
