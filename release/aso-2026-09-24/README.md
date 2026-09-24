@@ -17,8 +17,11 @@ checksums and display order. The final preflight reports zero errors.
 
 The iOS 1.0.70 (6) archive passed validation, upload and Apple processing
 (`VALID`, `APP_STORE_ELIGIBLE`). iOS 1.0.70 (6) was submitted on September 24,
-2026 at 13:29 Europe/Vienna and is now **In Review** (15:26 check), with automatic release
-after approval. macOS 1.0.3 and tvOS 1.0.0 (1) passed processing and
+2026 at 13:29 Europe/Vienna. Apple later rejected its metadata under Guideline
+2.3.6 because the Advertising age-rating descriptor was false. The descriptor is
+now verified true in both editable App Information records. The same build was
+resubmitted at 20:00 Europe/Vienna and is Waiting for Review, with automatic
+release after approval. macOS 1.0.3 and tvOS 1.0.0 (1) passed processing and
 are available to the existing internal TestFlight group. See
 `validation/RELEASE-STATUS.md` for the latest verified release state.
 
@@ -28,14 +31,23 @@ English policy at https://themegaradio.com/en/privacy-policy without introducing
 new terms or translating legal text. Both editable App Information records
 were verified against that copy; content-rights declarations were untouched.
 
-## Proposed iPad artwork refresh
+## iPad artwork refresh
 
-A new four-image design with actual iPad screens is prepared separately in
-`/Users/mumiix/Downloads/MegaRadio-iPad-Redesign-2026-09-24/`. All 50 locale sets
-/ 200 images pass validation. It has not replaced the submitted images: the
-app is already In Review, and the user is choosing between withdrawing and
-resubmitting or retaining this artwork for a subsequent release. See
-`screenshots/IPAD-REDESIGN.md` and `validation/ipad-redesign-validation.json`.
+The requested four-image design uses genuine iPad captures of discovery, live
+playback, a genre station grid and country selection. All 50 locale sets / 200
+images passed local validation in
+`/Users/mumiix/Downloads/MegaRadio-iPad-Redesign-2026-09-24/`.
+The editable rejected version now permits delivery without withdrawing review.
+`deliver-ipad-redesign.py --apply` targets only iOS 1.0.70 and replaces originals
+only after all four new images in a set are processed and checksum verified.
+The canonical image package and delivery evidence are updated on full success.
+All 50 sets / 200 images are delivered and verified. See
+`validation/ipad-redesign-delivery.json` for per-locale evidence.
+
+`verify-ios-resubmission.py` reads the exact iOS build association, 150 metadata
+records, automatic release setting and both Advertising descriptors. It does
+not modify or submit anything. The final delivery gate also requires evidence
+that Advertising is declared before allowing another review handoff.
 
 ## Regenerate copy
 
@@ -72,8 +84,8 @@ The scoped API uploader supports Apple's region-qualified locale identifiers.
 
 Original iPhone photos and device frames are preserved. Unsupported recording,
 HD and ranking claims are removed; the old recording slide now shows a real
-Genres capture. Three original iPad photographs are retained, and the repeated
-fourth slide is replaced with a real iPad Genres screen. Mac and Apple TV use
+Genres capture. The refreshed iPad set uses four real app screens with localized captions
+and the original MegaRadio icon. Mac and Apple TV use
 actual app captures for discovery, player, genres and country selection.
 
 Editorial captions are localized in all 50 languages with AppKit text shaping,
@@ -118,7 +130,7 @@ is respected and authentication is refreshed after a long quota wait.
 `--refresh-stalled` replaces only unfinished reservations from an interrupted
 run; processed originals remain until their replacements are ready. A pending
 byte transfer is finalized even if a previous run stopped before its checksum
-commit. Seven offline delivery tests cover reuse, ordering, interruption, and
+commit. Eight offline delivery tests cover acknowledged-but-uncommitted uploads, reuse, ordering, interruption, and
 preservation of originals after failed processing or checksum validation.
 
 Run `python3 release/aso-2026-09-24/check-delivery.py` before the final UI review.

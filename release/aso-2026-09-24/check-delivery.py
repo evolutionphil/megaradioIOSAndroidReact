@@ -19,6 +19,15 @@ build = json.loads((ROOT / 'validation/ios-selected-build.json').read_text())
 expected_devices = {'IOS': {'iphone6.5': 7, 'iphone6.9': 7, 'iphone5.5': 7, 'ipad13': 4, 'watch': 6},
                     'MAC_OS': {'mac': 4}, 'TV_OS': {'appletv': 4}}
 errors = []
+advertising_path = ROOT / 'validation/ios-advertising-declaration.json'
+if not advertising_path.exists():
+    errors.append('Advertising age-rating declaration has not been verified')
+else:
+    advertising = json.loads(advertising_path.read_text())
+    infos = advertising.get('editableAppInfos', [])
+    if (not advertising.get('verified') or advertising.get('advertising') is not True
+            or len(infos) != 2 or not all(x.get('advertising') is True and x.get('verified') for x in infos)):
+        errors.append('Advertising must be declared in both editable App Information records')
 fingerprint = hashlib.sha256(json.dumps(copy, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 if text.get('copyFingerprint') != fingerprint:
     errors.append('Metadata readback does not identify the current copy revision')

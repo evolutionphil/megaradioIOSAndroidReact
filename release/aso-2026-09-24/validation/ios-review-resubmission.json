@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-09-24T18:00:43Z",
+  "source": "App Store Connect API after Safari resubmission",
+  "appId": "6759302561",
+  "platform": "IOS",
+  "version": "1.0.70",
+  "build": "6",
+  "submissionId": "2a04470f-1d8e-43c0-8e71-538d9e909cc2",
+  "submissionUrl": "https://appstoreconnect.apple.com/apps/6759302561/distribution/reviewsubmissions/details/2a04470f-1d8e-43c0-8e71-538d9e909cc2",
+  "submission": {
+    "platform": "IOS",
+    "submittedDate": "2026-09-24T18:00:26.802Z",
+    "state": "WAITING_FOR_REVIEW"
+  },
+  "state": "WAITING_FOR_REVIEW",
+  "items": [
+    {
+      "id": "MmEwNDQ3MGYtMWQ4ZS00M2MwLThlNzEtNTM4ZDllOTA5Y2MyfDZ8ODkxODkzNTgz",
+      "state": "READY_FOR_REVIEW"
+    }
+  ],
+  "automaticReleaseAfterApproval": true,
+  "advertisingCorrected": true,
+  "ipadRedesignLocales": 50,
+  "ipadRedesignImages": 200,
+  "appleApproved": false,
+  "published": false,
+  "contentRightsDeclarationChanged": false
+}

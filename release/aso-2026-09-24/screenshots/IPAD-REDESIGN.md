@@ -1,13 +1,13 @@
 # iPad store artwork refresh
 
 The previous four-image set used three onboarding photographs and one Genres
-screen. This proposed replacement uses four genuine iPad Pro 13-inch captures:
+screen. This replacement uses four genuine iPad Pro 13-inch captures:
 Discover, live player, a genre's station grid, and country selection. Large
 captions, a consistent device frame and a coordinated purple, peach and lilac
 palette give the set a shared visual structure. MegaRadio's original app icon
 and exact brand name are preserved.
 
-The output package is separate from the images submitted to Apple:
+The design output package is retained separately from the canonical delivered package:
 `/Users/mumiix/Downloads/MegaRadio-iPad-Redesign-2026-09-24/`.
 It contains four 2064 × 2752 RGB PNGs per locale, 50 locales / 200 images,
 with localized editorial captions. The real native interface remains in English.
@@ -16,11 +16,15 @@ content, station data, account entitlements or playback metadata was invented.
 
 ## Status
 
-App Store Connect reported iOS 1.0.70 as IN_REVIEW at 13:26 UTC on September 24.
-No submission was withdrawn and no store images were replaced by this refresh.
-The user was shown a four-image preview and asked whether to withdraw and
-resubmit with the new images or retain them for a subsequent release. This
-choice remains separate from preparing and validating the artwork.
+The user requested correction and resubmission after Apple's automated
+Guideline 2.3.6 rejection for an incorrect Advertising age-rating descriptor.
+The metadata issue is corrected. The rejected version is editable, so the
+prepared 50-locale artwork has been delivered as part of this resubmission.
+All 200 images are COMPLETE with verified checksums and order. The canonical
+package now contains this artwork; originals remain backed up locally.
+No active review was withdrawn. iOS 1.0.70 (6) was resubmitted at 20:00
+Europe/Vienna and is Waiting for Review. See
+`../validation/ipad-redesign-delivery.json` for verified per-locale evidence.
 
 Apple documents that screenshot editing requires an editable version state:
 https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots

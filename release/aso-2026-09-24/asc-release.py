@@ -185,6 +185,15 @@ def deliver_set(job, mutate, refresh_stalled=False):
                   and current_by_id[sid].get('sourceFileChecksum')==checksum
                   for sid,checksum in expected_checksums.items())
         if ready:break
+        # Apple can acknowledge the finalization PATCH yet keep an asset at
+        # UPLOAD_COMPLETE with no checksum. Retry the same idempotent commit
+        # after a grace period; never replace/delete processed originals here.
+        if mutate and attempt in (3,9):
+            for sid,checksum in expected_checksums.items():
+                attrs=current_by_id.get(sid,{})
+                if (attrs.get('assetDeliveryState',{}).get('state')=='UPLOAD_COMPLETE'
+                        and not attrs.get('sourceFileChecksum')):
+                    api.patch('appScreenshots',sid,{'uploaded':True,'sourceFileChecksum':checksum})
         if mutate:time.sleep(10)
     if not ready:return {'platform':platform,'locale':locale,'device':device,'error':'processing or checksum verification incomplete','setId':set_id}
     # Replace only after every new image is processed and checksum-verified.

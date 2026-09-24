@@ -78,6 +78,26 @@ class DeliverySafety(unittest.TestCase):
         self.assertTrue(self.deliver(api)['verified'])
         self.assertEqual(api.mutations, [])
 
+    def test_acknowledged_commit_with_missing_checksum_is_retried(self):
+        class DelayedCommitApple(FakeApple):
+            def __init__(self):
+                super().__init__([shot('old', 'old-checksum')])
+                self.attempts = {}
+
+            def patch(self, kind, identifier, attrs):
+                self.attempts[identifier] = self.attempts.get(identifier, 0) + 1
+                if self.attempts[identifier] == 1:
+                    item = next(x for x in self.shots if x['id'] == identifier)
+                    item['attributes']['assetDeliveryState']['state'] = 'UPLOAD_COMPLETE'
+                    return
+                super().patch(kind, identifier, attrs)
+
+        api = DelayedCommitApple()
+        self.assertTrue(self.deliver(api)['verified'])
+        self.assertTrue(all(count == 2 for count in api.attempts.values()))
+        self.assertEqual(len(api.shots), 2)
+        self.assertNotIn('old', [x['id'] for x in api.shots])
+
     def test_replacement_preserves_old_assets_until_new_assets_are_ready(self):
         api = FakeApple([shot('old', 'old-checksum')])
         self.assertTrue(self.deliver(api)['verified'])

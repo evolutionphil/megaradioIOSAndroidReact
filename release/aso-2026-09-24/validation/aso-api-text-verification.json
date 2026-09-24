@@ -1,6 +1,7 @@
 {
-  "observedAt": "2026-09-24T11:27:42Z",
+  "observedAt": "2026-09-24T17:46:01Z",
   "copyFingerprint": "e1da5d850c47be861845c70b82a4855e17481fed2ad770fb220681b0cb7ceb69",
+  "privacyPolicyFingerprint": "4b64ea45baa4a4e4ef90e900a4f58620283a831a6065f22b905e9a6aee58e31d",
   "records": [
     {
       "kind": "appInfo",
@@ -604,601 +605,601 @@
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "tr",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "de-DE",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "en-US",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "fr-FR",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "es-ES",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "it",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "pt-PT",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ru",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ja",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "zh-Hant",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "he",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ar-SA",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "en-GB",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "en-AU",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "fr-CA",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "es-MX",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "pt-BR",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "nl-NL",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "sv",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "no",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "da",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "fi",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "pl",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "cs",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "sk",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "hu",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ro",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "hr",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "el",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "uk",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ca",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "zh-Hans",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ko",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "id",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ms",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "th",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "vi",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "hi",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "en-CA",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "bn",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "gu",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "kn",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ml",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "mr",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "or",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "pa",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ta",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "te",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "ur",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "MAC_OS",
+      "platform": "IOS",
       "locale": "sl",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "tr",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "de-DE",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "en-US",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "fr-FR",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "es-ES",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "it",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "pt-PT",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ru",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ja",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "zh-Hant",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "he",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ar-SA",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "en-GB",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "en-AU",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "fr-CA",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "es-MX",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "pt-BR",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "nl-NL",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "sv",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "no",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "da",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "fi",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "pl",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "cs",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "sk",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "hu",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ro",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "hr",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "el",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "uk",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ca",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "zh-Hans",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ko",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "id",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ms",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "th",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "vi",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "hi",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "en-CA",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "bn",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "gu",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "kn",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ml",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "mr",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "or",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "pa",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ta",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "te",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "ur",
       "mismatches": []
     },
     {
       "kind": "version",
-      "platform": "IOS",
+      "platform": "MAC_OS",
       "locale": "sl",
       "mismatches": []
     },
@@ -1503,6 +1504,5 @@
       "mismatches": []
     }
   ],
-  "privacyPolicyFingerprint": "4b64ea45baa4a4e4ef90e900a4f58620283a831a6065f22b905e9a6aee58e31d",
   "mismatches": []
 }

@@ -1,5 +1,5 @@
 {
-  "passed": 7,
+  "passed": 8,
   "failed": 0,
   "networkAccess": false,
   "command": "python tests/test_delivery.py",
@@ -10,6 +10,8 @@
     "preserve originals after checksum failure",
     "restore image order without upload",
     "finalize interrupted byte transfer",
-    "replace unfinished reservation while preserving original on failure"
-  ]
+    "replace unfinished reservation while preserving original on failure",
+    "retry acknowledged finalization when Apple has not stored the checksum"
+  ],
+  "observedAt": "2026-09-24T17:48:51Z"
 }
