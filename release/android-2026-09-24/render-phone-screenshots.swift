@@ -6,8 +6,9 @@ let source = URL(fileURLWithPath: CommandLine.arguments[1])
 let output = URL(fileURLWithPath: CommandLine.arguments[2])
 let wordsURL = URL(fileURLWithPath: CommandLine.arguments[3])
 let captions = try JSONSerialization.jsonObject(with: Data(contentsOf: wordsURL)) as! [String:[String:[String]]]
-let frames = [("country","03-country.png"),("discover","01-discover.png"),("player","02-player.png"),("genres","04-genres.png"),("car","05-car.png"),("search","06-search.png")]
-let only = CommandLine.arguments.count > 4 ? CommandLine.arguments[4] : ""
+let frames = [("country","03-country.png"),("discover","01-discover.png"),("player","02-player.png"),("genres","04-genres.png"),("car","05-car.png"),("search","06-search.png"),("rock-stations","07-rock-stations.png"),("sleep-timer","08-sleep-timer.png")]
+let extrasOnly = CommandLine.arguments.contains("--extras-only")
+let only = CommandLine.arguments.dropFirst(4).first { !$0.hasPrefix("--") } ?? ""
 func color(_ h:UInt32, _ a:CGFloat = 1) -> NSColor { NSColor(srgbRed:CGFloat((h>>16)&255)/255,green:CGFloat((h>>8)&255)/255,blue:CGFloat(h&255)/255,alpha:a) }
 func label(_ value:String,_ box:NSRect,_ maxSize:CGFloat,_ minSize:CGFloat,_ weight:NSFont.Weight,_ ink:NSColor) throws -> CGFloat {
     let p=NSMutableParagraphStyle();p.alignment = .center;p.baseWritingDirection = .natural;p.lineBreakMode = .byWordWrapping;p.lineSpacing=3
@@ -24,7 +25,7 @@ var audit=[[String:Any]]()
 for locale in captions.keys.sorted() where only.isEmpty || locale == only {
     let folder=output.appendingPathComponent(locale).appendingPathComponent("phone")
     try FileManager.default.createDirectory(at:folder,withIntermediateDirectories:true)
-    for (index,frame) in frames.enumerated() {
+    for (index,frame) in frames.enumerated() where !extrasOnly || index >= 6 {
         let raw=source.appendingPathComponent(frame.1)
         guard let shot=NSImage(contentsOf:raw) else { throw NSError(domain:"MissingAndroidCapture",code:1,userInfo:[NSLocalizedDescriptionKey:raw.path]) }
         let words=captions[locale]![frame.0]!
@@ -52,5 +53,6 @@ for locale in captions.keys.sorted() where only.isEmpty || locale == only {
         audit.append(["locale":locale,"kind":frame.0,"file":file.path,"source":raw.path,"headline":words[0],"caption":words[1],"headingFont":heading,"captionFont":subtitle,"width":1080,"height":1920,"capturedUILanguage":"English","editorialTextLocalized":true])
     }
 }
-try JSONSerialization.data(withJSONObject:audit,options:[.prettyPrinted,.sortedKeys]).write(to:output.appendingPathComponent(only.isEmpty ? "phone-render-audit.json" : "phone-render-preview-\(only).json"))
+let report = extrasOnly ? "phone-extras-render-audit.json" : (only.isEmpty ? "phone-render-audit.json" : "phone-render-preview-\(only).json")
+try JSONSerialization.data(withJSONObject:audit,options:[.prettyPrinted,.sortedKeys]).write(to:output.appendingPathComponent(report))
 print("Rendered \(audit.count) actual Android phone screenshots")

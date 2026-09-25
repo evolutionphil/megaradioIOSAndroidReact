@@ -5,8 +5,8 @@ import Foundation
 let root = URL(fileURLWithPath: CommandLine.arguments[1])
 let output = URL(fileURLWithPath: CommandLine.arguments[2])
 let onlyLocale = CommandLine.arguments.count > 3 ? CommandLine.arguments[3] : nil
-let copy = try JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent("ipad-redesign-captions.json"))) as! [String:[String:[String]]]
-let slides = ["discover", "player", "genres", "country"]
+let copy = try JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent("ipad-ten-captions.json"))) as! [String:[String:[String]]]
+let slides = ["discover", "player", "genres", "country", "search", "rock-stations", "sleep-timer", "favorites", "social", "recent"]
 let width = 2064, height = 2752
 let appIconURL = root.appendingPathComponent("../../../frontend/assets/megaradio-icon.png").standardizedFileURL
 guard let appIcon = NSImage(contentsOf:appIconURL) else { fatalError("Missing original MegaRadio icon") }
@@ -34,22 +34,25 @@ func round(_ rect: NSRect, _ radius: CGFloat, _ fill: NSColor) {
 }
 for locale in copy.keys.sorted() where onlyLocale == nil || locale == onlyLocale {
   for (index, kind) in slides.enumerated() {
-    let source = root.appendingPathComponent("source/ipad-redesign/\(kind).png")
+    let source = index < 4
+        ? root.appendingPathComponent("source/ipad-redesign/\(kind).png")
+        : root.appendingPathComponent("source/expanded-ipad/" + String(format:"%02d-", index+1) + kind + ".png")
     guard let capture = NSImage(contentsOf:source) else { fatalError("Missing native capture: \(source.path)") }
     let rep = NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:width,pixelsHigh:height,bitsPerSample:8,samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:0,bitsPerPixel:0)!
     let ctx = NSGraphicsContext(bitmapImageRep:rep)!.cgContext
     ctx.translateBy(x:0,y:CGFloat(height));ctx.scaleBy(x:1,y:-1)
     NSGraphicsContext.saveGraphicsState();NSGraphicsContext.current=NSGraphicsContext(cgContext:ctx,flipped:true)
-    let dark = index == 0 || index == 3
+    let paletteIndex = index % 4
+    let dark = paletteIndex == 0 || paletteIndex == 3
     let backgrounds:[UInt32] = [0x211334,0xFFF0E7,0xEEE8FF,0x271229]
     let accents:[UInt32] = [0xA977FF,0xFF865A,0x9868EB,0xEC70AE]
     let ink = color(dark ? 0xFFFFFF : 0x271936)
     let secondary = color(dark ? 0xE1D6EF : 0x66566F)
-    let accent=color(accents[index])
-    color(backgrounds[index]).setFill();NSRect(x:0,y:0,width:width,height:height).fill()
+    let accent=color(accents[paletteIndex])
+    color(backgrounds[paletteIndex]).setFill();NSRect(x:0,y:0,width:width,height:height).fill()
     // Broad geometry gives each card its own color while keeping a single visual system.
     accent.withAlphaComponent(dark ? 0.18 : 0.15).setFill()
-    NSBezierPath(ovalIn:NSRect(x:-480+index*180,y:780,width:3000,height:2800)).fill()
+    NSBezierPath(ovalIn:NSRect(x:-480+paletteIndex*180,y:780,width:3000,height:2800)).fill()
     for n in 0..<3 {
         let ring=NSBezierPath(ovalIn:NSRect(x:-460-n*85,y:1110+n*100,width:2900+n*170,height:2300+n*170))
         ring.lineWidth=3;accent.withAlphaComponent(0.22).setStroke();ring.stroke()
@@ -60,7 +63,7 @@ for locale in copy.keys.sorted() where onlyLocale == nil || locale == onlyLocale
     appIcon.draw(in:logoRect,from:.zero,operation:.sourceOver,fraction:1,respectFlipped:true,hints:[.interpolation:NSImageInterpolation.high])
     NSGraphicsContext.restoreGraphicsState()
     _ = try text("MegaRadio",box:NSRect(x:249,y:88,width:580,height:88),maximum:62,minimum:62,weight:.bold,ink:ink,alignment:.left)
-    _ = try text(String(format:"%02d / 04",index+1),box:NSRect(x:1640,y:104,width:265,height:60),maximum:38,minimum:38,weight:.medium,ink:secondary,alignment:.right)
+    _ = try text(String(format:"%02d / 10",index+1),box:NSRect(x:1640,y:104,width:265,height:60),maximum:38,minimum:38,weight:.medium,ink:secondary,alignment:.right)
     let wording=copy[locale]![kind]!
     let headingFont = try text(wording[0],box:NSRect(x:145,y:215,width:1774,height:292),maximum:158,minimum:86,weight:.heavy,ink:ink)
     let subtitleFont = try text(wording[1],box:NSRect(x:220,y:510,width:1624,height:112),maximum:55,minimum:40,weight:.medium,ink:secondary)

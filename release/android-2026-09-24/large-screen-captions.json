@@ -31,6 +31,10 @@
     "sleep-timer": [
       "Radyo eşliğinde uykuya dal",
       "Yayının ne zaman duracağını seç"
+    ],
+    "favorites": [
+      "Favori radyoların",
+      "Sevdiğin istasyonlara kolayca ulaş"
     ]
   },
   "de-DE": {
@@ -65,6 +69,10 @@
     "sleep-timer": [
       "Mit Radio einschlafen",
       "Wiedergabe zeitgesteuert beenden"
+    ],
+    "favorites": [
+      "Deine Lieblingssender",
+      "Schnell finden. Direkt einschalten."
     ]
   },
   "en-US": {
@@ -99,6 +107,10 @@
     "sleep-timer": [
       "Drift off to the radio",
       "Choose when playback stops"
+    ],
+    "favorites": [
+      "Your favorite stations",
+      "Save them. Find them. Press play."
     ]
   },
   "fr-FR": {
@@ -133,6 +145,10 @@
     "sleep-timer": [
       "Endormez-vous en musique",
       "Choisissez quand arrêter la lecture"
+    ],
+    "favorites": [
+      "Vos radios favorites",
+      "Retrouvez vos stations en un instant"
     ]
   },
   "es-ES": {
@@ -167,6 +183,10 @@
     "sleep-timer": [
       "Duérmete con la radio",
       "Elige cuándo detener la reproducción"
+    ],
+    "favorites": [
+      "Tus emisoras favoritas",
+      "Encuentra tu radio y dale al play"
     ]
   },
   "it-IT": {
@@ -201,6 +221,10 @@
     "sleep-timer": [
       "Addormentati con la radio",
       "Scegli quando interrompere l’ascolto"
+    ],
+    "favorites": [
+      "Le tue radio preferite",
+      "Ritrovale e mettiti in ascolto"
     ]
   },
   "pt-PT": {
@@ -235,6 +259,10 @@
     "sleep-timer": [
       "Adormece a ouvir rádio",
       "Escolhe quando parar a reprodução"
+    ],
+    "favorites": [
+      "As tuas rádios favoritas",
+      "Encontra a tua estação e começa a ouvir"
     ]
   },
   "ru-RU": {
@@ -269,6 +297,10 @@
     "sleep-timer": [
       "Засыпайте под радио",
       "Выберите время остановки воспроизведения"
+    ],
+    "favorites": [
+      "Любимые радиостанции",
+      "Сохраните и находите их быстрее"
     ]
   },
   "ja-JP": {
@@ -303,6 +335,10 @@
     "sleep-timer": [
       "ラジオと一緒におやすみ",
       "再生を止める時間を設定"
+    ],
+    "favorites": [
+      "お気に入りのラジオ局",
+      "保存した放送局にすぐアクセス"
     ]
   },
   "zh-TW": {
@@ -337,6 +373,10 @@
     "sleep-timer": [
       "伴著廣播入睡",
       "設定自動停止播放的時間"
+    ],
+    "favorites": [
+      "收藏喜愛的電台",
+      "輕鬆找到，隨時收聽"
     ]
   },
   "ar": {
@@ -371,6 +411,10 @@
     "sleep-timer": [
       "استرخِ مع مؤقّت النوم",
       "اختر وقت إيقاف التشغيل"
+    ],
+    "favorites": [
+      "محطاتك المفضلة",
+      "احفظ محطاتك واعثر عليها بسهولة"
     ]
   },
   "en-GB": {
@@ -405,6 +449,10 @@
     "sleep-timer": [
       "Radio for winding down",
       "Set a timer to stop playback"
+    ],
+    "favorites": [
+      "Your favourite stations",
+      "Keep the radio you love close"
     ]
   },
   "en-AU": {
@@ -439,6 +487,10 @@
     "sleep-timer": [
       "Unwind with the radio",
       "Choose when your listening ends"
+    ],
+    "favorites": [
+      "Your favourite stations",
+      "Local favourites. A world of radio."
     ]
   },
   "fr-CA": {
@@ -473,6 +525,10 @@
     "sleep-timer": [
       "La radio pour vous détendre",
       "Réglez l’arrêt automatique de la lecture"
+    ],
+    "favorites": [
+      "Vos radios préférées",
+      "Vos stations du Québec et d’ailleurs"
     ]
   },
   "es-419": {
@@ -507,6 +563,10 @@
     "sleep-timer": [
       "Descansa escuchando radio",
       "Programa cuándo se detiene el audio"
+    ],
+    "favorites": [
+      "Tus estaciones favoritas",
+      "Tu radio de siempre, a un toque"
     ]
   },
   "pt-BR": {
@@ -541,6 +601,10 @@
     "sleep-timer": [
       "Relaxe ouvindo rádio",
       "Programe quando o áudio deve parar"
+    ],
+    "favorites": [
+      "Suas rádios favoritas",
+      "Salve suas emissoras e dê o play"
     ]
   },
   "nl-NL": {
@@ -575,6 +639,10 @@
     "sleep-timer": [
       "Val in slaap met de radio",
       "Kies wanneer het afspelen stopt"
+    ],
+    "favorites": [
+      "Je favoriete zenders",
+      "Bewaar ze en luister meteen"
     ]
   },
   "sv-SE": {
@@ -609,6 +677,10 @@
     "sleep-timer": [
       "Somna till radion",
       "Välj när uppspelningen ska sluta"
+    ],
+    "favorites": [
+      "Dina favoritkanaler",
+      "Spara och hitta tillbaka direkt"
     ]
   },
   "no-NO": {
@@ -643,6 +715,10 @@
     "sleep-timer": [
       "Sov til lyden av radio",
       "Velg når avspillingen skal stoppe"
+    ],
+    "favorites": [
+      "Dine favorittkanaler",
+      "Lagre dem og lytt når du vil"
     ]
   },
   "da-DK": {
@@ -677,6 +753,10 @@
     "sleep-timer": [
       "Fald i søvn til radioen",
       "Vælg hvornår afspilningen stopper"
+    ],
+    "favorites": [
+      "Dine favoritkanaler",
+      "Gem dem, og lyt med det samme"
     ]
   },
   "fi-FI": {
@@ -711,6 +791,10 @@
     "sleep-timer": [
       "Nukahda radion ääreen",
       "Valitse toiston lopetusaika"
+    ],
+    "favorites": [
+      "Suosikkikanavasi",
+      "Tallenna ja löydä helposti uudelleen"
     ]
   },
   "pl-PL": {
@@ -745,6 +829,10 @@
     "sleep-timer": [
       "Zasypiaj przy radiu",
       "Ustaw czas zakończenia odtwarzania"
+    ],
+    "favorites": [
+      "Twoje ulubione stacje",
+      "Zapisz je i wracaj do słuchania"
     ]
   },
   "cs-CZ": {
@@ -779,6 +867,10 @@
     "sleep-timer": [
       "Usínejte s rádiem",
       "Vyberte čas zastavení přehrávání"
+    ],
+    "favorites": [
+      "Oblíbené stanice",
+      "Uložte si je a snadno je najděte"
     ]
   },
   "sk-SK": {
@@ -813,6 +905,10 @@
     "sleep-timer": [
       "Zaspávajte pri rádiu",
       "Nastavte čas zastavenia prehrávania"
+    ],
+    "favorites": [
+      "Obľúbené stanice",
+      "Uložte si ich a počúvajte znova"
     ]
   },
   "hu-HU": {
@@ -847,6 +943,10 @@
     "sleep-timer": [
       "Aludj el rádió mellett",
       "Állítsd be a lejátszás leállítását"
+    ],
+    "favorites": [
+      "Kedvenc rádióid",
+      "Mentsd el, és hallgasd újra"
     ]
   },
   "ro-RO": {
@@ -881,6 +981,10 @@
     "sleep-timer": [
       "Adormi ascultând radio",
       "Alege când se oprește redarea"
+    ],
+    "favorites": [
+      "Posturile tale preferate",
+      "Salvează-le și ascultă ușor"
     ]
   },
   "hr-HR": {
@@ -915,6 +1019,10 @@
     "sleep-timer": [
       "Zaspi uz radio",
       "Odaberi kada reprodukcija prestaje"
+    ],
+    "favorites": [
+      "Omiljene postaje",
+      "Spremite ih i jednostavno slušajte"
     ]
   },
   "el-GR": {
@@ -949,6 +1057,10 @@
     "sleep-timer": [
       "Αποκοιμήσου με ραδιόφωνο",
       "Επίλεξε πότε θα σταματήσει η αναπαραγωγή"
+    ],
+    "favorites": [
+      "Οι αγαπημένοι σου σταθμοί",
+      "Αποθήκευσε και άκουσε εύκολα"
     ]
   },
   "uk": {
@@ -983,6 +1095,10 @@
     "sleep-timer": [
       "Засинайте під радіо",
       "Виберіть час зупинки відтворення"
+    ],
+    "favorites": [
+      "Улюблені радіостанції",
+      "Зберігайте та знаходьте їх швидше"
     ]
   },
   "ca": {
@@ -1017,6 +1133,10 @@
     "sleep-timer": [
       "Adorm-te amb la ràdio",
       "Tria quan s’atura la reproducció"
+    ],
+    "favorites": [
+      "Les teves ràdios preferides",
+      "Desa-les i torna-hi fàcilment"
     ]
   },
   "zh-CN": {
@@ -1051,6 +1171,10 @@
     "sleep-timer": [
       "伴着广播入睡",
       "设置自动停止播放的时间"
+    ],
+    "favorites": [
+      "收藏喜爱的电台",
+      "轻松找到，随时收听"
     ]
   },
   "ko-KR": {
@@ -1085,6 +1209,10 @@
     "sleep-timer": [
       "라디오와 함께 편안한 잠",
       "재생을 멈출 시간을 설정하세요"
+    ],
+    "favorites": [
+      "즐겨찾는 라디오 방송",
+      "저장하고 간편하게 다시 듣기"
     ]
   },
   "id": {
@@ -1119,6 +1247,10 @@
     "sleep-timer": [
       "Tidur ditemani radio",
       "Atur kapan pemutaran berhenti"
+    ],
+    "favorites": [
+      "Stasiun favoritmu",
+      "Simpan dan dengarkan dengan mudah"
     ]
   },
   "th": {
@@ -1153,6 +1285,10 @@
     "sleep-timer": [
       "หลับสบายไปกับวิทยุ",
       "ตั้งเวลาให้หยุดเล่นโดยอัตโนมัติ"
+    ],
+    "favorites": [
+      "สถานีโปรดของคุณ",
+      "บันทึกไว้แล้วกลับมาฟังได้ง่าย"
     ]
   },
   "vi": {
@@ -1187,6 +1323,10 @@
     "sleep-timer": [
       "Thư giãn cùng hẹn giờ ngủ",
       "Chọn thời điểm dừng phát"
+    ],
+    "favorites": [
+      "Đài phát thanh yêu thích",
+      "Lưu lại và tìm nghe dễ dàng"
     ]
   },
   "hi-IN": {
@@ -1221,6 +1361,10 @@
     "sleep-timer": [
       "रेडियो सुनते हुए सोएँ",
       "प्लेबैक बंद होने का समय चुनें"
+    ],
+    "favorites": [
+      "आपके पसंदीदा स्टेशन",
+      "सहेजें और आसानी से फिर सुनें"
     ]
   },
   "en-CA": {
@@ -1255,6 +1399,10 @@
     "sleep-timer": [
       "Settle in with a sleep timer",
       "Choose when playback stops"
+    ],
+    "favorites": [
+      "Your favourite stations",
+      "From local radio to the world"
     ]
   },
   "bn-BD": {
@@ -1289,6 +1437,10 @@
     "sleep-timer": [
       "রেডিও শুনতে শুনতে ঘুমিয়ে পড়ুন",
       "কখন বাজানো বন্ধ হবে বেছে নিন"
+    ],
+    "favorites": [
+      "আপনার পছন্দের স্টেশন",
+      "সংরক্ষণ করুন, সহজে আবার শুনুন"
     ]
   },
   "gu": {
@@ -1323,6 +1475,10 @@
     "sleep-timer": [
       "રેડિયો સાંભળતાં આરામ કરો",
       "પ્લેબેક બંધ થવાનો સમય પસંદ કરો"
+    ],
+    "favorites": [
+      "તમારા મનપસંદ સ્ટેશન",
+      "સાચવો અને સરળતાથી ફરી સાંભળો"
     ]
   },
   "kn-IN": {
@@ -1357,6 +1513,10 @@
     "sleep-timer": [
       "ರೇಡಿಯೊ ಕೇಳುತ್ತಾ ನಿದ್ರಿಸಿ",
       "ಪ್ಲೇಬ್ಯಾಕ್ ನಿಲ್ಲುವ ಸಮಯ ಆಯ್ಕೆಮಾಡಿ"
+    ],
+    "favorites": [
+      "ನಿಮ್ಮ ನೆಚ್ಚಿನ ನಿಲ್ದಾಣಗಳು",
+      "ಉಳಿಸಿ ಮತ್ತು ಸುಲಭವಾಗಿ ಮತ್ತೆ ಕೇಳಿ"
     ]
   },
   "ml-IN": {
@@ -1391,6 +1551,10 @@
     "sleep-timer": [
       "റേഡിയോ കേട്ടുറങ്ങൂ",
       "പ്ലേബാക്ക് നിർത്തേണ്ട സമയം തിരഞ്ഞെടുക്കൂ"
+    ],
+    "favorites": [
+      "നിങ്ങളുടെ പ്രിയപ്പെട്ട നിലയങ്ങൾ",
+      "സൂക്ഷിച്ച് എളുപ്പത്തിൽ വീണ്ടും കേൾക്കൂ"
     ]
   },
   "mr-IN": {
@@ -1425,6 +1589,10 @@
     "sleep-timer": [
       "रेडिओ ऐकत झोपी जा",
       "प्लेबॅक थांबण्याची वेळ निवडा"
+    ],
+    "favorites": [
+      "तुमची आवडती केंद्रे",
+      "जतन करा आणि सहज पुन्हा ऐका"
     ]
   },
   "pa": {
@@ -1459,6 +1627,10 @@
     "sleep-timer": [
       "ਰੇਡੀਓ ਸੁਣਦਿਆਂ ਸੌਂ ਜਾਓ",
       "ਪਲੇਬੈਕ ਰੁਕਣ ਦਾ ਸਮਾਂ ਚੁਣੋ"
+    ],
+    "favorites": [
+      "ਤੁਹਾਡੇ ਮਨਪਸੰਦ ਸਟੇਸ਼ਨ",
+      "ਸੰਭਾਲੋ ਅਤੇ ਆਸਾਨੀ ਨਾਲ ਦੁਬਾਰਾ ਸੁਣੋ"
     ]
   },
   "ta-IN": {
@@ -1493,6 +1665,10 @@
     "sleep-timer": [
       "வானொலி கேட்டபடி உறங்குங்கள்",
       "ஒலிபரப்பு நிற்கும் நேரத்தைத் தேர்ந்தெடுங்கள்"
+    ],
+    "favorites": [
+      "உங்கள் பிடித்த நிலையங்கள்",
+      "சேமித்து எளிதாக மீண்டும் கேளுங்கள்"
     ]
   },
   "te-IN": {
@@ -1527,6 +1703,10 @@
     "sleep-timer": [
       "రేడియో వింటూ నిద్రపోండి",
       "ప్లేబ్యాక్ ఆగే సమయాన్ని ఎంచుకోండి"
+    ],
+    "favorites": [
+      "మీకు ఇష్టమైన స్టేషన్లు",
+      "సేవ్ చేసి సులభంగా మళ్లీ వినండి"
     ]
   },
   "ur": {
@@ -1561,6 +1741,10 @@
     "sleep-timer": [
       "ریڈیو سنتے ہوئے سو جائیں",
       "پلے بیک بند ہونے کا وقت چنیں"
+    ],
+    "favorites": [
+      "آپ کے پسندیدہ اسٹیشن",
+      "محفوظ کریں اور آسانی سے دوبارہ سنیں"
     ]
   },
   "sl-SI": {
@@ -1595,6 +1779,10 @@
     "sleep-timer": [
       "Zaspi ob radiu",
       "Izberi čas zaustavitve predvajanja"
+    ],
+    "favorites": [
+      "Vaše priljubljene postaje",
+      "Shranite jih in preprosto poslušajte"
     ]
   },
   "bg": {
@@ -1629,6 +1817,10 @@
     "sleep-timer": [
       "Заспивайте с радио",
       "Изберете кога да спре възпроизвеждането"
+    ],
+    "favorites": [
+      "Любимите ви радиостанции",
+      "Лесен достъп до любимите станции"
     ]
   },
   "zh-HK": {
@@ -1663,6 +1855,10 @@
     "sleep-timer": [
       "聽着廣播放鬆入睡",
       "設定自動停止播放時間"
+    ],
+    "favorites": [
+      "珍藏喜愛的電台",
+      "隨時輕鬆重聽心愛頻道"
     ]
   },
   "iw-IL": {
@@ -1697,6 +1893,10 @@
     "sleep-timer": [
       "הירדמו לצלילי הרדיו",
       "בחרו מתי ההשמעה תיפסק"
+    ],
+    "favorites": [
+      "תחנות הרדיו האהובות",
+      "שמרו אותן וחזרו להאזין בקלות"
     ]
   },
   "ms-MY": {
@@ -1731,6 +1931,10 @@
     "sleep-timer": [
       "Rehat sambil mendengar radio",
       "Tetapkan masa main balik berhenti"
+    ],
+    "favorites": [
+      "Stesen kegemaran anda",
+      "Simpan dan dengar dengan mudah"
     ]
   }
 }

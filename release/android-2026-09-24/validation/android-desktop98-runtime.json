@@ -20,5 +20,7 @@
   "limitations": [
     "Paid Google Play billing has not been exercised on a signed-in physical desktop device.",
     "This is a native desktop emulator runtime check, not proof of Google Play approval."
-  ]
+  ],
+  "genresNavigation": true,
+  "playbackDuringNavigation": true
 }

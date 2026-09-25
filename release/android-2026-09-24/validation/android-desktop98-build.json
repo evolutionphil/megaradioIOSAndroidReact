@@ -6,7 +6,7 @@
   "lint": "passed",
   "unitTests": "5 passed",
   "build": "passed",
-  "runtime": "pending",
+  "runtime": "Native Desktop API34 launch, maximize, intro Enter navigation, station playback and Genres navigation passed; see android-desktop98-runtime.json",
   "playReason": "Desktop track requires target API 36; 97 is a superseded upload and was never published",
   "time": "2026-09-25T14:11:39.172778+00:00",
   "googlePlayInternal": {
