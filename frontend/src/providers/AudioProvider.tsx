@@ -26,6 +26,7 @@ import { syncCompanionCatalog } from '../services/companionCatalogService';
 import { normalizeCompanionCountries } from '../utils/companionCountries';
 import watchService from '../services/watchService';
 import wearOSService from '../services/wearOSService';
+import { handleWearStationRequest } from '../services/wearStationRequest';
 import { adMobService } from '../services/adMobService';
 import { genreService } from '../services/genreService';
 import api from '../services/api';
@@ -1607,6 +1608,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           // Wear OS requests data refresh
           try {
             const data = command.data ? JSON.parse(command.data) : { type: 'all' };
+            if (await handleWearStationRequest(data, async genre => {
+              const { useLocationStore } = await import('../store/locationStore');
+              const location = useLocationStore.getState();
+              const result = await genreService.getGenreStations(genre, 1, 20,
+                location.countryEnglish || location.country, 'votes', 'desc', location.country);
+              return result.stations || [];
+            }, async country => {
+              const result = await stationService.getPopularStations(country, 30);
+              return result.stations || [];
+            }, (requestId, stations, error) => wearOSService.updateStations(stations, { requestId, error }))) break;
             if (data.type === 'genre_stations' && data.genreId) {
               await handleWatchCommand({ command: 'requestGenreStations', genreSlug: data.genreId });
             } else if (data.type === 'country_stations' && data.countryCode) {

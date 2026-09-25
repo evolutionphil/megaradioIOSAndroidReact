@@ -25,6 +25,9 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MegaRadioTV">
 
+        <service android:name=".TvPlaybackService" android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

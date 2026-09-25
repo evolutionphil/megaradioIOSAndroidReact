@@ -8,6 +8,8 @@ import android.util.Log
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.DataMapItem
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
 
@@ -29,6 +31,22 @@ class PhoneConnectivityService(private val context: Context) {
     private val messageClient: MessageClient = Wearable.getMessageClient(context)
     private val nodeClient: NodeClient = Wearable.getNodeClient(context)
 
+    // Data Layer retains items. A restarted watch process does not receive a
+    // DATA_CHANGED event until the phone publishes again, so hydrate on launch.
+    suspend fun loadCachedData() {
+        try {
+            val items = Wearable.getDataClient(context).dataItems.await()
+            try {
+                items.forEach { item ->
+                    if (item.uri.path?.startsWith("/megaradio/") == true) {
+                        WearDataRepository.applyData(item.uri.path, DataMapItem.fromDataItem(item).dataMap)
+                    }
+                }
+            } finally { items.release() }
+        } catch (e: CancellationException) { throw e
+        } catch (e: Exception) { Log.w(TAG, "Cached phone data unavailable", e) }
+    }
+
     /**
      * Check if the phone is connected via Bluetooth.
      * Updates the WearDataRepository singleton.
@@ -40,6 +58,7 @@ class PhoneConnectivityService(private val context: Context) {
             WearDataRepository.setPhoneConnected(connected)
             Log.d(TAG, "Phone connected: $connected (${nodes.size} nodes)")
             connected
+        } catch (e: CancellationException) { throw e
         } catch (e: Exception) {
             Log.e(TAG, "Error checking phone connection: $e")
             WearDataRepository.setPhoneConnected(false)
@@ -102,10 +121,11 @@ class PhoneConnectivityService(private val context: Context) {
     /**
      * Request stations filtered by genre.
      */
-    suspend fun requestStationsByGenre(genreId: String): Boolean {
+    suspend fun requestStationsByGenre(genreId: String, requestId: String): Boolean {
         val payload = JSONObject().apply {
             put("type", "genre_stations")
             put("genreId", genreId)
+            put("requestId", requestId)
         }
         return sendMessageToPhone(PATH_REQUEST_DATA, payload.toString().toByteArray())
     }
@@ -113,10 +133,11 @@ class PhoneConnectivityService(private val context: Context) {
     /**
      * Request stations filtered by country.
      */
-    suspend fun requestStationsByCountry(countryCode: String): Boolean {
+    suspend fun requestStationsByCountry(countryCode: String, requestId: String): Boolean {
         val payload = JSONObject().apply {
             put("type", "country_stations")
             put("countryCode", countryCode)
+            put("requestId", requestId)
         }
         return sendMessageToPhone(PATH_REQUEST_DATA, payload.toString().toByteArray())
     }
@@ -139,12 +160,14 @@ class PhoneConnectivityService(private val context: Context) {
                 try {
                     messageClient.sendMessage(node.id, path, data).await()
                     Log.d(TAG, "Message sent to ${node.displayName}: $path")
+                } catch (e: CancellationException) { throw e
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to send message to ${node.displayName}: $e")
                     success = false
                 }
             }
             success
+        } catch (e: CancellationException) { throw e
         } catch (e: Exception) {
             Log.e(TAG, "Error sending message ($path): $e")
             false

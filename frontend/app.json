@@ -240,7 +240,7 @@
           {"scheme": "https", "host": "themegaradio.com", "pathPrefix": "/he/profil/"}
         ]
       }],
-      "versionCode": 92,
+      "versionCode": 95,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "INTERNET",

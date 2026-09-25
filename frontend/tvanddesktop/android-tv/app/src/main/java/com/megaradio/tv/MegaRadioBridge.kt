@@ -1,6 +1,7 @@
 package com.megaradio.tv
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
 import android.webkit.WebView
@@ -67,15 +68,13 @@ class MegaRadioNativeBridge(
     }
 
     private fun openPlayStoreSubscriptions() {
-        try {
-            val pkg = activity.packageName
-            val url = "https://play.google.com/store/account/subscriptions?package=$pkg"
-            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW,
-                android.net.Uri.parse(url))
-            activity.startActivity(intent)
-        } catch (e: Exception) {
-            Log.w(TAG, "openManageSubscriptions failed: ${e.message}")
-        }
+        // Google Play's subscription website requires a browser that may not
+        // exist on a TV. Keep the remote-controlled flow inside the app.
+        AlertDialog.Builder(activity)
+            .setTitle(R.string.manage_subscriptions)
+            .setMessage(R.string.manage_subscriptions_instructions)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 
     private fun resolve(id: String, payload: Any) {

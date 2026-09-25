@@ -184,10 +184,11 @@ fun HomeScreen(
                     )
                 }
                 Text(
-                    text = "No phone connection",
+                    text = "Connect your Android phone and open MegaRadio",
                     color = TextGray,
                     fontSize = 11.sp,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.fillMaxWidth(0.8f).padding(top = 4.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
             }
         }
@@ -339,6 +340,7 @@ fun StationsScreen(
     title: String,
     stations: List<Station>,
     isLoading: Boolean = false,
+    error: String? = null,
     onStationClick: (Station) -> Unit
 ) {
     ScalingLazyColumn(
@@ -368,6 +370,8 @@ fun StationsScreen(
                     strokeWidth = 3.dp
                 )
             }
+        } else if (error != null) {
+            item { EmptyState(text = error) }
         } else if (stations.isEmpty()) {
             item { EmptyState(text = "No stations found") }
         } else {

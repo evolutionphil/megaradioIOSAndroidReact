@@ -47,6 +47,8 @@ android {
 apply(from = rootProject.file("../../scripts/android-release-signing.gradle"))
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     // Wear OS Compose
     implementation("androidx.wear.compose:compose-material:1.3.0")
     implementation("androidx.wear.compose:compose-foundation:1.3.0")

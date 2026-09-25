@@ -17,13 +17,13 @@ if (process.platform === 'linux') {
 let mainWindow = null;
 let splashWindow = null;
 
-const APP_URL_PROD = 'https://desktop.themegaradio.com/api/tv-app/';
+const APP_URL_PROD = 'https://cdn.themegaradio.com/';
 const LOCAL_FILE = path.join(__dirname, '..', 'renderer', 'index.html');
 const APP_URL_LOCAL = pathToFileURL(LOCAL_FILE).href;
 
 /**
  * Splash window — small frameless brand window shown for the first ~2-3
- * seconds while Chromium establishes the connection to desktop.themegaradio.com.
+ * seconds while Chromium establishes the connection to cdn.themegaradio.com.
  * Closed automatically once the main window finishes its first paint.
  */
 function createSplash() {

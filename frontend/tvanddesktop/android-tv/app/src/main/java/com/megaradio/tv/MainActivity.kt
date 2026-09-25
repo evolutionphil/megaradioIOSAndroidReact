@@ -1,9 +1,12 @@
 package com.megaradio.tv
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Intent
-import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -17,9 +20,9 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.view.WindowCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 
@@ -31,12 +34,22 @@ import androidx.webkit.WebViewFeature
  * and audio playback — we only need to funnel hardware remote events through
  * so the existing tv-remote-keys.js handler can dispatch them.
  */
-class MainActivity : FragmentActivity() {
+class MainActivity : Activity() {
 
     private lateinit var webView: WebView
     private val billingService by lazy { BillingService(this) }
     private var nativeBridge: MegaRadioNativeBridge? = null
     private var recommendationsBridge: MegaRadioBridge? = null
+    private var playbackStarted = false
+    private var controlsRegistered = false
+    private val playbackControls = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val command = intent?.getStringExtra("command") ?: return
+            if (command in setOf("resume", "pause", "stop") && ::webView.isInitialized) {
+                webView.evaluateJavascript(TvRemoteCommands.script(command), null)
+            }
+        }
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +61,7 @@ class MainActivity : FragmentActivity() {
             hide(WindowInsetsCompat.Type.systemBars())
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        // Audio-only TV apps must allow Ambient Mode.
 
         // Origin-scoped messaging and document-start injection prevent another
         // website or an embedded frame from calling the native billing API.
@@ -86,11 +99,7 @@ class MainActivity : FragmentActivity() {
                     val uri = request?.url ?: return true
                     if (TvNavigationPolicy.isTrusted(uri.toString())) return false
                     if (request.isForMainFrame && uri.scheme in listOf("https", "http")) {
-                        try {
-                            startActivity(Intent(Intent.ACTION_VIEW, uri))
-                        } catch (_: ActivityNotFoundException) {
-                            // Many TVs have no browser. Keep the radio app open.
-                        }
+                        showWebContent(uri)
                     }
                     return true
                 }
@@ -122,11 +131,41 @@ class MainActivity : FragmentActivity() {
                     message.data?.let(recommendations::onContinueListening)
                 }
             }
+            WebViewCompat.addWebMessageListener(this, "MegaRadioPlaybackTransport", allowedOrigins) {
+                    _, message, sourceOrigin, isMainFrame, _ ->
+                if (isMainFrame && TvNavigationPolicy.isTrusted(sourceOrigin.toString())) {
+                    message.data?.let { payload ->
+                        val state = try { org.json.JSONObject(payload) } catch (_: Exception) { null }
+                        if (state != null && state.optBoolean("hasStation")) {
+                            if (state.optBoolean("playing") || playbackStarted) {
+                                ContextCompat.startForegroundService(this@MainActivity,
+                                    Intent(this@MainActivity, TvPlaybackService::class.java).putExtra("state", payload))
+                                playbackStarted = true
+                            }
+                        } else if (playbackStarted) {
+                            stopService(Intent(this@MainActivity, TvPlaybackService::class.java))
+                            playbackStarted = false
+                        }
+                    }
+                }
+            }
             // Preserve the existing CDN protocol without exposing a Java object
             // to every frame. Installed before the shared app's first script.
             WebViewCompat.addDocumentStartJavaScript(this, """
                 if (window === window.top) {
                     window.MegaRadioPlatform = { platform: 'androidtv' };
+                    // Observe the existing CDN player without a Samsung/LG deployment.
+                    var lastPlaybackState = '';
+                    setInterval(function () {
+                        var p = window.globalPlayer;
+                        var state = JSON.stringify({hasStation: !!(p && p.currentStation),
+                            playing: !!(p && p.isPlaying),
+                            title: p && p.currentStation ? p.currentStation.name : 'MegaRadio'});
+                        if (state !== lastPlaybackState) {
+                            lastPlaybackState = state;
+                            window.MegaRadioPlaybackTransport.postMessage(state);
+                        }
+                    }, 1000);
                     window.MegaRadioNative = {
                         platform: 'androidtv',
                         invoke: function (payload) { window.MegaRadioNativeTransport.postMessage(payload); }
@@ -148,6 +187,10 @@ class MainActivity : FragmentActivity() {
         }
 
         setContentView(webView)
+        webView.requestFocus()
+        ContextCompat.registerReceiver(this, playbackControls, IntentFilter(TvPlaybackService.ACTION_CONTROL),
+            ContextCompat.RECEIVER_NOT_EXPORTED)
+        controlsRegistered = true
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -176,6 +219,7 @@ class MainActivity : FragmentActivity() {
                 val data = intent.data ?: return null
                 if (data.scheme != "megaradio") return null
                 when (data.host) {
+                    "player" -> "$base#/radio-playing"
                     "play"   -> data.getQueryParameter("station")?.takeIf { it.isNotBlank() }
                         ?.let { "$base#/radio-playing?station=${Uri.encode(it)}" }
                     "genre"  -> data.pathSegments.firstOrNull()?.takeIf { it.isNotBlank() }
@@ -189,42 +233,42 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    /**
-     * Forward TV remote keys (D-pad, Media, Color, Back) directly into the
-     * WebView so the JS spatial-nav engine can handle them. We do NOT swallow
-     * the event — letting the WebView dispatch it means `keydown` fires in JS
-     * exactly as it would on Samsung / webOS.
-     */
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return when (event.keyCode) {
-            KeyEvent.KEYCODE_DPAD_UP,
-            KeyEvent.KEYCODE_DPAD_DOWN,
-            KeyEvent.KEYCODE_DPAD_LEFT,
-            KeyEvent.KEYCODE_DPAD_RIGHT,
-            KeyEvent.KEYCODE_DPAD_CENTER,
-            KeyEvent.KEYCODE_ENTER,
-            KeyEvent.KEYCODE_MEDIA_PLAY,
-            KeyEvent.KEYCODE_MEDIA_PAUSE,
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
-            KeyEvent.KEYCODE_MEDIA_STOP,
-            KeyEvent.KEYCODE_MEDIA_NEXT,
-            KeyEvent.KEYCODE_MEDIA_PREVIOUS,
-            KeyEvent.KEYCODE_MEDIA_FAST_FORWARD,
-            KeyEvent.KEYCODE_MEDIA_REWIND,
-            KeyEvent.KEYCODE_PROG_RED,
-            KeyEvent.KEYCODE_PROG_GREEN,
-            KeyEvent.KEYCODE_PROG_YELLOW,
-            KeyEvent.KEYCODE_PROG_BLUE,
-            KeyEvent.KEYCODE_CHANNEL_UP,
-            KeyEvent.KEYCODE_CHANNEL_DOWN -> super.dispatchKeyEvent(event)
-            KeyEvent.KEYCODE_BACK -> {
-                if (::webView.isInitialized && event.action == KeyEvent.ACTION_DOWN && webView.canGoBack()) {
-                    webView.goBack()
-                    true
-                } else super.dispatchKeyEvent(event)
+        if (::webView.isInitialized) {
+            val command = TvRemoteCommands.playerCommand(event.keyCode)
+            if (command != null) {
+                if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+                    webView.evaluateJavascript(TvRemoteCommands.script(command), null)
+                }
+                return true
             }
-            else -> super.dispatchKeyEvent(event)
+            if (event.keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+                if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) webView.goBack()
+                return true
+            }
         }
+        return super.dispatchKeyEvent(event)
+    }
+
+    /** TV devices cannot rely on an external web browser. No native bridge here. */
+    private fun showWebContent(uri: Uri) {
+        val content = WebView(this).apply {
+            settings.javaScriptEnabled = false
+            settings.allowFileAccess = false
+            settings.allowContentAccess = false
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean =
+                    request?.url?.scheme != "https"
+            }
+            if (uri.scheme == "https") loadUrl(uri.toString())
+        }
+        android.app.AlertDialog.Builder(this).setView(content)
+            .setPositiveButton(android.R.string.ok, null).create().apply {
+                setOnDismissListener { content.destroy() }
+                show()
+                window?.setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT)
+            }
     }
 
     override fun onPause() {
@@ -234,6 +278,8 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun onDestroy() {
+        if (controlsRegistered) unregisterReceiver(playbackControls)
+        stopService(Intent(this, TvPlaybackService::class.java))
         nativeBridge?.close()
         recommendationsBridge?.close()
         billingService.close()

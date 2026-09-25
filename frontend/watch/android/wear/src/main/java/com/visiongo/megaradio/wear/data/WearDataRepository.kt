@@ -1,6 +1,7 @@
 package com.visiongo.megaradio.wear.data
 
 import android.util.Log
+import com.google.android.gms.wearable.DataMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONArray
@@ -17,6 +18,26 @@ object WearDataRepository {
 
     private val _stations = MutableStateFlow<List<Station>>(emptyList())
     val stations: StateFlow<List<Station>> = _stations
+
+    private val _stationResponse = MutableStateFlow<StationResponse?>(null)
+    val stationResponse: StateFlow<StationResponse?> = _stationResponse
+
+    fun applyData(path: String?, data: DataMap) {
+        when (path) {
+            "/megaradio/stations" -> updateStations(data.getString("data") ?: "[]")
+            "/megaradio/station_response" -> {
+                val id = data.getString("requestId") ?: return
+                _stationResponse.value = StationResponse(id,
+                    parseStations(data.getString("data") ?: "[]"), data.getString("error"))
+            }
+            "/megaradio/favorites" -> updateFavorites(data.getString("data") ?: "[]")
+            "/megaradio/genres" -> updateGenres(data.getString("data") ?: "[]")
+            "/megaradio/countries" -> updateCountries(data.getString("data") ?: "[]")
+            "/megaradio/now_playing" -> updateNowPlaying(data.getString("station"),
+                data.getBoolean("isPlaying"), data.getString("songTitle") ?: "",
+                data.getString("artistName") ?: "")
+        }
+    }
 
     private val _favorites = MutableStateFlow<List<Station>>(emptyList())
     val favorites: StateFlow<List<Station>> = _favorites
@@ -112,7 +133,7 @@ object WearDataRepository {
     }
 
     private fun parseStation(json: String?): Station? {
-        if (json.isNullOrEmpty()) return null
+        if (json.isNullOrEmpty() || json == "{}") return null
         return try {
             val obj = JSONObject(json)
             Station(
