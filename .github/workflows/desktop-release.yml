@@ -36,9 +36,11 @@ jobs:
       - name: Install desktop dependencies
         run: npm ci
 
-      - name: Check release integration
+      - name: Check desktop purchase integration
         working-directory: .
-        run: node --test tests/apple-release-iap.test.cjs
+        # The same file also contains an iOS rating-modal test, which requires
+        # the separate React Native app dependencies.
+        run: node --test --test-name-pattern="receipt|purchase|transaction|restore" tests/apple-release-iap.test.cjs
 
       - name: Build (Windows)
         if: matrix.os == 'windows-latest'
