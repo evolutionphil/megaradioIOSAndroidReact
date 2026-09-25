@@ -16,12 +16,12 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --enable-logging",
-    "build:linux": "electron-builder --config electron-builder.config.js --linux AppImage deb",
-    "build:win": "electron-builder --config electron-builder.config.js --win nsis portable",
-    "build:mac": "electron-builder --config electron-builder.config.js --mac dmg --universal",
-    "build:mas": "electron-builder --config electron-builder.config.js --mac mas --universal",
-    "build:mas-dev": "electron-builder --config electron-builder.config.js --mac mas-dev --universal",
-    "build:all": "electron-builder --config electron-builder.config.js -mwl"
+    "build:linux": "node ./node_modules/electron-builder/cli.js --config electron-builder.config.js --linux AppImage deb",
+    "build:win": "node ./node_modules/electron-builder/cli.js --config electron-builder.config.js --win nsis portable",
+    "build:mac": "node ./node_modules/electron-builder/cli.js --config electron-builder.config.js --mac dmg --universal",
+    "build:mas": "node ./node_modules/electron-builder/cli.js --config electron-builder.config.js --mac mas --universal",
+    "build:mas-dev": "node ./node_modules/electron-builder/cli.js --config electron-builder.config.js --mac mas-dev --universal",
+    "build:all": "node ./node_modules/electron-builder/cli.js --config electron-builder.config.js -mwl"
   },
   "devDependencies": {
     "electron": "44.4.5",
@@ -36,7 +36,13 @@
     "productName": "MegaRadio",
     "copyright": "© ${new Date().getFullYear()} MegaRadio",
     "asar": true,
-    "publish": [{ "provider": "github", "owner": "evolutionphil", "repo": "megaradioIOSAndroidReact" }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "evolutionphil",
+        "repo": "megaradioIOSAndroidReact"
+      }
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "build"
