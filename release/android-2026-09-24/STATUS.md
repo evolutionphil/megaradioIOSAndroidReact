@@ -1,6 +1,6 @@
 # Android release work — in progress
 
-Updated 2026-09-25. Publishing is authorized. **No Android release has been uploaded or published yet.** Complete the remaining device and store checks before production submission. The user moved the iOS review recheck ahead of Android artwork completion. iOS build 6 was rejected for a missing ATT prompt; build 7 is now WAITING_FOR_REVIEW with automatic release after approval. Android artwork and release work has resumed.
+Updated 2026-09-25. Publishing is authorized. **Android 1.0.70 (92) is uploaded and available to the existing internal test group. Production remains 1.0.69 (91); the production update has not been submitted.** Complete the remaining device and store checks before production submission. The user moved the iOS review recheck ahead of Android artwork completion. iOS build 6 was rejected for a missing ATT prompt; build 7 is now WAITING_FOR_REVIEW with automatic release after approval. Android artwork and release work has resumed.
 
 ## Google Play listing
 
@@ -11,13 +11,13 @@ Updated 2026-09-25. Publishing is authorized. **No Android release has been uplo
 - Four Console language aliases are handled: sk, ro, hr, sl. `play-all-listings-import.json` contains the 51 actual Console codes.
 - Market research covers 54 contexts, 163 localized listing observations and 141 distinct apps. Local competitors include Radyo Kulesi and radio.de. No keyword-volume or historical-ranking dataset was available; do not claim measured demand or guaranteed rankings.
 - Feature graphics were rendered in all prepared languages. All 51 supported locale graphics are saved and verified; none remain. `validation/play-console-feature-readback.json` records the latest persisted checkpoint, which can lag the live session. Do not count a local PNG as a delivered asset.
-- Six actual Android phone captures and four Pixel Tablet captures are complete. 306 localized phone images across 51 locales passed file/size/overflow validation and visual contact-sheet review. All 51 supported phone sets (306 images) are saved and all six images per locale were read back with the correct order and dimensions; see validation/play-console-screenshot-readback.json. Tablet delivery is now in progress: 204 localized real-tablet compositions across 51 locales passed RGB/size/overflow and nine contact-sheet checks. The default en-US native tablet set was saved, but translated locales showed empty tablet slots even after reload; localized tablet sets are therefore being saved directly into both size fields. See validation/play-console-tablet-readback.json. TV/Wear captures remain pending.
+- Six actual Android phone captures and four Pixel Tablet captures are complete. 306 localized phone images across 51 locales passed file/size/overflow validation and visual contact-sheet review. All 51 supported phone sets (306 images) are saved and all six images per locale were read back with the correct order and dimensions; see validation/play-console-screenshot-readback.json. Tablet delivery is complete: 204 localized real-tablet compositions across 51 locales passed RGB/size/overflow and nine contact-sheet checks. The default en-US native tablet set was saved, but translated locales showed empty tablet slots even after reload; all 51 localized tablet sets were therefore saved directly into both size fields. See validation/play-console-tablet-readback.json. TV/Wear captures remain pending.
 
 ## Android builds and testing
 
 Phone 1.0.70 (92), TV 1.0.70 (93), Wear 1.0.70 (94) all build with the existing Play upload key. Credentials remain outside Git. The upload certificate matches Play; the phone OAuth upload-key SHA-1 also matches google-services.json. The **Google Play app-signing** OAuth certificate was checked and is missing from Android OAuth clients; the new client is prepared, awaiting action-time approval.
 
-- Phone native build fixed with the existing package patches, Kotlin 2.1.20 and the Wear bridge override. Signed release APK/AAB succeeded. New fixes are being rebuilt and retested.
+- Phone native build fixed with the existing package patches, Kotlin 2.1.20 and the Wear bridge override. Signed release APK/AAB succeeded. The final HLS/consent/UI native build was installed and tested on phone and tablet emulators.
 - All 52 64-bit native libraries passed the ELF 16 KB alignment check.
 - Phone emulator: launch without location permission, API catalog, genre headings and fallback REYFM artwork observed. MANGORADIO MP3 played and song metadata updated.
 - KRAL POP exposed an HLS regression: API `hls: true` with a `.m3u` URL was sent as a progressive stream. Explicit HLS track types now cover foreground, fallback and background queues. Four focused stream tests pass.
@@ -29,13 +29,13 @@ Phone 1.0.70 (92), TV 1.0.70 (93), Wear 1.0.70 (94) all build with the existing 
 
 ## Remaining release gates
 
-1. Finish and verify all localized feature graphics and actual Android screenshots.
+1. Phone/tablet ASO and artwork delivery is complete. Finish TV/Wear captures after functional tests.
 2. Retest HLS after prolonged pause, background audio, notification controls, login, premium restore and failure handling.
 3. Verify Play app-signing OAuth fingerprint; use an internal Play install for real billing validation.
 4. Finish TV / Wear device testing and eligible form-factor onboarding; never advertise a scaffold as tested compatibility.
-5. Upload appropriate AABs and submit the authorized update, then verify Play's returned status.
-6. Update evidence, review and push scoped changes to the existing PR.
-7. iOS 1.0.70 (7) resubmission is complete and remains Waiting for Review with automatic release, rechecked at 01:26 UTC Sep 25. Do not modify content-rights declarations.
+5. Phone AAB 92 is available in internal testing. Finish production prerequisites, then submit the authorized production update and verify Play's returned status.
+6. Keep release evidence and the existing draft PR current.
+7. iOS 1.0.70 (7) resubmission is complete and remains Waiting for Review with automatic release, rechecked at 03:48 UTC Sep 25. Do not modify content-rights declarations.
 
 ## Follow-up on 2026-09-25
 
@@ -46,11 +46,17 @@ Phone 1.0.70 (92), TV 1.0.70 (93), Wear 1.0.70 (94) all build with the existing 
 
 ## Current delivery checkpoint
 
-- Source changes are committed as `6b4f1a96`. The signed phone/TV/Wear binaries were built before this commit from the same source; no application source changes were made during screenshot delivery.
-- All 51 Play text records, 51 feature graphics and 51 phone sets / 306 images are saved and read back.
-- All 204 localized tablet compositions passed RGB, dimensions, size, overflow and visual review. Nineteen localized tablet sets have both size fields saved and first/last read back; all eight positions were checked before saving. `validation/play-console-tablet-readback.json` is authoritative.
-- Slovak (`sk`, source `sk-SK`) is unfinished. A browser reload discarded its first unsaved attempt. The latest attempt added the discovery image via its detail panel; further additions were not verified. Reinspect both tablet fields and complete exactly four ordered files before saving. Do not count this locale as delivered.
-- Safari's asset-selection controls became unreliable, then its HTML accessibility tree intermittently disappeared while screenshots still showed the page. Window activation, rebinding and reload did not restore reliable interaction. A user question asks whether the Mac is unlocked and the correct Safari window is foreground.
-- Google Play Android OAuth creation remains pending the separate action-time confirmation. No client was created and no Android release was uploaded or published.
-- Wear AVD `MegaRadio_Wear_API36` was created from the installed API36 signed image with a round 454x454 profile and host renderer, but it has not been started or tested. Android Auto desktop head unit is not installed.
-- Final packaging checks: generated ATT/Android Auto modules match their checked-in templates; reverse-apply validation confirms the installed TrackPlayer source matches the patch. Strict diff whitespace checks pass outside the patch; the patch's flagged single-space lines are required unified-diff context and pass with only blank-at-EOL checking disabled.
+- Source `6b4f1a96` and initial release evidence `ac1dab88` are pushed to the existing draft PR. Application source has not changed during screenshot delivery.
+- All 51 supported Play text records, feature graphics, phone sets (306 images) and localized tablet sets (204 distinct images, 408 placements across both sizes) are saved. The locale sets match exactly. See `validation/phone-tablet-delivery-complete.json`.
+- Phone verification reads back all six names and dimensions per locale. Tablet verification checks all eight positions before save, then the first and last name and dimensions per size after save. A Bulgarian insertion-order issue was caught and corrected before saving. Default en-US native-only tablet images were replaced with the same editorial design used for the other locales.
+- Safari delivery resumed successfully. Android Studio's emulator controls remain unreliable: TV launcher rendering works with host graphics, but application navigation has not been verified. A standalone TV emulator booted successfully but the computer-use tool could not bind its executable; TV was restarted in Android Studio.
+- Wear AVD `MegaRadio_Wear_API36` booted and the signed release APK installed successfully. Pairing and application control tests remain pending. Installation is not functional validation.
+- Production Google OAuth creation still awaits the separate action-time confirmation; no client was created. Phone AAB 92 is available to the existing internal test group (release 16), verified at 05:53 Europe/Vienna. Production, TV and Wear releases have not been submitted.
+- iOS 1.0.70 (7) remains WAITING_FOR_REVIEW with automatic release after approval, verified 2026-09-25 03:48 UTC. Content-rights and App Privacy declarations are unchanged.
+- Final packaging checks: generated ATT/Android Auto modules match checked-in templates; reverse-apply validation confirms installed TrackPlayer source matches the patch. Strict whitespace checks pass outside the patch; its single-space context lines are valid unified-diff syntax.
+
+## Internal Android release
+
+- Google Play accepted phone AAB 92 with no blocking errors and one non-blocking deobfuscation mapping warning; minification is disabled.
+- Release 16 is available to the existing internal testers, published 2026-09-25 05:53 Europe/Vienna. All 24 currently published store languages have localized release notes. The expanded 51-language store listing remains a saved draft pending production submission.
+- See `validation/play-internal-release-92.json`. Real Play-installed Google login and billing are not yet verified. The missing production-signing OAuth client still awaits action-time confirmation.

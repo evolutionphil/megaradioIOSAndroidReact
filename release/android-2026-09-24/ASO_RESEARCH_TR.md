@@ -80,6 +80,6 @@ Kamuya açık başlık, kısa açıklama, açıklama yapısı, puan ve küresel 
 
 - Başlangıçta 24 mağaza dili; hazırlanan kapsam 52 dil.
 - Tüm başlıklar ≤30, kısa açıklamalar ≤80, tam açıklamalar ≤4000 UTF-16 kod birimi.
-- Konsolun desteklediği 51 dilde metinler, tanıtım grafikleri ve altışar telefon görseli kaydedilip doğrulandı. Odia Konsol dil listesinde bulunmadığından yüklenmedi. Tablet setlerinin teslimi sürüyor; güncel durum `STATUS.md` ve `validation/play-console-tablet-readback.json` içinde kayıtlı.
+- Konsolun desteklediği 51 dilde metinler, tanıtım grafikleri ve altışar telefon görseli kaydedilip doğrulandı. Odia Konsol dil listesinde bulunmadığından yüklenmedi. 51 dilin tamamında dörder tablet görseli hem 7 hem 10 inç alanına kaydedildi; sıralama ve kayıt sonrası örnek dosya kontrolleri tamamlandı. Telefon/tablet teslim kapsamı `validation/phone-tablet-delivery-complete.json` içinde kayıtlı.
 - Almanca Avusturya/İsviçre araştırması, kendi kendine ayrı Google Play dil kaydı oluşturmaz. Ülke hedefli özel mağaza girişi ayrıca yapılandırılmalıdır.
 - ASO sonuçları yayın sonrası Play edinme/dönüşüm verileriyle değerlendirilmelidir; bu görevde gözlemlenmemiş sonuçlar başarı olarak sunulmaz.

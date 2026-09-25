@@ -26,7 +26,7 @@
   "phoneVersion": "1.0.70 (92)",
   "tvVersion": "1.0.70 (93)",
   "wearVersion": "1.0.70 (94)",
-  "releaseUploaded": false,
+  "releaseUploaded": true,
   "phoneEmulator": {
     "launchWithoutLocationPermission": true,
     "publicCatalogLoaded": true,
@@ -84,5 +84,29 @@
       "03-genres.png",
       "04-country.png"
     ]
+  },
+  "wearEmulator": {
+    "avd": "MegaRadio_Wear_API36",
+    "profile": "round 454x454",
+    "bootCompleted": true,
+    "releaseApkInstall": "Success",
+    "pairingVerified": false,
+    "applicationControlsVerified": false
+  },
+  "tvEmulator": {
+    "avd": "MegaRadio_TV_API36",
+    "hostRendererLauncherVisible": true,
+    "appNavigationVerified": false,
+    "limitation": "Android Studio input routing not verified; standalone emulator UI executable could not be bound by computer-use tool."
+  },
+  "publishing": {
+    "phoneVersion": "1.0.70 (92)",
+    "track": "internal testing",
+    "releaseId": "16",
+    "status": "Available to internal testers",
+    "publishedAtConsole": "2026-09-25 05:53 Europe/Vienna",
+    "productionPublished": false,
+    "tvUploaded": false,
+    "wearUploaded": false
   }
 }
