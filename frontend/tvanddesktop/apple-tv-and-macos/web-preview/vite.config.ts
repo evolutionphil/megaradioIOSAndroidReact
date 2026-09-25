@@ -12,11 +12,14 @@ export default defineConfig(({ mode }) => {
   // Version injected so UpdateBanner can compare against /api/tv/version.
   // Override via VITE_APP_VERSION env var (used by prepare-tizen.js / CI).
   const APP_VERSION = env.VITE_APP_VERSION || '1.0.2';
+  // Electron supports native modules under file://. Shipping the TV legacy
+  // bootstrap too starts two React roots and crashes the packaged desktop UI.
+  const isDesktop = env.TV_BUILD_TARGET === 'desktop';
 
   return {
     base: "/api/tv-app/",
-    plugins: [react(), legacy({ targets: ['chrome >= 38'], modernTargets: ['chrome >= 64'],
-      renderLegacyChunks: true, renderModernChunks: true }), legacyTvSupport()],
+    plugins: [react(), ...(isDesktop ? [] : [legacy({ targets: ['chrome >= 38'], modernTargets: ['chrome >= 64'],
+      renderLegacyChunks: true, renderModernChunks: true }), legacyTvSupport()])],
     define: {
       'import.meta.env.VITE_APP_VERSION': JSON.stringify(APP_VERSION),
     },
@@ -32,7 +35,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: false,
       // LG webOS3.x uses Chromium38; 4.x uses53. Neither supports native ESM.
       // plugin-legacy supplies Babel/SystemJS; esbuild target:es5 alone cannot.
-      cssTarget: 'chrome38',
+      cssTarget: isDesktop ? 'chrome140' : 'chrome38',
       modulePreload: { polyfill: false },
     },
     server: {
