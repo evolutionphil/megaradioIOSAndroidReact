@@ -22,5 +22,6 @@
   "googleLoginViaPlayVerified": false,
   "billingViaPlayVerified": false,
   "productionPublished": false,
-  "productionBaseline": "1.0.69 (91)"
+  "productionBaseline": "1.0.69 (91)",
+  "subsequentSubmissionEvidence": "play-production-submission-92.json"
 }

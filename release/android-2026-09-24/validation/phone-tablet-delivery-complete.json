@@ -1,6 +1,6 @@
 {
   "verifiedAt": "2026-09-25T03:44:55.960650+00:00",
-  "state": "Final listing review saved; ready to submit in Publishing overview, not submitted or published",
+  "state": "Submitted to Google Play review together with production 92; live publication not yet confirmed",
   "supportedLocaleCount": 51,
   "localeSetsMatch": true,
   "textFieldsPerLocale": 3,
@@ -18,7 +18,7 @@
     "Android TV and Wear functional tests and graphics",
     "Android Auto host test",
     "Play-installed Google login and billing validation",
-    "Production release and store-listing submission"
+    "Google review outcome and live publication verification"
   ],
   "locales": [
     "ar",
@@ -73,5 +73,6 @@
     "zh-HK",
     "zh-TW"
   ],
-  "oauthRegistrationVerifiedAt": "2026-09-25T09:37:00.060311+00:00"
+  "oauthRegistrationVerifiedAt": "2026-09-25T09:37:00.060311+00:00",
+  "submittedAt": "2026-09-25T09:49:29.923416+00:00"
 }

@@ -1,6 +1,6 @@
 {
   "observedAt": "2026-09-24T20:35:43.732422+00:00",
-  "state": "Final listing review saved; ready to submit in Publishing overview, not submitted or published",
+  "state": "Submitted to Google Play review together with production 92; live publication not yet confirmed",
   "baselineLocales": 24,
   "verifiedLocales": 51,
   "fieldsPerLocale": [
@@ -495,5 +495,6 @@
     "en-AU",
     "sv-SE"
   ],
-  "nativeAccessibilityNote": "Tamil field AX value omitted 15 final characters. Full selected text after save and page reload matched all 3701 characters."
+  "nativeAccessibilityNote": "Tamil field AX value omitted 15 final characters. Full selected text after save and page reload matched all 3701 characters.",
+  "submittedAt": "2026-09-25T09:49:29.923416+00:00"
 }

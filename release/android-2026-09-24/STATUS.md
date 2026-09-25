@@ -1,6 +1,6 @@
 # Android release work — in progress
 
-Updated 2026-09-25. Publishing is authorized. **Android 1.0.70 (92) is uploaded and available to the existing internal test group. Production remains 1.0.69 (91); the production update has not been submitted.** Complete the remaining device and store checks before production submission. The user moved the iOS review recheck ahead of Android artwork completion. iOS build 6 was rejected for a missing ATT prompt; build 7 is now WAITING_FOR_REVIEW with automatic release after approval. Android artwork and release work has resumed.
+Updated 2026-09-25. Publishing is authorized. **Android 1.0.70 (92) and all 51 supported store localizations were submitted to Google Play review on September 25. Console confirms 196 changes under “İncelenmekte olan değişiklikler”; managed publishing is disabled, so approval will trigger the planned full rollout. Live publication is not yet confirmed.** The user explicitly requested publishing without waiting for the remaining physical Google login/billing checks. Separate TV/Wear bundles were not submitted. The user moved the iOS review recheck ahead of Android artwork completion. iOS build 6 was rejected for a missing ATT prompt; build 7 is now WAITING_FOR_REVIEW with automatic release after approval. Android artwork and release work has resumed.
 
 ## Google Play listing
 
@@ -27,15 +27,15 @@ Phone 1.0.70 (92), TV 1.0.70 (93), Wear 1.0.70 (94) all build with the existing 
 - Wear release built and signing matched. Pairing, reconnect and actual control tests remain pending.
 - Full TypeScript checking reports existing project errors (platform-specific AdMob resolution and other pre-existing types). The introduced test-import extension error was removed by using a Node `.mjs` test. A successful native build does not mean full TypeScript checking is clean.
 
-## Remaining release gates
+## Remaining validation and form-factor work
 
 1. Phone/tablet ASO and artwork delivery is complete. Finish TV/Wear captures after functional tests.
 2. Retest HLS after prolonged pause, background audio, notification controls, login, premium restore and failure handling.
 3. Play app-signing OAuth registration is verified. Use an internal Play install for real Google login and billing validation; the user has been asked to test the existing release.
 4. Finish TV / Wear device testing and eligible form-factor onboarding; never advertise a scaffold as tested compatibility.
-5. Phone AAB 92 is available in internal testing. Finish production prerequisites, then submit the authorized production update and verify Play's returned status.
+5. Phone AAB 92 and the store listing are submitted; Google review outcome and live publication remain pending.
 6. Keep release evidence and the existing draft PR current.
-7. iOS 1.0.70 (7) resubmission is complete and remains Waiting for Review with automatic release, rechecked at 09:30 UTC Sep 25. Do not modify content-rights declarations.
+7. iOS 1.0.70 (7) resubmission is complete and remains Waiting for Review with automatic release, rechecked at 09:47 UTC Sep 25. Do not modify content-rights declarations.
 
 ## Follow-up on 2026-09-25
 
@@ -51,20 +51,20 @@ Phone 1.0.70 (92), TV 1.0.70 (93), Wear 1.0.70 (94) all build with the existing 
 - Phone verification reads back all six names and dimensions per locale. Tablet verification checks all eight positions before save, then the first and last name and dimensions per size after save. A Bulgarian insertion-order issue was caught and corrected before saving. Default en-US native-only tablet images were replaced with the same editorial design used for the other locales.
 - Safari delivery resumed successfully. Android Studio's emulator controls remain unreliable: TV launcher rendering works with host graphics, but application navigation has not been verified. A standalone TV emulator booted successfully but the computer-use tool could not bind its executable; TV was restarted in Android Studio.
 - Wear AVD `MegaRadio_Wear_API36` booted and the signed release APK installed successfully. Pairing and application control tests remain pending. Installation is not functional validation.
-- Production Google OAuth registration is complete and its saved fields have been verified. Phone AAB 92 is available to the existing internal test group (release 16), verified at 05:53 Europe/Vienna. Production, TV and Wear releases have not been submitted.
-- iOS 1.0.70 (7) remains WAITING_FOR_REVIEW with automatic release after approval, verified 2026-09-25 09:30 UTC. Content-rights and App Privacy declarations are unchanged.
+- Production Google OAuth registration is complete and its saved fields have been verified. Phone AAB 92 is available to the existing internal test group (release 16), verified at 05:53 Europe/Vienna. Production 92 is now submitted; the separate TV and Wear releases have not been submitted.
+- iOS 1.0.70 (7) remains WAITING_FOR_REVIEW with automatic release after approval, verified 2026-09-25 09:47 UTC. Content-rights and App Privacy declarations are unchanged.
 - Final packaging checks: generated ATT/Android Auto modules match checked-in templates; reverse-apply validation confirms installed TrackPlayer source matches the patch. Strict whitespace checks pass outside the patch; its single-space context lines are valid unified-diff syntax.
 
 ## Internal Android release
 
 - Google Play accepted phone AAB 92 with no blocking errors and one non-blocking deobfuscation mapping warning; minification is disabled.
-- Release 16 is available to the existing internal testers, published 2026-09-25 05:53 Europe/Vienna. All 24 currently published store languages have localized release notes. The expanded 51-language store listing remains a saved draft pending production submission.
+- Release 16 is available to the existing internal testers, published 2026-09-25 05:53 Europe/Vienna. All 24 currently published store languages have localized release notes. The expanded 51-language store listing has now been submitted with production 92.
 - See `validation/play-internal-release-92.json`. Real Play-installed Google login and billing are not yet verified. The production-signing OAuth client is now registered; real Play-installed login and billing tests are still required.
 
 ## Production preparation recheck — September 25
 
 - Phone 92 was promoted from the internal release to production draft release 7, track 4697806995588787253. Play validation showed zero blocking errors and only the known non-blocking R8/ProGuard mapping warning. All 24 existing release-note languages were retained.
-- The draft was saved to Publishing overview with the existing countries and 100% rollout selected; it has not been submitted. Google pre-submission quick checks started. See `validation/play-production-draft-92.json`.
+- The draft was saved to Publishing overview with the existing countries and 100% rollout selected; it was subsequently submitted at the user’s explicit request. Google pre-submission quick checks started. See `validation/play-production-draft-92.json`.
 - The Console currently has no pre-launch device report. This absence is not a passing test result.
 - The Play OAuth client registration was independently read back and matches the Play app-signing certificate. User verification of real Play-installed Google login and existing Premium restoration was requested.
 - TV emulator boot and installed version 93 were verified again. The computer-use tool cannot focus its input canvas (offscreen-element error); keyboard/hardware input attempts do not reach the launcher. Native TV navigation/playback remains unverified.
@@ -73,4 +73,4 @@ Phone 1.0.70 (92), TV 1.0.70 (93), Wear 1.0.70 (94) all build with the existing 
 
 - Reopened the persisted default listing and advanced to step 2 Review. English title is MegaRadio: Live FM & AM Radio; full description is 3,941 characters. Review shows 1 feature graphic, 6 phone images and 4 images for each tablet size. Prior per-locale delivery checks remain recorded separately.
 - The Review step exposes AI-asset labeling options, but they are not required to save. Final Save succeeded with both choices unchanged/unselected, and Console confirmed the listing is ready for review. An earlier clarification request was withdrawn after this was verified. The graphics contain real captured application UI with AI-assisted text/code-rendered composition; the existing icon was retained. No AI declaration or content-rights change was made. See `validation/play-listing-review-gate.json`.
-- The production binary and the store-listing changes are saved for review; Publishing overview reports 196 pending changes. Neither has been submitted to Google review. Quick checks are still in progress.
+- The production binary and store-listing changes were submitted through the final confirmation dialog. Publishing overview shows all 196 changes under In review, including 195 listing rows covering exactly 51 locales and one production 92 row. No unsent changes section is present. Quick checks were still displayed in progress immediately after submission. See `validation/play-production-submission-92.json`.

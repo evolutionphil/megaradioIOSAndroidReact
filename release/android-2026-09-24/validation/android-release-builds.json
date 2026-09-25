@@ -107,6 +107,10 @@
     "publishedAtConsole": "2026-09-25 05:53 Europe/Vienna",
     "productionPublished": false,
     "tvUploaded": false,
-    "wearUploaded": false
+    "wearUploaded": false,
+    "productionSubmitted": true,
+    "productionReleaseId": "7",
+    "productionState": "In review; automatic release after approval",
+    "submissionEvidence": "play-production-submission-92.json"
   }
 }
