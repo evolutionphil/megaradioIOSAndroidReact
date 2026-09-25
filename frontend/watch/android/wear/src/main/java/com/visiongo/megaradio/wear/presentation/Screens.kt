@@ -169,27 +169,31 @@ fun HomeScreen(
 
         if (!isPhoneConnected) {
             item {
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    onClick = onRefreshClick,
-                    modifier = Modifier.size(36.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
-                    shape = CircleShape
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = "Refresh",
-                        tint = TextGray,
-                        modifier = Modifier.size(18.dp)
+                    Button(
+                        onClick = onRefreshClick,
+                        modifier = Modifier.size(36.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
+                        shape = CircleShape
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = "Refresh connection",
+                            tint = TextGray,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Text(
+                        text = "Connect your Android phone and open MegaRadio",
+                        color = TextGray,
+                        fontSize = 12.sp,
+                        modifier = Modifier.fillMaxWidth(0.8f).padding(top = 6.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
-                Text(
-                    text = "Connect your Android phone and open MegaRadio",
-                    color = TextGray,
-                    fontSize = 11.sp,
-                    modifier = Modifier.fillMaxWidth(0.8f).padding(top = 4.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
             }
         }
     }

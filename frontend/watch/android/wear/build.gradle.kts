@@ -16,7 +16,7 @@ android {
         applicationId = "com.megaradio"
         minSdk = 30  // Wear OS 3.0+
         targetSdk = 35
-        versionCode = 94
+        versionCode = 96
         versionName = "1.0.70"
     }
 
