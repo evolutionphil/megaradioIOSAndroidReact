@@ -1,6 +1,6 @@
 # Apple release status — 2026-09-25
 
-iOS **1.0.70 (7)** was resubmitted at **2026-09-24 22:48 UTC** and is **WAITING_FOR_REVIEW**, with automatic release after approval. The last read-only check at 2026-09-25 01:26 UTC confirmed build `488189fc-079b-4f9a-b182-13d8fa033d80`, processing state VALID, and release type AFTER_APPROVAL. This is a completed submission, not Apple approval or publication. See `../../ios-2026-09-25/latest-status.json` and `resubmission.json` in that directory.
+iOS **1.0.70 (7)** was resubmitted at **2026-09-24 22:48 UTC** and is **WAITING_FOR_REVIEW**, with automatic release after approval. The read-only recheck at 2026-09-25 12:09 UTC confirmed build `488189fc-079b-4f9a-b182-13d8fa033d80`, processing state VALID, and release type AFTER_APPROVAL. This is a completed submission, not Apple approval or publication. See `../../ios-2026-09-25/latest-status.json` and `resubmission.json` in that directory.
 
 ## Privacy correction
 
@@ -18,6 +18,6 @@ Apple's earlier 2.3.6 age-rating issue was corrected by declaring the app's adve
 
 ## Other platforms and validation limits
 
-macOS 1.0.3 and native tvOS 1.0.0 (1) are processed and available to the existing internal TestFlight group. Their public App Store drafts were not submitted. The earlier contract/auth/purchase validation passed 79 application tests; the ASO uploader passed eight safety tests. No new paid or sandbox purchase was performed and push delivery remains unverified.
+macOS 1.0.3 and native tvOS 1.0.0 (2) are processed and available to the existing internal TestFlight group. Both were submitted through the existing authenticated Safari account on September 25; API readback at 12:09 UTC confirms all three platforms are WAITING_FOR_REVIEW with valid selected builds and AFTER_APPROVAL release. The API key review permission was not expanded. Evidence: `all-apple-submissions-2026-09-25.json`. The native tvOS build 2 includes the Siri Remote guide correction. The earlier contract/auth/purchase validation passed 79 application tests; the ASO uploader passed eight safety tests. No new paid or sandbox purchase was performed and push delivery remains unverified.
 
 Android's subsequent profile privacy-options entry and car-mode localization fixes are **not part of the already submitted iOS build 7**. Android delivery remains in progress; consult `../../android-2026-09-24/STATUS.md` for its independent release gates.
