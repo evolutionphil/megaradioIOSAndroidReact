@@ -32,6 +32,7 @@ object RecommendationsChannel {
 
     fun publish(context: Context, stations: List<RecItem>) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        if (!context.packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_LEANBACK)) return
         val channelId = ensureChannel(context)
         // TV providers reject SQL selections. Enumerate this channel's rows and
         // remove each by its item URI, leaving other channels untouched.

@@ -1,13 +1,23 @@
-# MegaRadio Android TV / Google TV
+# MegaRadio Android TV and Android desktop
 
-**Release status:** Android validation and Google Play setup are pending. A
-successful JavaScript export or unit test is not a signed, tested TV release.
+**Release status:** TV build 93 is uploaded and its production rollout is prepared.
+Desktop build 98 (target API 36) passed build checks and native emulator playback;
+its internal release is active while production and localized artwork remain in preparation. See
+`../../../release/android-2026-09-24/validation/` for verified submission status.
 
 The app is a thin Leanback-launcher shell that hosts a fullscreen `WebView`
 pointed at `https://cdn.themegaradio.com/`, the shared bundle used by Samsung
 Tizen and LG webOS. The existing CDN deployment publishes web design updates;
 native changes such as Billing, permissions or the host require a new AAB.
 The native tvOS app has a separate implementation.
+
+The `desktop` module compiles the same Kotlin sources and resources as `app`,
+using a desktop manifest for Googlebook OS and ChromeOS. It keeps system window
+controls, opens in a wide resizable window, and does not require Leanback. TV
+recommendations are only published when the device actually supports Leanback.
+Both modules retain the existing origin-scoped Google Play Billing bridge and CDN.
+The dedicated Play Console desktop track must receive the desktop AAB; the TV
+AAB's required Leanback feature excludes desktop devices.
 
 ## Project layout
 
@@ -45,6 +55,10 @@ android-tv/
 # Release AAB; supply the existing Play upload key before uploading.
 ./gradlew :app:bundleRelease
 #   ⇒ app/build/outputs/bundle/release/app-release.aab
+
+# Googlebook OS / ChromeOS, using the same upload key and package name.
+./gradlew :desktop:testReleaseUnitTest :desktop:lintRelease :desktop:bundleRelease
+#   ⇒ desktop/build/outputs/bundle/release/desktop-release.aab
 ```
 
 ## MegaRadio brand icon & TV banner
@@ -70,16 +84,16 @@ genre lists, player controls, search and Back on a TV device before release.
 The WebView uses origin-scoped message listeners and document-start adapters
 for the existing `MegaRadioNative.invoke` and `MegaRadioBridge` protocol.
 Only the main frame at the HTTPS CDN origin can call native purchase methods.
-External web links leave the WebView; supported System WebView features are
+External HTTPS pages use a separate dialog without a native bridge; supported System WebView features are
 checked before the application starts. Google Play Billing is 8.3.0.
 
 ## Stores
 
 | Store              | Target              | Package                  |
 |--------------------|---------------------|--------------------------|
-| Google Play (TV)   | AAB, leanback       | `com.megaradio`, version code 93; Console TV enrollment pending |
+| Google Play (TV)   | AAB, leanback       | `com.megaradio`, version code 93; TV distribution enabled |
+| Google Play (Desktop) | AAB, resizable | `com.megaradio`, version code 98; dedicated desktop track |
 
-Do not upload this as a second app merely because the scaffold has a separate
-application ID. Confirm the Console's form-factor setup, product catalog,
-version codes and signing identity first. Fire TV requires its own store and
+Both form factors belong to the existing MegaRadio listing. Keep version codes
+unique across its mobile, watch, TV and desktop bundles. Fire TV requires its own store and
 billing integration; the Google Play purchase flow is not Amazon billing.

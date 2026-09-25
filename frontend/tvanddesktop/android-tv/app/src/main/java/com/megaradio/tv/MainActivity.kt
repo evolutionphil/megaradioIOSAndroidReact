@@ -36,6 +36,11 @@ import androidx.webkit.WebViewFeature
  */
 class MainActivity : Activity() {
 
+    private val desktopShell by lazy {
+        packageManager.getActivityInfo(componentName, android.content.pm.PackageManager.GET_META_DATA)
+            .metaData?.getBoolean("com.megaradio.DESKTOP_SHELL", false) == true
+    }
+
     private lateinit var webView: WebView
     private val billingService by lazy { BillingService(this) }
     private var nativeBridge: MegaRadioNativeBridge? = null
@@ -55,11 +60,13 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Full-screen immersive — hide system bars on TV
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, window.decorView).apply {
-            hide(WindowInsetsCompat.Type.systemBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        // Desktop keeps the system caption/taskbar and remains freely resizable.
+        WindowCompat.setDecorFitsSystemWindows(window, desktopShell)
+        if (!desktopShell) {
+            WindowInsetsControllerCompat(window, window.decorView).apply {
+                hide(WindowInsetsCompat.Type.systemBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
         }
         // Audio-only TV apps must allow Ambient Mode.
 
@@ -92,7 +99,8 @@ class MainActivity : Activity() {
                 useWideViewPort = true
                 allowFileAccess = false
                 allowContentAccess = false
-                userAgentString = "$userAgentString MegaRadioAndroidTV/1.0"
+                userAgentString = "$userAgentString " +
+                    if (desktopShell) "MegaRadioAndroidDesktop/1.0" else "MegaRadioAndroidTV/1.0"
             }
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -177,7 +185,7 @@ class MainActivity : Activity() {
                     };
                 }
             """.trimIndent(), allowedOrigins)
-            systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+            if (!desktopShell) systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
