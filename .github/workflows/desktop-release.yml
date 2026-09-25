@@ -81,7 +81,10 @@ jobs:
           version=$(node -p "require('./frontend/tvanddesktop/desktop/package.json').version")
           tag="v${version}"
           if gh release view "$tag" >/dev/null 2>&1; then
-            test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
+            if [ "$(gh release view "$tag" --json isDraft --jq .isDraft)" != true ]; then
+              echo "Desktop release $tag is already public; preserving its verified installers and update metadata."
+              exit 0
+            fi
           else
             gh release create "$tag" --draft --target "$GITHUB_SHA" --title "MegaRadio ${version}" --notes "Windows and Linux desktop update with the shared TV interface and current CDN delivery."
           fi
