@@ -68,10 +68,11 @@ export const Guide2 = (): JSX.Element => {
 
         {/* Tooltip Box */}
         <div className="absolute bg-black h-[115px] left-[340px] overflow-clip rounded-[10px] top-[338px] w-[509px] z-20">
-          <p className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[67px] not-italic text-[24px] text-white top-[43px]">
-            {t('guide_genres_description') || 'You can press green to access genres.'}
-          </p>
-          <div className="absolute bg-[#55e952] left-[24px] rounded-[40px] w-[18.667px] h-[18.667px] top-[48px]" />
+          <div className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[67px] not-italic text-[24px] text-white top-[29px]">
+            <p>{t('nav_genres')}</p>
+            <p>{t('next')} · Enter / OK</p>
+          </div>
+          <div className="absolute bg-[#ff4199] left-[24px] rounded-[40px] w-[18.667px] h-[18.667px] top-[48px]" />
         </div>
       </div>
   );

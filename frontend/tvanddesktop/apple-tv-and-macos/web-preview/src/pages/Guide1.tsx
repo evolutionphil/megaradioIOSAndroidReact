@@ -70,9 +70,9 @@ export const Guide1 = (): JSX.Element => {
         <div className="absolute bg-black h-[115px] left-[340px] overflow-clip rounded-[10px] top-[233px] w-[720px] z-20">
           <div className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[67px] not-italic text-[24px] text-white top-[29px] whitespace-nowrap">
             <p className="mb-0">{t('guide_discover_description') || 'This is the discovery page. You can always reach here'}</p>
-            <p>{t('guide_discover_red_button') || 'by pressing the red button on the remote.'}</p>
+            <p>{t('next')} · Enter / OK</p>
           </div>
-          <div className="absolute bg-[#e95252] left-[24px] rounded-[40px] w-[18.667px] h-[18.667px] top-[48px]" />
+          <div className="absolute bg-[#ff4199] left-[24px] rounded-[40px] w-[18.667px] h-[18.667px] top-[48px]" />
         </div>
       </div>
   );
