@@ -22,7 +22,8 @@
   "productionPublished": false,
   "productionBaseline": "1.0.69 (91)",
   "existingTesterAccessChanged": false,
-  "googleOAuthClientCreated": false,
+  "googleOAuthClientCreated": true,
   "googleLoginViaPlayVerified": false,
-  "billingViaPlayVerified": false
+  "billingViaPlayVerified": false,
+  "oauthRecheckedAt": "2026-09-25T09:31:17.483095+00:00"
 }

@@ -1,0 +1,26 @@
+{
+  "verifiedAt": "2026-09-25T09:37:00.060311+00:00",
+  "package": "com.megaradio",
+  "versionName": "1.0.70",
+  "versionCode": 92,
+  "productionTrackId": "4697806995588787253",
+  "releaseId": "7",
+  "reviewUrl": "https://play.google.com/console/u/0/developers/7314839518457703103/app/4972640059774211400/tracks/4697806995588787253/releases/7/review",
+  "state": "Saved in Publishing overview, not submitted for review",
+  "plannedRolloutPercent": 100,
+  "countries": "Existing targeted countries",
+  "blockingValidationErrors": 0,
+  "warnings": [
+    {
+      "message": "Missing R8/ProGuard deobfuscation mapping",
+      "disposition": "Non-blocking; release minification disabled"
+    }
+  ],
+  "releaseNotesLocales": 24,
+  "preSubmissionQuickChecks": "In progress; Console initially estimated up to 14 minutes",
+  "preLaunchReport": "No report available in Console on recheck",
+  "googleLoginViaPlayVerified": false,
+  "billingViaPlayVerified": false,
+  "productionPublished": false,
+  "productionBaseline": "1.0.69 (91)"
+}
