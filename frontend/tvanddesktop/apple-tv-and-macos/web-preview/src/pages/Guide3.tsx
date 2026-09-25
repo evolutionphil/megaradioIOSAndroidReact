@@ -54,9 +54,9 @@ export const Guide3 = (): JSX.Element => {
         <div className="absolute bg-black h-[115px] left-[340px] overflow-clip rounded-[10px] top-[449px] w-[597px] z-20">
           <div className="absolute font-['Ubuntu',Helvetica] font-medium leading-normal left-[67px] not-italic text-[24px] text-white top-[29px] whitespace-nowrap">
             <p className="mb-0">{t('guide_search_description') || 'You can find any radio station you want here.'}</p>
-            <p>{t('guide_search_blue_button') || 'Press the blue on the remote!'}</p>
+            <p>{t('next')} · Enter / OK</p>
           </div>
-          <div className="absolute bg-[#2d41f4] left-[24px] rounded-[40px] w-[18.667px] h-[18.667px] top-[48px]" />
+          <div className="absolute bg-[#ff4199] left-[24px] rounded-[40px] w-[18.667px] h-[18.667px] top-[48px]" />
         </div>
 
         {/* Highlighted Search Button */}
