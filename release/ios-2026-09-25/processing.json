@@ -1,0 +1,31 @@
+{
+  "observedAt": "2026-09-24T22:46:02.901211+00:00",
+  "marketingVersion": "1.0.70",
+  "builds": [
+    {
+      "id": "488189fc-079b-4f9a-b182-13d8fa033d80",
+      "attributes": {
+        "version": "7",
+        "uploadedDate": "2026-09-24T15:37:16-07:00",
+        "expirationDate": "2026-12-23T14:37:16-08:00",
+        "expired": false,
+        "minOsVersion": "15.1",
+        "lsMinimumSystemVersion": "12.0",
+        "computedMinMacOsVersion": "12.0",
+        "computedMinVisionOsVersion": "1.0",
+        "iconAssetToken": {
+          "templateUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/48/d2/5b/48d25bd7-1751-fe7e-ed92-d30f0977babe/AppIcon76x76@2x_U007eipad.png/{w}x{h}bb.{f}",
+          "width": 152,
+          "height": 152
+        },
+        "processingState": "VALID",
+        "buildAudienceType": "APP_STORE_ELIGIBLE",
+        "usesNonExemptEncryption": false
+      },
+      "preReleaseVersion": {
+        "version": "1.0.70",
+        "platform": "IOS"
+      }
+    }
+  ]
+}

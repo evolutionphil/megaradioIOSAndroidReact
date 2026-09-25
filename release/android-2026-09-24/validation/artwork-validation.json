@@ -1,0 +1,580 @@
+{
+  "locales": 52,
+  "graphics": [
+    {
+      "locale": "ar",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ar/feature-graphic.png",
+      "altText": "MegaRadio — راديو مباشر. محطات FM وAM من حول العالم",
+      "sha256": "834e9bfccd5097790571efa2647fe41d2187b80d958e0dcded91b2d975b60735",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "bg",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bg/feature-graphic.png",
+      "altText": "MegaRadio — Радио на живо. Български гласове. Музика от света.",
+      "sha256": "f05a71a5e34f251860d0dc4347eab366b5d9145f78a5b1232e54ddeac37f3bb4",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn-BD",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bn-BD/feature-graphic.png",
+      "altText": "MegaRadio — বাংলা রেডিও. বাংলা ও বিশ্বের রেডিও শুনুন",
+      "sha256": "aa3618dd2cc558781032041f699c91789d6d27a31fae9e70f435c6e751fbe791",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ca/feature-graphic.png",
+      "altText": "MegaRadio — Ràdio en directe. Emissores FM i AM del món",
+      "sha256": "b2ed6d7c46625f6f1a4bad6cbe2598ac66fe3c0b63d9dade05eae42b4f138d54",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/cs-CZ/feature-graphic.png",
+      "altText": "MegaRadio — Rádio online. Živé vysílání FM a AM stanic",
+      "sha256": "ee50579af95c4e37a39b2d593f054f09bb9e578157e4566b11a9b3cb4f19107a",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "da-DK",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/da-DK/feature-graphic.png",
+      "altText": "MegaRadio — Dansk netradio. Live radio fra hele verden",
+      "sha256": "68c5ba3d710403e3bc8030f426e3f31524d5b6c77744292e5d3f63c7974276f0",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/de-DE/feature-graphic.png",
+      "altText": "MegaRadio — Radio & Webradio. Entdecke Radiosender aus aller Welt.",
+      "sha256": "04416ff805b893550650100a306133a4979dc2e4926cbf73caef27aa3d3742a5",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "el-GR",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/el-GR/feature-graphic.png",
+      "altText": "MegaRadio — Ραδιόφωνο live. Σταθμοί FM και AM παγκοσμίως",
+      "sha256": "11d7073f102494f2794fc8bc2f6579cf4d3596b30a5c8c89d3b4457cf6fd7ca4",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-AU/feature-graphic.png",
+      "altText": "MegaRadio — Live Radio. Australian voices. Worldwide discovery.",
+      "sha256": "431fcdcfbd5a8b53de03c1784937754dcbd73e08e8bfe448ad941418a8af0ae3",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-CA/feature-graphic.png",
+      "altText": "MegaRadio — Canadian Radio. Local voices, music and world radio.",
+      "sha256": "320ea295b133d7acb2c39592493550a0ec86979fb85cd153765f941b18667593",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-GB/feature-graphic.png",
+      "altText": "MegaRadio — Live Radio. Your local sound. A world to discover.",
+      "sha256": "e3f4688d7229bf38a8298b6d5c59febfc001be7115db51783c6bb084538b6d40",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-US/feature-graphic.png",
+      "altText": "MegaRadio — Live Radio. Discover stations from around the world.",
+      "sha256": "5021316e3e5ce721b00d56fb35873af52737fa0b3fbb1366fcb6f1bab90d6bb8",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-419",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-419/feature-graphic.png",
+      "altText": "MegaRadio — Radio en vivo. México y el mundo en tu radio.",
+      "sha256": "e2003e1420dbc9be5765f59c7899d4a98ffae62f6ae0d6ac18136d955b1dec9d",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-ES/feature-graphic.png",
+      "altText": "MegaRadio — Radio en directo. Descubre emisoras de todo el mundo.",
+      "sha256": "070faf1d5b4443076897cbab8cf41e1f6cb8d8833a4af40e37f525a48c366dfb",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi-FI",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fi-FI/feature-graphic.png",
+      "altText": "MegaRadio — Kuuntele radiota. Suomen ja maailman nettiradio",
+      "sha256": "1009709d35b95d6dd8d7e9f4e429dcc58a4d1194e714e8e6a013f901fb050029",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-CA/feature-graphic.png",
+      "altText": "MegaRadio — Radio en direct. Le Québec à l’écoute du monde.",
+      "sha256": "4c22167f2a69c2e2f335e0ab9821ea7b06aa045887115a33149ea41bc0b1e0cc",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-FR/feature-graphic.png",
+      "altText": "MegaRadio — Radio en direct. Découvrez des radios du monde entier.",
+      "sha256": "de95b61fce0db8877e6c84cbd6636d2e1436fc3f4edf3b575fc7a23749c2445e",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/gu/feature-graphic.png",
+      "altText": "MegaRadio — લાઇવ રેડિયો. ગુજરાતી અને વિશ્વના FM, AM",
+      "sha256": "733c5016ef0e524e8b2dfe9da64acf8bcf347b2a4abafe99d8a4d76f3f82f50f",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi-IN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hi-IN/feature-graphic.png",
+      "altText": "MegaRadio — लाइव रेडियो. भारत और दुनिया के FM, AM",
+      "sha256": "6b487d0c4882e9b0b2a3737d8c16818e2581c486c0f2543ceb96d40fae472889",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr-HR",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hr-HR/feature-graphic.png",
+      "altText": "MegaRadio — Radio uživo. FM i AM postaje iz svijeta",
+      "sha256": "d8cdc5e33f52043ccb41de6548a779541f06696d84f63d5b4765384ee385e2ff",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu-HU",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hu-HU/feature-graphic.png",
+      "altText": "MegaRadio — Online rádió. Élő FM és AM adók a világból",
+      "sha256": "33c3dfb2e68638bad0acfecefdde2aca3eb7ac95bd047e87177c76160e976c85",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/id/feature-graphic.png",
+      "altText": "MegaRadio — Radio Online. Dengar siaran langsung FM & AM",
+      "sha256": "3ad6a3c8e055609d878d1d8d6396cc9ea7c8f2fe87961af832f289a3656e52c8",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "it-IT",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/it-IT/feature-graphic.png",
+      "altText": "MegaRadio — Radio in diretta. Scopri le radio di tutto il mondo.",
+      "sha256": "dc63c29e41a4e79d6b66fecd118a10d486f47e652ca92e7559ccde6be582d62a",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "iw-IL",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/iw-IL/feature-graphic.png",
+      "altText": "MegaRadio — רדיו בשידור חי. תחנות FM ו-AM מכל העולם",
+      "sha256": "f0215d46558ae3ee203d346846e46010c2692d6018639797570dc3f473126a67",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja-JP",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ja-JP/feature-graphic.png",
+      "altText": "MegaRadio — ネットラジオ. 世界中のラジオ局と出会おう。",
+      "sha256": "313a0da5a29eb7c6e62be8a75dcc65a0285503646c525e38cf751c93b15fe6b1",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn-IN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/kn-IN/feature-graphic.png",
+      "altText": "MegaRadio — ಕನ್ನಡ ರೇಡಿಯೋ. ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM",
+      "sha256": "39d3f24fed7e4a5fb2666dd2233e8a81c88dbae6e2224a4e985b3a266c9f49a7",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko-KR",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ko-KR/feature-graphic.png",
+      "altText": "MegaRadio — 실시간 라디오. 전 세계의 라디오를 만나 보세요.",
+      "sha256": "01298a52d488b26213267148e27d91b9751f79ce6049309da3f067447c3e3438",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml-IN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ml-IN/feature-graphic.png",
+      "altText": "MegaRadio — ലൈവ് റേഡിയോ. മലയാളവും ലോകവും FM, AM",
+      "sha256": "ffcfc18470b951b312d6738f8fae6e6a6ea888faee38f103898d591205b33df6",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr-IN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/mr-IN/feature-graphic.png",
+      "altText": "MegaRadio — लाइव्ह रेडिओ. मराठी व जगभरातील FM, AM",
+      "sha256": "ad1b3156d67e7927b1189208f1cf7378ca29e46b1771d5a8960037cd257575ac",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms-MY",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ms-MY/feature-graphic.png",
+      "altText": "MegaRadio — Radio Dalam Talian. Siaran langsung FM dan AM",
+      "sha256": "faa204da0472603c4c68ebd636a29d51f51b04cd427743a2bb7af3920c8a4eb1",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/nl-NL/feature-graphic.png",
+      "altText": "MegaRadio — Radio luisteren. Live FM, AM en wereldzenders",
+      "sha256": "3e14546db710bf9e95b631541cf4493ee51c4ee2fe6bea2d892b09fbed27be35",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "no-NO",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/no-NO/feature-graphic.png",
+      "altText": "MegaRadio — Nettradio & musikk. FM, AM og kanaler fra verden",
+      "sha256": "2fa98efbff8a740bedf114a841da333194923ba8816f296096ddaad7336f3a0e",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/or/feature-graphic.png",
+      "altText": "MegaRadio — ଲାଇଭ୍ ରେଡିଓ. ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM",
+      "sha256": "6dc54a600afa7dc88d14369551caf2e386931939dcb0f4b7e27c4fe15c3d2860",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pa/feature-graphic.png",
+      "altText": "MegaRadio — ਲਾਈਵ ਰੇਡੀਓ. ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM",
+      "sha256": "036102a020336df5f3566f2289ef77f0517e7a544a985d9d71d54daee5e0f12e",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl-PL",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pl-PL/feature-graphic.png",
+      "altText": "MegaRadio — Radio internetowe. Stacje FM i AM na żywo",
+      "sha256": "d746dad986aa2b7e127c5d068a892a917b56492d9d67547db2ccd4396632050e",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-BR/feature-graphic.png",
+      "altText": "MegaRadio — Rádio ao vivo. Descubra rádios do Brasil e do mundo.",
+      "sha256": "e7e0ceeb96c10bd29472cc57f639c529059fc2d9901c282535c2979110db22df",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-PT/feature-graphic.png",
+      "altText": "MegaRadio — Rádio em direto. Descobre rádios de Portugal e do mundo.",
+      "sha256": "2aaecc7e0cc0d37569d0497de5792f6294ac309ca99a0debcebab84b6c8846cd",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro-RO",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ro-RO/feature-graphic.png",
+      "altText": "MegaRadio — Radio online. Posturi FM și AM în direct",
+      "sha256": "0ac4383d6afd76328c9b5947e0eca2cef1a7f06ca7e9a518f9e8011248437643",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru-RU",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ru-RU/feature-graphic.png",
+      "altText": "MegaRadio — Радио онлайн. Прямой эфир FM и AM станций",
+      "sha256": "8930ab575f8ed519cd4a233c7491c261c530c4c425b2a9053ade51dfa06e5ac5",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk-SK",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sk-SK/feature-graphic.png",
+      "altText": "MegaRadio — Rádio naživo. Online stanice FM a AM",
+      "sha256": "2d55b119e479005c67e4088962339ff329537fb35ea9a8c5ceb9b33de96a4125",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl-SI",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sl-SI/feature-graphic.png",
+      "altText": "MegaRadio — Radio v živo. Postaje FM in AM z vsega sveta",
+      "sha256": "f82e8eee36ee201733da676bb3491258d1ffd4fac4759cfc9e0edd60722da05e",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv-SE",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sv-SE/feature-graphic.png",
+      "altText": "MegaRadio — Radio Sverige. Webbradio, musik och nyheter",
+      "sha256": "06f68c968e77ac848ea6d459b9127c8c8525c5f42a1efc5cc98f0d4ad38b2ea6",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta-IN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ta-IN/feature-graphic.png",
+      "altText": "MegaRadio — தமிழ் வானொலி. உலக FM, AM நேரலை கேளுங்கள்",
+      "sha256": "d27ad94cf4f88d9feed2c6a5332ae8d96570e75fa921c82f892a43e4638612b1",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "te-IN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/te-IN/feature-graphic.png",
+      "altText": "MegaRadio — లైవ్ రేడియో. తెలుగు, ప్రపంచ FM, AM వినండి",
+      "sha256": "a4879bc01b39e7e065da2e8112cd6f07b3976b67cd4808d9a6e79691d6eac350",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/th/feature-graphic.png",
+      "altText": "MegaRadio — วิทยุออนไลน์. ฟังสด FM AM จากทั่วโลก",
+      "sha256": "84b96e1de5c822f1c218be965f48bde2414c3224f40a908579237787a43dff87",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr-TR",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/tr-TR/feature-graphic.png",
+      "altText": "MegaRadio — Canlı Radyo. Türkiye’den ve dünyadan radyoları keşfet.",
+      "sha256": "100d63938d596152561fcc7df9b7eeed287268bb24fa5d0701ff07b15742b7ae",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/uk/feature-graphic.png",
+      "altText": "MegaRadio — Радіо онлайн. Прямий ефір FM та AM станцій",
+      "sha256": "b4bca6d297da6ab1cb9352d562cd8cd85e2520e8eb0c7b12e94a0fb57a8153f8",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ur/feature-graphic.png",
+      "altText": "MegaRadio — لائیو ریڈیو. اردو اور دنیا کے FM، AM سنیں",
+      "sha256": "815fe94fd21046c1d14a2305bf5bd9b67eb01f4445cb7e70c0356bb687d81888",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/vi/feature-graphic.png",
+      "altText": "MegaRadio — Nghe radio online. Đài FM, AM trực tiếp toàn cầu",
+      "sha256": "ae837a5d3278d4d50f99e10d9483dd82a7dcf8a24636061186dee12d1ffd6fb4",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-CN",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-CN/feature-graphic.png",
+      "altText": "MegaRadio — 在线广播电台. 发现来自世界各地的电台。",
+      "sha256": "ee71cf1601bcc6c7d1456502e4aec72f90ba64edefb945730069b427ad250207",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-HK",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-HK/feature-graphic.png",
+      "altText": "MegaRadio — 隨時聽廣播. 香港的聲音，世界的音樂。",
+      "sha256": "79ff8b2ee9a6dbd7eb6d87ec079ec835350816e0523ca305d2e113f5a6ca1f2a",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-TW",
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-TW/feature-graphic.png",
+      "altText": "MegaRadio — 即時網路電台. 探索來自世界各地的電台。",
+      "sha256": "326dd92acbbdee18f3a242c981ddc7897bc091de0dc61d42739d604a2c844503",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "errors": [],
+  "screenshots": "Not yet captured; Android SDK/device validation pending",
+  "storeDelivery": "Not uploaded"
+}

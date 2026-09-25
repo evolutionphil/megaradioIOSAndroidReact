@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-09-25T01:26:27.246418+00:00",
+  "version": "1.0.70",
+  "state": "WAITING_FOR_REVIEW",
+  "releaseType": "AFTER_APPROVAL",
+  "buildId": "488189fc-079b-4f9a-b182-13d8fa033d80",
+  "build": "7",
+  "buildProcessingState": "VALID"
+}

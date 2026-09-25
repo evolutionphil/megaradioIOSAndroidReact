@@ -1,0 +1,19 @@
+ LOG  [AdMob] Request configuration set (non-personalized ads enabled)
+ WARN  [Layout] AdMob init timed out after 20s
+ LOG  [Layout] AdMob initialized: false
+ LOG  [Layout] AdMob init failed, retrying in 10s...
+ LOG  [AdMob] SDK initialized successfully
+ LOG  [AdMob] Loading App Open first (for first-launch ad)...
+ LOG  [AdMob] Loading App Open ad with adUnitId: ca-app-pub-3940256099942544/5575463023
+ LOG  [AdMob] Staggered ad loading initiated (App Open prioritized)
+ LOG  [AdMob] Station change counter reset for new session
+ LOG  [AdMob] Loading Interstitial...
+ LOG  [AdMob] Loading interstitial with adUnitId: ca-app-pub-3940256099942544/4411468910
+ LOG  [AdMob] Loading Rewarded...
+ LOG  [AdMob] Loading rewarded interstitial with adUnitId: ca-app-pub-3940256099942544/6978759866
+ LOG  [Layout] AdMob retry result: true
+ LOG  [AdMob] App Open ad LOADED
+ LOG  [AdMob] Interstitial ad LOADED successfully
+ LOG  [AdMob] Rewarded interstitial ad LOADED successfully
+ LOG  [AdMob] App Open ad shown (attempt 1)
+ LOG  [AdMob] App Open ad closed - cleaning up

@@ -11,7 +11,7 @@ d = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(d)
 api = d.client.ASC()
 VERSION = 'a7ee381b-c6c2-4919-9df7-310d906d1565'
-BUILD = '8f8b9512-fd29-4fd7-9c6f-37b35231d8a9'
+BUILD = '488189fc-079b-4f9a-b182-13d8fa033d80'
 INFOS = ['1c1ca9df-fd5f-4caf-84eb-41eac95c1809', '76c28973-6ad6-4710-8a56-de3af87822a6']
 errors = []
 records = []
@@ -21,8 +21,8 @@ version = api.request('GET', '/v1/appStoreVersions/' + VERSION)['data']
 build = api.request('GET', f'/v1/appStoreVersions/{VERSION}/build')['data']
 if version['attributes']['versionString'] != '1.0.70' or version['attributes']['platform'] != 'IOS':
     errors.append('Unexpected version')
-if build['id'] != BUILD or build['attributes']['version'] != '6' or build['attributes']['processingState'] != 'VALID':
-    errors.append('Expected validated build 6')
+if build['id'] != BUILD or build['attributes']['version'] != '7' or build['attributes']['processingState'] != 'VALID':
+    errors.append('Expected validated build 7')
 if version['attributes']['releaseType'] != 'AFTER_APPROVAL':
     errors.append('Automatic release after approval is not configured')
 
@@ -48,10 +48,10 @@ for info in INFOS:
         errors.append('Advertising not declared: ' + info)
 
 report = {'observedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-          'versionId': VERSION, 'version': '1.0.70', 'build': '6',
+          'versionId': VERSION, 'version': '1.0.70', 'build': '7',
           'state': version['attributes']['appStoreState'], 'buildProcessingState': build['attributes']['processingState'],
           'automaticReleaseAfterApproval': version['attributes']['releaseType'] == 'AFTER_APPROVAL',
           'records': records, 'ageRatings': ages, 'errors': errors, 'verified': not errors}
-(ROOT / 'validation/ios-resubmission-preflight.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+(ROOT / 'validation/ios-att7-resubmission-preflight.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 print(json.dumps({k: v for k, v in report.items() if k != 'records'}, indent=2))
 raise SystemExit(bool(errors))

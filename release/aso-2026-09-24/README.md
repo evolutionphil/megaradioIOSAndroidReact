@@ -1,3 +1,5 @@
+> Current iOS status (2026-09-25): 1.0.70 (7) resubmitted after the ATT fix; WAITING_FOR_REVIEW, automatic release after approval. See `../ios-2026-09-25/`. Older build 6 evidence below is historical.
+
 # MegaRadio Apple release and ASO
 
 `copy.json` is the authoritative copy for 50 App Store localizations and three

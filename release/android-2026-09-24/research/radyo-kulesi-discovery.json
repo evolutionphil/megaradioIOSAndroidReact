@@ -1,0 +1,50 @@
+{
+  "locale": "tr-kulesi",
+  "language": "tr",
+  "country": "tr",
+  "query": "Radyo Kulesi",
+  "editorialIntentPhrases": [
+    "canlı radyo",
+    "radyo dinle",
+    "Türkçe radyo"
+  ],
+  "queryUrl": "https://play.google.com/store/search?q=Radyo%20Kulesi&c=apps&hl=tr&gl=tr",
+  "results": [
+    {
+      "appId": "idu.com.radio.radyoturk",
+      "title": "Radyo Türk - Canlı Radyo Dinle",
+      "url": null,
+      "score": 4.444126
+    },
+    {
+      "appId": "fm.radiotune.country.tr",
+      "title": "Radyo Türkiye: AM ve FM Radyo",
+      "url": null,
+      "score": 4.7824774
+    },
+    {
+      "appId": "com.applogist.radyoburada",
+      "title": "Radyo Burada - Radyo Dinle",
+      "url": null,
+      "score": 4.85514
+    },
+    {
+      "appId": "com.nuh.gardenpro",
+      "title": "Radyo Kulesi Garden",
+      "url": null,
+      "score": 4.4155846
+    },
+    {
+      "appId": "com.radyo.canliradyo",
+      "title": "Kule Radyo Dinle :Tüm Radyolar",
+      "url": null,
+      "score": 4.3913045
+    },
+    {
+      "appId": "fm.radiotune.global",
+      "title": "FM ve AM Radyo",
+      "url": null,
+      "score": 4.9
+    }
+  ]
+}
