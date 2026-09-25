@@ -1,0 +1,33 @@
+"promotionalText" = "Local news, country, jazz or a new sound abroad: explore live FM, AM and internet radio, browse by country and genre, and keep your favorite stations close.";
+"description" = "Listen to live radio from the United States and around the world with MegaRadio. Find local FM and AM stations online, explore music by genre, and keep news, talk, sports and favorite stations together in your own listening routine.
+
+RADIO THAT FITS YOUR DAY
+Start with a morning news station, find music for your desk, or settle into an evening talk show. MegaRadio brings station discovery and playback into one place, so you can spend more time listening and less time looking for a separate app for every broadcaster. Choose the United States for a local starting point, then explore other countries whenever curiosity takes over.
+
+COUNTRY, CLASSIC ROCK, JAZZ AND MORE
+Browse the genres in the directory to find a sound that suits you. Look for country, pop, rock, jazz, classical, electronic music and other formats available in the catalog. A station's own programming can introduce you to something beyond your usual playlist. Categories and station availability vary by country; sports and talk programming follows each broadcaster's schedule.
+
+FIND A NAME YOU KNOW
+Already have a station in mind? Search for it by name and open its player. Prefer to explore? Start with a genre or select another country. Go from familiar local voices to international programs and music in other languages without changing the way you browse.
+
+BUILD YOUR OWN STATION COLLECTION
+Save stations to favorites as you discover them. Keep a place for morning updates, another for workday music, and a few discoveries for the weekend. Your favorites give you a direct route back to the stations you enjoy, without having to remember every name or repeat your search.
+
+STAY WITH THE LIVE BROADCAST
+Start or pause playback from the station player and see the information supplied by the stream. Track and artist details are shown when the broadcaster provides them; some stations do not send song information. FM and AM refer to stations' online streams. MegaRadio uses an internet connection rather than receiving offline radio frequencies through your device's antenna.
+
+A SIMPLE WAY TO GET STARTED
+Choose a country, search for a familiar station or open a genre, and press play. Save a station you like before moving on to your next discovery. You choose the station; its live program brings the music, voices and conversation.
+
+OPTIONAL PURCHASES AND SUBSCRIPTIONS
+Optional in-app purchases are available. The purchase screen explains each plan's features, duration and current price. A plan that removes app advertising cannot remove commercials included in a station's own broadcast. Manage subscriptions purchased through Apple in your Apple Account, or use Restore Purchases in the app to verify an existing purchase.
+
+An internet connection is required. Mobile data charges may apply. Stream and song information availability varies by station and region. MegaRadio is a radio directory; broadcast content is provided by the respective stations.
+
+Bring live radio to your workday or downtime on your Mac.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "internet,online,local,news,talk,sports,jazz,classical,country,pop,rock,favorites,tuner,music,oldies";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

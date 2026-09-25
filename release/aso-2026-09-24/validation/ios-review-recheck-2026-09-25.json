@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-09-24T22:03:04.175673+00:00",
+  "source": "App Store Connect Safari UI",
+  "appId": "6759302561",
+  "version": "1.0.70",
+  "build": "6",
+  "state": "REJECTED",
+  "guideline": "5.1.2 Legal: Privacy - Data Use and Sharing",
+  "automaticReleaseAfterApproval": true,
+  "iphoneScreenshotsEnglishUS": 7,
+  "detailMessagePending": false,
+  "published": false,
+  "rejectionSummary": "Privacy labels declare Device ID, Precise Location and Advertising Data tracking, but build 6 did not request App Tracking Transparency permission.",
+  "confirmedRootCauses": [
+    "NativeModules.ATTModule was referenced but absent from the iOS project",
+    "AdMob plugin used the unsupported userTrackingPermission option, leaving NSUserTrackingUsageDescription absent",
+    "GADDelayAppMeasurementInit was false"
+  ],
+  "replacementBuild": "7",
+  "replacementBuildStatus": "building and testing"
+}

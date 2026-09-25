@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-09-24T18:49:06.190123+00:00",
+  "status": "passed",
+  "validation": "Expo production Android JavaScript/Hermes export",
+  "nativeApkValidation": "pending SDK setup; not implied by this result",
+  "bundles": [
+    {
+      "file": "/tmp/megaradio-android-export-20260924/_expo/static/js/android/index-46e801b610cbb74012dec0a46e9755fe.hbc",
+      "bytes": 6480916,
+      "sha256": "ee6b079fd45b7b0f8cdd22934c5e02a006941376e6e53ab4d54273ee50438023"
+    }
+  ]
+}

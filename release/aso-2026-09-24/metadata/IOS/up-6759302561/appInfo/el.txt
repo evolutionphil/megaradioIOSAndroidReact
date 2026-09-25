@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Ραδιόφωνο live";
+"subtitle" = "Σταθμοί FM και AM παγκοσμίως";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

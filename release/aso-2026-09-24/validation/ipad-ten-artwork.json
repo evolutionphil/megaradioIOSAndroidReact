@@ -1,0 +1,4508 @@
+{
+  "sets": 50,
+  "images": 500,
+  "uploaded": false,
+  "errors": [],
+  "files": [
+    {
+      "locale": "ar-SA",
+      "file": "01_discover.png",
+      "sha256": "de782cc620cbe55ef26d0fd86a12c112cc6f64bf8a8c0bc7e9af7b7e6955400c",
+      "bytes": 608382,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "02_player.png",
+      "sha256": "2cd3e9bacf12bf5938e3188e9a32795ed67af2a2190c14f43b4f36c265ac8019",
+      "bytes": 795660,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "03_genres.png",
+      "sha256": "ce0f2a01969716e5e273233a3afdaf26247e65345a9fde7a2080332552a9107c",
+      "bytes": 1395537,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "04_country.png",
+      "sha256": "86d6440beb02533ca513df17b902121b1873fc45741c717caacb49b367753393",
+      "bytes": 395195,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "05_search.png",
+      "sha256": "8da2c350e549d884fac5891071c6a6ea07ab8c75296d0722058fd05838042dab",
+      "bytes": 524473,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "06_rock-stations.png",
+      "sha256": "e52d7d5a1e662dbcbc4339c40544dc0665cb957bb9bfae5fa986f8cfad173a80",
+      "bytes": 1555338,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "07_sleep-timer.png",
+      "sha256": "8047b7e74558c11629d6d6f242d5af0d194e1af9f0e9776a66e8ee4735c61c92",
+      "bytes": 401226,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "08_favorites.png",
+      "sha256": "bcc77ff9fc3039dad93f1c43c2ea4bd3a68994a26757fd350073cb4b01234116",
+      "bytes": 369727,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "09_social.png",
+      "sha256": "a4052a8156c12116d99dbd42db05da5595f46b7d3a2a7ebde06a50473e0aa757",
+      "bytes": 444884,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "10_recent.png",
+      "sha256": "2fb032f37b32863a8e61f3db0ba25a96c72104b0e4792e88c7f2eca56b072454",
+      "bytes": 1402497,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "01_discover.png",
+      "sha256": "4987903eb5cc37dcd834267bc65694fe3ceb7493ed5db95d1da089e5b246bc42",
+      "bytes": 613852,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "02_player.png",
+      "sha256": "4046c2e738ad41e9ee61e13f67e8c1595777722ce9a8e4cc64d7e313c2c8e24c",
+      "bytes": 785998,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "03_genres.png",
+      "sha256": "3bd1b1060c974749e8a658ccf24e1cb7e8d7fd6d0fbd3d335910158cfb04444c",
+      "bytes": 1393169,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "04_country.png",
+      "sha256": "42d35a4cc21aec99118c86a59d7234b0e96c98f13ca88ffc0386b6b7816e75c6",
+      "bytes": 398917,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "05_search.png",
+      "sha256": "e5208235496bed3395cf8115676623dcac66bb6021dc5b5a1b1c75d02bccad0f",
+      "bytes": 525765,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "06_rock-stations.png",
+      "sha256": "c46989616e34cab315d579e7750b7af32a4e0736d4f11db548e458e6056cdc6d",
+      "bytes": 1552399,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "07_sleep-timer.png",
+      "sha256": "3a9731299ed550d4c0506b33a22c089ec2ef4fc62bf596c4b98cf4b2a2bd0fae",
+      "bytes": 396173,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "08_favorites.png",
+      "sha256": "4f144beee95477a80af5d0312ea217a1123064de028ae0ddaf65bb22c3766af3",
+      "bytes": 371734,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "09_social.png",
+      "sha256": "999241b617a327b45239e4ecac65378fb5d527e679760c57e57aa8b50db96504",
+      "bytes": 444885,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "bn",
+      "file": "10_recent.png",
+      "sha256": "3ef8c45e70a7a198a30424784444766d8b9fbdde33d4392380a722d406eaeb5e",
+      "bytes": 1400771,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "01_discover.png",
+      "sha256": "1560505c6fa8e23b515761eb8e6f84d8c64aff9680839f1a02bf468f9156cc97",
+      "bytes": 606968,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "02_player.png",
+      "sha256": "31245b42200d4c0d30d7fcb336eb58a6782d3a18c0edc85f6ebe2c45d10321a6",
+      "bytes": 781707,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "03_genres.png",
+      "sha256": "2e496e46aea0293874f570ee33a03fe7622e0e81e4758e7c9b5aaaf50e7b740c",
+      "bytes": 1385054,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "04_country.png",
+      "sha256": "6d0a2da2e1af380392559329b1d90a9c63abba56df416e3a5c72113c2d104ab6",
+      "bytes": 387508,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "05_search.png",
+      "sha256": "e626efa966aa789d85c86c3100e541672ad8a171a226e18e1b6435e7557c029d",
+      "bytes": 510033,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "06_rock-stations.png",
+      "sha256": "1575d279fb711e208cb704a4044a85f716c3c3a69cd763643c2364c41aba36ab",
+      "bytes": 1546246,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "07_sleep-timer.png",
+      "sha256": "607ff2c6475dcb3c201bae87ef8137094113b14a3678dd4a46f8b4c1c698a374",
+      "bytes": 388666,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "08_favorites.png",
+      "sha256": "9ae8b6ae3ff9210fbe046eb647890bc36eefb5a4cc0005ef0a23eae40fecd60d",
+      "bytes": 361954,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "09_social.png",
+      "sha256": "39b575a7c11a7da2afe3fcd5cf2c311264b3ae86ff42b6dca6e8ea847da900ba",
+      "bytes": 430724,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ca",
+      "file": "10_recent.png",
+      "sha256": "27773e2f93e549b8fa03d036fe6571ed5e77fbad5e76e1de6ee07e68b5528ab4",
+      "bytes": 1381627,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "01_discover.png",
+      "sha256": "932f033a7578cf23944eb456df4134973e6e7d3c5f4cda257ab0a38bee6d28c6",
+      "bytes": 605591,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "02_player.png",
+      "sha256": "d788fbaf31bc9367dd4579c4d92b3badc94558e76335ad0fe50f4cd66f0bbfac",
+      "bytes": 789195,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "03_genres.png",
+      "sha256": "5e290057ac1d61de894099d12c9baf2d4918a6ed4c5d0b9548526ef73fd64456",
+      "bytes": 1389471,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "04_country.png",
+      "sha256": "799b4176efa3b8255280c1671dd01bc3e15c87edf54a3bea0dfedf2aa36d2d0f",
+      "bytes": 396836,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "05_search.png",
+      "sha256": "1d48083c139a49d1e77e0dae9411c3bcede23a0eb700113f6ceeb40ca6f594ed",
+      "bytes": 518914,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "06_rock-stations.png",
+      "sha256": "4bfd4117ec28d2b2a8287b0e19366be782a83be95579082e2a9b42e2460e1f2e",
+      "bytes": 1553790,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "07_sleep-timer.png",
+      "sha256": "4d09acd16546e1310d0de68dd097625645be1c6c96f4fc518df794b28cd3cd9c",
+      "bytes": 387842,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "08_favorites.png",
+      "sha256": "8c190f97cce140b760ead121aa963eccb36b53bf2ef476b1ef8c794dc5ef67b8",
+      "bytes": 364629,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "09_social.png",
+      "sha256": "54a2ef66ef47e418f1ad0d5220a730f0d317c04ac751da10cb4019ef5e7b7062",
+      "bytes": 433752,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "cs",
+      "file": "10_recent.png",
+      "sha256": "c2e5cb8f949a97e252f1fa4a6d40ebec48a1526ee16dc395ffbe9c8a928480d7",
+      "bytes": 1396808,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "01_discover.png",
+      "sha256": "8b57ace0cbba611505d5ff1423c8023ea97f3e716ac6351440b59650b8c6f740",
+      "bytes": 606006,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "02_player.png",
+      "sha256": "29379236deb71b664501d75af66bdd86e5d84001cf9a799d0d69dece7a848b44",
+      "bytes": 776384,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "03_genres.png",
+      "sha256": "acd22b275f2c8c29b38754da8072e7717adbecb92dca3d5595647d1d7a11c1be",
+      "bytes": 1369876,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "04_country.png",
+      "sha256": "2095952096b8a50a4105717bb1f4645a5de07af6e29fab7209e49f6bce44e87c",
+      "bytes": 382209,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "05_search.png",
+      "sha256": "2db7e1a0310117e9b19651bd6d608f8cb2c6039534edd6dabc878dbc1dda03da",
+      "bytes": 503510,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "06_rock-stations.png",
+      "sha256": "d358fdd4c0f4c35f51a5ea0de2aa70ed8c25c53aec7e1262087e3219e2cf6c7c",
+      "bytes": 1540928,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "07_sleep-timer.png",
+      "sha256": "a4e80da6279abde8f23ef479ad6a6761d55f49e73ef842188aa9e5908047aa80",
+      "bytes": 391113,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "08_favorites.png",
+      "sha256": "bd273397c695e125ce70cbec351eb873c9a043f9703d5b29939a057a8400539f",
+      "bytes": 360473,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "09_social.png",
+      "sha256": "b818e85199e208d63daac5c8847b08fd339df4d7bb2dd5043eccb6c7cf2a8ad4",
+      "bytes": 432217,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "da",
+      "file": "10_recent.png",
+      "sha256": "f20bc47e75ee54f5a0c80543854db9cbb7cb81ac5e81b8e07e19361afb68fd9a",
+      "bytes": 1383574,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "01_discover.png",
+      "sha256": "9287a6d621b8d23754b004643ea32e0711b02caee69cfbdd4f8ed10ac128759d",
+      "bytes": 613763,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "02_player.png",
+      "sha256": "ba915a5fbc5c415f8d281513f485878ee2b53f5c8280b01ba2044df8aa76bbd8",
+      "bytes": 781297,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "03_genres.png",
+      "sha256": "7b0b5d525ae8121a345ced283c07c465a1b57f97b43fe75bd00316f328e3ec85",
+      "bytes": 1390054,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "04_country.png",
+      "sha256": "bb7fb1c801dc1deeca4e59a7362993db400f785737aa6415fd4925627bca79e6",
+      "bytes": 392147,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "05_search.png",
+      "sha256": "26c1142e997544a6d3bb02822e8969fc1547d32469d07bf38cb1ab715229278f",
+      "bytes": 506003,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "06_rock-stations.png",
+      "sha256": "dce0075d918db869b8a338b910843d1049e50e10b1db5029ab53d3bc18650348",
+      "bytes": 1554508,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "07_sleep-timer.png",
+      "sha256": "c25d7e97919ab9dc908773c391111c78739c29a4bf9f5430446da40cce1ebf3f",
+      "bytes": 391015,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "08_favorites.png",
+      "sha256": "30b40fa8ead4039df672248dcddef75f789d2be1033a0e4e833741e7bdd0814e",
+      "bytes": 361751,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "09_social.png",
+      "sha256": "7ac5c4bc0a99c21b7966862ae598291b5b3c8b647f38b336230314511e1ba69d",
+      "bytes": 427118,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "de-DE",
+      "file": "10_recent.png",
+      "sha256": "5a9bf21738addd234c4684be27a1e245a8baf8f08b8ab29827a1672b1319ee12",
+      "bytes": 1391443,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "01_discover.png",
+      "sha256": "09ccd92cafd8c00f37b8a5a6a0da66b7d0b234056c89fa905049ab724578980b",
+      "bytes": 616327,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "02_player.png",
+      "sha256": "334110dd77ffb10acf740040667c44536097487569eb0b3d2609d4d91b7b87e7",
+      "bytes": 790450,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "03_genres.png",
+      "sha256": "3a1acd7569c815071abb5ae90e4092aabb9114d5de4997da1719501db6e0e15b",
+      "bytes": 1393299,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "04_country.png",
+      "sha256": "f83fdfcd205ee4cd42ec6dedb9963ee0b7f42bb715d4d631ec91975cd61c40cf",
+      "bytes": 392458,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "05_search.png",
+      "sha256": "6a8d06ef1388876d94eac213de85d3d32bf6570c103b2fa0e6c215dca93aeabb",
+      "bytes": 521673,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "06_rock-stations.png",
+      "sha256": "4c9a9b0a0c6581781074438d99cc413c909b514537150984df6b97e0452708c6",
+      "bytes": 1558649,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "07_sleep-timer.png",
+      "sha256": "a85cfb76d1ab2ac865fc8dbb0374756d5462b82dd30964699f40e380f33286e1",
+      "bytes": 400256,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "08_favorites.png",
+      "sha256": "38a0d05e140d96528b8bcbc12929d04d9e7cd5c76d1ba0ee09c08e44de7a2358",
+      "bytes": 368237,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "09_social.png",
+      "sha256": "627139927a64d49b26ea36af90fd52c445bdf3c7cc40b5bd1fea9325931995bb",
+      "bytes": 431278,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "el",
+      "file": "10_recent.png",
+      "sha256": "30603bcbe0e2ef797cb89b82c0db967d8bca9784246e39f0d9962ccff0631694",
+      "bytes": 1403743,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "01_discover.png",
+      "sha256": "c5ca34a8c79afe1f641271030120317c2046d6d15fb0a551ed93983393692e72",
+      "bytes": 606344,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "02_player.png",
+      "sha256": "7879458c2287279d49903ef7480bd1f44bb544720d049d51ef22f04d223c5d8a",
+      "bytes": 782566,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "03_genres.png",
+      "sha256": "90886610a4802f48bca6cfa22054078652190b605cc2b07d31373a1d257c9024",
+      "bytes": 1385368,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "04_country.png",
+      "sha256": "802ced3fbe50ac4b927cc6429c472b20cb36b4c9ed1837d96094014041bf720a",
+      "bytes": 392242,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "05_search.png",
+      "sha256": "f46ba7febca4a0feb4d28a50de57392a789444474849d81b9f9fd895b3ce2a2e",
+      "bytes": 514609,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "06_rock-stations.png",
+      "sha256": "4aabefa965ed9d2e4ef1bbe4e7e676fe6e926bedf936822c8169bc6bc2227aa4",
+      "bytes": 1545687,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "07_sleep-timer.png",
+      "sha256": "ba524e5c1b7939601c71c61c52a03a9d26995617f75797ccb1ca729668f69224",
+      "bytes": 386615,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "08_favorites.png",
+      "sha256": "13715d563328238a6f56305197f32b31fa14e246f2999f79d14f432317abae04",
+      "bytes": 363892,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "09_social.png",
+      "sha256": "3d871beb9f8161f371807a574701cb9f6d26386b7754671ad899b54426243267",
+      "bytes": 433343,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-AU",
+      "file": "10_recent.png",
+      "sha256": "18309c107a65b438504d7ec725f8d477bc2801687550ca728fa7cc7e830a4929",
+      "bytes": 1387380,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "01_discover.png",
+      "sha256": "fb734d45a8afd82c4ce23c62864774c3dc1f75d8156011489afda440ffdb9fa4",
+      "bytes": 606928,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "02_player.png",
+      "sha256": "229ae443eb831f11b52cc5adebc69fe62b0053dfe938a95d4284c814d8566e5c",
+      "bytes": 779871,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "03_genres.png",
+      "sha256": "bc84a59ec302a163ed069794f60ad19eacb02cd409492f54d4a40bcf1e1c1108",
+      "bytes": 1386102,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "04_country.png",
+      "sha256": "52f94c352c418382ec57014697831e5d9ffac6150fa50ccc5b7646dd129bc350",
+      "bytes": 393654,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "05_search.png",
+      "sha256": "e69c1aa7b16ae61eac394db0f50f76d5c885985d7cb83fbf445d6d8dd7ccfbb2",
+      "bytes": 512420,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "06_rock-stations.png",
+      "sha256": "baef37bc8b683ac73ffcb0b2016da57d8f7186fde1964a3ed1ff618467924bc8",
+      "bytes": 1548505,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "07_sleep-timer.png",
+      "sha256": "5f020c34ab9bbc46f55d95976e6a01ba86649f7fbcef13e46cba3035bde89b0f",
+      "bytes": 390351,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "08_favorites.png",
+      "sha256": "4c4e7699bc5b906b0b20d08e80dd225fcd11f911c463d01bdc6c216da101df1c",
+      "bytes": 361324,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "09_social.png",
+      "sha256": "9ee2daab4b2450bd75f0d8f7207fdebf275ced8cef8595bcf1c4f41610e2fd72",
+      "bytes": 426295,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-CA",
+      "file": "10_recent.png",
+      "sha256": "18309c107a65b438504d7ec725f8d477bc2801687550ca728fa7cc7e830a4929",
+      "bytes": 1387380,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "01_discover.png",
+      "sha256": "c5ca34a8c79afe1f641271030120317c2046d6d15fb0a551ed93983393692e72",
+      "bytes": 606344,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "02_player.png",
+      "sha256": "b6e7a2bada1c7648340155b02abc8a83fa74b26c6c3099cc4dbbbffb65d9a070",
+      "bytes": 778806,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "03_genres.png",
+      "sha256": "d509184b5461bab8fdc66386f30412b0f18bc69a9d30a0f1ddcc5cc701812ec2",
+      "bytes": 1387932,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "04_country.png",
+      "sha256": "865111795c0bc661842bad9a15b04dd831c91576c1729a32f8f6986413650a0e",
+      "bytes": 393118,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "05_search.png",
+      "sha256": "7864891011c32a24ba63d829aae49c4945418dab2479a9a7ccd12a56774fa3f5",
+      "bytes": 513486,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "06_rock-stations.png",
+      "sha256": "bec6fbacaabc6068a1e74605e3c70065bf42b9286d0165f639faead998254ef0",
+      "bytes": 1546560,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "07_sleep-timer.png",
+      "sha256": "03cd47f3b1fc1df939b8e124bda0a450a1e9d31372c5cf39436838694c0b1719",
+      "bytes": 387806,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "08_favorites.png",
+      "sha256": "186064e3223d4a7d60f6b8b5fbed3207fedea23a8cb95b3c8df03806876fd982",
+      "bytes": 364113,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "09_social.png",
+      "sha256": "0fcff091b44000632451bf3513129880b05a85b53030ef700142f660cb196688",
+      "bytes": 430625,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-GB",
+      "file": "10_recent.png",
+      "sha256": "18309c107a65b438504d7ec725f8d477bc2801687550ca728fa7cc7e830a4929",
+      "bytes": 1387380,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "01_discover.png",
+      "sha256": "c5ca34a8c79afe1f641271030120317c2046d6d15fb0a551ed93983393692e72",
+      "bytes": 606344,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "02_player.png",
+      "sha256": "ce8b0c4598a85afebacef48404280ff120fcff2cdec84c34ac2120440ed226b1",
+      "bytes": 781177,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "03_genres.png",
+      "sha256": "e49d3b883fc51d9130ec29b50fed2e3e49d093fd49b2cae63d8dc636b250faf2",
+      "bytes": 1386356,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "04_country.png",
+      "sha256": "c90f72beee4bd9ddfb3cd53ed574fb9186beaad03707a6284f167743d32c45be",
+      "bytes": 390911,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "05_search.png",
+      "sha256": "76ecefa1d3826e826cc432db729add628c459d72a79f99899aa9306fe19dfa2a",
+      "bytes": 513944,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "06_rock-stations.png",
+      "sha256": "0bfbc52aa810b0539c0d725c558224b0fb91fd571e469862e7a7faa5be47d9f9",
+      "bytes": 1546829,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "07_sleep-timer.png",
+      "sha256": "2c2fd217b654c369d4a8fe34907adb1c65dcb9b6d098a56d0ac1f559795acbc9",
+      "bytes": 385021,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "08_favorites.png",
+      "sha256": "19e7b17f5105d26fba58373f63eac5735df1103b5478745e47f57a87938f6739",
+      "bytes": 364330,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "09_social.png",
+      "sha256": "b5525b740de46fbe8301d643b1edd9f2379dbcc3f495054e86b5d4c635f350a7",
+      "bytes": 431161,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "en-US",
+      "file": "10_recent.png",
+      "sha256": "18309c107a65b438504d7ec725f8d477bc2801687550ca728fa7cc7e830a4929",
+      "bytes": 1387380,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "01_discover.png",
+      "sha256": "b9b437d832c1308c4885c3e2611eb3e666852af6f012738c1d2afad81a2b77ac",
+      "bytes": 607792,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "02_player.png",
+      "sha256": "4d861e495082326346d8f34644666420a2caf4a2468952c41a3c9574b48512c8",
+      "bytes": 776630,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "03_genres.png",
+      "sha256": "cdca235a87b8701c02fee5f884e9c5adf76f712a5b4b3a8051c2e83693a7702a",
+      "bytes": 1381853,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "04_country.png",
+      "sha256": "7c6996e75f5fc3f15f537efd69278ca95178e801ca83dac5513edd3cdf590349",
+      "bytes": 387222,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "05_search.png",
+      "sha256": "b7a2068860b00822118c1a1022096260f5e6ca8b711b006f7dca649009f7b41c",
+      "bytes": 510770,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "06_rock-stations.png",
+      "sha256": "7311dd51eb0398d416bfce8d5cfab3de68e66b599afc09660e1a1e9493763c8d",
+      "bytes": 1547414,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "07_sleep-timer.png",
+      "sha256": "ff24684fbce1cbc575ff3ef0154c391f4beaad4ec02054921de4c2fb48544f4e",
+      "bytes": 390515,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "08_favorites.png",
+      "sha256": "d5637bf3fe004e4446d9e0933bc9bd629ef1900a0498a1f6b7d677b66edd3907",
+      "bytes": 360878,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "09_social.png",
+      "sha256": "d686a3960d56183dba3d2194a4a198bd2e0a86a8b1b3a1f53fb22fb2e423d6c0",
+      "bytes": 425541,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-ES",
+      "file": "10_recent.png",
+      "sha256": "d46d57ed1e00a7bc6c8f7bc86ad0a7849453c6cd4d9a62b663b539ae2adcc66e",
+      "bytes": 1382621,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "01_discover.png",
+      "sha256": "86d5b274ff9338629cd04d5282053fef556fa0a7f40972e38752515b7c4d0d1b",
+      "bytes": 606315,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "02_player.png",
+      "sha256": "918af83b20f6050fe5ef93d7342e4e553b0c062ef46a7753d7e8ed8de3ff6005",
+      "bytes": 780457,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "03_genres.png",
+      "sha256": "19c90ce05857325195379fa6e647b56e9c96e8bffa9f4ba5c4e0d0dd36bf22ec",
+      "bytes": 1388321,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "04_country.png",
+      "sha256": "64e40780f20440311df5267ee511c7a9fdb44a175678a12d6ed6a9fab7ae0fef",
+      "bytes": 395565,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "05_search.png",
+      "sha256": "983e2dc6425f8807cc2e41cc9c0d9011d478f22ea9ed54b195eece8ba9663267",
+      "bytes": 511971,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "06_rock-stations.png",
+      "sha256": "d068f37f8e07ee00171bb81d1b68cf09933d93b5e4334980d99e9f715e3dcef7",
+      "bytes": 1544407,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "07_sleep-timer.png",
+      "sha256": "1be5b203af0808657d75cbea2ed932b635e200f4f241a98a21558693fb195460",
+      "bytes": 388004,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "08_favorites.png",
+      "sha256": "5891e7a1ceea0c4a4969fab6b5ab72aed2acb3b5f721b6b33f3b102515310969",
+      "bytes": 362849,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "09_social.png",
+      "sha256": "fe484e537dc280fd50e46146fb9450ed653cc60a6035467e75d1cd8bf1540863",
+      "bytes": 429090,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "es-MX",
+      "file": "10_recent.png",
+      "sha256": "d46d57ed1e00a7bc6c8f7bc86ad0a7849453c6cd4d9a62b663b539ae2adcc66e",
+      "bytes": 1382621,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "01_discover.png",
+      "sha256": "6c0fb51ada671cb96fbe2fa58bcae5e06af91c95867e327255d76a29b404ca75",
+      "bytes": 604919,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "02_player.png",
+      "sha256": "87316004a7194cb6afc8d91a8624e09db620b8b640c0b962023470ac64867400",
+      "bytes": 779651,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "03_genres.png",
+      "sha256": "e495e70fe9e5abb12cbf45caf91a5759f04f5d90110cbbf19c28696267e4f762",
+      "bytes": 1387455,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "04_country.png",
+      "sha256": "c6b1d112ca12d37fb2e9efde6251f609b8737af2e81f16539cf56f68629d2739",
+      "bytes": 385599,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "05_search.png",
+      "sha256": "5abf8f53e2fe3b4fcebefb115e7bc91ce0ff6f015c4294dd47703230864872e2",
+      "bytes": 514898,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "06_rock-stations.png",
+      "sha256": "18b16c6168d12be4c927c7db2e8c6417f3b5e98a2b84b05ff4488fd4c9a71d0d",
+      "bytes": 1546880,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "07_sleep-timer.png",
+      "sha256": "8265fb46f9cf596a37dd6f121cabadeafa5231daa4eef457482b85d1c66cbcf7",
+      "bytes": 386829,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "08_favorites.png",
+      "sha256": "b79898cd72c2953b45ebd9b175df3fd9cf18e56740c068fd5c0c7427da2bc5fa",
+      "bytes": 363425,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "09_social.png",
+      "sha256": "425451bcaf7dd4a78d5cd713870b25915a2cf95e3e3e12d10dfa3285db163e7d",
+      "bytes": 430758,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fi",
+      "file": "10_recent.png",
+      "sha256": "61b129e887c45d84bda5ba9b50d1a4648a8c6294d71fafe7a582e751072bb5a6",
+      "bytes": 1382823,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "01_discover.png",
+      "sha256": "2fee1b753cfa5ab32afc6649bd8c36de14085e67b2e58a25a03bfa0048193e47",
+      "bytes": 608469,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "02_player.png",
+      "sha256": "d8542d518a276736b5f39ee1e828a66ecd279610c9bdffda4ae5166cec8aead7",
+      "bytes": 781576,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "03_genres.png",
+      "sha256": "aa632819fb3ce7b00b465855aa47632ef42f53db7e69eebc76bedd3ccdb73a26",
+      "bytes": 1392214,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "04_country.png",
+      "sha256": "9b05e601f4c8528701674ec8f7d3517ce89e033bd582a45e1e3c42219cba10a3",
+      "bytes": 395210,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "05_search.png",
+      "sha256": "cb5c4b6a6c07fc9e42f8a1ee9056d6e22f699b6c5628345ef9ef102107ddf943",
+      "bytes": 512792,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "06_rock-stations.png",
+      "sha256": "d30a87fe764480abbe7275040c10627df35609d329ccfa8adbe7a84d58eb5637",
+      "bytes": 1548888,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "07_sleep-timer.png",
+      "sha256": "1922ffad56071e3c53d9d9dbb288ae292cf094cda1df211c974e8447e7987ea0",
+      "bytes": 389623,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "08_favorites.png",
+      "sha256": "d86b94021f246b17c39b6a3c146c577161299196a33dd1e38b5633983f093439",
+      "bytes": 368051,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "09_social.png",
+      "sha256": "c6be081823ec59624ad60af51eccdac4218e8b84499b85978fe90a293c3f5792",
+      "bytes": 436186,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "10_recent.png",
+      "sha256": "794cde4065df006838e285b246bb7eb7894c7c65d9068363cfebb5b157fb3669",
+      "bytes": 1397045,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "01_discover.png",
+      "sha256": "2fee1b753cfa5ab32afc6649bd8c36de14085e67b2e58a25a03bfa0048193e47",
+      "bytes": 608469,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "02_player.png",
+      "sha256": "b5af9e0a03e1d469b10f0be3012a002ac7e792d8f753735b18e8a8306156e044",
+      "bytes": 779443,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "03_genres.png",
+      "sha256": "3e1c3548dbd68d32c237c6216265ff0fd2e8b6b1f47e89bedb9f003992ee3a33",
+      "bytes": 1387291,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "04_country.png",
+      "sha256": "91cbdc100f1dd41b9ece7e1a9f3d561c83ce175da74f332eb8ec74864ed3b361",
+      "bytes": 389593,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "05_search.png",
+      "sha256": "a3d96f45ff06a845f545b7c6ac38fe2bf1a073512ba6337f8da5e7d24ac4d4be",
+      "bytes": 508931,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "06_rock-stations.png",
+      "sha256": "a083a43bdd51a2ea4de6fa95c793bef637e9e7b112110bb81e95f0fe8fec81d2",
+      "bytes": 1542059,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "07_sleep-timer.png",
+      "sha256": "f6cfce1d8682629d5d533e8b190401250bb6ee7189ba94d60058a6808b3ed4ed",
+      "bytes": 387078,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "08_favorites.png",
+      "sha256": "a22a1b829f5c7a2d42ae3e65a18c17de7c0ee34653c24385f7b69f35c56eb0fa",
+      "bytes": 362283,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "09_social.png",
+      "sha256": "41f63f90abe9004cb64c25a9084215a30c93fe83bbc7c2c460da1986b9d2fac8",
+      "bytes": 431174,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "10_recent.png",
+      "sha256": "794cde4065df006838e285b246bb7eb7894c7c65d9068363cfebb5b157fb3669",
+      "bytes": 1397045,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "01_discover.png",
+      "sha256": "e5bdb978125e1807681cfd34b1bdede08845189efa0a3ddf3596f5f4722d4111",
+      "bytes": 609029,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "02_player.png",
+      "sha256": "d83acf5deb28377aed33b0433011fcc3b30f77e4def75d18923dc504c2439fa7",
+      "bytes": 785986,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "03_genres.png",
+      "sha256": "a2838c8653333fe746202ec11ee10b1f0917fb4f11b7a7311ac3c5b2fa03168f",
+      "bytes": 1392523,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "04_country.png",
+      "sha256": "c6e8382e785b8c07d0ebf6c488e76bebee7945fe8179a2ed5f4839e3ed4376dc",
+      "bytes": 391279,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "05_search.png",
+      "sha256": "b20a82a87834edffd4469d34c0910ab35f42a39466e94db9fc1f022194791189",
+      "bytes": 524685,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "06_rock-stations.png",
+      "sha256": "bf36d145e887803aa3df1f3a2b8ec4e8db13a7a3b9e38ab8ad9c109ea1de1142",
+      "bytes": 1549116,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "07_sleep-timer.png",
+      "sha256": "7a3d733698b8a699d364761ac5766071a4a0f98f7c4127d429f3b99f8c0626ef",
+      "bytes": 397990,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "08_favorites.png",
+      "sha256": "1e4c24ed0d4cc38c837e2acbae79d9ad7301c14f34545e8217030d3e8c0ffe54",
+      "bytes": 367139,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "09_social.png",
+      "sha256": "2c9b06b19d8d7479923d801234fa25700802d461013def05bdcf946de5eebd93",
+      "bytes": 429175,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "gu",
+      "file": "10_recent.png",
+      "sha256": "90ef6605707a033c767b7d4e34720ecaf5f4b27a8589ff19c2c120f8d2c0ba29",
+      "bytes": 1401466,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "01_discover.png",
+      "sha256": "e037f48ec0db6275df9d4674737e54d87edc0587a87c78497c5888befa3cbd51",
+      "bytes": 594582,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "02_player.png",
+      "sha256": "c4a74b5a66e678b1f3925f9ad534b602e8320ec1a966f2632ba85fd7b817aafb",
+      "bytes": 767165,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "03_genres.png",
+      "sha256": "df883b6201bb65511d6e609fbdfb36546e61d5300fa4b7d8f496a9a86d3e288e",
+      "bytes": 1373441,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "04_country.png",
+      "sha256": "3c8f60e3be91da5032f49143cf9617293fd1fd3f0553a5a1170d0d37322d89d4",
+      "bytes": 378971,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "05_search.png",
+      "sha256": "97392fea5ccb0209412e07c449c10898968fd92f12b0e34f96f8781b274d4af1",
+      "bytes": 506477,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "06_rock-stations.png",
+      "sha256": "f7fa90b67531fee76520d6f8d16d76f9367ef06e63ef9ef86a015518df0ef8b0",
+      "bytes": 1529223,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "07_sleep-timer.png",
+      "sha256": "fc58f352eae6029ae586749794a1ff8dd79e7981ec73938498ce8f284745f303",
+      "bytes": 373216,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "08_favorites.png",
+      "sha256": "6fa31411511b482a49361c40983528a41b412d8b2b33c4d81fda876d2c852e32",
+      "bytes": 348336,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "09_social.png",
+      "sha256": "15ad949b25de6050721e40004dd1daf0d9263d6554e8adcddde627bbe090e9d4",
+      "bytes": 414639,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "he",
+      "file": "10_recent.png",
+      "sha256": "78f7fec33116582c69af07cb3b0de4dea0e06378a427c40959cf6116fa8482e9",
+      "bytes": 1373640,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "01_discover.png",
+      "sha256": "ec9339863ba4d3161fd2f7cfdc642d6d100165b70c83da26700006633276a59e",
+      "bytes": 604630,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "02_player.png",
+      "sha256": "f1a25d4f9e120321f5ea1d3b2f373c3bff5d73a87416ade12e8ed5a3c299912d",
+      "bytes": 786042,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "03_genres.png",
+      "sha256": "6f6077a8e0cf96181a950e5e8d26fad99307424c545fab69b3792860cf9fc888",
+      "bytes": 1384951,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "04_country.png",
+      "sha256": "fd46f1289ee23092eb186e7e5e7039f52c0a128ce9f5a4ccc34c23ee8051880a",
+      "bytes": 390250,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "05_search.png",
+      "sha256": "d5bd71b3b86019ec8c049c78641c900a0b8585d7cf50d63fbb1b5d5f0f637ad7",
+      "bytes": 514919,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "06_rock-stations.png",
+      "sha256": "c53eda011bb3227e33047c1933a734127cbb1eb27721013a334b82a47357a4f9",
+      "bytes": 1542084,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "07_sleep-timer.png",
+      "sha256": "f916f59fab28707bb9d2b5278c5ce0274fc0ca95dc7dfc97066722646a0c01d4",
+      "bytes": 387639,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "08_favorites.png",
+      "sha256": "37bb2d891cdb49a0d4779b1b512560a5ed905cf6ed62151d72292a9ac81870d8",
+      "bytes": 359344,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "09_social.png",
+      "sha256": "4b803cdb4cb8abc8ac4bf474323c392d28a61c7cb7a94afaf1bf0ae06d793d0c",
+      "bytes": 430590,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hi",
+      "file": "10_recent.png",
+      "sha256": "d80b2fb4c8b1e4514bced44e3e47347702ab0efd07173ff67f8b905eecc05421",
+      "bytes": 1389054,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "01_discover.png",
+      "sha256": "90680cefbd0e5f4bf95892bb82666c5429a9871ab145e356ead86acca1dd7afa",
+      "bytes": 604948,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "02_player.png",
+      "sha256": "6e6080a57faa4df28fc02e6b9c51512cd83c2175a720b9d050b99d38e835e5dc",
+      "bytes": 781286,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "03_genres.png",
+      "sha256": "74b9ca13a2166ae90e0fa001ffa9f289c3c802e08cb631560e55c3426cf5123d",
+      "bytes": 1392495,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "04_country.png",
+      "sha256": "b9eb17c8910e7ab225ba9e21ec642397ec0be93843b40bdc5725239ec5223157",
+      "bytes": 393023,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "05_search.png",
+      "sha256": "db781d0efaa2cc154fb0442cd7f9cf8460335349fea39a0e2355eb328a88b01e",
+      "bytes": 512813,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "06_rock-stations.png",
+      "sha256": "b811233d6024b07103b17a55d4fe03912b94af7ba2bf1bc1731346f022a9dbcc",
+      "bytes": 1549321,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "07_sleep-timer.png",
+      "sha256": "8d3fe663d07cfcd7c25166e3dda5d8b45cbbaa239889e46d4087e40a0567f372",
+      "bytes": 385701,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "08_favorites.png",
+      "sha256": "8974bd74a1f39da5380bbf5ad0e39f08231bff00f25ffdb2a292103904036253",
+      "bytes": 366659,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "09_social.png",
+      "sha256": "7acd03ade1220e143b73b154738e4d2da855eb3774487db0b1703079a67add44",
+      "bytes": 431085,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hr",
+      "file": "10_recent.png",
+      "sha256": "7393fbdc89eaadd90464f406f0939e22d3be39ad0356e6c46cd8b6435bb96ffc",
+      "bytes": 1386425,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "01_discover.png",
+      "sha256": "11cf5a57a0a40b51889c15a5b195c5e867e9c214a79824da5ececc0341a97bcd",
+      "bytes": 608552,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "02_player.png",
+      "sha256": "00e853f5eb1b6496e73eb46eb37fb97e9d13faa410d75e4d6b17a0131065c176",
+      "bytes": 786065,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "03_genres.png",
+      "sha256": "186adeaa459432f3b72a4474d40aad5b8af3aad96f2d62d0c0ce02c668691089",
+      "bytes": 1386585,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "04_country.png",
+      "sha256": "ccea0dc39842d2d4a75b0a8d7828a82f06a87b8de8cf16218ce6e5b5f80119c0",
+      "bytes": 396217,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "05_search.png",
+      "sha256": "cbb6e7f483fb84ed8fe83abb0256d1260f7a114833f86bb64380f90dc648606f",
+      "bytes": 515911,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "06_rock-stations.png",
+      "sha256": "c48855791f75dceecd003ffdac2e10208e07886fe8d64fb254d86b5b6a30d8f1",
+      "bytes": 1548836,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "07_sleep-timer.png",
+      "sha256": "e8f69bc6b8a585eb5e31c32f806ef526cd5963b91b4ad5fcd7bf68beb5369138",
+      "bytes": 385768,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "08_favorites.png",
+      "sha256": "624d5eb4366472e668f25910308d1baa1395f995a8c95003231839f4000521a5",
+      "bytes": 362989,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "09_social.png",
+      "sha256": "839d86048a954dccc564c3ac9b915b554f5e9723d0dbf3cdb8dc727b8450ddd4",
+      "bytes": 427479,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "hu",
+      "file": "10_recent.png",
+      "sha256": "f2964a233826a64cc4948ec5801bee13e6f3eebba9009a05b4eadad87871a85a",
+      "bytes": 1394849,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "01_discover.png",
+      "sha256": "28f7b5589d6a2fb280fd2235adad18e7ec4eca18bcad18f4259b35bca52d4cc6",
+      "bytes": 607424,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "02_player.png",
+      "sha256": "38b8345fe185cb8727f031e13bbdcf946338374b20acfd89a261f3dd1abebe1c",
+      "bytes": 784181,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "03_genres.png",
+      "sha256": "5ec85b93c0d3b0e816700fd58044e8f75821d2f1084dc6b12c584d9a3090fcee",
+      "bytes": 1381222,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "04_country.png",
+      "sha256": "51fe7a88fcc1e3e85878cabef8a17d0ed1b27e8347f39deb8cc02e54c4a8269e",
+      "bytes": 386079,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "05_search.png",
+      "sha256": "eda81146cfb5fb5e48dc9dc52a33542296a509d63aa52ed6ab7e26622d838b41",
+      "bytes": 510980,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "06_rock-stations.png",
+      "sha256": "01d7f60952065b5c599f63b9407b3abbeb4d1b17cac0e19abb2d53a0a5091689",
+      "bytes": 1540678,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "07_sleep-timer.png",
+      "sha256": "4abe62cd8f00f2b05b518190f52dd41eb7d009790e2822cbac4143655748d396",
+      "bytes": 381940,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "08_favorites.png",
+      "sha256": "d18855e4a30e24a1630c8a9a2001ab441bdd5b6bb25ab4dd7159f1eb130684b6",
+      "bytes": 362938,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "09_social.png",
+      "sha256": "37edc297b276bb60fbf24ba995314d3fdafb74019beffdce0c50a389da31671c",
+      "bytes": 423254,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "id",
+      "file": "10_recent.png",
+      "sha256": "fb79dc82675d230273c92f24f30990a1928d5c6a635a7c7ffc0bd773d4f8c077",
+      "bytes": 1385901,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "01_discover.png",
+      "sha256": "ea499d8904a94820af05b5318a285a87d7f6c05a176a48960c366150a1400b13",
+      "bytes": 605120,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "02_player.png",
+      "sha256": "5936be80faad1d2f42d2088ae451f69a15c6951657d33f3fd91850d827ec3a7f",
+      "bytes": 774762,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "03_genres.png",
+      "sha256": "bb03467bb972ce9c56756d614580cb03f672f4252b6331959fb509546bc9cb0b",
+      "bytes": 1386422,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "04_country.png",
+      "sha256": "7e3d9067cb177c16521707a2b12eedeb9ab4756743eec31d5b319bca02993c0a",
+      "bytes": 385922,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "05_search.png",
+      "sha256": "b6114402134abc02c919e7e15e099b69643521e6a900010ed858611bf4bcf53a",
+      "bytes": 504670,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "06_rock-stations.png",
+      "sha256": "0be0a65d60d389f2cabc9175e4655e7a68c356bd6ccdaaebbb55a4459dd03334",
+      "bytes": 1544882,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "07_sleep-timer.png",
+      "sha256": "b5948b5cf06b6b2a7014aab8cb021d2e4e91d77fc8f2cfab9b1fe10fafb968e7",
+      "bytes": 388714,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "08_favorites.png",
+      "sha256": "618c6889c385ffd3a28b2a952bf745b707a7f3dfc08a019182f1a1b1318a8383",
+      "bytes": 358247,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "09_social.png",
+      "sha256": "67b591088a1d03c185f9c7179abc6c559d23063aa7b088d1df631672c548b2ff",
+      "bytes": 428742,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "it",
+      "file": "10_recent.png",
+      "sha256": "f327d8801be7f578dcb49c80b218ee00574dde54e88330e69a448c57dadc8779",
+      "bytes": 1390024,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "01_discover.png",
+      "sha256": "b80bbcd64ed341256b215008fc784fe0b853be9dcfe941cc7aaecf17646893c1",
+      "bytes": 618046,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "02_player.png",
+      "sha256": "f65e80828311e7306673af0d4e6ade8d491104036f67d5871679d4dd48d7153a",
+      "bytes": 816346,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "03_genres.png",
+      "sha256": "4c3adc4dc71e22b363489b25e6190b39a87f5b1b493dcf6019b599be677967cf",
+      "bytes": 1421389,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "04_country.png",
+      "sha256": "2f143726d6751b83cd471789e793ba702b346c274534be168028a45e997e16ab",
+      "bytes": 405815,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "05_search.png",
+      "sha256": "1295b945af0ec885c2de924eaadf450d8c605c33a965c3b79581eaff56f6ccf9",
+      "bytes": 535902,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "06_rock-stations.png",
+      "sha256": "1782ad0254de24a6c9f1e3203a1eab9b5105e5890cb8b73c07d23e3a941c8749",
+      "bytes": 1573018,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "07_sleep-timer.png",
+      "sha256": "9d287775b915d7249b937e8dd39b8347613d9face3adafe16ebfa45d8a761ce5",
+      "bytes": 411104,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "08_favorites.png",
+      "sha256": "f179f7bf49f7568d6ee3c0c5375a8dea8524b9ea2739440f65d6b8a2065bb722",
+      "bytes": 390213,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "09_social.png",
+      "sha256": "19cabfa7e2f51bfbdecc760b5d39f3bec9de6e148e9f3013b3de908d7df72afd",
+      "bytes": 457582,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ja",
+      "file": "10_recent.png",
+      "sha256": "84e70fdce9bab1dc9a11a3d4e44960ecb61d233ddeb1f7b8800fc07513c4360b",
+      "bytes": 1405384,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "01_discover.png",
+      "sha256": "f6296ce729ebebd0855edfa75429de7d0a1425a812c765d615eed094ae4345e4",
+      "bytes": 622557,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "02_player.png",
+      "sha256": "d5d9bc1e9796971595d76a9987857f437b49c791ffd1d905540e35fb2b4a9a31",
+      "bytes": 805887,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "03_genres.png",
+      "sha256": "32d202712d0ed6e68435cecb9de8772c6b08686d1099f5283482daaa5c075af3",
+      "bytes": 1410316,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "04_country.png",
+      "sha256": "1f3e9c07c565ff17cdb04b6b075d5a58ea51f5df9e28b1413d8cc1c6c7c13b50",
+      "bytes": 412518,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "05_search.png",
+      "sha256": "45af1c82da6c7f30f70769c4520cbeaef4da0e124286ecfb77189ebacbafc4ff",
+      "bytes": 540084,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "06_rock-stations.png",
+      "sha256": "77bde072558007053467a7a7251703c33dde98669b146f843f92152156c0516b",
+      "bytes": 1581672,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "07_sleep-timer.png",
+      "sha256": "df707c5e9d343fb3bfdbd1473e79a675de4fa6990cc0f80a20739bdca7eddaa6",
+      "bytes": 427579,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "08_favorites.png",
+      "sha256": "39e9df474a61b4943a35bcde9a234657b0e8e66b9252f7644dbb867d04707b0f",
+      "bytes": 394294,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "09_social.png",
+      "sha256": "ce08905b3486124f13ae801a81b7f684d80e8f15c3d6ea98ae84428a9a8e7efe",
+      "bytes": 466229,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "kn",
+      "file": "10_recent.png",
+      "sha256": "d03cdf5218526e11de437d778a2f6a915c112cf4fa4785fbf3191b986a89e5ac",
+      "bytes": 1419007,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "01_discover.png",
+      "sha256": "c2c296b6c37546b04a359e7de3d0c50df812e7952e538a5a07ea502178ef17e4",
+      "bytes": 601599,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "02_player.png",
+      "sha256": "5c9b681cc4a534f95a276b51ef7720324e17bb84b81caea6f12d5c7d06dfd213",
+      "bytes": 792755,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "03_genres.png",
+      "sha256": "3111c5c20bc66f85b10b87b7bd589c9e39efad8f2b2d2a42abcd056915710542",
+      "bytes": 1384380,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "04_country.png",
+      "sha256": "1eb653459be2bd3a83d36eee2936f53bf195fd01419bd9d2318d3a30e6b9891c",
+      "bytes": 385414,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "05_search.png",
+      "sha256": "18dcdefe53c3452fa41a0a7defb726e9e66b75b5c26a70a433d208505687e70b",
+      "bytes": 512662,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "06_rock-stations.png",
+      "sha256": "b011e9712839b493a5b79158207812cef6e7e093fada85e809f380ca20874a09",
+      "bytes": 1540654,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "07_sleep-timer.png",
+      "sha256": "300e447d68081926334a384771c64e52693eb9476fd9e64d81793bd1b0dbf481",
+      "bytes": 390563,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "08_favorites.png",
+      "sha256": "62a342152a07513aeb28882f2babc493e1656cc8709a3cc060f9229bf7cc7824",
+      "bytes": 361957,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "09_social.png",
+      "sha256": "82af0123989f65e3b29b5502deebfef91f09f37e2e4290a69cf83e8893acb50c",
+      "bytes": 426585,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ko",
+      "file": "10_recent.png",
+      "sha256": "5b27bcbe1758597963823a3b641dd050a64606720fb17e4d146a58f7359c9837",
+      "bytes": 1382112,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "01_discover.png",
+      "sha256": "4a2c208b051b8a9b6f2e237fc9a5de8556f3601fecc141517123bf0282f2f009",
+      "bytes": 618969,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "02_player.png",
+      "sha256": "00de17312a8485b41ed675a6785b567e90e5d6c775c62b95ca862d7c84674e3e",
+      "bytes": 806865,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "03_genres.png",
+      "sha256": "df96cec3c670f2b26126a0b72044303b022a96b1518b56c3fb0e8b655c103eaa",
+      "bytes": 1410118,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "04_country.png",
+      "sha256": "384b63d947eef18daf0ffe36405f5f3a97429ce52c1a764d7257ec2bff6fe026",
+      "bytes": 421243,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "05_search.png",
+      "sha256": "ec006d1287063a6eb901d6c6b61dcdec1e312bf9d4269827b9e26ca025f9edc8",
+      "bytes": 543551,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "06_rock-stations.png",
+      "sha256": "391584d067e274df3159e7d90f369be6b3f9631c92d78b60c82298010e4687ce",
+      "bytes": 1574487,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "07_sleep-timer.png",
+      "sha256": "28f8361eaff1a943f4bb669673c18675b04cd08ae2ca0e7d523ec8b81120a8bd",
+      "bytes": 419399,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "08_favorites.png",
+      "sha256": "dd88ebbb08f201606b5f3ab781902e506622bb8f978b42ae3c1ee8c5f28636b5",
+      "bytes": 389885,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "09_social.png",
+      "sha256": "5545c30ccc451cf9264c4066201ff575c64be1acc01731798db25b9d7a2f6e2e",
+      "bytes": 468384,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ml",
+      "file": "10_recent.png",
+      "sha256": "895127d884a00703c862c0c4c048613d1bb32e5f74b91667f688aca20e8994be",
+      "bytes": 1419517,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "01_discover.png",
+      "sha256": "ba925d86af61786b66da19ed2256ada30cc581265f21e0c911555d84b2829b6f",
+      "bytes": 605558,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "02_player.png",
+      "sha256": "a9c3bbc5a19ec6f0af37193e373566ec8be2b4fa6bc9f82ffda0e31f1067954f",
+      "bytes": 783076,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "03_genres.png",
+      "sha256": "db4d4e9c565e0a29707be0f4fffd8df3b532f71d70a49a76963f248c8a4cb804",
+      "bytes": 1380997,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "04_country.png",
+      "sha256": "1179f67e90e6d911bb5503669cfa629a72ffb9b971f719b15be3588faddb7512",
+      "bytes": 384881,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "05_search.png",
+      "sha256": "6467de7b6e9f750f86ea415bd6aadb3dd31589cfcb1cd693ae8eb041761d996d",
+      "bytes": 511922,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "06_rock-stations.png",
+      "sha256": "2b09291b19544f31c198446c25634097453de4a328452e74e2036f08804d0ae5",
+      "bytes": 1541284,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "07_sleep-timer.png",
+      "sha256": "bfff4612d5663e471cf4d785d9b0fe5c7a350c3b699c268572e8a7430afaa956",
+      "bytes": 389602,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "08_favorites.png",
+      "sha256": "2f4c463cd1172c74abdf69ec65e46bbaca2381b3b721cb09d8de92f31e6b9e33",
+      "bytes": 361676,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "09_social.png",
+      "sha256": "6efcb1742a9e63a794859a567833e1702306e60f01c601366ebe1e5093454ba1",
+      "bytes": 429526,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "mr",
+      "file": "10_recent.png",
+      "sha256": "98a7e62559a52791bcf70ca7fb2e62ddb24c5859a5541dc9eb4f18569b14afaf",
+      "bytes": 1397988,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "01_discover.png",
+      "sha256": "3ab2a23c5c3c5c4b6f617be4ddd4308367273a49c241bcc53743a0865752e983",
+      "bytes": 605157,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "02_player.png",
+      "sha256": "5e2109af19a41a78c8a3c17448f9b326ff640e0da7b0c0ae80a8f5fd7215c11b",
+      "bytes": 780622,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "03_genres.png",
+      "sha256": "c780cc618d2382c2daef239a8b8e839f2a9b997a06d13968745852cd05251840",
+      "bytes": 1387015,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "04_country.png",
+      "sha256": "92a865d81c0754cc8b43e688e1935f010eb070beae4791a6eb4bdab1a6206ec2",
+      "bytes": 385929,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "05_search.png",
+      "sha256": "067de2e3ef50a0e8f51f484a5bb39f5167a406d292eebcefcdcb5e5545b79f16",
+      "bytes": 511504,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "06_rock-stations.png",
+      "sha256": "bc39640198c9dd24f074018f7f326407323b77ef9c04dd0d31e01afd272ab8ac",
+      "bytes": 1538022,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "07_sleep-timer.png",
+      "sha256": "9b6412f88a66a88a08a21839e1720a08e72b9c1b6a491206c085127539937c8e",
+      "bytes": 386252,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "08_favorites.png",
+      "sha256": "aa2c2d550dea6198876d5c66d04a178e6c79dd1e543b142f5b0ecc4e64d48c55",
+      "bytes": 364589,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "09_social.png",
+      "sha256": "1caa0b89c3c338600a9ed7c0051a0152c036080ed11d5144e2b433f6a3649963",
+      "bytes": 422986,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ms",
+      "file": "10_recent.png",
+      "sha256": "13763cac7bdd438dc6a586f5de448e4957ecb7f6a27904112b928c03239ae672",
+      "bytes": 1387101,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "01_discover.png",
+      "sha256": "be16880719216dcd36ad4fcbfe1fad81e5f98ec0a51af266034d807a110df2af",
+      "bytes": 607129,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "02_player.png",
+      "sha256": "f4810de432eb09130f0a0ac3d820597e5b56583ef46140beeec6e6bcd6abd927",
+      "bytes": 780230,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "03_genres.png",
+      "sha256": "b197b5004f5798103f0bd889de9187e82ec1795213cea28734cad3f677ea4df6",
+      "bytes": 1386490,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "04_country.png",
+      "sha256": "2674147eb4ce7f778d338c7752e564ecdbfbb8f14f74cf13346d10a788c72817",
+      "bytes": 387596,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "05_search.png",
+      "sha256": "0661717d5e1a77fb72217442bfc47f011a8561869cc4764667022c97d44c1277",
+      "bytes": 512419,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "06_rock-stations.png",
+      "sha256": "02e3f34208460743bedaadcaebe8c7a456c3c56d9519c77cd19e62e4d226b373",
+      "bytes": 1546006,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "07_sleep-timer.png",
+      "sha256": "69ad4f7bfae6a20174b20c7b46da381138b02eabe12f1583a48ea299b2ba0063",
+      "bytes": 388686,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "08_favorites.png",
+      "sha256": "3bd0b134caa30e1230cb3fcb8e00b9d5ea6b8593835830df9fd482ca7aedd02b",
+      "bytes": 362279,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "09_social.png",
+      "sha256": "aa56af63df6965a59269363d723183afb23a4b8740f298ab3054b6d95336bda5",
+      "bytes": 425272,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "10_recent.png",
+      "sha256": "3ac7bbe657d53aecf68d5e5f552317aaa5597717d9042d33003dfb6e3dda2d1b",
+      "bytes": 1384107,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "01_discover.png",
+      "sha256": "c452d6b914b902221f044dd94743d2a6416eaa14aceb49ebafecb3903b1adddd",
+      "bytes": 612872,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "02_player.png",
+      "sha256": "19f17c46f60d41b2ad8ba6a3482303dbb270952e28b80e2810961adff998c803",
+      "bytes": 778735,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "03_genres.png",
+      "sha256": "382935434a9848a19f5acaa89b39ff9eb9f84ab2992d320677a24a991c208e28",
+      "bytes": 1377809,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "04_country.png",
+      "sha256": "e45f985116aef0a73c96331ce61791616403f6a0a2d351ee4f075c2c0b08d18a",
+      "bytes": 384877,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "05_search.png",
+      "sha256": "22c04de837a8f4aed92611b2504bc853e41311450240ccd7d8f9527a9362a471",
+      "bytes": 507205,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "06_rock-stations.png",
+      "sha256": "2efc8aa5ea462843971006255ffac90ae5111ee276f9069378e9f6f13a67319f",
+      "bytes": 1553007,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "07_sleep-timer.png",
+      "sha256": "6917f893c9765b553dfcf19099a2c63f0815fb5eaddc8b501b8816e5322e89d6",
+      "bytes": 390224,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "08_favorites.png",
+      "sha256": "d64313e5b69ded0d8b56e3e60d1dc5333d40b7c622f2afd629848674fe3a498a",
+      "bytes": 360504,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "09_social.png",
+      "sha256": "989ebe39f1bb07a36b0e77240908b9eec9c8003b58a82a7e1b0597df66efcb0b",
+      "bytes": 428891,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "no",
+      "file": "10_recent.png",
+      "sha256": "3c53b03d832a712ba2ecbb4667f8ad97c9f23911a9e13db4d752726f9e481a01",
+      "bytes": 1380314,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "01_discover.png",
+      "sha256": "a443dd7620fb8377aace1f03b5a31b30712c1e2782ee5339604f40ec16220085",
+      "bytes": 619996,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "02_player.png",
+      "sha256": "05fe3717e7bbc29b8b77f921a12e5b9f1e3f054350d97220858225e0ca1ee33f",
+      "bytes": 796996,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "03_genres.png",
+      "sha256": "ffbc172ca007bedd4656702403c3758825b747525b15ba60578430b727fdb913",
+      "bytes": 1402524,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "04_country.png",
+      "sha256": "518f25cc0b338210569f70d5eb2d4833363884b2ccf43d87280660a3ea365ba5",
+      "bytes": 400760,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "05_search.png",
+      "sha256": "9b961ab81c34c1ba3ead8b564fc1d24816d4ac9d78e6f2d755da7a24e4762079",
+      "bytes": 537440,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "06_rock-stations.png",
+      "sha256": "6860606e94b0edeca0232595efc550d8911979ba9a8d24b46018cf3d243274b3",
+      "bytes": 1572715,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "07_sleep-timer.png",
+      "sha256": "991ccb4887c80930377381921993a1da3de2dce714819e7ec35c078b4909a48a",
+      "bytes": 416720,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "08_favorites.png",
+      "sha256": "a6e90942ff05363e00a75b7e3049f28ce7e1399915955f2fb86cecbaff2cb952",
+      "bytes": 393548,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "09_social.png",
+      "sha256": "89cef7d6cbb25141018afd63d32847aafb4163e846129afa7ed8693caba48ea3",
+      "bytes": 459999,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "or",
+      "file": "10_recent.png",
+      "sha256": "a27d298f10639192ec3f726316894bd6c1d17db93d55b14ff0758ebe93ad308f",
+      "bytes": 1424200,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "01_discover.png",
+      "sha256": "e07d06f5fe1d31f05793b5d0c23303aa91d416e8aaddfd75c662de7e6c307a2f",
+      "bytes": 605312,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "02_player.png",
+      "sha256": "cf6ed7051ae126c3d6d062eb2a25724bc0c7b3da876d4939a49c73dd8a580e53",
+      "bytes": 782538,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "03_genres.png",
+      "sha256": "5c074961c1c1e0035bbb8e788e1cd1897aa46393058ea7161872d45e35396f1f",
+      "bytes": 1381818,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "04_country.png",
+      "sha256": "075f2b96055f606e917b9fe045442f253719525b86e164b560568dee95af7cc7",
+      "bytes": 385430,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "05_search.png",
+      "sha256": "e52c2fa041e639f8789dff94b3df5bfa6300301b3e79295b250d7fc7883669f6",
+      "bytes": 516535,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "06_rock-stations.png",
+      "sha256": "0bf9a7b7da707bf10a26b8f66b0dd186831902f37158f4e06b934fae27b252f4",
+      "bytes": 1541580,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "07_sleep-timer.png",
+      "sha256": "1bf8f462c4abf577f1da9d8d820404c7b8d3f1b05ecb237ce15bb61efbf0be29",
+      "bytes": 384447,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "08_favorites.png",
+      "sha256": "78179115a5f62d615d3a3ea5ada4c132ca7449f6553dcc8bd909076ba2ae16fa",
+      "bytes": 360152,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "09_social.png",
+      "sha256": "3b3b14474e48509f6e5766151c2e127747808dc07006796c6cc68efdc3212c4b",
+      "bytes": 426151,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pa",
+      "file": "10_recent.png",
+      "sha256": "c6f34b0e74d2549e6ebcce6c6d5b52a15c81b4dbfbb2340bc371e4f45447d61f",
+      "bytes": 1393057,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "01_discover.png",
+      "sha256": "90f649b586fe06d3b6e13a15f5efd809cd13dd64f464981ae6059d67bca0baab",
+      "bytes": 609066,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "02_player.png",
+      "sha256": "6db5b4d1d8385eb1b60a2efaaf69e07a8075a9834f8af139fcf26fdbe9d6b5fa",
+      "bytes": 783988,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "03_genres.png",
+      "sha256": "4ff9a02507bb076cddda50aeeceb415b5110d655341a052d628365b0bf22989a",
+      "bytes": 1388657,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "04_country.png",
+      "sha256": "6960e1e8b6f67b13e232daacbcb3a8f42aa40ca429b8fdd54540d86bfba35d14",
+      "bytes": 397877,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "05_search.png",
+      "sha256": "3a157e281bd63c289452a324e993865b21939ce56c5efea0aec1b14923f9961d",
+      "bytes": 520734,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "06_rock-stations.png",
+      "sha256": "21fc9c96c7490c10713afac72b41314f1a15a2df837c5efd63fc2e1136d41c78",
+      "bytes": 1554633,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "07_sleep-timer.png",
+      "sha256": "2f93a1959243506d87efe690c995b8bdd555a599e8eaf83d1ee5af20a5648ba5",
+      "bytes": 387210,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "08_favorites.png",
+      "sha256": "1bd4946c4ece4633b479aa71c107dab320d3e2d95d7a920925a6e9c55d4edfaf",
+      "bytes": 367192,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "09_social.png",
+      "sha256": "6dc4c8fc2414e7ba57f420f314dd776fc35a1cb080ae62327ceed34281d061c4",
+      "bytes": 433200,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pl",
+      "file": "10_recent.png",
+      "sha256": "09c1df057825c962a76c69d0c96377ac713843e7ba7905c09f6d16a4700393a6",
+      "bytes": 1397299,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "01_discover.png",
+      "sha256": "e50cf26685576ba2a2b9f09aa31217316de5fea8642e7f386a336c762d84ce91",
+      "bytes": 606784,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "02_player.png",
+      "sha256": "6c3fbf0355a1c712bd592c34f243701214ccdb541f86e11ad76314475cb7f4e3",
+      "bytes": 780477,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "03_genres.png",
+      "sha256": "7f7ecf89b9bd64648de497c2262144a25a7e40a8af048b5df65b9d0bde5b27a7",
+      "bytes": 1381654,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "04_country.png",
+      "sha256": "34e8569a6fca6695a1719848011af443dc4978e22bab0b14443f09512e3407f0",
+      "bytes": 391868,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "05_search.png",
+      "sha256": "c5cfd367f29bc66c5ba2c4da3487bbce78a548f38a48e8616e2a23f5c8fbbe76",
+      "bytes": 512666,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "06_rock-stations.png",
+      "sha256": "83bf0b59fb540ec13bafbf15a88be7761dc0b85432ebaff78d9b4804cdd95b0d",
+      "bytes": 1545888,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "07_sleep-timer.png",
+      "sha256": "5be1a90f65cb092cceb1c6425edb552f4c58a0a27ed8b2cfe96e6588f725ee36",
+      "bytes": 390881,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "08_favorites.png",
+      "sha256": "e0f9ba07e34d22755fdbe10df9cc82b6a7e5a5ab79d9e6e31c943a453b5c596d",
+      "bytes": 367586,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "09_social.png",
+      "sha256": "6d0c96081c0952818dda0d75bed3b7481fe863cd5750d1af8066dfe89dfacea7",
+      "bytes": 428331,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "10_recent.png",
+      "sha256": "0194148597c3c6333ca79535bd325e0438d9b12c51fd5675c3ce611b3f3af150",
+      "bytes": 1392531,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "01_discover.png",
+      "sha256": "6fbeb7cbb6dab9e6af4fe5d519c942279aefc2ccab438e1c3e41cd480086c221",
+      "bytes": 609036,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "02_player.png",
+      "sha256": "1fdb20ac2889d8096fe574c32bccceac5b750fbc06f0d1e92e6297875a2b4299",
+      "bytes": 780596,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "03_genres.png",
+      "sha256": "79beedc344ef346f8e3a10c2fed1bec51497c9e9ab046cc14499d60bfdb54bad",
+      "bytes": 1381752,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "04_country.png",
+      "sha256": "d834ca3fc89c4a9aca20e19f6bfd7e28d98ee98dc9628075bd76029709f81e3d",
+      "bytes": 391645,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "05_search.png",
+      "sha256": "4e539b35c1d1783a0c0488bee5328c9053561086fdcff9a7fc0235cc8d701c35",
+      "bytes": 509756,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "06_rock-stations.png",
+      "sha256": "f958c7f0eb1b6e736a66c373340db5b68352996c8f9f1d7ae0ffe7cd6379f158",
+      "bytes": 1549988,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "07_sleep-timer.png",
+      "sha256": "de6f1353c97bbd0a7c96e79479221bf2772691a48be0797ab0e534f44f6b47af",
+      "bytes": 392482,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "08_favorites.png",
+      "sha256": "43c157f421f225eac0f7e6053b46929c6778b659b7a725562dd6e5d09ae8b9dd",
+      "bytes": 366070,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "09_social.png",
+      "sha256": "1c10aae93d82955bc80b4ed068331810898b8170230997ed1f7db1afd6b0cfb0",
+      "bytes": 429679,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "10_recent.png",
+      "sha256": "5fa304eaa4910804c111abf945222fafcda4ed203129359515b11932b4fa4dc1",
+      "bytes": 1390909,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "01_discover.png",
+      "sha256": "9f0e55120db4db552113978a3c7c7f5431b523e4bcdfe507830677ac10d8a3a7",
+      "bytes": 604322,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "02_player.png",
+      "sha256": "58d3ee0d230e4b94cd9af6959ae37b1df40a171da95ff4d6c6be31b5855eb47c",
+      "bytes": 784638,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "03_genres.png",
+      "sha256": "bd344e9ab9bd7d09f3d8e4600a41ed380269d8d35c79d784793f55c96f9acc19",
+      "bytes": 1387638,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "04_country.png",
+      "sha256": "79bd8b5d15a2057a179e9805822e5d3b10f070c75976a25bba6af36f9018293f",
+      "bytes": 391919,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "05_search.png",
+      "sha256": "6307d3990065c4d5a9e3a87f40e85a7739543d00fddad98df603164b74a91eb4",
+      "bytes": 518300,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "06_rock-stations.png",
+      "sha256": "3eb28770ba078a5966c901d168b1e86eea810eb745885896b665c698459cbe7f",
+      "bytes": 1548418,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "07_sleep-timer.png",
+      "sha256": "ea7ed87b7261f18cae4a23363545c3a198858308bae92f508462ce8f477b5fa8",
+      "bytes": 393409,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "08_favorites.png",
+      "sha256": "b52851a6be15148f9b96a2b937c690583a90d7a5a54ca09d9a8d67d99c2d82ff",
+      "bytes": 363004,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "09_social.png",
+      "sha256": "4585646a81cd840b3acd8743c91e6b5957a6d6fdc3901a4fea2de93d1aab2358",
+      "bytes": 432583,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ro",
+      "file": "10_recent.png",
+      "sha256": "c739bd0dfab8e66371ce69ce04d6112d0accc49008b06b02e15b3db3e9a67f97",
+      "bytes": 1389249,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "01_discover.png",
+      "sha256": "0ea3e6300d0f04e1e5781225b4b5d028d7e48d2c945f9238d253c6527ff0a9b4",
+      "bytes": 603762,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "02_player.png",
+      "sha256": "1c0726d746cacbedfb756ecc39295d34c32eb954bf235841af9281914d2b275b",
+      "bytes": 782832,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "03_genres.png",
+      "sha256": "29d6797bc6ff2f4eba545c88be501cadd0e4150d8eaddd0f69f2eec172b6c136",
+      "bytes": 1383057,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "04_country.png",
+      "sha256": "4a26e82ae472c404a7144ae345311fcc7b402603db92ade502458800f6371e9a",
+      "bytes": 386196,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "05_search.png",
+      "sha256": "647d0584cdc8102d38f57b4d1c67b4c6aa161657ce583819bd69f0e36d8b9de3",
+      "bytes": 509205,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "06_rock-stations.png",
+      "sha256": "0a327d4c88b77b0d7dea18f86a7296af3e9ff38d70cbbdd9a87f59d427037ed7",
+      "bytes": 1542488,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "07_sleep-timer.png",
+      "sha256": "8c8ac3e41e4aecee4ec5e846b1dc254e9975e35261c2d23e760f04ec6af8fef7",
+      "bytes": 391117,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "08_favorites.png",
+      "sha256": "f39fc1f472624bc56a5eb4beab58fafe98e834f3ad92d1d3f46c3a774862265c",
+      "bytes": 365584,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "09_social.png",
+      "sha256": "47597db969f74299a8bcb89f32088140c74d04f9dda2d7dc34161f3248b89177",
+      "bytes": 428664,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ru",
+      "file": "10_recent.png",
+      "sha256": "03e1cf84662571b608b9663e7ed42d75f91ffe69eac3c95bc1d1da4867829d6e",
+      "bytes": 1388323,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "01_discover.png",
+      "sha256": "ea0c7460c879360657333c3409016ee3f0c7f8ae3796008beaf35cc9b1b95d47",
+      "bytes": 606181,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "02_player.png",
+      "sha256": "fbc18b5a0254ea96dd32916776c89aea55c3a9ddc9daf6d29ae7517edf5392b9",
+      "bytes": 785402,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "03_genres.png",
+      "sha256": "66cf810b35792d9f980800f961f210a2ece3f23ee1c91e5b9ebb6e8146c065d3",
+      "bytes": 1388632,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "04_country.png",
+      "sha256": "dbb1b280054f950999d1372bff18fe533ed1ae9f5fb4e57ed2c7d2f493e8c61a",
+      "bytes": 393418,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "05_search.png",
+      "sha256": "146b1569c09099d76cd038d2aeb0d30dd1acdb48e0de45fbbe7773c9142c163c",
+      "bytes": 515955,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "06_rock-stations.png",
+      "sha256": "eda2b2f7bd732b7e34e0647519a74dc50af8f734cd31fb89c70c42d77412a2de",
+      "bytes": 1555907,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "07_sleep-timer.png",
+      "sha256": "c1178e44c3f18d0ead644ae6ea74f8a750733b84338a6c7b1f9ab31fb58c5bc3",
+      "bytes": 390399,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "08_favorites.png",
+      "sha256": "d2f7bbf13d4e6a7d9dff68c4a74f428be2be340b1e052e48ae1c846939c06e1c",
+      "bytes": 367830,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "09_social.png",
+      "sha256": "e46014169ead0d10c2adc71b568f40092f8e920ebba69163895eaaa7303dd54c",
+      "bytes": 435454,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sk",
+      "file": "10_recent.png",
+      "sha256": "13161bd040ecf49938ff6e4fe2a93000534c1e7774511ecd3a088fbef02421f5",
+      "bytes": 1397420,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "01_discover.png",
+      "sha256": "531c05e2e837725290f491cc97cb29f06d1c0f3882408974ddb0cf86dcb16d60",
+      "bytes": 605617,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "02_player.png",
+      "sha256": "ea172d3b3e31b3e04726ccb4a4a0029638d42c35e8908284e46533c99a673bd1",
+      "bytes": 781965,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "03_genres.png",
+      "sha256": "ea2ae861cff69c6487a2f16224fde711236bdaa7ce11df5875038ff566649f89",
+      "bytes": 1393408,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "04_country.png",
+      "sha256": "f8f54d3150950f84cfe5e30b27b0885e59515f3ecc00f194b313e0db4bfeb3c0",
+      "bytes": 391229,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "05_search.png",
+      "sha256": "84e48e3b39bf752461d84e18988abcaf8c98b8a6156b3878a89efb9d9c61ae62",
+      "bytes": 517392,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "06_rock-stations.png",
+      "sha256": "d3826e7fffc273edd5943fe51deb86e9df67438ee0c5176569289add0b1c3f8c",
+      "bytes": 1551426,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "07_sleep-timer.png",
+      "sha256": "4769f4fe86a1a048c77b0f01aa3638b266f7f08c567a3c055edad33314a92208",
+      "bytes": 385673,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "08_favorites.png",
+      "sha256": "7c230dd5e23b783562d24450918be45ac82f7c8a98fa12c64f79968503ab8124",
+      "bytes": 369266,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "09_social.png",
+      "sha256": "8ddd8dc092952eea242795e17578be07ff16c8cf347d28e660cd76c629c21b44",
+      "bytes": 430350,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sl",
+      "file": "10_recent.png",
+      "sha256": "f73457a0b3855228b1bcc70d9d4db8cfd985123e482009b5cbb1c654c59b509b",
+      "bytes": 1391635,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "01_discover.png",
+      "sha256": "965d4e6183595e334cbf3b394c35e8670db89f76f165ed5cd35029dac6c5e560",
+      "bytes": 612937,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "02_player.png",
+      "sha256": "fa2f43c9b786cca82be00b8490773c1bced60473bb5b9d0ceb8cb8f7b5a2ef4a",
+      "bytes": 780780,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "03_genres.png",
+      "sha256": "519e069637281ffd4675b31cf56c2446f8b031fefac0d2c653aaf4d8b3b21f9d",
+      "bytes": 1380692,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "04_country.png",
+      "sha256": "a31d693a26c75cda16007a00a00ecffd1d684f98b49dcff3af7b6c8bb25ba8eb",
+      "bytes": 390228,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "05_search.png",
+      "sha256": "1477d86a933fe5408fa3b1a1898bbcb3581a4cdd61ef5aedcf28682269356d74",
+      "bytes": 508565,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "06_rock-stations.png",
+      "sha256": "02dc98b7e01264b401b8ceb20b2cbe616eef09c63fbd93c5f116e118ff9d937a",
+      "bytes": 1548839,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "07_sleep-timer.png",
+      "sha256": "0331b7979b9a2026aa8c51c05ace7df8e76a3dde6696c26e78413641f10bd6b7",
+      "bytes": 383526,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "08_favorites.png",
+      "sha256": "6a0e148fc2572944d845c12b20aad073cabc991b6339e440e3f28703905220de",
+      "bytes": 360262,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "09_social.png",
+      "sha256": "cd00873044d557a539ed42b353ca3b824df013ab698871e97cec61737c74c346",
+      "bytes": 427543,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "sv",
+      "file": "10_recent.png",
+      "sha256": "ce7d132d9f6d07ca66e15262392c77c87effe8bb91fe49654130e7fa559b1628",
+      "bytes": 1382128,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "01_discover.png",
+      "sha256": "5a673f4e36df9a410d74f109f2098abb43b2d7f776804456cac07d6425e22cb0",
+      "bytes": 618375,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "02_player.png",
+      "sha256": "c716712267ecfbafb33a28edcf34baac8d758ad46b991bc595e522ef6b2533ef",
+      "bytes": 798810,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "03_genres.png",
+      "sha256": "f2e4f1654ab629d89f90499bab30fa5aaee1ff4a682715000219201767fc78a6",
+      "bytes": 1405336,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "04_country.png",
+      "sha256": "58bfd49279b352cb6ec3344b655b5873a20fa124e471c008dcb9cb5cf4688809",
+      "bytes": 406503,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "05_search.png",
+      "sha256": "90f072470cf8ed35ef6b4f2fcbfb55db7ebf3c786013286faa3ebefdc01b864c",
+      "bytes": 535261,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "06_rock-stations.png",
+      "sha256": "970468e36a6fdade2904a6c137ae250d8df3970c1f17de2413c1aafee2e5a158",
+      "bytes": 1561269,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "07_sleep-timer.png",
+      "sha256": "4917b99e4f87494a2b08eae871df4fdfbc00f9961b63e619d333bd10417145f6",
+      "bytes": 409526,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "08_favorites.png",
+      "sha256": "ef519ec299c9557e4a5ebdbfbd46f6b3a17bfd51aa8e8985a9dabf999c622d53",
+      "bytes": 373766,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "09_social.png",
+      "sha256": "b8bec9d2716676aea881717e170710619b65797034c9f33076822feac12c89c0",
+      "bytes": 452303,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ta",
+      "file": "10_recent.png",
+      "sha256": "7f63c1bece502ea7218559c8dc38a72970d069a85615a22866ea3090ffbfb2e9",
+      "bytes": 1416237,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "01_discover.png",
+      "sha256": "48dfd14631b79ba34735647e8686a6c8f79c5d4b4ed3062661e48ee43bd88853",
+      "bytes": 623997,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "02_player.png",
+      "sha256": "9510ebce383047d0009a10c48731bf19acef9810f8a3c3889997018f1fc1498b",
+      "bytes": 825313,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "03_genres.png",
+      "sha256": "5d5204810fc80cf343e85dadbb08560a5c8a9baad77386efb168fe983081a9de",
+      "bytes": 1411368,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "04_country.png",
+      "sha256": "d3b45ec4fc16d2e66af2c6898f51786461c5454f5932a1b055c6407966449ebc",
+      "bytes": 421960,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "05_search.png",
+      "sha256": "0dc0439f9870eccd4aac91db486742cb34425b30b30695ea1edde0bfc1093b23",
+      "bytes": 545496,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "06_rock-stations.png",
+      "sha256": "b832538a4ba06967a9a6291118180c79c8c53b25865b38cfbe2c38fae8bc63d2",
+      "bytes": 1580738,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "07_sleep-timer.png",
+      "sha256": "b2d341c335e45ca1ba287dff4eb8d1aff2ac4cbc1f35dbdb8dffd48b158d85e8",
+      "bytes": 429480,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "08_favorites.png",
+      "sha256": "8dff5c5e27e08491454d4e4b658fa045a3f4d8d393b1226b5c2fb123da13bea0",
+      "bytes": 397394,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "09_social.png",
+      "sha256": "412bb767fc529879113d28d442f92e0b76b6e6405082fc207385397ee352dcb9",
+      "bytes": 468808,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "te",
+      "file": "10_recent.png",
+      "sha256": "256549626879aea861b69fd3d4bd74eba7b5361c20ad64f2a86ad2e136da1c0d",
+      "bytes": 1445529,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "01_discover.png",
+      "sha256": "47ef2b11dd7bb23ee577906abb6b311ae5f780cc2dd2c89290e494ce6ee506c3",
+      "bytes": 610090,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "02_player.png",
+      "sha256": "657b48d1b0008e7104c8f8bfbc94348518f93e2e0a2d6366e658fbc636500f82",
+      "bytes": 795335,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "03_genres.png",
+      "sha256": "2fe2b2b85016ae2db6398c98640d74018744d19b95c3946bd89f1ce864210a49",
+      "bytes": 1394490,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "04_country.png",
+      "sha256": "7b535510115acabf5e59bc42e26194b318acf123ca1304ed61c9d4d01370b966",
+      "bytes": 397798,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "05_search.png",
+      "sha256": "d0dc15924a91cd4f10e3144acb673d6c2dc0fd4ef49d3be249777341a52bff79",
+      "bytes": 518503,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "06_rock-stations.png",
+      "sha256": "5b7900d11a656938b54094f7ad38df2304ae44f1f24ee7d2791d31ad1b920f33",
+      "bytes": 1553739,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "07_sleep-timer.png",
+      "sha256": "48d64ee9d70d9bb8130ac359a0bd42aaa9feb6f7f7c9d2a02b4e5e07fe9e82c9",
+      "bytes": 395142,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "08_favorites.png",
+      "sha256": "3b9af862eafda4e933ab87a37266c7e8743839684e025f1736b559b1bc4c8c86",
+      "bytes": 376908,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "09_social.png",
+      "sha256": "e6f2475b2fb52ae1eebf9368c83e201ddac63437d7fd6f71d3298b55d318ce8c",
+      "bytes": 440472,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "th",
+      "file": "10_recent.png",
+      "sha256": "85b3d74dc37c7789d04a3b9adcc787102da283429b10e958977a2c643d18d87a",
+      "bytes": 1396150,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "01_discover.png",
+      "sha256": "7d4560e5ec4f44cd6ae7007c360add092520f8bbdf6108ebdfff2abe6cea71fa",
+      "bytes": 607376,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "02_player.png",
+      "sha256": "c07dd0fdedecab577e08da91425131c74ce3688de62a37c35a3e068e42d16133",
+      "bytes": 782962,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "03_genres.png",
+      "sha256": "c54d19ee6977d7325aafcf2f1654880bbb39751ddd8be9eadd4d1f3d97f3c756",
+      "bytes": 1387601,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "04_country.png",
+      "sha256": "8f246ad09d342771fab73819d2ef67f57beabd25085781fa872b97aa447dbbcf",
+      "bytes": 387363,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "05_search.png",
+      "sha256": "05a52d7cee94b54e84b74936f60ced64eee058c1d20b214cee7b39dcb2d1d2b5",
+      "bytes": 512714,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "06_rock-stations.png",
+      "sha256": "e4b5c886df90496fe264df8e83ebe65e1eea0348d3dd1ae735aacf1d1ffc5adb",
+      "bytes": 1550742,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "07_sleep-timer.png",
+      "sha256": "bbfb696fe3eabecb66babe4aba8b20641f81406c8dd9d25275de64ef2ddfe188",
+      "bytes": 392831,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "08_favorites.png",
+      "sha256": "fe20d8888d6a8a4426fa5519162d20d4cec00a1fdc88926df46093fc0c30f6a2",
+      "bytes": 362028,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "09_social.png",
+      "sha256": "1949e5c62b925ed7e7837be955bd0f76317cd1ef983c24ebc8f65a9386f90979",
+      "bytes": 431786,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "tr",
+      "file": "10_recent.png",
+      "sha256": "2bd32620c32b2dedbe162e367c04b7e3defdcae16e0aa7472bb2b38d33cfc4ff",
+      "bytes": 1394067,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "01_discover.png",
+      "sha256": "d9b377d072976a05c1b14700914529d73a3b761e9c4e396e26a92ff1b14d3edc",
+      "bytes": 602997,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "02_player.png",
+      "sha256": "c684b9f9180251d8f1e0a4658d1702f11c21d6b9b062f586118b7c2321332292",
+      "bytes": 781908,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "03_genres.png",
+      "sha256": "2e57e2bb094cfcc81758f423d253fc7666468d938df80af7941d2f847dc7c77e",
+      "bytes": 1383435,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "04_country.png",
+      "sha256": "00846d6b6b15441988a83d6a74f182b7b4dfc118baed9ca08e54423ffe90b8c6",
+      "bytes": 387097,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "05_search.png",
+      "sha256": "863d967ae17135dcd281e63ff28c79a5917ad63ec23b91da0c12b3f1444dd407",
+      "bytes": 511618,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "06_rock-stations.png",
+      "sha256": "7cac28a1a7790c0ba38e664ade74e7fa66c1a63d24c4f2753bb711d2b0d2e053",
+      "bytes": 1550070,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "07_sleep-timer.png",
+      "sha256": "76c2651cf5ba0533a173a4b36bb2fe91a88d3d8c6110cdea3a33b06fee520a08",
+      "bytes": 390338,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "08_favorites.png",
+      "sha256": "ded6321898c5a7e6f962edfd21136fafdfa79cc91831fad041a7d839b9bc376b",
+      "bytes": 369440,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "09_social.png",
+      "sha256": "924335160e49dab2b45a294a99fbdedb93487c241d5fd51e502c86e7e0ef7df1",
+      "bytes": 431017,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "uk",
+      "file": "10_recent.png",
+      "sha256": "273991d183c939de0eb71e02b92efaaef5da95710831eb54870757f737b05cec",
+      "bytes": 1390846,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "01_discover.png",
+      "sha256": "73266374f9ff73176bdc5fc7e0c779390bb09c3a9fa03edfa5196e0aa11fdc37",
+      "bytes": 606073,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "02_player.png",
+      "sha256": "19d9f1d772512d550f990fdfc26155bf8d0dd56667628113fa780528b9ab0a39",
+      "bytes": 788500,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "03_genres.png",
+      "sha256": "c3aaff1061d23a4015aefa0fa507abfb024f8f9417a260c76a70064040be2885",
+      "bytes": 1394975,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "04_country.png",
+      "sha256": "ceddc061d0481d4a2d6c3b2f2f1d2038d57854ee761968254bb57217626f42d1",
+      "bytes": 396443,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "05_search.png",
+      "sha256": "4c3feca37ae6a278e2b8e71111c13d25810e90b0f6e0f7bd8a26f86f46d14431",
+      "bytes": 524677,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "06_rock-stations.png",
+      "sha256": "34a65c93d0114cef855b99ab3da2a866d186a49383df02a9b19f4214a21d5bb5",
+      "bytes": 1557422,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "07_sleep-timer.png",
+      "sha256": "5cbfc48dc4f76a8b3ff3a5524b2170972368b657c2f7d273535d55fd27de89c6",
+      "bytes": 395510,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "08_favorites.png",
+      "sha256": "cc50687a2f5a3823e3fae8f4ce82c6cdbbd9ced4bd55889d828aca29ab7b992a",
+      "bytes": 373419,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "09_social.png",
+      "sha256": "6564205466ad70abc13d5e09aa553f9c9285f0d573af29d5026aba70c273e22f",
+      "bytes": 443804,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "ur",
+      "file": "10_recent.png",
+      "sha256": "a47f74d5115ada4777d36d32963ee0e0a90577506be90954e71887792f9ba783",
+      "bytes": 1407030,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "01_discover.png",
+      "sha256": "7bd8babc68852381969559f63e99797caa4b4e0327aa456b6b83d72762235fb7",
+      "bytes": 608943,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "02_player.png",
+      "sha256": "a30f80fae6204dcc3e2dd483367b9657cd40a868d5592012672e8e5052d4e2f9",
+      "bytes": 785772,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "03_genres.png",
+      "sha256": "53d8143d8b4feb4ba882d6bd0c57a57237c07b0a0d1590629a827124fda1c6c7",
+      "bytes": 1389801,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "04_country.png",
+      "sha256": "ad6f3b33493b3162740f1e058c5f955539a51ad36ed6fc8de1b6e44ae9bfde79",
+      "bytes": 400054,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "05_search.png",
+      "sha256": "332ef71a0e8deeaf876b424af4468d6d9c393347ff7e5cf36f1226aa40c373b1",
+      "bytes": 516672,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "06_rock-stations.png",
+      "sha256": "b747c9864bed0530e9973ec6c0ac1e4553f99cb2344e9c88cf605358db0afc1d",
+      "bytes": 1545086,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "07_sleep-timer.png",
+      "sha256": "c913f3b301f117076cfb9a54ca4c236c10a058683fe673964d0f206e698c0031",
+      "bytes": 389416,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "08_favorites.png",
+      "sha256": "4f3760b57a42ef24598b826a735ef54759c710debee718bb7399d57f0b038ab6",
+      "bytes": 365745,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "09_social.png",
+      "sha256": "f80502e8d78bf20d61e4543d3d292045a7be22756c31178256e18a4f5cc7da99",
+      "bytes": 431680,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "vi",
+      "file": "10_recent.png",
+      "sha256": "924aee92c1760d888ee4b7681cda1daae635ddba19b322f285b40759f707a3b3",
+      "bytes": 1394388,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "01_discover.png",
+      "sha256": "fa565fe32f71e830516f8950fdee085593dfd2c79dce458cb57b633c23ad8b88",
+      "bytes": 613002,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "02_player.png",
+      "sha256": "27329e02a150ece8590cb51d8e5fafbe0d444f5704d7cb4c88bac3214cd53558",
+      "bytes": 794473,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "03_genres.png",
+      "sha256": "cc5035f71025dbd460510b8bcaa93191a2d5b5cb62be31370f2ce1a5e4a5b889",
+      "bytes": 1401347,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "04_country.png",
+      "sha256": "34c76af87068e0f210f35a1cc9fcc1c70feb1f402b5326069dc112ab4c4772c4",
+      "bytes": 398243,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "05_search.png",
+      "sha256": "a8b8475a54b28701d7cdb1f5aba2cb475aec7cfd31861a6ee8c8d31cc62fc9ba",
+      "bytes": 521658,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "06_rock-stations.png",
+      "sha256": "2724d874710b3d7c526c3a257a099871fca63787e9f75961e6ac292dfca307ad",
+      "bytes": 1556032,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "07_sleep-timer.png",
+      "sha256": "747efb1fb92113af62266656fe13efb627c65eddfacd56fa9b054de8f62dea22",
+      "bytes": 388215,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "08_favorites.png",
+      "sha256": "aa3be444a40c665325b93b3a354a58563de0eedc58252a8d0a642da496c5c810",
+      "bytes": 369499,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "09_social.png",
+      "sha256": "b6a0768f21b64d91961a2ea8ddcad2b7965f1f04d0123d24315b5e56d437d4d3",
+      "bytes": 431049,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "10_recent.png",
+      "sha256": "2f62622a5b252b96dd9d80b4e4e54a448a7d8fadd11f88ee5ff01d59afec60f1",
+      "bytes": 1397573,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "01_discover.png",
+      "sha256": "d9183cb49b1cfb4a81733ba56ad5f05ea119441f7f82f793409c09a34d55b26f",
+      "bytes": 613732,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "02_player.png",
+      "sha256": "7c0a463b431bf6d89d50fa69556b0bb2cc9243d43e07577b77bea3a9d390d8a3",
+      "bytes": 793894,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "03_genres.png",
+      "sha256": "3d3359d1d4f14a7ef0fe5398f5d83cd80dfcedf4bfe975a06f315d7d0d0db7ff",
+      "bytes": 1402896,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "04_country.png",
+      "sha256": "4cc9156bfbbdd07426a1cb7e8a65f2192e37e151af45e1b5a22471f9353b5108",
+      "bytes": 401803,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "05_search.png",
+      "sha256": "aa0e0ab39111ca69e5a509c74d390df81087be8b93de7a547f8f7c1bdaae4387",
+      "bytes": 529575,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "06_rock-stations.png",
+      "sha256": "c4c9730279dae2b546e54b78825463dcdda2126c7995d1271950a3366529af54",
+      "bytes": 1557514,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "07_sleep-timer.png",
+      "sha256": "d64bb358b99cea02101da22c18351a77813fc07d84c459e2e29f3e39ac736335",
+      "bytes": 390585,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "08_favorites.png",
+      "sha256": "415f62a0462b8c6416d7ba81b05df74493f284f8e635af6a4572de951db924a5",
+      "bytes": 373580,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "09_social.png",
+      "sha256": "4b257c4bdcedfb8b8989a67bc32570b713c5ef6c0146948c4a9e0523238290c4",
+      "bytes": 434284,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "10_recent.png",
+      "sha256": "9a1fa9630ba3e2cc20f3285e7da088c96e09da240006e94b979d860b42a80a91",
+      "bytes": 1400507,
+      "width": 2064,
+      "height": 2752,
+      "mode": "RGB"
+    }
+  ]
+}

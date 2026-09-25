@@ -1,0 +1,36 @@
+{
+  "verifiedAt": "2026-09-25T12:09:27.518187+00:00",
+  "versions": [
+    {
+      "versionId": "1a49d2fc-d7fd-434d-ba5a-50aa4fb217b3",
+      "platform": "MAC_OS",
+      "versionString": "1.0.3",
+      "appStoreState": "WAITING_FOR_REVIEW",
+      "releaseType": "AFTER_APPROVAL",
+      "buildId": "7e6ef871-9f6d-4c6d-9aa2-f511d202f395",
+      "buildVersion": "1.0.3",
+      "buildProcessingState": "VALID"
+    },
+    {
+      "versionId": "a7ee381b-c6c2-4919-9df7-310d906d1565",
+      "platform": "IOS",
+      "versionString": "1.0.70",
+      "appStoreState": "WAITING_FOR_REVIEW",
+      "releaseType": "AFTER_APPROVAL",
+      "buildId": "488189fc-079b-4f9a-b182-13d8fa033d80",
+      "buildVersion": "7",
+      "buildProcessingState": "VALID"
+    },
+    {
+      "versionId": "49d680f3-5b7c-44a5-8b2a-4c761c5a1733",
+      "platform": "TV_OS",
+      "versionString": "1.0.0",
+      "appStoreState": "WAITING_FOR_REVIEW",
+      "releaseType": "AFTER_APPROVAL",
+      "buildId": "a3cd30ab-ed2b-424d-9b2b-099fd4d519be",
+      "buildVersion": "2",
+      "buildProcessingState": "VALID"
+    }
+  ],
+  "submissionMethod": "Existing authenticated Safari account. Existing API key is read/metadata only for review actions; no access role changed."
+}

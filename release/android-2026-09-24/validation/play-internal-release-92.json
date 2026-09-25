@@ -1,0 +1,29 @@
+{
+  "verifiedAt": "2026-09-25T03:54:19.602957+00:00",
+  "package": "com.megaradio",
+  "versionName": "1.0.70",
+  "versionCode": 92,
+  "trackId": "4701199947535348853",
+  "track": "internal testing",
+  "releaseId": "16",
+  "url": "https://play.google.com/console/u/0/developers/7314839518457703103/app/4972640059774211400/tracks/4701199947535348853/releases/16/details",
+  "statusObserved": "Dahili test kullan\u0131c\u0131lar\u0131 taraf\u0131ndan kullan\u0131labilir",
+  "publishedAtConsole": "25 Eyl 05:53",
+  "timezone": "Europe/Vienna",
+  "aabSha256": "9625073d01929eac222a810a738c16ee3fa67c08c9a365793990215f0d32f904",
+  "releaseNotesLocales": 24,
+  "blockingValidationErrors": 0,
+  "warnings": [
+    {
+      "message": "Missing R8/ProGuard deobfuscation mapping",
+      "disposition": "Non-blocking. Release minification is disabled in the current Gradle configuration."
+    }
+  ],
+  "productionPublished": false,
+  "productionBaseline": "1.0.69 (91)",
+  "existingTesterAccessChanged": false,
+  "googleOAuthClientCreated": true,
+  "googleLoginViaPlayVerified": false,
+  "billingViaPlayVerified": false,
+  "oauthRecheckedAt": "2026-09-25T09:31:17.483095+00:00"
+}

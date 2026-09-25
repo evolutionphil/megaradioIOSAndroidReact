@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio online";
+"subtitle" = "Posturi FM și AM în direct";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

@@ -98,14 +98,14 @@ android {
         // MEGARADIO_ADMOB_PLACEHOLDERS: Resolve library manifest placeholders
         manifestPlaceholders += [
             appJSONGoogleMobileAdsAppID: "ca-app-pub-8771434485570434~7427742767",
-            appJSONGoogleMobileAdsDelayAppMeasurementInit: "false",
+            appJSONGoogleMobileAdsDelayAppMeasurementInit: "true",
             appJSONGoogleMobileAdsOptimizeInitialization: "true",
             appJSONGoogleMobileAdsOptimizeAdLoading: "true"
         ]
         applicationId 'com.megaradio'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 92
+        versionCode 95
         versionName "1.0.70"
 
         multiDexEnabled true
@@ -125,9 +125,6 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds
@@ -146,6 +143,8 @@ android {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
 }
+
+apply from: new File(rootProject.projectDir, '../scripts/android-release-signing.gradle')
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
 // Accepts values in comma delimited lists, example:

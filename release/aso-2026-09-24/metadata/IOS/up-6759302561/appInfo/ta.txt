@@ -1,0 +1,3 @@
+"name" = "MegaRadio: தமிழ் வானொலி";
+"subtitle" = "உலக FM, AM நேரலை கேளுங்கள்";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

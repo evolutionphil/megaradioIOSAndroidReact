@@ -1,0 +1,3 @@
+"name" = "MegaRadio: ଲାଇଭ୍ ରେଡିଓ";
+"subtitle" = "ଓଡ଼ିଆ ଓ ବିଶ୍ୱର FM, AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

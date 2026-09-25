@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Canadian Radio";
+"subtitle" = "Live FM, AM & world stations";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

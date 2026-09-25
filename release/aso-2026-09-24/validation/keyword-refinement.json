@@ -1,0 +1,302 @@
+[
+  {
+    "locale": "tr",
+    "before": "dinle,türkçe,online,istasyon,arabesk,türkü,haber,spor,pop,rock,caz,klasik,yerel,favori",
+    "after": "dinle,türkçe,online,istasyon,arabesk,türkü,haber,spor,pop,rock,caz,klasik,yerel,favori,slow,nostalji",
+    "characters": 100
+  },
+  {
+    "locale": "de-DE",
+    "before": "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop",
+    "after": "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop,schlager",
+    "characters": 100
+  },
+  {
+    "locale": "en-US",
+    "before": "internet,online,local,news,talk,sports,jazz,classical,country,pop,rock,favorites,tuner",
+    "after": "internet,online,local,news,talk,sports,jazz,classical,country,pop,rock,favorites,tuner,music,oldies",
+    "characters": 99
+  },
+  {
+    "locale": "fr-FR",
+    "before": "écouter,internet,en ligne,france,locales,actualités,sport,jazz,classique,pop,rock,favoris",
+    "after": "écouter,internet,en ligne,france,locales,actualités,sport,jazz,classique,pop,rock,favoris,chanson",
+    "characters": 97
+  },
+  {
+    "locale": "es-ES",
+    "before": "escuchar,internet,online,españa,local,noticias,deportes,jazz,clásica,pop,rock,favoritos",
+    "after": "escuchar,internet,online,españa,local,noticias,deportes,jazz,clásica,pop,rock,favoritos,música,voz",
+    "characters": 98
+  },
+  {
+    "locale": "it",
+    "before": "ascoltare,internet,online,italia,locali,notizie,sport,jazz,classica,pop,rock,preferiti",
+    "after": "ascoltare,internet,online,italia,locali,notizie,sport,jazz,classica,pop,rock,preferiti,musica,voci",
+    "characters": 98
+  },
+  {
+    "locale": "pt-PT",
+    "before": "ouvir,internet,online,portugal,local,notícias,desporto,jazz,clássica,pop,rock,favoritos",
+    "after": "ouvir,internet,online,portugal,local,notícias,desporto,jazz,clássica,pop,rock,favoritos,fado,música",
+    "characters": 99
+  },
+  {
+    "locale": "ru",
+    "before": "слушать,интернет,россия,мировое,новости,спорт,джаз,классика,поп,рок,избранное",
+    "after": "слушать,интернет,россия,мировое,новости,спорт,джаз,классика,поп,рок,избранное,музыка,ретро,каналы",
+    "characters": 97
+  },
+  {
+    "locale": "ja",
+    "before": "インターネット,ネットラジオ,放送局,オンライン,ニュース,スポーツ,ジャズ,クラシック,ポップ,ロック,お気に入り",
+    "after": "インターネット,ネットラジオ,放送局,オンライン,ニュース,スポーツ,ジャズ,クラシック,ポップ,ロック,お気に入り,音楽,洋楽,邦楽,トーク,選局,生放送,海外,番組,インディー,電子音楽",
+    "characters": 95
+  },
+  {
+    "locale": "zh-Hant",
+    "before": "線上,收音機,直播,新聞,體育,爵士,古典,流行,搖滾,音樂台,最愛,頻道,國際",
+    "after": "線上,收音機,直播,新聞,體育,爵士,古典,流行,搖滾,音樂台,最愛,頻道,國際,華語,粵語,歌曲,談話,節目,演唱者,電子,放鬆,懷舊,本地,搖滾樂,音訊,選台,直播收音機",
+    "characters": 87
+  },
+  {
+    "locale": "he",
+    "before": "האזנה,אינטרנט,אונליין,ישראל,חדשות,ספורט,ג׳אז,קלאסי,פופ,רוק,מועדפים",
+    "after": "האזנה,אינטרנט,אונליין,ישראל,חדשות,ספורט,ג׳אז,קלאסי,פופ,רוק,מועדפים,מוזיקה,שירים,תוכניות,ערוצים",
+    "characters": 94
+  },
+  {
+    "locale": "ar-SA",
+    "before": "استماع,إذاعة,انترنت,عربي,السعودية,أخبار,رياضة,جاز,كلاسيك,بوب,روك,مفضلة",
+    "after": "استماع,إذاعة,انترنت,عربي,السعودية,أخبار,رياضة,جاز,كلاسيك,بوب,روك,مفضلة,موسيقى,أغاني,طرب,برامج,محلي",
+    "characters": 98
+  },
+  {
+    "locale": "en-GB",
+    "before": "internet,online,uk,british,local,news,sport,talk,jazz,classical,indie,rock,favourites",
+    "after": "internet,online,uk,british,local,news,sport,talk,jazz,classical,indie,rock,favourites,music,oldies",
+    "characters": 98
+  },
+  {
+    "locale": "en-AU",
+    "before": "listen,internet,online,stations,local,news,sport,talk,jazz,country,rock,pop,favourites",
+    "after": "listen,internet,online,stations,local,news,sport,talk,jazz,country,rock,pop,favourites,music,oldies",
+    "characters": 99
+  },
+  {
+    "locale": "fr-CA",
+    "before": "écouter,fm,am,internet,en ligne,canada,francophone,nouvelles,sports,jazz,country,favoris",
+    "after": "écouter,fm,am,internet,en ligne,canada,francophone,nouvelles,sports,jazz,country,favoris,musique,pop",
+    "characters": 100
+  },
+  {
+    "locale": "es-MX",
+    "before": "escuchar,fm,am,internet,online,estaciones,noticias,deportes,regional,banda,pop,favoritos",
+    "after": "escuchar,fm,am,internet,online,estaciones,noticias,deportes,regional,banda,pop,favoritos,ranchera",
+    "characters": 97
+  },
+  {
+    "locale": "pt-BR",
+    "before": "ouvir,online,internet,brasil,sertanejo,gospel,pagode,samba,notícias,esportes,favoritos",
+    "after": "ouvir,online,internet,brasil,sertanejo,gospel,pagode,samba,notícias,esportes,favoritos,mpb,música",
+    "characters": 97
+  },
+  {
+    "locale": "nl-NL",
+    "before": "internetradio,online,nederland,belgië,vlaams,lokaal,nieuws,sport,jazz,klassiek,favorieten",
+    "after": "internetradio,online,nederland,belgië,vlaams,lokaal,nieuws,sport,jazz,klassiek,favorieten,muziek,pop",
+    "characters": 100
+  },
+  {
+    "locale": "sv",
+    "before": "lyssna,nätradio,fm,am,online,lokalt,sport,jazz,klassisk,pop,rock,favoriter",
+    "after": "lyssna,nätradio,fm,am,online,lokalt,sport,jazz,klassisk,pop,rock,favoriter,dansband,retro,kanaler",
+    "characters": 97
+  },
+  {
+    "locale": "no",
+    "before": "nettradio,norsk,norge,online,lokal,nyheter,sport,jazz,klassisk,pop,rock,favoritter",
+    "after": "norsk,norge,online,lokal,nyheter,sport,jazz,klassisk,pop,rock,favoritter,retro,country,lytt",
+    "characters": 91
+  },
+  {
+    "locale": "da",
+    "before": "lyt,webradio,fm,am,danmark,online,lokal,nyheder,sport,jazz,klassisk,pop,favoritter",
+    "after": "lyt,webradio,fm,am,danmark,online,lokal,nyheder,sport,jazz,klassisk,pop,favoritter,rock,musik,retro",
+    "characters": 99
+  },
+  {
+    "locale": "fi",
+    "before": "suomi,fm,am,verkkoradio,suorat,kanavat,uutiset,urheilu,jazz,klassinen,pop,rock,suosikit",
+    "after": "suomi,fm,am,verkkoradio,suorat,kanavat,uutiset,urheilu,jazz,klassinen,pop,rock,suosikit,iskelmä",
+    "characters": 95
+  },
+  {
+    "locale": "pl",
+    "before": "słuchaj,online,polska,polskie,lokalne,wiadomości,sport,jazz,klasyka,pop,rock,ulubione",
+    "after": "słuchaj,online,polska,polskie,lokalne,wiadomości,sport,jazz,klasyka,pop,rock,ulubione,muzyka,retro",
+    "characters": 98
+  },
+  {
+    "locale": "cs",
+    "before": "poslech,internetové,české,česko,svět,zprávy,sport,jazz,klasika,pop,rock,oblíbené",
+    "after": "poslech,internetové,české,česko,svět,zprávy,sport,jazz,klasika,pop,rock,oblíbené,hudba,retro,folk",
+    "characters": 97
+  },
+  {
+    "locale": "sk",
+    "before": "počúvať,internetové,slovensko,slovenské,svet,správy,šport,jazz,klasika,pop,rock,obľúbené",
+    "after": "počúvať,internetové,slovensko,slovenské,svet,správy,šport,jazz,klasika,pop,rock,obľúbené,hudba,folk",
+    "characters": 99
+  },
+  {
+    "locale": "hu",
+    "before": "hallgatás,internetes,magyar,magyarország,hírek,sport,jazz,klasszikus,pop,rock,kedvencek",
+    "after": "hallgatás,internetes,magyar,magyarország,hírek,sport,jazz,klasszikus,pop,rock,kedvencek,zene,retro",
+    "characters": 98
+  },
+  {
+    "locale": "ro",
+    "before": "ascultă,internet,românia,românesc,știri,sport,populară,dance,jazz,rock,favorite",
+    "after": "ascultă,internet,românia,românesc,știri,sport,populară,dance,jazz,rock,favorite,muzică,pop,clasică",
+    "characters": 98
+  },
+  {
+    "locale": "hr",
+    "before": "slušaj,internet,online,hrvatska,domaće,vijesti,sport,jazz,klasika,pop,rock,omiljene",
+    "after": "slušaj,internet,online,hrvatska,domaće,vijesti,sport,jazz,klasika,pop,rock,omiljene,glazba,pjesme",
+    "characters": 97
+  },
+  {
+    "locale": "el",
+    "before": "ακούστε,ίντερνετ,online,ελλάδα,ελληνικά,νέα,αθλητικά,λαϊκά,τζαζ,ροκ,αγαπημένα",
+    "after": "ακούστε,ίντερνετ,online,ελλάδα,ελληνικά,νέα,αθλητικά,λαϊκά,τζαζ,ροκ,αγαπημένα,έντεχνα,μουσική,ποπ",
+    "characters": 97
+  },
+  {
+    "locale": "uk",
+    "before": "слухати,інтернет,україна,українське,новини,спорт,джаз,класика,поп,рок,обране",
+    "after": "слухати,інтернет,україна,українське,новини,спорт,джаз,класика,поп,рок,обране,музика,народна,пісні",
+    "characters": 97
+  },
+  {
+    "locale": "ca",
+    "before": "escoltar,internet,online,català,catalunya,notícies,esports,jazz,clàssica,pop,rock,preferits",
+    "after": "escoltar,internet,online,català,catalunya,notícies,esports,jazz,clàssica,pop,rock,preferits,música",
+    "characters": 98
+  },
+  {
+    "locale": "zh-Hans",
+    "before": "网络收音机,互联网,中文,新闻,体育,爵士,古典,流行,摇滚,收藏,频道,国际,音乐台",
+    "after": "网络收音机,互联网,中文,新闻,体育,爵士,古典,流行,摇滚,收藏,频道,国际,音乐台,歌曲,音乐,谈话,节目,歌手,电子,怀旧,本地,国际广播,选台,音频,华语,外语,直播收音机",
+    "characters": 90
+  },
+  {
+    "locale": "ko",
+    "before": "인터넷,온라인,방송국,뉴스,스포츠,재즈,클래식,팝,록,즐겨찾기,음악방송,해외",
+    "after": "인터넷,온라인,방송국,뉴스,스포츠,재즈,클래식,팝,록,즐겨찾기,음악방송,해외,음악,노래,채널,청취,토크,아티스트,선곡,생방송,현지,국제,록음악,전자음악",
+    "characters": 84
+  },
+  {
+    "locale": "id",
+    "before": "indonesia,lokal,internet,berita,olahraga,dangdut,pop,jazz,rock,favorit,stasiun",
+    "after": "indonesia,lokal,internet,berita,olahraga,dangdut,pop,jazz,rock,favorit,stasiun,musik,lagu,klasik",
+    "characters": 96
+  },
+  {
+    "locale": "ms",
+    "before": "dengar,internet,malaysia,melayu,stesen,tempatan,berita,sukan,pop,jazz,rock,kegemaran",
+    "after": "dengar,internet,malaysia,melayu,stesen,tempatan,berita,sukan,pop,jazz,rock,kegemaran,muzik,lagu",
+    "characters": 95
+  },
+  {
+    "locale": "th",
+    "before": "สถานี,ไทย,อินเทอร์เน็ต,ข่าว,กีฬา,ลูกทุ่ง,ป๊อป,แจ๊ส,คลาสสิก,รายการโปรด",
+    "after": "สถานี,ไทย,อินเทอร์เน็ต,ข่าว,กีฬา,ลูกทุ่ง,ป๊อป,แจ๊ส,คลาสสิก,รายการโปรด,เพลง,ลูกกรุง,หมอลำ,ดนตรี,ช่อง",
+    "characters": 99
+  },
+  {
+    "locale": "vi",
+    "before": "phát thanh,internet,việt nam,tin tức,thể thao,nhạc trẻ,trữ tình,jazz,yêu thích",
+    "after": "phát thanh,internet,việt nam,tin tức,thể thao,nhạc trẻ,trữ tình,jazz,yêu thích,âm nhạc,ca khúc,kênh",
+    "characters": 99
+  },
+  {
+    "locale": "hi",
+    "before": "सुनें,ऑनलाइन,इंटरनेट,हिंदी,स्टेशन,समाचार,खेल,गाने,बॉलीवुड,भक्ति,पसंदीदा",
+    "after": "सुनें,ऑनलाइन,इंटरनेट,हिंदी,स्टेशन,समाचार,खेल,गाने,बॉलीवुड,भक्ति,पसंदीदा,संगीत,शास्त्रीय,लोकगीत",
+    "characters": 94
+  },
+  {
+    "locale": "en-CA",
+    "before": "listen,internet,online,stations,local,news,sports,talk,jazz,country,rock,favourites",
+    "after": "listen,internet,online,local,news,sports,talk,jazz,country,rock,favourites,music,canada,indie,oldies",
+    "characters": 100
+  },
+  {
+    "locale": "bn",
+    "before": "অনলাইন,ইন্টারনেট,স্টেশন,খবর,খেলা,গান,সংগীত,পছন্দের,বাংলাদেশ,ভারত",
+    "after": "অনলাইন,ইন্টারনেট,স্টেশন,খবর,খেলা,গান,সংগীত,পছন্দের,বাংলাদেশ,ভারত,লোকগান,শাস্ত্রীয়,সম্প্রচার,শিল্পী",
+    "characters": 99
+  },
+  {
+    "locale": "gu",
+    "before": "સાંભળો,ઓનલાઇન,ઇન્ટરનેટ,સ્ટેશન,સમાચાર,રમત,ગીત,ગુજરાત,મનપસંદ",
+    "after": "સાંભળો,ઓનલાઇન,ઇન્ટરનેટ,સ્ટેશન,સમાચાર,રમત,ગીત,ગુજરાત,મનપસંદ,સંગીત,લોકગીત,શાસ્ત્રીય,પ્રસારણ",
+    "characters": 89
+  },
+  {
+    "locale": "kn",
+    "before": "ಕೇಳಿ,ಆನ್‌ಲೈನ್,ಇಂಟರ್ನೆಟ್,ನಿಲ್ದಾಣ,ಸುದ್ದಿ,ಕ್ರೀಡೆ,ಹಾಡು,ಕರ್ನಾಟಕ,ನೆಚ್ಚಿನ",
+    "after": "ಕೇಳಿ,ಆನ್‌ಲೈನ್,ಇಂಟರ್ನೆಟ್,ನಿಲ್ದಾಣ,ಸುದ್ದಿ,ಕ್ರೀಡೆ,ಹಾಡು,ಕರ್ನಾಟಕ,ನೆಚ್ಚಿನ,ಸಂಗೀತ,ಜನಪದ,ಶಾಸ್ತ್ರೀಯ,ಪ್ರಸಾರ",
+    "characters": 94
+  },
+  {
+    "locale": "ml",
+    "before": "കേൾക്കൂ,ഓൺലൈൻ,ഇന്റർനെറ്റ്,നിലയം,വാർത്ത,കായികം,പാട്ട്,കേരളം,പ്രിയപ്പെട്ടവ",
+    "after": "കേൾക്കൂ,ഓൺലൈൻ,ഇന്റർനെറ്റ്,നിലയം,വാർത്ത,കായികം,പാട്ട്,കേരളം,പ്രിയപ്പെട്ടവ,സംഗീതം,നാടൻപാട്ട്",
+    "characters": 90
+  },
+  {
+    "locale": "mr",
+    "before": "ऐका,ऑनलाइन,इंटरनेट,केंद्र,बातम्या,क्रीडा,गाणी,महाराष्ट्र,आवडते",
+    "after": "ऐका,ऑनलाइन,इंटरनेट,केंद्र,बातम्या,क्रीडा,गाणी,महाराष्ट्र,आवडते,संगीत,लोकगीत,शास्त्रीय,प्रसारण",
+    "characters": 93
+  },
+  {
+    "locale": "or",
+    "before": "ଶୁଣନ୍ତୁ,ଅନଲାଇନ୍,ଇଣ୍ଟରନେଟ୍,ଷ୍ଟେସନ୍,ଖବର,କ୍ରୀଡ଼ା,ଗୀତ,ଓଡ଼ିଶା,ପସନ୍ଦ",
+    "after": "ଶୁଣନ୍ତୁ,ଅନଲାଇନ୍,ଇଣ୍ଟରନେଟ୍,ଷ୍ଟେସନ୍,ଖବର,କ୍ରୀଡ଼ା,ଗୀତ,ଓଡ଼ିଶା,ପସନ୍ଦ,ସଙ୍ଗୀତ,ଲୋକଗୀତ,ଶାସ୍ତ୍ରୀୟ,ପ୍ରସାରଣ",
+    "characters": 94
+  },
+  {
+    "locale": "pa",
+    "before": "ਸੁਣੋ,ਆਨਲਾਈਨ,ਇੰਟਰਨੈੱਟ,ਸਟੇਸ਼ਨ,ਖ਼ਬਰਾਂ,ਖੇਡਾਂ,ਗੀਤ,ਪੰਜਾਬ,ਮਨਪਸੰਦ",
+    "after": "ਸੁਣੋ,ਆਨਲਾਈਨ,ਇੰਟਰਨੈੱਟ,ਸਟੇਸ਼ਨ,ਖ਼ਬਰਾਂ,ਖੇਡਾਂ,ਗੀਤ,ਪੰਜਾਬ,ਮਨਪਸੰਦ,ਸੰਗੀਤ,ਲੋਕਗੀਤ,ਪ੍ਰਸਾਰਣ,ਕਲਾਕਾਰ",
+    "characters": 85
+  },
+  {
+    "locale": "ta",
+    "before": "ரேடியோ,ஆன்லைன்,இணையம்,நிலையம்,செய்தி,விளையாட்டு,பாடல்,பிடித்தவை",
+    "after": "ரேடியோ,ஆன்லைன்,இணையம்,நிலையம்,செய்தி,விளையாட்டு,பாடல்,பிடித்தவை,இசை,தமிழகம்,நாட்டுப்புறம்,கலைஞர்",
+    "characters": 96
+  },
+  {
+    "locale": "te",
+    "before": "ఆన్‌లైన్,ఇంటర్నెట్,స్టేషన్,వార్తలు,క్రీడలు,పాటలు,ఇష్టమైనవి,సంగీతం",
+    "after": "ఆన్‌లైన్,ఇంటర్నెట్,స్టేషన్,వార్తలు,క్రీడలు,పాటలు,ఇష్టమైనవి,సంగీతం,జానపదం,కళాకారుడు,ప్రసారం,శాస్త్రీయ",
+    "characters": 100
+  },
+  {
+    "locale": "ur",
+    "before": "آن لائن,انٹرنیٹ,اسٹیشن,پاکستان,خبریں,کھیل,گانے,پسندیدہ,نشریات",
+    "after": "آن لائن,انٹرنیٹ,اسٹیشن,پاکستان,خبریں,کھیل,گانے,پسندیدہ,نشریات,موسیقی,غزل,لوک,فنکار,پروگرام",
+    "characters": 90
+  },
+  {
+    "locale": "sl",
+    "before": "poslušaj,spletni,internet,slovenija,slovenski,novice,šport,jazz,klasika,pop,priljubljene",
+    "after": "poslušaj,spletni,internet,slovenija,slovenski,novice,šport,jazz,klasika,pop,priljubljene,glasba,rock",
+    "characters": 100
+  }
+]

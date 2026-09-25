@@ -1,0 +1,3 @@
+"name" = "MegaRadio: বিশ্ব রেডিও শুনুন";
+"subtitle" = "বাংলা ও বিশ্বের রেডিও শুনুন";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

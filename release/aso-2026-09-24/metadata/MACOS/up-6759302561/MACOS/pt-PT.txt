@@ -1,0 +1,27 @@
+"promotionalText" = "A tua rádio de Portugal e novas descobertas: ouve em direto, explora estações por país ou género musical e guarda as favoritas para a próxima escuta.";
+"description" = "Ouve rádio em direto com a MegaRadio: encontra estações de Portugal, explora emissoras FM e AM pela internet e descobre música, notícias e desporto de outros países. Escolhe por nome, país ou género e guarda as tuas favoritas.
+
+DA MANHÃ AO FIM DO DIA
+Começa com as notícias, acompanha o trabalho com música ou escolhe uma conversa para o serão. Ao selecionar Portugal, tens um ponto de partida para encontrar vozes familiares. Se estás no estrangeiro, procura a emissão online de uma estação que conheces. Para mudar de ambiente, explora outro país e o seu ritmo de rádio.
+
+DÁ ESPAÇO A OUTROS ESTILOS
+Pop, rock, fado, jazz, clássica e música eletrónica são caminhos para descobrir o catálogo quando esses géneros estão disponíveis. Cada emissora prepara a sua programação e pode apresentar-te músicas fora das tuas listas habituais. Também há estações orientadas para notícias, entrevistas e desporto; a emissão concreta depende sempre da grelha da rádio.
+
+UMA SELEÇÃO FEITA POR TI
+Adiciona aos favoritos as estações que queres voltar a ouvir. Junta a rádio do pequeno-almoço, a música para trabalhar e algumas descobertas para o fim de semana. Assim, não precisas de repetir a pesquisa nem de decorar todos os nomes de cada vez que abres a aplicação.
+
+SABER O QUE ESTÁS A OUVIR
+No leitor, inicia ou coloca a emissão em pausa e consulta os dados disponibilizados pela estação. Os títulos e artistas aparecem quando o fluxo inclui essa informação. FM e AM identificam as rádios com emissão online; não representam receção sem internet através de uma antena. A disponibilidade pode variar com a localização e com o próprio emissor.
+
+COMPRAS OPCIONAIS
+Existem compras integradas na aplicação. As funcionalidades, a duração e o preço de cada opção são apresentados antes da compra. Remover anúncios da aplicação não remove a publicidade transmitida pela estação. Gere as subscrições da Apple na tua conta Apple e usa a opção de restauro para verificar compras anteriores.
+
+É necessária uma ligação à internet. Podem aplicar-se custos de dados móveis. A disponibilidade das emissões e da informação das músicas depende da estação e da região. A MegaRadio é um diretório; os conteúdos são fornecidos pelas respetivas estações.
+
+Ouça rádio no Mac enquanto trabalha ou descansa.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ouvir,internet,online,portugal,local,notícias,desporto,jazz,clássica,pop,rock,favoritos,fado,música";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

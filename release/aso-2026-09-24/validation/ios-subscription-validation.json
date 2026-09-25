@@ -1,0 +1,39 @@
+{
+  "tests": 79,
+  "passed": 79,
+  "failed": 0,
+  "mobileTypeDiagnostics": {
+    "previous": 44,
+    "current": 42,
+    "new": []
+  },
+  "simulator": {
+    "device": "iPad Pro 13-inch (M5), iOS 26.4",
+    "reviewAccountEmailLogin": "passed",
+    "premiumActiveProfile": "passed",
+    "goPremiumHidden": "passed",
+    "removeAdsHidden": "passed",
+    "rewardedAdOfferHidden": "passed",
+    "afterTerminateAndRelaunch": "same verified Premium status; purchase offers still hidden",
+    "guestRestore": "requires account sign-in"
+  },
+  "limits": [
+    "Physical Apple/Google sign-in and active Premium UI confirmed by the user on build 6; no screen mirroring was available.",
+    "No new paid subscription was purchased during this run; receipt/error/timeout paths have automated tests."
+  ],
+  "physicalDevice": {
+    "model": "iPhone 13 Pro Max",
+    "osVersion": "26.6.1",
+    "installedVersion": "1.0.70",
+    "installedBuild": "6",
+    "installation": "succeeded",
+    "launch": "succeeded",
+    "interactiveResults": {
+      "reportedBy": "user",
+      "premiumActive": true,
+      "purchaseOffersHidden": true,
+      "appleSignIn": "passed",
+      "googleSignIn": "passed"
+    }
+  }
+}

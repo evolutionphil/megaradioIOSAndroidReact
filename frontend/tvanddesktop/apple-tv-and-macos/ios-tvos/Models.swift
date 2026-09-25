@@ -4,6 +4,24 @@
 
 import Foundation
 
+/// The live endpoint returns a flat payload; older deployments wrap it in `metadata`.
+struct NowPlayingMetadata: Decodable {
+    let title: String?
+    let artist: String?
+    private enum CodingKeys: String, CodingKey { case title, artist, metadata }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let values = try container.decodeIfPresent(NowPlayingMetadata.self, forKey: .metadata)
+        func clean(_ text: String?) -> String? {
+            guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else { return nil }
+            return text
+        }
+        title = clean(try values?.title ?? container.decodeIfPresent(String.self, forKey: .title))
+        artist = clean(try values?.artist ?? container.decodeIfPresent(String.self, forKey: .artist))
+    }
+}
+
 struct Station: Codable, Identifiable, Hashable {
     let id: String
     let name: String
@@ -11,7 +29,9 @@ struct Station: Codable, Identifiable, Hashable {
     let urlResolved: String?
     let favicon: String?
     let country: String?
-    let countryCode: String?
+    private let apiCountryCode: String?
+    private let legacyCountryCode: String?
+    var countryCode: String? { apiCountryCode ?? legacyCountryCode }
     let tags: String?
     let bitrate: Int?
     let codec: String?
@@ -21,7 +41,8 @@ struct Station: Codable, Identifiable, Hashable {
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case name, url, urlResolved, favicon, country, tags
-        case countryCode = "countrycode"
+        case apiCountryCode = "countryCode"
+        case legacyCountryCode = "countrycode"
         case bitrate, codec, votes, homepage
     }
 

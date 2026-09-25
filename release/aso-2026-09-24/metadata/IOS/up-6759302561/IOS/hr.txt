@@ -1,0 +1,29 @@
+"promotionalText" = "Hrvatske postaje i novi zvukovi iz svijeta: slušajte radio uživo, istražite glazbene žanrove i spremite postaje kojima se želite vratiti.";
+"description" = "Slušajte radio uživo uz MegaRadio. Pronađite hrvatske radijske postaje na internetu, istražite FM i AM postaje iz drugih zemalja te odaberite glazbu, vijesti ili razgovorne emisije. Pretražujte po nazivu i spremite omiljene postaje.
+
+RADIO KROZ VAŠ DAN
+Vijesti uz doručak, glazba dok radite ili razgovor za mirnu večer: odaberite postaju koja odgovara trenutku. Počnite od Hrvatske u odabiru zemlje. Ako živite u inozemstvu, potražite internetsko emitiranje poznate domaće postaje. Promjena zemlje otvara i druge jezike, glazbu i lokalne perspektive.
+
+OD DOMAĆE GLAZBE DO NOVIH ŽANROVA
+Istražite pop, rock, zabavnu glazbu, jazz, klasiku i druge kategorije dostupne u katalogu. Postaja sama bira glazbu i emisije, pa ne morate slagati popis svake pjesme. Voditelji i program uživo mogu vas dovesti do nečega što još niste čuli. Ponuda vijesti, sporta i žanrova ovisi o zemlji i nakladniku.
+
+SPREMITE ONO ŠTO VAM SE SVIĐA
+Dodajte postaje u favorite čim poželite ponovno slušati njihov program. Okupite jutarnje informacije, glazbu za rad i nova otkrića za vikend. Tako se možete vratiti bez pamćenja svakog naziva ili ponavljanja pretrage.
+
+KAKO RADI MREŽNO SLUŠANJE
+Pokrenite ili zaustavite reprodukciju u playeru. Podaci o izvođaču i pjesmi prikazuju se kada ih postaja šalje. FM i AM ovdje označavaju internetske prijenose postaja, a ne prijam antenom bez internetske veze. Dostupnost prijenosa može ovisiti o lokaciji i samoj postaji.
+
+NEOBAVEZNE KUPNJE
+Aplikacija nudi neobavezne kupnje. Pogodnosti, trajanje i cijena prikazuju se prije kupnje. Uklanjanje oglasa aplikacije ne uklanja reklame u radijskom programu. Apple pretplatama upravljate u Apple računu, a postojeće kupnje možete obnoviti u aplikaciji.
+
+Potrebna je internetska veza. Mogući su troškovi mobilnih podataka. Dostupnost prijenosa i podataka o pjesmama ovisi o postaji i regiji. MegaRadio je imenik; sadržaj pružaju postaje.
+
+NA IPHONEU I IPADU
+Slušajte u pozadini i upravljajte reprodukcijom sa zaključanog zaslona. Postavite mjerač vremena za kasnije zaustavljanje. Način za automobil ima veće tipke. Odaberite postaju prije vožnje i pratite promet.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "slušaj,internet,online,hrvatska,domaće,vijesti,sport,jazz,klasika,pop,rock,omiljene,glazba,pjesme";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Poboljšani su žanrovi, slike postaja i nedavna slušanja. Pouzdanija prijava, promjena računa i obnova pretplata.";

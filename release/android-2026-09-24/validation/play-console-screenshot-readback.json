@@ -1,0 +1,1078 @@
+{
+  "verified": [
+    {
+      "locale": "en-US",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-en-US-phone-01-country.png",
+          "MegaRadio-en-US-phone-02-discover.png",
+          "MegaRadio-en-US-phone-03-player.png",
+          "MegaRadio-en-US-phone-04-genres.png",
+          "MegaRadio-en-US-phone-05-car.png",
+          "MegaRadio-en-US-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "en-US"
+    },
+    {
+      "locale": "tr-TR",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-tr-TR-phone-01-country.png",
+          "MegaRadio-tr-TR-phone-02-discover.png",
+          "MegaRadio-tr-TR-phone-03-player.png",
+          "MegaRadio-tr-TR-phone-04-genres.png",
+          "MegaRadio-tr-TR-phone-05-car.png",
+          "MegaRadio-tr-TR-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "tr-TR"
+    },
+    {
+      "locale": "de-DE",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-de-DE-phone-01-country.png",
+          "MegaRadio-de-DE-phone-02-discover.png",
+          "MegaRadio-de-DE-phone-03-player.png",
+          "MegaRadio-de-DE-phone-04-genres.png",
+          "MegaRadio-de-DE-phone-05-car.png",
+          "MegaRadio-de-DE-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "de-DE"
+    },
+    {
+      "locale": "fr-FR",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-fr-FR-phone-01-country.png",
+          "MegaRadio-fr-FR-phone-02-discover.png",
+          "MegaRadio-fr-FR-phone-03-player.png",
+          "MegaRadio-fr-FR-phone-04-genres.png",
+          "MegaRadio-fr-FR-phone-05-car.png",
+          "MegaRadio-fr-FR-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "fr-FR"
+    },
+    {
+      "locale": "es-ES",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-es-ES-phone-01-country.png",
+          "MegaRadio-es-ES-phone-02-discover.png",
+          "MegaRadio-es-ES-phone-03-player.png",
+          "MegaRadio-es-ES-phone-04-genres.png",
+          "MegaRadio-es-ES-phone-05-car.png",
+          "MegaRadio-es-ES-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "es-ES"
+    },
+    {
+      "locale": "it-IT",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-it-IT-phone-01-country.png",
+          "MegaRadio-it-IT-phone-02-discover.png",
+          "MegaRadio-it-IT-phone-03-player.png",
+          "MegaRadio-it-IT-phone-04-genres.png",
+          "MegaRadio-it-IT-phone-05-car.png",
+          "MegaRadio-it-IT-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "it-IT"
+    },
+    {
+      "locale": "pt-BR",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-pt-BR-phone-01-country.png",
+          "MegaRadio-pt-BR-phone-02-discover.png",
+          "MegaRadio-pt-BR-phone-03-player.png",
+          "MegaRadio-pt-BR-phone-04-genres.png",
+          "MegaRadio-pt-BR-phone-05-car.png",
+          "MegaRadio-pt-BR-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "pt-BR"
+    },
+    {
+      "locale": "pt-PT",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-pt-PT-phone-01-country.png",
+          "MegaRadio-pt-PT-phone-02-discover.png",
+          "MegaRadio-pt-PT-phone-03-player.png",
+          "MegaRadio-pt-PT-phone-04-genres.png",
+          "MegaRadio-pt-PT-phone-05-car.png",
+          "MegaRadio-pt-PT-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "pt-PT"
+    },
+    {
+      "locale": "en-GB",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-en-GB-phone-01-country.png",
+          "MegaRadio-en-GB-phone-02-discover.png",
+          "MegaRadio-en-GB-phone-03-player.png",
+          "MegaRadio-en-GB-phone-04-genres.png",
+          "MegaRadio-en-GB-phone-05-car.png",
+          "MegaRadio-en-GB-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "en-GB"
+    },
+    {
+      "locale": "en-AU",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-en-AU-phone-01-country.png",
+          "MegaRadio-en-AU-phone-02-discover.png",
+          "MegaRadio-en-AU-phone-03-player.png",
+          "MegaRadio-en-AU-phone-04-genres.png",
+          "MegaRadio-en-AU-phone-05-car.png",
+          "MegaRadio-en-AU-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "en-AU"
+    },
+    {
+      "locale": "en-CA",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-en-CA-phone-01-country.png",
+          "MegaRadio-en-CA-phone-02-discover.png",
+          "MegaRadio-en-CA-phone-03-player.png",
+          "MegaRadio-en-CA-phone-04-genres.png",
+          "MegaRadio-en-CA-phone-05-car.png",
+          "MegaRadio-en-CA-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "en-CA"
+    },
+    {
+      "locale": "fr-CA",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-fr-CA-phone-01-country.png",
+          "MegaRadio-fr-CA-phone-02-discover.png",
+          "MegaRadio-fr-CA-phone-03-player.png",
+          "MegaRadio-fr-CA-phone-04-genres.png",
+          "MegaRadio-fr-CA-phone-05-car.png",
+          "MegaRadio-fr-CA-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "fr-CA"
+    },
+    {
+      "locale": "es-419",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-es-419-phone-01-country.png",
+          "MegaRadio-es-419-phone-02-discover.png",
+          "MegaRadio-es-419-phone-03-player.png",
+          "MegaRadio-es-419-phone-04-genres.png",
+          "MegaRadio-es-419-phone-05-car.png",
+          "MegaRadio-es-419-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "es-419"
+    },
+    {
+      "locale": "nl-NL",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-nl-NL-phone-01-country.png",
+          "MegaRadio-nl-NL-phone-02-discover.png",
+          "MegaRadio-nl-NL-phone-03-player.png",
+          "MegaRadio-nl-NL-phone-04-genres.png",
+          "MegaRadio-nl-NL-phone-05-car.png",
+          "MegaRadio-nl-NL-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "nl-NL"
+    },
+    {
+      "locale": "pl-PL",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-pl-PL-phone-01-country.png",
+          "MegaRadio-pl-PL-phone-02-discover.png",
+          "MegaRadio-pl-PL-phone-03-player.png",
+          "MegaRadio-pl-PL-phone-04-genres.png",
+          "MegaRadio-pl-PL-phone-05-car.png",
+          "MegaRadio-pl-PL-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "pl-PL"
+    },
+    {
+      "locale": "sv-SE",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-sv-SE-phone-01-country.png",
+          "MegaRadio-sv-SE-phone-02-discover.png",
+          "MegaRadio-sv-SE-phone-03-player.png",
+          "MegaRadio-sv-SE-phone-04-genres.png",
+          "MegaRadio-sv-SE-phone-05-car.png",
+          "MegaRadio-sv-SE-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "sv-SE"
+    },
+    {
+      "locale": "da-DK",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-da-DK-phone-01-country.png",
+          "MegaRadio-da-DK-phone-02-discover.png",
+          "MegaRadio-da-DK-phone-03-player.png",
+          "MegaRadio-da-DK-phone-04-genres.png",
+          "MegaRadio-da-DK-phone-05-car.png",
+          "MegaRadio-da-DK-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      },
+      "consoleLocale": "da-DK"
+    },
+    {
+      "locale": "no-NO",
+      "consoleLocale": "no-NO",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-no-NO-phone-01-country.png",
+          "MegaRadio-no-NO-phone-02-discover.png",
+          "MegaRadio-no-NO-phone-03-player.png",
+          "MegaRadio-no-NO-phone-04-genres.png",
+          "MegaRadio-no-NO-phone-05-car.png",
+          "MegaRadio-no-NO-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "fi-FI",
+      "consoleLocale": "fi-FI",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-fi-FI-phone-01-country.png",
+          "MegaRadio-fi-FI-phone-02-discover.png",
+          "MegaRadio-fi-FI-phone-03-player.png",
+          "MegaRadio-fi-FI-phone-04-genres.png",
+          "MegaRadio-fi-FI-phone-05-car.png",
+          "MegaRadio-fi-FI-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "cs-CZ",
+      "consoleLocale": "cs-CZ",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-cs-CZ-phone-01-country.png",
+          "MegaRadio-cs-CZ-phone-02-discover.png",
+          "MegaRadio-cs-CZ-phone-03-player.png",
+          "MegaRadio-cs-CZ-phone-04-genres.png",
+          "MegaRadio-cs-CZ-phone-05-car.png",
+          "MegaRadio-cs-CZ-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "sk-SK",
+      "consoleLocale": "sk",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-sk-SK-phone-01-country.png",
+          "MegaRadio-sk-SK-phone-02-discover.png",
+          "MegaRadio-sk-SK-phone-03-player.png",
+          "MegaRadio-sk-SK-phone-04-genres.png",
+          "MegaRadio-sk-SK-phone-05-car.png",
+          "MegaRadio-sk-SK-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "hu-HU",
+      "consoleLocale": "hu-HU",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-hu-HU-phone-01-country.png",
+          "MegaRadio-hu-HU-phone-02-discover.png",
+          "MegaRadio-hu-HU-phone-03-player.png",
+          "MegaRadio-hu-HU-phone-04-genres.png",
+          "MegaRadio-hu-HU-phone-05-car.png",
+          "MegaRadio-hu-HU-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ro-RO",
+      "consoleLocale": "ro",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ro-RO-phone-01-country.png",
+          "MegaRadio-ro-RO-phone-02-discover.png",
+          "MegaRadio-ro-RO-phone-03-player.png",
+          "MegaRadio-ro-RO-phone-04-genres.png",
+          "MegaRadio-ro-RO-phone-05-car.png",
+          "MegaRadio-ro-RO-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "hr-HR",
+      "consoleLocale": "hr",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-hr-HR-phone-01-country.png",
+          "MegaRadio-hr-HR-phone-02-discover.png",
+          "MegaRadio-hr-HR-phone-03-player.png",
+          "MegaRadio-hr-HR-phone-04-genres.png",
+          "MegaRadio-hr-HR-phone-05-car.png",
+          "MegaRadio-hr-HR-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "sl-SI",
+      "consoleLocale": "sl",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-sl-SI-phone-01-country.png",
+          "MegaRadio-sl-SI-phone-02-discover.png",
+          "MegaRadio-sl-SI-phone-03-player.png",
+          "MegaRadio-sl-SI-phone-04-genres.png",
+          "MegaRadio-sl-SI-phone-05-car.png",
+          "MegaRadio-sl-SI-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "el-GR",
+      "consoleLocale": "el-GR",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-el-GR-phone-01-country.png",
+          "MegaRadio-el-GR-phone-02-discover.png",
+          "MegaRadio-el-GR-phone-03-player.png",
+          "MegaRadio-el-GR-phone-04-genres.png",
+          "MegaRadio-el-GR-phone-05-car.png",
+          "MegaRadio-el-GR-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "bg",
+      "consoleLocale": "bg",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-bg-phone-01-country.png",
+          "MegaRadio-bg-phone-02-discover.png",
+          "MegaRadio-bg-phone-03-player.png",
+          "MegaRadio-bg-phone-04-genres.png",
+          "MegaRadio-bg-phone-05-car.png",
+          "MegaRadio-bg-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ca",
+      "consoleLocale": "ca",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ca-phone-01-country.png",
+          "MegaRadio-ca-phone-02-discover.png",
+          "MegaRadio-ca-phone-03-player.png",
+          "MegaRadio-ca-phone-04-genres.png",
+          "MegaRadio-ca-phone-05-car.png",
+          "MegaRadio-ca-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ru-RU",
+      "consoleLocale": "ru-RU",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ru-RU-phone-01-country.png",
+          "MegaRadio-ru-RU-phone-02-discover.png",
+          "MegaRadio-ru-RU-phone-03-player.png",
+          "MegaRadio-ru-RU-phone-04-genres.png",
+          "MegaRadio-ru-RU-phone-05-car.png",
+          "MegaRadio-ru-RU-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "uk",
+      "consoleLocale": "uk",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-uk-phone-01-country.png",
+          "MegaRadio-uk-phone-02-discover.png",
+          "MegaRadio-uk-phone-03-player.png",
+          "MegaRadio-uk-phone-04-genres.png",
+          "MegaRadio-uk-phone-05-car.png",
+          "MegaRadio-uk-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ar",
+      "consoleLocale": "ar",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ar-phone-01-country.png",
+          "MegaRadio-ar-phone-02-discover.png",
+          "MegaRadio-ar-phone-03-player.png",
+          "MegaRadio-ar-phone-04-genres.png",
+          "MegaRadio-ar-phone-05-car.png",
+          "MegaRadio-ar-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "iw-IL",
+      "consoleLocale": "iw-IL",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-iw-IL-phone-01-country.png",
+          "MegaRadio-iw-IL-phone-02-discover.png",
+          "MegaRadio-iw-IL-phone-03-player.png",
+          "MegaRadio-iw-IL-phone-04-genres.png",
+          "MegaRadio-iw-IL-phone-05-car.png",
+          "MegaRadio-iw-IL-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ja-JP",
+      "consoleLocale": "ja-JP",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ja-JP-phone-01-country.png",
+          "MegaRadio-ja-JP-phone-02-discover.png",
+          "MegaRadio-ja-JP-phone-03-player.png",
+          "MegaRadio-ja-JP-phone-04-genres.png",
+          "MegaRadio-ja-JP-phone-05-car.png",
+          "MegaRadio-ja-JP-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ko-KR",
+      "consoleLocale": "ko-KR",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ko-KR-phone-01-country.png",
+          "MegaRadio-ko-KR-phone-02-discover.png",
+          "MegaRadio-ko-KR-phone-03-player.png",
+          "MegaRadio-ko-KR-phone-04-genres.png",
+          "MegaRadio-ko-KR-phone-05-car.png",
+          "MegaRadio-ko-KR-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "zh-CN",
+      "consoleLocale": "zh-CN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-zh-CN-phone-01-country.png",
+          "MegaRadio-zh-CN-phone-02-discover.png",
+          "MegaRadio-zh-CN-phone-03-player.png",
+          "MegaRadio-zh-CN-phone-04-genres.png",
+          "MegaRadio-zh-CN-phone-05-car.png",
+          "MegaRadio-zh-CN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "zh-HK",
+      "consoleLocale": "zh-HK",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-zh-HK-phone-01-country.png",
+          "MegaRadio-zh-HK-phone-02-discover.png",
+          "MegaRadio-zh-HK-phone-03-player.png",
+          "MegaRadio-zh-HK-phone-04-genres.png",
+          "MegaRadio-zh-HK-phone-05-car.png",
+          "MegaRadio-zh-HK-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "zh-TW",
+      "consoleLocale": "zh-TW",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-zh-TW-phone-01-country.png",
+          "MegaRadio-zh-TW-phone-02-discover.png",
+          "MegaRadio-zh-TW-phone-03-player.png",
+          "MegaRadio-zh-TW-phone-04-genres.png",
+          "MegaRadio-zh-TW-phone-05-car.png",
+          "MegaRadio-zh-TW-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "id",
+      "consoleLocale": "id",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-id-phone-01-country.png",
+          "MegaRadio-id-phone-02-discover.png",
+          "MegaRadio-id-phone-03-player.png",
+          "MegaRadio-id-phone-04-genres.png",
+          "MegaRadio-id-phone-05-car.png",
+          "MegaRadio-id-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ms-MY",
+      "consoleLocale": "ms-MY",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ms-MY-phone-01-country.png",
+          "MegaRadio-ms-MY-phone-02-discover.png",
+          "MegaRadio-ms-MY-phone-03-player.png",
+          "MegaRadio-ms-MY-phone-04-genres.png",
+          "MegaRadio-ms-MY-phone-05-car.png",
+          "MegaRadio-ms-MY-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "vi",
+      "consoleLocale": "vi",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-vi-phone-01-country.png",
+          "MegaRadio-vi-phone-02-discover.png",
+          "MegaRadio-vi-phone-03-player.png",
+          "MegaRadio-vi-phone-04-genres.png",
+          "MegaRadio-vi-phone-05-car.png",
+          "MegaRadio-vi-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "th",
+      "consoleLocale": "th",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-th-phone-01-country.png",
+          "MegaRadio-th-phone-02-discover.png",
+          "MegaRadio-th-phone-03-player.png",
+          "MegaRadio-th-phone-04-genres.png",
+          "MegaRadio-th-phone-05-car.png",
+          "MegaRadio-th-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "hi-IN",
+      "consoleLocale": "hi-IN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-hi-IN-phone-01-country.png",
+          "MegaRadio-hi-IN-phone-02-discover.png",
+          "MegaRadio-hi-IN-phone-03-player.png",
+          "MegaRadio-hi-IN-phone-04-genres.png",
+          "MegaRadio-hi-IN-phone-05-car.png",
+          "MegaRadio-hi-IN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "bn-BD",
+      "consoleLocale": "bn-BD",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-bn-BD-phone-01-country.png",
+          "MegaRadio-bn-BD-phone-02-discover.png",
+          "MegaRadio-bn-BD-phone-03-player.png",
+          "MegaRadio-bn-BD-phone-04-genres.png",
+          "MegaRadio-bn-BD-phone-05-car.png",
+          "MegaRadio-bn-BD-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "gu",
+      "consoleLocale": "gu",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-gu-phone-01-country.png",
+          "MegaRadio-gu-phone-02-discover.png",
+          "MegaRadio-gu-phone-03-player.png",
+          "MegaRadio-gu-phone-04-genres.png",
+          "MegaRadio-gu-phone-05-car.png",
+          "MegaRadio-gu-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "kn-IN",
+      "consoleLocale": "kn-IN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-kn-IN-phone-01-country.png",
+          "MegaRadio-kn-IN-phone-02-discover.png",
+          "MegaRadio-kn-IN-phone-03-player.png",
+          "MegaRadio-kn-IN-phone-04-genres.png",
+          "MegaRadio-kn-IN-phone-05-car.png",
+          "MegaRadio-kn-IN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ml-IN",
+      "consoleLocale": "ml-IN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ml-IN-phone-01-country.png",
+          "MegaRadio-ml-IN-phone-02-discover.png",
+          "MegaRadio-ml-IN-phone-03-player.png",
+          "MegaRadio-ml-IN-phone-04-genres.png",
+          "MegaRadio-ml-IN-phone-05-car.png",
+          "MegaRadio-ml-IN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "mr-IN",
+      "consoleLocale": "mr-IN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-mr-IN-phone-01-country.png",
+          "MegaRadio-mr-IN-phone-02-discover.png",
+          "MegaRadio-mr-IN-phone-03-player.png",
+          "MegaRadio-mr-IN-phone-04-genres.png",
+          "MegaRadio-mr-IN-phone-05-car.png",
+          "MegaRadio-mr-IN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "pa",
+      "consoleLocale": "pa",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-pa-phone-01-country.png",
+          "MegaRadio-pa-phone-02-discover.png",
+          "MegaRadio-pa-phone-03-player.png",
+          "MegaRadio-pa-phone-04-genres.png",
+          "MegaRadio-pa-phone-05-car.png",
+          "MegaRadio-pa-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ta-IN",
+      "consoleLocale": "ta-IN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ta-IN-phone-01-country.png",
+          "MegaRadio-ta-IN-phone-02-discover.png",
+          "MegaRadio-ta-IN-phone-03-player.png",
+          "MegaRadio-ta-IN-phone-04-genres.png",
+          "MegaRadio-ta-IN-phone-05-car.png",
+          "MegaRadio-ta-IN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "te-IN",
+      "consoleLocale": "te-IN",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-te-IN-phone-01-country.png",
+          "MegaRadio-te-IN-phone-02-discover.png",
+          "MegaRadio-te-IN-phone-03-player.png",
+          "MegaRadio-te-IN-phone-04-genres.png",
+          "MegaRadio-te-IN-phone-05-car.png",
+          "MegaRadio-te-IN-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    },
+    {
+      "locale": "ur",
+      "consoleLocale": "ur",
+      "phone": {
+        "count": 6,
+        "filenames": [
+          "MegaRadio-ur-phone-01-country.png",
+          "MegaRadio-ur-phone-02-discover.png",
+          "MegaRadio-ur-phone-03-player.png",
+          "MegaRadio-ur-phone-04-genres.png",
+          "MegaRadio-ur-phone-05-car.png",
+          "MegaRadio-ur-phone-06-search.png"
+        ],
+        "dimensions": [
+          1080,
+          1920
+        ],
+        "saved": true,
+        "allSixReadBack": true
+      }
+    }
+  ],
+  "complete": false,
+  "updatedAt": "2026-09-25T01:27:51.841891+00:00",
+  "phoneComplete": true
+}

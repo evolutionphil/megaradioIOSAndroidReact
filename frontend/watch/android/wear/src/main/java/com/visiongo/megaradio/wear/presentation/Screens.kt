@@ -169,26 +169,31 @@ fun HomeScreen(
 
         if (!isPhoneConnected) {
             item {
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    onClick = onRefreshClick,
-                    modifier = Modifier.size(36.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
-                    shape = CircleShape
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = "Refresh",
-                        tint = TextGray,
-                        modifier = Modifier.size(18.dp)
+                    Button(
+                        onClick = onRefreshClick,
+                        modifier = Modifier.size(36.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
+                        shape = CircleShape
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = "Refresh connection",
+                            tint = TextGray,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Text(
+                        text = "Connect your Android phone and open MegaRadio",
+                        color = TextGray,
+                        fontSize = 12.sp,
+                        modifier = Modifier.fillMaxWidth(0.8f).padding(top = 6.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
-                Text(
-                    text = "No phone connection",
-                    color = TextGray,
-                    fontSize = 11.sp,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
             }
         }
     }
@@ -339,6 +344,7 @@ fun StationsScreen(
     title: String,
     stations: List<Station>,
     isLoading: Boolean = false,
+    error: String? = null,
     onStationClick: (Station) -> Unit
 ) {
     ScalingLazyColumn(
@@ -368,6 +374,8 @@ fun StationsScreen(
                     strokeWidth = 3.dp
                 )
             }
+        } else if (error != null) {
+            item { EmptyState(text = error) }
         } else if (stations.isEmpty()) {
             item { EmptyState(text = "No stations found") }
         } else {

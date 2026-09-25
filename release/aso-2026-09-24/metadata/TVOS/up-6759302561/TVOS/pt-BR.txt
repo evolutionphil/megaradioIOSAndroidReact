@@ -1,0 +1,30 @@
+"promotionalText" = "Sertanejo, pagode, gospel, notícias e novas descobertas: explore rádios do Brasil e do mundo, ouça ao vivo e tenha suas emissoras favoritas sempre à mão.";
+"description" = "Ouça rádio ao vivo com o MegaRadio: encontre emissoras do Brasil, descubra rádios FM e AM pela internet e acompanhe música, notícias, esportes e conversa. Pesquise pelo nome, explore países e gêneros e salve suas favoritas.
+
+A RÁDIO FAZ PARTE DA ROTINA
+Do noticiário da manhã à música que acompanha o trabalho, escolha uma emissora para cada momento. Selecione Brasil para começar com as vozes de casa ou busque diretamente uma estação pelo nome. Quem mora fora também pode procurar transmissões online brasileiras e reencontrar programas conhecidos, conforme a disponibilidade de cada emissora.
+
+DO SERTANEJO A OUTROS SONS
+Sertanejo, pagode, samba, gospel, MPB, pop e rock dão diferentes caminhos para explorar o catálogo. Escolha as categorias disponíveis e deixe a programação da rádio apresentar novas músicas. Para ampliar a descoberta, mude de país e ouça outras línguas, estilos e formas de fazer rádio. O conteúdo e a grade pertencem a cada estação.
+
+SUAS FAVORITAS EM UM SÓ LUGAR
+Salve a emissora que você quer ouvir de novo. Monte uma seleção com informação, música para o dia a dia e descobertas para o fim de semana. Voltar aos favoritos evita repetir buscas ou lembrar de todos os nomes sempre que abrir o aplicativo. Sua coleção pode mudar junto com seu gosto musical.
+
+CONTROLE A TRANSMISSÃO
+Abra o player para iniciar ou pausar o áudio. Nome da música e artista aparecem quando essas informações são enviadas pela estação. Nem toda transmissão inclui esses dados. FM e AM indicam emissoras com sinal disponível pela internet, não recepção offline por antena. Alguns streams podem ficar indisponíveis ou ter limitações regionais.
+
+COMECE COM UMA DESCOBERTA
+Escolha um país ou gênero, abra uma estação e dê o play. Se gostar, salve nos favoritos. Você escolhe a rádio; os apresentadores e a programação trazem o que vem depois.
+
+COMPRAS OPCIONAIS NO APP
+O aplicativo oferece compras e assinaturas opcionais. Benefícios, duração e preço são informados antes da contratação. Um plano sem anúncios do aplicativo não retira comerciais inseridos na transmissão da rádio. Assinaturas compradas pela Apple são gerenciadas na sua Conta Apple; compras existentes podem ser restauradas no app.
+
+É preciso ter conexão com a internet. Podem ser cobrados dados móveis. A disponibilidade das transmissões e das informações das músicas varia por emissora e região. O MegaRadio é um diretório; o conteúdo é fornecido pelas próprias rádios.
+
+Escolha sua rádio com o controle da Apple TV e curta o som na sala.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ouvir,online,internet,brasil,sertanejo,gospel,pagode,samba,notícias,esportes,favoritos,mpb,música";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

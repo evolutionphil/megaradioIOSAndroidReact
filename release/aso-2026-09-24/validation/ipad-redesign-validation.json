@@ -1,0 +1,1042 @@
+{
+  "observedAt": "2026-09-24T13:28:58Z",
+  "locales": 50,
+  "images": 200,
+  "dimensions": [
+    2064,
+    2752
+  ],
+  "mode": "RGB",
+  "errors": [],
+  "minimumHeadingFont": 121,
+  "minimumSubtitleFont": 55,
+  "nativeInterfaceLanguage": "English, preserved from genuine iPad captures",
+  "uploadStatus": "Delivered: 50 sets / 200 COMPLETE images, checksums and order verified; included in iOS resubmission",
+  "files": [
+    {
+      "locale": "tr",
+      "file": "01_discover.png",
+      "sha256": "43469f2890f7b8431bc408bb9b765c46c902ae20393686a2408f782455f1dc5d"
+    },
+    {
+      "locale": "tr",
+      "file": "02_player.png",
+      "sha256": "ee193e67a72618df2ddb20516e6b67f2765144c960b81ee2152340a9340bd04e"
+    },
+    {
+      "locale": "tr",
+      "file": "03_genres.png",
+      "sha256": "913a0d833fdb5900d04e2c0333688b093e78205d5566a18e8d6f7b6ed5f5430d"
+    },
+    {
+      "locale": "tr",
+      "file": "04_country.png",
+      "sha256": "d6120a7939dd56958c4bfb3117613fadd7e3cb25fbc3c9e486811723073b333a"
+    },
+    {
+      "locale": "de-DE",
+      "file": "01_discover.png",
+      "sha256": "5c4c330d0367c2172cf7c8418524a0cb0fc65bdd9729526a3a7088058c24eeaa"
+    },
+    {
+      "locale": "de-DE",
+      "file": "02_player.png",
+      "sha256": "2d61381ca58260aedf02779eebf9cb7c25656402e8d59b62f8202df8e8a7cd08"
+    },
+    {
+      "locale": "de-DE",
+      "file": "03_genres.png",
+      "sha256": "b99f5fd4f86631d27c78f40080bd599fb6b9d1e0b4a4357440576602805d06b1"
+    },
+    {
+      "locale": "de-DE",
+      "file": "04_country.png",
+      "sha256": "e143eaf3e6efe0acd1dbf6efaa24042989225ce98ce9aeb9f3ee5af10b9e9bfe"
+    },
+    {
+      "locale": "en-US",
+      "file": "01_discover.png",
+      "sha256": "9d7fbf04b48839ef27a070aa7e5daa039def8d286f4e14176fc6f9ba529c1f85"
+    },
+    {
+      "locale": "en-US",
+      "file": "02_player.png",
+      "sha256": "fe7ed4d54c799fb05d762ed22518b02b30dbeb81976d2b079c54d4955b3700f8"
+    },
+    {
+      "locale": "en-US",
+      "file": "03_genres.png",
+      "sha256": "814e62f1ecdf7dfe9cd9da55a8817e74fdadf50e7566dc7620ff0797b0cc4ad1"
+    },
+    {
+      "locale": "en-US",
+      "file": "04_country.png",
+      "sha256": "8a073be6b284d1a879de8fce59d1a930c90bfd88545f0eb2f15aba07f8c2ded4"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "01_discover.png",
+      "sha256": "ece2578c2d962f338d36cf67ef5974df6fd738d2d4fd9e169b772a56a4427202"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "02_player.png",
+      "sha256": "465c338ecf2fdca264932dd281c95dcf3658ffe9ac726aa97bbd4fe911de412c"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "03_genres.png",
+      "sha256": "c90558652464da8dd88fd82a44a484824fe922324df9e19937e31e0333384c0f"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "04_country.png",
+      "sha256": "058908f3cd7f7dbdc63bff30ed9b37918af1fa59e443e4b2f9d72fcfb02f46da"
+    },
+    {
+      "locale": "es-ES",
+      "file": "01_discover.png",
+      "sha256": "8442de515dd8ea4d1ddfeff0219652962f9f7bb727eafb2c91d95ecd447dd570"
+    },
+    {
+      "locale": "es-ES",
+      "file": "02_player.png",
+      "sha256": "5ab13b927d201867a21d3b3f952b655336cb0c12ef5aa7296fa67b7a8f0a90e7"
+    },
+    {
+      "locale": "es-ES",
+      "file": "03_genres.png",
+      "sha256": "38c0b85fe91f0b774a9a6d30d60d84a1c7f667e83b4ac8bf8ffa0a1204510e83"
+    },
+    {
+      "locale": "es-ES",
+      "file": "04_country.png",
+      "sha256": "f2fa54b9d8fb88017f55eddb9d613f7d8585b57b5cc908f6082c1f64add1f77e"
+    },
+    {
+      "locale": "it",
+      "file": "01_discover.png",
+      "sha256": "b83c2986bf39b1c3608eb0af7d5189362282f606258bf2db6f27a3d6444efe5b"
+    },
+    {
+      "locale": "it",
+      "file": "02_player.png",
+      "sha256": "8e6b7016e12a9e50dedf17297427822790789ba4b27fa6db98ec5d89c1c43e48"
+    },
+    {
+      "locale": "it",
+      "file": "03_genres.png",
+      "sha256": "30a2c14952e9b698df2c4ab3370f9461f2285bae7f50012b6eb8816cf03445b7"
+    },
+    {
+      "locale": "it",
+      "file": "04_country.png",
+      "sha256": "2f4e79bf2ea14c2024bcf8f29342e0b76d7441a24b7e1cfe33934346c1e57d6b"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "01_discover.png",
+      "sha256": "ed2fdc62a11a3be5edcd8d83a6e9056c6f0f4f2139b455cc5f9b84d90a0ff5ae"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "02_player.png",
+      "sha256": "fec31708c4e3cdbdcad8c7baa6beb6ae8983ed4de087153e63003467b6b3b5f4"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "03_genres.png",
+      "sha256": "655ace7599a25ac48c88a59ef2b7996d793aa7f6c154e2c912c61275ad0a231a"
+    },
+    {
+      "locale": "pt-PT",
+      "file": "04_country.png",
+      "sha256": "2a293b00e3828279ae8297a6fe06c020247bb17a5bed0147442b3b923af95717"
+    },
+    {
+      "locale": "ru",
+      "file": "01_discover.png",
+      "sha256": "a18c3e585668608ec2998aa85f3d4bb163f34e8e4f126f2d02ef6b3bc306a257"
+    },
+    {
+      "locale": "ru",
+      "file": "02_player.png",
+      "sha256": "5eb50a814585decbfcc21604a69d7c4e95edd664b10cf504c71c5a5bbfbb04ae"
+    },
+    {
+      "locale": "ru",
+      "file": "03_genres.png",
+      "sha256": "d105a3daf268b7bc09c2dc5ecf332c6063bc63431fbf4c32a4204b238fbe06bc"
+    },
+    {
+      "locale": "ru",
+      "file": "04_country.png",
+      "sha256": "1b90a5d3dc946641d158b1d01b81b8a1607344fd2a8cc148d3c42680111bf4a9"
+    },
+    {
+      "locale": "ja",
+      "file": "01_discover.png",
+      "sha256": "9461cdd434bb12d05bd9896f3e7ee783fc1f2c2b2050b2c372066bd20ff63241"
+    },
+    {
+      "locale": "ja",
+      "file": "02_player.png",
+      "sha256": "febaea60d20f2593176b70039fe1db6f834e89799debbf0b604533bcab228044"
+    },
+    {
+      "locale": "ja",
+      "file": "03_genres.png",
+      "sha256": "fbcb0d2e194f0487673eab4ebf827f683a86badf389394583f71de7e8c3a6d89"
+    },
+    {
+      "locale": "ja",
+      "file": "04_country.png",
+      "sha256": "492e5e9d5bb4351ec3773a06d51d7a44c5f507ce34be610493c9c2bb2707934d"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "01_discover.png",
+      "sha256": "609ff2b79e1a77379b02c11504ca03a24fb5212240dffbdc77f452bec4773bf3"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "02_player.png",
+      "sha256": "9a83fba74b01bb592523b0c62f579a5592d5e016d68a6011ee74786eb3aaf078"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "03_genres.png",
+      "sha256": "63f774cc4a63cc2185e731661016ae3f7ed670f9dc591a22a0a600594099bb5c"
+    },
+    {
+      "locale": "zh-Hant",
+      "file": "04_country.png",
+      "sha256": "4e0f3bae7700f52dc55d5a3745e3a1d13247aa6cf3993a5944cd1090401ce575"
+    },
+    {
+      "locale": "he",
+      "file": "01_discover.png",
+      "sha256": "1ae43f5cf43b3b796abd2afffe2a76798c91bd41c843472ed80b6bcc8bb95836"
+    },
+    {
+      "locale": "he",
+      "file": "02_player.png",
+      "sha256": "74c17800cd96ac45ca9865dd8b0d6b254284a96fb994bb83942cf4c662b3f7ec"
+    },
+    {
+      "locale": "he",
+      "file": "03_genres.png",
+      "sha256": "15f9d02d29e08db28804101f4e56ad951a43bbdf6bb96c738987f52ca223386f"
+    },
+    {
+      "locale": "he",
+      "file": "04_country.png",
+      "sha256": "24d6013461c4e87ba929295367a3692e9ec1f4a91f36903058c3fe7ad6c80869"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "01_discover.png",
+      "sha256": "3c2a7fb833bbbce719036427611a7d04f3242cec643945812b14c688fb6c28d4"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "02_player.png",
+      "sha256": "c84fe31998a3f0ea337ff75a664a114dda0bff042671c4f31f538c4c0885291d"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "03_genres.png",
+      "sha256": "1b5779b6d723a7b709eea8f88c56d2884e00e34fd715d6ca1bc4db3765dee958"
+    },
+    {
+      "locale": "ar-SA",
+      "file": "04_country.png",
+      "sha256": "b3782ecad2f0291b1efa6e1b15bc840965e20512be4fc8377932400c39ee5f46"
+    },
+    {
+      "locale": "en-GB",
+      "file": "01_discover.png",
+      "sha256": "9d7fbf04b48839ef27a070aa7e5daa039def8d286f4e14176fc6f9ba529c1f85"
+    },
+    {
+      "locale": "en-GB",
+      "file": "02_player.png",
+      "sha256": "75184e8f3e84148adcfc089edfcfc1f6b881f1317af0cc1e6f2cd96b9e963bd3"
+    },
+    {
+      "locale": "en-GB",
+      "file": "03_genres.png",
+      "sha256": "92fc1b7d03859f6aab4e06d530faeea387ab10e07a0c8e191ae95f8cd6db5c46"
+    },
+    {
+      "locale": "en-GB",
+      "file": "04_country.png",
+      "sha256": "078ca42449aefbe6a1bd140f90dadad886edfd1cdcd17ba06b1c298fcbeed476"
+    },
+    {
+      "locale": "en-AU",
+      "file": "01_discover.png",
+      "sha256": "9d7fbf04b48839ef27a070aa7e5daa039def8d286f4e14176fc6f9ba529c1f85"
+    },
+    {
+      "locale": "en-AU",
+      "file": "02_player.png",
+      "sha256": "22d17c6c0b4967f4bf0c66c2add12ca878561efd97b3afb24ca4b6eb5bef42d0"
+    },
+    {
+      "locale": "en-AU",
+      "file": "03_genres.png",
+      "sha256": "d207e8b63e24867000bdcf4ad74227d856e1bf1d9fd3045d39cce96d4df3dfd2"
+    },
+    {
+      "locale": "en-AU",
+      "file": "04_country.png",
+      "sha256": "453a1f848d7d74c71384e229f952bbc7d2422d5cc87a9b9c70d34c760af6edc2"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "01_discover.png",
+      "sha256": "ece2578c2d962f338d36cf67ef5974df6fd738d2d4fd9e169b772a56a4427202"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "02_player.png",
+      "sha256": "8d5d2d34c7bc8061f62188c22971f718b9bf80923e4845504f52326394160c19"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "03_genres.png",
+      "sha256": "9cb2b7cf74307572b6a62ac5398af291216c6b9dd47bd59e636899386045e456"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "04_country.png",
+      "sha256": "0a3ce20d8059fe2e023d7bd373ff0c5552bf04a0839acb951245cf71de145d4c"
+    },
+    {
+      "locale": "es-MX",
+      "file": "01_discover.png",
+      "sha256": "41ded3df109a7290b142de0ab75b35e422660bc46dd05d19f689386eccf3e670"
+    },
+    {
+      "locale": "es-MX",
+      "file": "02_player.png",
+      "sha256": "eb86a1e436e55b6c7b35b76fd7e51b314385c779ebce809d3e3b0e2a5abdf607"
+    },
+    {
+      "locale": "es-MX",
+      "file": "03_genres.png",
+      "sha256": "7f20cdf8dc0409dcbc7e43f72765d8aa19e5bd16209538e964e2e32e841441ad"
+    },
+    {
+      "locale": "es-MX",
+      "file": "04_country.png",
+      "sha256": "0e2f3d7fff5541aed629f84a0e1c6bc8eb450e6d74b817c4dec3420fd14cb90b"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "01_discover.png",
+      "sha256": "2797eb1605dc75a2c78a96ef1420c3cd282938c1d4776b0ede10aa3d40a21968"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "02_player.png",
+      "sha256": "c1a80bc5f96302225c575146e47cca275d940092d357c920b54150adcab9a072"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "03_genres.png",
+      "sha256": "c12b38f94c9962fdcc9c12d534fec302b5c753f4428869f2889df7b4ef593722"
+    },
+    {
+      "locale": "pt-BR",
+      "file": "04_country.png",
+      "sha256": "618dec04503d2572b66a2dd335236f03eff5fadd5cbefc242723df1de8631356"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "01_discover.png",
+      "sha256": "a8b99efac8c7f6fdbc9ded53e073847f3893df276d580eb2db8d69b54b9f38f2"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "02_player.png",
+      "sha256": "dad155f8e267bdfd4b7998238446d337b294cdfe2d3b7aaf8b30660d82b1698b"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "03_genres.png",
+      "sha256": "32f23888b2b23050aae96331dd3d2221602c76512538ebddc20fe7e970cf63de"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "04_country.png",
+      "sha256": "9ff3c154052c2e75b89913acc08997b622fa425790cd5ee520252f24f783fafd"
+    },
+    {
+      "locale": "sv",
+      "file": "01_discover.png",
+      "sha256": "4ec37498192a4b1f1734559692c75d9069c039abdaf81d1bcfa3856b02ade2ad"
+    },
+    {
+      "locale": "sv",
+      "file": "02_player.png",
+      "sha256": "4f0230d482af01374e38f5520243fb0c7caa590bd5830d161e1da67aeddf3a2d"
+    },
+    {
+      "locale": "sv",
+      "file": "03_genres.png",
+      "sha256": "5273900fe4b8a14c765adee777c5ada011b9ce2ee6d8d7222201f9e4f70fe72c"
+    },
+    {
+      "locale": "sv",
+      "file": "04_country.png",
+      "sha256": "0c578d426e583e517917bf979c6bb01b069b5b2514083f575313ef0dae3648de"
+    },
+    {
+      "locale": "no",
+      "file": "01_discover.png",
+      "sha256": "ed62c067487825de2654b2cb9eb9b60c5ae4c35191002498065c6e423fbdf548"
+    },
+    {
+      "locale": "no",
+      "file": "02_player.png",
+      "sha256": "0cc58675ba61e40fb7291dc3d8c535b20571a5b5ed9eabf2d8da6d7d47fe8b76"
+    },
+    {
+      "locale": "no",
+      "file": "03_genres.png",
+      "sha256": "8bd5c1cda54e31d69705cebb618b8d7fa8ee4dcfe861a37e23e0368341e8d769"
+    },
+    {
+      "locale": "no",
+      "file": "04_country.png",
+      "sha256": "d1a48de94a43d03237bd5c2d41641073b296f1b408c15b9f1b800d84e865c241"
+    },
+    {
+      "locale": "da",
+      "file": "01_discover.png",
+      "sha256": "6ae061f19a8be4050a9711998ec75b07b9d13f98b20bfebeb331b031e7533aa2"
+    },
+    {
+      "locale": "da",
+      "file": "02_player.png",
+      "sha256": "90c48d5e81c91131fa067602fbb5368ecab50376029c4bb09646c146319146eb"
+    },
+    {
+      "locale": "da",
+      "file": "03_genres.png",
+      "sha256": "aef390fa3660c7cb985a69fed3c856d46d6e54c93d22f56aa3adfd93edf8b4ac"
+    },
+    {
+      "locale": "da",
+      "file": "04_country.png",
+      "sha256": "77a1b7fc4d8ae024d86e1813d173ec39d77ff113fad4abebe578ef65340b5b9d"
+    },
+    {
+      "locale": "fi",
+      "file": "01_discover.png",
+      "sha256": "496caee783f35eafd53cf484271f2b8904821b648896424f13103ded27e9e555"
+    },
+    {
+      "locale": "fi",
+      "file": "02_player.png",
+      "sha256": "0bfc826929d6c1793ea2faf4ba5c4c13395e1b09e790271ec464b9abfc917972"
+    },
+    {
+      "locale": "fi",
+      "file": "03_genres.png",
+      "sha256": "a17e955204722d29dfd8e271e0f0a3d91e1780053137c3fa8e6232ebc109788f"
+    },
+    {
+      "locale": "fi",
+      "file": "04_country.png",
+      "sha256": "d5dfc2f8f1718f908fd2a74feb8f9d22fc15b172e31cac5c96544c271345c88c"
+    },
+    {
+      "locale": "pl",
+      "file": "01_discover.png",
+      "sha256": "3828a24c9b2e60e1fa13e27bc1ec891484942e48fa3cff84909d035d80af885a"
+    },
+    {
+      "locale": "pl",
+      "file": "02_player.png",
+      "sha256": "814b1bb11f5ccaaf9f9c62378ed256c958fb6e9daa63d697d683b54764cbe7cc"
+    },
+    {
+      "locale": "pl",
+      "file": "03_genres.png",
+      "sha256": "4a4051b06fecf5dde835081faef44a3602a000d610bc2f2a05eea1426340216e"
+    },
+    {
+      "locale": "pl",
+      "file": "04_country.png",
+      "sha256": "2af8c849c2e8127a3ba06d96ba7e11a95640bf7f87461dac65679462c4d5b204"
+    },
+    {
+      "locale": "cs",
+      "file": "01_discover.png",
+      "sha256": "29c27f986e9ab249a8fe4e267284ea50595ff9a7d3a35c2cc8666d2aa32b0217"
+    },
+    {
+      "locale": "cs",
+      "file": "02_player.png",
+      "sha256": "1fe2bc8082e3e0115a05c25624557b9d2c43c3f79120eeb06e481a7fbcea6b46"
+    },
+    {
+      "locale": "cs",
+      "file": "03_genres.png",
+      "sha256": "7ceff21d6253026d51fc2087b939b46c0d3d012dfbc0007d9aa1bd869e5981b8"
+    },
+    {
+      "locale": "cs",
+      "file": "04_country.png",
+      "sha256": "63afca5ef710d306afc89ae568b967f43bb54e920020186cdfe477cf3b9f6c48"
+    },
+    {
+      "locale": "sk",
+      "file": "01_discover.png",
+      "sha256": "e0654dd556564a314621d8025455b44fd1689594610ce505ece22d87640e8682"
+    },
+    {
+      "locale": "sk",
+      "file": "02_player.png",
+      "sha256": "3bfd673aa518da2bf0080b806ee80ca919813231e0b26481445585398dc5c6ea"
+    },
+    {
+      "locale": "sk",
+      "file": "03_genres.png",
+      "sha256": "4857562d9cb9d1afb2b0fa0beb42b6dd925f5830241e7477e73d802e51a171a7"
+    },
+    {
+      "locale": "sk",
+      "file": "04_country.png",
+      "sha256": "48c44bb9ca249999a997f9d3707628c9b84d61887177c60410eed4bbbcf0435c"
+    },
+    {
+      "locale": "hu",
+      "file": "01_discover.png",
+      "sha256": "dd77b703605b0dc6f8785d16edaa9ffcde6a05347f5024c3898eed4abc18d374"
+    },
+    {
+      "locale": "hu",
+      "file": "02_player.png",
+      "sha256": "01d59fc75d5acf01f3240a81425325bd0ab254342bcbbe1ce5282a87ccf08372"
+    },
+    {
+      "locale": "hu",
+      "file": "03_genres.png",
+      "sha256": "f7771605c1f6c36978472cda8bd3880ca160174c83868130a596ecdce9af8d95"
+    },
+    {
+      "locale": "hu",
+      "file": "04_country.png",
+      "sha256": "f6d7a9dbbb6b97ff110fcdbd19f6f0b6ccaabff2b0d4f98243a125ba5be25332"
+    },
+    {
+      "locale": "ro",
+      "file": "01_discover.png",
+      "sha256": "e39109b91d617c80ffaddb8f77bc4eb2b5a6ab31f9be3d691373dcf76a0c4399"
+    },
+    {
+      "locale": "ro",
+      "file": "02_player.png",
+      "sha256": "1b05bea3dcd6e3823b1cb527bc8883b3f944305f5edaf243938971b4d1bff9c5"
+    },
+    {
+      "locale": "ro",
+      "file": "03_genres.png",
+      "sha256": "f69d1c487ebee8b2f0dac2ff63d79ed786ca5ddbd5edd6d51f12f11fad4ecf14"
+    },
+    {
+      "locale": "ro",
+      "file": "04_country.png",
+      "sha256": "1676a789097f1f2e870e7a04c69b5db5eb47711573eb350a24ceec5ab25b5570"
+    },
+    {
+      "locale": "hr",
+      "file": "01_discover.png",
+      "sha256": "610a5bea336595a92544789431cde976d47246646ded453eafb12331d30be995"
+    },
+    {
+      "locale": "hr",
+      "file": "02_player.png",
+      "sha256": "b8de3cad1a99bfdb5b82c496cfe65e8d45dca0517fae243174df501689b210af"
+    },
+    {
+      "locale": "hr",
+      "file": "03_genres.png",
+      "sha256": "6e04edda5e1626cdf8fb63a83a534884138fe805b0f8e41f96021330bc0f699c"
+    },
+    {
+      "locale": "hr",
+      "file": "04_country.png",
+      "sha256": "ecb90bf34257bec2d5b4481da10abf28b8969b227b13ab81b4a3bb321c49c0bc"
+    },
+    {
+      "locale": "el",
+      "file": "01_discover.png",
+      "sha256": "e245be09ed58e4e16a62856527077b98ed0e56d1f989d78392dd2bd9f7b3a209"
+    },
+    {
+      "locale": "el",
+      "file": "02_player.png",
+      "sha256": "139990d0993444843b274d648c13e90a80f2996d3c20a7a74113861cf819d5f5"
+    },
+    {
+      "locale": "el",
+      "file": "03_genres.png",
+      "sha256": "0a8346af1c339e8c5244cae672908ad220a21552b2842ac71bc430a73aad6666"
+    },
+    {
+      "locale": "el",
+      "file": "04_country.png",
+      "sha256": "6a587e0cbaa09d704d740b0dced229dfd240c2c34cea88f6644502a0f05d4404"
+    },
+    {
+      "locale": "uk",
+      "file": "01_discover.png",
+      "sha256": "e8f799aceeccbd4ef89f07fd014db41061ab2a40967a94a6f49dd4cfba357e06"
+    },
+    {
+      "locale": "uk",
+      "file": "02_player.png",
+      "sha256": "0aa35b862ad1f0c3bf20e1071e02f629a1445031435a0824ace0945119fea170"
+    },
+    {
+      "locale": "uk",
+      "file": "03_genres.png",
+      "sha256": "2fd60d75f9d528f88d74ed6daa7878704b580c31d082badf6e989381bffd0918"
+    },
+    {
+      "locale": "uk",
+      "file": "04_country.png",
+      "sha256": "b8d409e7d7a450083f05f35da509c1f71447de308949068a92097e0a793e5ca6"
+    },
+    {
+      "locale": "ca",
+      "file": "01_discover.png",
+      "sha256": "213bf08717274526314e47c92e7aa490c444a9cdd2fe9d4b9610eee04fa87c08"
+    },
+    {
+      "locale": "ca",
+      "file": "02_player.png",
+      "sha256": "a634c89996c8ed776272be0e0bc42bd73b81b02a2d1521e6d164a775c1c4e6fa"
+    },
+    {
+      "locale": "ca",
+      "file": "03_genres.png",
+      "sha256": "17c320df1e661c09471f7e33c2f6b3fc27469b2175056664b33349fb400406c4"
+    },
+    {
+      "locale": "ca",
+      "file": "04_country.png",
+      "sha256": "49f8ed3a4ba0d231384b7900634483efa6d83275959616876b601e7f3c3ecf66"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "01_discover.png",
+      "sha256": "05eaf6aef51496e4825594b425797d37fe86c863c1e091a5c81ff0468b4ccae6"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "02_player.png",
+      "sha256": "efa986ba10ca577507c367497d5b40984575e9e72a4b4d44bf1a272d0367945d"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "03_genres.png",
+      "sha256": "f6aa07778cf9757810bc05bdb92e4cd531608db3b7dc268b8de142696a6ef0ff"
+    },
+    {
+      "locale": "zh-Hans",
+      "file": "04_country.png",
+      "sha256": "241b98ed5dc80b475f9b2efb87138a185fa6667d5e364579e128aa8004ac2080"
+    },
+    {
+      "locale": "ko",
+      "file": "01_discover.png",
+      "sha256": "a5fa43accc5b9a2fde82da209233884874bbea54caf6483f4f739020368d24ad"
+    },
+    {
+      "locale": "ko",
+      "file": "02_player.png",
+      "sha256": "128bfb6baa023632b2ec7702c0420c3adc6ca19d6def9de3351f8a2cc0383dac"
+    },
+    {
+      "locale": "ko",
+      "file": "03_genres.png",
+      "sha256": "f1a8a073c3ebfb2cfcf81042139b0785a5891df890995001602c0e5a7332c171"
+    },
+    {
+      "locale": "ko",
+      "file": "04_country.png",
+      "sha256": "ac9a8680ea8e46d528e9785016bad3edf3bc01f57262eb05e28718ca839db602"
+    },
+    {
+      "locale": "id",
+      "file": "01_discover.png",
+      "sha256": "4227af157efc3232f7902e809f11f223c524752a3626f7a304c819f36f6d09c8"
+    },
+    {
+      "locale": "id",
+      "file": "02_player.png",
+      "sha256": "1ff1283bf39ef77a2666e19974baded0a18c8531766d7b68df94fb9c6b5bb2e0"
+    },
+    {
+      "locale": "id",
+      "file": "03_genres.png",
+      "sha256": "c047381be55784f5c6ec606f9c0cbe6e25eae9f96e9ba9ec835dd7a78c4e3d49"
+    },
+    {
+      "locale": "id",
+      "file": "04_country.png",
+      "sha256": "7ef54798e37346b9e15669a8348584d05de0918e44c2536ee7e27edfed4ea6e6"
+    },
+    {
+      "locale": "ms",
+      "file": "01_discover.png",
+      "sha256": "9055f5bac95eef0a56bd84f7bc8c9d6c82bb362956de32cbc7c073bedfca7e71"
+    },
+    {
+      "locale": "ms",
+      "file": "02_player.png",
+      "sha256": "be84076b7f9db331911e2d1c8d4a798f4afb067a672de7585ec5f94b3f65360e"
+    },
+    {
+      "locale": "ms",
+      "file": "03_genres.png",
+      "sha256": "6707799cd303904e571332bd8f8956aecd65d95f10799ba1878417be60539293"
+    },
+    {
+      "locale": "ms",
+      "file": "04_country.png",
+      "sha256": "a74e8d437adc1a99006456bbef5ac4029a41a34af38e5795896cf9e8da53a24f"
+    },
+    {
+      "locale": "th",
+      "file": "01_discover.png",
+      "sha256": "c5c668fb60cbe9f61ea42155e919161893bb4f8e7e80b26c2792d1e5f7f0c739"
+    },
+    {
+      "locale": "th",
+      "file": "02_player.png",
+      "sha256": "cc2b57946d0d0b52cb1d0c1bc62f4bcf251b6ffbefe34a53dd251ddace1527f4"
+    },
+    {
+      "locale": "th",
+      "file": "03_genres.png",
+      "sha256": "8bf2a0d4f2a97da6c718b4188e5c464f4dd844af0f599766fa72a2a9446e8e5d"
+    },
+    {
+      "locale": "th",
+      "file": "04_country.png",
+      "sha256": "cb5c46ded769652c421422ba905e7819547fa44264b757a898aa6db4afe5f628"
+    },
+    {
+      "locale": "vi",
+      "file": "01_discover.png",
+      "sha256": "035ccef17fbeefec1ed04d400b381cf43b3dbac55d25344d4e4ac9a087da21c8"
+    },
+    {
+      "locale": "vi",
+      "file": "02_player.png",
+      "sha256": "663d5ccff4eb324c5a728915d5f89acb13733036b2698e1c3cb31ae359db36a8"
+    },
+    {
+      "locale": "vi",
+      "file": "03_genres.png",
+      "sha256": "d2c1a4986d16f510625c3e08c85525cfc5866405f0ff924e43b5c53e7c408a9e"
+    },
+    {
+      "locale": "vi",
+      "file": "04_country.png",
+      "sha256": "a1dba1be3250022cedeb28119333c20f096d2e10af3880987a12513ae51a7451"
+    },
+    {
+      "locale": "hi",
+      "file": "01_discover.png",
+      "sha256": "ea28564035f822b2cd671abe43aa0b676224b31025539bafba0b80e4b903c5e2"
+    },
+    {
+      "locale": "hi",
+      "file": "02_player.png",
+      "sha256": "580a69c9fae7f2033d8816ee2051f854a249a6e69663b026a030058fabb5de39"
+    },
+    {
+      "locale": "hi",
+      "file": "03_genres.png",
+      "sha256": "24a558b6eb7445d379dde7a1e7ce3991804600d9d4d751f6989ce1804f3e23ef"
+    },
+    {
+      "locale": "hi",
+      "file": "04_country.png",
+      "sha256": "97a27a3f95a5af2215d2585773873cd8075b8f5cb7061db90f0e4743de325d4f"
+    },
+    {
+      "locale": "en-CA",
+      "file": "01_discover.png",
+      "sha256": "f4b63f48318618799f9e5663f9bf5f9a87bc3d23fd7e4bba6b5369a74a526dc9"
+    },
+    {
+      "locale": "en-CA",
+      "file": "02_player.png",
+      "sha256": "78ab30d5530a301441a0f7a6bd2c6d213a5c7e3e4a1bfa2d971d76ee7e54cf02"
+    },
+    {
+      "locale": "en-CA",
+      "file": "03_genres.png",
+      "sha256": "1ce60eeab3d14f312ff3c4aa2575b299a4d006d36bf6c80b1595355bf50480ee"
+    },
+    {
+      "locale": "en-CA",
+      "file": "04_country.png",
+      "sha256": "4612a42252281932e2c121c213b2164c942f52a4356cc48d1314fabd520917cb"
+    },
+    {
+      "locale": "bn",
+      "file": "01_discover.png",
+      "sha256": "0aa7e81d6ef2979fd3fc245a075a719cb78f3b7437f92d11ff518548ac9f22bd"
+    },
+    {
+      "locale": "bn",
+      "file": "02_player.png",
+      "sha256": "dfaf63ab3e530e1c06c6ab943900a720ccf9f6187ba695d558d0def8533aacf3"
+    },
+    {
+      "locale": "bn",
+      "file": "03_genres.png",
+      "sha256": "e8d972bd24d7bb4a9ee6f125a014d44817914d883094466a65bb12d82b94d846"
+    },
+    {
+      "locale": "bn",
+      "file": "04_country.png",
+      "sha256": "fabd4b383546d89d3b01768e84734435ece8ebea89a5c4668924094cb8bc9b1d"
+    },
+    {
+      "locale": "gu",
+      "file": "01_discover.png",
+      "sha256": "8ae9309e676efc31697dcc2978e8a479524ea3008ea53e17f2d226f30a26094c"
+    },
+    {
+      "locale": "gu",
+      "file": "02_player.png",
+      "sha256": "0c0a2787fb382362a370b9730fbb68eebd89da17cc07c6c49acd92aff802115d"
+    },
+    {
+      "locale": "gu",
+      "file": "03_genres.png",
+      "sha256": "e41bfb7c9275fccd22c296e417ff2d48c8ce6105f217e226b5dff07822f0648a"
+    },
+    {
+      "locale": "gu",
+      "file": "04_country.png",
+      "sha256": "5b74a2079ab11bddb85828c79678a59fed4c7efbe70c60011c09a9906d0ff7a9"
+    },
+    {
+      "locale": "kn",
+      "file": "01_discover.png",
+      "sha256": "c25ce93ac75a80828f5d3eb68d95dd88c4d5f901102c23c0158c4ad323311fd4"
+    },
+    {
+      "locale": "kn",
+      "file": "02_player.png",
+      "sha256": "846015c7676e14d514e3b17c46188224dff82698302d613ffe3c040c5c88ca1d"
+    },
+    {
+      "locale": "kn",
+      "file": "03_genres.png",
+      "sha256": "8cee1b760c3211431a7c956a1caa57b833fb26d60d6e4708cb8a77b8e485e505"
+    },
+    {
+      "locale": "kn",
+      "file": "04_country.png",
+      "sha256": "1c4c3d75b9a7fe341eb5a8ffc494bb9c5602aecd4e7d2e8fc97a4e704e9289c6"
+    },
+    {
+      "locale": "ml",
+      "file": "01_discover.png",
+      "sha256": "3006034e4db49a5b105d2655048782aab487c6b6daaa98c872131e33f23eea5b"
+    },
+    {
+      "locale": "ml",
+      "file": "02_player.png",
+      "sha256": "b795131a276c6cf9b80517726a17e655d8d13671d83841c4ef77a73260c201b2"
+    },
+    {
+      "locale": "ml",
+      "file": "03_genres.png",
+      "sha256": "8b3e4718000b2c696fd98d3937096275598626de00117155b5f7304b99c0c83d"
+    },
+    {
+      "locale": "ml",
+      "file": "04_country.png",
+      "sha256": "f61a834bae64fc95496a89654195942f46a794be6f427c529e7adfb0b620b122"
+    },
+    {
+      "locale": "mr",
+      "file": "01_discover.png",
+      "sha256": "5310bbaa3dec6be9d9ae75cc3520a672d872db7e2feb04cd830a2f6f0849cc4e"
+    },
+    {
+      "locale": "mr",
+      "file": "02_player.png",
+      "sha256": "cd617ca4bde218e8eaec89719b3b197eb429a15064b62c0dd7e96292db431edd"
+    },
+    {
+      "locale": "mr",
+      "file": "03_genres.png",
+      "sha256": "560a4c8a0c480474aab521c82a542539c39b715f9a8e00f1c3d7a5b18837a0dc"
+    },
+    {
+      "locale": "mr",
+      "file": "04_country.png",
+      "sha256": "fd1ecfd0bc0c74683a827304256ca0799523feea04e6ee0ca19c676901366487"
+    },
+    {
+      "locale": "or",
+      "file": "01_discover.png",
+      "sha256": "ba1d6ff23f79bb84f5cef9c3bba3f7d99b47e3bd169c9a071511591e9027721a"
+    },
+    {
+      "locale": "or",
+      "file": "02_player.png",
+      "sha256": "be60fe87fe4bf0d29e5f4a147ef334b70398556061d82080a2c68a7caaca0b2d"
+    },
+    {
+      "locale": "or",
+      "file": "03_genres.png",
+      "sha256": "383a5a9c8a2ce061226695cd24115985ea66c85ed727c197cc7bb4de46fc2251"
+    },
+    {
+      "locale": "or",
+      "file": "04_country.png",
+      "sha256": "94bedb6818cc862554e54b1b5bb248c6ccb5fe946d443c5ad0d4ee24d292633f"
+    },
+    {
+      "locale": "pa",
+      "file": "01_discover.png",
+      "sha256": "395a80337e6d1e6287df7cfe0e28814b2f6bdabc2fbced52b2585c75e533d705"
+    },
+    {
+      "locale": "pa",
+      "file": "02_player.png",
+      "sha256": "9a9cd6445e81bb3b5ab3c650423fcaad8b596b5f8e7437aaa62bfff911cc638e"
+    },
+    {
+      "locale": "pa",
+      "file": "03_genres.png",
+      "sha256": "19963c8444e23cd6f8dfeb03596eafb5c00cf48db1c6910a9258cbc4c08822a1"
+    },
+    {
+      "locale": "pa",
+      "file": "04_country.png",
+      "sha256": "dd411e6ded11f485843677b853e02c3d3e79aea2eba8edc896d522ca3bca0ee6"
+    },
+    {
+      "locale": "ta",
+      "file": "01_discover.png",
+      "sha256": "dbbf9322bc54f1e365a5101f35b2cfd4eee893c6e34c207d5661b4bd63486184"
+    },
+    {
+      "locale": "ta",
+      "file": "02_player.png",
+      "sha256": "b88e57171fedc8cdc75912b3d5ef22efdbfea49c97519a32b30d7c4f8ce8e56b"
+    },
+    {
+      "locale": "ta",
+      "file": "03_genres.png",
+      "sha256": "70a654836f1e557d9c8c2dbc1ce53efb5217a2d6d02bbc6762741212b3e39e97"
+    },
+    {
+      "locale": "ta",
+      "file": "04_country.png",
+      "sha256": "54639ce5a7563211a1cac5c63d868ba3affff70735ae3d27c0b0e9c41e98ded5"
+    },
+    {
+      "locale": "te",
+      "file": "01_discover.png",
+      "sha256": "429ea8e28b169a14ea081b8bfc957be780b5415a09526fba81c2f2678e167965"
+    },
+    {
+      "locale": "te",
+      "file": "02_player.png",
+      "sha256": "6ce29111cd99aae68e06d5160572d0ee04d26f0e0a75eec7591dac969a5dae5c"
+    },
+    {
+      "locale": "te",
+      "file": "03_genres.png",
+      "sha256": "b99852b2436154cbf9232be8ee12830497277801580419de3230f35347cd8538"
+    },
+    {
+      "locale": "te",
+      "file": "04_country.png",
+      "sha256": "aaf32665a50eb08ec838c1da6930c781584238e33a990d145d8aadf9fba5b4a0"
+    },
+    {
+      "locale": "ur",
+      "file": "01_discover.png",
+      "sha256": "ec8a5e63db1951721b6e48751441073c933de12dba6755eb2f99723b2d5281e0"
+    },
+    {
+      "locale": "ur",
+      "file": "02_player.png",
+      "sha256": "bec110d198943fd0f74e3c8e61433d884ca0ae6528c535dc9efe0f56814f58a5"
+    },
+    {
+      "locale": "ur",
+      "file": "03_genres.png",
+      "sha256": "bef9d12c3c0774eea5f8dabfc66673d82229d44c7a2c184e97886635f2a4961c"
+    },
+    {
+      "locale": "ur",
+      "file": "04_country.png",
+      "sha256": "1071b689aca59391a78b919e222ffff6cecda8291754aa0d81d24daf277a0311"
+    },
+    {
+      "locale": "sl",
+      "file": "01_discover.png",
+      "sha256": "fe8031d30b296d068e6d210a978a026996db74a4389208513cd69e54995a0a32"
+    },
+    {
+      "locale": "sl",
+      "file": "02_player.png",
+      "sha256": "3bf5d02eb9ce2990e69cda32b7dfe7d8c8cccef32b99abcaacbee2260b76a7ba"
+    },
+    {
+      "locale": "sl",
+      "file": "03_genres.png",
+      "sha256": "ba744d29df9336700b19f521da997a191cc876d691240e7e36b3767e005bdda7"
+    },
+    {
+      "locale": "sl",
+      "file": "04_country.png",
+      "sha256": "26e9a9e70de710c4fedf6cda99e16ab6491d4fc75df42f6dab06cb3d149e1040"
+    }
+  ],
+  "visualReview": {
+    "captionContactSheets": 5,
+    "captionHeadersChecked": 200,
+    "fullSetLocales": [
+      "tr"
+    ],
+    "originalBrandIconVerified": true,
+    "issues": []
+  },
+  "outputPackage": "/Users/mumiix/Downloads/MegaRadio-iPad-Redesign-2026-09-24",
+  "sourceCaptureChecksums": {
+    "country.png": "9f9d0e8d6f42fc60137a5f8b3f82e3dcac6eaa44a636da40b73c8cf0f8f6d30e",
+    "discover.png": "c3fdab39e2fddd46467095963e9fb3c70085444ebf763ed7a75002c9971a15b5",
+    "genres.png": "72b3250c94aebfbeaa1011d4914fa53bf95fb5054252cf7f934d3578ee1ee3f9",
+    "player.png": "ec2d777fd4fa0c424e9f0f5914cf8e079b505042f370d68084dcfa9a7dfa2649"
+  },
+  "releaseSimulatorBuild": {
+    "version": "1.0.70",
+    "build": "6",
+    "configuration": "Release",
+    "buildSucceeded": true,
+    "installed": true,
+    "appStoreBinaryChanged": false
+  },
+  "reviewSubmissionModified": false
+}

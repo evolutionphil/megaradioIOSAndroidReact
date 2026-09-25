@@ -1,0 +1,3 @@
+"name" = "MegaRadio: راديو مباشر";
+"subtitle" = "محطات FM وAM من حول العالم";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

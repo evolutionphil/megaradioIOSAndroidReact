@@ -1,0 +1,2599 @@
+{
+  "collectedAt": "2026-09-24T18:26:31.231984+00:00",
+  "scope": "Research candidates; reconcile with existing Play Console locales before delivery.",
+  "limitation": "Public results do not provide keyword search volume. Order is contextual and is not a rank promise.",
+  "competitors": [
+    {
+      "appId": "com.streema.simpleradio",
+      "title": "Simple Radio: Live AM FM Radio",
+      "summaryExcerpt": "Music, News & Sports Radio Tuner App. Tune in Live FM & AM Radio Stations.",
+      "installs": "50,000,000+",
+      "score": 4.720018,
+      "ratings": 937918,
+      "url": "https://play.google.com/store/apps/details?id=com.streema.simpleradio&hl=en&gl=us"
+    },
+    {
+      "appId": "de.radio.android",
+      "title": "radio.net - AM FM Radio Tuner",
+      "summaryExcerpt": "AM FM radio tuner and podcast player for live stations, music and local news.",
+      "installs": "10,000,000+",
+      "score": 4.621762,
+      "ratings": 412589,
+      "url": "https://play.google.com/store/apps/details?id=de.radio.android&hl=en&gl=us"
+    },
+    {
+      "appId": "tunein.player",
+      "title": "TuneIn Radio: Music & Sports",
+      "summaryExcerpt": "Listen to live FM radio stations, sports, music and news on global radios online",
+      "installs": "100,000,000+",
+      "score": 4.7139664,
+      "ratings": 2818354,
+      "url": "https://play.google.com/store/apps/details?id=tunein.player&hl=en&gl=us"
+    },
+    {
+      "appId": "com.appgeneration.itunerfree",
+      "title": "myTuner FM Radio App",
+      "summaryExcerpt": "Live AM / FM Radio Stations: Online Radio and Live FM Radio Station App",
+      "installs": "10,000,000+",
+      "score": 4.5783834,
+      "ratings": 336360,
+      "url": "https://play.google.com/store/apps/details?id=com.appgeneration.itunerfree&hl=en&gl=us"
+    },
+    {
+      "appId": "com.hv.replaio",
+      "title": "Replaio Radio",
+      "summaryExcerpt": "Radio AM, FM & internet from around the world. Listen to many stations in 1 app",
+      "installs": "5,000,000+",
+      "score": 4.595349,
+      "ratings": 176054,
+      "url": "https://play.google.com/store/apps/details?id=com.hv.replaio&hl=en&gl=us"
+    },
+    {
+      "appId": "com.ilv.vradio",
+      "title": "VRadio - Online Radio App",
+      "summaryExcerpt": "Listen to thousands of radio stations online.",
+      "installs": "1,000,000+",
+      "score": 4.7462687,
+      "ratings": 37543,
+      "url": "https://play.google.com/store/apps/details?id=com.ilv.vradio&hl=en&gl=us"
+    },
+    {
+      "appId": "com.radio.fmradio",
+      "title": "Radio FM",
+      "summaryExcerpt": "Listen to Radio, Drama & Podcasts – Your all-in-one audio streaming app!",
+      "installs": "100,000,000+",
+      "score": 4.368036,
+      "ratings": 1011419,
+      "url": "https://play.google.com/store/apps/details?id=com.radio.fmradio&hl=en&gl=us"
+    },
+    {
+      "appId": "com.audials",
+      "title": "Audials Play: Radio & Podcasts",
+      "summaryExcerpt": "All in one player/recorder with countless radios from U.S. & abroad",
+      "installs": "1,000,000+",
+      "score": 3.9075143,
+      "ratings": 43471,
+      "url": "https://play.google.com/store/apps/details?id=com.audials&hl=en&gl=us"
+    },
+    {
+      "appId": "com.jonathanpuckey.radiogarden",
+      "title": "Radio Garden",
+      "summaryExcerpt": "Listen to thousands of live radio stations world wide by rotating the globe.",
+      "installs": "10,000,000+",
+      "score": 4.3714285,
+      "ratings": 128668,
+      "url": "https://play.google.com/store/apps/details?id=com.jonathanpuckey.radiogarden&hl=en&gl=us"
+    },
+    {
+      "appId": "com.finallevel.radiobox",
+      "title": "Online Radio Box・FM, AM Player",
+      "summaryExcerpt": "Live online radio player. Listen to local and worldwide stations.",
+      "installs": "5,000,000+",
+      "score": 4.3425927,
+      "ratings": 25167,
+      "url": "https://play.google.com/store/apps/details?id=com.finallevel.radiobox&hl=en&gl=us"
+    }
+  ],
+  "markets": [
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "country": "tr",
+      "query": "canlı radyo dinle",
+      "editorialIntentPhrases": [
+        "Türkçe radyo",
+        "türkü",
+        "arabesk",
+        "haber"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=canl%C4%B1%20radyo%20dinle&c=apps&hl=tr&gl=tr",
+      "results": [
+        {
+          "appId": "idu.com.radio.radyoturk",
+          "title": "Radyo Türk - Canlı Radyo Dinle",
+          "url": null,
+          "score": 4.444126
+        },
+        {
+          "appId": "fm.radiotune.country.tr",
+          "title": "Radyo Türkiye: AM ve FM Radyo",
+          "url": null,
+          "score": 4.7824774
+        },
+        {
+          "appId": "com.gatmaca.canliradyoo",
+          "title": "Mobil Canlı Radyo Tüm Radyolar",
+          "url": null,
+          "score": 4.07109
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Spor, Müzik, FM",
+          "url": null,
+          "score": 4.080925
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Radyo FM",
+          "url": null,
+          "score": 3.8023167
+        },
+        {
+          "appId": "com.md.radiigo",
+          "title": "RadiiGo - Radyo Dinle",
+          "url": null,
+          "score": 4.740506
+        }
+      ]
+    },
+    {
+      "locale": "de-DE",
+      "language": "de",
+      "country": "de",
+      "query": "Radio hören Webradio",
+      "editorialIntentPhrases": [
+        "Internetradio",
+        "Radiosender",
+        "Schlager",
+        "Nachrichten"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=Radio%20h%C3%B6ren%20Webradio&c=apps&hl=de&gl=de",
+      "results": [
+        {
+          "appId": "de.radio.android",
+          "title": "radio.de - Radio und Podcast",
+          "url": "https://play.google.com/store/apps/details?id=de.radio.android&hl=de&gl=de"
+        },
+        {
+          "appId": "com.appmind.radios.de",
+          "title": "InternetRadio Deutschland",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.de&hl=de&gl=de"
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Musik & Sport",
+          "url": "https://play.google.com/store/apps/details?id=tunein.player&hl=de&gl=de"
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Radio FM: Live-Radio-App",
+          "url": "https://play.google.com/store/apps/details?id=com.radio.fmradio&hl=de&gl=de"
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Radio Online",
+          "url": "https://play.google.com/store/apps/details?id=com.stayfprod.awesomeradio.free&hl=de&gl=de"
+        },
+        {
+          "appId": "de.phonostar.player",
+          "title": "Radio-App, Recorder, Podcasts",
+          "url": "https://play.google.com/store/apps/details?id=de.phonostar.player&hl=de&gl=de"
+        }
+      ]
+    },
+    {
+      "locale": "de-AT",
+      "language": "de",
+      "country": "at",
+      "query": "Radio Österreich live",
+      "editorialIntentPhrases": [
+        "österreichische Radiosender",
+        "Webradio",
+        "Austropop"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=Radio%20%C3%96sterreich%20live&c=apps&hl=de&gl=at",
+      "results": [
+        {
+          "appId": "com.idu.radio.austria.osterreich",
+          "title": "Radio Österreich - Live Radio",
+          "url": "https://play.google.com/store/apps/details?id=com.idu.radio.austria.osterreich&hl=de&gl=at"
+        },
+        {
+          "appId": "com.appmind.radios.at",
+          "title": "Radio Österreich Internetradio",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.at&hl=de&gl=at"
+        },
+        {
+          "appId": "com.harmony.radioAt",
+          "title": "Radio Österreich - Live !",
+          "url": "https://play.google.com/store/apps/details?id=com.harmony.radioAt&hl=de&gl=at"
+        },
+        {
+          "appId": "com.ntr.radios.osterreichische",
+          "title": "Radio Österreich FM AM live",
+          "url": "https://play.google.com/store/apps/details?id=com.ntr.radios.osterreichische&hl=de&gl=at"
+        },
+        {
+          "appId": "com.radiofmapp.radioaustria",
+          "title": "Radio Österreich: Online radio",
+          "url": "https://play.google.com/store/apps/details?id=com.radiofmapp.radioaustria&hl=de&gl=at"
+        },
+        {
+          "appId": "fm.radiotune.country.at",
+          "title": "Radio Österreich: FM & AM",
+          "url": "https://play.google.com/store/apps/details?id=fm.radiotune.country.at&hl=de&gl=at"
+        }
+      ]
+    },
+    {
+      "locale": "de-CH",
+      "language": "de",
+      "country": "ch",
+      "query": "Schweizer Radio hören",
+      "editorialIntentPhrases": [
+        "Schweizer Radiosender",
+        "Internetradio",
+        "Nachrichten"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=Schweizer%20Radio%20h%C3%B6ren&c=apps&hl=de&gl=ch",
+      "results": [
+        {
+          "appId": "ch.srf.mobile.srfplayer",
+          "title": "Play SRF: Streaming TV & Radio",
+          "url": null,
+          "score": 4.3875556
+        },
+        {
+          "appId": "com.appmind.radios.ch",
+          "title": "Radio Schweiz Internetradio",
+          "url": null,
+          "score": 4.6029797
+        },
+        {
+          "appId": "ch.srf.mobile",
+          "title": "SRF News - Nachrichten",
+          "url": null,
+          "score": 4.3958335
+        },
+        {
+          "appId": "com.radiofmapp.swiss",
+          "title": "Schweiz Radio: DAB radio app",
+          "url": null,
+          "score": 4.44
+        },
+        {
+          "appId": "com.radiolight.suisse",
+          "title": "Radio Schweiz: Radio FM online",
+          "url": null,
+          "score": 4.6862745
+        },
+        {
+          "appId": "fm.radiotune.country.ch",
+          "title": "Radio Schweiz: FM & AM",
+          "url": null,
+          "score": 4.8
+        }
+      ]
+    },
+    {
+      "locale": "en-US",
+      "language": "en",
+      "country": "us",
+      "query": "live radio stations",
+      "editorialIntentPhrases": [
+        "local radio",
+        "talk radio",
+        "country music",
+        "FM radio"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=live%20radio%20stations&c=apps&hl=en&gl=us",
+      "results": [
+        {
+          "appId": "com.clearchannel.iheartradio.controller",
+          "title": "iHeart: Music, Radio, Podcasts",
+          "url": null,
+          "score": 4.5897927
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Music & Sports",
+          "url": null,
+          "score": 4.7139664
+        },
+        {
+          "appId": "radio.usa",
+          "title": "Radio USA - Live Radio FM / AM",
+          "url": null,
+          "score": 4.6704545
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Radio FM",
+          "url": null,
+          "score": 4.368036
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "Simple Radio: Live AM FM Radio",
+          "url": null,
+          "score": 4.720018
+        },
+        {
+          "appId": "com.appgeneration.itunerfree",
+          "title": "myTuner FM Radio App",
+          "url": null,
+          "score": 4.5783834
+        }
+      ]
+    },
+    {
+      "locale": "en-GB",
+      "language": "en",
+      "country": "gb",
+      "query": "UK radio live",
+      "editorialIntentPhrases": [
+        "British radio",
+        "live stations",
+        "news radio",
+        "internet radio"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=UK%20radio%20live&c=apps&hl=en&gl=gb",
+      "results": [
+        {
+          "appId": "com.appmind.radios.gb",
+          "title": "Radio UK - Online Radio player",
+          "url": null,
+          "score": 4.6989822
+        },
+        {
+          "appId": "uk.myonlineradio.onlineradioapplication",
+          "title": "UKRadioLive: UK Radio Stations",
+          "url": null,
+          "score": 4.586207
+        },
+        {
+          "appId": "com.radiolight.uk",
+          "title": "Radio UK - Live FM & AM",
+          "url": null,
+          "score": 4.815969
+        },
+        {
+          "appId": "live.ukradio.twa",
+          "title": "UK Radio: FM, DAB & Online",
+          "url": null,
+          "score": 3.735294
+        },
+        {
+          "appId": "com.bbc.sounds",
+          "title": "BBC Sounds: Radio & Podcasts",
+          "url": null,
+          "score": 4.421078
+        },
+        {
+          "appId": "fm.radiotune.country.gb",
+          "title": "Radio UK: FM & AM",
+          "url": null,
+          "score": 4.5614033
+        }
+      ]
+    },
+    {
+      "locale": "en-AU",
+      "language": "en",
+      "country": "au",
+      "query": "Australian radio stations",
+      "editorialIntentPhrases": [
+        "local radio",
+        "talkback",
+        "live radio",
+        "online radio"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=Australian%20radio%20stations&c=apps&hl=en&gl=au",
+      "results": [
+        {
+          "appId": "com.appmind.radios.au",
+          "title": "Radio Australia - online radio",
+          "url": null,
+          "score": 4.5761285
+        },
+        {
+          "appId": "com.thisisaim.abcradio",
+          "title": "ABC listen: Radio & Podcasts",
+          "url": null,
+          "score": 2.7548077
+        },
+        {
+          "appId": "fm.radiotune.country.au",
+          "title": "Radio Australia: FM & AM",
+          "url": null,
+          "score": 4.75
+        },
+        {
+          "appId": "au.com.radioapp",
+          "title": "RadioApp – FM, AM, DAB+",
+          "url": null,
+          "score": 4.556
+        },
+        {
+          "appId": "com.m5bd9b37c5a8f.app",
+          "title": "Australian Country Radio",
+          "url": null,
+          "score": 4.5
+        },
+        {
+          "appId": "au.org.cbaa.app",
+          "title": "Community Radio Plus",
+          "url": null,
+          "score": 4.66
+        }
+      ]
+    },
+    {
+      "locale": "en-CA",
+      "language": "en",
+      "country": "ca",
+      "query": "Canada radio live",
+      "editorialIntentPhrases": [
+        "Canadian radio",
+        "local stations",
+        "country radio",
+        "news"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=Canada%20radio%20live&c=apps&hl=en&gl=ca",
+      "results": [
+        {
+          "appId": "com.appmind.radios.ca",
+          "title": "Radio Canada: Radio Player App",
+          "url": null,
+          "score": 4.5606203
+        },
+        {
+          "appId": "com.radiolight.canada",
+          "title": "Radio Canada: Online FM Radio",
+          "url": null,
+          "score": 4.829574
+        },
+        {
+          "appId": "com.radoxo.ca",
+          "title": "Radio Canada — Live Online FM",
+          "url": null,
+          "score": null
+        },
+        {
+          "appId": "com.radiosonline.radiofmcanada",
+          "title": "Radio FM Canada: Online Radio",
+          "url": null,
+          "score": 4.5470853
+        },
+        {
+          "appId": "swmr.canada.pro",
+          "title": "Canada Radio Stations",
+          "url": null,
+          "score": 4.173913
+        },
+        {
+          "appId": "fm.radiotune.country.ca",
+          "title": "Radio Canada: FM & AM",
+          "url": null,
+          "score": 4.811111
+        }
+      ]
+    },
+    {
+      "locale": "fr-FR",
+      "language": "fr",
+      "country": "fr",
+      "query": "radio en direct",
+      "editorialIntentPhrases": [
+        "écouter la radio",
+        "radios françaises",
+        "webradio",
+        "actualités"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20en%20direct&c=apps&hl=fr&gl=fr",
+      "results": [
+        {
+          "appId": "com.appmind.radios.fr",
+          "title": "Radios Françaises FM en Direct",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.fr&hl=fr&gl=fr"
+        },
+        {
+          "appId": "com.radiofrance.radio.radiofrance.android",
+          "title": "Radio France : radios, podcast",
+          "url": "https://play.google.com/store/apps/details?id=com.radiofrance.radio.radiofrance.android&hl=fr&gl=fr"
+        },
+        {
+          "appId": "de.radio.android",
+          "title": "radio.fr - radio et podcast",
+          "url": "https://play.google.com/store/apps/details?id=de.radio.android&hl=fr&gl=fr"
+        },
+        {
+          "appId": "com.blablacast.multiradio",
+          "title": "Radios en direct et en podcast",
+          "url": "https://play.google.com/store/apps/details?id=com.blablacast.multiradio&hl=fr&gl=fr"
+        },
+        {
+          "appId": "net.radioexpert.radio.france",
+          "title": "Radio en ligne France: Live FM",
+          "url": "https://play.google.com/store/apps/details?id=net.radioexpert.radio.france&hl=fr&gl=fr"
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: sport & radio FM",
+          "url": "https://play.google.com/store/apps/details?id=tunein.player&hl=fr&gl=fr"
+        }
+      ]
+    },
+    {
+      "locale": "fr-CA",
+      "language": "fr",
+      "country": "ca",
+      "query": "radio Québec en direct",
+      "editorialIntentPhrases": [
+        "radios québécoises",
+        "radio francophone",
+        "chansons",
+        "nouvelles"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20Qu%C3%A9bec%20en%20direct&c=apps&hl=fr&gl=ca",
+      "results": [
+        {
+          "appId": "com.radioleaf.quebec",
+          "title": "Radios du Québec en direct",
+          "url": null,
+          "score": 4.4310346
+        },
+        {
+          "appId": "com.radio.radioquebec",
+          "title": "Radio Quebec",
+          "url": null,
+          "score": 4.775
+        },
+        {
+          "appId": "com.radiocanada.android",
+          "title": "Radio-Canada Info",
+          "url": null,
+          "score": 4.5936475
+        },
+        {
+          "appId": "tv.telequebec",
+          "title": "Télé-Québec",
+          "url": null,
+          "score": 2.826087
+        },
+        {
+          "appId": "net.manoloworks.radio_quebec_montreal_canada",
+          "title": "Stations de Radio Québec",
+          "url": null,
+          "score": null
+        },
+        {
+          "appId": "net.artstyle.canada_radio_quebec_montreal",
+          "title": "Radio Quebec",
+          "url": null,
+          "score": 4.4
+        }
+      ]
+    },
+    {
+      "locale": "es-ES",
+      "language": "es",
+      "country": "es",
+      "query": "radio España en directo",
+      "editorialIntentPhrases": [
+        "emisoras",
+        "escuchar radio",
+        "noticias",
+        "radio online"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20Espa%C3%B1a%20en%20directo&c=apps&hl=es&gl=es",
+      "results": [
+        {
+          "appId": "com.appmind.radios.es",
+          "title": "Radios Españolas en directo FM",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.es&hl=es&gl=es"
+        },
+        {
+          "appId": "fm.radiotune.country.es",
+          "title": "Radio España: Radio FM y AM",
+          "url": "https://play.google.com/store/apps/details?id=fm.radiotune.country.es&hl=es&gl=es"
+        },
+        {
+          "appId": "com.radiofmapp.radioespanna",
+          "title": "Radios de España FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radiofmapp.radioespanna&hl=es&gl=es"
+        },
+        {
+          "appId": "es.androideapp.radioEsp",
+          "title": "Radios de España",
+          "url": "https://play.google.com/store/apps/details?id=es.androideapp.radioEsp&hl=es&gl=es"
+        },
+        {
+          "appId": "com.cmobile.radiofm",
+          "title": "Radio FM: Escucha En Directo",
+          "url": "https://play.google.com/store/apps/details?id=com.cmobile.radiofm&hl=es&gl=es"
+        },
+        {
+          "appId": "moldesbrothers.miradio",
+          "title": "miRadio: Radios FM de España",
+          "url": "https://play.google.com/store/apps/details?id=moldesbrothers.miradio&hl=es&gl=es"
+        }
+      ]
+    },
+    {
+      "locale": "es-419",
+      "language": "es",
+      "country": "mx",
+      "query": "radio México en vivo",
+      "editorialIntentPhrases": [
+        "emisoras mexicanas",
+        "radio en línea",
+        "regional mexicano",
+        "noticias"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20M%C3%A9xico%20en%20vivo&c=apps&hl=es&gl=mx",
+      "results": [
+        {
+          "appId": "com.appmind.radios.mx",
+          "title": "Radio Mexico - radio en vivo",
+          "url": null,
+          "score": 4.7741394
+        },
+        {
+          "appId": "com.radiosonline.radiofmmexico",
+          "title": "Radio México FM, AM y Emisoras",
+          "url": null,
+          "score": 4.640741
+        },
+        {
+          "appId": "com.ntr.radios.mexico",
+          "title": "Radio México FM y AM en Vivo",
+          "url": null,
+          "score": 4
+        },
+        {
+          "appId": "fm.radiotune.country.mx",
+          "title": "Radio Mexico: Radio FM y AM",
+          "url": null,
+          "score": 4.85
+        },
+        {
+          "appId": "com.app.mexam",
+          "title": "Mexico Radio - FM /AM",
+          "url": null,
+          "score": 4.792308
+        },
+        {
+          "appId": "com.radoxo.mx",
+          "title": "Radios de México En Vivo FM",
+          "url": null,
+          "score": 4.5964913
+        }
+      ]
+    },
+    {
+      "locale": "it-IT",
+      "language": "it",
+      "country": "it",
+      "query": "radio italiane in diretta",
+      "editorialIntentPhrases": [
+        "ascolta radio",
+        "radio online",
+        "musica italiana",
+        "notizie"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20italiane%20in%20diretta&c=apps&hl=it&gl=it",
+      "results": [
+        {
+          "appId": "com.appmind.radios.it",
+          "title": "Radio Italia FM in diretta",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.it&hl=it&gl=it"
+        },
+        {
+          "appId": "com.vbapps.radioitalia",
+          "title": "Radio Italiane in Diretta",
+          "url": "https://play.google.com/store/apps/details?id=com.vbapps.radioitalia&hl=it&gl=it"
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "Simple Radio - Radio FM e AM",
+          "url": "https://play.google.com/store/apps/details?id=com.streema.simpleradio&hl=it&gl=it"
+        },
+        {
+          "appId": "moldesbrothers.miradioit",
+          "title": "Radio Italiane FM in Diretta",
+          "url": "https://play.google.com/store/apps/details?id=moldesbrothers.miradioit&hl=it&gl=it"
+        },
+        {
+          "appId": "fm.radiotune.country.it",
+          "title": "Radio Italia: Radio FM e AM",
+          "url": "https://play.google.com/store/apps/details?id=fm.radiotune.country.it&hl=it&gl=it"
+        },
+        {
+          "appId": "com.radioplayer.mobile",
+          "title": "Radioplayer - Radio & Podcast",
+          "url": "https://play.google.com/store/apps/details?id=com.radioplayer.mobile&hl=it&gl=it"
+        }
+      ]
+    },
+    {
+      "locale": "pt-PT",
+      "language": "pt",
+      "country": "pt",
+      "query": "rádio Portugal em direto",
+      "editorialIntentPhrases": [
+        "rádios portuguesas",
+        "ouvir rádio",
+        "fado",
+        "notícias"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=r%C3%A1dio%20Portugal%20em%20direto&c=apps&hl=pt&gl=pt",
+      "results": [
+        {
+          "appId": "com.radiolight.portugal",
+          "title": "Rádio Portugal FM online",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.portugal&hl=pt&gl=pt"
+        },
+        {
+          "appId": "com.radiofmapp.radioportugal",
+          "title": "Radio Portugal FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radiofmapp.radioportugal&hl=pt&gl=pt"
+        },
+        {
+          "appId": "radio.online.portugal",
+          "title": "Radios de  Portugal - Rádio FM",
+          "url": "https://play.google.com/store/apps/details?id=radio.online.portugal&hl=pt&gl=pt"
+        },
+        {
+          "appId": "pt.rtp.play",
+          "title": "RTP Play",
+          "url": "https://play.google.com/store/apps/details?id=pt.rtp.play&hl=pt&gl=pt"
+        },
+        {
+          "appId": "com.GR.TV.portugal",
+          "title": "TV Portugal em direto",
+          "url": "https://play.google.com/store/apps/details?id=com.GR.TV.portugal&hl=pt&gl=pt"
+        },
+        {
+          "appId": "com.portugal.tv",
+          "title": "Portugal Live",
+          "url": "https://play.google.com/store/apps/details?id=com.portugal.tv&hl=pt&gl=pt"
+        }
+      ]
+    },
+    {
+      "locale": "pt-BR",
+      "language": "pt",
+      "country": "br",
+      "query": "rádio ao vivo",
+      "editorialIntentPhrases": [
+        "rádios brasileiras",
+        "rádio online",
+        "sertanejo",
+        "MPB"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=r%C3%A1dio%20ao%20vivo&c=apps&hl=pt&gl=br",
+      "results": [
+        {
+          "appId": "com.appmind.radios.br",
+          "title": "Radio Brasil- Rádio FM ao vivo",
+          "url": null,
+          "score": 4.793777
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Rádio Online - Brasil, Mundo",
+          "url": null,
+          "score": 4.732026
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Rádio FM",
+          "url": null,
+          "score": 4.515629
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "Simple Radio: Estações AM & FM",
+          "url": null,
+          "score": 4.839513
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Rádio: Música, Esportes",
+          "url": null,
+          "score": 4.84424
+        },
+        {
+          "appId": "com.jonathanpuckey.radiogarden",
+          "title": "Radio Garden",
+          "url": null,
+          "score": 4.6937985
+        }
+      ]
+    },
+    {
+      "locale": "ru-RU",
+      "language": "ru",
+      "country": "ru",
+      "query": "слушать радио онлайн",
+      "editorialIntentPhrases": [
+        "радиостанции",
+        "прямой эфир",
+        "музыка",
+        "новости"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%D1%81%D0%BB%D1%83%D1%88%D0%B0%D1%82%D1%8C%20%D1%80%D0%B0%D0%B4%D0%B8%D0%BE%20%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD&c=apps&hl=ru&gl=ru",
+      "results": [
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Радио Онлайн",
+          "url": null,
+          "score": 4.808057
+        },
+        {
+          "appId": "com.radiolight.russie",
+          "title": "Радио онлайн - FM и AM России",
+          "url": null,
+          "score": 4.819052
+        },
+        {
+          "appId": "com.radio.helloworld",
+          "title": "Просто Радио онлайн",
+          "url": null,
+          "score": 4.504016
+        },
+        {
+          "appId": "ru.involta.radio",
+          "title": "Радио онлайн. Музыка, новости",
+          "url": null,
+          "score": 4.3799057
+        },
+        {
+          "appId": "ru.fmfree",
+          "title": "Радио - все станции онлайн",
+          "url": null,
+          "score": 4.4158416
+        },
+        {
+          "appId": "ru.yandex.mobile.fmradio",
+          "title": "Яндекс Радио — все станции",
+          "url": null,
+          "score": 4.422222
+        }
+      ]
+    },
+    {
+      "locale": "ja-JP",
+      "language": "ja",
+      "country": "jp",
+      "query": "ラジオ インターネット",
+      "editorialIntentPhrases": [
+        "ネットラジオ",
+        "ラジオ局",
+        "音楽",
+        "ニュース"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E3%83%A9%E3%82%B8%E3%82%AA%20%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%8D%E3%83%83%E3%83%88&c=apps&hl=ja&gl=jp",
+      "results": [
+        {
+          "appId": "jp.radiko.Player",
+          "title": "radiko",
+          "url": null,
+          "score": 4.054082
+        },
+        {
+          "appId": "jp.nhk.netradio",
+          "title": "NHK ONE らじる★らじる ラジオ配信アプリ",
+          "url": null,
+          "score": 3.7295775
+        },
+        {
+          "appId": "jp.radiko.plusfm.player",
+          "title": "radiko＋FM",
+          "url": null,
+          "score": 3.4534883
+        },
+        {
+          "appId": "com.radiosonline.radiofmjapan",
+          "title": "ラジオFM AM 日本 - チューナー",
+          "url": null,
+          "score": 4
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Radio FM",
+          "url": null,
+          "score": 4.0762563
+        },
+        {
+          "appId": "com.radiolight.etatsunis",
+          "title": "ラジオUSAFMオンライン",
+          "url": null,
+          "score": 4.6987953
+        }
+      ]
+    },
+    {
+      "locale": "zh-TW",
+      "language": "zh-TW",
+      "country": "tw",
+      "query": "線上廣播電台",
+      "editorialIntentPhrases": [
+        "聽廣播",
+        "台灣電台",
+        "音樂",
+        "新聞"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E7%B7%9A%E4%B8%8A%E5%BB%A3%E6%92%AD%E9%9B%BB%E5%8F%B0&c=apps&hl=zh-TW&gl=tw",
+      "results": [
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn 電台：新聞、體育、音樂和廣播電台。",
+          "url": null,
+          "score": 4.7200813
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "Simple Radio: Live AM FM Radio",
+          "url": null,
+          "score": 4.58
+        },
+        {
+          "appId": "com.appgeneration.itunerfree",
+          "title": "myTuner Radio 收音機",
+          "url": null,
+          "score": 4.322727
+        },
+        {
+          "appId": "myradio.radio.fmradio.liveradio.radiostation",
+          "title": "My Radio：廣播電台、收音機、廣播 電台、FM",
+          "url": null,
+          "score": 4.5389223
+        },
+        {
+          "appId": "radiotime.player",
+          "title": "TuneIn Pro 電台：新聞、體育、音樂和廣播電台。",
+          "url": null,
+          "score": 4.63
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "網路電台 - 台灣，世界",
+          "url": null,
+          "score": 4.742574
+        }
+      ]
+    },
+    {
+      "locale": "zh-CN",
+      "language": "zh-CN",
+      "country": "sg",
+      "query": "在线收音机",
+      "editorialIntentPhrases": [
+        "网络电台",
+        "广播直播",
+        "音乐",
+        "新闻"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E5%9C%A8%E7%BA%BF%E6%94%B6%E9%9F%B3%E6%9C%BA&c=apps&hl=zh-CN&gl=sg",
+      "results": [
+        {
+          "appId": "fmradio.radiostation.livefm.musicradio",
+          "title": "FM Radio - 收音机 FM、AM、广播电台、在线电台",
+          "url": null,
+          "score": 4.4302325
+        },
+        {
+          "appId": "myradio.radio.fmradio.liveradio.radiostation",
+          "title": "My Radio - FM 收音机，广播电台，中国电台",
+          "url": null,
+          "score": 4.68
+        },
+        {
+          "appId": "com.radiosonline.radiofmchina",
+          "title": "收音机FM 中国广播电台 新闻夜秀",
+          "url": null,
+          "score": 4.5287356
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio：新闻、体育、音乐和广播电台",
+          "url": null,
+          "score": 4.6810346
+        },
+        {
+          "appId": "com.radiosonline.radiofmtaiwan",
+          "title": "收音机 台湾 FM - Radio Taiwan App",
+          "url": null,
+          "score": 4.214286
+        },
+        {
+          "appId": "com.maxxt.pcradio",
+          "title": "在线收音机 - PCRADIO",
+          "url": null,
+          "score": 4.5555553
+        }
+      ]
+    },
+    {
+      "locale": "ko-KR",
+      "language": "ko",
+      "country": "kr",
+      "query": "인터넷 라디오",
+      "editorialIntentPhrases": [
+        "실시간 라디오",
+        "라디오 방송",
+        "음악",
+        "뉴스"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%EC%9D%B8%ED%84%B0%EB%84%B7%20%EB%9D%BC%EB%94%94%EC%98%A4&c=apps&hl=ko&gl=kr",
+      "results": [
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "인터넷 라디오",
+          "url": null,
+          "score": 4.68
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn 라디오: 뉴스, 스포츠, 음악, fm",
+          "url": null,
+          "score": 4.706402
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "라디오 FM: 라이브 AM, FM 라디오 방송국",
+          "url": null,
+          "score": 3.9806576
+        },
+        {
+          "appId": "com.icecream.simplemediaplayer",
+          "title": "라디오 - 한국 인터넷 라디오, 실시간 FM AM",
+          "url": null,
+          "score": 4.5
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "단순한 라디오 - 라이브 라디오 FM AM 어플",
+          "url": null,
+          "score": 4.43
+        },
+        {
+          "appId": "de.radio.android",
+          "title": "radio.net - AM FM Radio Tuner",
+          "url": null,
+          "score": 4.69
+        }
+      ]
+    },
+    {
+      "locale": "he-IL",
+      "language": "iw",
+      "country": "il",
+      "query": "רדיו ישראל בשידור חי",
+      "editorialIntentPhrases": [
+        "תחנות רדיו",
+        "רדיו באינטרנט",
+        "מוזיקה",
+        "חדשות"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%D7%A8%D7%93%D7%99%D7%95%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%20%D7%91%D7%A9%D7%99%D7%93%D7%95%D7%A8%20%D7%97%D7%99&c=apps&hl=iw&gl=il",
+      "results": [
+        {
+          "appId": "com.greenshpits.RLive",
+          "title": "RLive רדיו - תחנות רדיו ישראלי",
+          "url": null,
+          "score": 4.1744547
+        },
+        {
+          "appId": "radio.israel.fm",
+          "title": "(radio israel) רדיו ישראלי",
+          "url": null,
+          "score": 4.6121716
+        },
+        {
+          "appId": "online.live.iradio.il",
+          "title": "רדיו ישראל-כל התחנות הטובות",
+          "url": null,
+          "score": 4.619403
+        },
+        {
+          "appId": "kaplandev.allfmplayer",
+          "title": "All-FM תחנות רדיו בישראל בקליק",
+          "url": null,
+          "score": 3.73
+        },
+        {
+          "appId": "com.radiosonline.radiofmisrael",
+          "title": "רדיו ישראלי - radio israel",
+          "url": null,
+          "score": 4.2977347
+        },
+        {
+          "appId": "com.asemob.radioapp.Israel",
+          "title": "תחנות רדיו ישראל",
+          "url": null,
+          "score": 4.418605
+        }
+      ]
+    },
+    {
+      "locale": "ar",
+      "language": "ar",
+      "country": "sa",
+      "query": "راديو بث مباشر",
+      "editorialIntentPhrases": [
+        "إذاعات عربية",
+        "راديو أون لاين",
+        "أخبار",
+        "موسيقى"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%D8%B1%D8%A7%D8%AF%D9%8A%D9%88%20%D8%A8%D8%AB%20%D9%85%D8%A8%D8%A7%D8%B4%D8%B1&c=apps&hl=ar&gl=sa",
+      "results": [
+        {
+          "appId": "com.radio.fmradio",
+          "title": "راديو FM",
+          "url": null,
+          "score": 4.4462028
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Music & Sports",
+          "url": null,
+          "score": 4.386667
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "Simple Radio: Live AM FM Radio",
+          "url": null,
+          "score": 4.5620914
+        },
+        {
+          "appId": "fmradio.radiostation.livefm.musicradio",
+          "title": "FM Radio, راديو مباشر FM AM",
+          "url": null,
+          "score": 4.19
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "راديو أونلاين - العالم العربي",
+          "url": null,
+          "score": 4.4117646
+        },
+        {
+          "appId": "fm.radiotune.global",
+          "title": "راديو FM و AM",
+          "url": null,
+          "score": 4.9166665
+        }
+      ]
+    },
+    {
+      "locale": "nl-NL",
+      "language": "nl",
+      "country": "nl",
+      "query": "radio luisteren",
+      "editorialIntentPhrases": [
+        "Nederlandse radio",
+        "online radio",
+        "radiozenders",
+        "nieuws"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20luisteren&c=apps&hl=nl&gl=nl",
+      "results": [
+        {
+          "appId": "com.appmind.radios.nl",
+          "title": "Radio Luisteren Nederland App",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.nl&hl=nl&gl=nl"
+        },
+        {
+          "appId": "nl.nibbixsoft.app",
+          "title": "Nederland.FM - Radio",
+          "url": "https://play.google.com/store/apps/details?id=nl.nibbixsoft.app&hl=nl&gl=nl"
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Sport & FM radio",
+          "url": "https://play.google.com/store/apps/details?id=tunein.player&hl=nl&gl=nl"
+        },
+        {
+          "appId": "com.radio.luisteren",
+          "title": "RadioLuisteren.fm - Live radio",
+          "url": "https://play.google.com/store/apps/details?id=com.radio.luisteren&hl=nl&gl=nl"
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Radio FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radio.fmradio&hl=nl&gl=nl"
+        },
+        {
+          "appId": "com.appgeneration.itunerfree",
+          "title": "myTuner Radio Nederland",
+          "url": "https://play.google.com/store/apps/details?id=com.appgeneration.itunerfree&hl=nl&gl=nl"
+        }
+      ]
+    },
+    {
+      "locale": "sv-SE",
+      "language": "sv",
+      "country": "se",
+      "query": "lyssna på radio",
+      "editorialIntentPhrases": [
+        "svensk radio",
+        "webbradio",
+        "radiokanaler",
+        "nyheter"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=lyssna%20p%C3%A5%20radio&c=apps&hl=sv&gl=se",
+      "results": [
+        {
+          "appId": "se.sr.android",
+          "title": "Sveriges Radio",
+          "url": "https://play.google.com/store/apps/details?id=se.sr.android&hl=sv&gl=se"
+        },
+        {
+          "appId": "com.appmind.radios.se",
+          "title": "Radio Sverige - radio online",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.se&hl=sv&gl=se"
+        },
+        {
+          "appId": "se.sr.androidtv",
+          "title": "Sveriges Radio",
+          "url": "https://play.google.com/store/apps/details?id=se.sr.androidtv&hl=sv&gl=se"
+        },
+        {
+          "appId": "com.radiolight.suede",
+          "title": "Radio Sverige: FM Radio online",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.suede&hl=sv&gl=se"
+        },
+        {
+          "appId": "se.sbs.radioplay",
+          "title": "RadioPlay",
+          "url": "https://play.google.com/store/apps/details?id=se.sbs.radioplay&hl=sv&gl=se"
+        },
+        {
+          "appId": "com.radiosonline.sverigeradiofm",
+          "title": "Radio Sverige: Radio Online FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radiosonline.sverigeradiofm&hl=sv&gl=se"
+        }
+      ]
+    },
+    {
+      "locale": "no-NO",
+      "language": "no",
+      "country": "no",
+      "query": "norsk radio direkte",
+      "editorialIntentPhrases": [
+        "nettradio",
+        "radiokanaler",
+        "lytt til radio",
+        "nyheter"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=norsk%20radio%20direkte&c=apps&hl=no&gl=no",
+      "results": [
+        {
+          "appId": "no.nrk.mobil.radio",
+          "title": "NRK Radio",
+          "url": "https://play.google.com/store/apps/details?id=no.nrk.mobil.radio&hl=no&gl=no"
+        },
+        {
+          "appId": "no.radiomannen.norskradioapp",
+          "title": "Radio for Norge - Radiomannen",
+          "url": "https://play.google.com/store/apps/details?id=no.radiomannen.norskradioapp&hl=no&gl=no"
+        },
+        {
+          "appId": "org.samsonsen.radio",
+          "title": "Min Radio Norge - Norsk radio",
+          "url": "https://play.google.com/store/apps/details?id=org.samsonsen.radio&hl=no&gl=no"
+        },
+        {
+          "appId": "com.appmind.radios.no",
+          "title": "Radio Norge - DAB og Nettradio",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.no&hl=no&gl=no"
+        },
+        {
+          "appId": "com.appgeneration.itunerfree",
+          "title": "myTuner Radio Norge: Nettradio",
+          "url": "https://play.google.com/store/apps/details?id=com.appgeneration.itunerfree&hl=no&gl=no"
+        },
+        {
+          "appId": "com.radoxo.no",
+          "title": "Radio Norge — FM og Nettradio",
+          "url": "https://play.google.com/store/apps/details?id=com.radoxo.no&hl=no&gl=no"
+        }
+      ]
+    },
+    {
+      "locale": "da-DK",
+      "language": "da",
+      "country": "dk",
+      "query": "dansk radio live",
+      "editorialIntentPhrases": [
+        "netradio",
+        "lyt til radio",
+        "radiokanaler",
+        "nyheder"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=dansk%20radio%20live&c=apps&hl=da&gl=dk",
+      "results": [
+        {
+          "appId": "dk.dr.radio",
+          "title": "DR LYD",
+          "url": "https://play.google.com/store/apps/details?id=dk.dr.radio&hl=da&gl=dk"
+        },
+        {
+          "appId": "com.appmind.radios.dk",
+          "title": "Radio Danmark: Netradio og DAB",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.dk&hl=da&gl=dk"
+        },
+        {
+          "appId": "dk.dr.tvplayer",
+          "title": "DRTV - Android TV",
+          "url": "https://play.google.com/store/apps/details?id=dk.dr.tvplayer&hl=da&gl=dk"
+        },
+        {
+          "appId": "com.crystalmissions.dkradio",
+          "title": "DK Radio - Danske radioer",
+          "url": "https://play.google.com/store/apps/details?id=com.crystalmissions.dkradio&hl=da&gl=dk"
+        },
+        {
+          "appId": "com.radiolight.danemark",
+          "title": "Radio Danmark: Radio play app",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.danemark&hl=da&gl=dk"
+        },
+        {
+          "appId": "de.radio.android",
+          "title": "radio.dk - radio og podcast",
+          "url": "https://play.google.com/store/apps/details?id=de.radio.android&hl=da&gl=dk"
+        }
+      ]
+    },
+    {
+      "locale": "fi-FI",
+      "language": "fi",
+      "country": "fi",
+      "query": "nettiradio Suomi",
+      "editorialIntentPhrases": [
+        "kuuntele radiota",
+        "radiokanavat",
+        "suomalainen radio",
+        "uutiset"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=nettiradio%20Suomi&c=apps&hl=fi&gl=fi",
+      "results": [
+        {
+          "appId": "com.radiofmapp.radiosuomi",
+          "title": "Radio Suomi FM - Nettiradio",
+          "url": "https://play.google.com/store/apps/details?id=com.radiofmapp.radiosuomi&hl=fi&gl=fi"
+        },
+        {
+          "appId": "com.appmind.radios.fi",
+          "title": "Radio Suomi - Kaikki Radiot FI",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.fi&hl=fi&gl=fi"
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Nettiradio",
+          "url": "https://play.google.com/store/apps/details?id=com.stayfprod.awesomeradio.free&hl=fi&gl=fi"
+        },
+        {
+          "appId": "com.radiosonline.radiofmsuomi",
+          "title": "Radio Suomi FI – Nettiradio",
+          "url": "https://play.google.com/store/apps/details?id=com.radiosonline.radiofmsuomi&hl=fi&gl=fi"
+        },
+        {
+          "appId": "com.radioplayer.mobile",
+          "title": "Radioplayer - Radio & Podcast",
+          "url": "https://play.google.com/store/apps/details?id=com.radioplayer.mobile&hl=fi&gl=fi"
+        },
+        {
+          "appId": "com.hv.replaio",
+          "title": "Replaio: Nettiradio Suomi FM",
+          "url": "https://play.google.com/store/apps/details?id=com.hv.replaio&hl=fi&gl=fi"
+        }
+      ]
+    },
+    {
+      "locale": "pl-PL",
+      "language": "pl",
+      "country": "pl",
+      "query": "radio internetowe",
+      "editorialIntentPhrases": [
+        "polskie radio",
+        "radio online",
+        "słuchaj radia",
+        "wiadomości"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20internetowe&c=apps&hl=pl&gl=pl",
+      "results": [
+        {
+          "appId": "com.appmind.radios.pl",
+          "title": "Radio Internetowe Polska",
+          "url": "https://play.google.com/store/apps/details?id=com.appmind.radios.pl&hl=pl&gl=pl"
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Radio internetowe",
+          "url": "https://play.google.com/store/apps/details?id=com.stayfprod.awesomeradio.free&hl=pl&gl=pl"
+        },
+        {
+          "appId": "pl.wp.android.openfm",
+          "title": "Open FM - radio i muzyka",
+          "url": "https://play.google.com/store/apps/details?id=pl.wp.android.openfm&hl=pl&gl=pl"
+        },
+        {
+          "appId": "com.radiolight.pologne",
+          "title": "Radio Polska: Stacje radio FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.pologne&hl=pl&gl=pl"
+        },
+        {
+          "appId": "com.hv.replaio",
+          "title": "Radio Internetowe FM Replaio",
+          "url": "https://play.google.com/store/apps/details?id=com.hv.replaio&hl=pl&gl=pl"
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Radio FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radio.fmradio&hl=pl&gl=pl"
+        }
+      ]
+    },
+    {
+      "locale": "cs-CZ",
+      "language": "cs",
+      "country": "cz",
+      "query": "česká rádia online",
+      "editorialIntentPhrases": [
+        "internetové rádio",
+        "poslech rádia",
+        "rádiové stanice",
+        "zprávy"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%C4%8Desk%C3%A1%20r%C3%A1dia%20online&c=apps&hl=cs&gl=cz",
+      "results": [
+        {
+          "appId": "com.crystalmissions.czradio",
+          "title": "CZ Radio - Česká online rádia",
+          "url": "https://play.google.com/store/apps/details?id=com.crystalmissions.czradio&hl=cs&gl=cz"
+        },
+        {
+          "appId": "czech.radio.online",
+          "title": "Rádio Česká - radio online",
+          "url": "https://play.google.com/store/apps/details?id=czech.radio.online&hl=cs&gl=cz"
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Rádio online",
+          "url": "https://play.google.com/store/apps/details?id=com.stayfprod.awesomeradio.free&hl=cs&gl=cz"
+        },
+        {
+          "appId": "cz.pixelfield.radiacz",
+          "title": "Radia.cz",
+          "url": "https://play.google.com/store/apps/details?id=cz.pixelfield.radiacz&hl=cs&gl=cz"
+        },
+        {
+          "appId": "cz.londa.radioimpuls",
+          "title": "Ráááádio Impuls",
+          "url": "https://play.google.com/store/apps/details?id=cz.londa.radioimpuls&hl=cs&gl=cz"
+        },
+        {
+          "appId": "net.radioexpert.radio.fm.czech",
+          "title": "Rádio Online Česká: Live Radio",
+          "url": "https://play.google.com/store/apps/details?id=net.radioexpert.radio.fm.czech&hl=cs&gl=cz"
+        }
+      ]
+    },
+    {
+      "locale": "sk-SK",
+      "language": "sk",
+      "country": "sk",
+      "query": "slovenské rádiá online",
+      "editorialIntentPhrases": [
+        "internetové rádio",
+        "počúvať rádio",
+        "rádiové stanice",
+        "správy"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=slovensk%C3%A9%20r%C3%A1di%C3%A1%20online&c=apps&hl=sk&gl=sk",
+      "results": [
+        {
+          "appId": "sk.myonlineradio.onlineradioapplication",
+          "title": "MyOnlineRadio: Slovenské rádiá",
+          "url": "https://play.google.com/store/apps/details?id=sk.myonlineradio.onlineradioapplication&hl=sk&gl=sk"
+        },
+        {
+          "appId": "radio.slovensko.sk.online.fm",
+          "title": "Rádiá Slovensko Online FM",
+          "url": "https://play.google.com/store/apps/details?id=radio.slovensko.sk.online.fm&hl=sk&gl=sk"
+        },
+        {
+          "appId": "com.crystalmissions.skradio",
+          "title": "SK Radio - Slovenské rádiá",
+          "url": "https://play.google.com/store/apps/details?id=com.crystalmissions.skradio&hl=sk&gl=sk"
+        },
+        {
+          "appId": "com.crystalmissions.dailytunes",
+          "title": "Daily Tunes - Svetové rádiá",
+          "url": "https://play.google.com/store/apps/details?id=com.crystalmissions.dailytunes&hl=sk&gl=sk"
+        },
+        {
+          "appId": "sk.troky.radiask",
+          "title": "Radia.sk",
+          "url": "https://play.google.com/store/apps/details?id=sk.troky.radiask&hl=sk&gl=sk"
+        },
+        {
+          "appId": "com.z9.jur.radio.slovakia.rozhlas.slovakradiostations.slovenske.radia",
+          "title": "Slovenské rozhlasové stanice",
+          "url": "https://play.google.com/store/apps/details?id=com.z9.jur.radio.slovakia.rozhlas.slovakradiostations.slovenske.radia&hl=sk&gl=sk"
+        }
+      ]
+    },
+    {
+      "locale": "hu-HU",
+      "language": "hu",
+      "country": "hu",
+      "query": "magyar rádió online",
+      "editorialIntentPhrases": [
+        "rádióhallgatás",
+        "internetes rádió",
+        "rádióállomások",
+        "hírek"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=magyar%20r%C3%A1di%C3%B3%20online&c=apps&hl=hu&gl=hu",
+      "results": [
+        {
+          "appId": "radio.online.magyar.ingyenes",
+          "title": "Online Rádió Magyarország",
+          "url": "https://play.google.com/store/apps/details?id=radio.online.magyar.ingyenes&hl=hu&gl=hu"
+        },
+        {
+          "appId": "hu.myonlineradio.onlineradioapplication",
+          "title": "MyOnlineRádió - Magyar Rádiók",
+          "url": "https://play.google.com/store/apps/details?id=hu.myonlineradio.onlineradioapplication&hl=hu&gl=hu"
+        },
+        {
+          "appId": "com.radiolight.hongrie",
+          "title": "Rádió Magyarország FM Online",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.hongrie&hl=hu&gl=hu"
+        },
+        {
+          "appId": "fm.radiotune.country.hu",
+          "title": "Magyarország Rádió: FM és AM",
+          "url": "https://play.google.com/store/apps/details?id=fm.radiotune.country.hu&hl=hu&gl=hu"
+        },
+        {
+          "appId": "net.radioexpert.radio.fm.hungary",
+          "title": "Online Rádió - Magyar Rádió",
+          "url": "https://play.google.com/store/apps/details?id=net.radioexpert.radio.fm.hungary&hl=hu&gl=hu"
+        },
+        {
+          "appId": "com.crystalmissions.huradio",
+          "title": "HU Radio - Magyar rádiók",
+          "url": "https://play.google.com/store/apps/details?id=com.crystalmissions.huradio&hl=hu&gl=hu"
+        }
+      ]
+    },
+    {
+      "locale": "ro-RO",
+      "language": "ro",
+      "country": "ro",
+      "query": "radio România online",
+      "editorialIntentPhrases": [
+        "radio live",
+        "posturi radio",
+        "ascultă radio",
+        "știri"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20Rom%C3%A2nia%20online&c=apps&hl=ro&gl=ro",
+      "results": [
+        {
+          "appId": "com.radiolight.roumanie",
+          "title": "Radio România AM FM Online",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.roumanie&hl=ro&gl=ro"
+        },
+        {
+          "appId": "radio.online.romania",
+          "title": "Radio Online România",
+          "url": "https://play.google.com/store/apps/details?id=radio.online.romania&hl=ro&gl=ro"
+        },
+        {
+          "appId": "net.radioexpert.radio.romania",
+          "title": "Radio Online România: Live FM",
+          "url": "https://play.google.com/store/apps/details?id=net.radioexpert.radio.romania&hl=ro&gl=ro"
+        },
+        {
+          "appId": "com.srr.radioromania",
+          "title": "Radio Romania",
+          "url": "https://play.google.com/store/apps/details?id=com.srr.radioromania&hl=ro&gl=ro"
+        },
+        {
+          "appId": "ro.myonlineradio.onlineradioapplication",
+          "title": "MyRadioOnline - Radio România",
+          "url": "https://play.google.com/store/apps/details?id=ro.myonlineradio.onlineradioapplication&hl=ro&gl=ro"
+        },
+        {
+          "appId": "com.radiocolors.roumanie",
+          "title": "Radio România: Radio FM Online",
+          "url": "https://play.google.com/store/apps/details?id=com.radiocolors.roumanie&hl=ro&gl=ro"
+        }
+      ]
+    },
+    {
+      "locale": "hr-HR",
+      "language": "hr",
+      "country": "hr",
+      "query": "hrvatski radio uživo",
+      "editorialIntentPhrases": [
+        "radio postaje",
+        "slušaj radio",
+        "online radio",
+        "vijesti"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=hrvatski%20radio%20u%C5%BEivo&c=apps&hl=hr&gl=hr",
+      "results": [
+        {
+          "appId": "com.Radio.Hrvatski",
+          "title": "Hrvatski Radio - Radio HR",
+          "url": "https://play.google.com/store/apps/details?id=com.Radio.Hrvatski&hl=hr&gl=hr"
+        },
+        {
+          "appId": "com.radoxo.hr",
+          "title": "Hrvatski Radio – FM i Uživo",
+          "url": "https://play.google.com/store/apps/details?id=com.radoxo.hr&hl=hr&gl=hr"
+        },
+        {
+          "appId": "hr.hrt.hrtradio",
+          "title": "HRT radio",
+          "url": "https://play.google.com/store/apps/details?id=hr.hrt.hrtradio&hl=hr&gl=hr"
+        },
+        {
+          "appId": "net.radioexpert.radio.uzivo",
+          "title": "Radio Uživo - Radio Stanice FM",
+          "url": "https://play.google.com/store/apps/details?id=net.radioexpert.radio.uzivo&hl=hr&gl=hr"
+        },
+        {
+          "appId": "radio.stanice.hrvatska.online.fm",
+          "title": "Radio Stanice Hrvatska Online",
+          "url": "https://play.google.com/store/apps/details?id=radio.stanice.hrvatska.online.fm&hl=hr&gl=hr"
+        },
+        {
+          "appId": "com.radiofmapp.hrvatska",
+          "title": "Radio Stanice Hrvatska FM",
+          "url": "https://play.google.com/store/apps/details?id=com.radiofmapp.hrvatska&hl=hr&gl=hr"
+        }
+      ]
+    },
+    {
+      "locale": "el-GR",
+      "language": "el",
+      "country": "gr",
+      "query": "ελληνικό ραδιόφωνο live",
+      "editorialIntentPhrases": [
+        "ραδιοφωνικοί σταθμοί",
+        "ραδιόφωνο online",
+        "μουσική",
+        "ειδήσεις"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%CE%B5%CE%BB%CE%BB%CE%B7%CE%BD%CE%B9%CE%BA%CF%8C%20%CF%81%CE%B1%CE%B4%CE%B9%CF%8C%CF%86%CF%89%CE%BD%CE%BF%20live&c=apps&hl=el&gl=gr",
+      "results": [
+        {
+          "appId": "radio.greece.free.fm",
+          "title": "Ραδιόφωνο FM Ελλάδα",
+          "url": "https://play.google.com/store/apps/details?id=radio.greece.free.fm&hl=el&gl=gr"
+        },
+        {
+          "appId": "com.radiolight.grece",
+          "title": "Ραδιόφωνο Ελλάδα FM online",
+          "url": "https://play.google.com/store/apps/details?id=com.radiolight.grece&hl=el&gl=gr"
+        },
+        {
+          "appId": "com.Greek.Radios",
+          "title": "Ελληνικά ραδιόφωνα",
+          "url": "https://play.google.com/store/apps/details?id=com.Greek.Radios&hl=el&gl=gr"
+        },
+        {
+          "appId": "gr.eradio.android",
+          "title": "E-Radio",
+          "url": "https://play.google.com/store/apps/details?id=gr.eradio.android&hl=el&gl=gr"
+        },
+        {
+          "appId": "com.greek.radios",
+          "title": "Greek Radios",
+          "url": "https://play.google.com/store/apps/details?id=com.greek.radios&hl=el&gl=gr"
+        },
+        {
+          "appId": "com.fsa.fsagreektv",
+          "title": "Greek TV Live & Ραδιόφωνο",
+          "url": "https://play.google.com/store/apps/details?id=com.fsa.fsagreektv&hl=el&gl=gr"
+        }
+      ]
+    },
+    {
+      "locale": "uk",
+      "language": "uk",
+      "country": "ua",
+      "query": "українське радіо онлайн",
+      "editorialIntentPhrases": [
+        "слухати радіо",
+        "радіостанції",
+        "прямий ефір",
+        "новини"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%D1%83%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D1%81%D1%8C%D0%BA%D0%B5%20%D1%80%D0%B0%D0%B4%D1%96%D0%BE%20%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD&c=apps&hl=uk&gl=ua",
+      "results": [
+        {
+          "appId": "com.radiolight.ukraine",
+          "title": "Радіо Україна: AM FM онлайн",
+          "url": null,
+          "score": 4.894161
+        },
+        {
+          "appId": "ua.radioplayer.app",
+          "title": "RadioPlayer: Радіо Україна",
+          "url": null,
+          "score": 4.365625
+        },
+        {
+          "appId": "an.UkraineRadio",
+          "title": "Українське Радіо Онлайн",
+          "url": null,
+          "score": 4.12
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "радіо FM",
+          "url": null,
+          "score": 4.417714
+        },
+        {
+          "appId": "io.luxnet.radiocircle",
+          "title": "Слухай UA: радіо і подкасти",
+          "url": null,
+          "score": 4.9439254
+        },
+        {
+          "appId": "com.worldradios.ukraine",
+          "title": "Радіо Україна FM Live Online",
+          "url": null,
+          "score": 4.878829
+        }
+      ]
+    },
+    {
+      "locale": "ca",
+      "language": "ca",
+      "country": "es",
+      "query": "ràdio en català",
+      "editorialIntentPhrases": [
+        "escoltar ràdio",
+        "emissores",
+        "ràdio en directe",
+        "notícies"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=r%C3%A0dio%20en%20catal%C3%A0&c=apps&hl=ca&gl=es",
+      "results": [
+        {
+          "appId": "cat.catradio.eng",
+          "title": "CatRàdio",
+          "url": "https://play.google.com/store/apps/details?id=cat.catradio.eng&hl=ca&gl=es"
+        },
+        {
+          "appId": "com.teamgm.catalunyaradioappgratisendirecte",
+          "title": "Catalunya Radio App en Directe",
+          "url": "https://play.google.com/store/apps/details?id=com.teamgm.catalunyaradioappgratisendirecte&hl=ca&gl=es"
+        },
+        {
+          "appId": "com.bestonlineradio.radioscatalanas",
+          "title": "Ràdio Catalunya FM",
+          "url": "https://play.google.com/store/apps/details?id=com.bestonlineradio.radioscatalanas&hl=ca&gl=es"
+        },
+        {
+          "appId": "com.teccom.radiocatalunya",
+          "title": "Radio Catalunya Directe",
+          "url": "https://play.google.com/store/apps/details?id=com.teccom.radiocatalunya&hl=ca&gl=es"
+        },
+        {
+          "appId": "com.appone.radios.de.catalunya",
+          "title": "Radios de Catalunya - Ràdio FM",
+          "url": "https://play.google.com/store/apps/details?id=com.appone.radios.de.catalunya&hl=ca&gl=es"
+        },
+        {
+          "appId": "com.alexto.radio.catalunya",
+          "title": "Ràdio Catalunya + Ràdio en viu",
+          "url": "https://play.google.com/store/apps/details?id=com.alexto.radio.catalunya&hl=ca&gl=es"
+        }
+      ]
+    },
+    {
+      "locale": "id",
+      "language": "id",
+      "country": "id",
+      "query": "radio Indonesia online",
+      "editorialIntentPhrases": [
+        "dengarkan radio",
+        "radio streaming",
+        "radio lokal",
+        "dangdut"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20Indonesia%20online&c=apps&hl=id&gl=id",
+      "results": [
+        {
+          "appId": "com.appmind.radios.id",
+          "title": "Radio Online Indonesia",
+          "url": null,
+          "score": 4.8122168
+        },
+        {
+          "appId": "com.worldradios.indonesie",
+          "title": "Radio Indonesia FM Live Online",
+          "url": null,
+          "score": 4.8665547
+        },
+        {
+          "appId": "com.radiolight.indonesie",
+          "title": "Radio Online Indonesia - FM AM",
+          "url": null,
+          "score": 4.801444
+        },
+        {
+          "appId": "com.crystalmissions.idradio",
+          "title": "ID Radio - Radio Indonesia",
+          "url": null,
+          "score": 4.75
+        },
+        {
+          "appId": "fm.radiotune.country.id",
+          "title": "Radio Indonesia: FM & AM",
+          "url": null,
+          "score": 4.72
+        },
+        {
+          "appId": "com.radiofmapp.radioindonesia",
+          "title": "Radio Indonesia FM - Online",
+          "url": null,
+          "score": 4.529412
+        }
+      ]
+    },
+    {
+      "locale": "ms",
+      "language": "ms",
+      "country": "my",
+      "query": "radio Malaysia online",
+      "editorialIntentPhrases": [
+        "dengar radio",
+        "siaran langsung",
+        "stesen radio",
+        "berita"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=radio%20Malaysia%20online&c=apps&hl=ms&gl=my",
+      "results": [
+        {
+          "appId": "com.radiolight.malaisie",
+          "title": "Radio Malaysia FM online",
+          "url": null,
+          "score": 4.863516
+        },
+        {
+          "appId": "com.radiosonline.radiofmmalaysia",
+          "title": "Radio Malaysia - FM Online",
+          "url": null,
+          "score": 4.6630316
+        },
+        {
+          "appId": "com.appmind.radios.my",
+          "title": "Radio FM Malaysia",
+          "url": null,
+          "score": 4.776295
+        },
+        {
+          "appId": "com.radoxo.my",
+          "title": "Radio Malaysia Langsung MY FM",
+          "url": null,
+          "score": 4.7821784
+        },
+        {
+          "appId": "com.worldradios.malaisie",
+          "title": "Radio FM Malaysia Online",
+          "url": null,
+          "score": 4.8650136
+        },
+        {
+          "appId": "com.vbapps.radiomalaysia",
+          "title": "Radio Malaysia FM Online",
+          "url": null,
+          "score": 4.568182
+        }
+      ]
+    },
+    {
+      "locale": "th",
+      "language": "th",
+      "country": "th",
+      "query": "ฟังวิทยุออนไลน์",
+      "editorialIntentPhrases": [
+        "วิทยุไทย",
+        "สถานีวิทยุ",
+        "เพลงลูกทุ่ง",
+        "ข่าว"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%B8%9F%E0%B8%B1%E0%B8%87%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B8%E0%B8%AD%E0%B8%AD%E0%B8%99%E0%B9%84%E0%B8%A5%E0%B8%99%E0%B9%8C&c=apps&hl=th&gl=th",
+      "results": [
+        {
+          "appId": "com.appmind.radios.th",
+          "title": "วิทยุออนไลน์ Radio FM Thailand",
+          "url": null,
+          "score": 4.7545185
+        },
+        {
+          "appId": "com.devtab.thairadioplusplus",
+          "title": "Thai Radio ฟังวิทยุออนไลน์",
+          "url": null,
+          "score": 4.73991
+        },
+        {
+          "appId": "fm.radiotune.country.th",
+          "title": "วิทยุไทย: FM AM",
+          "url": null,
+          "score": 4.90099
+        },
+        {
+          "appId": "com.appgeneration.itunerfree",
+          "title": "myTuner Radio - วิทยุออนไลน์",
+          "url": null,
+          "score": 4.666065
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "วิทยุ ออนไลน์ - ประเทศไทย, โลก",
+          "url": null,
+          "score": 4.6633663
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Music & Sports",
+          "url": null,
+          "score": 4.6704807
+        }
+      ]
+    },
+    {
+      "locale": "vi",
+      "language": "vi",
+      "country": "vn",
+      "query": "nghe radio trực tuyến",
+      "editorialIntentPhrases": [
+        "đài phát thanh",
+        "radio Việt Nam",
+        "âm nhạc",
+        "tin tức"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=nghe%20radio%20tr%E1%BB%B1c%20tuy%E1%BA%BFn&c=apps&hl=vi&gl=vn",
+      "results": [
+        {
+          "appId": "com.mobitwins.radiovietnamonline",
+          "title": "Radio Việt Nam - Nghe đài FM",
+          "url": null,
+          "score": 4.3098106
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Music & Sports",
+          "url": null,
+          "score": 4.1666665
+        },
+        {
+          "appId": "com.radio.fmradio",
+          "title": "Đài FM - Online Radio FM",
+          "url": null,
+          "score": 3.990196
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "Radio Trực tuyến - Việt Nam",
+          "url": null,
+          "score": 4.6666665
+        },
+        {
+          "appId": "radiotime.player",
+          "title": "TuneIn Radio Pro - Live Radio",
+          "url": null,
+          "score": 4.4418607
+        },
+        {
+          "appId": "com.radiolight.etatsunis",
+          "title": "Đài FM trực tuyến Hoa Kỳ",
+          "url": null,
+          "score": 4.939394
+        }
+      ]
+    },
+    {
+      "locale": "hi-IN",
+      "language": "hi",
+      "country": "in",
+      "query": "हिंदी रेडियो लाइव",
+      "editorialIntentPhrases": [
+        "ऑनलाइन रेडियो",
+        "रेडियो सुनें",
+        "बॉलीवुड",
+        "समाचार"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%A4%B9%E0%A4%BF%E0%A4%82%E0%A4%A6%E0%A5%80%20%E0%A4%B0%E0%A5%87%E0%A4%A1%E0%A4%BF%E0%A4%AF%E0%A5%8B%20%E0%A4%B2%E0%A4%BE%E0%A4%87%E0%A4%B5&c=apps&hl=hi&gl=in",
+      "results": [
+        {
+          "appId": "com.appmind.radios.in",
+          "title": "Radio India रेडियो एफएम ऐप",
+          "url": null,
+          "score": 4.612919
+        },
+        {
+          "appId": "com.hindi.radios",
+          "title": "Hindi Radio Online",
+          "url": null,
+          "score": 4.2732115
+        },
+        {
+          "appId": "com.asemob.radioapp.India",
+          "title": "हिंदी रेडियो स्टेशन",
+          "url": null,
+          "score": 4.3946867
+        },
+        {
+          "appId": "in.parmsoft.allhindiradios",
+          "title": "All Hindi Radios HD",
+          "url": null,
+          "score": 4.519617
+        },
+        {
+          "appId": "com.radiofmapp.radioindia",
+          "title": "रेडियो इंडिया FM Radio",
+          "url": null,
+          "score": 4.4467354
+        },
+        {
+          "appId": "info.squaradio.inde",
+          "title": "रेडियो इंडिया एफएम ऑनलाइन",
+          "url": null,
+          "score": 4.642857
+        }
+      ]
+    },
+    {
+      "locale": "bn-BD",
+      "language": "bn",
+      "country": "bd",
+      "query": "বাংলা রেডিও লাইভ",
+      "editorialIntentPhrases": [
+        "অনলাইন রেডিও",
+        "রেডিও শুনুন",
+        "বাংলা গান",
+        "খবর"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE%20%E0%A6%B0%E0%A7%87%E0%A6%A1%E0%A6%BF%E0%A6%93%20%E0%A6%B2%E0%A6%BE%E0%A6%87%E0%A6%AD&c=apps&hl=bn&gl=bd",
+      "results": [
+        {
+          "appId": "com.bangla.fmradio",
+          "title": "Bangla FM Radio - বাংলা রেডিও",
+          "url": null,
+          "score": 4.31
+        },
+        {
+          "appId": "np.com.pacificregmi.all.bangla.fm.radio.bangladesh",
+          "title": "সমস্ত বাংলা এফএম রেডিও",
+          "url": null,
+          "score": 3.9159663
+        },
+        {
+          "appId": "com.newageproductions.banglafmradioshd",
+          "title": "Bangla FM Radios HD",
+          "url": null,
+          "score": 4.25
+        },
+        {
+          "appId": "com.radoxo.bd",
+          "title": "রেডিও বাংলাদেশ - Radio BD FM",
+          "url": null,
+          "score": 4.5049505
+        },
+        {
+          "appId": "com.radoxo.radio",
+          "title": "বাংলাদেশি রেডিও লাইভ — Radoxo",
+          "url": null,
+          "score": null
+        },
+        {
+          "appId": "com.stayfprod.awesomeradio.free",
+          "title": "রেডিও অনলাইন - বাংলাদেশ",
+          "url": null,
+          "score": 4.1764708
+        }
+      ]
+    },
+    {
+      "locale": "gu",
+      "language": "gu",
+      "country": "in",
+      "query": "ગુજરાતી રેડિયો",
+      "editorialIntentPhrases": [
+        "રેડિયો સાંભળો",
+        "ઓનલાઇન રેડિયો",
+        "ગુજરાતી ગીતો",
+        "સમાચાર"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%AA%97%E0%AB%81%E0%AA%9C%E0%AA%B0%E0%AA%BE%E0%AA%A4%E0%AB%80%20%E0%AA%B0%E0%AB%87%E0%AA%A1%E0%AA%BF%E0%AA%AF%E0%AB%8B&c=apps&hl=gu&gl=in",
+      "results": [
+        {
+          "appId": "com.newageproductions.gujaratifmradioshd",
+          "title": "Gujarati FM Radios HD",
+          "url": null,
+          "score": 4.260274
+        },
+        {
+          "appId": "com.liveradio.fmradio.radiotuner.radiostation.amradio",
+          "title": "FM Radio : AM, FM, Radio Tuner",
+          "url": null,
+          "score": 4.2712216
+        },
+        {
+          "appId": "com.appmind.radios.in",
+          "title": "FM Radio India all stations",
+          "url": null,
+          "score": 4.612919
+        },
+        {
+          "appId": "fm.radiotune.global",
+          "title": "રેડિયો FM અને AM",
+          "url": null,
+          "score": 4.54902
+        },
+        {
+          "appId": "myradio.radio.fmradio.liveradio.radiostation",
+          "title": "My Radio - FM Radio for India",
+          "url": null,
+          "score": 4.5083737
+        },
+        {
+          "appId": "fliptech.gujaratifmworld",
+          "title": "A2Z Gujarati FM Radio",
+          "url": null,
+          "score": 4.42
+        }
+      ]
+    },
+    {
+      "locale": "kn-IN",
+      "language": "kn",
+      "country": "in",
+      "query": "ಕನ್ನಡ ರೇಡಿಯೋ",
+      "editorialIntentPhrases": [
+        "ಆನ್‌ಲೈನ್ ರೇಡಿಯೋ",
+        "ರೇಡಿಯೋ ಕೇಳಿ",
+        "ಕನ್ನಡ ಹಾಡುಗಳು",
+        "ಸುದ್ದಿ"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%B2%95%E0%B2%A8%E0%B3%8D%E0%B2%A8%E0%B2%A1%20%E0%B2%B0%E0%B3%87%E0%B2%A1%E0%B2%BF%E0%B2%AF%E0%B3%8B&c=apps&hl=kn&gl=in",
+      "results": [
+        {
+          "appId": "com.gayaksoft.radiolite.kannada",
+          "title": "ಕನ್ನಡ FM ರೇಡಿಯೋಗಳು HD",
+          "url": null,
+          "score": 4.6
+        },
+        {
+          "appId": "com.kannada.radios",
+          "title": "Kannada Radio online",
+          "url": null,
+          "score": 4.39
+        },
+        {
+          "appId": "com.kannadafmradio.kannadafmradiosongs",
+          "title": "Kannada Fm Radio HD",
+          "url": null,
+          "score": 4.57
+        },
+        {
+          "appId": "com.mkiz.kannadaradio",
+          "title": "Kannada Radio FM & AM HD Live",
+          "url": null,
+          "score": 4.36
+        },
+        {
+          "appId": "fliptech.kannadafmworld",
+          "title": "A2Z Kannada FM Radio | 30+ Rad",
+          "url": null,
+          "score": 4.2826085
+        },
+        {
+          "appId": "com.newageproductions.kannadafmradioshd",
+          "title": "Kannada FM Radios HD",
+          "url": null,
+          "score": 4.5116277
+        }
+      ]
+    },
+    {
+      "locale": "ml-IN",
+      "language": "ml",
+      "country": "in",
+      "query": "മലയാളം റേഡിയോ",
+      "editorialIntentPhrases": [
+        "ഓൺലൈൻ റേഡിയോ",
+        "റേഡിയോ കേൾക്കാം",
+        "മലയാള ഗാനങ്ങൾ",
+        "വാർത്തകൾ"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%B4%AE%E0%B4%B2%E0%B4%AF%E0%B4%BE%E0%B4%B3%E0%B4%82%20%E0%B4%B1%E0%B5%87%E0%B4%A1%E0%B4%BF%E0%B4%AF%E0%B5%8B&c=apps&hl=ml&gl=in",
+      "results": [
+        {
+          "appId": "com.malayalam.radios",
+          "title": "Malayalam Radio Online FM",
+          "url": null,
+          "score": 4.257384
+        },
+        {
+          "appId": "com.malayalamfmradio.malayalamfmsongs",
+          "title": "Malayalam Fm Radio HD Songs",
+          "url": null,
+          "score": 4.509259
+        },
+        {
+          "appId": "com.gayaksoft.radiolite.malayalam",
+          "title": "മലയാളം FM റേഡിയോ ലൈവ് കേരളം",
+          "url": null,
+          "score": 4.547945
+        },
+        {
+          "appId": "app.jaidexcoding.malayalam_radioonair",
+          "title": "Malayalam Radio ON AIR",
+          "url": null,
+          "score": 4.703704
+        },
+        {
+          "appId": "com.peaceradio",
+          "title": "Peace Radio - Malayalam Radio",
+          "url": null,
+          "score": 4.79305
+        },
+        {
+          "appId": "com.mkiz.malayalamradio",
+          "title": "Malayalam Radio FM &AM HD Live",
+          "url": null,
+          "score": 4.190184
+        }
+      ]
+    },
+    {
+      "locale": "mr-IN",
+      "language": "mr",
+      "country": "in",
+      "query": "मराठी रेडिओ",
+      "editorialIntentPhrases": [
+        "ऑनलाइन रेडिओ",
+        "रेडिओ ऐका",
+        "मराठी गाणी",
+        "बातम्या"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%A4%AE%E0%A4%B0%E0%A4%BE%E0%A4%A0%E0%A5%80%20%E0%A4%B0%E0%A5%87%E0%A4%A1%E0%A4%BF%E0%A4%93&c=apps&hl=mr&gl=in",
+      "results": [
+        {
+          "appId": null,
+          "title": "मराठी रेडिओ स्टेशन्स",
+          "url": null,
+          "score": 4.473723
+        },
+        {
+          "appId": "fm.radiotune.global",
+          "title": "रेडिओ FM आणि AM",
+          "url": null,
+          "score": 4.54902
+        },
+        {
+          "appId": "com.streema.simpleradio",
+          "title": "Simple Radio: Live AM FM Radio",
+          "url": null,
+          "score": 4.5604486
+        },
+        {
+          "appId": "de.radio.android",
+          "title": "radio.net - AM FM Radio Tuner",
+          "url": null,
+          "score": 4.409938
+        },
+        {
+          "appId": "com.hv.replaio",
+          "title": "Replaio Radio",
+          "url": null,
+          "score": 3.92
+        },
+        {
+          "appId": "tunein.player",
+          "title": "TuneIn Radio: Music & Sports",
+          "url": null,
+          "score": 4.3469963
+        }
+      ]
+    },
+    {
+      "locale": "or",
+      "language": "or",
+      "country": "in",
+      "query": "ଓଡ଼ିଆ ରେଡିଓ",
+      "editorialIntentPhrases": [
+        "ଅନଲାଇନ୍ ରେଡିଓ",
+        "ରେଡିଓ ଶୁଣନ୍ତୁ",
+        "ଓଡ଼ିଆ ଗୀତ",
+        "ଖବର"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86%20%E0%AC%B0%E0%AD%87%E0%AC%A1%E0%AC%BF%E0%AC%93&c=apps&hl=or&gl=in",
+      "results": [
+        {
+          "appId": "com.odia.fmradio",
+          "title": "Odia FM Radio - ଓଡିଆ ରେଡିଓ |",
+          "url": null,
+          "score": 4.24
+        }
+      ]
+    },
+    {
+      "locale": "pa",
+      "language": "pa",
+      "country": "in",
+      "query": "ਪੰਜਾਬੀ ਰੇਡੀਓ",
+      "editorialIntentPhrases": [
+        "ਆਨਲਾਈਨ ਰੇਡੀਓ",
+        "ਰੇਡੀਓ ਸੁਣੋ",
+        "ਪੰਜਾਬੀ ਗੀਤ",
+        "ਖ਼ਬਰਾਂ"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%A8%AA%E0%A9%B0%E0%A8%9C%E0%A8%BE%E0%A8%AC%E0%A9%80%20%E0%A8%B0%E0%A9%87%E0%A8%A1%E0%A9%80%E0%A8%93&c=apps&hl=pa&gl=in",
+      "results": [
+        {
+          "appId": "in.parmsoft.digitalpunjabiradio",
+          "title": "Digital Punjabi Radio",
+          "url": null,
+          "score": 4.7880793
+        },
+        {
+          "appId": "com.punjabi.fmradio",
+          "title": "Punjabi FM Radio",
+          "url": null,
+          "score": 4.34
+        },
+        {
+          "appId": "com.twis.punjabiradio",
+          "title": "Punjabi Radio USA",
+          "url": null,
+          "score": 4.51
+        },
+        {
+          "appId": "com.mkiz.punjabiradio",
+          "title": "Punjabi Radio FM & AM HD Live",
+          "url": null,
+          "score": 4.08
+        },
+        {
+          "appId": "com.punjabiradios.radio",
+          "title": "All Punjabi Radios",
+          "url": null,
+          "score": 4.487603
+        },
+        {
+          "appId": "com.harjas.allpunjabiradios",
+          "title": "All Punjabi Radios",
+          "url": null,
+          "score": 4.41
+        }
+      ]
+    },
+    {
+      "locale": "ta-IN",
+      "language": "ta",
+      "country": "in",
+      "query": "தமிழ் வானொலி",
+      "editorialIntentPhrases": [
+        "இணைய வானொலி",
+        "தமிழ் ரேடியோ",
+        "தமிழ் பாடல்கள்",
+        "செய்திகள்"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%AE%A4%E0%AE%AE%E0%AE%BF%E0%AE%B4%E0%AF%8D%20%E0%AE%B5%E0%AE%BE%E0%AE%A9%E0%AF%8A%E0%AE%B2%E0%AE%BF&c=apps&hl=ta&gl=in",
+      "results": [
+        {
+          "appId": "com.tamilfmradio.tamilfmsongs",
+          "title": "Tamil Fm Radio HD Tamil songs",
+          "url": null,
+          "score": 4.569846
+        },
+        {
+          "appId": "com.lazyPanda.Diwan",
+          "title": "Tamil FM radio HD Songs & News",
+          "url": null,
+          "score": 4.37
+        },
+        {
+          "appId": "com.tamilradios.android",
+          "title": "Tamil FM Radio",
+          "url": null,
+          "score": 4.484928
+        },
+        {
+          "appId": "com.kuyil.kuyilfm",
+          "title": "Tamil FM & Radio HD - Kuyil FM",
+          "url": null,
+          "score": 4.37
+        },
+        {
+          "appId": "com.zendroid.vaanoli",
+          "title": "தமிழ் வானொலி (Tamil/Tamizh Vaa",
+          "url": null,
+          "score": 4.16
+        },
+        {
+          "appId": "com.aibl.tamilradiolite.tamilfmradios",
+          "title": "தமிழ் FM ரேடியோ - AIR பாடல்கள்",
+          "url": null,
+          "score": 4.55
+        }
+      ]
+    },
+    {
+      "locale": "te-IN",
+      "language": "te",
+      "country": "in",
+      "query": "తెలుగు రేడియో",
+      "editorialIntentPhrases": [
+        "ఆన్‌లైన్ రేడియో",
+        "రేడియో వినండి",
+        "తెలుగు పాటలు",
+        "వార్తలు"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%E0%B0%A4%E0%B1%86%E0%B0%B2%E0%B1%81%E0%B0%97%E0%B1%81%20%E0%B0%B0%E0%B1%87%E0%B0%A1%E0%B0%BF%E0%B0%AF%E0%B1%8B&c=apps&hl=te&gl=in",
+      "results": [
+        {
+          "appId": "com.mkiz.teluguradio",
+          "title": "Telugu Radio FM & AM HD Live",
+          "url": null,
+          "score": 4.3366337
+        },
+        {
+          "appId": "com.tamilradiosnet.telugu",
+          "title": "Telugu Fm Radio Telugu Song HD",
+          "url": null,
+          "score": 4.4012537
+        },
+        {
+          "appId": "com.gayaksoft.radiolite.telugu",
+          "title": "తెలుగు FM రేడియోలు HD",
+          "url": null,
+          "score": 4.1439395
+        },
+        {
+          "appId": "com.revive.telugubibleradio",
+          "title": "TELUGU BIBLE RADIO",
+          "url": null,
+          "score": 4.73
+        },
+        {
+          "appId": "fm.radiotune.global",
+          "title": "రేడియో FM మరియు AM",
+          "url": null,
+          "score": 4.54902
+        },
+        {
+          "appId": "com.asemob.radioapp.telugu",
+          "title": "తెలుగు రేడియో స్టేషన్లు",
+          "url": null,
+          "score": 4.53
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "language": "ur",
+      "country": "pk",
+      "query": "اردو ریڈیو لائیو",
+      "editorialIntentPhrases": [
+        "آن لائن ریڈیو",
+        "پاکستانی ریڈیو",
+        "موسیقی",
+        "خبریں"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=%D8%A7%D8%B1%D8%AF%D9%88%20%D8%B1%DB%8C%DA%88%DB%8C%D9%88%20%D9%84%D8%A7%D8%A6%DB%8C%D9%88&c=apps&hl=ur&gl=pk",
+      "results": [
+        {
+          "appId": "fm.radiotune.country.pk",
+          "title": "ریڈیو پاکستان: FM AM",
+          "url": null,
+          "score": null
+        },
+        {
+          "appId": "radio.pakistan.all.stations.am.live.fm.online",
+          "title": "ریڈیو پاکستان - ریڈیو ایف ایم",
+          "url": null,
+          "score": 4.654054
+        },
+        {
+          "appId": "www.radioandpodcast.com",
+          "title": "Radio & Podcast : FM AM Radio",
+          "url": null,
+          "score": 4.5555553
+        },
+        {
+          "appId": "com.pixsterstudio.fmradio",
+          "title": "FM Radio: Live AM FM stations",
+          "url": null,
+          "score": 5
+        },
+        {
+          "appId": "fm.radiotune.country.us",
+          "title": "ریڈیو امریکہ: FM اور AM ریڈیو",
+          "url": null,
+          "score": null
+        },
+        {
+          "appId": "com.radioyar.mobile",
+          "title": "Radio Yar",
+          "url": null,
+          "score": null
+        }
+      ]
+    },
+    {
+      "locale": "sl-SI",
+      "language": "sl",
+      "country": "si",
+      "query": "slovenski radio v živo",
+      "editorialIntentPhrases": [
+        "spletni radio",
+        "radijske postaje",
+        "poslušaj radio",
+        "novice"
+      ],
+      "queryUrl": "https://play.google.com/store/search?q=slovenski%20radio%20v%20%C5%BEivo&c=apps&hl=sl&gl=si",
+      "results": [
+        {
+          "appId": "com.crystalmissions.siradio",
+          "title": "SI Radio - Radio Slovenije",
+          "url": "https://play.google.com/store/apps/details?id=com.crystalmissions.siradio&hl=sl&gl=si"
+        },
+        {
+          "appId": "com.radoxo.radio",
+          "title": "Slovenski radio živo — Radoxo",
+          "url": "https://play.google.com/store/apps/details?id=com.radoxo.radio&hl=sl&gl=si"
+        },
+        {
+          "appId": "com.shiko.SVN.radio",
+          "title": "Slovenske radijske postaje",
+          "url": "https://play.google.com/store/apps/details?id=com.shiko.SVN.radio&hl=sl&gl=si"
+        },
+        {
+          "appId": "com.mohan.onlineradio",
+          "title": "Radio FM Slovenija: V Živo",
+          "url": "https://play.google.com/store/apps/details?id=com.mohan.onlineradio&hl=sl&gl=si"
+        },
+        {
+          "appId": "info.squaradio.slovenie",
+          "title": "Radio Slovenija - FM postaje",
+          "url": "https://play.google.com/store/apps/details?id=info.squaradio.slovenie&hl=sl&gl=si"
+        },
+        {
+          "appId": "net.manoloworks.radioslovenija",
+          "title": "Slovenske Radijske Postaje",
+          "url": "https://play.google.com/store/apps/details?id=net.manoloworks.radioslovenija&hl=sl&gl=si"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1645 @@
+{
+  "createdAt": "2026-09-25T01:37:39.169573+00:00",
+  "count": 204,
+  "records": [
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ar/tablet/MegaRadio-ar-tablet-01-discover.png",
+      "locale": "ar",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506164,
+      "sha256": "ebfd5d8854121dd19ef16f7723a032971f6673c6a0d27cb715f0d0135c94541f"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ar/tablet/MegaRadio-ar-tablet-02-player.png",
+      "locale": "ar",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 381106,
+      "sha256": "a790375fb98ac6d3845c3ea8081edf8fc019277f06382558fb841201dccf7919"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ar/tablet/MegaRadio-ar-tablet-03-genres.png",
+      "locale": "ar",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 416022,
+      "sha256": "7dea120136d9585018c018713833a84091defc5e3215a265b4f788b7e3c7c6e4"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ar/tablet/MegaRadio-ar-tablet-04-country.png",
+      "locale": "ar",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 304456,
+      "sha256": "304521ef78c55c8e6ce60bc21b63828f1c8df5bbff1d3824212216500f8b958d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bg/tablet/MegaRadio-bg-tablet-01-discover.png",
+      "locale": "bg",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506912,
+      "sha256": "06b7a5b386ce9d1d4ea900a9f6e681ccb59cb7d669447c311445b530ae24a329"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bg/tablet/MegaRadio-bg-tablet-02-player.png",
+      "locale": "bg",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375383,
+      "sha256": "7a1fd0601d27e7686cf72067ef724b19080b6502223fd78e1006c6d5dba2ec03"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bg/tablet/MegaRadio-bg-tablet-03-genres.png",
+      "locale": "bg",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414389,
+      "sha256": "0de15d8005aaf00500a3c00bb22fff653a2eb28f94625b72a329f6b92832ed14"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bg/tablet/MegaRadio-bg-tablet-04-country.png",
+      "locale": "bg",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306423,
+      "sha256": "f5c78634f411d73e20f77a8121b2c9147fc441d0dea8aa4fd6af8d9d1544285d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bn-BD/tablet/MegaRadio-bn-BD-tablet-01-discover.png",
+      "locale": "bn-BD",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 512249,
+      "sha256": "1ccd0ff65a1d20bd1b8cf6400ddcb1e131e7c9b195d1efcbc1a7d1c899cbaac2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bn-BD/tablet/MegaRadio-bn-BD-tablet-02-player.png",
+      "locale": "bn-BD",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 377135,
+      "sha256": "3e828863acc218ed8c4efcb6a46d0437ee8c75df42359912fa6835f695b07b7c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bn-BD/tablet/MegaRadio-bn-BD-tablet-03-genres.png",
+      "locale": "bn-BD",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 419034,
+      "sha256": "41a91431c7476857f436bf6889afef4cc0df95e14840f102d607d5f7388c7517"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/bn-BD/tablet/MegaRadio-bn-BD-tablet-04-country.png",
+      "locale": "bn-BD",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 308258,
+      "sha256": "a52d4c35648191887c249f726c7f03eace259830eaac33ac4a56218558ff1a93"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ca/tablet/MegaRadio-ca-tablet-01-discover.png",
+      "locale": "ca",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508728,
+      "sha256": "e0afae0cc8d9af861bb10b824fa1dc145a79da2ad6d67bc1207b6828c5508f22"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ca/tablet/MegaRadio-ca-tablet-02-player.png",
+      "locale": "ca",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 376554,
+      "sha256": "dd97122bbcef4f1f68de5e5517bd32a319bc0e14262dfc8207dd8f00d23197f2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ca/tablet/MegaRadio-ca-tablet-03-genres.png",
+      "locale": "ca",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414585,
+      "sha256": "6d0202f8e910768da08fdbea74020ddc631cceafca5fa3f5a981c17fffbb7f51"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ca/tablet/MegaRadio-ca-tablet-04-country.png",
+      "locale": "ca",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 307048,
+      "sha256": "5218fa5abb0d01a50a0846874d273c32e87290fb965ca8dd14c0a68823879ba4"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/cs-CZ/tablet/MegaRadio-cs-CZ-tablet-01-discover.png",
+      "locale": "cs-CZ",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506743,
+      "sha256": "b911ebe46d13165317d18d505622f61765a70bfc127f7db6008c78970fbcd0ad"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/cs-CZ/tablet/MegaRadio-cs-CZ-tablet-02-player.png",
+      "locale": "cs-CZ",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 376208,
+      "sha256": "d8dc46d20522d167c58939eb2b5a3e21862dee0e7b814a8bb4aa4c9056dd85a6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/cs-CZ/tablet/MegaRadio-cs-CZ-tablet-03-genres.png",
+      "locale": "cs-CZ",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 421136,
+      "sha256": "fd449afa86ee5cddc48e1c2f946b805e03e929311a88ae252259c5de950f121c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/cs-CZ/tablet/MegaRadio-cs-CZ-tablet-04-country.png",
+      "locale": "cs-CZ",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 308902,
+      "sha256": "e71143c4b68d29d75436e948ed6d813d51f9d84026b18bc3127104d4e2a21baf"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/da-DK/tablet/MegaRadio-da-DK-tablet-01-discover.png",
+      "locale": "da-DK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506201,
+      "sha256": "972163b44b063f3d5292c9d85917736c5f7be4c39dbb3d2f71b38daa829f76bc"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/da-DK/tablet/MegaRadio-da-DK-tablet-02-player.png",
+      "locale": "da-DK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 370078,
+      "sha256": "8218aab155f9ab708a0cb98e988f87c09012d9909839edc4b4f6d13356209f92"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/da-DK/tablet/MegaRadio-da-DK-tablet-03-genres.png",
+      "locale": "da-DK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 406319,
+      "sha256": "ee2174a24e8cb1330403bbdbd353de5b9cdf1315c98c7dc72b93fb6c45f09798"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/da-DK/tablet/MegaRadio-da-DK-tablet-04-country.png",
+      "locale": "da-DK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 299956,
+      "sha256": "98b79c0d3cdbe1fcbc5e822f362dfa1c47ef539c1a9450d6773ea443b1d8cb69"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/de-DE/tablet/MegaRadio-de-DE-tablet-01-discover.png",
+      "locale": "de-DE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 512584,
+      "sha256": "2cf047d0c060cc36b3d6a48d6636c650d1dd1f573d63589b6516a791a0a3c8aa"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/de-DE/tablet/MegaRadio-de-DE-tablet-02-player.png",
+      "locale": "de-DE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 374254,
+      "sha256": "44c915f30fee3b1e76b45859c2beb1071b9291be584e9a56c20ffd3c8e67ee50"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/de-DE/tablet/MegaRadio-de-DE-tablet-03-genres.png",
+      "locale": "de-DE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 421101,
+      "sha256": "4e991203068969c7178956f5e3680a03e1b61ca6cc4e1b8b0bd0cf5b07cde452"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/de-DE/tablet/MegaRadio-de-DE-tablet-04-country.png",
+      "locale": "de-DE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 304191,
+      "sha256": "ef3d67a6b02945224785e3312752c02673aa10e062d57e6e3ff4ac206350b200"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/el-GR/tablet/MegaRadio-el-GR-tablet-01-discover.png",
+      "locale": "el-GR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 513674,
+      "sha256": "91d3f34c39456da4096f56ebe1a3ddbd8ff399e4a1c42fd884e6262cfd2be2f6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/el-GR/tablet/MegaRadio-el-GR-tablet-02-player.png",
+      "locale": "el-GR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 384963,
+      "sha256": "847f0b2fa402db58dd70e4638f26a8ce894562a5cd1fa6ad561e9e325c928869"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/el-GR/tablet/MegaRadio-el-GR-tablet-03-genres.png",
+      "locale": "el-GR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 423550,
+      "sha256": "8714340c4876ae5fe1eaf3dbf791f75c6369c1010615f30dd0f5e43b48c850cd"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/el-GR/tablet/MegaRadio-el-GR-tablet-04-country.png",
+      "locale": "el-GR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 309621,
+      "sha256": "1f786d331c4618b2fa0d5ebe401a4e7432859e80e1a302013cf2457bd1d4a736"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-AU/tablet/MegaRadio-en-AU-tablet-01-discover.png",
+      "locale": "en-AU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 504402,
+      "sha256": "031de4b77e17db8d4a87a1fc087dc31170ef01c11d810fa388c10d9542eca015"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-AU/tablet/MegaRadio-en-AU-tablet-02-player.png",
+      "locale": "en-AU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 380783,
+      "sha256": "093b59f650afe508e9f94dc28c6f3e55f21a44ecbcaa5d154408772eb8450470"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-AU/tablet/MegaRadio-en-AU-tablet-03-genres.png",
+      "locale": "en-AU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 412126,
+      "sha256": "a65c3bbf5faa75847f418dfc42126c43f3d835c938fc4e8442ad28ed41db8655"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-AU/tablet/MegaRadio-en-AU-tablet-04-country.png",
+      "locale": "en-AU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 308316,
+      "sha256": "46709b978bbd90aa82b4a8af88cd8a2284bf0101e816031f4c16f666d35ea455"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-CA/tablet/MegaRadio-en-CA-tablet-01-discover.png",
+      "locale": "en-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 509607,
+      "sha256": "941d36eef049c5e2a34e237b12b87d3bb18ed37124454224ae5c805da6df5c38"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-CA/tablet/MegaRadio-en-CA-tablet-02-player.png",
+      "locale": "en-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 377270,
+      "sha256": "c77666c58451545b4aa0fee0a9966df3ff81b4f7c0364337bb5b2f5bb516095e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-CA/tablet/MegaRadio-en-CA-tablet-03-genres.png",
+      "locale": "en-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414334,
+      "sha256": "8bb1ab8070aa933c5eac72acb23b8630c8fc8706b1167f3e9a65c065a4763bc3"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-CA/tablet/MegaRadio-en-CA-tablet-04-country.png",
+      "locale": "en-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 309469,
+      "sha256": "4b050bd8451ff46d555a0782e86bcf6fe6a0bf42bbab6ffa8577cd59244eb597"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-GB/tablet/MegaRadio-en-GB-tablet-01-discover.png",
+      "locale": "en-GB",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505329,
+      "sha256": "7f9986209e46ecf315a0fe95c136352a72830478a2e96d6a217b1766e66e0e62"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-GB/tablet/MegaRadio-en-GB-tablet-02-player.png",
+      "locale": "en-GB",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 374013,
+      "sha256": "84c3c945c478c07882d236770fb72dbebf22e37bd5e3e733b27a711f56f9189e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-GB/tablet/MegaRadio-en-GB-tablet-03-genres.png",
+      "locale": "en-GB",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 415308,
+      "sha256": "47a32e7febcdbf83c1d022ec0faa3393e0d1c0b6eb7fcec4c31e12f1c87f002e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-GB/tablet/MegaRadio-en-GB-tablet-04-country.png",
+      "locale": "en-GB",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 307503,
+      "sha256": "7247e938eb9188b4f2c85e47189712b85bfd5d2ed73e8d3b5d8d3c51255a4f00"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-US/tablet/MegaRadio-en-US-tablet-01-discover.png",
+      "locale": "en-US",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505430,
+      "sha256": "66f3e8c45a5ea10cb1e641b28183626d37460462cdb2321b48565612bc37e935"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-US/tablet/MegaRadio-en-US-tablet-02-player.png",
+      "locale": "en-US",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 374389,
+      "sha256": "addd81b222d79e6a9dd68a045a1bd7fbcf93c43738c84623f256a6cbfcf7e09e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-US/tablet/MegaRadio-en-US-tablet-03-genres.png",
+      "locale": "en-US",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 415271,
+      "sha256": "4753c58555b96d01b6ef0196cb6e7f50b1c2efc440d75a0b4c5126e37272fadb"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/en-US/tablet/MegaRadio-en-US-tablet-04-country.png",
+      "locale": "en-US",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 307814,
+      "sha256": "a12297b1590029bafbf4200df4fbb7e0a3c8bcc4f22666087f9f7ab877c702bb"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-419/tablet/MegaRadio-es-419-tablet-01-discover.png",
+      "locale": "es-419",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508203,
+      "sha256": "3b3c673866d9f98847f5b046a18dcadbb803c831813c3282bca55356b2ff168e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-419/tablet/MegaRadio-es-419-tablet-02-player.png",
+      "locale": "es-419",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 376493,
+      "sha256": "019222b307f9f3f1cb1f0574c4c3bc983526a7bd3293b4af1ff67a8ad3cda0b6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-419/tablet/MegaRadio-es-419-tablet-03-genres.png",
+      "locale": "es-419",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 416694,
+      "sha256": "2620e8112acda4b48af529d3e8e35d8688e4bdcc70747fca6c2fdfd65d8c2945"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-419/tablet/MegaRadio-es-419-tablet-04-country.png",
+      "locale": "es-419",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306694,
+      "sha256": "e568af6f195b7cf2e57711dd9f55cfff9c33fb7265830ce1124100c2465df10d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-ES/tablet/MegaRadio-es-ES-tablet-01-discover.png",
+      "locale": "es-ES",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 509521,
+      "sha256": "36779d799a6e02fb8e852f9957ec5f1aec4811c052698da801c091ccf277dc06"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-ES/tablet/MegaRadio-es-ES-tablet-02-player.png",
+      "locale": "es-ES",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 373408,
+      "sha256": "46f81f9a5df73bd700b645dfb1f2f0f3d2d7077bdfff1b68f90c019d77048065"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-ES/tablet/MegaRadio-es-ES-tablet-03-genres.png",
+      "locale": "es-ES",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 410766,
+      "sha256": "9f93919f619ad7659a2522ade56f094cdc45f6cde891f219c9a959b790a079e8"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/es-ES/tablet/MegaRadio-es-ES-tablet-04-country.png",
+      "locale": "es-ES",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 303517,
+      "sha256": "995f2d9d108ecc77799c66902e9a9a0e4926bf24394dfa4840289e8085895b89"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fi-FI/tablet/MegaRadio-fi-FI-tablet-01-discover.png",
+      "locale": "fi-FI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508386,
+      "sha256": "86b4fb94f1dbe9f3108c69647940104b92ecc597e885a46ef329476cb089c1d0"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fi-FI/tablet/MegaRadio-fi-FI-tablet-02-player.png",
+      "locale": "fi-FI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375825,
+      "sha256": "814c4abe4dcbc3fbce607d0d5a041024f5c5bd4a464d796a402494c3e86d1db5"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fi-FI/tablet/MegaRadio-fi-FI-tablet-03-genres.png",
+      "locale": "fi-FI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 415946,
+      "sha256": "3a26b0c3741bb516fe65a77a20ff8abee2997805326e4e35e98166f760418c93"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fi-FI/tablet/MegaRadio-fi-FI-tablet-04-country.png",
+      "locale": "fi-FI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306379,
+      "sha256": "0cfe4be69d2b300a388eabcc88e9040ede7746bcc7e8ecb8c8ffb802d98f74f3"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-CA/tablet/MegaRadio-fr-CA-tablet-01-discover.png",
+      "locale": "fr-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 511038,
+      "sha256": "1a3b25cbc0c6c2e33385ea69772da63f783f7609b90370e1f65a732d5a76e980"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-CA/tablet/MegaRadio-fr-CA-tablet-02-player.png",
+      "locale": "fr-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 378698,
+      "sha256": "4b85c815bdf4bcdb6d84506204c8f7cf1e2bb6233636e463fa465d3a0f21ee15"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-CA/tablet/MegaRadio-fr-CA-tablet-03-genres.png",
+      "locale": "fr-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 422035,
+      "sha256": "99fa39f5bf4e778bf1647a6b9b8c0df867a5b50cba3c69d927546669186dd6d2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-CA/tablet/MegaRadio-fr-CA-tablet-04-country.png",
+      "locale": "fr-CA",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 310564,
+      "sha256": "814eaa8529b2c40c6a47787eec4e9890f782e7f6a442fdfc4a64efc3668af0f3"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-FR/tablet/MegaRadio-fr-FR-tablet-01-discover.png",
+      "locale": "fr-FR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508514,
+      "sha256": "5034342919f3112a96b9a0007f12fd00ac7b3da8111b17da5f404523b3689267"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-FR/tablet/MegaRadio-fr-FR-tablet-02-player.png",
+      "locale": "fr-FR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375588,
+      "sha256": "f1f7faa158d3c4d01e6bab177797f0bd5dd9c0c7fc89ac661463d8dcbba26e78"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-FR/tablet/MegaRadio-fr-FR-tablet-03-genres.png",
+      "locale": "fr-FR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 419361,
+      "sha256": "daceabb050e824481f30be47d66828e989050916e0e2d7c79e27195abe019d9c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/fr-FR/tablet/MegaRadio-fr-FR-tablet-04-country.png",
+      "locale": "fr-FR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 303361,
+      "sha256": "75dd78658c60a25da3f8f5eca46fddd082709722eb4e5d5fe2518ac3a4a76a42"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/gu/tablet/MegaRadio-gu-tablet-01-discover.png",
+      "locale": "gu",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 507169,
+      "sha256": "ce551dd9361736b77d31424b5a7419ae936e822d2f24785b0ec9c33b321b4bff"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/gu/tablet/MegaRadio-gu-tablet-02-player.png",
+      "locale": "gu",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375665,
+      "sha256": "515c6340562a87015e558fc8faa5c3b2a7beef123e72927910e9ecf2ad15462e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/gu/tablet/MegaRadio-gu-tablet-03-genres.png",
+      "locale": "gu",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 417987,
+      "sha256": "a9de1a9f72273ef5c8d18eea18047f8059726119e88da626e0465810d65e47e0"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/gu/tablet/MegaRadio-gu-tablet-04-country.png",
+      "locale": "gu",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 302034,
+      "sha256": "5116183c3082e7b7e25028081c8451af05219ed0b344ab6e5933d39a7df4e88a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hi-IN/tablet/MegaRadio-hi-IN-tablet-01-discover.png",
+      "locale": "hi-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 503649,
+      "sha256": "0eb279c4c355a21a53a500d335737e5a7072a5bf78fd86cecc9a7c9db69b6843"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hi-IN/tablet/MegaRadio-hi-IN-tablet-02-player.png",
+      "locale": "hi-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 376938,
+      "sha256": "de8953778d840e592ddaa05050a5d1b9123d3a0d2a324c928ccc885971272c5f"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hi-IN/tablet/MegaRadio-hi-IN-tablet-03-genres.png",
+      "locale": "hi-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 411761,
+      "sha256": "08b9c685e9ae451f866628479c6221be617adebb4015882ad100d037efa8dc06"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hi-IN/tablet/MegaRadio-hi-IN-tablet-04-country.png",
+      "locale": "hi-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 301340,
+      "sha256": "2a26c8a1274a686ec42736890105524bee92187e7ebe750175c4850ba2f55881"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hr-HR/tablet/MegaRadio-hr-HR-tablet-01-discover.png",
+      "locale": "hr-HR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505273,
+      "sha256": "be03c92e8025515c99aff72ba573c7aeff788cc026f7e07d7650378f4bd86ffe"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hr-HR/tablet/MegaRadio-hr-HR-tablet-02-player.png",
+      "locale": "hr-HR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 372955,
+      "sha256": "32f30962e37f7bd1aba1e55cdbd07f08aeedad7365e18afa1f970f0c88dc601a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hr-HR/tablet/MegaRadio-hr-HR-tablet-03-genres.png",
+      "locale": "hr-HR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 417569,
+      "sha256": "c479005a0bdebdb78633f82aaa92c2742050bdbfe6213d233ecb20fa38bb7f22"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hr-HR/tablet/MegaRadio-hr-HR-tablet-04-country.png",
+      "locale": "hr-HR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 308709,
+      "sha256": "2cb58d02e47b91a48bd299850d257605e7e3a2f895cc2fc627478b9a8d5d88bc"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hu-HU/tablet/MegaRadio-hu-HU-tablet-01-discover.png",
+      "locale": "hu-HU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508423,
+      "sha256": "1dc2d91ad9df070b1e983fb1daf78ec91e6f06ddec6272aa67086284af69a961"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hu-HU/tablet/MegaRadio-hu-HU-tablet-02-player.png",
+      "locale": "hu-HU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 376246,
+      "sha256": "d5b3d4cb2f4a1d738f39e1d2d1928c2dd595bd9760cacae080a819df810bd7bd"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hu-HU/tablet/MegaRadio-hu-HU-tablet-03-genres.png",
+      "locale": "hu-HU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 416280,
+      "sha256": "aea50e50fe7314d7e11da5f92c002068875f14b6c8b5298637440d9ef32c401f"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/hu-HU/tablet/MegaRadio-hu-HU-tablet-04-country.png",
+      "locale": "hu-HU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 313286,
+      "sha256": "0f3c09c80717de7d9b25b8ae53b92c6fffec26289824a521717ed6a5fc3bb346"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/id/tablet/MegaRadio-id-tablet-01-discover.png",
+      "locale": "id",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508245,
+      "sha256": "aeb49b8e7193496a583a084130f52c2e6ed33a667d0f4ae197da3e251dd6f0cc"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/id/tablet/MegaRadio-id-tablet-02-player.png",
+      "locale": "id",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 381321,
+      "sha256": "759beb6d8be72e073f4e1682e7fd32e4174b106b613ce6291687b5470bdaab7a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/id/tablet/MegaRadio-id-tablet-03-genres.png",
+      "locale": "id",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414957,
+      "sha256": "20ed6d44aa9563c210fe90c252f08865d94028603bf44a1706565ecb5951aed2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/id/tablet/MegaRadio-id-tablet-04-country.png",
+      "locale": "id",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 303962,
+      "sha256": "81da8d5336926cf6efcd3acb94e8e221c354237ad264142143cb8d685388d037"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/it-IT/tablet/MegaRadio-it-IT-tablet-01-discover.png",
+      "locale": "it-IT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 507473,
+      "sha256": "224c3d1310a0d32c5fe140631f79bd37b64a40c87acfa433a238458b34f4a835"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/it-IT/tablet/MegaRadio-it-IT-tablet-02-player.png",
+      "locale": "it-IT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 373823,
+      "sha256": "822d90e1b0f58a972c739829f1bdb573d02fd971f097c84b32515df03b31a781"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/it-IT/tablet/MegaRadio-it-IT-tablet-03-genres.png",
+      "locale": "it-IT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 416208,
+      "sha256": "f866212c66fc2f35ea05a802359d962c48c71829755f0d10c866f02975e4a053"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/it-IT/tablet/MegaRadio-it-IT-tablet-04-country.png",
+      "locale": "it-IT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 303457,
+      "sha256": "d90f13f84575de8b99f445137a2c401ccd691e93ebaab9aad3337c8966790e35"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/iw-IL/tablet/MegaRadio-iw-IL-tablet-01-discover.png",
+      "locale": "iw-IL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 499931,
+      "sha256": "fd69454452358907de5c235ae2d914c8dd9e4d492ff339367d850812b4c06f8c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/iw-IL/tablet/MegaRadio-iw-IL-tablet-02-player.png",
+      "locale": "iw-IL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 366372,
+      "sha256": "3d2cb69c2197f657c662390fd399340d47212b2e050c82f5e2e14c2d6b281d58"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/iw-IL/tablet/MegaRadio-iw-IL-tablet-03-genres.png",
+      "locale": "iw-IL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 407070,
+      "sha256": "b1d56bcabe5482156e7bef8334802b8fc5c87d1664bd211974ccfdb99e7003b3"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/iw-IL/tablet/MegaRadio-iw-IL-tablet-04-country.png",
+      "locale": "iw-IL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 295318,
+      "sha256": "d7d93760d57cc296cba236207748722c44ee8723abb471d0a5cf0f54d87324db"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ja-JP/tablet/MegaRadio-ja-JP-tablet-01-discover.png",
+      "locale": "ja-JP",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 512226,
+      "sha256": "ee96da4313ebca239c24bcb513e7a6534b08fb5d649ec2000fdb174884cac1cb"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ja-JP/tablet/MegaRadio-ja-JP-tablet-02-player.png",
+      "locale": "ja-JP",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 384805,
+      "sha256": "12dae3f0ff84f6baefcec05ad6692c5d3d945eec077ee10111ed04c592fca7d9"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ja-JP/tablet/MegaRadio-ja-JP-tablet-03-genres.png",
+      "locale": "ja-JP",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 428827,
+      "sha256": "821c609c4df23d84391b85ccf093cff7696a87dc9ffe8d3ff9df481b15c24008"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ja-JP/tablet/MegaRadio-ja-JP-tablet-04-country.png",
+      "locale": "ja-JP",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 307106,
+      "sha256": "f7b9399b8f9539e1dd96f702c6ca89a9ad9f4b7fb52e6eb7eeb19fbd161540e6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/kn-IN/tablet/MegaRadio-kn-IN-tablet-01-discover.png",
+      "locale": "kn-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 515599,
+      "sha256": "e8985d30139aa0097c9f8c4393cfc0862535b2a88fae4a1fb4ce639767ff7379"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/kn-IN/tablet/MegaRadio-kn-IN-tablet-02-player.png",
+      "locale": "kn-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 389313,
+      "sha256": "728e52e5f5b8cb2de95d35160f9d37adc0e466d8fcd7195723868b6f8b976360"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/kn-IN/tablet/MegaRadio-kn-IN-tablet-03-genres.png",
+      "locale": "kn-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 428053,
+      "sha256": "f9ff5935aa3a9cf8a9e3942a57280149346e557c42bb1ffe4605517a46609798"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/kn-IN/tablet/MegaRadio-kn-IN-tablet-04-country.png",
+      "locale": "kn-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 314749,
+      "sha256": "bf45950228ded337ef5fa99498d63639c88545c5e6a7a49a217ad091520f3a4a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ko-KR/tablet/MegaRadio-ko-KR-tablet-01-discover.png",
+      "locale": "ko-KR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505139,
+      "sha256": "a64e911a6175796894e797aff6c394e77cbed11578ee3ff328e63a04e30c492a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ko-KR/tablet/MegaRadio-ko-KR-tablet-02-player.png",
+      "locale": "ko-KR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 380553,
+      "sha256": "587c1625e16d7af26adb779affec985ec4f28a68656176c52a8987d84e43ee7a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ko-KR/tablet/MegaRadio-ko-KR-tablet-03-genres.png",
+      "locale": "ko-KR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 411117,
+      "sha256": "4310fdccca6733477479824b28555e1242df932d1e082b2c7d068bc9790db1f9"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ko-KR/tablet/MegaRadio-ko-KR-tablet-04-country.png",
+      "locale": "ko-KR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 304425,
+      "sha256": "e7156a97db73865758242b80fa85f434beb50aa694704e4350200d090f2991f0"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ml-IN/tablet/MegaRadio-ml-IN-tablet-01-discover.png",
+      "locale": "ml-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 515582,
+      "sha256": "fc9d2da6f059605204303986eff186cf96de9f4ea01a11acba0d9995c994d2f5"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ml-IN/tablet/MegaRadio-ml-IN-tablet-02-player.png",
+      "locale": "ml-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 395311,
+      "sha256": "cdb48235f9bdb0a253b04d365ff536ac6a5aeb22e858d3777d1660a35369f800"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ml-IN/tablet/MegaRadio-ml-IN-tablet-03-genres.png",
+      "locale": "ml-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 435302,
+      "sha256": "466075bc946a21eaac3f0153feecf3defd1eba85ec0ec75af0f2c29926a13a86"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ml-IN/tablet/MegaRadio-ml-IN-tablet-04-country.png",
+      "locale": "ml-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 326239,
+      "sha256": "2f62b493ec3149e6d416d4bbe45be61216c3a98c60fc8600f5e688607c894ec0"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/mr-IN/tablet/MegaRadio-mr-IN-tablet-01-discover.png",
+      "locale": "mr-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 504056,
+      "sha256": "aba4a9c94417c62090174d0a30148f6e6870fd684f2337e0f3090f09ce44d56d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/mr-IN/tablet/MegaRadio-mr-IN-tablet-02-player.png",
+      "locale": "mr-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 373863,
+      "sha256": "c305c45e4f165be7ddbb3222583500ec49b8d70978b1b0ae8bfef2f36a25d0fe"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/mr-IN/tablet/MegaRadio-mr-IN-tablet-03-genres.png",
+      "locale": "mr-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 408054,
+      "sha256": "5cd100e00a918124b6754bf8a742921aff7849dac79e14893c5603586a9eae4b"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/mr-IN/tablet/MegaRadio-mr-IN-tablet-04-country.png",
+      "locale": "mr-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 299187,
+      "sha256": "b3dcadde9a192e0fd4863c529108c6de8ce09aafcc649ac8bd440e67b4059192"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ms-MY/tablet/MegaRadio-ms-MY-tablet-01-discover.png",
+      "locale": "ms-MY",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508122,
+      "sha256": "a3b494731320d234d476222f8a5883d2bf8bb15d8540c224d27a86f4c75aef5c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ms-MY/tablet/MegaRadio-ms-MY-tablet-02-player.png",
+      "locale": "ms-MY",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 380717,
+      "sha256": "6e2418642d0a561bc8a565d9021f9536178605aa83109fc961ebf5f8ecda8c7c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ms-MY/tablet/MegaRadio-ms-MY-tablet-03-genres.png",
+      "locale": "ms-MY",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 416739,
+      "sha256": "d225fabf76550a55240319d32c83e1797b80269afd72d5235e523505e044d7d0"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ms-MY/tablet/MegaRadio-ms-MY-tablet-04-country.png",
+      "locale": "ms-MY",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306975,
+      "sha256": "0455a26dcb40fd224130828befa491a4d59625d7cf7dbb530f1b5eebf49f2949"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/nl-NL/tablet/MegaRadio-nl-NL-tablet-01-discover.png",
+      "locale": "nl-NL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 508663,
+      "sha256": "155541a4b04ba0fdd482053dc6e284771e9089c4c01433666b99517eb6f827c7"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/nl-NL/tablet/MegaRadio-nl-NL-tablet-02-player.png",
+      "locale": "nl-NL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 373441,
+      "sha256": "97daaf0973b04021ab80afb16eb980bb278b971615ba0061e29652010ae62f8b"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/nl-NL/tablet/MegaRadio-nl-NL-tablet-03-genres.png",
+      "locale": "nl-NL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414267,
+      "sha256": "14e58a515a5e69d3975ef98bf302c7a1cca2c92631215cb2fdd9f5aa0b3f9203"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/nl-NL/tablet/MegaRadio-nl-NL-tablet-04-country.png",
+      "locale": "nl-NL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 304782,
+      "sha256": "8e311011d72aab81462d4f4c08b273e9e7247601d659266bd34a42bc5fa1f99c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/no-NO/tablet/MegaRadio-no-NO-tablet-01-discover.png",
+      "locale": "no-NO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 513384,
+      "sha256": "6a274d2bc6c6a8f926cda2f422fde67a7b8478d6fb61b98f5c3c0f6d01abccc6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/no-NO/tablet/MegaRadio-no-NO-tablet-02-player.png",
+      "locale": "no-NO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 372321,
+      "sha256": "e572e0c59e25b9fb0e180dfea5af0a84da4caa65a38f21caa40cae139a0d371b"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/no-NO/tablet/MegaRadio-no-NO-tablet-03-genres.png",
+      "locale": "no-NO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 411654,
+      "sha256": "073489a77c5ff0e679857abe94ac71b2175577f84f87932d7baefe07fc6f49e2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/no-NO/tablet/MegaRadio-no-NO-tablet-04-country.png",
+      "locale": "no-NO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 302343,
+      "sha256": "0b17dd8cc6c6fc147d03703d1ade387f198cd8faf15e95e172a6a8a4acca4356"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pa/tablet/MegaRadio-pa-tablet-01-discover.png",
+      "locale": "pa",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 503778,
+      "sha256": "34ccff3cb546539982d4de69d97dfaf0da605f609b706fcf764fdbc82fd9b820"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pa/tablet/MegaRadio-pa-tablet-02-player.png",
+      "locale": "pa",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 374294,
+      "sha256": "8a43b1ebbf0d89857e590d2725c57bae4b493a287026ee253e8d8c26009a883d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pa/tablet/MegaRadio-pa-tablet-03-genres.png",
+      "locale": "pa",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 410380,
+      "sha256": "34db704aac4511c39c5fda1f40548aea391c2757420fe556896cfe7aabe9a831"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pa/tablet/MegaRadio-pa-tablet-04-country.png",
+      "locale": "pa",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 301746,
+      "sha256": "efef87655c57c372e25f146e176b14c9eaa0f7d083b0ef394c58d10d13700c8e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pl-PL/tablet/MegaRadio-pl-PL-tablet-01-discover.png",
+      "locale": "pl-PL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 510589,
+      "sha256": "79268acad46059fb0b17e1f4352ab49c0a1f6ea7a3c659eba717c3f303335bd9"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pl-PL/tablet/MegaRadio-pl-PL-tablet-02-player.png",
+      "locale": "pl-PL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375686,
+      "sha256": "19796fc52c0e5dea086228595f97d6914e01166009fe15716d62e416b313e26d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pl-PL/tablet/MegaRadio-pl-PL-tablet-03-genres.png",
+      "locale": "pl-PL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414574,
+      "sha256": "7b6d875321fab074ff068b9946375528897b2b4d691d5c129c499951c4bc7994"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pl-PL/tablet/MegaRadio-pl-PL-tablet-04-country.png",
+      "locale": "pl-PL",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 308185,
+      "sha256": "63fe684a1b58e7d6897dbdd4b9c8075bdb8d33e8d77146a1bdacce443f62ce7e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-BR/tablet/MegaRadio-pt-BR-tablet-01-discover.png",
+      "locale": "pt-BR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506514,
+      "sha256": "3733e196f61cd30baf3eefb1a379ebb15465f6f4cdf66e60ab6afb0c5f75dce9"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-BR/tablet/MegaRadio-pt-BR-tablet-02-player.png",
+      "locale": "pt-BR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 373816,
+      "sha256": "635445a0b0e202c87aec73bb8fcfbf78a9773e4c9e59e0d4f519f21eb6dd47ca"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-BR/tablet/MegaRadio-pt-BR-tablet-03-genres.png",
+      "locale": "pt-BR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 410472,
+      "sha256": "9b38d031b7e894356fecf080472290eabc1c5972acd4940b7d3495616326836f"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-BR/tablet/MegaRadio-pt-BR-tablet-04-country.png",
+      "locale": "pt-BR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 305457,
+      "sha256": "6cede8ad7a9458245b6835d614785bfec55af66e3eda1581dcef8ab1599b948b"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-PT/tablet/MegaRadio-pt-PT-tablet-01-discover.png",
+      "locale": "pt-PT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 509728,
+      "sha256": "254b5689d7a0390861a2e4c009bf6b7587da1ac299f1c5d27cb921d421ab50f5"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-PT/tablet/MegaRadio-pt-PT-tablet-02-player.png",
+      "locale": "pt-PT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 377025,
+      "sha256": "134bc1f53561c2284ad1d55c2998b34cdd1b7428420168039b481f1516ea2168"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-PT/tablet/MegaRadio-pt-PT-tablet-03-genres.png",
+      "locale": "pt-PT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 412853,
+      "sha256": "50bd0ed31538be1ffd961cfd0954b0f67b2982b8e10aca4769f9efbff8779e72"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/pt-PT/tablet/MegaRadio-pt-PT-tablet-04-country.png",
+      "locale": "pt-PT",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306214,
+      "sha256": "b6877251e8a44828defd79e47ab14d75f052d7c8a9821aa678fb2c5419331983"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ro-RO/tablet/MegaRadio-ro-RO-tablet-01-discover.png",
+      "locale": "ro-RO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505054,
+      "sha256": "3e92e719c66f40a4c124f5c5426010ed04688bd3490b95c18abf73ea360c3f21"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ro-RO/tablet/MegaRadio-ro-RO-tablet-02-player.png",
+      "locale": "ro-RO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375964,
+      "sha256": "d0b98cb2241e0a54071922603a4196f44bf94e9f4c0811f24c97c19975d952c3"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ro-RO/tablet/MegaRadio-ro-RO-tablet-03-genres.png",
+      "locale": "ro-RO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 414235,
+      "sha256": "c2de662ab437b774dcab96c089c749ca0449d3ac9e6855dfa203eb395b6358ba"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ro-RO/tablet/MegaRadio-ro-RO-tablet-04-country.png",
+      "locale": "ro-RO",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306812,
+      "sha256": "79dfe9fa4a712a50e25cfbbf91208ae0404db2c95c102ceddc4a932930201eb8"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ru-RU/tablet/MegaRadio-ru-RU-tablet-01-discover.png",
+      "locale": "ru-RU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506534,
+      "sha256": "c06be983583b126dd568dccd785a0208edf43059696b526855d174872aab709c"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ru-RU/tablet/MegaRadio-ru-RU-tablet-02-player.png",
+      "locale": "ru-RU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 382456,
+      "sha256": "e4a5a2b390d8d2ad09f3bc7b37cf69cc11a7326b65de8149e8d18a9a3e700cc1"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ru-RU/tablet/MegaRadio-ru-RU-tablet-03-genres.png",
+      "locale": "ru-RU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 413565,
+      "sha256": "86cd1a282a759d46c68cd12d461c90ec52692eac19af79b3d34a02c8e519aae2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ru-RU/tablet/MegaRadio-ru-RU-tablet-04-country.png",
+      "locale": "ru-RU",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 309226,
+      "sha256": "57d573f1fc6a044a144c262681aa484bb3987ca7ad903588919d13f193597960"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sk-SK/tablet/MegaRadio-sk-SK-tablet-01-discover.png",
+      "locale": "sk-SK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505768,
+      "sha256": "8b6759be7de19b5bfe5ef2b85d2f038d337677e1d90b1ac25799988110073030"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sk-SK/tablet/MegaRadio-sk-SK-tablet-02-player.png",
+      "locale": "sk-SK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 374850,
+      "sha256": "83ddb9fb053321242b4155dea7c5eb133c39b67c9b1d4b2099f176bcc43b7502"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sk-SK/tablet/MegaRadio-sk-SK-tablet-03-genres.png",
+      "locale": "sk-SK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 417863,
+      "sha256": "cd72753b6ad1a2469fe570d9c84dc5cf5f63d979cb40936eed765e53d6cbc1ca"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sk-SK/tablet/MegaRadio-sk-SK-tablet-04-country.png",
+      "locale": "sk-SK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 305613,
+      "sha256": "cb3a81a1cead3f8dd6ff32a97c34e156fb15813577008c89949358a33d4f9803"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sl-SI/tablet/MegaRadio-sl-SI-tablet-01-discover.png",
+      "locale": "sl-SI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506394,
+      "sha256": "14a01e13a5fbaa6bce88d14f419ddcf3caeef73137d7f6457bf476bea1c252a6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sl-SI/tablet/MegaRadio-sl-SI-tablet-02-player.png",
+      "locale": "sl-SI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 374113,
+      "sha256": "6286a6baa2a12035ceb59df61046cf6156fd03c3d27a93b1243d0f490083e7a5"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sl-SI/tablet/MegaRadio-sl-SI-tablet-03-genres.png",
+      "locale": "sl-SI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 419961,
+      "sha256": "39df3b9ec359a53c98326385c9387445054ac74121e47bdf723a8898023f24dd"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sl-SI/tablet/MegaRadio-sl-SI-tablet-04-country.png",
+      "locale": "sl-SI",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 307026,
+      "sha256": "f3921f157e7314083c6fec120e5638c62a7887a1907ec8d4cec65e0e188ea5a2"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sv-SE/tablet/MegaRadio-sv-SE-tablet-01-discover.png",
+      "locale": "sv-SE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 511746,
+      "sha256": "fa887bee46b97a3f74ee22afac244248fd0153d85d2f17519ede1e654f5a8b03"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sv-SE/tablet/MegaRadio-sv-SE-tablet-02-player.png",
+      "locale": "sv-SE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 373356,
+      "sha256": "33925ca696d058ab645b54838c632057c7d54099623fd5fe876b53e31235922d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sv-SE/tablet/MegaRadio-sv-SE-tablet-03-genres.png",
+      "locale": "sv-SE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 411297,
+      "sha256": "f8940a7a2cc9cc1a04ca862a851a1cdbe876708c0cc40492d7d3a30a7de5d1fe"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/sv-SE/tablet/MegaRadio-sv-SE-tablet-04-country.png",
+      "locale": "sv-SE",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 307244,
+      "sha256": "3d54537630ffbecd9d79785b7ffdc041867c62762c499e23a85976f9b078411a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ta-IN/tablet/MegaRadio-ta-IN-tablet-01-discover.png",
+      "locale": "ta-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 515902,
+      "sha256": "55d907486d54d840248a3b7283885c62d7a240449ccd3cdacec2550a72e085f6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ta-IN/tablet/MegaRadio-ta-IN-tablet-02-player.png",
+      "locale": "ta-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 390476,
+      "sha256": "820d74faf4a511b66aa4c2493d4e4070294ae8100a0465137d8c17e2516255f6"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ta-IN/tablet/MegaRadio-ta-IN-tablet-03-genres.png",
+      "locale": "ta-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 434816,
+      "sha256": "96bbcceabbaaeba41ac86ab647ca26b67c3600cecd98c4d2af6a656e0254a81e"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ta-IN/tablet/MegaRadio-ta-IN-tablet-04-country.png",
+      "locale": "ta-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 319372,
+      "sha256": "41e41b8bd404c80cbef5598f71055fd9d2a15fec99b446ec8ccfd800cff453ab"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/te-IN/tablet/MegaRadio-te-IN-tablet-01-discover.png",
+      "locale": "te-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 516348,
+      "sha256": "e3c0a5f8e44f2597cd288fc6014e7673b0c7601d4cc13ce56ac7eca3e7f42f91"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/te-IN/tablet/MegaRadio-te-IN-tablet-02-player.png",
+      "locale": "te-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 400324,
+      "sha256": "4015f538b090ee45d32b757b511a32d462876780e0260def689783ad585b2f6a"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/te-IN/tablet/MegaRadio-te-IN-tablet-03-genres.png",
+      "locale": "te-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 438164,
+      "sha256": "bd542d5fc449ce64644cfd2017508dce2eaccd019eec18c463a67bb3b457fb4b"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/te-IN/tablet/MegaRadio-te-IN-tablet-04-country.png",
+      "locale": "te-IN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 320386,
+      "sha256": "73dba982e1c16f4636ef8fdf39430c604b47b5adef6830fe5235d651acd199dc"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/th/tablet/MegaRadio-th-tablet-01-discover.png",
+      "locale": "th",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 509401,
+      "sha256": "b8b32f04a15125b59e435839c8175073ab5b41c8bd58fcd5f735cb19c18470cf"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/th/tablet/MegaRadio-th-tablet-02-player.png",
+      "locale": "th",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 384145,
+      "sha256": "9568c2b1b8267766a3138268dd3e781d37a0b08345f9bee0d60a61a696c4da69"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/th/tablet/MegaRadio-th-tablet-03-genres.png",
+      "locale": "th",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 418506,
+      "sha256": "97d84bb5592070f85e2268d2f78a8fba6f3f0eba30553e9c9d918e025adaab98"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/th/tablet/MegaRadio-th-tablet-04-country.png",
+      "locale": "th",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 306418,
+      "sha256": "fc3cf614453a0572655083813f35708b20aeaba6eda7cf90c060ceed4fedf3d4"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/tr-TR/tablet/MegaRadio-tr-TR-tablet-01-discover.png",
+      "locale": "tr-TR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 506303,
+      "sha256": "4b4c0f45d65768032b481c5e48e0b006ec0316cc6e54bc98f7f481ec6f68df94"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/tr-TR/tablet/MegaRadio-tr-TR-tablet-02-player.png",
+      "locale": "tr-TR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375699,
+      "sha256": "ba7176044a2645e0db880db5f647759f09a02f5fb1b03dac451f37662af53ca8"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/tr-TR/tablet/MegaRadio-tr-TR-tablet-03-genres.png",
+      "locale": "tr-TR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 413211,
+      "sha256": "e3310baa91bb5a4360bd6678029448830b90a38b35e464babed9164c13d5f7fb"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/tr-TR/tablet/MegaRadio-tr-TR-tablet-04-country.png",
+      "locale": "tr-TR",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 302574,
+      "sha256": "a0223f0d14c39ecb45b4cb17e0a0b9a519175e1b70b1d976a4fd0f883c270d4d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/uk/tablet/MegaRadio-uk-tablet-01-discover.png",
+      "locale": "uk",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 505864,
+      "sha256": "94b93e2c981bc8908796cd35e0d0bcb2683b0820af6b583f94c530d96deaf155"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/uk/tablet/MegaRadio-uk-tablet-02-player.png",
+      "locale": "uk",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 375361,
+      "sha256": "75c9493a1c702be33520cbb07b24e09f6e090a01c9fb15d2087d3211dc8e0f57"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/uk/tablet/MegaRadio-uk-tablet-03-genres.png",
+      "locale": "uk",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 412727,
+      "sha256": "3ae37b6befb6550833179be82be8a39d3f2058c34bf1179a4b69b90ee0c0d420"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/uk/tablet/MegaRadio-uk-tablet-04-country.png",
+      "locale": "uk",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 308709,
+      "sha256": "c4c8cb75b2700a6098e0afd22029e9050e3ee78097d21b6b837d4f35d11d51fc"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ur/tablet/MegaRadio-ur-tablet-01-discover.png",
+      "locale": "ur",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 504783,
+      "sha256": "c28adbf5017f0b521512e63302cb36d256eada862f748c3b7fa42fe1e30b93c0"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ur/tablet/MegaRadio-ur-tablet-02-player.png",
+      "locale": "ur",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 376062,
+      "sha256": "329786277bbe11ca59128891dc73f351d6e48f90f05e8bdd0d4d67f151ac5c19"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ur/tablet/MegaRadio-ur-tablet-03-genres.png",
+      "locale": "ur",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 421693,
+      "sha256": "4cbd8f3d76bfe8627f5202cef6db21a955780c32f4cc2404cfcd56d5108e76df"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/ur/tablet/MegaRadio-ur-tablet-04-country.png",
+      "locale": "ur",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 304530,
+      "sha256": "279ad50b790ba518794cf6a0530fb21f783e7124d0bd9751ede329076faf5c70"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/vi/tablet/MegaRadio-vi-tablet-01-discover.png",
+      "locale": "vi",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 510556,
+      "sha256": "90916cdf8b14db27f3a6a3f3b66c8f160acd566c1c7ad18f8626e922e65f667f"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/vi/tablet/MegaRadio-vi-tablet-02-player.png",
+      "locale": "vi",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 382637,
+      "sha256": "3e74ac24fb412b8ae30b6c1887e5504e7ab6f9f3fe455b35f9f147c6fd50c980"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/vi/tablet/MegaRadio-vi-tablet-03-genres.png",
+      "locale": "vi",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 419922,
+      "sha256": "fef249b3a137eb86dcd41e157ee716fc584d112843f47cf57968281eb92f91b7"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/vi/tablet/MegaRadio-vi-tablet-04-country.png",
+      "locale": "vi",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 311707,
+      "sha256": "f81366f4510fdc327c9cb017c81ed069862d3479365c2343990cea1ff3224c68"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-CN/tablet/MegaRadio-zh-CN-tablet-01-discover.png",
+      "locale": "zh-CN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 512128,
+      "sha256": "3156cc81207deba3689cd203d5f7c19ebfaccfc4063b3413f57b64b98cae03f4"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-CN/tablet/MegaRadio-zh-CN-tablet-02-player.png",
+      "locale": "zh-CN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 383268,
+      "sha256": "e5bd1c2c2694e31499a4c531388eb59becdc1f2d8bf45eeba5dfa50f5d90b63f"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-CN/tablet/MegaRadio-zh-CN-tablet-03-genres.png",
+      "locale": "zh-CN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 421070,
+      "sha256": "b60d606836a64fb071bf89820191b326f3bbfd61348e2326d4a79ea3ae31e11d"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-CN/tablet/MegaRadio-zh-CN-tablet-04-country.png",
+      "locale": "zh-CN",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 309025,
+      "sha256": "48d16cc2343ccd0f01f902816a02d5e20b25ad3fc165a23f830715999b20f641"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-HK/tablet/MegaRadio-zh-HK-tablet-01-discover.png",
+      "locale": "zh-HK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 512300,
+      "sha256": "37a3c0f0c47ee538bd37c957d1b2fb0d9d874f359890acd561e2a1ad31297c84"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-HK/tablet/MegaRadio-zh-HK-tablet-02-player.png",
+      "locale": "zh-HK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 383678,
+      "sha256": "fc9e0d3d40ce45c11a87721b4e3fc6fd8e3770eb70066c339148a8e87114baf7"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-HK/tablet/MegaRadio-zh-HK-tablet-03-genres.png",
+      "locale": "zh-HK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 420030,
+      "sha256": "16b0662d4c66cbdfc2187f31bc465babb6e68f373fda33fe8c1ef11e3b5ab268"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-HK/tablet/MegaRadio-zh-HK-tablet-04-country.png",
+      "locale": "zh-HK",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 305502,
+      "sha256": "9e0d59924bdabe0dd4a9b16b31d7f77e1c28b33dde611834a5cd3f8b1c1afb23"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-TW/tablet/MegaRadio-zh-TW-tablet-01-discover.png",
+      "locale": "zh-TW",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 517358,
+      "sha256": "fbe62a326dfcd5498df2d3068ff46010d544d590b569bba24b369bba99d6c586"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-TW/tablet/MegaRadio-zh-TW-tablet-02-player.png",
+      "locale": "zh-TW",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 386990,
+      "sha256": "b5f61534affb68e54540435f8becf7028cd369c556bd99547a958d3447c707ee"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-TW/tablet/MegaRadio-zh-TW-tablet-03-genres.png",
+      "locale": "zh-TW",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 426899,
+      "sha256": "1f25ab110f2302998780cae665247e9216452acaedf291a9dfd677efc264adad"
+    },
+    {
+      "file": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/zh-TW/tablet/MegaRadio-zh-TW-tablet-04-country.png",
+      "locale": "zh-TW",
+      "width": 2880,
+      "height": 1620,
+      "bytes": 314328,
+      "sha256": "38b13840292d77fc81cbd2bb5c1d42f2af78b913c67a40bdcf09fc064ae362d5"
+    }
+  ],
+  "visualQA": {
+    "allNineContactSheetsReviewed": true,
+    "allLocalesReviewed": true,
+    "noCaptionClippingObserved": true,
+    "realTabletPixelsPreserved": true
+  },
+  "uploaded": false
+}

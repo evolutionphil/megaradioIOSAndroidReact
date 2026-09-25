@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-25T18:17:38Z",
+  "package": "com.megaradio",
+  "versionName": "1.0.70",
+  "versionCode": 98,
+  "targetSdk": 36,
+  "device": "MegaRadio Desktop API34 / emulator-5554",
+  "launch": "Android Studio Profile or Debug APK / Run; installed successfully",
+  "windowMaximize": true,
+  "introEnterNavigation": true,
+  "stationPlayback": {
+    "station": "Radio Paradise Main Mix (EU) 320k AAC",
+    "visibleSong": "SoL - Fine",
+    "androidMediaSessionState": "PLAYING",
+    "active": true
+  },
+  "androidRuntimeErrorLogEmpty": true,
+  "capture": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/raw-android-desktop98-player.png",
+  "captureSHA256": "d98cd2576b715b87b7dc0e5ce1cc6231c3745da129db1f1b491afbe73e0d4fba",
+  "limitations": [
+    "Paid Google Play billing has not been exercised on a signed-in physical desktop device.",
+    "This is a native desktop emulator runtime check, not proof of Google Play approval."
+  ],
+  "genresNavigation": true,
+  "playbackDuringNavigation": true
+}

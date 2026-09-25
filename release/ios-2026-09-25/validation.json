@@ -1,0 +1,44 @@
+{
+  "observedAt": "2026-09-24T22:45:24.670364+00:00",
+  "version": "1.0.70",
+  "build": "7",
+  "consentTests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "simulatorBuild": "SUCCEEDED",
+  "ipad": {
+    "device": "iPad Pro 13-inch (M5)",
+    "ios": "26.4",
+    "nativeATTPromptVisible": true,
+    "denyTrackingTested": true,
+    "appRemainsUsable": true,
+    "nonPersonalizedTestAdsLoadedAfterDecision": true,
+    "radioPlaybackAfterDenial": "MANGORADIO: ready -> playing, ICY metadata received"
+  },
+  "archive": "SUCCEEDED",
+  "uploaded": true,
+  "submitted": true,
+  "appStoreAssets": {
+    "textRecords": 250,
+    "screenshotSets": 350,
+    "images": 1950,
+    "errors": 0,
+    "rechecked": true
+  },
+  "uploadMethod": "existing Xcode account",
+  "uploadResult": "SUCCEEDED",
+  "uploadWarning": "Hermes framework dSYM unavailable; framework crash symbolication limited. Upload accepted.",
+  "apiKeyValidationAttempt": "403 ROLE_NOT_VALID; used existing Xcode account without expanding key permissions",
+  "iphoneSimulator": {
+    "device": "iPhone 17 Pro",
+    "ios": "26.4",
+    "nativeATTPromptVisible": true,
+    "denyTrackingTested": true,
+    "radioPlaybackAfterDenial": "MANGORADIO ready -> playing; ICY title Roses",
+    "nonPersonalizedTestAdAfterDecision": true,
+    "limitation": "Unsigned Debug simulator reports Expo push auto-registration Keychain entitlement warning; physical-device validation pending."
+  },
+  "appStoreState": "WAITING_FOR_REVIEW",
+  "automaticReleaseAfterApproval": true
+}

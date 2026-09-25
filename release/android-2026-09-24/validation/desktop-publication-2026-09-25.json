@@ -1,0 +1,85 @@
+{
+  "assets": [
+    {
+      "name": "latest-linux.yml",
+      "size": 534,
+      "sha256": "8b922d5d275f9a5b5126ae0bef92cbd2080a03fe0f6ff1f5f29ade93827cc7a4"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 523,
+      "sha256": "4cbc15185738ea52e73bef588cf077854bfa2477ad31626f7c064e473dac3b28"
+    },
+    {
+      "name": "latest.yml",
+      "size": 355,
+      "sha256": "a3eaf291fcef4099301c2a35418770a4a4447d013a0c693bf4ec5be0e6286553"
+    },
+    {
+      "name": "MegaRadio-1.0.3-universal-mac.zip",
+      "size": 236034179,
+      "sha256": "51420972c4f1658c9ead33ea0777585c487d6c66dd5a4357ff73c2cbd6691632"
+    },
+    {
+      "name": "MegaRadio-1.0.3-universal-mac.zip.blockmap",
+      "size": 247392,
+      "sha256": "201dc110eb143736bd4731861859de710f3388673863fcd88db36977ba141460"
+    },
+    {
+      "name": "MegaRadio-1.0.3-universal.dmg",
+      "size": 235099527,
+      "sha256": "c4f9a592a6defa97c49d0f0affd227703e422233b758f65e8e77de73b9cab894"
+    },
+    {
+      "name": "MegaRadio-1.0.3-universal.dmg.blockmap",
+      "size": 248320,
+      "sha256": "0c2669da58da0fda5d7e9b209d1e33257d7fa860c4342ab058ab9864ccff8d2b"
+    },
+    {
+      "name": "MegaRadio-1.0.3.AppImage",
+      "size": 130237769,
+      "sha256": "220e2d4b79af552a0d69891e384bc636cafc44dc862c22c58e425d1a1bafb99e"
+    },
+    {
+      "name": "megaradio-desktop_1.0.3_amd64.deb",
+      "size": 104260920,
+      "sha256": "0f02a0b73731ef0ff00c7dd260e6dd6b5a1ca36514055011419bb4b3e5f67a83"
+    },
+    {
+      "name": "MegaRadio-Portable-1.0.3-x64.exe",
+      "size": 116203264,
+      "sha256": "0b651d0c4a287274301650667e842b822f4657750e9522d46a14505324fde43d"
+    },
+    {
+      "name": "MegaRadio-Setup-1.0.3-x64.exe",
+      "size": 116630873,
+      "sha256": "fa60bb407b89ef83281cb023c3b2af4e4112abea902af727a02a15cdf76c7e2c"
+    },
+    {
+      "name": "MegaRadio-Setup-1.0.3-x64.exe.blockmap",
+      "size": 122321,
+      "sha256": "a86325a5805f87e0d421e194c378a97338e73aec635dfb81ba80c351156d5493"
+    }
+  ],
+  "verifiedAt": "2026-09-25T12:04:01.826809+00:00",
+  "release": "https://github.com/evolutionphil/megaradioIOSAndroidReact/releases/tag/v1.0.3",
+  "published": true,
+  "sourceCommit": "6abb30532d71b8f5e956040db8fd6d3f64f62c9c",
+  "ciRun": 36130777807,
+  "macNotarization": {
+    "status": "Accepted",
+    "id": "a1eb055f-c877-4aa8-8321-ec7be2226cae",
+    "dmgAndAppStapled": true,
+    "gatekeeper": "accepted / Notarized Developer ID"
+  },
+  "runtime": {
+    "macOS": "Signed notarized app opened without a warning; guide, discovery and Radio Paradise player opened; current song Matthew Sweet - Girlfriend appeared with playing control. Actual payment not tested.",
+    "windowsLinux": "CI build and updater asset/hash validation passed; runtime not tested on these OSes."
+  },
+  "cdn": {
+    "run": 36132268676,
+    "version": "gha-36132268676-1-32e9b4123553638a522b4e3c830111f2b368726d",
+    "status": "live verified",
+    "testsPassed": 40
+  }
+}

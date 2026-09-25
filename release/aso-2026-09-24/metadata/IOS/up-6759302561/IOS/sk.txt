@@ -1,0 +1,29 @@
+"promotionalText" = "Slovenské rádiá aj nové hlasy zo sveta: počúvajte naživo, objavujte hudobné žánre a ukladajte si stanice, ku ktorým sa chcete vracať.";
+"description" = "Počúvajte rádio naživo cez internet s MegaRadio. Nájdite slovenské stanice FM a AM online, objavujte hudbu a spravodajstvo z ďalších krajín a uložte si obľúbené rádiá. Hľadajte podľa názvu, krajiny alebo hudobného žánru.
+
+HLASY DOMOVA AJ NOVÉ OBJAVY
+Začnite výberom Slovenska a nájdite si stanicu na ranné správy, hudbu k práci alebo pokojný večer. Ak žijete v zahraničí, vyhľadajte internetové vysielanie rádia, ktoré poznáte z domu. Zmena krajiny vám otvorí iné programy, jazyky a spôsoby, akými sa robí rádio.
+
+HUDBA PODĽA NÁLADY
+Prezerajte pop, rock, folk, jazz, klasickú hudbu a ďalšie žánre v katalógu. O skladbách a reláciách rozhoduje stanica, takže nemusíte pripravovať vlastný zoznam každej pesničky. Moderátori a živé vysielanie môžu priniesť aj niečo nečakané. Ponuka kategórií, správ a športových relácií závisí od krajiny a vysielateľa.
+
+ULOŽTE SI TO, ČO VÁS OSLOVÍ
+Obľúbené stanice sú praktickým miestom pre vaše pravidelné aj nové počúvanie. Pridajte rádio so správami, hudbu na sústredenie či objav na víkend. Pri ďalšom otvorení nemusíte opakovať vyhľadávanie ani si pamätať všetky názvy.
+
+POČÚVANIE CEZ INTERNET
+V prehrávači spustíte alebo pozastavíte živý stream. Názov skladby a interpreta sa zobrazuje, keď ho stanica poskytuje. Nie každé vysielanie obsahuje tieto údaje. FM a AM označujú internetové streamy staníc, nie prijímač s anténou fungujúci bez pripojenia. Dostupnosť sa môže líšiť podľa regiónu.
+
+VOLITEĽNÉ NÁKUPY
+Aplikácia ponúka voliteľné nákupy. Výhody, obdobie a cenu uvidíte pred potvrdením. Odstránenie reklám aplikácie neodstráni reklamy vo vysielaní rádií. Predplatné Apple spravujete vo svojom Apple účte a existujúce nákupy obnovíte v aplikácii.
+
+Potrebujete internetové pripojenie; môžu sa účtovať mobilné dáta. Dostupnosť vysielania a informácií o skladbách závisí od stanice a regiónu. Obsah poskytujú jednotliví vysielatelia.
+
+NA IPHONE A IPADE
+Počúvajte na pozadí a ovládajte prehrávanie zo zamknutej obrazovky. Nastavte časovač vypnutia na neskôr. Režim do auta má väčšie tlačidlá. Stanicu vyberte pred jazdou a sústreďte sa na cestu.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "počúvať,internetové,slovensko,slovenské,svet,správy,šport,jazz,klasika,pop,rock,obľúbené,hudba,folk";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Vylepšené žánre, obrázky staníc a nedávne prehrávanie. Spoľahlivejšie prihlásenie, prepínanie účtov a obnova predplatného.";

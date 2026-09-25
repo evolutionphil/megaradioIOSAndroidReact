@@ -1,0 +1,29 @@
+"promotionalText" = "České rádio i nové hlasy ze světa: poslouchejte živě, objevujte hudební žánry a uložte si stanice, ke kterým se budete rádi vracet.";
+"description" = "Poslouchejte rádio online živě s MegaRadio. Najděte české rozhlasové stanice, objevte internetové vysílání FM a AM z dalších zemí a vyberte si hudbu, zprávy nebo rozhovory. Hledejte podle názvu a ukládejte oblíbené stanice.
+
+RÁDIO PRO KAŽDOU ČÁST DNE
+Ranní zprávy, hudba při práci nebo večerní rozhovor: stanici můžete vybrat podle právě prožívané chvíle. Začněte Českem ve výběru země a vyhledejte známý název. V zahraničí si můžete najít internetový stream domácí stanice. Pokud chcete změnu, přejděte k jiné zemi a objevte místní programy.
+
+NECHTE SE PŘEKVAPIT VYSÍLÁNÍM
+Pop, rock, folk, jazz, klasická i elektronická hudba nabízejí různé cesty do katalogu. Program sestavuje každá stanice sama, takže nemusíte vybírat každou skladbu do vlastního seznamu. Moderátoři, zprávy a diskuse přinášejí další důvody k poslechu. Žánry a dostupné pořady se liší podle země a vysílatele.
+
+VLASTNÍ VÝBĚR NA PŘÍŠTĚ
+Když vás stanice zaujme, přidejte ji mezi oblíbené. Uložte si rádio pro ranní přehled, hudbu k soustředění i víkendové objevy. Příště nemusíte znovu zadávat název ani procházet všechny výsledky. Výběr můžete rozšiřovat podle svého vkusu.
+
+JAK FUNGUJE ŽIVÝ STREAM
+Přehrávání zahájíte nebo pozastavíte v přehrávači. Informace o skladbě a interpretovi se zobrazují, pokud je stanice posílá. Označení FM a AM znamená online vysílání těchto stanic, nikoli příjem přes anténu bez internetu. Některé streamy mohou být dočasně nebo regionálně nedostupné.
+
+VOLITELNÉ NÁKUPY
+Aplikace nabízí volitelné nákupy. Funkce, délka období a cena jsou uvedeny před potvrzením. Tarif bez reklam aplikace neodstraňuje reklamu uvnitř rozhlasového vysílání. Předplatné Apple spravujete ve svém účtu Apple; dřívější nákupy lze obnovit v aplikaci.
+
+Je nutné připojení k internetu a mohou se účtovat mobilní data. Dostupnost vysílání a názvů skladeb závisí na stanici a regionu. MegaRadio je katalog; obsah zajišťují vysílatelé.
+
+NA IPHONU A IPADU
+Poslouchejte na pozadí a ovládejte přehrávání ze zamčené obrazovky. Nastavte časovač vypnutí na později. Režim do auta nabízí větší tlačítka. Stanici vyberte před jízdou a věnujte pozornost provozu.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "poslech,internetové,české,česko,svět,zprávy,sport,jazz,klasika,pop,rock,oblíbené,hudba,retro,folk";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Vylepšili jsme žánry, obrázky stanic a nedávno přehrávané stanice. Přihlášení, přepínání účtů a obnovení předplatného jsou spolehlivější.";

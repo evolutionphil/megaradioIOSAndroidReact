@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-09-24T22:48:19.931655+00:00",
+  "version": "1.0.70",
+  "build": "7",
+  "buildId": "488189fc-079b-4f9a-b182-13d8fa033d80",
+  "versionState": "WAITING_FOR_REVIEW",
+  "releaseType": "AFTER_APPROVAL",
+  "submission": {
+    "id": "2a04470f-1d8e-43c0-8e71-538d9e909cc2",
+    "attributes": {
+      "platform": "IOS",
+      "submittedDate": "2026-09-24T22:48:09.568Z",
+      "state": "WAITING_FOR_REVIEW"
+    }
+  }
+}

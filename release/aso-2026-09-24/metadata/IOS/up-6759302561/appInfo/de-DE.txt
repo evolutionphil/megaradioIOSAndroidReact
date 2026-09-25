@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio & Webradio";
+"subtitle" = "Live-Sender aus aller Welt";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

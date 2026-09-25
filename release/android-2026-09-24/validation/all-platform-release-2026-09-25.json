@@ -1,0 +1,34 @@
+{
+  "observedAt": "2026-09-25T11:16:06.689304+00:00",
+  "artifacts": {
+    "phone95": {
+      "path": "frontend/android/app/build/outputs/bundle/release/app-release.aab",
+      "sha256": "a8127e5e91868e9961cec4e6ba58edce53b3103d2ef953e4acc46047af27a310",
+      "bytes": 75114060
+    },
+    "tv93": {
+      "path": "frontend/tvanddesktop/android-tv/app/build/outputs/bundle/release/app-release.aab",
+      "sha256": "2034941e00f8cf3e10008c2fa59d3c13ba18ba5064304e346636958fca573dd2",
+      "bytes": 4177719
+    },
+    "wear94": {
+      "path": "frontend/watch/android/wear/build/outputs/bundle/release/wear-release.aab",
+      "sha256": "f932be1225ed5b96b2e3e3022bf4568b552a927a6f8c742287c0766f10c5b47a",
+      "bytes": 16559089
+    }
+  },
+  "checks": {
+    "phoneBuild": "SUCCESS",
+    "tvLintUnitTestsSignedBuild": "SUCCESS; 5 JVM tests",
+    "wearLintUnitTestsSignedBuild": "SUCCESS; 4 JVM tests",
+    "phoneWearProtocol": "3 Node tests passed",
+    "tvRuntime": "Release APK: D-pad, playback metadata, background audio/media session verified. Provider and subscription-management fixes rebuilt; final runtime recheck pending.",
+    "wearRuntime": "Release APK launches. End-to-end pairing requires official Google Pixel Watch companion app; not yet verified."
+  },
+  "submission": {
+    "phone92": "In review; ASO 196 changes submitted",
+    "phone95": "not uploaded",
+    "tv93": "not uploaded",
+    "wear94": "internal release published; no testers configured; not production"
+  }
+}

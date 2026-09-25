@@ -1,0 +1,27 @@
+"promotionalText" = "De tu emisora de siempre a nuevas voces: escucha radio de España y del mundo en directo, explora géneros y reúne tus favoritas para volver cuando quieras.";
+"description" = "Escucha la radio en directo con MegaRadio. Encuentra emisoras de España, explora radios FM y AM por internet y descubre música, noticias, deporte y conversación de otros países. Busca por nombre, elige un género y guarda tus favoritas.
+
+LA RADIO QUE ENCAJA EN TU DÍA
+Un informativo por la mañana, música mientras trabajas o una tertulia al terminar el día: cada momento puede tener su emisora. Selecciona España para empezar cerca de casa. Si estás fuera, busca la emisión online de una radio conocida; si te apetece cambiar, abre otro país y escucha cómo suena su programación.
+
+MÁS ALLÁ DE TU LISTA HABITUAL
+Pop en español, rock, flamenco, jazz, clásica o música electrónica son distintos caminos para explorar el catálogo. No necesitas escoger cada canción: las emisoras ponen sus propias voces y su selección musical. También puedes buscar contenidos de actualidad, deportes o entrevistas. Los géneros y programas disponibles dependen del país y de la parrilla de cada radio.
+
+HAZ TU PROPIA SELECCIÓN
+Añade a favoritos las emisoras a las que quieras volver. Junta la radio que escuchas al desayunar, la música para concentrarte y algún descubrimiento para el fin de semana. Así no tendrás que recordar todos los nombres ni repetir la búsqueda cada vez que abras la aplicación.
+
+EL DIRECTO, CON CONTROLES SENCILLOS
+Abre una estación para iniciar o pausar la reproducción. Si el emisor facilita el título y el artista, podrás consultar esos datos. No todas las radios envían información musical. FM y AM se refieren a sus emisiones por internet: MegaRadio no recibe frecuencias sin conexión ni sustituye un receptor de antena. Algunos programas pueden tener restricciones geográficas.
+
+COMPRAS OPCIONALES
+La aplicación ofrece compras integradas. Las prestaciones, la duración y el precio aparecen antes de comprar. Una modalidad sin anuncios de la aplicación no elimina la publicidad emitida por las propias radios. Gestiona las suscripciones de Apple en tu cuenta Apple y restaura las compras existentes desde la aplicación.
+
+Se necesita conexión a internet. Pueden aplicarse cargos por datos móviles. La disponibilidad de las emisiones y la información de las canciones depende de la emisora y de la región. MegaRadio es un directorio; cada emisora proporciona sus contenidos.
+
+Escucha radio en tu Mac mientras trabajas o descansas.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "escuchar,internet,online,españa,local,noticias,deportes,jazz,clásica,pop,rock,favoritos,música,voz";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

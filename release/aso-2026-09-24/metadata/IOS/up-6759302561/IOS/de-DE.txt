@@ -1,0 +1,32 @@
+"promotionalText" = "Webradio für deinen Alltag: Sender aus Deutschland, Österreich, der Schweiz und aller Welt entdecken, nach Genre stöbern und Lieblingssender griffbereit speichern.";
+"description" = "Radio hören, Lieblingssender finden und neue Webradios entdecken: MegaRadio verbindet Live-Radio aus Deutschland, Österreich und der Schweiz mit Internetradio aus aller Welt. Wähle lokale Stimmen, aktuelle Nachrichten oder Musik, die zu deinem Tag passt.
+
+DEIN ALLTAG HAT SEINEN EIGENEN SOUND
+Morgens Nachrichten, beim Arbeiten Musik und abends eine vertraute Stimme: Stelle dir eine Auswahl zusammen, die zu deinen Hörgewohnheiten passt. Ob du in Deutschland wohnst, österreichische Programme suchst oder Schweizer Radio hören möchtest: Über die Länderauswahl findest du einen passenden Einstieg. Auch im Ausland kannst du nach den Internetstreams deiner Heimatregion suchen.
+
+VON SCHLAGER BIS JAZZ
+Entdecke Pop, Rock, Schlager, Klassik, elektronische Musik und weitere Genres im Senderverzeichnis. Du musst keine eigene Wiedergabeliste zusammenstellen: Die Redaktion des jeweiligen Radiosenders bestimmt das laufende Programm. So bleibt Platz für Musik, die du selbst noch nicht ausgewählt hättest. Angebot und Kategorien können je nach Land variieren.
+
+FINDE DEINEN NÄCHSTEN LIEBLINGSSENDER
+Kennst du bereits einen Sender, suche nach seinem Namen. Willst du etwas Neues hören, beginne mit einem Genre oder einem anderen Land. Zwischen vertrauten Radios und internationalen Programmen kannst du dir eine persönliche Auswahl aufbauen, ohne für jede Station eine eigene App suchen zu müssen.
+
+WENIGER SUCHEN, MEHR ZUHÖREN
+Speichere interessante Sender in deinen Favoriten. So findest du deine Nachrichtenquelle, die Musik für den Feierabend oder einen neu entdeckten Jazzsender wieder. Deine Auswahl muss nicht immer gleich bleiben: Ergänze sie, wenn du beim Stöbern einen neuen Favoriten findest.
+
+WISSEN, WAS GERADE LÄUFT
+Starte oder pausiere die Wiedergabe direkt im Player. Wenn ein Sender Titelinformationen übermittelt, siehst du, welcher Song gerade läuft. So kannst du beim Zuhören auch neue Künstler entdecken. FM und AM bezeichnen hier die Online-Streams der Radiosender; für die Wiedergabe brauchst du eine Internetverbindung.
+
+OPTIONALE IN-APP-KÄUFE
+Die App bietet optionale Käufe und Abonnements. Leistungen, Laufzeit und Preis des gewählten Angebots werden vor dem Kauf angezeigt. Ein werbefreier App-Tarif entfernt keine Werbung, die ein Radiosender selbst in sein Programm einbaut. Über Apple abgeschlossene Abonnements verwaltest du in deinem Apple Account. Bestehende Käufe lassen sich in der App wiederherstellen.
+
+Eine Internetverbindung ist erforderlich. Es können mobile Datenkosten entstehen. Die Verfügbarkeit von Streams und Titelinformationen hängt vom Sender und deinem Standort ab. MegaRadio ist ein Radioverzeichnis; die Inhalte stammen von den jeweiligen Sendern.
+
+RADIO AUF IPHONE UND IPAD
+Höre im Hintergrund weiter und nutze die Wiedergabesteuerung auf dem Sperrbildschirm. Mit dem Sleep-Timer legst du fest, wann die Wiedergabe endet. Der Automodus bietet größere Bedienelemente. Diese Funktionen gehören zur mobilen App; richte deine Wiedergabe vor der Fahrt ein und konzentriere dich unterwegs auf den Verkehr.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "internetradio,hören,fm,am,deutschland,österreich,schweiz,nachrichten,sport,jazz,klassik,pop,schlager";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Wir haben Genrelisten, Senderbilder und die Anordnung der zuletzt gehörten Sender verbessert. Anmeldung, Kontowechsel und das Wiederherstellen von Abonnements funktionieren zuverlässiger.";

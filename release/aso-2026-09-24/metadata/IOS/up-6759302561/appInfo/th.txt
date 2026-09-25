@@ -1,0 +1,3 @@
+"name" = "MegaRadio: วิทยุออนไลน์";
+"subtitle" = "ฟังสด FM AM จากทั่วโลก";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

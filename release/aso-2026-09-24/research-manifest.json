@@ -1,0 +1,1048 @@
+[
+  {
+    "file": "at-lookup.json",
+    "bytes": 118899,
+    "sha256": "5c5c837dd0cd0740cdff4163676fb97c94043cf5fd8f18baed36c9b4390cfce2",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=at",
+      "observedAt": "2026-09-23T23:20:04.303599+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "at-search.json",
+    "bytes": 451011,
+    "sha256": "3576f5924c7d1979f720e07cd254318aa145f0da50e95f4fe998f4ee363de4c0",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=internetradio&entity=software&limit=40&country=at",
+      "observedAt": "2026-09-23T23:20:00.435375+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "au-lookup.json",
+    "bytes": 116419,
+    "sha256": "ca77331fcfc759cb536171e219e8a1d5f2cea98023235d5906308744dd3f56c8",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=au",
+      "observedAt": "2026-09-23T23:20:29.914026+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "au-search.json",
+    "bytes": 410525,
+    "sha256": "0687f893af663e8c64aed250a93e5d0845e60ef9f8e9c2176675bcf6809d88de",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+live&entity=software&limit=40&country=au",
+      "observedAt": "2026-09-23T23:20:25.920246+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "be-lookup.json",
+    "bytes": 116740,
+    "sha256": "aaf6bc21ea6ecd50ba40f493dbda91b0eba5c757f92459f1772af7505de4c834",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=be",
+      "observedAt": "2026-09-23T23:21:44.264258+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "be-search.json",
+    "bytes": 416996,
+    "sha256": "ecc8c2fdf803a685435c29b9f7d89605401a4aada16e33a9b817be0b230cf3ad",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+luisteren&entity=software&limit=40&country=be",
+      "observedAt": "2026-09-23T23:21:40.402019+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "bn-language-search.json",
+    "bytes": 10454,
+    "sha256": "524f591e3e7270f37876a37c38cebcf082e551adb5247931ccc76a9d05ecdfac",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE+%E0%A6%B0%E0%A7%87%E0%A6%A1%E0%A6%BF%E0%A6%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:17.589226+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "bn-romanized-search.json",
+    "bytes": 168959,
+    "sha256": "0c64e4f404222816585d77d6c541d3544efd1d43c738ebcbbd58bf7802b228ac",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=bangla+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:49.568325+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "br-lookup.json",
+    "bytes": 117472,
+    "sha256": "a5397be23bc6fddfed524638f71b9b587aa6835eed06a08e7c0eaacf3f186d6b",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=br",
+      "observedAt": "2026-09-23T23:21:11.351199+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "br-search.json",
+    "bytes": 445483,
+    "sha256": "945299e41ce2177f8f770542214b32a44f410551a45cdbcf9a86ecee717d60c8",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+ao+vivo&entity=software&limit=40&country=br",
+      "observedAt": "2026-09-23T23:21:07.575513+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ca-language-search.json",
+    "bytes": 300744,
+    "sha256": "7f428b75d020b15371aa9272512a316f621e4ae76a4a1f8486c62c2cf5c0f527",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A0dio+en+directe&country=es&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:14.053982+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "ca-lookup.json",
+    "bytes": 116455,
+    "sha256": "602ea027cec054b7d28e874a235d5ec28f63305ec5aa753934878605cb798beb",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=ca",
+      "observedAt": "2026-09-23T23:20:46.506840+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ca-search.json",
+    "bytes": 438208,
+    "sha256": "f6be8ff8b6841fd7a31e5d189e992b9d7a120568862e2a35d01bb22ba0779547",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+en+direct&entity=software&limit=40&country=ca",
+      "observedAt": "2026-09-23T23:20:42.731502+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ch-lookup.json",
+    "bytes": 118910,
+    "sha256": "f6c7e1abb07acb5ddf2d6da55502551b7a2e462f81d2136099801fe1e345a787",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=ch",
+      "observedAt": "2026-09-23T23:21:52.588629+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ch-search.json",
+    "bytes": 471207,
+    "sha256": "ec46042780d1e8c9217b92b7d9ead79f39afec6fbb072e4e0df45e80cd1b49a7",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+h%C3%B6ren&entity=software&limit=40&country=ch",
+      "observedAt": "2026-09-23T23:21:48.774861+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "cn-lookup.json",
+    "bytes": 50680,
+    "sha256": "082cd2242b69af8313c7217c269f6538f6b6f0cb9fbee603b0b23f67b02fae81",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=cn",
+      "observedAt": "2026-09-23T23:25:04.535944+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "cn-search.json",
+    "bytes": 402135,
+    "sha256": "ec2128a3b3f746121cf17ef719420458dfe4d3fc1aec6f2b10d856f66cbde024",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E7%BD%91%E7%BB%9C%E7%94%B5%E5%8F%B0&entity=software&limit=40&country=cn",
+      "observedAt": "2026-09-23T23:25:00.912941+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "competitor-pages.json",
+    "bytes": 155229,
+    "sha256": "b769d88d2a1990f9afc5334d7aad220c8351412062be32bfb61e208970789555",
+    "source": null
+  },
+  {
+    "file": "cz-lookup.json",
+    "bytes": 116699,
+    "sha256": "3cb75679ef993fb54309e229b09985f9d4e6de63f453852cef870cfbc4e2ecf3",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=cz",
+      "observedAt": "2026-09-23T23:22:41.984265+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "cz-search.json",
+    "bytes": 420472,
+    "sha256": "2930eceb59167b24bf1b8e1696338fd8f984da9d1d2a6430282320e0f854be47",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+online&entity=software&limit=40&country=cz",
+      "observedAt": "2026-09-23T23:22:38.163403+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "de-lookup.json",
+    "bytes": 133100,
+    "sha256": "06486de3191cf45012817412ae5275a457a02081aca9cb60572850bfc6ea0c23",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=de",
+      "observedAt": "2026-09-23T23:19:55.830642+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "de-search.json",
+    "bytes": 450674,
+    "sha256": "b9ea67649b15d7339c824b2a7d15eafc276d54e86c7ff0f4b3356d27729b7a6a",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+h%C3%B6ren&entity=software&limit=40&country=de",
+      "observedAt": "2026-09-23T23:19:52.043432+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "dk-lookup.json",
+    "bytes": 116728,
+    "sha256": "b7c234d4d84cb5a1a4eb3c28a6bdaf5039a912aad5c674ae4e85f0c9fe50f906",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=dk",
+      "observedAt": "2026-09-23T23:22:01.129677+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "dk-search.json",
+    "bytes": 421758,
+    "sha256": "98bfb994a9dfa3e69c6147f8a23b077b0b81cb5adea1eb4a5d48f50f0e35c252",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio&entity=software&limit=40&country=dk",
+      "observedAt": "2026-09-23T23:21:57.204855+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "en-CA-language-search.json",
+    "bytes": 340933,
+    "sha256": "6a0381695021a8e92aa3dccb65b8c59ed74fea8dd6e84c0268354f866333e1ee",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+canada+live&country=ca&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:58.340931+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "es-lookup.json",
+    "bytes": 115607,
+    "sha256": "04b4c55b415de0720a0173420cd140901ef8ef2b1c3a9feae52d8bdf82dca937",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=es",
+      "observedAt": "2026-09-23T23:20:55.061927+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "es-search.json",
+    "bytes": 430568,
+    "sha256": "45098718ae1ca4793a52b21d511db31c5412bba46a705da5465120dcbf846156",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=es",
+      "observedAt": "2026-09-23T23:20:51.307985+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "fi-lookup.json",
+    "bytes": 116724,
+    "sha256": "74f202a9556f5c48bd28ae22e0026dd83afd7e9f4765b6b5f0c81064e1e06668",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=fi",
+      "observedAt": "2026-09-23T23:22:25.766399+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "fi-search.json",
+    "bytes": 379878,
+    "sha256": "953435823672e0cd3c9cb6d8796fb9282222535aabf150609c230fa0655dd602",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=nettiradio&entity=software&limit=40&country=fi",
+      "observedAt": "2026-09-23T23:22:21.988090+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "fr-lookup.json",
+    "bytes": 117238,
+    "sha256": "7e29caf050336dba6cc118f9f5b9dd177f387b7e30332a87242f18ed669ed6ef",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=fr",
+      "observedAt": "2026-09-23T23:20:38.169606+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "fr-search.json",
+    "bytes": 474033,
+    "sha256": "9b8924c4a679c6e3f341fee139c4ba1d1a5ddcf32b0113c7d155169d59201046",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+en+direct&entity=software&limit=40&country=fr",
+      "observedAt": "2026-09-23T23:20:34.379503+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "gb-lookup.json",
+    "bytes": 116741,
+    "sha256": "be5c2388b6d5db454d15783cd2cec95be2a82edf60252745cf77a817a66ffb55",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=gb",
+      "observedAt": "2026-09-23T23:20:21.235133+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "gb-search.json",
+    "bytes": 443298,
+    "sha256": "47416d7683205a691ee07bbab9dbb8f10e0d873b856c616db082af76e0ae13b7",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+stations&entity=software&limit=40&country=gb",
+      "observedAt": "2026-09-23T23:20:17.468969+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "gr-lookup.json",
+    "bytes": 116718,
+    "sha256": "4a04cb25cb287a7ee7545e0da2ccb10b6148ddf317c91be39e521f611c16889b",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=gr",
+      "observedAt": "2026-09-23T23:23:23.539879+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "gr-search.json",
+    "bytes": 432335,
+    "sha256": "ba7996ac01dfdb5ee9da7881a2c3f869765f4479ef9950018b174ce3da98b59b",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%CF%81%CE%B1%CE%B4%CE%B9%CF%8C%CF%86%CF%89%CE%BD%CE%BF&entity=software&limit=40&country=gr",
+      "observedAt": "2026-09-23T23:23:19.743809+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "gu-language-search.json",
+    "bytes": 388,
+    "sha256": "cfd8942a161bd8e1d0006c5073ae2c5a19de95a838f8dc50358a20957e9bc734",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%AA%97%E0%AB%81%E0%AA%9C%E0%AA%B0%E0%AA%BE%E0%AA%A4%E0%AB%80+%E0%AA%B0%E0%AB%87%E0%AA%A1%E0%AA%BF%E0%AA%AF%E0%AB%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:21.154856+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "gu-romanized-search.json",
+    "bytes": 287386,
+    "sha256": "2034dbb868675144400b43ab9ca20a11057f42043759bfd435cd56a471336c24",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=gujarati+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:49.761982+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "hk-lookup.json",
+    "bytes": 111165,
+    "sha256": "f4e2b433941976c7fb71e2dcffae0620fa66bc82f3ca193cd76aa5d27003ee10",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=hk",
+      "observedAt": "2026-09-23T23:25:21.136966+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "hk-search.json",
+    "bytes": 430147,
+    "sha256": "686da951d4b9eb4208507f42913e6e78bc88d09d230ac8d469eda6145fc3f5c6",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E7%B6%B2%E7%B5%A1%E9%9B%BB%E5%8F%B0&entity=software&limit=40&country=hk",
+      "observedAt": "2026-09-23T23:25:17.346689+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "hr-lookup.json",
+    "bytes": 116712,
+    "sha256": "8705ce88cd9de3612097db73e067cb5d3d95b25627f1093e92d50e539112631b",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=hr",
+      "observedAt": "2026-09-23T23:23:15.154518+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "hr-search.json",
+    "bytes": 437887,
+    "sha256": "9be5a1dfa290238219f7a91a4e9c423b1ba21f26dbeeeb2e2aa84870c1299d8f",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+u%C5%BEivo&entity=software&limit=40&country=hr",
+      "observedAt": "2026-09-23T23:23:11.328703+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "hu-lookup.json",
+    "bytes": 116700,
+    "sha256": "66e9a1340e0cf2d5d07ed2566aec987ac3407001e1499b2007de9b162b42d112",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=hu",
+      "observedAt": "2026-09-23T23:22:58.702939+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "hu-search.json",
+    "bytes": 428617,
+    "sha256": "de8227ac1436b31b906630035cdedb9641e9b9b2202b0cdb4ff2807e245d445b",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1di%C3%B3+online&entity=software&limit=40&country=hu",
+      "observedAt": "2026-09-23T23:22:54.940879+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "id-lookup.json",
+    "bytes": 116686,
+    "sha256": "54301863e8d3145242d544f8976aacbb24c14b04cb5a7ee1e1f51d9a7f2d30ca",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=id",
+      "observedAt": "2026-09-23T23:24:14.284261+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "id-search.json",
+    "bytes": 432151,
+    "sha256": "67b6e7bbe40abdaa75a53d35301505d69fa55caa2c98521d7e7e7b17c2b5cbc0",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=id",
+      "observedAt": "2026-09-23T23:24:10.451706+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "il-lookup.json",
+    "bytes": 116701,
+    "sha256": "f6af82071a5f104b1fdf84ebf3b341f5d0cae787ef2b662650b85b984329dcde",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=il",
+      "observedAt": "2026-09-23T23:23:48.757868+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "il-search.json",
+    "bytes": 399107,
+    "sha256": "95969d0a9005bb4cb423e2cc3f721e5477c184bca1fdfb4519944da25add9480",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D7%A8%D7%93%D7%99%D7%95&entity=software&limit=40&country=il",
+      "observedAt": "2026-09-23T23:23:44.996266+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "in-lookup.json",
+    "bytes": 116700,
+    "sha256": "5abf65eac51e6ea157a5de20763e7a270bb0f899042a686661a537a04e96893f",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=in",
+      "observedAt": "2026-09-23T23:24:05.802000+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "in-search.json",
+    "bytes": 459909,
+    "sha256": "aa8b75e5f1957c05a8e1d77349d2679bbebf07b59639cb48a2f84ef07c6595ad",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A4%B0%E0%A5%87%E0%A4%A1%E0%A4%BF%E0%A4%AF%E0%A5%8B&entity=software&limit=40&country=in",
+      "observedAt": "2026-09-23T23:24:01.987950+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "it-lookup.json",
+    "bytes": 116334,
+    "sha256": "6fbbd7ede13a12aa51e6b2e06f4acb955ac1eee341a3df8caa296b6834bde097",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=it",
+      "observedAt": "2026-09-23T23:21:27.712939+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "it-search.json",
+    "bytes": 467739,
+    "sha256": "bac768b336e2bfc52f003cd7dee81e4d0b8e165281e108a5dae6f9cbfc48e163",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+in+diretta&entity=software&limit=40&country=it",
+      "observedAt": "2026-09-23T23:21:23.925373+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "jp-lookup.json",
+    "bytes": 121251,
+    "sha256": "75d85595aec42225d6d47537075933ae25c18381555ea80baf925360fef1a58d",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=jp",
+      "observedAt": "2026-09-23T23:24:47.998238+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "jp-search.json",
+    "bytes": 372874,
+    "sha256": "eb5fe03aab53d586a682960a8c9428338ddc9b0479b4fcea49e5aabbdc39f86f",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E3%83%A9%E3%82%B8%E3%82%AA&entity=software&limit=40&country=jp",
+      "observedAt": "2026-09-23T23:24:44.195491+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "kn-language-search.json",
+    "bytes": 370,
+    "sha256": "98c46da20fec952662e76e2cf170b20ad575df6edf3fda4988a97464d0e4b65e",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B2%95%E0%B2%A8%E0%B3%8D%E0%B2%A8%E0%B2%A1+%E0%B2%B0%E0%B3%87%E0%B2%A1%E0%B2%BF%E0%B2%AF%E0%B3%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:24.662782+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "kn-romanized-search.json",
+    "bytes": 298521,
+    "sha256": "7bedc66bd854efb436fefe1e7bf2d28c63bbf6c5e90ea06aa3f49fee5019e6b9",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=kannada+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:50.625381+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "kr-lookup.json",
+    "bytes": 102147,
+    "sha256": "249d3596a291059a1f898bb3af8373c520588318fcf5d9f369dffb4dda664316",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=kr",
+      "observedAt": "2026-09-23T23:24:56.248362+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "kr-search.json",
+    "bytes": 366136,
+    "sha256": "3d1e1ee556e6f52991da3e52cf424cc89b7e93b261f2ae8fc58c0bb985982682",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%EB%9D%BC%EB%94%94%EC%98%A4&entity=software&limit=40&country=kr",
+      "observedAt": "2026-09-23T23:24:52.386528+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ml-language-search.json",
+    "bytes": 379,
+    "sha256": "50e0704846ce5aecc0fa463d9d739a85e5f027a0287234ccbf6b5ee27e2f3128",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B4%AE%E0%B4%B2%E0%B4%AF%E0%B4%BE%E0%B4%B3%E0%B4%82+%E0%B4%B1%E0%B5%87%E0%B4%A1%E0%B4%BF%E0%B4%AF%E0%B5%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:28.233526+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "ml-romanized-search.json",
+    "bytes": 265553,
+    "sha256": "1efa113a9455d8d85b60f613cc6834b7cf01249fed277218da14a4c869d75124",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=malayalam+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:50.774118+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "mr-language-search.json",
+    "bytes": 361,
+    "sha256": "bb107c85605527c8d5c8bc3ac283e92c9af613b84c1a005e3c17ecb2020bd43e",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A4%AE%E0%A4%B0%E0%A4%BE%E0%A4%A0%E0%A5%80+%E0%A4%B0%E0%A5%87%E0%A4%A1%E0%A4%BF%E0%A4%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:31.817193+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "mr-romanized-search.json",
+    "bytes": 276872,
+    "sha256": "f856dcbc993936d67fd64e7a2884ae0d0eded5020f1bfddd8c95dc7958f3cd98",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=marathi+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:51.654248+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "mx-lookup.json",
+    "bytes": 115560,
+    "sha256": "6c95c7c8329ed10acc9a00b58fd5e1240af88fcd97aa9f8a662eaf174a8d8d2e",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=mx",
+      "observedAt": "2026-09-23T23:21:03.263735+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "mx-search.json",
+    "bytes": 456278,
+    "sha256": "9e6f267cc0dc01ca28964d3feb0f46aee2696a233f102f9b1b219d78971d66b7",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+en+vivo&entity=software&limit=40&country=mx",
+      "observedAt": "2026-09-23T23:20:59.513716+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "my-lookup.json",
+    "bytes": 116672,
+    "sha256": "e36eca74f780617653024553911b395a463b2f4555707199787603ee35827472",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=my",
+      "observedAt": "2026-09-23T23:24:22.681209+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "my-search.json",
+    "bytes": 448320,
+    "sha256": "6fb3f545919f081d6fd5235101acdc7af8fe0fbcf7944e88b7a3e686891e7099",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=my",
+      "observedAt": "2026-09-23T23:24:18.855070+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "nl-lookup.json",
+    "bytes": 117340,
+    "sha256": "d43c54ab3ebe3c48758a25bd599b6c89e63dbfc946b3a751264232cf26aa5bee",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=nl",
+      "observedAt": "2026-09-23T23:21:35.888130+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "nl-search.json",
+    "bytes": 409388,
+    "sha256": "f4fb223f41e6f83c931786972ee8a75552292b01fdd4d79dae88229dbdbd4516",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+luisteren&entity=software&limit=40&country=nl",
+      "observedAt": "2026-09-23T23:21:32.106394+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "no-lookup.json",
+    "bytes": 116724,
+    "sha256": "f1d516a3c79767a62be6341db5dea9319acdd655a5410de4cdfef3fa7afd694b",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=no",
+      "observedAt": "2026-09-23T23:22:17.738478+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "no-search.json",
+    "bytes": 423442,
+    "sha256": "9bb0fa70d4fba12a109f990230d012b0b3d0c95088e53bdb3f74167c11aef043",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio&entity=software&limit=40&country=no",
+      "observedAt": "2026-09-23T23:22:13.931637+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "or-language-search.json",
+    "bytes": 361,
+    "sha256": "769807fb4bb76478bd8a1d837fc3ce860d2eaa994656e10843d1fd254a1514de",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%AC%93%E0%AC%A1%E0%AC%BC%E0%AC%BF%E0%AC%86+%E0%AC%B0%E0%AD%87%E0%AC%A1%E0%AC%BF%E0%AC%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:35.471421+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "or-romanized-search.json",
+    "bytes": 61497,
+    "sha256": "698e9c4f1717d58c75fa70cd43ab2d7119e202f753081cf51942f805d86b22a2",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=odia+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:51.263547+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "pa-language-search.json",
+    "bytes": 370,
+    "sha256": "e53ff3cb93d4968fd5dbf0ec6f9be0951d6f145ee9da6ebd1d78ebfac8b99022",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%A8%AA%E0%A9%B0%E0%A8%9C%E0%A8%BE%E0%A8%AC%E0%A9%80+%E0%A8%B0%E0%A9%87%E0%A8%A1%E0%A9%80%E0%A8%93&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:38.967751+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "pa-romanized-search.json",
+    "bytes": 253136,
+    "sha256": "83fa8e2cc9347533b73fe8f3da50676d9de35470afc7cb6b47857eedd05cc235",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=punjabi+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:52.276505+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "pl-lookup.json",
+    "bytes": 116718,
+    "sha256": "2bc001c458745ab410a32546884f05b067f3e42c00f5cfa23c503a382349b37f",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=pl",
+      "observedAt": "2026-09-23T23:22:33.822204+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "pl-search.json",
+    "bytes": 446128,
+    "sha256": "9810e650615ab969cbd292d55104b004d701f933fb672e0a2231e5b2f2260371",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+internetowe&entity=software&limit=40&country=pl",
+      "observedAt": "2026-09-23T23:22:30.096195+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "pt-lookup.json",
+    "bytes": 114198,
+    "sha256": "62c54bb1cee51f04b6ac6ab9acb97cc9be8b458b4887153b5380e4ecd04ad936",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=pt",
+      "observedAt": "2026-09-23T23:21:19.420146+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "pt-search.json",
+    "bytes": 416076,
+    "sha256": "45b31ca7a0f00d044d0a7749aa010232eeec0dad36e7831f8ec0859d845ddab6",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+online&entity=software&limit=40&country=pt",
+      "observedAt": "2026-09-23T23:21:15.571551+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ro-lookup.json",
+    "bytes": 116712,
+    "sha256": "9757071ffdfc5da2510482ea95f8a1c65b31894eaa65e7d756f73d016154f191",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=ro",
+      "observedAt": "2026-09-23T23:23:06.868560+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ro-search.json",
+    "bytes": 428127,
+    "sha256": "b1009c8d8acc3ffa5a10ae1d05db559a8e9aea02417ca79609e2bb3059819ddc",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+online&entity=software&limit=40&country=ro",
+      "observedAt": "2026-09-23T23:23:03.087825+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ru-lookup.json",
+    "bytes": 113242,
+    "sha256": "0c8a7b5b4913a5dc662cc32dba1b83f3341a89b9e43ac9449e47b7af08baa7a0",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=ru",
+      "observedAt": "2026-09-23T23:23:32.097308+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ru-search.json",
+    "bytes": 477415,
+    "sha256": "ebfef5d04fe7923b14c2f10abfc9da5e77841dd2a0bc08a8bbcde2ac90e6e6d2",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D1%80%D0%B0%D0%B4%D0%B8%D0%BE+%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD&entity=software&limit=40&country=ru",
+      "observedAt": "2026-09-23T23:23:28.203923+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "sa-lookup.json",
+    "bytes": 116692,
+    "sha256": "60bbf155a683546c6a2df16a7febbf4c54c25168e5d6d2420113ea8d1ffe5388",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=sa",
+      "observedAt": "2026-09-23T23:23:57.427219+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "sa-search.json",
+    "bytes": 445302,
+    "sha256": "7ba1cc7e0c2c6104ee9d1025caba15325f742d00bb967e9c2428668ff231e27d",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D8%B1%D8%A7%D8%AF%D9%8A%D9%88+%D9%85%D8%A8%D8%A7%D8%B4%D8%B1&entity=software&limit=40&country=sa",
+      "observedAt": "2026-09-23T23:23:53.387392+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "se-lookup.json",
+    "bytes": 115260,
+    "sha256": "6dcb96471fe1c7b4e2bf0ee2e89fefc5a9205aec6dedf3df843c83af17248ad3",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=se",
+      "observedAt": "2026-09-23T23:22:09.438238+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "se-search.json",
+    "bytes": 457961,
+    "sha256": "3564e9471723abc3c5a5a7276d6a3b4055dca4a798f01dd23b61f5147d44069e",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=lyssna+radio&entity=software&limit=40&country=se",
+      "observedAt": "2026-09-23T23:22:05.586803+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "sk-lookup.json",
+    "bytes": 116692,
+    "sha256": "f8bd4ee51afbdd1df9e5225c4be0e019b018e5484897c94510acfbf0bd68f641",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=sk",
+      "observedAt": "2026-09-23T23:22:50.422237+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "sk-search.json",
+    "bytes": 462948,
+    "sha256": "218be138aa26f6c6e7856571a3a3cf152be1b9ab0c1f90f3f67b7be92352640e",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=r%C3%A1dio+online&entity=software&limit=40&country=sk",
+      "observedAt": "2026-09-23T23:22:46.447438+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "sl-language-search.json",
+    "bytes": 9049,
+    "sha256": "256bc41d1a62683549c383c94a016718349d9b0918a7bf5a4e9304acbe8eea98",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radio+v+%C5%BEivo&country=si&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:53.987539+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "ta-language-search.json",
+    "bytes": 12362,
+    "sha256": "df53e676bf6eda2122c0c8371571d7de3b5709145a946b42840a2d8210943f3a",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%AE%A4%E0%AE%AE%E0%AE%BF%E0%AE%B4%E0%AF%8D+%E0%AE%B5%E0%AE%BE%E0%AE%A9%E0%AF%8A%E0%AE%B2%E0%AE%BF&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:42.569696+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "ta-romanized-search.json",
+    "bytes": 261388,
+    "sha256": "84444aa9e7197c7c1aade2e74362513f64bf9261a9a04890eb4f9e296edb2601",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=tamil+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:52.830645+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "te-language-search.json",
+    "bytes": 379,
+    "sha256": "4cbf9888257511de4c1392571d5a7ed1753b973ff96e5ffc2cfd834951199b8f",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B0%A4%E0%B1%86%E0%B0%B2%E0%B1%81%E0%B0%97%E0%B1%81+%E0%B0%B0%E0%B1%87%E0%B0%A1%E0%B0%BF%E0%B0%AF%E0%B1%8B&country=in&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:46.159235+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "te-romanized-search.json",
+    "bytes": 275180,
+    "sha256": "fdd3bc1129728d241c4a83a186628bd5e6f485794d860f6ad284c8f1da43cd4a",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=telugu+radio&country=in&entity=software&limit=25",
+      "observedAt": "2026-09-24T00:09:53.442046+00:00",
+      "note": "Romanized local-language query; public result sample, not search volume."
+    }
+  },
+  {
+    "file": "th-lookup.json",
+    "bytes": 116699,
+    "sha256": "8ae2c0a25acb9b7bc9e5e7548763ad90e8fcd5414f105135e23d643e2088df63",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=th",
+      "observedAt": "2026-09-23T23:24:31.004327+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "th-search.json",
+    "bytes": 440725,
+    "sha256": "2413e00b29da21f2f194dba902f2bdc1e3afabc5f9015b4fb3a31f1a06f9f908",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B8%E0%B8%AD%E0%B8%AD%E0%B8%99%E0%B9%84%E0%B8%A5%E0%B8%99%E0%B9%8C&entity=software&limit=40&country=th",
+      "observedAt": "2026-09-23T23:24:27.191987+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "tr-lookup.json",
+    "bytes": 64271,
+    "sha256": "5ca2efc76fc7ee3684ea9008f153c7fe9dbd60bc02bcaaa450987b376ee6f20a",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=tr",
+      "observedAt": "2026-09-23T23:19:47.600362+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "tr-search.json",
+    "bytes": 362879,
+    "sha256": "49e9db1c6bbbc52de71c1cd0458991f1a8f9a2277e182f6b1f0400ef6c784b9f",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=radyo+dinle&entity=software&limit=40&country=tr",
+      "observedAt": "2026-09-23T23:19:43.888897+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "tw-lookup.json",
+    "bytes": 111149,
+    "sha256": "fa09624ba96c156d8b69025642a3954e06f35fe403f93f540e7c5bee3ee028ec",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=tw",
+      "observedAt": "2026-09-23T23:25:12.850852+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "tw-search.json",
+    "bytes": 412689,
+    "sha256": "cde30e44dbd7770235c3cf2f65354730ee3c0e98b8f574dfba6f7c2214ffc2bd",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%E7%B6%B2%E8%B7%AF%E9%9B%BB%E5%8F%B0&entity=software&limit=40&country=tw",
+      "observedAt": "2026-09-23T23:25:08.956693+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ua-lookup.json",
+    "bytes": 116700,
+    "sha256": "65b15966b477a9dbf04f1f53ac718e5d9163c843e6a8fbed45ea2e5c345fde34",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=ua",
+      "observedAt": "2026-09-23T23:23:40.489145+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ua-search.json",
+    "bytes": 434149,
+    "sha256": "09a77bc874dc73e82d406ace7b9ef1135f70c7fd59761d78a9b155820d78765a",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D1%80%D0%B0%D0%B4%D1%96%D0%BE+%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD&entity=software&limit=40&country=ua",
+      "observedAt": "2026-09-23T23:23:36.591892+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "ur-language-search.json",
+    "bytes": 303907,
+    "sha256": "6da5bb8ec8a1a45e82d5cab8aeb2f62225144cc38b090d1080e80fd2f18ff9f1",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%D8%A7%D8%B1%D8%AF%D9%88+%D8%B1%DB%8C%DA%88%DB%8C%D9%88&country=pk&entity=software&limit=30",
+      "observedAt": "2026-09-23T23:45:50.464551+00:00",
+      "note": "Public API sample; no search volume or download count."
+    }
+  },
+  {
+    "file": "us-lookup.json",
+    "bytes": 115324,
+    "sha256": "adc78726bf9db31bbf92587a6b74d309c879ca20eb7728c81704f43c2c36c283",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=us",
+      "observedAt": "2026-09-23T23:20:12.983867+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "us-search.json",
+    "bytes": 434673,
+    "sha256": "294d7e483e95f583e679620aa3722056625cc8d835b3534288b24b04d505d31b",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=live+radio&entity=software&limit=40&country=us",
+      "observedAt": "2026-09-23T23:20:09.144367+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "vn-lookup.json",
+    "bytes": 116674,
+    "sha256": "ff5147c37daf5ea16431fd6929e61e381054f73ded36c47c62bbeba37cfeaf73",
+    "source": {
+      "url": "https://itunes.apple.com/lookup?id=311762416%2C418987775%2C520502858%2C891132290%2C951362406%2C625143593%2C6443602613%2C1339670993%2C311658127%2C932743253&entity=software&country=vn",
+      "observedAt": "2026-09-23T23:24:39.646177+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  },
+  {
+    "file": "vn-search.json",
+    "bytes": 359835,
+    "sha256": "4c7a661e71f96e755c1d18333536cf23f290c5625e2b9f5ad18f9d0d81133428",
+    "source": {
+      "url": "https://itunes.apple.com/search?term=%C4%91%C3%A0i+ph%C3%A1t+thanh&entity=software&limit=40&country=vn",
+      "observedAt": "2026-09-23T23:24:35.771983+00:00",
+      "note": "Public API sample, not download volume or personalized App Store rank."
+    }
+  }
+]

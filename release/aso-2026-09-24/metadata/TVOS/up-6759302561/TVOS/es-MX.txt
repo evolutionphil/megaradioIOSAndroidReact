@@ -1,0 +1,30 @@
+"promotionalText" = "De la música regional a las noticias: descubre estaciones de México y del mundo, escucha radio en vivo y guarda tus favoritas en una selección hecha por ti.";
+"description" = "Escucha radio en vivo de México y del mundo con MegaRadio. Encuentra tus estaciones FM y AM por internet, sigue las noticias o elige música para tu día. Explora por país y género, y guarda las emisoras que quieras volver a escuchar.
+
+TU ESTACIÓN, TU MOMENTO
+La radio puede acompañar el desayuno, una tarde de trabajo o un rato de descanso. Selecciona México para comenzar con voces conocidas y busca una emisora por su nombre. Si vives fuera del país, explora los programas disponibles en línea para mantener cerca la música y la conversación de casa.
+
+DEL REGIONAL A NUEVOS RITMOS
+Explora categorías como regional mexicano, banda, pop, rock, música romántica o jazz cuando estén disponibles en el catálogo. Cada estación decide su programación; tú eliges a cuál sintonizar. Para variar, cambia de país y descubre otros estilos, presentadores y formas de contar las noticias. La oferta de géneros y transmisiones cambia entre regiones.
+
+ARMA TU COLECCIÓN DE FAVORITAS
+Guarda una estación cuando encuentres algo que te guste. Reúne una fuente de noticias, música para acompañar tus actividades y nuevos descubrimientos. Al volver a MegaRadio, tus favoritas te ayudan a llegar a esas emisoras sin escribir sus nombres otra vez.
+
+ASÍ FUNCIONA LA ESCUCHA EN VIVO
+Desde el reproductor puedes iniciar o pausar la estación. Los datos de la canción y del artista se muestran si el medio los proporciona. Las referencias FM y AM corresponden a sus transmisiones por internet, no a una antena de radio sin conexión. Los horarios, contenidos y posibles restricciones del flujo dependen de cada emisora.
+
+EMPIEZA POR LO QUE CONOCES
+Busca una radio que ya disfrutas, guárdala y después prueba un género diferente. También puedes ir directamente a otro país y descubrir una estación sin preparar una lista de canciones.
+
+COMPRAS DENTRO DE LA APP
+Hay opciones de compra y suscripción. Consulta las funciones, la duración y el precio de cada plan antes de elegirlo. Quitar anuncios de la aplicación no quita los comerciales incluidos por las estaciones en su señal. Administra las suscripciones de Apple en tu cuenta Apple y verifica compras anteriores con la opción de restauración.
+
+Necesitas conexión a internet; tu operador puede cobrar por datos móviles. La disponibilidad de transmisiones y títulos de canciones depende de la estación y tu región. MegaRadio es un directorio; cada emisora proporciona su contenido.
+
+Navega con el control remoto de Apple TV y disfruta la radio en tu sala.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "escuchar,fm,am,internet,online,estaciones,noticias,deportes,regional,banda,pop,favoritos,ranchera";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
