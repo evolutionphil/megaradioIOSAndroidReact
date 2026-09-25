@@ -5,6 +5,7 @@ import * as Localization from 'expo-localization';
 import api from './api';
 import { API_ENDPOINTS } from '../constants/api';
 import { subscriptionTranslations } from './subscriptionTranslations';
+import { adPrivacyTranslations } from './adPrivacyTranslations';
 
 // Storage key for language preference
 const LANGUAGE_KEY = '@megaradio_language';
@@ -711,9 +712,9 @@ const germanTranslations: Record<string, string> = {
 };
 
 // Pre-populate Turkish and German cache
-Object.assign(defaultTranslations, subscriptionTranslations.en);
-Object.assign(turkishTranslations, subscriptionTranslations.tr);
-Object.assign(germanTranslations, subscriptionTranslations.de);
+Object.assign(defaultTranslations, subscriptionTranslations.en, adPrivacyTranslations.en);
+Object.assign(turkishTranslations, subscriptionTranslations.tr, adPrivacyTranslations.tr);
+Object.assign(germanTranslations, subscriptionTranslations.de, adPrivacyTranslations.de);
 translationsCache['tr'] = turkishTranslations;
 translationsCache['de'] = germanTranslations;
 
@@ -742,6 +743,7 @@ export const fetchTranslations = async (lang: string): Promise<Record<string, st
       ...defaultTranslations,  // English as base
       ...localFallback,        // Local translations for known languages
       ...subscriptionTranslations[lang],
+      ...adPrivacyTranslations[lang],
       ...apiTranslations       // API translations override
     };
     
@@ -762,7 +764,7 @@ export const fetchTranslations = async (lang: string): Promise<Record<string, st
       return { ...defaultTranslations, ...germanTranslations };
     }
     
-    return { ...defaultTranslations, ...subscriptionTranslations[lang] };
+    return { ...defaultTranslations, ...subscriptionTranslations[lang], ...adPrivacyTranslations[lang] };
   }
 };
 
@@ -815,7 +817,7 @@ export const initI18n = async (): Promise<void> => {
   console.log('[i18n] Initializing with stored language:', storedLang);
   
   // Use cached translations for fast startup (tr and en are pre-cached)
-  const initialTranslations = translationsCache[storedLang] || { ...defaultTranslations, ...subscriptionTranslations[storedLang] };
+  const initialTranslations = translationsCache[storedLang] || { ...defaultTranslations, ...subscriptionTranslations[storedLang], ...adPrivacyTranslations[storedLang] };
 
   await i18n
     .use(initReactI18next)

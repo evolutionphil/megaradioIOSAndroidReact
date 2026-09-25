@@ -1,6 +1,6 @@
 // build.gradle.kts (Module: wear)
 // Wear OS app build configuration
-// Uses Kotlin 2.0.0 Compose Compiler Plugin (NOT legacy composeOptions)
+// Uses the Kotlin Compose Compiler plugin configured in the root project.
 
 plugins {
     id("com.android.application")
@@ -10,14 +10,14 @@ plugins {
 
 android {
     namespace = "com.visiongo.megaradio.wear"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.megaradio"
         minSdk = 30  // Wear OS 3.0+
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        targetSdk = 35
+        versionCode = 94
+        versionName = "1.0.70"
     }
 
     buildTypes {
@@ -43,6 +43,8 @@ android {
         compose = true
     }
 }
+
+apply(from = rootProject.file("../../scripts/android-release-signing.gradle"))
 
 dependencies {
     // Wear OS Compose

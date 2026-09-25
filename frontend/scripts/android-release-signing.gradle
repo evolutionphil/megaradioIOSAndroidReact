@@ -1,0 +1,32 @@
+import groovy.json.JsonSlurper
+
+// Use the existing Play upload key, stored outside the repository.
+// EAS may configure the same release signing config itself when building remotely.
+def credentialsPath = System.getenv('MEGARADIO_ANDROID_CREDENTIALS')
+def androidExtension = project.extensions.getByName('android')
+if (credentialsPath) {
+    def credentialsFile = new File(credentialsPath)
+    if (!credentialsFile.isFile()) throw new GradleException('Android credentials file is missing')
+    def key = new JsonSlurper().parse(credentialsFile).android.keystore
+    def keyFile = new File(key.keystorePath as String)
+    if (!keyFile.isAbsolute()) keyFile = new File(credentialsFile.parentFile, key.keystorePath as String)
+    if (!keyFile.isFile()) throw new GradleException('Android upload keystore is missing')
+    def signing = androidExtension.signingConfigs.maybeCreate('release')
+    signing.storeFile = keyFile
+    signing.storePassword = key.keystorePassword
+    signing.keyAlias = key.keyAlias
+    signing.keyPassword = key.keyPassword
+    androidExtension.buildTypes.getByName('release').signingConfig = signing
+}
+
+gradle.taskGraph.whenReady { graph ->
+    def publishesRelease = graph.allTasks.any { task ->
+        task.project == project && task.name in ['assembleRelease', 'bundleRelease']
+    }
+    if (publishesRelease) {
+        def signing = androidExtension.buildTypes.getByName('release').signingConfig
+        if (!signing?.storeFile || signing.name == 'debug') {
+            throw new GradleException('Release requires the existing Play upload key. Set MEGARADIO_ANDROID_CREDENTIALS to the external EAS-format credentials.json file.')
+        }
+    }
+}

@@ -36,6 +36,8 @@
 		F11749032D0307B40044C1D9 /* SiriPlayMediaHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11749022D0307B40044C1D9 /* SiriPlayMediaHandler.swift */; };
 		F11749052D0307B40044C1D9 /* PhoneSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11749042D0307B40044C1D9 /* PhoneSceneDelegate.swift */; };
 		FB25CC2BA0AB4A2FB9A9FEBA /* GenresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798C0B46DA9D4B82941069C6 /* GenresView.swift */; };
+		AC42E6F61F7A4713873BA7CE /* ATTModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BB30212B24FDB98AAEA5C /* ATTModule.m */; };
+		251459E3702C4DEC935B34B4 /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEAE9EC824EA4357884706A2 /* AppTrackingTransparency.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -87,6 +89,8 @@
 		F11749022D0307B40044C1D9 /* SiriPlayMediaHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SiriPlayMediaHandler.swift; path = MegaRadio/SiriPlayMediaHandler.swift; sourceTree = "<group>"; };
 		F11749042D0307B40044C1D9 /* PhoneSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhoneSceneDelegate.swift; path = MegaRadio/PhoneSceneDelegate.swift; sourceTree = "<group>"; };
 		FA8DB19532FAD6A244F81F9E /* Pods_MegaRadio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MegaRadio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		268BB30212B24FDB98AAEA5C /* ATTModule.m */ = {isa = PBXFileReference; name = "ATTModule.m"; path = "MegaRadio/ATTModule.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		EEAE9EC824EA4357884706A2 /* AppTrackingTransparency.framework */ = {isa = PBXFileReference; name = "AppTrackingTransparency.framework"; path = "System/Library/Frameworks/AppTrackingTransparency.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7678986B87BFC9C3617261A3 /* Pods_MegaRadio.framework in Frameworks */,
+				251459E3702C4DEC935B34B4 /* AppTrackingTransparency.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,6 +135,7 @@
 				3964C17CF92C4A37A8D673C4 /* WatchConnectivityBridge.swift */,
 				8A02D407E3444045AEB360F5 /* WatchConnectivityBridge.m */,
 				B99975581E3D4EFDA1DEF701 /* WatchConnectivityHandler.swift */,
+				268BB30212B24FDB98AAEA5C /* ATTModule.m */,
 			);
 			name = MegaRadio;
 			sourceTree = "<group>";
@@ -139,6 +145,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				FA8DB19532FAD6A244F81F9E /* Pods_MegaRadio.framework */,
+				EEAE9EC824EA4357884706A2 /* AppTrackingTransparency.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -535,6 +542,7 @@
 				AC75D6D022194AED932B2601 /* WatchConnectivityBridge.m in Sources */,
 				7BA497B2859C493AA40A43E9 /* WatchConnectivityHandler.swift in Sources */,
 				CED959D5963236831DD0733C /* ExpoModulesProvider.swift in Sources */,
+				AC42E6F61F7A4713873BA7CE /* ATTModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,7 +575,7 @@
 				CODE_SIGN_ENTITLEMENTS = MegaRadio/MegaRadio.entitlements;
 				DEVELOPMENT_TEAM = M6T85HP76P;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -606,7 +614,7 @@
 				CODE_SIGN_ENTITLEMENTS = MegaRadio/MegaRadio.entitlements;
 				DEVELOPMENT_TEAM = M6T85HP76P;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				INFOPLIST_FILE = MegaRadio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -697,7 +705,10 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = ("$(inherited)", "$(SDKROOT)/usr/lib/swift", );
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -770,7 +781,10 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = ("$(inherited)", "$(SDKROOT)/usr/lib/swift", );
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
@@ -790,7 +804,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MegaRadioWatch/MegaRadioWatch.entitlements;
 				DEVELOPMENT_TEAM = M6T85HP76P;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				MARKETING_VERSION = 1.0.70;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
@@ -826,7 +840,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MegaRadioWatch/MegaRadioWatch.entitlements;
 				DEVELOPMENT_TEAM = M6T85HP76P;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				MARKETING_VERSION = 1.0.70;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;

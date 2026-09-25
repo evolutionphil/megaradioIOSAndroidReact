@@ -45,11 +45,11 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>6</string>
+    <string>7</string>
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-8771434485570434~4044224468</string>
     <key>GADDelayAppMeasurementInit</key>
-    <false/>
+    <true/>
     <key>GADIsAdManagerApp</key>
     <false/>
     <key>ITSAppUsesNonExemptEncryption</key>
@@ -84,6 +84,8 @@
     <string>MegaRadio uses your location to find nearby radio stations.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Photo library access is required to upload a profile picture.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>Your permission allows advertising partners to use your device identifier to measure ads across apps and websites. You can decline and continue listening.</string>
     <key>NSSiriUsageDescription</key>
     <string>MegaRadio uses Siri to play radio stations with voice commands.</string>
     <key>NSUserActivityTypes</key>

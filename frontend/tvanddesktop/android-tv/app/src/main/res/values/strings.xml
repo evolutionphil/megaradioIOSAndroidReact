@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MegaRadio</string>
+    <string name="webview_update_required">Please update Android System WebView in Google Play, then reopen MegaRadio.</string>
 </resources>

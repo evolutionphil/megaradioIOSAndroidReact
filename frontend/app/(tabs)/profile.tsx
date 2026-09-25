@@ -32,6 +32,9 @@ import { AvatarWithFallback } from '../../src/components/AvatarWithFallback';
 const RewardedAdButton = Platform.OS !== 'web' 
   ? require('../../src/components/RewardedAdButton.native').RewardedAdButton
   : () => null;
+const AdPrivacyOptions = Platform.OS !== 'web'
+  ? require('../../src/components/AdPrivacyOptions.native').AdPrivacyOptions
+  : () => null;
 import api from '../../src/services/api';
 import userService from '../../src/services/userService';
 import { profileShareContent } from '../../src/utils/profileShare';
@@ -697,6 +700,7 @@ export default function ProfileScreen() {
           {/* Settings Section */}
           <View style={s.section}>
             <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
+            <AdPrivacyOptions />
 
             {/* Account - Redirects to Login */}
             <TouchableOpacity 
@@ -982,6 +986,7 @@ export default function ProfileScreen() {
 
         {/* Settings */}
         <Text style={s.sectionLabel}>{t('settings', 'Settings')}</Text>
+        <AdPrivacyOptions />
         {[
           { 
             title: t('play_at_login', 'Play at Login'), 

@@ -20,7 +20,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.visiongo.megaradio",
       "associatedDomains": ["applinks:themegaradio.com"],
-      "buildNumber": "6",
+      "buildNumber": "7",
       "usesAppleSignIn": true,
       "splash": {
         "image": "./assets/images/splash.png",
@@ -289,7 +289,7 @@
             "usesCleartextTraffic": true,
             "useLegacyPackaging": true,
             "newArchEnabled": false,
-            "kotlinVersion": "2.0.0",
+            "kotlinVersion": "2.1.20",
             "extraProguardRules": "-keep class io.invertase.** { *; }\n-keep class com.google.android.gms.ads.** { *; }"
           },
           "ios": {
@@ -347,7 +347,8 @@
         {
           "androidAppId": "ca-app-pub-8771434485570434~7427742767",
           "iosAppId": "ca-app-pub-8771434485570434~4044224468",
-          "userTrackingPermission": "MegaRadio uses your device information to provide you with a better and more personalized advertising experience."
+          "delayAppMeasurementInit": true,
+          "userTrackingUsageDescription": "Your permission allows advertising partners to use your device identifier to measure ads across apps and websites. You can decline and continue listening."
         }
       ],
       "./plugins/withTrackPlayerServiceFix.js",
@@ -355,6 +356,7 @@
       "./plugins/withCarPlayScenes.js",
       "./plugins/withSwiftAudioExRadioFix.js",
       "./plugins/withCompanionBridges.js",
+      "./plugins/withTrackingTransparency.js",
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
       "./plugins/withGoogleServicesFix.js",
@@ -365,7 +367,8 @@
         }
       ],
       "./plugins/withFmtFix.js",
-      "./plugins/withWatchOSBuildFix.js"
+      "./plugins/withWatchOSBuildFix.js",
+      "./plugins/withAndroidReleaseSigning.js"
     ],
     "experiments": {
       "typedRoutes": true

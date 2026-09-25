@@ -18,7 +18,8 @@ class WearDataLayerModule(private val context: ReactApplicationContext) : ReactC
     private var artist = ""
     override fun getName() = "WearDataLayer"
 
-    @ReactMethod fun initialize() {
+    @ReactMethod override fun initialize() {
+        super.initialize()
         if (initialized) return
         initialized = true
         WearCommandBus.listener = { command ->

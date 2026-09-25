@@ -50,7 +50,7 @@
     </service>
     <service android:name="org.birkir.carplay.CarPlayService" tools:node="remove"/>
     <service android:name="org.birkir.carplay.CarPlayHeadlessTaskService" tools:node="remove"/>
-    <service android:name=".MegaRadioAutoService" android:exported="true">
+    <service android:name=".MegaRadioAutoService" android:exported="true" android:foregroundServiceType="mediaPlayback">
       <intent-filter>
         <action android:name="android.media.browse.MediaBrowserService"/>
       </intent-filter>

@@ -3,12 +3,14 @@ package com.megaradio.tv
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Intent
+import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -18,12 +20,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 
 /**
  * MegaRadio Android TV / Google TV / Fire TV shell.
  *
  * A full-screen WebView hosting the shared TV web bundle. The same JS engine
- * that runs on Apple TV, Samsung Tizen and webOS handles spatial navigation
+ * that runs on Samsung Tizen and webOS handles spatial navigation
  * and audio playback — we only need to funnel hardware remote events through
  * so the existing tv-remote-keys.js handler can dispatch them.
  */
@@ -32,6 +36,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var webView: WebView
     private val billingService by lazy { BillingService(this) }
     private var nativeBridge: MegaRadioNativeBridge? = null
+    private var recommendationsBridge: MegaRadioBridge? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,21 @@ class MainActivity : FragmentActivity() {
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        // Origin-scoped messaging and document-start injection prevent another
+        // website or an embedded frame from calling the native billing API.
+        if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) ||
+            !WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+            setContentView(TextView(this).apply {
+                text = getString(R.string.webview_update_required)
+                setTextColor(Color.WHITE)
+                setBackgroundColor(Color.parseColor("#0E0E0E"))
+                textSize = 22f
+                gravity = android.view.Gravity.CENTER
+                setPadding(48, 48, 48, 48)
+            })
+            return
+        }
+
         webView = WebView(this).apply {
             setBackgroundColor(Color.parseColor("#0E0E0E"))
             isFocusable = true
@@ -57,30 +77,67 @@ class MainActivity : FragmentActivity() {
                 cacheMode = WebSettings.LOAD_DEFAULT
                 loadWithOverviewMode = true
                 useWideViewPort = true
+                allowFileAccess = false
+                allowContentAccess = false
                 userAgentString = "$userAgentString MegaRadioAndroidTV/1.0"
             }
             webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean = false
+                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                    val uri = request?.url ?: return true
+                    if (TvNavigationPolicy.isTrusted(uri.toString())) return false
+                    if (request.isForMainFrame && uri.scheme in listOf("https", "http")) {
+                        try {
+                            startActivity(Intent(Intent.ACTION_VIEW, uri))
+                        } catch (_: ActivityNotFoundException) {
+                            // Many TVs have no browser. Keep the radio app open.
+                        }
+                    }
+                    return true
+                }
+
+                @Deprecated("Used by older Android framework versions")
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean =
+                    !TvNavigationPolicy.isTrusted(url)
+
                 override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
                     super.onPageStarted(view, url, favicon)
-                    // Announce platform BEFORE any user JS runs so platform.ts
-                    // sees `window.MegaRadioPlatform.platform === 'androidtv'`
-                    // and the PremiumUpgrade page renders the native-IAP
-                    // variant instead of the QR-code screen.
-                    view?.evaluateJavascript(
-                        "window.MegaRadioPlatform = { platform: 'androidtv' };", null)
+                    if (!TvNavigationPolicy.isTrusted(url)) view?.stopLoading()
                 }
             }
             webChromeClient = WebChromeClient()
-            // Continue-Listening → home screen recommendations channel
-            addJavascriptInterface(MegaRadioBridge(this@MainActivity), "MegaRadioBridge")
-            // Native IAP bridge (Google Play Billing v7). Same protocol as
-            // Apple TV — see /app/frontend/tvanddesktop/apple-tv-and-macos/
-            // web-preview/src/lib/nativeIap.ts.
-            addJavascriptInterface(
-                MegaRadioNativeBridge(this@MainActivity, this, billingService).also { nativeBridge = it },
-                "MegaRadioNative"
-            )
+            val recommendations = MegaRadioBridge(this@MainActivity)
+            recommendationsBridge = recommendations
+            val purchases = MegaRadioNativeBridge(this@MainActivity, this, billingService)
+            nativeBridge = purchases
+            val allowedOrigins = setOf(BuildConfigExtras.TV_ORIGIN)
+            WebViewCompat.addWebMessageListener(this, "MegaRadioNativeTransport", allowedOrigins) {
+                    _, message, sourceOrigin, isMainFrame, _ ->
+                if (isMainFrame && TvNavigationPolicy.isTrusted(sourceOrigin.toString())) {
+                    message.data?.let(purchases::invoke)
+                }
+            }
+            WebViewCompat.addWebMessageListener(this, "MegaRadioRecommendationsTransport", allowedOrigins) {
+                    _, message, sourceOrigin, isMainFrame, _ ->
+                if (isMainFrame && TvNavigationPolicy.isTrusted(sourceOrigin.toString())) {
+                    message.data?.let(recommendations::onContinueListening)
+                }
+            }
+            // Preserve the existing CDN protocol without exposing a Java object
+            // to every frame. Installed before the shared app's first script.
+            WebViewCompat.addDocumentStartJavaScript(this, """
+                if (window === window.top) {
+                    window.MegaRadioPlatform = { platform: 'androidtv' };
+                    window.MegaRadioNative = {
+                        platform: 'androidtv',
+                        invoke: function (payload) { window.MegaRadioNativeTransport.postMessage(payload); }
+                    };
+                    window.MegaRadioBridge = {
+                        onContinueListening: function (payload) {
+                            window.MegaRadioRecommendationsTransport.postMessage(payload);
+                        }
+                    };
+                }
+            """.trimIndent(), allowedOrigins)
             systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
@@ -96,7 +153,7 @@ class MainActivity : FragmentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Hot-route Assistant SEARCH / deep-links without recreating the WebView.
-        intentToUrl(intent)?.let { webView.loadUrl(it) }
+        if (::webView.isInitialized) intentToUrl(intent)?.let { webView.loadUrl(it) }
     }
 
     /**
@@ -161,7 +218,7 @@ class MainActivity : FragmentActivity() {
             KeyEvent.KEYCODE_CHANNEL_UP,
             KeyEvent.KEYCODE_CHANNEL_DOWN -> super.dispatchKeyEvent(event)
             KeyEvent.KEYCODE_BACK -> {
-                if (event.action == KeyEvent.ACTION_DOWN && webView.canGoBack()) {
+                if (::webView.isInitialized && event.action == KeyEvent.ACTION_DOWN && webView.canGoBack()) {
                     webView.goBack()
                     true
                 } else super.dispatchKeyEvent(event)
@@ -178,8 +235,9 @@ class MainActivity : FragmentActivity() {
 
     override fun onDestroy() {
         nativeBridge?.close()
+        recommendationsBridge?.close()
         billingService.close()
-        webView.destroy()
+        if (::webView.isInitialized) webView.destroy()
         super.onDestroy()
     }
 }

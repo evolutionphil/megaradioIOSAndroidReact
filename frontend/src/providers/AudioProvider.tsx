@@ -4,7 +4,8 @@
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 
 import TrackPlayer, { 
-  Capability, 
+  Capability,
+  TrackType,
   State, 
   Event, 
   usePlaybackState, 
@@ -179,7 +180,7 @@ async function doSetupTrackPlayer(): Promise<boolean> {
 // ============================================
 // PROVIDER COMPONENT
 // ============================================
-import { buildStreamCandidates, isPlaylistStream } from '../utils/streamSources';
+import { buildStreamCandidates, isPlaylistStream, isHlsStream } from '../utils/streamSources';
 
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
@@ -306,6 +307,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             await TrackPlayer.add({
               id: currentStation._id || `station_${Date.now()}`,
               url: nextUrl,
+              type: isHlsStream(nextUrl, currentStation) ? TrackType.HLS : TrackType.Default,
               title: currentStation.name || 'MegaRadio',
               artist: 'MegaRadio',
               album: getStationGenre(currentStation) || 'MegaRadio',
@@ -1067,6 +1069,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       await TrackPlayer.add({
         id: 'placeholder_previous',
         url: url,
+        type: isHlsStream(url, station) ? TrackType.HLS : TrackType.Default,
         title: 'Previous Station',
         artist: 'MegaRadio',
         album: safeAlbum,
@@ -1080,6 +1083,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       await TrackPlayer.add({
         id: safeId,
         url: url,
+        type: isHlsStream(url, station) ? TrackType.HLS : TrackType.Default,
         title: safeTitle,
         artist: 'MegaRadio',
         album: safeAlbum,
@@ -1093,6 +1097,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       await TrackPlayer.add({
         id: 'placeholder_next',
         url: url,
+        type: isHlsStream(url, station) ? TrackType.HLS : TrackType.Default,
         title: 'Next Station',
         artist: 'MegaRadio',
         album: safeAlbum,
@@ -1214,6 +1219,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           await TrackPlayer.add({
             id: station._id || `station_${Date.now()}`,
             url: nextUrl,
+            type: isHlsStream(nextUrl, station) ? TrackType.HLS : TrackType.Default,
             title: station.name || 'MegaRadio',
             artist: 'MegaRadio',
             album: getStationGenre(station) || 'MegaRadio',
