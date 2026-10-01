@@ -4,6 +4,7 @@
 
 import { Platform, NativeModules, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { prepareAdConsent } from '../utils/adConsent';
 
 // Storage keys
 const AD_FREE_UNTIL_KEY = '@megaradio_ad_free_until';
@@ -24,12 +25,6 @@ const AD_UNITS = {
   },
 };
 
-// Test Ad Unit IDs (for development)
-const TEST_AD_UNITS = {
-  interstitial: 'ca-app-pub-3940256099942544/1033173712',
-  rewarded: 'ca-app-pub-3940256099942544/5224354917',
-};
-
 class AdMobService {
   private interstitialAd: any = null;
   private rewardedAd: any = null;
@@ -38,7 +33,8 @@ class AdMobService {
   private isRewardedLoaded = false;
   private isAppOpenLoaded = false;
   isInitialized = false;
-  private umpFormShown = false;
+  private initializationPromise: Promise<boolean> | null = null;
+  private privacyOptionsOpen = false;
   private stationChangeCount = 0;
   firstStationAdShown = false; // Per-session flag for first station rewarded ad
   private isManualRewardedAd = false; // CRITICAL: Only true when user clicks "Watch Ad" button
@@ -46,8 +42,10 @@ class AdMobService {
   // Get the correct ad unit ID based on platform and environment
   getAdUnitId(type: 'interstitial' | 'rewarded' | 'appOpenInterstitial'): string {
     if (__DEV__) {
-      // Test ads don't have appOpenInterstitial, use regular interstitial
-      return TEST_AD_UNITS[type === 'appOpenInterstitial' ? 'interstitial' : type];
+      const { TestIds } = require('react-native-google-mobile-ads');
+      return type === 'appOpenInterstitial' ? TestIds.APP_OPEN
+        : type === 'rewarded' ? TestIds.REWARDED_INTERSTITIAL
+        : TestIds.INTERSTITIAL;
     }
     
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
@@ -56,6 +54,44 @@ class AdMobService {
 
   // Initialize AdMob SDK
   async initialize(): Promise<boolean> {
+    if (this.privacyOptionsOpen) return false;
+    if (this.isInitialized) return true;
+    if (this.initializationPromise) return this.initializationPromise;
+    this.initializationPromise = this.initializeOnce();
+    try { return await this.initializationPromise; }
+    finally { this.initializationPromise = null; }
+  }
+
+  async requiresPrivacyOptions(): Promise<boolean> {
+    if (this.initializationPromise) await this.initializationPromise;
+    const { AdsConsent, AdsConsentPrivacyOptionsRequirementStatus } = require('react-native-google-mobile-ads');
+    return (await AdsConsent.getConsentInfo()).privacyOptionsRequirementStatus ===
+      AdsConsentPrivacyOptionsRequirementStatus.REQUIRED;
+  }
+
+  async showPrivacyOptions(): Promise<void> {
+    if (this.privacyOptionsOpen) return;
+    if (this.initializationPromise) await this.initializationPromise;
+    if (this.privacyOptionsOpen) return;
+    this.privacyOptionsOpen = true;
+    this.isInitialized = false;
+    // Discard requests made under the old choices before presenting the form.
+    for (const ad of [this.interstitialAd, this.rewardedAd, this.appOpenAd]) {
+      try { ad?.removeAllListeners(); } catch { /* Already disposed. */ }
+    }
+    this.interstitialAd = this.rewardedAd = this.appOpenAd = null;
+    this.isInterstitialLoaded = this.isRewardedLoaded = this.isAppOpenLoaded = false;
+    try {
+      const { AdsConsent } = require('react-native-google-mobile-ads');
+      await AdsConsent.showPrivacyOptionsForm();
+    } finally {
+      this.privacyOptionsOpen = false;
+      // Re-read UMP before creating any replacement ad request.
+      await this.initialize();
+    }
+  }
+
+  private async initializeOnce(): Promise<boolean> {
     if (Platform.OS === 'web') {
       console.log('[AdMob] Not available on web');
       return false;
@@ -69,60 +105,30 @@ class AdMobService {
       const mobileAds = require('react-native-google-mobile-ads').default;
       const { MaxAdContentRating } = require('react-native-google-mobile-ads');
       
-      // CRITICAL: Set request configuration BEFORE initializing
-      // requestNonPersonalizedAdsOnly ensures ads serve even when ATT is denied
+      // The non-personalized flag belongs on each ad request, not this SDK configuration.
       try {
         await mobileAds().setRequestConfiguration({
           maxAdContentRating: MaxAdContentRating.T,
           tagForChildDirectedTreatment: false,
           tagForUnderAgeOfConsent: false,
-          requestNonPersonalizedAdsOnly: true,
         });
         console.log('[AdMob] Request configuration set (non-personalized ads enabled)');
       } catch (configError) {
         console.error('[AdMob] Request configuration error (non-fatal):', configError);
       }
       
-      // iOS 14+: Request ATT (App Tracking Transparency) BEFORE initializing ads
-      // Without ATT permission, AdMob cannot access IDFA and ads won't serve (or very low fill rate)
-      if (Platform.OS === 'ios') {
-        try {
-          // STEP 1: Request native iOS ATT permission via our custom native module
-          // ATTModule is defined in ios/MegaRadio/ATTModule.swift - zero dependencies
-          const { ATTModule } = NativeModules;
-          if (ATTModule) {
-            const status = await ATTModule.requestPermission();
-            console.log('[AdMob] ATT permission status:', status);
-          } else {
-            console.log('[AdMob] ATTModule not available (non-fatal)');
-          }
-          // Continue regardless of status - AdMob will serve non-personalized ads if denied
-        } catch (attError) {
-          console.log('[AdMob] ATT request error (non-fatal):', attError);
-        }
-        
-        try {
-          // STEP 2: Request Google UMP consent (for GDPR regions)
-          const { AdsConsent, AdsConsentStatus } = require('react-native-google-mobile-ads');
-          
-          const consentInfo = await AdsConsent.requestInfoUpdate();
-          console.log('[AdMob] UMP Consent info:', consentInfo.status);
-          
-          if (consentInfo.isConsentFormAvailable && 
-              !this.umpFormShown &&
-              (consentInfo.status === AdsConsentStatus.REQUIRED || 
-               consentInfo.status === AdsConsentStatus.UNKNOWN)) {
-            console.log('[AdMob] Showing UMP consent form...');
-            this.umpFormShown = true;
-            await AdsConsent.showForm();
-          } else if (this.umpFormShown) {
-            console.log('[AdMob] UMP form already shown this session, skipping');
-          }
-        } catch (consentError) {
-          console.log('[AdMob] UMP consent request error (non-fatal):', consentError);
-        }
+      const { AdsConsent } = require('react-native-google-mobile-ads');
+      const attModule = NativeModules.ATTModule;
+      const canRequestAds = await prepareAdConsent(
+        Platform.OS,
+        attModule ? () => attModule.requestPermission() : undefined,
+        AdsConsent,
+      );
+      if (!canRequestAds) {
+        console.log('[AdMob] Ads remain disabled until privacy requirements are resolved');
+        return false;
       }
-      
+
       await mobileAds().initialize();
       console.log('[AdMob] SDK initialized successfully');
       

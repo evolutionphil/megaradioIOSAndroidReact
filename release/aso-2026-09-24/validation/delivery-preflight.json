@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-09-24T17:59:25Z",
+  "readyForFinalUIReview": true,
+  "metadataRecords": 250,
+  "currentScreenshotSets": 350,
+  "expectedScreenshotSets": 350,
+  "expectedImages": 1950,
+  "iosBuild": "6",
+  "errors": []
+}

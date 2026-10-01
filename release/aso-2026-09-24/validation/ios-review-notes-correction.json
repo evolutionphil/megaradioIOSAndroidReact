@@ -1,0 +1,7 @@
+{
+  "observedAt": "2026-09-24T17:44:43Z",
+  "reviewNotesUpdated": true,
+  "addedPublicExplanation": "Age Rating metadata correction (Guideline 2.3.6): MegaRadio includes in-app advertising for the free tier. The Advertising content descriptor is now set to Yes. Premium and Remove Ads entitlements disable the app-provided advertising; radio broadcasters may include advertisements within their streams.",
+  "reviewCredentialsPreserved": true,
+  "verified": true
+}

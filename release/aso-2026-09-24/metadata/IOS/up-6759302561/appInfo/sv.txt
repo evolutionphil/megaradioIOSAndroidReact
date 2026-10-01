@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio Sverige";
+"subtitle" = "Webbradio, musik och nyheter";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

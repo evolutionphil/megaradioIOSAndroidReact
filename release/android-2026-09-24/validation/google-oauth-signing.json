@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-25T09:31:17.481991+00:00",
+  "project": "megaradio-276c6",
+  "package": "com.megaradio",
+  "uploadSha1": "5A:59:88:E0:55:4A:4E:C1:4D:DB:07:34:44:81:33:2C:A2:04:2E:C3",
+  "playAppSigningSha1": "CA:38:14:B6:BC:19:B4:F1:EB:C4:C7:C9:C4:7E:BF:C1:E4:A8:CE:04",
+  "existingAndroidClient": "957628580421-7ljbcgt6m27jvpjkeog28vtbvdc4s7d8.apps.googleusercontent.com",
+  "existingClientHasOnlyUploadCertificate": true,
+  "newClientName": "MegaRadio Google Play",
+  "newClientCreated": true,
+  "state": "Client already created when inspected; persisted name, package and Play signing SHA-1 verified by opening its details",
+  "newClientId": "957628580421-0vfiguia0mu4qvgo0l1kh57e9tfrc94q.apps.googleusercontent.com",
+  "creationDateConsole": "September 25, 2026, 11:25:13 AM GMT+2",
+  "publishingStatus": "In production",
+  "audience": "External",
+  "configuredSensitiveScopes": 0,
+  "configuredRestrictedScopes": 0,
+  "backendWebClientId": "957628580421-ob14qeft7j83apkdjqfn48o3961qk7ti.apps.googleusercontent.com",
+  "runtimeScopes": "Google DEFAULT_SIGN_IN + EMAIL + ID token; offline access disabled; no additional scopes",
+  "requiresNewBuildForRegistration": false,
+  "googleLoginViaPlayVerified": false,
+  "billingViaPlayVerified": false
+}

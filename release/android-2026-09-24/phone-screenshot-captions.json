@@ -1,0 +1,1736 @@
+{
+  "tr-TR": {
+    "discover": [
+      "Canlı Radyo",
+      "Türkiye ve dünyadan FM, AM"
+    ],
+    "player": [
+      "Canlı yayına kulak ver",
+      "Türkiye ve dünyadan FM, AM"
+    ],
+    "country": [
+      "Dünyadan sesler",
+      "Türkiye ve dünyadan FM, AM"
+    ],
+    "genres": [
+      "Tarzına göre keşfet",
+      "Türkiye ve dünyadan FM, AM"
+    ],
+    "car": [
+      "Araç modu",
+      "Sevdiğin istasyonlara kolayca ulaş"
+    ],
+    "search": [
+      "Aradığın radyoyu bul",
+      "Türkiye ve dünyadan FM, AM"
+    ],
+    "rock-stations": [
+      "Rock radyolarını keşfet",
+      "Müzik zevkine göre istasyonları gez"
+    ],
+    "sleep-timer": [
+      "Radyo eşliğinde uykuya dal",
+      "Yayının ne zaman duracağını seç"
+    ]
+  },
+  "de-DE": {
+    "discover": [
+      "Radio & Webradio",
+      "Live-Sender aus aller Welt"
+    ],
+    "player": [
+      "Dein Radio. Jetzt live.",
+      "Live-Sender aus aller Welt"
+    ],
+    "country": [
+      "Sender aus aller Welt",
+      "Live-Sender aus aller Welt"
+    ],
+    "genres": [
+      "Musik für deinen Geschmack",
+      "Live-Sender aus aller Welt"
+    ],
+    "car": [
+      "Radio im Auto",
+      "Schnell finden. Direkt einschalten."
+    ],
+    "search": [
+      "Finde deinen Lieblingssender",
+      "Live-Sender aus aller Welt"
+    ],
+    "rock-stations": [
+      "Rockradio für deinen Geschmack",
+      "Sender nach Musikrichtung entdecken"
+    ],
+    "sleep-timer": [
+      "Mit Radio einschlafen",
+      "Wiedergabe zeitgesteuert beenden"
+    ]
+  },
+  "en-US": {
+    "discover": [
+      "Live Radio",
+      "FM, AM & stations worldwide"
+    ],
+    "player": [
+      "Your station, live",
+      "FM, AM & stations worldwide"
+    ],
+    "country": [
+      "Explore radio worldwide",
+      "FM, AM & stations worldwide"
+    ],
+    "genres": [
+      "Find your kind of music",
+      "FM, AM & stations worldwide"
+    ],
+    "car": [
+      "Radio in car mode",
+      "Save them. Find them. Press play."
+    ],
+    "search": [
+      "Find a station you love",
+      "FM, AM & stations worldwide"
+    ],
+    "rock-stations": [
+      "Rock radio, your way",
+      "Explore stations by music genre"
+    ],
+    "sleep-timer": [
+      "Drift off to the radio",
+      "Choose when playback stops"
+    ]
+  },
+  "fr-FR": {
+    "discover": [
+      "Radio en direct",
+      "Stations FM, AM du monde"
+    ],
+    "player": [
+      "Votre radio, en direct",
+      "Stations FM, AM du monde"
+    ],
+    "country": [
+      "Les radios du monde",
+      "Stations FM, AM du monde"
+    ],
+    "genres": [
+      "À chaque envie, sa musique",
+      "Stations FM, AM du monde"
+    ],
+    "car": [
+      "Le mode voiture",
+      "Retrouvez vos stations en un instant"
+    ],
+    "search": [
+      "Trouvez votre radio",
+      "Stations FM, AM du monde"
+    ],
+    "rock-stations": [
+      "Le rock à la radio",
+      "Explorez les stations par genre musical"
+    ],
+    "sleep-timer": [
+      "Endormez-vous en musique",
+      "Choisissez quand arrêter la lecture"
+    ]
+  },
+  "es-ES": {
+    "discover": [
+      "Radio en directo",
+      "Emisoras FM y AM del mundo"
+    ],
+    "player": [
+      "Tu radio, en directo",
+      "Emisoras FM y AM del mundo"
+    ],
+    "country": [
+      "Emisoras sin fronteras",
+      "Emisoras FM y AM del mundo"
+    ],
+    "genres": [
+      "Encuentra tu estilo",
+      "Emisoras FM y AM del mundo"
+    ],
+    "car": [
+      "Modo coche",
+      "Encuentra tu radio y dale al play"
+    ],
+    "search": [
+      "Encuentra tu emisora",
+      "Emisoras FM y AM del mundo"
+    ],
+    "rock-stations": [
+      "Descubre emisoras de rock",
+      "Explora la radio por género musical"
+    ],
+    "sleep-timer": [
+      "Duérmete con la radio",
+      "Elige cuándo detener la reproducción"
+    ]
+  },
+  "it-IT": {
+    "discover": [
+      "Radio in diretta",
+      "Stazioni FM e AM dal mondo"
+    ],
+    "player": [
+      "La tua radio, in diretta",
+      "Stazioni FM e AM dal mondo"
+    ],
+    "country": [
+      "Radio da tutto il mondo",
+      "Stazioni FM e AM dal mondo"
+    ],
+    "genres": [
+      "La musica che ti somiglia",
+      "Stazioni FM e AM dal mondo"
+    ],
+    "car": [
+      "Modalità auto",
+      "Ritrovale e mettiti in ascolto"
+    ],
+    "search": [
+      "Trova la tua radio",
+      "Stazioni FM e AM dal mondo"
+    ],
+    "rock-stations": [
+      "Scopri le radio rock",
+      "Esplora le stazioni per genere musicale"
+    ],
+    "sleep-timer": [
+      "Addormentati con la radio",
+      "Scegli quando interrompere l’ascolto"
+    ]
+  },
+  "pt-PT": {
+    "discover": [
+      "Rádio em direto",
+      "Estações FM e AM do mundo"
+    ],
+    "player": [
+      "A tua rádio, em direto",
+      "Estações FM e AM do mundo"
+    ],
+    "country": [
+      "Rádios de todo o mundo",
+      "Estações FM e AM do mundo"
+    ],
+    "genres": [
+      "Encontra o teu estilo",
+      "Estações FM e AM do mundo"
+    ],
+    "car": [
+      "Modo de condução",
+      "Encontra a tua estação e começa a ouvir"
+    ],
+    "search": [
+      "Encontra a tua rádio",
+      "Estações FM e AM do mundo"
+    ],
+    "rock-stations": [
+      "Descobre rádios de rock",
+      "Explora estações por género musical"
+    ],
+    "sleep-timer": [
+      "Adormece a ouvir rádio",
+      "Escolhe quando parar a reprodução"
+    ]
+  },
+  "ru-RU": {
+    "discover": [
+      "Радио онлайн",
+      "Прямой эфир FM и AM станций"
+    ],
+    "player": [
+      "Ваше радио в прямом эфире",
+      "Прямой эфир FM и AM станций"
+    ],
+    "country": [
+      "Радиостанции со всего мира",
+      "Прямой эфир FM и AM станций"
+    ],
+    "genres": [
+      "Музыка на ваш вкус",
+      "Прямой эфир FM и AM станций"
+    ],
+    "car": [
+      "Режим в автомобиле",
+      "Сохраните и находите их быстрее"
+    ],
+    "search": [
+      "Найди свою радиостанцию",
+      "Прямой эфир FM и AM станций"
+    ],
+    "rock-stations": [
+      "Откройте рок-радиостанции",
+      "Ищите станции по музыкальным жанрам"
+    ],
+    "sleep-timer": [
+      "Засыпайте под радио",
+      "Выберите время остановки воспроизведения"
+    ]
+  },
+  "ja-JP": {
+    "discover": [
+      "ラジオを聴く",
+      "日本と世界のFM・AMをライブで"
+    ],
+    "player": [
+      "好きなラジオをライブで",
+      "日本と世界のFM・AMをライブで"
+    ],
+    "country": [
+      "世界の放送局へ",
+      "日本と世界のFM・AMをライブで"
+    ],
+    "genres": [
+      "気分に合うジャンルを発見",
+      "日本と世界のFM・AMをライブで"
+    ],
+    "car": [
+      "車内向けの再生画面",
+      "保存した放送局にすぐアクセス"
+    ],
+    "search": [
+      "聴きたいラジオを探す",
+      "日本と世界のFM・AMをライブで"
+    ],
+    "rock-stations": [
+      "ロックのラジオ局を発見",
+      "音楽ジャンルから放送局を探す"
+    ],
+    "sleep-timer": [
+      "ラジオと一緒におやすみ",
+      "再生を止める時間を設定"
+    ]
+  },
+  "zh-TW": {
+    "discover": [
+      "即時網路電台",
+      "收聽台灣香港與世界FM、AM廣播"
+    ],
+    "player": [
+      "喜歡的電台，即時收聽",
+      "收聽台灣香港與世界FM、AM廣播"
+    ],
+    "country": [
+      "聽見世界各地的聲音",
+      "收聽台灣香港與世界FM、AM廣播"
+    ],
+    "genres": [
+      "找到合你口味的音樂",
+      "收聽台灣香港與世界FM、AM廣播"
+    ],
+    "car": [
+      "車用播放模式",
+      "輕鬆找到，隨時收聽"
+    ],
+    "search": [
+      "找到想聽的電台",
+      "收聽台灣香港與世界FM、AM廣播"
+    ],
+    "rock-stations": [
+      "探索搖滾電台",
+      "依音樂類型尋找喜愛的電台"
+    ],
+    "sleep-timer": [
+      "伴著廣播入睡",
+      "設定自動停止播放的時間"
+    ]
+  },
+  "ar": {
+    "discover": [
+      "راديو مباشر",
+      "محطات FM وAM من حول العالم"
+    ],
+    "player": [
+      "راديوك على الهواء مباشرة",
+      "محطات FM وAM من حول العالم"
+    ],
+    "country": [
+      "محطات من حول العالم",
+      "محطات FM وAM من حول العالم"
+    ],
+    "genres": [
+      "موسيقى تناسب ذوقك",
+      "محطات FM وAM من حول العالم"
+    ],
+    "car": [
+      "وضع السيارة",
+      "احفظ محطاتك واعثر عليها بسهولة"
+    ],
+    "search": [
+      "اعثر على محطتك المفضلة",
+      "محطات FM وAM من حول العالم"
+    ],
+    "rock-stations": [
+      "اكتشف إذاعات الروك",
+      "تصفّح المحطات حسب النوع الموسيقي"
+    ],
+    "sleep-timer": [
+      "استرخِ مع مؤقّت النوم",
+      "اختر وقت إيقاف التشغيل"
+    ]
+  },
+  "en-GB": {
+    "discover": [
+      "Live Radio",
+      "FM, AM & worldwide stations"
+    ],
+    "player": [
+      "Tune in to your day",
+      "FM, AM & worldwide stations"
+    ],
+    "country": [
+      "Radio beyond borders",
+      "FM, AM & worldwide stations"
+    ],
+    "genres": [
+      "A genre for every mood",
+      "FM, AM & worldwide stations"
+    ],
+    "car": [
+      "Radio in car mode",
+      "Keep the radio you love close"
+    ],
+    "search": [
+      "Find your favourite station",
+      "FM, AM & worldwide stations"
+    ],
+    "rock-stations": [
+      "Find your rock station",
+      "Browse stations by music genre"
+    ],
+    "sleep-timer": [
+      "Radio for winding down",
+      "Set a timer to stop playback"
+    ]
+  },
+  "en-AU": {
+    "discover": [
+      "Live Radio",
+      "Australian & global FM, AM"
+    ],
+    "player": [
+      "Your radio, wherever you are",
+      "Australian & global FM, AM"
+    ],
+    "country": [
+      "From Australia to the world",
+      "Australian & global FM, AM"
+    ],
+    "genres": [
+      "Find your next sound",
+      "Australian & global FM, AM"
+    ],
+    "car": [
+      "Radio in car mode",
+      "Local favourites. A world of radio."
+    ],
+    "search": [
+      "Find your next local station",
+      "Australian & global FM, AM"
+    ],
+    "rock-stations": [
+      "Rock stations to discover",
+      "Find a station for your music taste"
+    ],
+    "sleep-timer": [
+      "Unwind with the radio",
+      "Choose when your listening ends"
+    ]
+  },
+  "fr-CA": {
+    "discover": [
+      "Radio en direct",
+      "Stations du Québec et du monde"
+    ],
+    "player": [
+      "Vos radios, en direct",
+      "Stations du Québec et du monde"
+    ],
+    "country": [
+      "Du Québec au monde entier",
+      "Stations du Québec et du monde"
+    ],
+    "genres": [
+      "De la musique à votre goût",
+      "Stations du Québec et du monde"
+    ],
+    "car": [
+      "Le mode voiture",
+      "Vos stations du Québec et d’ailleurs"
+    ],
+    "search": [
+      "Trouvez votre station",
+      "Stations du Québec et du monde"
+    ],
+    "rock-stations": [
+      "Découvrez des radios rock",
+      "Parcourez les stations par style musical"
+    ],
+    "sleep-timer": [
+      "La radio pour vous détendre",
+      "Réglez l’arrêt automatique de la lecture"
+    ]
+  },
+  "es-419": {
+    "discover": [
+      "Radio en vivo",
+      "Emisoras de México y el mundo"
+    ],
+    "player": [
+      "Tu estación, en vivo",
+      "Emisoras de México y el mundo"
+    ],
+    "country": [
+      "De México al mundo",
+      "Emisoras de México y el mundo"
+    ],
+    "genres": [
+      "El ritmo que va contigo",
+      "Emisoras de México y el mundo"
+    ],
+    "car": [
+      "Modo auto",
+      "Tu radio de siempre, a un toque"
+    ],
+    "search": [
+      "Encuentra tu estación",
+      "Emisoras de México y el mundo"
+    ],
+    "rock-stations": [
+      "Encuentra tu estación de rock",
+      "Explora radios por género musical"
+    ],
+    "sleep-timer": [
+      "Descansa escuchando radio",
+      "Programa cuándo se detiene el audio"
+    ]
+  },
+  "pt-BR": {
+    "discover": [
+      "Rádio ao vivo",
+      "Emissoras FM e AM do mundo"
+    ],
+    "player": [
+      "Sua rádio, ao vivo",
+      "Emissoras FM e AM do mundo"
+    ],
+    "country": [
+      "Do Brasil para o mundo",
+      "Emissoras FM e AM do mundo"
+    ],
+    "genres": [
+      "Encontre seu ritmo",
+      "Emissoras FM e AM do mundo"
+    ],
+    "car": [
+      "Modo carro",
+      "Salve suas emissoras e dê o play"
+    ],
+    "search": [
+      "Encontre sua rádio",
+      "Emissoras FM e AM do mundo"
+    ],
+    "rock-stations": [
+      "Encontre sua rádio de rock",
+      "Explore estações por estilo musical"
+    ],
+    "sleep-timer": [
+      "Relaxe ouvindo rádio",
+      "Programe quando o áudio deve parar"
+    ]
+  },
+  "nl-NL": {
+    "discover": [
+      "Radio luisteren",
+      "Live FM, AM en wereldzenders"
+    ],
+    "player": [
+      "Jouw radio, nu live",
+      "Live FM, AM en wereldzenders"
+    ],
+    "country": [
+      "Zenders over de grens",
+      "Live FM, AM en wereldzenders"
+    ],
+    "genres": [
+      "Muziek die bij je past",
+      "Live FM, AM en wereldzenders"
+    ],
+    "car": [
+      "Radio in automodus",
+      "Bewaar ze en luister meteen"
+    ],
+    "search": [
+      "Vind jouw radiozender",
+      "Live FM, AM en wereldzenders"
+    ],
+    "rock-stations": [
+      "Ontdek rockzenders",
+      "Blader door zenders per muziekgenre"
+    ],
+    "sleep-timer": [
+      "Val in slaap met de radio",
+      "Kies wanneer het afspelen stopt"
+    ]
+  },
+  "sv-SE": {
+    "discover": [
+      "Radio Sverige",
+      "Webbradio, musik och nyheter"
+    ],
+    "player": [
+      "Din radio, direkt",
+      "Webbradio, musik och nyheter"
+    ],
+    "country": [
+      "Kanaler från hela världen",
+      "Webbradio, musik och nyheter"
+    ],
+    "genres": [
+      "Hitta din musikstil",
+      "Webbradio, musik och nyheter"
+    ],
+    "car": [
+      "Radio i billäge",
+      "Spara och hitta tillbaka direkt"
+    ],
+    "search": [
+      "Hitta din radiostation",
+      "Webbradio, musik och nyheter"
+    ],
+    "rock-stations": [
+      "Upptäck rockstationer",
+      "Bläddra bland stationer efter musikstil"
+    ],
+    "sleep-timer": [
+      "Somna till radion",
+      "Välj när uppspelningen ska sluta"
+    ]
+  },
+  "no-NO": {
+    "discover": [
+      "Nettradio & musikk",
+      "FM, AM og kanaler fra verden"
+    ],
+    "player": [
+      "Din radio, direkte",
+      "FM, AM og kanaler fra verden"
+    ],
+    "country": [
+      "Kanaler fra hele verden",
+      "FM, AM og kanaler fra verden"
+    ],
+    "genres": [
+      "Finn musikken du liker",
+      "FM, AM og kanaler fra verden"
+    ],
+    "car": [
+      "Radio i bilmodus",
+      "Lagre dem og lytt når du vil"
+    ],
+    "search": [
+      "Finn din radiostasjon",
+      "FM, AM og kanaler fra verden"
+    ],
+    "rock-stations": [
+      "Oppdag rockestasjoner",
+      "Bla gjennom stasjoner etter musikksjanger"
+    ],
+    "sleep-timer": [
+      "Sov til lyden av radio",
+      "Velg når avspillingen skal stoppe"
+    ]
+  },
+  "da-DK": {
+    "discover": [
+      "Dansk netradio",
+      "Live radio fra hele verden"
+    ],
+    "player": [
+      "Din radio, direkte",
+      "Live radio fra hele verden"
+    ],
+    "country": [
+      "Kanaler fra hele verden",
+      "Live radio fra hele verden"
+    ],
+    "genres": [
+      "Find din musikstil",
+      "Live radio fra hele verden"
+    ],
+    "car": [
+      "Radio i biltilstand",
+      "Gem dem, og lyt med det samme"
+    ],
+    "search": [
+      "Find din radiostation",
+      "Live radio fra hele verden"
+    ],
+    "rock-stations": [
+      "Find din rockstation",
+      "Udforsk stationer efter musikgenre"
+    ],
+    "sleep-timer": [
+      "Fald i søvn til radioen",
+      "Vælg hvornår afspilningen stopper"
+    ]
+  },
+  "fi-FI": {
+    "discover": [
+      "Kuuntele radiota",
+      "Suomen ja maailman nettiradio"
+    ],
+    "player": [
+      "Oma radiosi suorana",
+      "Suomen ja maailman nettiradio"
+    ],
+    "country": [
+      "Kanavia ympäri maailman",
+      "Suomen ja maailman nettiradio"
+    ],
+    "genres": [
+      "Löydä oma musiikkisi",
+      "Suomen ja maailman nettiradio"
+    ],
+    "car": [
+      "Radion autotila",
+      "Tallenna ja löydä helposti uudelleen"
+    ],
+    "search": [
+      "Löydä oma radioasemasi",
+      "Suomen ja maailman nettiradio"
+    ],
+    "rock-stations": [
+      "Löydä rockradiokanavia",
+      "Selaa kanavia musiikkilajin mukaan"
+    ],
+    "sleep-timer": [
+      "Nukahda radion ääreen",
+      "Valitse toiston lopetusaika"
+    ]
+  },
+  "pl-PL": {
+    "discover": [
+      "Radio internetowe",
+      "Stacje FM i AM na żywo"
+    ],
+    "player": [
+      "Twoje radio na żywo",
+      "Stacje FM i AM na żywo"
+    ],
+    "country": [
+      "Stacje z całego świata",
+      "Stacje FM i AM na żywo"
+    ],
+    "genres": [
+      "Muzyka w Twoim stylu",
+      "Stacje FM i AM na żywo"
+    ],
+    "car": [
+      "Tryb samochodowy",
+      "Zapisz je i wracaj do słuchania"
+    ],
+    "search": [
+      "Znajdź swoją stację",
+      "Stacje FM i AM na żywo"
+    ],
+    "rock-stations": [
+      "Odkryj stacje rockowe",
+      "Przeglądaj radio według gatunku muzyki"
+    ],
+    "sleep-timer": [
+      "Zasypiaj przy radiu",
+      "Ustaw czas zakończenia odtwarzania"
+    ]
+  },
+  "cs-CZ": {
+    "discover": [
+      "Rádio online",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "player": [
+      "Vaše rádio živě",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "country": [
+      "Stanice z celého světa",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "genres": [
+      "Hudba podle vašeho vkusu",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "car": [
+      "Režim do auta",
+      "Uložte si je a snadno je najděte"
+    ],
+    "search": [
+      "Najděte svou stanici",
+      "Živé vysílání FM a AM stanic"
+    ],
+    "rock-stations": [
+      "Objevte rocková rádia",
+      "Procházejte stanice podle hudebního žánru"
+    ],
+    "sleep-timer": [
+      "Usínejte s rádiem",
+      "Vyberte čas zastavení přehrávání"
+    ]
+  },
+  "sk-SK": {
+    "discover": [
+      "Rádio naživo",
+      "Online stanice FM a AM"
+    ],
+    "player": [
+      "Vaše rádio naživo",
+      "Online stanice FM a AM"
+    ],
+    "country": [
+      "Stanice z celého sveta",
+      "Online stanice FM a AM"
+    ],
+    "genres": [
+      "Hudba podľa vášho vkusu",
+      "Online stanice FM a AM"
+    ],
+    "car": [
+      "Režim do auta",
+      "Uložte si ich a počúvajte znova"
+    ],
+    "search": [
+      "Nájdite svoju stanicu",
+      "Online stanice FM a AM"
+    ],
+    "rock-stations": [
+      "Objavte rockové rádiá",
+      "Prehliadajte stanice podľa hudobného žánru"
+    ],
+    "sleep-timer": [
+      "Zaspávajte pri rádiu",
+      "Nastavte čas zastavenia prehrávania"
+    ]
+  },
+  "hu-HU": {
+    "discover": [
+      "Online rádió",
+      "Élő FM és AM adók a világból"
+    ],
+    "player": [
+      "A rádiód, élőben",
+      "Élő FM és AM adók a világból"
+    ],
+    "country": [
+      "Adók a világ minden tájáról",
+      "Élő FM és AM adók a világból"
+    ],
+    "genres": [
+      "Zene a te ízlésed szerint",
+      "Élő FM és AM adók a világból"
+    ],
+    "car": [
+      "Autós mód",
+      "Mentsd el, és hallgasd újra"
+    ],
+    "search": [
+      "Találd meg a kedvenc adódat",
+      "Élő FM és AM adók a világból"
+    ],
+    "rock-stations": [
+      "Fedezz fel rockrádiókat",
+      "Böngéssz zenei műfajok szerint"
+    ],
+    "sleep-timer": [
+      "Aludj el rádió mellett",
+      "Állítsd be a lejátszás leállítását"
+    ]
+  },
+  "ro-RO": {
+    "discover": [
+      "Radio online",
+      "Posturi FM și AM în direct"
+    ],
+    "player": [
+      "Radioul tău, în direct",
+      "Posturi FM și AM în direct"
+    ],
+    "country": [
+      "Posturi din întreaga lume",
+      "Posturi FM și AM în direct"
+    ],
+    "genres": [
+      "Muzică pe gustul tău",
+      "Posturi FM și AM în direct"
+    ],
+    "car": [
+      "Modul auto",
+      "Salvează-le și ascultă ușor"
+    ],
+    "search": [
+      "Găsește postul preferat",
+      "Posturi FM și AM în direct"
+    ],
+    "rock-stations": [
+      "Descoperă posturi rock",
+      "Explorează radiouri după genul muzical"
+    ],
+    "sleep-timer": [
+      "Adormi ascultând radio",
+      "Alege când se oprește redarea"
+    ]
+  },
+  "hr-HR": {
+    "discover": [
+      "Radio uživo",
+      "FM i AM postaje iz svijeta"
+    ],
+    "player": [
+      "Vaš radio uživo",
+      "FM i AM postaje iz svijeta"
+    ],
+    "country": [
+      "Postaje iz cijelog svijeta",
+      "FM i AM postaje iz svijeta"
+    ],
+    "genres": [
+      "Glazba po vašem ukusu",
+      "FM i AM postaje iz svijeta"
+    ],
+    "car": [
+      "Način za automobil",
+      "Spremite ih i jednostavno slušajte"
+    ],
+    "search": [
+      "Pronađi svoju postaju",
+      "FM i AM postaje iz svijeta"
+    ],
+    "rock-stations": [
+      "Otkrij rock postaje",
+      "Pregledaj postaje prema glazbenom žanru"
+    ],
+    "sleep-timer": [
+      "Zaspi uz radio",
+      "Odaberi kada reprodukcija prestaje"
+    ]
+  },
+  "el-GR": {
+    "discover": [
+      "Ραδιόφωνο live",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "player": [
+      "Το ραδιόφωνό σου, ζωντανά",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "country": [
+      "Σταθμοί από όλο τον κόσμο",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "genres": [
+      "Μουσική για κάθε διάθεση",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "car": [
+      "Λειτουργία αυτοκινήτου",
+      "Αποθήκευσε και άκουσε εύκολα"
+    ],
+    "search": [
+      "Βρες τον σταθμό σου",
+      "Σταθμοί FM και AM παγκοσμίως"
+    ],
+    "rock-stations": [
+      "Ανακάλυψε ροκ σταθμούς",
+      "Βρες ραδιόφωνα ανά είδος μουσικής"
+    ],
+    "sleep-timer": [
+      "Αποκοιμήσου με ραδιόφωνο",
+      "Επίλεξε πότε θα σταματήσει η αναπαραγωγή"
+    ]
+  },
+  "uk": {
+    "discover": [
+      "Радіо онлайн",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "player": [
+      "Ваше радіо наживо",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "country": [
+      "Радіостанції з усього світу",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "genres": [
+      "Музика на ваш смак",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "car": [
+      "Режим для автомобіля",
+      "Зберігайте та знаходьте їх швидше"
+    ],
+    "search": [
+      "Знайди свою радіостанцію",
+      "Прямий ефір FM та AM станцій"
+    ],
+    "rock-stations": [
+      "Відкривайте рок-радіостанції",
+      "Шукайте станції за музичним жанром"
+    ],
+    "sleep-timer": [
+      "Засинайте під радіо",
+      "Виберіть час зупинки відтворення"
+    ]
+  },
+  "ca": {
+    "discover": [
+      "Ràdio en directe",
+      "Emissores FM i AM del món"
+    ],
+    "player": [
+      "La teva ràdio, en directe",
+      "Emissores FM i AM del món"
+    ],
+    "country": [
+      "Emissores d’arreu del món",
+      "Emissores FM i AM del món"
+    ],
+    "genres": [
+      "La música que va amb tu",
+      "Emissores FM i AM del món"
+    ],
+    "car": [
+      "Mode cotxe",
+      "Desa-les i torna-hi fàcilment"
+    ],
+    "search": [
+      "Troba la teva emissora",
+      "Emissores FM i AM del món"
+    ],
+    "rock-stations": [
+      "Descobreix emissores de rock",
+      "Explora la ràdio per gènere musical"
+    ],
+    "sleep-timer": [
+      "Adorm-te amb la ràdio",
+      "Tria quan s’atura la reproducció"
+    ]
+  },
+  "zh-CN": {
+    "discover": [
+      "在线广播电台",
+      "收听世界各地的FM与AM直播"
+    ],
+    "player": [
+      "喜欢的电台，实时收听",
+      "收听世界各地的FM与AM直播"
+    ],
+    "country": [
+      "聆听世界各地的声音",
+      "收听世界各地的FM与AM直播"
+    ],
+    "genres": [
+      "发现合你口味的音乐",
+      "收听世界各地的FM与AM直播"
+    ],
+    "car": [
+      "车载播放模式",
+      "轻松找到，随时收听"
+    ],
+    "search": [
+      "找到想听的电台",
+      "收听世界各地的FM与AM直播"
+    ],
+    "rock-stations": [
+      "发现摇滚电台",
+      "按音乐类型寻找喜欢的电台"
+    ],
+    "sleep-timer": [
+      "伴着广播入睡",
+      "设置自动停止播放的时间"
+    ]
+  },
+  "ko-KR": {
+    "discover": [
+      "실시간 라디오",
+      "한국과 세계의 FM·AM 방송 듣기"
+    ],
+    "player": [
+      "좋아하는 방송을 실시간으로",
+      "한국과 세계의 FM·AM 방송 듣기"
+    ],
+    "country": [
+      "세계의 라디오를 만나세요",
+      "한국과 세계의 FM·AM 방송 듣기"
+    ],
+    "genres": [
+      "내 취향에 맞는 음악",
+      "한국과 세계의 FM·AM 방송 듣기"
+    ],
+    "car": [
+      "차량용 재생 화면",
+      "저장하고 간편하게 다시 듣기"
+    ],
+    "search": [
+      "듣고 싶은 방송 찾기",
+      "한국과 세계의 FM·AM 방송 듣기"
+    ],
+    "rock-stations": [
+      "록 라디오를 찾아보세요",
+      "음악 장르별로 방송국 탐색"
+    ],
+    "sleep-timer": [
+      "라디오와 함께 편안한 잠",
+      "재생을 멈출 시간을 설정하세요"
+    ]
+  },
+  "id": {
+    "discover": [
+      "Radio Online",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "player": [
+      "Radio pilihanmu, langsung",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "country": [
+      "Jelajahi radio dunia",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "genres": [
+      "Musik sesuai seleramu",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "car": [
+      "Mode mobil",
+      "Simpan dan dengarkan dengan mudah"
+    ],
+    "search": [
+      "Temukan stasiun favoritmu",
+      "Dengar siaran langsung FM & AM"
+    ],
+    "rock-stations": [
+      "Temukan radio rock",
+      "Jelajahi stasiun menurut genre musik"
+    ],
+    "sleep-timer": [
+      "Tidur ditemani radio",
+      "Atur kapan pemutaran berhenti"
+    ]
+  },
+  "th": {
+    "discover": [
+      "วิทยุออนไลน์",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "player": [
+      "สถานีที่ชอบ ฟังสดได้เลย",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "country": [
+      "เปิดโลกสถานีวิทยุ",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "genres": [
+      "ค้นหาเพลงในแนวที่ใช่",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "car": [
+      "โหมดในรถ",
+      "บันทึกไว้แล้วกลับมาฟังได้ง่าย"
+    ],
+    "search": [
+      "ค้นหาสถานีที่ชอบ",
+      "ฟังสด FM AM จากทั่วโลก"
+    ],
+    "rock-stations": [
+      "ค้นพบสถานีเพลงร็อก",
+      "เลือกฟังสถานีตามแนวเพลง"
+    ],
+    "sleep-timer": [
+      "หลับสบายไปกับวิทยุ",
+      "ตั้งเวลาให้หยุดเล่นโดยอัตโนมัติ"
+    ]
+  },
+  "vi": {
+    "discover": [
+      "Nghe radio online",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "player": [
+      "Đài yêu thích, phát trực tiếp",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "country": [
+      "Nghe radio khắp thế giới",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "genres": [
+      "Âm nhạc đúng gu của bạn",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "car": [
+      "Chế độ ô tô",
+      "Lưu lại và tìm nghe dễ dàng"
+    ],
+    "search": [
+      "Tìm đài bạn yêu thích",
+      "Đài FM, AM trực tiếp toàn cầu"
+    ],
+    "rock-stations": [
+      "Khám phá đài nhạc rock",
+      "Tìm đài theo thể loại âm nhạc"
+    ],
+    "sleep-timer": [
+      "Thư giãn cùng hẹn giờ ngủ",
+      "Chọn thời điểm dừng phát"
+    ]
+  },
+  "hi-IN": {
+    "discover": [
+      "लाइव रेडियो",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "player": [
+      "आपका रेडियो, सीधे प्रसारण में",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "country": [
+      "दुनिया भर की आवाज़ें",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "genres": [
+      "अपनी पसंद का संगीत खोजें",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "car": [
+      "कार मोड",
+      "सहेजें और आसानी से फिर सुनें"
+    ],
+    "search": [
+      "अपना पसंदीदा रेडियो खोजें",
+      "भारत और दुनिया के FM, AM"
+    ],
+    "rock-stations": [
+      "रॉक रेडियो खोजें",
+      "संगीत की शैली के अनुसार स्टेशन देखें"
+    ],
+    "sleep-timer": [
+      "रेडियो सुनते हुए सोएँ",
+      "प्लेबैक बंद होने का समय चुनें"
+    ]
+  },
+  "en-CA": {
+    "discover": [
+      "Canadian Radio",
+      "Live FM, AM & world stations"
+    ],
+    "player": [
+      "Tune in, coast to coast",
+      "Live FM, AM & world stations"
+    ],
+    "country": [
+      "Local voices. World radio.",
+      "Live FM, AM & world stations"
+    ],
+    "genres": [
+      "Find a sound you love",
+      "Live FM, AM & world stations"
+    ],
+    "car": [
+      "Radio in car mode",
+      "From local radio to the world"
+    ],
+    "search": [
+      "Find a familiar voice",
+      "Live FM, AM & world stations"
+    ],
+    "rock-stations": [
+      "Discover more rock radio",
+      "Browse stations by music genre"
+    ],
+    "sleep-timer": [
+      "Settle in with a sleep timer",
+      "Choose when playback stops"
+    ]
+  },
+  "bn-BD": {
+    "discover": [
+      "বিশ্ব রেডিও শুনুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "player": [
+      "আপনার রেডিও, সরাসরি",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "country": [
+      "বিশ্বজুড়ে রেডিও শুনুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "genres": [
+      "নিজের পছন্দের সুর খুঁজুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "car": [
+      "গাড়ি মোড",
+      "সংরক্ষণ করুন, সহজে আবার শুনুন"
+    ],
+    "search": [
+      "পছন্দের রেডিও খুঁজুন",
+      "বাংলা ও বিশ্বের রেডিও শুনুন"
+    ],
+    "rock-stations": [
+      "রক রেডিও খুঁজে নিন",
+      "গানের ধরন অনুযায়ী স্টেশন দেখুন"
+    ],
+    "sleep-timer": [
+      "রেডিও শুনতে শুনতে ঘুমিয়ে পড়ুন",
+      "কখন বাজানো বন্ধ হবে বেছে নিন"
+    ]
+  },
+  "gu": {
+    "discover": [
+      "લાઇવ રેડિયો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "player": [
+      "તમારો રેડિયો, લાઇવ",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "country": [
+      "વિશ્વભરના અવાજો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "genres": [
+      "તમારી પસંદનું સંગીત શોધો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "car": [
+      "કાર મોડ",
+      "સાચવો અને સરળતાથી ફરી સાંભળો"
+    ],
+    "search": [
+      "તમારું મનપસંદ રેડિયો શોધો",
+      "ગુજરાતી અને વિશ્વના FM, AM"
+    ],
+    "rock-stations": [
+      "રૉક રેડિયો શોધો",
+      "સંગીતના પ્રકાર પ્રમાણે સ્ટેશનો જુઓ"
+    ],
+    "sleep-timer": [
+      "રેડિયો સાંભળતાં આરામ કરો",
+      "પ્લેબેક બંધ થવાનો સમય પસંદ કરો"
+    ]
+  },
+  "kn-IN": {
+    "discover": [
+      "ಕನ್ನಡ ರೇಡಿಯೋ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "player": [
+      "ನಿಮ್ಮ ರೇಡಿಯೋ, ನೇರ ಪ್ರಸಾರ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "country": [
+      "ಜಗತ್ತಿನ ಧ್ವನಿಗಳನ್ನು ಕೇಳಿ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "genres": [
+      "ನಿಮ್ಮ ಅಭಿರುಚಿಯ ಸಂಗೀತ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "car": [
+      "ಕಾರ್ ಮೋಡ್",
+      "ಉಳಿಸಿ ಮತ್ತು ಸುಲಭವಾಗಿ ಮತ್ತೆ ಕೇಳಿ"
+    ],
+    "search": [
+      "ನಿಮ್ಮ ಮೆಚ್ಚಿನ ರೇಡಿಯೊ ಹುಡುಕಿ",
+      "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM"
+    ],
+    "rock-stations": [
+      "ರಾಕ್ ರೇಡಿಯೊಗಳನ್ನು ಅನ್ವೇಷಿಸಿ",
+      "ಸಂಗೀತದ ಪ್ರಕಾರಕ್ಕೆ ತಕ್ಕಂತೆ ಕೇಂದ್ರಗಳನ್ನು ಹುಡುಕಿ"
+    ],
+    "sleep-timer": [
+      "ರೇಡಿಯೊ ಕೇಳುತ್ತಾ ನಿದ್ರಿಸಿ",
+      "ಪ್ಲೇಬ್ಯಾಕ್ ನಿಲ್ಲುವ ಸಮಯ ಆಯ್ಕೆಮಾಡಿ"
+    ]
+  },
+  "ml-IN": {
+    "discover": [
+      "ലൈവ് റേഡിയോ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "player": [
+      "നിങ്ങളുടെ റേഡിയോ തത്സമയം",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "country": [
+      "ലോകത്തിന്റെ ശബ്ദങ്ങൾ കേൾക്കൂ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "genres": [
+      "ഇഷ്ടമുള്ള സംഗീതം കണ്ടെത്തൂ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "car": [
+      "കാർ മോഡ്",
+      "സൂക്ഷിച്ച് എളുപ്പത്തിൽ വീണ്ടും കേൾക്കൂ"
+    ],
+    "search": [
+      "ഇഷ്ടമുള്ള റേഡിയോ കണ്ടെത്തൂ",
+      "മലയാളവും ലോകവും FM, AM"
+    ],
+    "rock-stations": [
+      "റോക്ക് റേഡിയോ കണ്ടെത്തൂ",
+      "സംഗീത വിഭാഗമനുസരിച്ച് നിലയങ്ങൾ തിരയൂ"
+    ],
+    "sleep-timer": [
+      "റേഡിയോ കേട്ടുറങ്ങൂ",
+      "പ്ലേബാക്ക് നിർത്തേണ്ട സമയം തിരഞ്ഞെടുക്കൂ"
+    ]
+  },
+  "mr-IN": {
+    "discover": [
+      "लाइव्ह रेडिओ",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "player": [
+      "तुमचा रेडिओ, थेट प्रसारण",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "country": [
+      "जगभरातील आवाज ऐका",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "genres": [
+      "आवडीचे संगीत शोधा",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "car": [
+      "कार मोड",
+      "जतन करा आणि सहज पुन्हा ऐका"
+    ],
+    "search": [
+      "तुमचे आवडते रेडिओ शोधा",
+      "मराठी व जगभरातील FM, AM"
+    ],
+    "rock-stations": [
+      "रॉक रेडिओ शोधा",
+      "संगीत प्रकारानुसार स्टेशन्स पाहा"
+    ],
+    "sleep-timer": [
+      "रेडिओ ऐकत झोपी जा",
+      "प्लेबॅक थांबण्याची वेळ निवडा"
+    ]
+  },
+  "pa": {
+    "discover": [
+      "ਲਾਈਵ ਰੇਡੀਓ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "player": [
+      "ਤੁਹਾਡਾ ਰੇਡੀਓ, ਸਿੱਧਾ ਪ੍ਰਸਾਰਣ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "country": [
+      "ਦੁਨੀਆ ਭਰ ਦੀਆਂ ਆਵਾਜ਼ਾਂ ਸੁਣੋ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "genres": [
+      "ਆਪਣੀ ਪਸੰਦ ਦਾ ਸੰਗੀਤ ਲੱਭੋ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "car": [
+      "ਕਾਰ ਮੋਡ",
+      "ਸੰਭਾਲੋ ਅਤੇ ਆਸਾਨੀ ਨਾਲ ਦੁਬਾਰਾ ਸੁਣੋ"
+    ],
+    "search": [
+      "ਆਪਣਾ ਮਨਪਸੰਦ ਰੇਡੀਓ ਲੱਭੋ",
+      "ਪੰਜਾਬੀ ਤੇ ਦੁਨੀਆ ਦੇ FM, AM"
+    ],
+    "rock-stations": [
+      "ਰੌਕ ਰੇਡੀਓ ਲੱਭੋ",
+      "ਸੰਗੀਤ ਦੀ ਕਿਸਮ ਮੁਤਾਬਕ ਸਟੇਸ਼ਨ ਵੇਖੋ"
+    ],
+    "sleep-timer": [
+      "ਰੇਡੀਓ ਸੁਣਦਿਆਂ ਸੌਂ ਜਾਓ",
+      "ਪਲੇਬੈਕ ਰੁਕਣ ਦਾ ਸਮਾਂ ਚੁਣੋ"
+    ]
+  },
+  "ta-IN": {
+    "discover": [
+      "தமிழ் வானொலி",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "player": [
+      "உங்கள் வானொலி நேரலையில்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "country": [
+      "உலகின் குரல்களைக் கேளுங்கள்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "genres": [
+      "உங்கள் விருப்ப இசையைத் தேடுங்கள்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "car": [
+      "கார் பயன்முறை",
+      "சேமித்து எளிதாக மீண்டும் கேளுங்கள்"
+    ],
+    "search": [
+      "விருப்பமான வானொலியைத் தேடுங்கள்",
+      "உலக FM, AM நேரலை கேளுங்கள்"
+    ],
+    "rock-stations": [
+      "ராக் வானொலிகளைக் கண்டறியுங்கள்",
+      "இசை வகைக்கேற்ப நிலையங்களைத் தேடுங்கள்"
+    ],
+    "sleep-timer": [
+      "வானொலி கேட்டபடி உறங்குங்கள்",
+      "ஒலிபரப்பு நிற்கும் நேரத்தைத் தேர்ந்தெடுங்கள்"
+    ]
+  },
+  "te-IN": {
+    "discover": [
+      "లైవ్ రేడియో",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "player": [
+      "మీ రేడియో ప్రత్యక్ష ప్రసారంలో",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "country": [
+      "ప్రపంచ స్వరాలను వినండి",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "genres": [
+      "మీకు నచ్చిన సంగీతం కనుగొనండి",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "car": [
+      "కార్ మోడ్",
+      "సేవ్ చేసి సులభంగా మళ్లీ వినండి"
+    ],
+    "search": [
+      "మీకు నచ్చిన రేడియోను వెతకండి",
+      "తెలుగు, ప్రపంచ FM, AM వినండి"
+    ],
+    "rock-stations": [
+      "రాక్ రేడియోలను కనుగొనండి",
+      "సంగీత రకాన్ని బట్టి స్టేషన్లను చూడండి"
+    ],
+    "sleep-timer": [
+      "రేడియో వింటూ నిద్రపోండి",
+      "ప్లేబ్యాక్ ఆగే సమయాన్ని ఎంచుకోండి"
+    ]
+  },
+  "ur": {
+    "discover": [
+      "لائیو ریڈیو",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "player": [
+      "آپ کا ریڈیو، براہ راست",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "country": [
+      "دنیا بھر کی آوازیں سنیں",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "genres": [
+      "اپنی پسند کی موسیقی تلاش کریں",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "car": [
+      "کار موڈ",
+      "محفوظ کریں اور آسانی سے دوبارہ سنیں"
+    ],
+    "search": [
+      "اپنا پسندیدہ ریڈیو تلاش کریں",
+      "اردو اور دنیا کے FM، AM سنیں"
+    ],
+    "rock-stations": [
+      "راک ریڈیو تلاش کریں",
+      "موسیقی کی صنف کے مطابق اسٹیشن دیکھیں"
+    ],
+    "sleep-timer": [
+      "ریڈیو سنتے ہوئے سو جائیں",
+      "پلے بیک بند ہونے کا وقت چنیں"
+    ]
+  },
+  "sl-SI": {
+    "discover": [
+      "Radio v živo",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "player": [
+      "Vaš radio v živo",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "country": [
+      "Postaje z vsega sveta",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "genres": [
+      "Glasba po vašem okusu",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "car": [
+      "Način za avto",
+      "Shranite jih in preprosto poslušajte"
+    ],
+    "search": [
+      "Poišči svojo radijsko postajo",
+      "Postaje FM in AM z vsega sveta"
+    ],
+    "rock-stations": [
+      "Odkrij rock postaje",
+      "Brskaj po postajah glede na glasbeno zvrst"
+    ],
+    "sleep-timer": [
+      "Zaspi ob radiu",
+      "Izberi čas zaustavitve predvajanja"
+    ]
+  },
+  "bg": {
+    "discover": [
+      "Радио на живо",
+      "Местни станции и радио от цял свят"
+    ],
+    "player": [
+      "Твоята станция на живо",
+      "Местни станции и радио от цял свят"
+    ],
+    "country": [
+      "Открий радио от света",
+      "Местни станции и радио от цял свят"
+    ],
+    "genres": [
+      "Музика по твой вкус",
+      "Местни станции и радио от цял свят"
+    ],
+    "car": [
+      "Радио в автомобилен режим",
+      "Местни станции и радио от цял свят"
+    ],
+    "search": [
+      "Намери радиостанция",
+      "Местни станции и радио от цял свят"
+    ],
+    "rock-stations": [
+      "Открийте рок радиостанции",
+      "Разглеждайте станции по музикален жанр"
+    ],
+    "sleep-timer": [
+      "Заспивайте с радио",
+      "Изберете кога да спре възпроизвеждането"
+    ]
+  },
+  "zh-HK": {
+    "discover": [
+      "即時網上電台",
+      "香港以至世界各地的網上電台"
+    ],
+    "player": [
+      "你的電台 即刻開播",
+      "香港以至世界各地的網上電台"
+    ],
+    "country": [
+      "探索世界電台",
+      "香港以至世界各地的網上電台"
+    ],
+    "genres": [
+      "揀你喜歡的音樂",
+      "香港以至世界各地的網上電台"
+    ],
+    "car": [
+      "車內收聽模式",
+      "香港以至世界各地的網上電台"
+    ],
+    "search": [
+      "搜尋你想聽的電台",
+      "香港以至世界各地的網上電台"
+    ],
+    "rock-stations": [
+      "發掘搖滾電台",
+      "按音樂類型尋找心愛電台"
+    ],
+    "sleep-timer": [
+      "聽着廣播放鬆入睡",
+      "設定自動停止播放時間"
+    ]
+  },
+  "iw-IL": {
+    "discover": [
+      "רדיו בשידור חי",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "player": [
+      "הרדיו שלך בשידור חי",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "country": [
+      "תחנות מכל העולם",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "genres": [
+      "מוזיקה שמתאימה לך",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "car": [
+      "מצב רכב",
+      "שמרו אותן וחזרו להאזין בקלות"
+    ],
+    "search": [
+      "מוצאים את התחנה שלכם",
+      "תחנות FM ו-AM מכל העולם"
+    ],
+    "rock-stations": [
+      "גלו תחנות רוק",
+      "חפשו תחנות לפי סגנון מוזיקלי"
+    ],
+    "sleep-timer": [
+      "הירדמו לצלילי הרדיו",
+      "בחרו מתי ההשמעה תיפסק"
+    ]
+  },
+  "ms-MY": {
+    "discover": [
+      "Radio Dalam Talian",
+      "Siaran langsung FM dan AM"
+    ],
+    "player": [
+      "Radio pilihan anda, langsung",
+      "Siaran langsung FM dan AM"
+    ],
+    "country": [
+      "Terokai radio seluruh dunia",
+      "Siaran langsung FM dan AM"
+    ],
+    "genres": [
+      "Muzik mengikut cita rasa",
+      "Siaran langsung FM dan AM"
+    ],
+    "car": [
+      "Mod kereta",
+      "Simpan dan dengar dengan mudah"
+    ],
+    "search": [
+      "Cari stesen pilihan anda",
+      "Siaran langsung FM dan AM"
+    ],
+    "rock-stations": [
+      "Terokai radio rock",
+      "Cari stesen mengikut genre muzik"
+    ],
+    "sleep-timer": [
+      "Rehat sambil mendengar radio",
+      "Tetapkan masa main balik berhenti"
+    ]
+  }
+}

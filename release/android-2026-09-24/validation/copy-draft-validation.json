@@ -1,0 +1,270 @@
+{
+  "locales": 52,
+  "supportedPlayLocales": 51,
+  "unsupportedPreparedLocales": [
+    "or"
+  ],
+  "errors": [],
+  "lengths": {
+    "tr-TR": {
+      "title": 28,
+      "shortDescription": 74,
+      "fullDescription": 3874
+    },
+    "de-DE": {
+      "title": 27,
+      "shortDescription": 75,
+      "fullDescription": 3895
+    },
+    "en-US": {
+      "title": 29,
+      "shortDescription": 78,
+      "fullDescription": 3941
+    },
+    "fr-FR": {
+      "title": 26,
+      "shortDescription": 78,
+      "fullDescription": 3755
+    },
+    "es-ES": {
+      "title": 27,
+      "shortDescription": 78,
+      "fullDescription": 3636
+    },
+    "it-IT": {
+      "title": 27,
+      "shortDescription": 79,
+      "fullDescription": 3677
+    },
+    "pt-PT": {
+      "title": 26,
+      "shortDescription": 79,
+      "fullDescription": 3569
+    },
+    "ru-RU": {
+      "title": 23,
+      "shortDescription": 75,
+      "fullDescription": 3548
+    },
+    "ja-JP": {
+      "title": 17,
+      "shortDescription": 49,
+      "fullDescription": 2311
+    },
+    "zh-TW": {
+      "title": 17,
+      "shortDescription": 40,
+      "fullDescription": 1842
+    },
+    "ar": {
+      "title": 22,
+      "shortDescription": 72,
+      "fullDescription": 3314
+    },
+    "en-GB": {
+      "title": 27,
+      "shortDescription": 75,
+      "fullDescription": 3842
+    },
+    "en-AU": {
+      "title": 27,
+      "shortDescription": 78,
+      "fullDescription": 3671
+    },
+    "fr-CA": {
+      "title": 26,
+      "shortDescription": 71,
+      "fullDescription": 3610
+    },
+    "es-419": {
+      "title": 24,
+      "shortDescription": 78,
+      "fullDescription": 3682
+    },
+    "pt-BR": {
+      "title": 24,
+      "shortDescription": 77,
+      "fullDescription": 3681
+    },
+    "nl-NL": {
+      "title": 26,
+      "shortDescription": 74,
+      "fullDescription": 3733
+    },
+    "sv-SE": {
+      "title": 24,
+      "shortDescription": 74,
+      "fullDescription": 3542
+    },
+    "no-NO": {
+      "title": 29,
+      "shortDescription": 76,
+      "fullDescription": 3469
+    },
+    "da-DK": {
+      "title": 25,
+      "shortDescription": 75,
+      "fullDescription": 3498
+    },
+    "fi-FI": {
+      "title": 27,
+      "shortDescription": 80,
+      "fullDescription": 3591
+    },
+    "pl-PL": {
+      "title": 28,
+      "shortDescription": 75,
+      "fullDescription": 3528
+    },
+    "cs-CZ": {
+      "title": 23,
+      "shortDescription": 68,
+      "fullDescription": 3373
+    },
+    "sk-SK": {
+      "title": 23,
+      "shortDescription": 74,
+      "fullDescription": 3367
+    },
+    "hu-HU": {
+      "title": 23,
+      "shortDescription": 72,
+      "fullDescription": 3577
+    },
+    "ro-RO": {
+      "title": 23,
+      "shortDescription": 77,
+      "fullDescription": 3650
+    },
+    "hr-HR": {
+      "title": 22,
+      "shortDescription": 75,
+      "fullDescription": 3435
+    },
+    "el-GR": {
+      "title": 25,
+      "shortDescription": 73,
+      "fullDescription": 3458
+    },
+    "uk": {
+      "title": 23,
+      "shortDescription": 68,
+      "fullDescription": 3308
+    },
+    "ca": {
+      "title": 27,
+      "shortDescription": 75,
+      "fullDescription": 3473
+    },
+    "zh-CN": {
+      "title": 17,
+      "shortDescription": 47,
+      "fullDescription": 2065
+    },
+    "ko-KR": {
+      "title": 18,
+      "shortDescription": 50,
+      "fullDescription": 2842
+    },
+    "id": {
+      "title": 23,
+      "shortDescription": 77,
+      "fullDescription": 3798
+    },
+    "th": {
+      "title": 23,
+      "shortDescription": 79,
+      "fullDescription": 3186
+    },
+    "vi": {
+      "title": 28,
+      "shortDescription": 72,
+      "fullDescription": 3391
+    },
+    "hi-IN": {
+      "title": 22,
+      "shortDescription": 67,
+      "fullDescription": 3424
+    },
+    "en-CA": {
+      "title": 25,
+      "shortDescription": 77,
+      "fullDescription": 3759
+    },
+    "bn-BD": {
+      "title": 22,
+      "shortDescription": 62,
+      "fullDescription": 3215
+    },
+    "gu": {
+      "title": 25,
+      "shortDescription": 68,
+      "fullDescription": 3116
+    },
+    "kn-IN": {
+      "title": 23,
+      "shortDescription": 71,
+      "fullDescription": 3343
+    },
+    "ml-IN": {
+      "title": 24,
+      "shortDescription": 70,
+      "fullDescription": 3488
+    },
+    "mr-IN": {
+      "title": 22,
+      "shortDescription": 71,
+      "fullDescription": 3203
+    },
+    "or": {
+      "title": 22,
+      "shortDescription": 61,
+      "fullDescription": 2848
+    },
+    "pa": {
+      "title": 23,
+      "shortDescription": 63,
+      "fullDescription": 3003
+    },
+    "ta-IN": {
+      "title": 23,
+      "shortDescription": 74,
+      "fullDescription": 3701
+    },
+    "te-IN": {
+      "title": 24,
+      "shortDescription": 74,
+      "fullDescription": 3361
+    },
+    "ur": {
+      "title": 21,
+      "shortDescription": 72,
+      "fullDescription": 3228
+    },
+    "sl-SI": {
+      "title": 23,
+      "shortDescription": 77,
+      "fullDescription": 3537
+    },
+    "bg": {
+      "title": 23,
+      "shortDescription": 73,
+      "fullDescription": 3681
+    },
+    "zh-HK": {
+      "title": 16,
+      "shortDescription": 40,
+      "fullDescription": 2124
+    },
+    "iw-IL": {
+      "title": 25,
+      "shortDescription": 66,
+      "fullDescription": 3124
+    },
+    "ms-MY": {
+      "title": 29,
+      "shortDescription": 75,
+      "fullDescription": 3563
+    }
+  }
+}

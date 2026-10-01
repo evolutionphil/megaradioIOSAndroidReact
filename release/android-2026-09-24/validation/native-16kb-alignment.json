@@ -1,0 +1,468 @@
+{
+  "apk": "frontend/android/app/build/outputs/apk/release/app-release.apk",
+  "libraries": 52,
+  "failed": [],
+  "checks": [
+    {
+      "library": "lib/arm64-v8a/libNitroIap.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libNitroMmkv.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libNitroModules.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libanimation-decoder-gif.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libavif_android.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libc++_shared.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libcrashlytics-common.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libcrashlytics-handler.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libcrashlytics-trampoline.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libcrashlytics.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libdatastore_shared_counter.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libexpo-modules-core.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libfbjni.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libgifimage.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libhermes.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libhermestooling.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libimagepipeline.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libjsi.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libmmkv.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libnative-filters.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libnative-imagetranscoder.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libreactnative.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libreanimated.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/librnscreens.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libstatic-webp.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/arm64-v8a/libworklets.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libNitroIap.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libNitroMmkv.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libNitroModules.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libanimation-decoder-gif.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libavif_android.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libc++_shared.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libcrashlytics-common.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libcrashlytics-handler.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libcrashlytics-trampoline.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libcrashlytics.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libdatastore_shared_counter.so",
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libexpo-modules-core.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libfbjni.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libgifimage.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libhermes.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libhermestooling.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libimagepipeline.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libjsi.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libmmkv.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libnative-filters.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libnative-imagetranscoder.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libreactnative.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libreanimated.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/librnscreens.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libstatic-webp.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    },
+    {
+      "library": "lib/x86_64/libworklets.so",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports16KB": true
+    }
+  ]
+}

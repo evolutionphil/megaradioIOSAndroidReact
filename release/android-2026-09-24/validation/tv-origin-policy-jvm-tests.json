@@ -1,0 +1,12 @@
+{
+  "scope": "Actual TV origin policy production source tested on JVM; this does not validate the Android APK or WebView integration.",
+  "results": [
+    {
+      "name": "com.megaradio.tv.TvNavigationPolicyTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ]
+}

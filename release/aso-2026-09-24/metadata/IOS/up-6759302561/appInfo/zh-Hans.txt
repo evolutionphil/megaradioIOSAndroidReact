@@ -1,0 +1,3 @@
+"name" = "MegaRadio: 在线广播电台";
+"subtitle" = "收听世界各地的FM与AM直播";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

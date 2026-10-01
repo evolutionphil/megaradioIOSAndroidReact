@@ -17,13 +17,13 @@ if (process.platform === 'linux') {
 let mainWindow = null;
 let splashWindow = null;
 
-const APP_URL_PROD = 'https://desktop.themegaradio.com/api/tv-app/';
+const APP_URL_PROD = 'https://cdn.themegaradio.com/';
 const LOCAL_FILE = path.join(__dirname, '..', 'renderer', 'index.html');
 const APP_URL_LOCAL = pathToFileURL(LOCAL_FILE).href;
 
 /**
  * Splash window — small frameless brand window shown for the first ~2-3
- * seconds while Chromium establishes the connection to desktop.themegaradio.com.
+ * seconds while Chromium establishes the connection to cdn.themegaradio.com.
  * Closed automatically once the main window finishes its first paint.
  */
 function createSplash() {
@@ -110,10 +110,12 @@ function createWindow() {
     mainWindow.maximize();
   }
 
-  // Load the deployed TV preview by default; fall back to local bundle if offline.
-  const url = process.env.MR_LOCAL === '1' ? APP_URL_LOCAL : APP_URL_PROD;
+  // Store builds run the renderer that was signed and tested with their native IAP bridge.
+  // Other desktop distributions retain their existing CDN update path.
+  const useLocalRenderer = process.mas === true || process.env.MR_LOCAL === '1';
+  const url = useLocalRenderer ? APP_URL_LOCAL : APP_URL_PROD;
   console.log('[MegaRadio] Loading', url, 'with UA:', desktopUA);
-  let triedLocal = process.env.MR_LOCAL === '1';
+  let triedLocal = useLocalRenderer;
   let showingError = false;
 
   // Surface load failures so the user sees something better than a black window.
@@ -326,7 +328,7 @@ app.whenReady().then(() => {
   createSplash();    // show brand logo splash window first
   createWindow();    // main window starts hidden, splash overlays until first paint
   // Auto-update from GitHub Releases (skips in dev)
-  if (mainWindow && !process.env.MR_DISABLE_UPDATER) {
+  if (mainWindow && !process.mas && !process.env.MR_DISABLE_UPDATER) {
     try { updater.init(mainWindow); } catch (e) { console.warn('Updater init failed:', e); }
   }
 

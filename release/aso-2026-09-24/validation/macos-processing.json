@@ -1,0 +1,42 @@
+{
+  "app-store-attributes" : {
+    "buildAudienceType" : "APP_STORE_ELIGIBLE",
+    "controllerRequiredPlatforms" : [
+
+    ],
+    "deviceFamilies" : [
+
+    ],
+    "expirationDate" : "expirationDate",
+    "expired" : false,
+    "hasGameCenterEntitlement" : false,
+    "hasMessagesExtension" : false,
+    "hasStickers" : false,
+    "iconAssetToken" : {
+      "height" : 1024,
+      "templateUrl" : "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4e/84/68/4e846857-769b-f3c0-58cf-e9d03d5ca20e/icon.png/{w}x{h}bb.{f}",
+      "width" : 1024
+    },
+    "isLaunchProhibited" : false,
+    "isSpatialControllerRequired" : false,
+    "isWatchOnly" : false,
+    "lsMinimumSystemVersion" : "13.0",
+    "minOsVersion" : "13.0",
+    "processingState" : "VALID",
+    "qcState" : "BETA_INTERNAL_TESTING",
+    "uploadedDate" : "uploadedDate",
+    "usesNonExemptEncryption" : false,
+    "version" : "1.0.3"
+  },
+  "build-audience-type" : "APP_STORE_ELIGIBLE",
+  "build-status" : "BETA_INTERNAL_TESTING",
+  "delivery-uuid" : "7e6ef871-9f6d-4c6d-9aa2-f511d202f395",
+  "device-families" : [
+
+  ],
+  "expiration-date" : "23.12.26, 01:43:10",
+  "import-status" : "VALID",
+  "is-on-app-store-connect" : true,
+  "uploaded-date" : "24.09.26, 02:43:10",
+  "uses-non-exempt-encryption" : false
+}

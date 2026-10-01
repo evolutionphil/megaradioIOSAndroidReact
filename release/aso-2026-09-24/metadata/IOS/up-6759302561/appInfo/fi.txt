@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Kuuntele radiota";
+"subtitle" = "Suomen ja maailman nettiradio";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

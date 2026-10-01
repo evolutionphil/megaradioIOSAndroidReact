@@ -1,0 +1,3 @@
+"name" = "MegaRadio: 실시간 라디오";
+"subtitle" = "한국과 세계의 FM·AM 방송 듣기";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

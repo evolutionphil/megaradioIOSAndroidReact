@@ -34,6 +34,8 @@ final class APIClient {
         cfg.timeoutIntervalForRequest = 15
         cfg.timeoutIntervalForResource = 30
         cfg.requestCachePolicy = .reloadIgnoringLocalCacheData
+        cfg.httpShouldSetCookies = false
+        cfg.httpCookieStorage = nil
         return URLSession(configuration: cfg)
     }()
 

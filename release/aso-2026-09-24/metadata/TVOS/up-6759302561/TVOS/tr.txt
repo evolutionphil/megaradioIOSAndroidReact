@@ -1,0 +1,30 @@
+"promotionalText" = "Türkçe poptan türküye, arabeskten habere: Türkiye ve dünya radyolarını canlı dinle. Ülke ve türe göre keşfet, sevdiğin istasyonları favorilerinde buluştur.";
+"description" = "Canlı radyo dinle, sevdiğin FM ve AM istasyonlarını bul, Türkiye'den ve dünyadan internet radyolarını tek yerde keşfet. MegaRadio; Türkçe pop, türkü, arabesk, haber, spor ve farklı müzik türleri arasında kendi dinleme rotanı oluşturman için tasarlandı.
+
+TÜRKİYE'DEKİ YAYINLARLA BAĞINI KORU
+Güne bir haber radyosuyla başla, çalışırken müzik aç veya akşam sevdiğin sohbet programına dön. Yurt dışında yaşıyorsan Türkiye'yi ülke olarak seçerek Türkçe yayınlara göz atabilirsin. İstasyonların kendi yayın akışlarını dinlersin; canlı radyonun sunduğu yeni şarkılara ve beklenmedik keşiflere yer açarsın.
+
+SADECE BİR MÜZİK TÜRÜNE BAĞLI KALMA
+Türkçe pop ve arabeskten Anadolu rock, caz, klasik ve elektronik müziğe uzanan kategorileri incele. Belirli bir yayıncıyı arıyorsan adını yaz; yeni bir şeyler dinlemek istiyorsan türlere göz at. Ülke seçimiyle yerel radyolara yaklaş, farklı bir ülkeye geçerek o bölgenin yayınlarını keşfet. Katalog ve tür seçenekleri seçtiğin ülkeye göre değişebilir.
+
+KENDİ RADYO LİSTENİ OLUŞTUR
+Dinlemekten keyif aldığın istasyonları favorilerine ekle; sabah haberleri, gün içinde müzik ve akşam sohbetleri için kişisel bir seçki oluştur. Favoriler, her seferinde istasyon adını yeniden hatırlamak veya aramak zorunda kalmadan radyolarına dönmeni sağlar. Yeni keşifler yaptıkça seçkini de değiştirebilirsin.
+
+YAYINI TANI, KOLAYCA KONTROL ET
+Bir istasyonu seçerek oynatıcıyı aç, yayını başlat veya duraklat. İstasyonun sağladığı bilgilerle ne dinlediğini takip et. Şarkı adı veya sanatçı bilgisi her yayında bulunmayabilir; uygulama bu bilgileri yayıncı sağladığında gösterir. FM ve AM burada istasyonların internet yayınlarını ifade eder; cihazın anteniyle çevrimdışı frekans alma özelliği değildir.
+
+İLK DİNLEYİŞİN İÇİN
+Ülkeni seç, tanıdık bir istasyon ara veya bir tür aç. Beğendiğin radyoyu favorilerine ekle. Sonraki ziyaretinde aynı yayına kolayca dön veya farklı bir ülke ve müzik türüyle keşfe devam et.
+
+ÜCRETSİZ DİNLEME VE İSTEĞE BAĞLI ÜYELİK
+Uygulama içi satın alma seçenekleri sunulur. Seçilen planın özellikleri, fiyatı ve süresi satın alma ekranında gösterilir. Uygulama reklamlarını kaldıran bir plan, radyo istasyonunun kendi yayınındaki reklamları kaldıramaz. Apple üzerinden alınan abonelikleri Apple hesabından yönetebilir, mevcut satın alımları uygulamadaki geri yükleme seçeneğiyle doğrulayabilirsin.
+
+Dinlemek için internet bağlantısı gerekir; mobil veri ücretleri uygulanabilir. Yayınların ve şarkı bilgilerinin erişilebilirliği istasyona ve bölgeye bağlıdır. MegaRadio bir radyo rehberidir; yayın içeriklerini ilgili istasyonlar sağlar.
+
+Apple TV'de kumandayla istasyonlar arasında gezin ve oturma odanı canlı yayınlarla doldur.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "dinle,türkçe,online,istasyon,arabesk,türkü,haber,spor,pop,rock,caz,klasik,yerel,favori,slow,nostalji";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

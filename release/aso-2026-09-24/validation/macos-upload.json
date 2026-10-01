@@ -1,0 +1,10 @@
+{
+  "details" : {
+    "delivery-uuid" : "7e6ef871-9f6d-4c6d-9aa2-f511d202f395",
+    "transferred" : "233187060 bytes in 46.340 seconds (5.0MB/s, 40.256Mbps)"
+  },
+  "os-version" : "Version 26.6.2 (Build 25G83)",
+  "success-message" : "No errors uploading archive at 'frontend/tvanddesktop/desktop/dist/mas-universal/MegaRadio-1.0.3-universal.pkg'.",
+  "tool-path" : "/Applications/Xcode.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources",
+  "tool-version" : "26.30.4 (173004)"
+}

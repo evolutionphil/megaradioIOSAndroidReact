@@ -1,0 +1,41 @@
+{
+  "app-store-attributes" : {
+    "buildAudienceType" : "APP_STORE_ELIGIBLE",
+    "controllerRequiredPlatforms" : [
+
+    ],
+    "deviceFamilies" : [
+      "APPLE_TV"
+    ],
+    "expirationDate" : "expirationDate",
+    "expired" : false,
+    "hasGameCenterEntitlement" : false,
+    "hasMessagesExtension" : false,
+    "hasStickers" : false,
+    "iconAssetToken" : {
+      "height" : 240,
+      "templateUrl" : "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/02/f4/02/02f40243-6479-23cb-3312-34c022bb6f1f/Small.lsr/{w}x{h}bb.{f}",
+      "width" : 400
+    },
+    "isLaunchProhibited" : false,
+    "isSpatialControllerRequired" : false,
+    "isWatchOnly" : false,
+    "minOsVersion" : "17.0",
+    "processingState" : "VALID",
+    "qcState" : "BETA_INTERNAL_TESTING",
+    "uploadedDate" : "uploadedDate",
+    "usesNonExemptEncryption" : false,
+    "version" : "1"
+  },
+  "build-audience-type" : "APP_STORE_ELIGIBLE",
+  "build-status" : "BETA_INTERNAL_TESTING",
+  "delivery-uuid" : "34a58f4f-b4f9-430a-9e3e-fd53e949d4bc",
+  "device-families" : [
+    "APPLE_TV"
+  ],
+  "expiration-date" : "23.12.26, 01:51:22",
+  "import-status" : "VALID",
+  "is-on-app-store-connect" : true,
+  "uploaded-date" : "24.09.26, 02:51:22",
+  "uses-non-exempt-encryption" : false
+}

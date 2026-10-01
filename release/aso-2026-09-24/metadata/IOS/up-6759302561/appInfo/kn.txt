@@ -1,0 +1,3 @@
+"name" = "MegaRadio: ಕನ್ನಡ ರೇಡಿಯೋ";
+"subtitle" = "ಕನ್ನಡ ಮತ್ತು ಜಗತ್ತಿನ FM, AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

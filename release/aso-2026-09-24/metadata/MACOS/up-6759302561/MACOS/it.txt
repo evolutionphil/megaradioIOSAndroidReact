@@ -1,0 +1,30 @@
+"promotionalText" = "Dalle radio italiane alle voci del mondo: ascolta in diretta, esplora i generi musicali e ritrova le stazioni che ami nella tua raccolta di preferite.";
+"description" = "Ascolta la radio in diretta con MegaRadio: trova le emittenti italiane online, esplora stazioni FM e AM da altri paesi e scegli tra musica, notizie, sport e programmi parlati. Cerca per nome o genere e salva le tue preferite.
+
+LA COLONNA SONORA DELLA TUA GIORNATA
+Un notiziario a colazione, musica mentre lavori o una voce familiare la sera: scegli una stazione per il momento che stai vivendo. Imposta l'Italia per partire dalle emittenti di casa. Se sei all'estero, cerca il flusso online di una radio che conosci; quando vuoi cambiare, passa a un altro paese.
+
+OLTRE LA SOLITA PLAYLIST
+Esplora pop italiano, rock, jazz, classica, dance e gli altri generi presenti nel catalogo. Ogni emittente propone la propria selezione musicale, con conduttori e programmi che possono farti scoprire qualcosa di nuovo. Notizie, interviste e sport offrono altri modi di ascoltare. Le categorie disponibili e i palinsesti variano in base alle stazioni e al paese.
+
+UNA RACCOLTA CHE CRESCE CON TE
+Aggiungi ai preferiti le radio a cui vuoi tornare. Puoi raccogliere l'informazione del mattino, la musica per concentrarti e nuove scoperte per il tempo libero. In questo modo non devi ricordare ogni nome o ripetere la ricerca a ogni apertura dell'app.
+
+IL DIRETTO, CON LE INFORMAZIONI DISPONIBILI
+Apri il lettore per avviare o mettere in pausa la trasmissione. Titolo e artista compaiono quando l'emittente fornisce questi dati. Non tutti i flussi includono informazioni sui brani. Le sigle FM e AM indicano qui le trasmissioni accessibili via internet, non un sintonizzatore offline. Alcune stazioni possono limitare l'ascolto in determinate aree.
+
+COMINCIA DA UNA RADIO
+Scegli il paese, cerca un nome familiare oppure apri un genere. Ascolta, salva ciò che ti piace e torna a esplorare quando desideri un suono diverso.
+
+ACQUISTI FACOLTATIVI
+Sono disponibili acquisti in-app. Funzioni, durata e prezzo di ogni offerta sono mostrati prima dell'acquisto. Un piano che elimina gli annunci dell'app non rimuove la pubblicità trasmessa dalle radio. Gestisci gli abbonamenti Apple nel tuo Apple Account e ripristina gli acquisti già effettuati dall'app.
+
+È necessaria una connessione internet. Potrebbero essere applicati costi per i dati mobili. La disponibilità degli stream e dei titoli dipende dalla stazione e dalla regione. MegaRadio è una directory; i contenuti sono forniti dalle rispettive emittenti.
+
+Ascolta la radio sul Mac mentre lavori o ti rilassi.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "ascoltare,internet,online,italia,locali,notizie,sport,jazz,classica,pop,rock,preferiti,musica,voci";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

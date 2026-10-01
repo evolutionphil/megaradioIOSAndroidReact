@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio v živo";
+"subtitle" = "Postaje FM in AM z vsega sveta";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

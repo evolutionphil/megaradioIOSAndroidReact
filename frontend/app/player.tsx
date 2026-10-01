@@ -799,7 +799,7 @@ export default function PlayerScreen() {
             <Text style={styles.sectionTitle}>
               {t('recently_played', 'Recently Played')}
             </Text>
-            <View style={styles.stationGrid}>
+            <View style={[styles.stationGrid, { columnGap: gridMetrics.gap }]}>
               {recentStations.slice(0, 6).map((station: Station, index: number) => (
                 <GridItem
                   key={`recent-${station._id}-${index}`}
@@ -818,7 +818,7 @@ export default function PlayerScreen() {
             <Text style={styles.sectionTitle}>
               {t('similar_radios', 'Similar Radios')}
             </Text>
-            <View style={styles.stationGrid}>
+            <View style={[styles.stationGrid, { columnGap: gridMetrics.gap }]}>
               {displaySimilarStations.slice(0, 9).map((station: Station, index: number) => (
                 <GridItem
                   key={`similar-${station._id}-${index}`}
@@ -1237,7 +1237,7 @@ const styles = StyleSheet.create({
   stationGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
 
   // Grid Items - sizes are set dynamically in the component

@@ -49,6 +49,7 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
     val isPhoneConnected by viewModel.isPhoneConnected.collectAsState()
     val filteredStations by viewModel.filteredStations.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     SwipeDismissableNavHost(
         navController = navController,
@@ -101,6 +102,7 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
                 title = genreName,
                 stations = filteredStations,
                 isLoading = isLoading,
+                error = error,
                 onStationClick = { station ->
                     viewModel.playStation(station)
                     navController.navigate(Routes.NOW_PLAYING)
@@ -127,6 +129,7 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
                 title = countryName,
                 stations = filteredStations,
                 isLoading = isLoading,
+                error = error,
                 onStationClick = { station ->
                     viewModel.playStation(station)
                     navController.navigate(Routes.NOW_PLAYING)

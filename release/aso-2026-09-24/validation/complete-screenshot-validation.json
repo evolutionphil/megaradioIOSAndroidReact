@@ -1,0 +1,3506 @@
+{
+  "sets": 350,
+  "images": 1950,
+  "checks": [
+    {
+      "locale": "tr",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "tr",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "tr",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "tr",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "tr",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "tr",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "tr",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "de-DE",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-US",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-FR",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-ES",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "it",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-PT",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ru",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ja",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hant",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "he",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ar-SA",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-GB",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-AU",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fr-CA",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "es-MX",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pt-BR",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "nl-NL",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sv",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "no",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "da",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "fi",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pl",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "cs",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sk",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hu",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ro",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hr",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "el",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "uk",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ca",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "zh-Hans",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ko",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "id",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ms",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "th",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "vi",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "hi",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "en-CA",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "bn",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "gu",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "kn",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ml",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "mr",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "or",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "pa",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ta",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "te",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "ur",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "iphone6.5",
+      "count": 7,
+      "size": [
+        1284,
+        2778
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "iphone6.9",
+      "count": 7,
+      "size": [
+        1320,
+        2868
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "iphone5.5",
+      "count": 7,
+      "size": [
+        1242,
+        2208
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "ipad13",
+      "count": 4,
+      "size": [
+        2064,
+        2752
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "watch",
+      "count": 6,
+      "size": [
+        410,
+        502
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "mac",
+      "count": 4,
+      "size": [
+        2880,
+        1800
+      ],
+      "valid": true
+    },
+    {
+      "locale": "sl",
+      "device": "appletv",
+      "count": 4,
+      "size": [
+        1920,
+        1080
+      ],
+      "valid": true
+    }
+  ]
+}

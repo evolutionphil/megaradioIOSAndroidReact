@@ -1,0 +1,48 @@
+{
+  "app-store-attributes" : {
+    "buildAudienceType" : "APP_STORE_ELIGIBLE",
+    "computedMinMacOsVersion" : "12.0",
+    "computedMinVisionOsVersion" : "1.0",
+    "controllerRequiredPlatforms" : [
+
+    ],
+    "deviceFamilies" : [
+      "IPHONE",
+      "IPAD",
+      "APPLE_WATCH"
+    ],
+    "expirationDate" : "expirationDate",
+    "expired" : false,
+    "hasGameCenterEntitlement" : false,
+    "hasMessagesExtension" : false,
+    "hasStickers" : false,
+    "iconAssetToken" : {
+      "height" : 152,
+      "templateUrl" : "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/42/a8/36/42a836c1-0fd6-4100-c870-4f00fe39c09f/AppIcon76x76@2x_U007eipad.png/{w}x{h}bb.{f}",
+      "width" : 152
+    },
+    "isLaunchProhibited" : false,
+    "isSpatialControllerRequired" : false,
+    "isWatchOnly" : false,
+    "lsMinimumSystemVersion" : "12.0",
+    "minOsVersion" : "15.1",
+    "processingState" : "VALID",
+    "qcState" : "BETA_INTERNAL_TESTING",
+    "uploadedDate" : "uploadedDate",
+    "usesNonExemptEncryption" : false,
+    "version" : "5"
+  },
+  "build-audience-type" : "APP_STORE_ELIGIBLE",
+  "build-status" : "BETA_INTERNAL_TESTING",
+  "delivery-uuid" : "9cc3ed3c-24a5-4abf-a869-f739b9bbbb61",
+  "device-families" : [
+    "IPHONE",
+    "IPAD",
+    "APPLE_WATCH"
+  ],
+  "expiration-date" : "23.12.26, 01:40:27",
+  "import-status" : "VALID",
+  "is-on-app-store-connect" : true,
+  "uploaded-date" : "24.09.26, 02:40:27",
+  "uses-non-exempt-encryption" : false
+}

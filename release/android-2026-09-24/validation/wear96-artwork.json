@@ -1,0 +1,27 @@
+{
+  "versionCode": 96,
+  "captures": [
+    {
+      "source": "/Users/mumiix/Desktop/Screenshot_1790339907.png",
+      "path": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/raw-android/wear/MegaRadio-Wear-01-home.png",
+      "size": [
+        454,
+        454
+      ],
+      "mode": "RGB",
+      "sha256": "88a46dbaf49ad3ee1cacb7f11863db84505be1408c281c68a97495e4768b610a"
+    },
+    {
+      "source": "/Users/mumiix/Desktop/Screenshot_1790339972.png",
+      "path": "/Users/mumiix/Downloads/MegaRadio-GooglePlay-2026-09-24/raw-android/wear/MegaRadio-Wear-02-phone-connection.png",
+      "size": [
+        454,
+        454
+      ],
+      "mode": "RGB",
+      "sha256": "4ccbdf128351640bb3acc622df266af12e693dfd7b3108b3bc3f53da89629497"
+    }
+  ],
+  "visualCheck": "Home and disconnected-phone instructions captured from installed signed release APK. No overlays or device frame. Connection refresh button and text no longer overlap.",
+  "pairedEndToEndVerified": false
+}

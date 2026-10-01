@@ -1,0 +1,27 @@
+"promotionalText" = "Suomen radiokanavat ja maailman uudet äänet: kuuntele suorana, löydä musiikkia tyylilajeittain ja kokoa suosikkiasemat seuraavaa kuuntelukertaa varten.";
+"description" = "Kuuntele radiota suorana MegaRadiolla. Löydä suomalaiset radiokanavat verkosta, tutustu maailman FM- ja AM-asemien nettiradioihin ja valitse musiikkia, uutisia tai puhetta päivääsi. Hae nimellä, selaa tyylilajeja ja tallenna suosikit.
+
+NETTIRADIO OSANA PÄIVÄÄ
+Uutiset aamupalalla, musiikkia työnteon lomassa tai tuttua puhetta illalla: valitse hetkeen sopiva kanava. Aloita valitsemalla Suomi ja etsi tuttu radioasema. Ulkomailla voit hakea kotimaisen kanavan verkkolähetystä. Kun kaipaat vaihtelua, valitse toinen maa ja kuuntele sen paikallisia ääniä.
+
+ISKELMÄSTÄ JAZZIIN
+Tutustu katalogin musiikkilajeihin, kuten popiin, rockiin, iskelmään, jazziin ja klassiseen. Asema valitsee ohjelmistonsa, joten sinun ei tarvitse poimia jokaista kappaletta itse. Juontajat ja suorat ohjelmat tuovat kuunteluun muutakin kuin soittolistan. Uutis- ja urheiluohjelmien sekä tyylilajien saatavuus riippuu kanavasta ja valitusta maasta.
+
+OMAT KANAVAT TALTEEN
+Lisää kiinnostava asema suosikkeihin heti löytäessäsi sen. Kokoa yhteen aamun uutiset, musiikki keskittymiseen ja viikonlopun uudet löydöt. Näin pääset takaisin ilman nimien muistamista tai uuden haun tekemistä. Valikoimasi voi muuttua oman musiikkimakusi mukana.
+
+MITÄ SUORATOISTO TARKOITTAA
+Käynnistä tai keskeytä lähetys soittimesta. Kappaleen ja esittäjän tiedot näkyvät silloin, kun radioasema välittää ne. Kaikki lähetykset eivät sisällä musiikkitietoja. FM ja AM tarkoittavat asemien internetissä saatavia lähetyksiä, eivät offline-vastaanottoa antennilla. Saatavuus voi riippua alueesta ja lähettäjästä.
+
+VALINNAISET OSTOT
+Sovelluksessa on valinnaisia ostoja. Edut, kesto ja hinta näytetään ennen ostamista. Sovelluksen mainokset poistava tilaus ei poista radioaseman omia mainoksia. Hallitse Apple-tilauksia Apple-tililläsi ja palauta aiemmat ostot sovelluksessa.
+
+Kuuntelu vaatii internetyhteyden. Mobiilidatasta voi aiheutua maksuja. Lähetysten ja kappaletietojen saatavuus riippuu kanavasta ja alueesta. MegaRadio on radiohakemisto; kanavat vastaavat ohjelmasisällöstä.
+
+Kuuntele radiota Macilla työn tai levon lomassa.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "suomi,fm,am,verkkoradio,suorat,kanavat,uutiset,urheilu,jazz,klassinen,pop,rock,suosikit,iskelmä";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

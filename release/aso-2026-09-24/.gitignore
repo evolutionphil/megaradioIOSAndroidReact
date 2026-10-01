@@ -1,0 +1,9 @@
+remote-api-snapshot.json
+remote-backups/
+*.p8
+*.key
+research/*.json
+screenshots/source/
+screenshots/complete-render-audit*.json
+screenshots/render-audit.json
+screenshots/platform-render-audit.json

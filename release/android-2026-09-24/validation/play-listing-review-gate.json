@@ -1,0 +1,34 @@
+{
+  "observedAt": "2026-09-25T09:40:11.891704+00:00",
+  "url": "https://play.google.com/console/u/0/developers/7314839518457703103/app/4972640059774211400/store-listings/default/edit",
+  "state": "Submitted to Google Play review together with production 92",
+  "selectedLocale": "en-US",
+  "title": "MegaRadio: Live FM & AM Radio",
+  "descriptionLength": 3941,
+  "imagesVisibleInReview": {
+    "featureGraphic": 1,
+    "phone": 6,
+    "sevenInchTablet": 4,
+    "tenInchTablet": 4
+  },
+  "aiAssetDeclaration": {
+    "selectedOption": null,
+    "options": [
+      "Do not label assets",
+      "Label assets as AI-generated or edited"
+    ],
+    "helpUrl": "https://support.google.com/googleplay/android-developer/answer/17262077?hl=en",
+    "provenance": "Real Android screenshots combined with AI-assisted editorial text and code-rendered layouts. Existing app icon was retained.",
+    "userDecisionRequested": false,
+    "resolution": "Saved successfully without selecting or changing either declaration option. User informed that no label action is needed to continue."
+  },
+  "productionDraftSavedSeparately": true,
+  "storeListingSubmitted": true,
+  "contentRightsChanged": false,
+  "aiDeclarationChoiceRequiredToSave": false,
+  "publishingOverviewChangeCount": 196,
+  "publishingOverviewIncludesProductionDraft": true,
+  "preSubmissionQuickChecks": "In progress, up to 13 minutes remained on latest observation",
+  "submittedAt": "2026-09-25T09:49:29.923416+00:00",
+  "submissionEvidence": "play-production-submission-92.json"
+}

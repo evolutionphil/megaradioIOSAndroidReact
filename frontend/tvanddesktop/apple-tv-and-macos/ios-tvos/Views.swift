@@ -147,6 +147,7 @@ struct MegaRadioLogo: View {
 
 struct AppSidebar: View {
     let active: Route
+    var onMoveRight: (() -> Void)? = nil
     @EnvironmentObject var router: TVRouter
 
     fileprivate struct Item {
@@ -182,6 +183,9 @@ struct AppSidebar: View {
         }
         .frame(width: 120, height: 760, alignment: .topLeading)
         .focusSection()
+        .onMoveCommand { direction in
+            if direction == .right { onMoveRight?() }
+        }
         .offset(x: 48, y: 170)
     }
 

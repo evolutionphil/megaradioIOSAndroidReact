@@ -1,0 +1,773 @@
+{
+  "observedAt": "2026-09-24T22:47:09Z",
+  "versionId": "a7ee381b-c6c2-4919-9df7-310d906d1565",
+  "version": "1.0.70",
+  "build": "7",
+  "state": "PREPARE_FOR_SUBMISSION",
+  "buildProcessingState": "VALID",
+  "automaticReleaseAfterApproval": true,
+  "records": [
+    {
+      "kind": "iOS",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "iOS",
+      "locale": "sl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "locale": "sl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "tr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "de-DE",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-US",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "fr-FR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "es-ES",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "it",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pt-PT",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ru",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ja",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "zh-Hant",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "he",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ar-SA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-GB",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-AU",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "fr-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "es-MX",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pt-BR",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "nl-NL",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "sv",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "no",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "da",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "fi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pl",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "cs",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "sk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "hu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ro",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "hr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "el",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "uk",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ca",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "zh-Hans",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ko",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "id",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ms",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "th",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "vi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "hi",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "en-CA",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "bn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "gu",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "kn",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ml",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "mr",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "or",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "pa",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ta",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "te",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "ur",
+      "mismatches": []
+    },
+    {
+      "kind": "appInfo/76c28973-6ad6-4710-8a56-de3af87822a6",
+      "locale": "sl",
+      "mismatches": []
+    }
+  ],
+  "ageRatings": [
+    {
+      "appInfoId": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "advertising": true
+    },
+    {
+      "appInfoId": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "advertising": true
+    }
+  ],
+  "errors": [],
+  "verified": true
+}

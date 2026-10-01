@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-09-24T11:30:00Z",
+  "source": "App Store Connect Safari UI",
+  "appId": "6759302561",
+  "platform": "IOS",
+  "version": "1.0.70",
+  "build": "6",
+  "submissionId": "2a04470f-1d8e-43c0-8e71-538d9e909cc2",
+  "submissionUrl": "https://appstoreconnect.apple.com/apps/6759302561/distribution/reviewsubmissions/details/2a04470f-1d8e-43c0-8e71-538d9e909cc2",
+  "submittedAtDisplayed": "Sep 24, 2026 at 1:29 PM",
+  "displayTimezone": "Europe/Vienna",
+  "confirmation": "1 Item Submitted",
+  "state": "WAITING_FOR_REVIEW",
+  "displayState": "Waiting for Review",
+  "itemsSubmitted": 1,
+  "automaticReleaseAfterApproval": true,
+  "appleApproved": false,
+  "published": false,
+  "contentRightsDeclarationChanged": false,
+  "macOSAndTVOSScope": "Existing internal TestFlight group; App Store drafts not submitted"
+}

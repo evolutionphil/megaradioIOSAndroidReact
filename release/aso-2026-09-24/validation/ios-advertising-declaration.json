@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-09-24T17:41:52Z",
+  "appId": "6759302561",
+  "appInfoId": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+  "version": "1.0.70",
+  "build": "6",
+  "guideline": "2.3.6 Performance: Accurate Metadata",
+  "appleMessage": "Automated analysis detected advertising, but Advertising was not selected Yes in the Age Rating questionnaire.",
+  "advertisingBefore": false,
+  "advertising": true,
+  "changedFields": [
+    "advertising"
+  ],
+  "verified": true,
+  "contentRightsDeclarationChanged": false,
+  "newBinaryRequired": false,
+  "editableAppInfos": [
+    {
+      "appInfoId": "1c1ca9df-fd5f-4caf-84eb-41eac95c1809",
+      "state": "REJECTED",
+      "advertising": true,
+      "changedFieldsThisPass": [],
+      "verified": true
+    },
+    {
+      "appInfoId": "76c28973-6ad6-4710-8a56-de3af87822a6",
+      "state": "PREPARE_FOR_SUBMISSION",
+      "advertising": true,
+      "changedFieldsThisPass": [
+        "advertising"
+      ],
+      "verified": true
+    }
+  ],
+  "uiReadback": "Safari Age Ratings > Step 1 Features > Advertising: No unselected, Yes selected"
+}

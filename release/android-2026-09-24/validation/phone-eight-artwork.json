@@ -1,0 +1,2457 @@
+{
+  "sets": 51,
+  "images": 408,
+  "newImages": 102,
+  "newImagesUploaded": false,
+  "errors": [],
+  "files": [
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-01-country.png",
+      "sha256": "de00104281768635206a667f9d8a066fa3d3a763b261ef1c16b07d7d3279ffff",
+      "bytes": 248571
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-02-discover.png",
+      "sha256": "fcc958329f8ed989be8dd1783a56224fb22ebcfbe10ab18b0f88e0714bc61a7a",
+      "bytes": 377582
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-03-player.png",
+      "sha256": "82fce813384214bdbd69aa6521c74150b5f55fc3c3138af799bd3b4f5f1dde8e",
+      "bytes": 322909
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-04-genres.png",
+      "sha256": "43817de02f6603ff2888b5089e353f6b61a99de3419ea84f186b6e74c44f31a5",
+      "bytes": 275347
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-05-car.png",
+      "sha256": "238514844cb4017bd462ac3c8dcb1b45622c338f9c78fd9b61555e017ae0584f",
+      "bytes": 260199
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-06-search.png",
+      "sha256": "9f05194a00c12e4a969c35591782ecc11ebe80c1655426d9174294ce52434c9d",
+      "bytes": 288222
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-07-rock-stations.png",
+      "sha256": "51f491f4c853890ec54e436c22147c4c7848a5123668eac9eb7be83e3dd59141",
+      "bytes": 510488
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-tr-TR-phone-08-sleep-timer.png",
+      "sha256": "762b644cc0f0f9c68e9c95ebac3b84a1a2a322edb0937104a20b51a0a1d0db1a",
+      "bytes": 242031
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-01-country.png",
+      "sha256": "ae2449fc860e85461388dab675a36034766cb186ce54c4cac1a79fc22a7d10f5",
+      "bytes": 250391
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-02-discover.png",
+      "sha256": "fae34f3e3fc03789e84ffc04263fb6efe98e3c78a87937344035fb6557c1e9eb",
+      "bytes": 380090
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-03-player.png",
+      "sha256": "e60ce9461a042c5897cd1bf47cae7eb4041f94c7b00f42d9b4ca5b3d6fee35dd",
+      "bytes": 322845
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-04-genres.png",
+      "sha256": "d5994e74eea15ed00c01d9a43762b40608c83e1beac0f8c2dadb0f02cd5f4976",
+      "bytes": 280990
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-05-car.png",
+      "sha256": "44e65862c9960abb3465b204e21678e36179565a25b58e15c24dbd2da5d1bd27",
+      "bytes": 260033
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-06-search.png",
+      "sha256": "48be362270c8aeb40bd73a5a02c2b78bd7333eb60f984c4840064f6b83af7989",
+      "bytes": 290592
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-07-rock-stations.png",
+      "sha256": "dedd0d5bd033472006433f1ab10fe2128265979e82e30aa9e570a9c75903e992",
+      "bytes": 515208
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-de-DE-phone-08-sleep-timer.png",
+      "sha256": "1c4dc0343b47cf7925b5d5a828794c8ad68879aacea81460c00438c131229d8b",
+      "bytes": 239142
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-01-country.png",
+      "sha256": "75a06d4ff5f46bd6f92e0b643061714dc334f7c34944e600b5119e0c020a6023",
+      "bytes": 253129
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-02-discover.png",
+      "sha256": "7289e68c34a3bbb847a95476852866bacd140ecea4b052cbf3c64a6eefce25d0",
+      "bytes": 376963
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-03-player.png",
+      "sha256": "09e8c2324826a85422c36600c23794bd6a34885eb86fd8505bda92a271133661",
+      "bytes": 322481
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-04-genres.png",
+      "sha256": "a337d2473a43fb4575a8d0874f797bc0cbe224a9485d3a7a17399c695ec65a7e",
+      "bytes": 276337
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-05-car.png",
+      "sha256": "9668c4af3c38f9159048380126c5a6a74c2fcdc36bfb341d70d7df9fbd35c2bd",
+      "bytes": 262704
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-06-search.png",
+      "sha256": "e98a80060b623d876f6987bd1aeb970d7c1f437e4f966f48fc064c914188d075",
+      "bytes": 289082
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-07-rock-stations.png",
+      "sha256": "4228b0ec2ed0dbce2a4f7d21f6694c9f00e33775f29b3461c6f44af5f306c791",
+      "bytes": 506219
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-en-US-phone-08-sleep-timer.png",
+      "sha256": "029b8d6daad47ac48c2be8109ce980d85fff33e4775f328f2bdf8e36d9bd0a52",
+      "bytes": 235410
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-01-country.png",
+      "sha256": "a9bdd328b6a8e5e3591bb4e4784cf27fc03912c2a1fa0ac8c3655e091f3ea36f",
+      "bytes": 248806
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-02-discover.png",
+      "sha256": "f619ae9d96264409aa1e160bf94a9661b11c2cbe4070205afb35a3315713e572",
+      "bytes": 378757
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-03-player.png",
+      "sha256": "a79714a13e5917524d55bec1abb31302740d5b2c5a8ec4ab0ac71c1b00ebef3c",
+      "bytes": 323144
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-04-genres.png",
+      "sha256": "edf117ffa47f414573890e218f81566ab5a2f06587d438733521d2aaba4aaf9d",
+      "bytes": 280082
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-05-car.png",
+      "sha256": "7b8ddd171d41c9d9f8a7b66a7bef29ae529a7606f3f03b867b74cfd3113a1f5e",
+      "bytes": 260627
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-06-search.png",
+      "sha256": "2d0b1896b3b5af1b6d3653fe6eb106e2234c0ab8282f75e9ca7f8b3c5d09619e",
+      "bytes": 285019
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-07-rock-stations.png",
+      "sha256": "46c1677d11c722e04670939730a714f86121d05f560c37df0a4766c250932214",
+      "bytes": 504144
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-fr-FR-phone-08-sleep-timer.png",
+      "sha256": "b64f2e9e336b320a730ee1d421001fff53a605f0f9c0786b4935dd3e33cf1d4f",
+      "bytes": 241827
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-01-country.png",
+      "sha256": "d673bf092d835c4d846d5d4a8cda8aa9483cdf8b47376d276d11391eb362445f",
+      "bytes": 249275
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-02-discover.png",
+      "sha256": "9af871e8dfab658f3fc4a1539ae5af2d6fa7680321e4115ba7f6f0818f08d237",
+      "bytes": 380032
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-03-player.png",
+      "sha256": "4e06c3d49d4a5a2b61e2bb4bd76110f1143e78f7bc28c3fbf446ac8d2d52d8b9",
+      "bytes": 321924
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-04-genres.png",
+      "sha256": "a42a9d04fed63ee24d133cb76d8831bb9e81ee430649fc390be2950c47f745c1",
+      "bytes": 273223
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-05-car.png",
+      "sha256": "d5713f54176d0474bc8d49c4d753c3a45dfe05de6f19a45ca8b1ed91739958f4",
+      "bytes": 257323
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-06-search.png",
+      "sha256": "c9f996ad9161a594712512ef7845351e2d5f38ceb1c1efaa49b41dbc0d0e3a9c",
+      "bytes": 286671
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-07-rock-stations.png",
+      "sha256": "481be3e848181753cdb5415dd83530e573034a7e75a6f9ff2eead1911e3135e5",
+      "bytes": 510593
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-es-ES-phone-08-sleep-timer.png",
+      "sha256": "4e15f6770a30ba5e96410f74377619ea52c947e847604248105e1303fa35c97e",
+      "bytes": 239285
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-01-country.png",
+      "sha256": "bfb2139dcae14594ca9e9eda209e6e4d48c53022f1020b292ab9fd594167b2fd",
+      "bytes": 249303
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-02-discover.png",
+      "sha256": "44d76d13c443a88b210545032adeda9fbbb7569f1c9beac8c8ab4b5f2d81d6b5",
+      "bytes": 378098
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-03-player.png",
+      "sha256": "e5a68ed89ac1baddf46f4e036149d6d9aa571838a47ea59027989e5006a7c08e",
+      "bytes": 321783
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-04-genres.png",
+      "sha256": "218b6a193bd6a0e99204ad69c21c9ee19179608e9ad199c837925bc953ccea37",
+      "bytes": 276903
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-05-car.png",
+      "sha256": "1f3e1673b26b730b39179c1e5ac9fac7f17befb59359bb866549d2b54c48b306",
+      "bytes": 259221
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-06-search.png",
+      "sha256": "c322a5233c9dd788db2a83a2dbdd119b6287e177895d0421119a476334b45ef0",
+      "bytes": 283514
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-07-rock-stations.png",
+      "sha256": "6f5ecdd35959c4c522e50d0d9a2a1593062a8f7807c426fd6a30d501783b835c",
+      "bytes": 506147
+    },
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-it-IT-phone-08-sleep-timer.png",
+      "sha256": "f0cefb315f1ceacfc1596d34e09fadc5c34ea7442cec7ed7a1cb49a8e0cece01",
+      "bytes": 241792
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-01-country.png",
+      "sha256": "0718a33ea452faa48899d3d1cc10a996b1426ca0383a3e6416c2dad12f05971b",
+      "bytes": 249787
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-02-discover.png",
+      "sha256": "e6dba50e5c70223473244cb7e85276018e1cfe826a25020fab147f483b7481e7",
+      "bytes": 378693
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-03-player.png",
+      "sha256": "9e75258e7ddccb7bb3284c767fe9735b6e86f3054d4adabf3bf0ee221645d6bd",
+      "bytes": 322755
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-04-genres.png",
+      "sha256": "671a65d71c4d6d6d765b37c2671f467e01a9c46049da957a4b32d3447cb9462b",
+      "bytes": 273574
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-05-car.png",
+      "sha256": "fd37195200babef7ae509fe30c7749cdbcecd7786026d46d50689bff03cef67c",
+      "bytes": 264688
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-06-search.png",
+      "sha256": "e8a544333615fd679fee3af3860347fd4d274c66503b27ddbc53cb23146bda84",
+      "bytes": 286041
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-07-rock-stations.png",
+      "sha256": "2646ce0a52c0769cb0c6f8a78a372c86c13870d0d5ad530d461fd60f8c9cbbd2",
+      "bytes": 510565
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-pt-PT-phone-08-sleep-timer.png",
+      "sha256": "6a54026e536984ae50b77b19d2a335d4b791f0b040c404dfd390654b626811b3",
+      "bytes": 240021
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-01-country.png",
+      "sha256": "32813ace83d26b328481a388a39fa0c005fd54c73219a650fd999108fd1d1130",
+      "bytes": 253102
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-02-discover.png",
+      "sha256": "878cf5c3b0b15c86d4e11057d747c12d0043fcc1a04f4770ca6d368df432581c",
+      "bytes": 376824
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-03-player.png",
+      "sha256": "99795c48e3706a22f336e3489d8c039d52b468e1e61030e5a0ab8a2953256a9d",
+      "bytes": 327625
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-04-genres.png",
+      "sha256": "34c5ecdb916ff7ce303c4a473f06c7e71d13a523ce9a343de954201d9bbd2301",
+      "bytes": 274143
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-05-car.png",
+      "sha256": "918cb4eaef925606f1f4bb20cfb9863ccb5fd62778c16e113d1f328987589be5",
+      "bytes": 265077
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-06-search.png",
+      "sha256": "dc51ae4e1f4ef69e0443536e6f86edf94b84738340df1252fbabbfa80823719f",
+      "bytes": 292108
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-07-rock-stations.png",
+      "sha256": "e3f47e4ef877b047b3e02c7ac8568a5650b342c70ab9cca7b95d7aa22d427bcf",
+      "bytes": 511506
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-ru-RU-phone-08-sleep-timer.png",
+      "sha256": "72284be4a1f4996cb02fc537ad068f983a73e5536dfd7fb1d5508d1c89f9bcc9",
+      "bytes": 241616
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-01-country.png",
+      "sha256": "1f3e641147d0efe2bb15296a0cf8be2055fc68d338393e747d7552758db0dc99",
+      "bytes": 251956
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-02-discover.png",
+      "sha256": "999db0b88a2998159328b7706318f8aa9683224139e3444d1b893218cf738c88",
+      "bytes": 381424
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-03-player.png",
+      "sha256": "c039e8a3fe14e44867248c274bcc43e732bd2bfa79a39b165b17a3add44e60d9",
+      "bytes": 331918
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-04-genres.png",
+      "sha256": "1b36fbab7fec8f3b52fa3cd7279341763638ae5d25150516ebb5a92915a8255f",
+      "bytes": 288743
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-05-car.png",
+      "sha256": "370570ce2396b54aaabc1d19d2fb4c1d3a7a5e0ca902557c5aef54fc8ee5eeed",
+      "bytes": 264656
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-06-search.png",
+      "sha256": "b366a3d5c70504363ad52b1c527e443ae04f9bcd4289448aa85c07559596cedd",
+      "bytes": 296003
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-07-rock-stations.png",
+      "sha256": "820ba4f46d9ea0dc081e1cebb4d5954739e2a51e779aba6f44d812818470c8b1",
+      "bytes": 514036
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-ja-JP-phone-08-sleep-timer.png",
+      "sha256": "5fc1b83ca4fe308184a834bc67dc99e9d5006f711b90d4d0b8081fc7fae6d5c3",
+      "bytes": 243857
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-01-country.png",
+      "sha256": "b5681a9c734473d586374ef5a3afb1a52a1a2ed1437e1246df4eaa9cdcc95e5c",
+      "bytes": 257422
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-02-discover.png",
+      "sha256": "ee42b2cddc5259b0265f03c9dd65554345534727ba52d11ff483e32adce6d315",
+      "bytes": 385142
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-03-player.png",
+      "sha256": "4e3580976f438c85d6a8f95d9c53b83e7e11e69a0c18b9389af7f2ca1249d2d6",
+      "bytes": 333171
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-04-genres.png",
+      "sha256": "15b473a20021429b8ea02ca3b88015e2740a2b6fa96cb022eed958c81b44976f",
+      "bytes": 285442
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-05-car.png",
+      "sha256": "792822fcc60a9bb64e5f07af6e0d18b18da6b29e16b70f44988e75a47afb8eec",
+      "bytes": 262091
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-06-search.png",
+      "sha256": "7ba9888db5abca3262aed2315f127bc78b563df8c306ea10cabe54581fc818dd",
+      "bytes": 294626
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-07-rock-stations.png",
+      "sha256": "e1725f0a88c13d9966a4cae52af9dd66c12d279085f808144cc2e8fb36805d12",
+      "bytes": 508099
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-zh-TW-phone-08-sleep-timer.png",
+      "sha256": "1bd9da2eca094dbc9bf95e7246d8dd57821acb0ff18b7470702b88b38860562b",
+      "bytes": 235426
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-01-country.png",
+      "sha256": "7eba332b30f48526280e11cbf3c63f83ddd9d28caf874b64da38659996993b72",
+      "bytes": 249332
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-02-discover.png",
+      "sha256": "1cb9dc8484e34fb205307e8e41aac5b7df300a05605a87cf8bea6d9819c5924e",
+      "bytes": 376580
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-03-player.png",
+      "sha256": "b9eeec7e111201bf795585e16f7260e85d702eb678089843761ce3f20d3d5142",
+      "bytes": 327709
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-04-genres.png",
+      "sha256": "ec9e7b7027f3aa5fcd2a6e697e2ffc5d9d39bd0879f10d628a28563a236f8873",
+      "bytes": 276467
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-05-car.png",
+      "sha256": "07b8c4e0e5d99bf65edd3e899ac1cf211c1923d64794482f8ecd39fbe340550a",
+      "bytes": 258935
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-06-search.png",
+      "sha256": "cc0648fac26d241958b8324b4237739427736b155deac843e0138c09d6ef57c0",
+      "bytes": 289806
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-07-rock-stations.png",
+      "sha256": "b4b3d9f67339c69d428ab49d657ea3f059157febefdf040205330e033eae1e16",
+      "bytes": 506573
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-ar-phone-08-sleep-timer.png",
+      "sha256": "6bf35cf56d8dbbf357f6a73c82a46837e0ca450080608cc89b06bb2bb94533a4",
+      "bytes": 238018
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-01-country.png",
+      "sha256": "ebf18be05f0698c12e902f244634e4b3a7b8579e95d5c878c94eac2d7a6e94e2",
+      "bytes": 252722
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-02-discover.png",
+      "sha256": "a93cfba7f2bb26a909f3ea9cad528fa5e473e414cc5ef414b319d17c0de4c64f",
+      "bytes": 376722
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-03-player.png",
+      "sha256": "f4ebf8191a84266f1c6685d6beab50dbff618558f81879b6dd4c951dfb42d965",
+      "bytes": 321258
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-04-genres.png",
+      "sha256": "8680da9e82b8fe315dc2c0ced05d60e806c5396fcee6a42b7664ecc849d2ba43",
+      "bytes": 276760
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-05-car.png",
+      "sha256": "cfd456920a0973392866e50901dd1fd65c450601e8f50bfab98fa4d060fbfcf6",
+      "bytes": 261683
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-06-search.png",
+      "sha256": "9b5654acd0a24eaf6edd7828b54172dfa927a7051f099ee0128e2d0e4371992f",
+      "bytes": 291272
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-07-rock-stations.png",
+      "sha256": "ba62c87cfe0906ce178d870068f1f70f129f2130b0b20379bcb0950c92b4142c",
+      "bytes": 506233
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-en-GB-phone-08-sleep-timer.png",
+      "sha256": "332713e96d0c74c9d4cacbd2072147384f6ee1fb40266a88a59698610df99191",
+      "bytes": 238176
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-01-country.png",
+      "sha256": "907d4344d88e4ce37f1e6a4309888c3a75409d9cc192f384ef63d0343f96ae2e",
+      "bytes": 252999
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-02-discover.png",
+      "sha256": "56fdc3a34af2f4ef5770e491f67fa99c7d257a806fb6b07d04be9b3727b69bd5",
+      "bytes": 376371
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-03-player.png",
+      "sha256": "9dc875d5896bc2f81bcd35b1b1c6077bfea91313af80a719fc2552ad7754b0ae",
+      "bytes": 327720
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-04-genres.png",
+      "sha256": "04da12ccdc4a2687c37a08c6954d6ec726915241598fe54a568c2e1f9378d474",
+      "bytes": 274446
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-05-car.png",
+      "sha256": "3b03c8254ee663d9c2e38fa8e4a0fb055984165ac2c8b29a99a673cce8de88da",
+      "bytes": 261875
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-06-search.png",
+      "sha256": "271a16f3280dcf3de1056599878443457fdfa7285126e10f812553584928dfd6",
+      "bytes": 291769
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-07-rock-stations.png",
+      "sha256": "99216d9b76762f42a6c701de174872aab9a70aff12806d3fc06ec5d26dd0d6f4",
+      "bytes": 508116
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-en-AU-phone-08-sleep-timer.png",
+      "sha256": "e32be717630b3049332657cf02ba34e3a980839c1776a55e594b783460bde0e2",
+      "bytes": 237501
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-01-country.png",
+      "sha256": "2b0ec0e2eb45cf6dfb205d3b27d8c86f331e079615fe9e0233064b75715eacec",
+      "bytes": 254308
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-02-discover.png",
+      "sha256": "16f7624549bf69eca0e279bf8624a684f78ace0611fd3b1260f837108a80fd03",
+      "bytes": 380666
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-03-player.png",
+      "sha256": "5d912f8f6842d490e7c52d0c32dee37ce7946ee86b310ef17df53487dc46a6f4",
+      "bytes": 326081
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-04-genres.png",
+      "sha256": "b20302b7d5832f7ee015e6153367a79ee3d01103b6f61064ffe4ad6a4341a7b2",
+      "bytes": 280640
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-05-car.png",
+      "sha256": "a667d2fc93f610024f0e4695e69fdff42c8d3a3bbb683febe35fd891edf22592",
+      "bytes": 261914
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-06-search.png",
+      "sha256": "d95711eb28fb081ca4ea96f3a33ca976e6bed2f78536a3289560ecf547f95532",
+      "bytes": 288550
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-07-rock-stations.png",
+      "sha256": "ada45879dadc2dda17bd5521166256d6d522bbb0d4b7b3fa115bddfdea63beae",
+      "bytes": 511612
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-fr-CA-phone-08-sleep-timer.png",
+      "sha256": "504390bcd7fecaab7fb11d96a87ff379a960514a8f521ac9a612e603458875a2",
+      "bytes": 242142
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-01-country.png",
+      "sha256": "1adcd4223cd0e85885685a2fe62393d3073bf0d5f64357ee97c607678a4eef24",
+      "bytes": 251574
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-02-discover.png",
+      "sha256": "a625b5e3e7a14789956936f1d19efb7d1e6954e076c7a44a181c49e9c565a870",
+      "bytes": 378084
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-03-player.png",
+      "sha256": "8b284e7a7d91fc34f8c9bee272d19a5d91954add6e5d976b44a7422d247fbf4a",
+      "bytes": 324103
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-04-genres.png",
+      "sha256": "be6ea7e69a27994193e78f6da545f819d0b4a9a3479b191db1af55d0b3089306",
+      "bytes": 277394
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-05-car.png",
+      "sha256": "43879466d6a569a6977067026decafb540178a1a52deff90c6fe1592f9ed2c40",
+      "bytes": 255799
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-06-search.png",
+      "sha256": "b0b8509a14216b2ff449a6285507403e4469a99f95f8deffe70339db24bc9c2c",
+      "bytes": 288554
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-07-rock-stations.png",
+      "sha256": "f981270d78d9562686d521a5953be3f73e2a955b21028fe44a5f3593e0cc6b35",
+      "bytes": 509750
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-es-419-phone-08-sleep-timer.png",
+      "sha256": "48f1105f60b7a64c75116e94c2a89670ff8f394554eda1d77011ae5059c00792",
+      "bytes": 243073
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-01-country.png",
+      "sha256": "58b5e6843c46d38cb5c930be89e2d10b27692f6508877399f7aab248ed9560a1",
+      "bytes": 249709
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-02-discover.png",
+      "sha256": "c8874f78f9a5a81c113234f2027114fde5051d4dcfd16189eb5edf4c961cadd6",
+      "bytes": 377721
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-03-player.png",
+      "sha256": "8b2dc4f2fb6c07eadec907e0364c5b64c16da046687a67e74c8aac7ff5c428b7",
+      "bytes": 322225
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-04-genres.png",
+      "sha256": "c60192b490eb79019a5fb165b7fafb802451bbeece1ea3217d43f9fcea670334",
+      "bytes": 272455
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-05-car.png",
+      "sha256": "9186662ff02ebbda17c5eacc3d844f466ca75822d0d5edd38cbb1161492bdda3",
+      "bytes": 258685
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-06-search.png",
+      "sha256": "b480d6ffd7f054aa5cbbbf9112aaac91746af44ab487e8cf674c21b127397738",
+      "bytes": 286419
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-07-rock-stations.png",
+      "sha256": "e69021fe35c4a4adfaec9f29fa0e865c3e9ae051e8df3cd5c8b777a8e5173f69",
+      "bytes": 510362
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-pt-BR-phone-08-sleep-timer.png",
+      "sha256": "36d08f5bed8033efecc290c80ad1f73414b54643d252d4eac2c63572b96fae6c",
+      "bytes": 238587
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-01-country.png",
+      "sha256": "865b315d9279d2383c4a4686f8264a076f60f61e1fc9ce00fffac7af12e6959e",
+      "bytes": 250432
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-02-discover.png",
+      "sha256": "5ad130f5d71a0dd6d2c7e01dd14f6d5d6797d0fb05ca9b0b3f7ffccb855b7120",
+      "bytes": 379442
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-03-player.png",
+      "sha256": "1aafc6025743af4fb1a6105503431e31187c5cb635a2b694941123002a3d8d3a",
+      "bytes": 322101
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-04-genres.png",
+      "sha256": "0555768d43e529498e95d4c9aa8df68fe38e64ae1bf7adec0e1b8a901f6d32ec",
+      "bytes": 276096
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-05-car.png",
+      "sha256": "ee903232925564fe505a03b9defd2cdabfd73cc5a979aa33ad89dee49b152673",
+      "bytes": 261861
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-06-search.png",
+      "sha256": "d32dc941b10ba340627f7aa6082994e12010b078f8688de3f9852e7c764ef997",
+      "bytes": 288188
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-07-rock-stations.png",
+      "sha256": "0c1a5362bcf252c11f70f7970181cbd427a77a7c94acc3c7252a9d36ca18f01d",
+      "bytes": 506354
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-nl-NL-phone-08-sleep-timer.png",
+      "sha256": "0f0b5806267bfc628a9d143f12346bc9838fb1e5a75372a31966964c64e40ca6",
+      "bytes": 238787
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-01-country.png",
+      "sha256": "f47054f3b421b535cd967ee265c10cea00aee3137faf023422fb30901a338a65",
+      "bytes": 251985
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-02-discover.png",
+      "sha256": "b9a783c3d134a63d58f338336f39a9a55a376a1a1367bc48a11326aca1244d1f",
+      "bytes": 381176
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-03-player.png",
+      "sha256": "2db4092483e9b2114150400c82feaa0d3a1e9463cced4aab3cc35584835088cb",
+      "bytes": 321228
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-04-genres.png",
+      "sha256": "70d35afed4827e2bd676dbb99f1f1fb00745a6fdbc6ae0a7a2d55bd21ba58f88",
+      "bytes": 272181
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-05-car.png",
+      "sha256": "4640010447ae2039bdd99d53ed162b57cc47ab012e4e46085015827fc026b9d8",
+      "bytes": 261152
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-06-search.png",
+      "sha256": "f43042c384d76749c9850672893b4334c784c6628f13e236a3ea8db366090acb",
+      "bytes": 285945
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-07-rock-stations.png",
+      "sha256": "0b2704353b67dc5699e62eb8563c944971909eb4834fac876f08481268249dee",
+      "bytes": 509907
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-sv-SE-phone-08-sleep-timer.png",
+      "sha256": "f702a9bf963628c78d6bafc6dbde8412a1db1e89c280d73ee18322b6b02f9ce3",
+      "bytes": 234105
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-01-country.png",
+      "sha256": "8bb245d0097d58b16942456402d64839649524cedfab5875b55476e4b5db2a41",
+      "bytes": 247003
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-02-discover.png",
+      "sha256": "c3e0d8709927524994ea634c1dbd6e11a9f476606b7066e9d02e0c41ca4732a9",
+      "bytes": 382759
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-03-player.png",
+      "sha256": "42acfee65cd473849c7b1dc428e23538bbf5a4fa2a03ab2b602fabe5796fc7cf",
+      "bytes": 321190
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-04-genres.png",
+      "sha256": "0a86a59e4ccd7ab13ad83e1c2f4d13f1f9698d71ed853fb888344220cf26927a",
+      "bytes": 273721
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-05-car.png",
+      "sha256": "a0aa3a78cb5ae1053d4221cb18848c781a9b81da51a1cd9cd9ea2e7e140eec25",
+      "bytes": 260421
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-06-search.png",
+      "sha256": "2e1534d7592bdb6b27cf38f86d4092b1fbd75dcd34a94931721aac9781523432",
+      "bytes": 286769
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-07-rock-stations.png",
+      "sha256": "e23ad975b33d7b0287d839634d62bd981728f363d28b6c7c704f5d26d98cb576",
+      "bytes": 513013
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-no-NO-phone-08-sleep-timer.png",
+      "sha256": "b7a7add251d535a3aea217b5d7c31cef781c18b09e4f1bd292be0fa845df776b",
+      "bytes": 239093
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-01-country.png",
+      "sha256": "3ac0b42333c8263c8f929f4d8460cd9f230bb56ab2be975a98810290d11440bb",
+      "bytes": 245354
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-02-discover.png",
+      "sha256": "9b376393d0961db4fe553d6bc354b0ab829413899fc4145ff30b0162eacd495f",
+      "bytes": 378061
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-03-player.png",
+      "sha256": "fceb30ab267076a38a9635b018e4cc6d4857130602d8f531e52b38bf630153e0",
+      "bytes": 319668
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-04-genres.png",
+      "sha256": "b3a0dd4fe307294bdb54f4242296b2840d62fbf65a64886c432243d90c5e1773",
+      "bytes": 269823
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-05-car.png",
+      "sha256": "af2f64326b4866dadd394911af11b0c974d986cf4d0fcc3cde6b42f657137415",
+      "bytes": 261488
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-06-search.png",
+      "sha256": "f2830fcfffa99365de6acf205a5746dca71a95a999bad69b28e2737437c2f882",
+      "bytes": 283178
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-07-rock-stations.png",
+      "sha256": "292c267d724da5cdca7c700745c8a9b2de2d04acb8aa368456a7268776201cd1",
+      "bytes": 505309
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-da-DK-phone-08-sleep-timer.png",
+      "sha256": "71fee71e0d9709865230e41868a20bd45e4e7709cb44a187244539cae1d1c351",
+      "bytes": 239254
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-01-country.png",
+      "sha256": "efaf014a09dd064e1f80ed63b35f6de731c3bb92a2dfd1cef7bf094c46281396",
+      "bytes": 252875
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-02-discover.png",
+      "sha256": "c36e9a1dd85afa09ba3c0c1ab09e9d616a56a37ebaad991920e7bb08d07c802b",
+      "bytes": 379976
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-03-player.png",
+      "sha256": "5ea0b33b87f45636f39725c42e15bed7b9e7f623c72d080f2266d27638346c82",
+      "bytes": 323450
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-04-genres.png",
+      "sha256": "21e28816f880f79501f5da905cf5cc4c14c703583117699404fb7e59dda07b0e",
+      "bytes": 277785
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-05-car.png",
+      "sha256": "ea74cc05c1af9a4792ceb0cb8716b3f187effae38054bf5f22d54c6eb1cc0b2e",
+      "bytes": 260100
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-06-search.png",
+      "sha256": "107f23deeabff1232d045b3c1727cc5d09d53898a655eaca2509045e46185eac",
+      "bytes": 291731
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-07-rock-stations.png",
+      "sha256": "b3940312fde5ec68e818bb2425a2f801325525774b77297dd8318590f279c63b",
+      "bytes": 508719
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-fi-FI-phone-08-sleep-timer.png",
+      "sha256": "3a19a0d7a601bda90116a285be439e03c3cb7f6431047c0ba1c9a64d77d2ad9b",
+      "bytes": 237829
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-01-country.png",
+      "sha256": "1f27a6a1a208a9829df41682ddf8db33b79c62459154f94c318a14cce7dc3a18",
+      "bytes": 253040
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-02-discover.png",
+      "sha256": "fa79b111a99c721374b72f7db3db00a14e8f8678ec0dbc5f05a0f1505df97e73",
+      "bytes": 379723
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-03-player.png",
+      "sha256": "86cbf6cc50841b6899a001926f34ac4a7394e4ebea990578f172e52e7cf96d6d",
+      "bytes": 323391
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-04-genres.png",
+      "sha256": "96598098a430e4e61ef889a20f243452c002654352e56275b76573e3654a3aed",
+      "bytes": 275818
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-05-car.png",
+      "sha256": "8395d4b1cbb6169e4bdfdca009896dafbbae76e6ea2c88b77030c41f7b8f5b12",
+      "bytes": 265049
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-06-search.png",
+      "sha256": "0ff8a9bf485bf28fa35b37c37f691ff10b969ad0d749ffdcb0e7ea7617a965f3",
+      "bytes": 289694
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-07-rock-stations.png",
+      "sha256": "c97a5634fb4ffefb8cb030509d9d1d83cb197baf52ca261a7c4a96cb34a5018f",
+      "bytes": 511051
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-pl-PL-phone-08-sleep-timer.png",
+      "sha256": "ccefe9410b26d936c91c765752f4722a30532e7f03c70d8eba8b0511caf803a3",
+      "bytes": 237875
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-01-country.png",
+      "sha256": "ea41abf39696734ec9172b97dea63861753042f3f72f83f11cb2bb6efb20a2f8",
+      "bytes": 253769
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-02-discover.png",
+      "sha256": "6614eae5abfc06d9c8d997ea73b66a7afac82761103fe77ad208a07b7b40c653",
+      "bytes": 377767
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-03-player.png",
+      "sha256": "0624a9183d06d4625017c52d088b7d576f0101a454023e4dc510d159414d17f8",
+      "bytes": 323773
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-04-genres.png",
+      "sha256": "08a6b3f45c87b81b9c67e0c34926da4c26cfbc6ae2daa3f577636235867786d5",
+      "bytes": 279567
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-05-car.png",
+      "sha256": "5d50a6aeecfc8b5d26cf2e9172cbd694b8056a69d804eb749386ef543924b35c",
+      "bytes": 259475
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-06-search.png",
+      "sha256": "93314770ba4cfb6f1253e91751b310d14e48a69b58189ba2cae01ed9b780dd9a",
+      "bytes": 289971
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-07-rock-stations.png",
+      "sha256": "0ccf4be58c59d8a9c7b02c945e200038cb80e8b552edb340c0d39bb28529a9c0",
+      "bytes": 511823
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-cs-CZ-phone-08-sleep-timer.png",
+      "sha256": "6b0d21928da15f71cbf8e277c6ab2ef08272e2c7e57d9562ae5db6a4d4826aed",
+      "bytes": 237490
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-01-country.png",
+      "sha256": "e6e2eb13386a322503a17c6722f5f400ffa4b803cda4b954e7c2b8987902d0ac",
+      "bytes": 251733
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-02-discover.png",
+      "sha256": "354fff8b403b31783d8f26fdc8d809774054a854bd85d166298aca03c6b92c3b",
+      "bytes": 377376
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-03-player.png",
+      "sha256": "b70a42f9bcbc7216848c3fb4137027527ae0e1a549c3442045c1705149582b50",
+      "bytes": 323106
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-04-genres.png",
+      "sha256": "96d4cc0422ab5b6ebecf3651498b40a8dc2cc18a0a4ce4b7e7331cdc512694f0",
+      "bytes": 278215
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-05-car.png",
+      "sha256": "cb3da78581f15ca4745c7ab80bebcaeb1ec99930be2390c6001f2d0b440e2834",
+      "bytes": 259843
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-06-search.png",
+      "sha256": "16c013ec0de0e2e112ca0782002bca1940f81bdc479567cd0f1c707af9f0bd29",
+      "bytes": 288612
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-07-rock-stations.png",
+      "sha256": "120485d39366c5472658bb5655893f8e81cbc6c563e87bb5fd7d28e25f0ca07c",
+      "bytes": 512364
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-sk-SK-phone-08-sleep-timer.png",
+      "sha256": "49b61cbcc1f69fdb085f6621bbf892d7175784bcbeff735c94d8354c223f48aa",
+      "bytes": 238807
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-01-country.png",
+      "sha256": "85c4bd89a33074aa17e9c92ba77279f4a449e58953b63461bdf409fb5188a0d1",
+      "bytes": 257190
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-02-discover.png",
+      "sha256": "5f668845ee4a03fe5434d191de2f4f34f8b653f8fea882210bcdec752736ede4",
+      "bytes": 378819
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-03-player.png",
+      "sha256": "582317dde8177bd0b8610b3089ec3e5ab5978ffaa424703c22881914179cf5a4",
+      "bytes": 323767
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-04-genres.png",
+      "sha256": "0908eb5fee7de21b7c0bceb256b77aa3abab32c05dadd7b730b3819ada8aabf0",
+      "bytes": 276586
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-05-car.png",
+      "sha256": "d919de976507e30dd8ffdf1bb6ef2c38ef8d088160dd4a3e7172ac45a97dbfc3",
+      "bytes": 257571
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-06-search.png",
+      "sha256": "4e6b3cae575208b33fdfca2795f3aa61e17286fe9fb9e1270235c4ec4732a67c",
+      "bytes": 293182
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-07-rock-stations.png",
+      "sha256": "3ab268ae06116ba2038af34dd6ad2155687e255ca069a30a115a4e617ed0a326",
+      "bytes": 508262
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-hu-HU-phone-08-sleep-timer.png",
+      "sha256": "8e045aa8a65f470023dfcfb79765c63bfa425b255e8c2940920b0b3b02c6ee7e",
+      "bytes": 237468
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-01-country.png",
+      "sha256": "5fde65714158e1497221c36b734b667b950846f975e30f03871a0a1d1fdb59b5",
+      "bytes": 251673
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-02-discover.png",
+      "sha256": "cc5035ebc8009c9454a4c8aa60a6a505647f9985f36816c3ae161e795bd38182",
+      "bytes": 376523
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-03-player.png",
+      "sha256": "6d271fe867d697a8dfd8da63625e29b7b15b031505e53974ad3e147f830f16d5",
+      "bytes": 323587
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-04-genres.png",
+      "sha256": "eb23c2c9c285b2abed764671453bf64242ba04bf50c74baca8ba460fdce3b9ed",
+      "bytes": 275642
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-05-car.png",
+      "sha256": "e681dafa5814ba8347475b478261c81003d261a8f5e30643619d63e2bff658a3",
+      "bytes": 257195
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-06-search.png",
+      "sha256": "9dec8abd3f946c43d33264f62aef96bf481e1933a8ec2d56d0e739795b1057a6",
+      "bytes": 290775
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-07-rock-stations.png",
+      "sha256": "666f1161e6d0d341b168ef7816c67d7697e2f25a20428c2573ca9c0f68b653fe",
+      "bytes": 509668
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-ro-RO-phone-08-sleep-timer.png",
+      "sha256": "0a5bb11a51b135e425d3254cc330e6360aaa6d188f39cc6108eb4020c4a0ec2d",
+      "bytes": 239283
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-01-country.png",
+      "sha256": "8e89270dfda8c9a56ac114daa68a222e6dc172303c54e313304afd276fe696ff",
+      "bytes": 253227
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-02-discover.png",
+      "sha256": "c6477ae95a3f151a1f5bb73a5f1fa1f5cb727e2cdedee4c7fdcfacdf1fdc76fe",
+      "bytes": 376986
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-03-player.png",
+      "sha256": "4b26613693097b25b4335bfcd433d9b4d417903e03c7ad7f1464cb7ae25939cd",
+      "bytes": 321701
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-04-genres.png",
+      "sha256": "822aff170e9d457d81d2ce46078a78b65a9c974d7dae63ff381b0acab0db92a9",
+      "bytes": 278646
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-05-car.png",
+      "sha256": "b88b567260bdaf8456ee345472db730b84d72f40c150c7447511c7aba55df6d3",
+      "bytes": 263884
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-06-search.png",
+      "sha256": "5f1b811e7b694fac844b9ec51f8c9c9e6467fa39402254232de7042dd721781f",
+      "bytes": 288926
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-07-rock-stations.png",
+      "sha256": "d6236e138a5b78965b51fae449f9f76552c49d46f4cb633a3a7b0d5deff6fec9",
+      "bytes": 507318
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-hr-HR-phone-08-sleep-timer.png",
+      "sha256": "079aba5a26e963274b11628aa0fced3aae22571efa2c9cd7253d14e7bbc5229f",
+      "bytes": 234477
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-01-country.png",
+      "sha256": "11751de6ca74a21143fd84905f63928fce21baf427d4bd77ee3966f8ef339835",
+      "bytes": 255409
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-02-discover.png",
+      "sha256": "a8bfc1db2c8823bbc4b5c329412dbb71a8e3a1f7e086128baed769ab9183a18f",
+      "bytes": 383451
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-03-player.png",
+      "sha256": "ee9d8aea537434d1be07e5c2a7f8ce657553f4b332adc13750776495cdaa6a39",
+      "bytes": 332909
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-04-genres.png",
+      "sha256": "8e5dbe662f7a11cd7b67c9e179622b49039e1a00755cfff4592d971a5f98efe0",
+      "bytes": 284692
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-05-car.png",
+      "sha256": "0c6a495cef792082f4b57183423ddc033b1006f05ed6c13c17bb91eac2e17a3e",
+      "bytes": 267254
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-06-search.png",
+      "sha256": "b4d53b04ab2d08abfdbacaf13fbb54f1df0990dbc79c775eab2249c9623bf440",
+      "bytes": 291229
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-07-rock-stations.png",
+      "sha256": "f39bdffd62f03d6936279b13acd533d28e30dd53ad88d2d34c60aea8d9cfea12",
+      "bytes": 515117
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-el-GR-phone-08-sleep-timer.png",
+      "sha256": "14ff4acfee575d5db21ad89f54ae8ecd78cb10ed9ef1ba3882168504f089549b",
+      "bytes": 249544
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-01-country.png",
+      "sha256": "0e2945e0f1579b7aa3d0ce84c69db3cbd92280ad1a23edda855452a7706dd083",
+      "bytes": 253131
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-02-discover.png",
+      "sha256": "dc86858290d44f3097c3679e5e8a557926ad687afb310728315ef8eb4683fd38",
+      "bytes": 377540
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-03-player.png",
+      "sha256": "49189e243061c65994108c635e4a1f04c680dca78a54dec6ae5c7012fafe71c1",
+      "bytes": 323762
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-04-genres.png",
+      "sha256": "f4ea4be5a8f5a4584ebf2dd21c67b1b2819f52c2b4fa633b4ca18266f752d6ba",
+      "bytes": 274253
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-05-car.png",
+      "sha256": "f1289690ff03cedf1920ca9348b513bc8c69c9b9d3c78f425cb0e1d2969595eb",
+      "bytes": 266869
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-06-search.png",
+      "sha256": "420230caa79dc9d10d8276b82f3e89f5c76156cb27fd25db977131216ecbd5b3",
+      "bytes": 293484
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-07-rock-stations.png",
+      "sha256": "1814ec7b5c39503c62a956ae4749497597b2640c044fffc2957836f5573264eb",
+      "bytes": 513561
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-uk-phone-08-sleep-timer.png",
+      "sha256": "c9e3f363838838342410110dcfc53561ee3e1ec604d33620fb8094b0af46a7da",
+      "bytes": 237282
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-01-country.png",
+      "sha256": "aa4e06a5c2be1983ff21b6cb06c7cf7a6ea35b9e09978350ece76bfb495d9495",
+      "bytes": 251872
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-02-discover.png",
+      "sha256": "dd835619a99a3f1dbe380c55a44abf0158efd22476f65c529b150fa779589015",
+      "bytes": 379854
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-03-player.png",
+      "sha256": "9e25973be538a686073abc98dd1a0d5c05da354a1ea5ae6f20aa2c8deb2bea44",
+      "bytes": 324895
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-04-genres.png",
+      "sha256": "29994995b22b3cd00d0795786bdeb6be2cd67a4f06576b99f61c5b155997cd4e",
+      "bytes": 276546
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-05-car.png",
+      "sha256": "0657c8ad7e5a2df35e2613301749fbddc11bc5dd783db37a1589b1f9b225fafe",
+      "bytes": 257898
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-06-search.png",
+      "sha256": "cf4a253d7f5c01720c06e7117abecb483e76447f2e1de9c9ce9cdbf1ec8ac70a",
+      "bytes": 287936
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-07-rock-stations.png",
+      "sha256": "25c7451c93ea3b66adf48a3be280a1d05ef92e25c6ebc10e8db60dc0bfe140a1",
+      "bytes": 511772
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-ca-phone-08-sleep-timer.png",
+      "sha256": "77f7a487e3d3aacdd52e9598746e5f7e092f53c78d1f26a87c57297b3bb8cae1",
+      "bytes": 237806
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-01-country.png",
+      "sha256": "7d382ba0f76d811553e788a69269257357008a3698ddbe2644091553f56413f5",
+      "bytes": 253981
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-02-discover.png",
+      "sha256": "8948eabc9c1a33adbba89c0993a596f60ad66f2e06abb011734d3e22f75720e3",
+      "bytes": 381360
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-03-player.png",
+      "sha256": "bc48fec8e6d27d091b7d2a875441cdb24d88936b6931fdb9ff000f03298743ef",
+      "bytes": 329998
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-04-genres.png",
+      "sha256": "31a90cd034303156fefe83471e0d673036cfdb823a513628b2f34ec3bef32454",
+      "bytes": 281047
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-05-car.png",
+      "sha256": "1458b005d3aa1d4dde143b68d4bfe7b9d03172c26af0ac9d62f3b28e929d0c6e",
+      "bytes": 262940
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-06-search.png",
+      "sha256": "523787c51c3de0a5d9930d7b2ea95a094077438dbe3b56db6554f5ec5a971ff7",
+      "bytes": 290492
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-07-rock-stations.png",
+      "sha256": "6466ed6d3f078fdc2dc703ba9bf69eee1c746c8e0929aa11833302aa0e7b3d15",
+      "bytes": 507488
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-zh-CN-phone-08-sleep-timer.png",
+      "sha256": "6d08d943684f43c8e1fb39396ea7dfd11314558ad7385d07bf46fe4951f9c52e",
+      "bytes": 233687
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-01-country.png",
+      "sha256": "391fae33c9fd5e6e8ca1be5c04b50d7fd105fb937fda35e27c93bf7a7fb9881a",
+      "bytes": 250034
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-02-discover.png",
+      "sha256": "1f99547b0cad1d86081d79cd2670781acabba8538150a83bcab922f8c2e7dc39",
+      "bytes": 376355
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-03-player.png",
+      "sha256": "81ed81a83fc9d6835c05dbef9f85d7c972150957ad70ad304a68aaf0d5707f5f",
+      "bytes": 327945
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-04-genres.png",
+      "sha256": "d99e69d16ceb5e473f0ab09d58e2b43dbc9dc732e1278388968753cb8a7ac9d0",
+      "bytes": 273108
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-05-car.png",
+      "sha256": "4ccfc8ee8542661f03ba542b881622b3888148fa73b01f4393bb9088eb9d3f45",
+      "bytes": 260576
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-06-search.png",
+      "sha256": "daa983478cdc490361781684451e31464994067da8fc5516e65607af75eaf03f",
+      "bytes": 285481
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-07-rock-stations.png",
+      "sha256": "342f132b65c5d21d681f95fa510bf13d41dbd9ff69d1519e6f9efe818ba1b1b5",
+      "bytes": 502358
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-ko-KR-phone-08-sleep-timer.png",
+      "sha256": "0308e7480a720276ff86adf8f522d246c28fd9d39ca6eb1333df446cd0a09d0e",
+      "bytes": 237950
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-01-country.png",
+      "sha256": "ec38515bba7e271bbae338c5bdc251ea5cb727aef00eb9948511ac26b80e7f60",
+      "bytes": 249471
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-02-discover.png",
+      "sha256": "652b3825c34e2530966b1a7cbaab2059dc4faef2f6877e6d000d971b236541d9",
+      "bytes": 378850
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-03-player.png",
+      "sha256": "53718909feab5b0cd1c7efdd6293b6ac02b5609d9c6c7660cc8f9ab48952a1c8",
+      "bytes": 327909
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-04-genres.png",
+      "sha256": "03dee7fd8f81098be9c4189df6432cf4f0ad17879ecbef9471467124bd67118e",
+      "bytes": 276279
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-05-car.png",
+      "sha256": "0dacc08c6d601aa60bf29ce64fbf7a443b9ebb5238bcba628ea4007260610a78",
+      "bytes": 258727
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-06-search.png",
+      "sha256": "8607f600524de1898b23aaa7473cad6ce7e3bc055dd119bca39001cc3f36c938",
+      "bytes": 291233
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-07-rock-stations.png",
+      "sha256": "3fc2e3f0018121bbaf5f4c2913504c4ab448239ceeb0d71a0caa82b077d2057a",
+      "bytes": 504859
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-id-phone-08-sleep-timer.png",
+      "sha256": "a1bc42f47baa7845d0267111145b35585f8f8ae8ac01abcde2bc7df6f85b9761",
+      "bytes": 235121
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-01-country.png",
+      "sha256": "5c21eba92022dc5040a76d2774224a1ab4be93ff5b12f6145c285d5274a8aa1c",
+      "bytes": 252502
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-02-discover.png",
+      "sha256": "ef1ca47b88a1baf41025f42bc8ba2ca7ab993d56854781210c3bf31f3b525a6b",
+      "bytes": 379975
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-03-player.png",
+      "sha256": "a001c187a1cd3afc73d5c9115a1d8a605418819376014d7a99488a65afc3d9c9",
+      "bytes": 331530
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-04-genres.png",
+      "sha256": "ec0b5c41c0167eccc4ba8240a53a6932bc564b94e1248fccc02116e135d4f6b2",
+      "bytes": 279751
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-05-car.png",
+      "sha256": "b866681e8b567cd8ed870e0f609d06379d7d5d24f4174e1ce95df2568af6b97d",
+      "bytes": 261118
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-06-search.png",
+      "sha256": "fac184cc47a67b9dedd1b64b4844842ece41386fbef2c4a9c4de4d9d24a6e90a",
+      "bytes": 288511
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-07-rock-stations.png",
+      "sha256": "0b2140c86e2fb34a7be526d3059a88bb2dc7dbc492edffebf70fc533ae5e1bf1",
+      "bytes": 509279
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-th-phone-08-sleep-timer.png",
+      "sha256": "28730644bcd2407315dddf8a57504b5a2c0d7ae35beb7295b2aa5d5f49696855",
+      "bytes": 240770
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-01-country.png",
+      "sha256": "0b40ecac1706fb80bec94c8f50c6e38c9087201417de8d5c0ea8a7a9135b2687",
+      "bytes": 256275
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-02-discover.png",
+      "sha256": "3b8477e870e69f9a28f2986742fff4c17a561f80c39c4032256c1ad5d137f0b7",
+      "bytes": 380276
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-03-player.png",
+      "sha256": "bffe27c615a206e16a451ce0ddde3fa74c7525645c66ead76235a8bb8eac5285",
+      "bytes": 329609
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-04-genres.png",
+      "sha256": "b37fac2883d3ab9d6a58b5c84bdfb763d83086e21d08b6690a1e4731317d4251",
+      "bytes": 278561
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-05-car.png",
+      "sha256": "7be2647215f8842fe513fcf01949a94d6c1b2fa95a7a6f8d4866424aa05f7416",
+      "bytes": 257352
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-06-search.png",
+      "sha256": "14a8534d1fab62097aabd277a23a1c2dd5bdb3a3159307c9f027ce10b4a0199e",
+      "bytes": 289023
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-07-rock-stations.png",
+      "sha256": "1e22009bb766e0bd9b778247b3c15b8e82fcca04ee6b318de01bf06b36854d6f",
+      "bytes": 507095
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-vi-phone-08-sleep-timer.png",
+      "sha256": "358eee3fbd17c5e3ec6ffbb2385f94864cbdcfc5b10848edd843e3e064cee700",
+      "bytes": 240507
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-01-country.png",
+      "sha256": "bab2e550b85b8b76030cd57a769a7b69822beeace5076687bea2dba930b1d28a",
+      "bytes": 247626
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-02-discover.png",
+      "sha256": "2654a83737fdf5dfee1e704e6c2a9fac8cd02ccd816a067e0f01425356258f56",
+      "bytes": 375522
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-03-player.png",
+      "sha256": "5de71a106229415bc2e04c80a4e74a9b8f998c1fa96df5ebe04dd5e2aeab3557",
+      "bytes": 324375
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-04-genres.png",
+      "sha256": "5df2aefe5cf0039655881fbefe521a7effc20f49ffad48b58f5e27a936c26d8c",
+      "bytes": 272964
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-05-car.png",
+      "sha256": "65a2ae380aeb07987f09ce096d6dd7230d01871543248473bb0b0f23988fd148",
+      "bytes": 252450
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-06-search.png",
+      "sha256": "ca101ca30df58a198ddcdb68e4d3ff877a7e464ccbd6197b8996b33947ce2b5b",
+      "bytes": 287482
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-07-rock-stations.png",
+      "sha256": "90f67649df8f6717998e29a258e0fb5e5471e18a9f4fee797f00afe7b8d0f511",
+      "bytes": 502199
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-hi-IN-phone-08-sleep-timer.png",
+      "sha256": "e7f47ca67d33a24c8fbaf91fae5b43698c6b5e5cc6be162aef49f1ea0f7458c2",
+      "bytes": 234042
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-01-country.png",
+      "sha256": "2be2c16d91df1ab4c556bf4974c9b922002234612d5c94d25b02109d7d03735e",
+      "bytes": 252888
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-02-discover.png",
+      "sha256": "5898de61df8ec39c9555164fb083cc8f549dfd19a65a29d38f1559b0b35ccfad",
+      "bytes": 379618
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-03-player.png",
+      "sha256": "f9b1f44968412a94115b5f457fb6750c6be00114fc0261bae028088005ce907b",
+      "bytes": 323694
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-04-genres.png",
+      "sha256": "9157a2cae606c735b2647a39a1236e186880b2098d469e12135d0e6b4e490e27",
+      "bytes": 275716
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-05-car.png",
+      "sha256": "8e2b5ebee3bceb101e929819e9cac16710c3a90e880b0753057ac46ef53f192b",
+      "bytes": 260866
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-06-search.png",
+      "sha256": "e6e34444ffff1f7d61dd31c51839ff4406dd0ea0b05e0f6c7adf2cb67c2e3cfb",
+      "bytes": 286623
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-07-rock-stations.png",
+      "sha256": "ac826cd2290e81564df1c6f24a35c97a7531b4826bc08c90ef779a629b473aca",
+      "bytes": 508059
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-en-CA-phone-08-sleep-timer.png",
+      "sha256": "4efe3762a43b76722293c51ec4f2522de93e1b7b213b07761e61472df666fa18",
+      "bytes": 240165
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-01-country.png",
+      "sha256": "830687824c9eea817f1361c135cffb3e18d15788f03db0a4105d0ca484416e35",
+      "bytes": 254303
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-02-discover.png",
+      "sha256": "56fdde9e098accccfbd6f16b928b11a970e0e46ad5e2b52af809512818826d17",
+      "bytes": 382057
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-03-player.png",
+      "sha256": "e9e6b75b0a163d4f54358b51b996798ff42e611dc0b02f7b1e8a6e5f3550cc93",
+      "bytes": 325482
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-04-genres.png",
+      "sha256": "5a5bc370c339926cb40d2ab5d67d1a04c8c1331c9119c32fa20400d5e66f448a",
+      "bytes": 280401
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-05-car.png",
+      "sha256": "c023fc994f9a160ccb0e9edac92c5342286606852a53f0d6ae64323fd2fa718d",
+      "bytes": 257184
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-06-search.png",
+      "sha256": "42a1d36d382a7197b47b18570dbdcdaa907cf2a8165266095b27ad54a1073938",
+      "bytes": 291854
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-07-rock-stations.png",
+      "sha256": "0e150d1ad5c38f31b9b46b24c22fb7090754b9b136594f1d72842b9c24084930",
+      "bytes": 507140
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-bn-BD-phone-08-sleep-timer.png",
+      "sha256": "559edb4717a35df3e113ec6739db1ec922f7938ae7136188e8011484abbd8777",
+      "bytes": 245057
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-01-country.png",
+      "sha256": "6ea89a1b0e7f2766e60b51a21f5ec02b8a8053c3a81b29817731656238cb4b46",
+      "bytes": 247935
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-02-discover.png",
+      "sha256": "9ff69c10eff95c5e399fdc59dda3df520c26d106219b1cfd6c4a82268d11b368",
+      "bytes": 377804
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-03-player.png",
+      "sha256": "c72a004ad06a98fe1154f1bfa81a252dc80ef44607fd55188713bf78f52ec3d0",
+      "bytes": 323211
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-04-genres.png",
+      "sha256": "8972bdc9c0b0b7e4d0c94465deb0eee8ae1d813975b98b8ccbc4abbd4fccb7a3",
+      "bytes": 277858
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-05-car.png",
+      "sha256": "6f939097cc2d0fb8e933ad69b342a0052a548020418d0e758dbdb30b1c1b012c",
+      "bytes": 256103
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-06-search.png",
+      "sha256": "41ff638c9d1371b0c4d8e62dbb15360c43839044e0fffd618ebf07517432f46d",
+      "bytes": 291659
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-07-rock-stations.png",
+      "sha256": "fe921ce2e1aea9b6f7b7a824dcf3dc10912bd3e5a46e59a0c29c1bde476e82f8",
+      "bytes": 505242
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-gu-phone-08-sleep-timer.png",
+      "sha256": "fe6a0fb0b0de1f646adc9e171ae3ef2f43fc2a3ccee6ed28ad9ec2232375da82",
+      "bytes": 242221
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-01-country.png",
+      "sha256": "2179ad8cc85978f628e02016fc2a488440625a409b49754d18293be334befab2",
+      "bytes": 259368
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-02-discover.png",
+      "sha256": "a3f2778f08abc6f24f255323d467c13210459d7179581848a64ccfdf66340aa3",
+      "bytes": 384604
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-03-player.png",
+      "sha256": "c2a66f6718349fab8f073aca1752dd9b137cdb4917d988baa4c0d10beaf4c565",
+      "bytes": 335948
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-04-genres.png",
+      "sha256": "c965866c78abf50dcb348cb6905142a0cdb9069bb09251fc8abce8c1771a4bf1",
+      "bytes": 287332
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-05-car.png",
+      "sha256": "47486b4304008724568d6a465c932db43c67772c8d2278ccf610470833d57ca0",
+      "bytes": 264863
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-06-search.png",
+      "sha256": "ec5bdfccae09a034e1386102bb383452b9aa59eac87e5119f21af5afc0d3e331",
+      "bytes": 302856
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-07-rock-stations.png",
+      "sha256": "b304c1c4a1decf34b82fa78c91a0f8923cb5c14175e71d490bbef39cf4cf0982",
+      "bytes": 527389
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-kn-IN-phone-08-sleep-timer.png",
+      "sha256": "0873d8e1a740a9bc8f2baae36b376c0b57006b8ba1f51df229fed8212ced0fc3",
+      "bytes": 253129
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-01-country.png",
+      "sha256": "e93221bd37d319c6fd52e332c281628ceb8383d8d0fb355f4ee2ac59159e83db",
+      "bytes": 272005
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-02-discover.png",
+      "sha256": "a5c6c43a8be3a48faa5af27ad3faa05ede21bc3bedf85375eb9b45da548ae764",
+      "bytes": 384530
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-03-player.png",
+      "sha256": "19136f1b4cf4c5a78dc6115896688def257dc2e35bcaef887b850644e0692cb2",
+      "bytes": 340946
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-04-genres.png",
+      "sha256": "55d6e588c44380cb2df102abc5e6427fe88a62fd1db05a9c52484ba051de20e6",
+      "bytes": 294239
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-05-car.png",
+      "sha256": "dfc66be87197552ca783d77a3817d701c200a88b0be3e9a279d7f33b11c2515a",
+      "bytes": 266112
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-06-search.png",
+      "sha256": "4d45ff761b6ad0d7ebe323f33716c3e6afc71dec6b54d3445dc8f07940547109",
+      "bytes": 308108
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-07-rock-stations.png",
+      "sha256": "750c73db8932f77d27bb8505bfdc472a75ceb6d1415578b2ab6c5156ef20cf02",
+      "bytes": 519932
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-ml-IN-phone-08-sleep-timer.png",
+      "sha256": "5c0fe962fd5b22665cbd6acd0b8fb0d776a3739ab6cf08086b94d355152e49db",
+      "bytes": 251843
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-01-country.png",
+      "sha256": "06f8eb1a88c3dd1ab43d0e921f6f1de6d15442ef2b47295e516e109c69ac2d3c",
+      "bytes": 245558
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-02-discover.png",
+      "sha256": "265516150b6f3d1d0d33c15d2216dd7a80baf314225be2f393b10271160aa6f2",
+      "bytes": 376120
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-03-player.png",
+      "sha256": "56edd5f61fd7d804ceb88703dafdc32956a22e895fdeb819596c3aefb22655bb",
+      "bytes": 321751
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-04-genres.png",
+      "sha256": "5083f3981693ffe611379ef62d4750cb422f823f3a61dd92799b8335c49ec865",
+      "bytes": 270729
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-05-car.png",
+      "sha256": "adca4f61a229fb43bdda4ac07cd67203b7d8494290e9297455cd9b4363828ce7",
+      "bytes": 252435
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-06-search.png",
+      "sha256": "a23cd7a7256540cba41271ca044e1f38ea680210e413d9a2856bb04b72c97856",
+      "bytes": 286731
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-07-rock-stations.png",
+      "sha256": "c6a81124aa0a209ebb613e339bb0f2ee9907f83fee4bf68a4b372c9eba5e7960",
+      "bytes": 500956
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-mr-IN-phone-08-sleep-timer.png",
+      "sha256": "54c8e7e439c4aec1ace224ce6d8945a32d262b7a5bef1fe5297e809e00941b50",
+      "bytes": 234565
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-01-country.png",
+      "sha256": "1fbb0c40d70ca1aa7398625da595274c84521fabfdac3fa473720eb367c2ec5d",
+      "bytes": 247708
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-02-discover.png",
+      "sha256": "89a1cba11c383f10f5e6e5c7695aa02f0eb74521d05c9493a249174206cbed2d",
+      "bytes": 375519
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-03-player.png",
+      "sha256": "b2a2614697611a48d8da1b17c47eedc2e592c8e309a42f60f8567e2a4dafa641",
+      "bytes": 322597
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-04-genres.png",
+      "sha256": "d4f6091132173c07de3905a8473ce9ee86bf7790e64bab3dd5e1bc1247043365",
+      "bytes": 272282
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-05-car.png",
+      "sha256": "c10ea216f195adc18bc1816c2e4f378311634d4c16e881019af7ad98cdfbbbe0",
+      "bytes": 252554
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-06-search.png",
+      "sha256": "2af2ce868a6cb64e1ded0f6cf1606f48410826202d31f75aaf8d012f72cc9724",
+      "bytes": 287576
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-07-rock-stations.png",
+      "sha256": "24c2ffc542202bc5bcc9eb46d83672ed375ea38d33af7f835a4e026f56ddff01",
+      "bytes": 500178
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-pa-phone-08-sleep-timer.png",
+      "sha256": "43fa1ef0fcf72391fc349b7f5a84567e470bc09e49c661ba3f40f0451bbfe95e",
+      "bytes": 233221
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-01-country.png",
+      "sha256": "cff1330139afc72169fc290cc83307dfa46df39e38b8f5748f4eed37ac4ceaa6",
+      "bytes": 263741
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-02-discover.png",
+      "sha256": "bd3e9f4ad2bd612e25d45968151e569210bd19c27110c6696b6b236778591119",
+      "bytes": 384809
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-03-player.png",
+      "sha256": "b2b6eb54114b82c412e1f20af3f3e521181a1bc9af8977918c66e3c2a8ed8d43",
+      "bytes": 337944
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-04-genres.png",
+      "sha256": "0750fa0eee43b50bdc48e58f2ed4b616ec2583e2532b2d6a72d6c450742b363a",
+      "bytes": 295603
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-05-car.png",
+      "sha256": "5cf32751649f5d0b96aaccca4b400de839d964d67159e7de31c6624a53a5b0e5",
+      "bytes": 264793
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-06-search.png",
+      "sha256": "6b60f8095fd896c706aab3ffb5f096578ccce60e75b90c90e28fc889f96ddcb8",
+      "bytes": 306081
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-07-rock-stations.png",
+      "sha256": "ab7a68090a19e6245942c9589a43bdac63109ba2206cad57b6a06e15b35c1504",
+      "bytes": 521226
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-ta-IN-phone-08-sleep-timer.png",
+      "sha256": "27da98eaa482bc9d822affa56c9a85fc5cf5d7fc30a237e2030c6870366fb8ef",
+      "bytes": 253133
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-01-country.png",
+      "sha256": "bad8a0e44365aa0a4173eac87a2a2c2b8d37496b58d65d7b1006472c79433bf4",
+      "bytes": 264685
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-02-discover.png",
+      "sha256": "f38d127558f776de8b2c2447e00207548e7decd3778bcd519ea9aa994346e4b8",
+      "bytes": 383967
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-03-player.png",
+      "sha256": "a757e72d660606acfcf0aaedfbb5be8d77abfd30b05b1066d8e46322aa5d834a",
+      "bytes": 343750
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-04-genres.png",
+      "sha256": "6b55bd1ff790b73d4fd69de1f20bf52f72642559ec7f9f5e45d5e77c479f2e75",
+      "bytes": 297878
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-05-car.png",
+      "sha256": "6017cdce832ab4abd2e65e7b478aef6b37a6566b646a7e040845c6de3eb5c012",
+      "bytes": 261792
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-06-search.png",
+      "sha256": "0d7967268cd62e5105776747f57bc98f0b60ff257923d3e0c034374e65be91bd",
+      "bytes": 308999
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-07-rock-stations.png",
+      "sha256": "a7315b25b4fb010c0ce9240fc035cdf655b3f906524d7144c75135145a3aa441",
+      "bytes": 521995
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-te-IN-phone-08-sleep-timer.png",
+      "sha256": "943127e79e24b9da35024f7db6760d9a582a45d860ac26b38dec449e62637892",
+      "bytes": 254425
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-01-country.png",
+      "sha256": "5e9ca2c6cb64239e1843bcc43e70666da348d3647f225f32a43c827760d71f7b",
+      "bytes": 250214
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-02-discover.png",
+      "sha256": "cf7aa646506fac1975bc411281bc1eed8a70e2e23339c3b793dc4347cba2a94d",
+      "bytes": 375747
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-03-player.png",
+      "sha256": "534cfaf740789a7210f9117422cbd606c34fb6c31a8f929be373c3f5ece426df",
+      "bytes": 323263
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-04-genres.png",
+      "sha256": "fc988d3833e4dc04725c75ef4faa6df3aaf4330456a3bd8919fef245b0071b6b",
+      "bytes": 281060
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-05-car.png",
+      "sha256": "10b1ea2687cf54afc5c9c4f141102b914c9b57d2770da7a5b98cc6c8c310e83b",
+      "bytes": 255190
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-06-search.png",
+      "sha256": "47ce279c9477918c80609a74f75053e7b487e3d356bf7104ae95260f42f949ee",
+      "bytes": 291694
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-07-rock-stations.png",
+      "sha256": "62f726322137a3bad330032bd0de9a3814edbc6c55d2b3229c69112da93c9f3c",
+      "bytes": 508360
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-ur-phone-08-sleep-timer.png",
+      "sha256": "3b8e0259f174025b9f5267f1eeb791aaedcf03810b91e5a169d7609f9954738c",
+      "bytes": 237449
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-01-country.png",
+      "sha256": "4487ae77062bcbbe1dde69c4a4aa6e04d70f502aa9d76389b55655fa27a2abca",
+      "bytes": 253141
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-02-discover.png",
+      "sha256": "4ee53a5efec7d2921cee21f2232ee64c6a39be0d3713369bdd1a248f6b5b6378",
+      "bytes": 378204
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-03-player.png",
+      "sha256": "d806fdab5d9b696da2004bf578c53cf816921bc78a57d51e16f150baece81e39",
+      "bytes": 323040
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-04-genres.png",
+      "sha256": "83342c5ce6e8726b3a774959da37809925bc3e9a527e586439ebde6c2805d93a",
+      "bytes": 280281
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-05-car.png",
+      "sha256": "9a922c8151dac8e5a29036c5e422be831d1cccf98e2f02398d3ce0a919fda45c",
+      "bytes": 261249
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-06-search.png",
+      "sha256": "70b30bea99c83bd1f05bc091df2c9d0e2280a013ba278c48a62b2c2e49ef1b7f",
+      "bytes": 297145
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-07-rock-stations.png",
+      "sha256": "033819d1c54faeaa95beeb030d22dd618ed18b91ac28c68466a81d8d91f8e616",
+      "bytes": 509305
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-sl-SI-phone-08-sleep-timer.png",
+      "sha256": "7fa6915bfc8f1603766328fa4047e20e38525e8acbf3b6c60ea951816d662a12",
+      "bytes": 234414
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-01-country.png",
+      "sha256": "044975a4159a01d36dfe16cc598b581a988a06b421feedc39b48e48eda447cf6",
+      "bytes": 252268
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-02-discover.png",
+      "sha256": "cb8d579c3dd9b0ba689a4b4be8ad479f6da5a135f18fd898fa15e63ea91bd5ef",
+      "bytes": 378409
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-03-player.png",
+      "sha256": "5e59d5d738604ce5e7c2e57cbf15542ec3653ab6b4c420921bd5e4c1fc44ac25",
+      "bytes": 322412
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-04-genres.png",
+      "sha256": "50127df399f5379425023f14287370a69e8bdc7401725e8f4b31522e5e64500e",
+      "bytes": 275772
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-05-car.png",
+      "sha256": "840cc377e3f066fecefca0da72564897466ff1cc0d70019c48f83237f24e5618",
+      "bytes": 268036
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-06-search.png",
+      "sha256": "f4c66906aebe0aba699525827c3f92c9a95f3672bf189575ae83e2c8c1dc60e0",
+      "bytes": 288509
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-07-rock-stations.png",
+      "sha256": "4a979a1a33d1f89cf353bbdf642cb0ff8c8b47650e76f6e10875d21c239d1099",
+      "bytes": 511882
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-bg-phone-08-sleep-timer.png",
+      "sha256": "169fa24a25dcdf27e3cda9848b52df1bbad3e03c224f45c0dfe49bd8b449a3a3",
+      "bytes": 240145
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-01-country.png",
+      "sha256": "02d44cdd3c451f6de0aef238e4e53e0c5ad2e9cc71eb7d84b94a752e204d90c5",
+      "bytes": 250402
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-02-discover.png",
+      "sha256": "0ca17677bf8d9c268ff5cf337be53c344b2c4eea24949fcfe23ee05d6ccc5616",
+      "bytes": 381370
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-03-player.png",
+      "sha256": "e18893a3c379e94e205db2d029213bb454297cafc842890aac9e293734617171",
+      "bytes": 330063
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-04-genres.png",
+      "sha256": "bb570228230dbf4334ebd8789a45c07fcb403ce807005eeb2d2c3b606765aff0",
+      "bytes": 279897
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-05-car.png",
+      "sha256": "779f0271cdf7ffe87c419f78ce455b425565b8a1078706b5c473dc019f9e7abb",
+      "bytes": 263919
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-06-search.png",
+      "sha256": "58b3d7f08fff06037e1a48d11ae155377a8bb3f5b5016804cf9a455b777fc657",
+      "bytes": 294365
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-07-rock-stations.png",
+      "sha256": "6ab1000772a8223dba8d79191d857c5cb91d4fbdc202857530fc0f2329aa5e0e",
+      "bytes": 507117
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-zh-HK-phone-08-sleep-timer.png",
+      "sha256": "cc1c353e32b3caf091b0a148aea8a3f122543b5342dffbf34d34278b71bf373e",
+      "bytes": 242269
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-01-country.png",
+      "sha256": "f4ec11c8151d67cace11c495e3d2c03abba30dcc130e19472e49e6530eeb9277",
+      "bytes": 241622
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-02-discover.png",
+      "sha256": "ca5fea5e40ef8f1996f57d8bbd9b16d9ea537be7cfeeec42a379338fa1ca70d5",
+      "bytes": 370432
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-03-player.png",
+      "sha256": "b60f8e17b64151142f30dd7cd7d8c1b6ca38c1855af903e9ca2e9bbbc5a37ebc",
+      "bytes": 314334
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-04-genres.png",
+      "sha256": "c91dd483e05a8cd6797ea4ad436d6d8ea95c081be62bad9e1b23c228bb141bb7",
+      "bytes": 269458
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-05-car.png",
+      "sha256": "e0ac5d822210d5c09559b23473bb21246436b903f026ab96a587839f488e223d",
+      "bytes": 251545
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-06-search.png",
+      "sha256": "bde9c6dca3eecc52b027fc645f5907d2d465ea2435ccb013b3353efc71bc68aa",
+      "bytes": 283154
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-07-rock-stations.png",
+      "sha256": "ac4212183ddd5c0cdef73a2d0033e2bac81e5eafcb2bfd7eb945637d5f22263f",
+      "bytes": 492586
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-iw-IL-phone-08-sleep-timer.png",
+      "sha256": "4d2a116c589d3907c0eed8239cbab45422c314bd5ea0bd8c1fa3d1d166bcc66c",
+      "bytes": 226672
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-01-country.png",
+      "sha256": "ce97aadfc100e789357440820e9f1248ce1741f46db71881442192fafccb4eca",
+      "bytes": 252480
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-02-discover.png",
+      "sha256": "41e69593783129e7e1de18cdd73f71be0fe5cc5bce4c46a8ed607ad5f2798bda",
+      "bytes": 379178
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-03-player.png",
+      "sha256": "39f42fdc838d96715893138501e6e3db460483eeaac170cb524bb150bd731e89",
+      "bytes": 328102
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-04-genres.png",
+      "sha256": "89d94b4fc35999933881c466747725f21c8e5c3859dd8b1457c795d2379f0fe8",
+      "bytes": 276847
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-05-car.png",
+      "sha256": "5133ce32e413195a8c38a7ec8b6a486422ae2e66f80df668547a92b3ef105b27",
+      "bytes": 258408
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-06-search.png",
+      "sha256": "ed4d5650b978178c926397571a41f00b0fa499edef2b64f18be06e581bf80ff5",
+      "bytes": 287879
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-07-rock-stations.png",
+      "sha256": "e593c8d484f6683fade4e61f0b99331e0eb69574a91d3321f54621d0fac47502",
+      "bytes": 503059
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-ms-MY-phone-08-sleep-timer.png",
+      "sha256": "2724acda219953d7bc634695d3d34049542e9919831321bd41797b2e18c74df4",
+      "bytes": 242224
+    }
+  ]
+}

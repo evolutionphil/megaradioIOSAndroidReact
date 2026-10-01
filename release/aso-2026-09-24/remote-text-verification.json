@@ -1,0 +1,884 @@
+[
+  {
+    "platform": "IOS",
+    "locale": "el",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-ES",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "sv",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "IOS",
+    "locale": "pl",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "nl-NL",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-GB",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ja",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "hi",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "gu",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ru",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-FR",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "de-DE",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-AU",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ms",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "mr",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-US",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "tr",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "es-MX",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "te",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ur",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "vi",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ta",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "no",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "bn",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "or",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "uk",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ml",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "ar-SA",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "cs",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "en-CA",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-BR",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "th",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "fr-CA",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ca",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "fi",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "IOS",
+    "locale": "da",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "IOS",
+    "locale": "kn",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "hu",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ko",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hans",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "sk",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "ro",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "id",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "pt-PT",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "zh-Hant",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "hr",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "he",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "it",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "IOS",
+    "locale": "pa",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "IOS",
+    "locale": "sl",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "el",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "es-ES",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "sv",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "MACOS",
+    "locale": "pl",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "nl-NL",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "en-GB",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ja",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "hi",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "gu",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ru",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "fr-FR",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "de-DE",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "en-AU",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ms",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "mr",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "en-US",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "tr",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "es-MX",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "te",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ur",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "vi",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ta",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "no",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "bn",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "or",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "uk",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ml",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ar-SA",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "cs",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "en-CA",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "pt-BR",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "th",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "fr-CA",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ca",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "fi",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "MACOS",
+    "locale": "da",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "MACOS",
+    "locale": "kn",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "hu",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ko",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "zh-Hans",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "sk",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "ro",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "id",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "pt-PT",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "zh-Hant",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "hr",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "he",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "it",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "MACOS",
+    "locale": "pa",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "MACOS",
+    "locale": "sl",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "el",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "es-ES",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "sv",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "TVOS",
+    "locale": "pl",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "nl-NL",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "en-GB",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ja",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "hi",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "gu",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ru",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "fr-FR",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "de-DE",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "en-AU",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ms",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "mr",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "en-US",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "tr",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "es-MX",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "te",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ur",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "vi",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ta",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "no",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "bn",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "or",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "uk",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ml",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ar-SA",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "cs",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "en-CA",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "pt-BR",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "th",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "fr-CA",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ca",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "fi",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "TVOS",
+    "locale": "da",
+    "status": "mismatch",
+    "fields": [
+      "keywords"
+    ]
+  },
+  {
+    "platform": "TVOS",
+    "locale": "kn",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "hu",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ko",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "zh-Hans",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "sk",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "ro",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "id",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "pt-PT",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "zh-Hant",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "hr",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "he",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "it",
+    "status": "match",
+    "fields": []
+  },
+  {
+    "platform": "TVOS",
+    "locale": "pa",
+    "status": "remote_missing_or_cli_unsupported"
+  },
+  {
+    "platform": "TVOS",
+    "locale": "sl",
+    "status": "remote_missing_or_cli_unsupported"
+  }
+]

@@ -1,0 +1,18 @@
+(node:20751) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/mumiix/Documents/megaradioIOSAndroidReact/frontend/src/utils/adConsent.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/mumiix/Documents/megaradioIOSAndroidReact/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a missing native ATT bridge cannot initialize iOS ads (3.669209ms)
+✔ no ad SDK work while the ATT system alert is pending (0.40575ms)
+✔ unresolved and failed ATT requests fail closed (0.347042ms)
+✔ denying tracking may serve existing NPA ads only after UMP permits requests (0.675667ms)
+✔ Android must also complete required UMP consent (0.295291ms)
+✔ a consent network error only permits a valid prior consent decision (4.73375ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1095.108916

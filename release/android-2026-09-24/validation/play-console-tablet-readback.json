@@ -1,0 +1,831 @@
+{
+  "updatedAt": "2026-09-25T03:41:50.455708+00:00",
+  "localizedVerified": [
+    {
+      "locale": "tr-TR",
+      "consoleLocale": "tr-TR",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "de-DE",
+      "consoleLocale": "de-DE",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "fr-FR",
+      "consoleLocale": "fr-FR",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "es-ES",
+      "consoleLocale": "es-ES",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "it-IT",
+      "consoleLocale": "it-IT",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "pt-BR",
+      "consoleLocale": "pt-BR",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "pt-PT",
+      "consoleLocale": "pt-PT",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "en-GB",
+      "consoleLocale": "en-GB",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "en-AU",
+      "consoleLocale": "en-AU",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "en-CA",
+      "consoleLocale": "en-CA",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "fr-CA",
+      "consoleLocale": "fr-CA",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "es-419",
+      "consoleLocale": "es-419",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "nl-NL",
+      "consoleLocale": "nl-NL",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "pl-PL",
+      "consoleLocale": "pl-PL",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "sv-SE",
+      "consoleLocale": "sv-SE",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "da-DK",
+      "consoleLocale": "da-DK",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "no-NO",
+      "consoleLocale": "no-NO",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "fi-FI",
+      "consoleLocale": "fi-FI",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "cs-CZ",
+      "consoleLocale": "cs-CZ",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "sk-SK",
+      "consoleLocale": "sk",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "hu-HU",
+      "consoleLocale": "hu-HU",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ro-RO",
+      "consoleLocale": "ro",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "hr-HR",
+      "consoleLocale": "hr",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "sl-SI",
+      "consoleLocale": "sl",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "el-GR",
+      "consoleLocale": "el-GR",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "bg",
+      "consoleLocale": "bg",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ca",
+      "consoleLocale": "ca",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ru-RU",
+      "consoleLocale": "ru-RU",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "uk",
+      "consoleLocale": "uk",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ar",
+      "consoleLocale": "ar",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "iw-IL",
+      "consoleLocale": "iw-IL",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ja-JP",
+      "consoleLocale": "ja-JP",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ko-KR",
+      "consoleLocale": "ko-KR",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "zh-CN",
+      "consoleLocale": "zh-CN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "zh-HK",
+      "consoleLocale": "zh-HK",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "zh-TW",
+      "consoleLocale": "zh-TW",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "id",
+      "consoleLocale": "id",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ms-MY",
+      "consoleLocale": "ms-MY",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "vi",
+      "consoleLocale": "vi",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "th",
+      "consoleLocale": "th",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "hi-IN",
+      "consoleLocale": "hi-IN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "bn-BD",
+      "consoleLocale": "bn-BD",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "gu",
+      "consoleLocale": "gu",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "kn-IN",
+      "consoleLocale": "kn-IN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ml-IN",
+      "consoleLocale": "ml-IN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "mr-IN",
+      "consoleLocale": "mr-IN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "pa",
+      "consoleLocale": "pa",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ta-IN",
+      "consoleLocale": "ta-IN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "te-IN",
+      "consoleLocale": "te-IN",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "ur",
+      "consoleLocale": "ur",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    },
+    {
+      "locale": "en-US",
+      "consoleLocale": "en-US",
+      "dimensions": [
+        2880,
+        1620
+      ],
+      "countPerSize": 4,
+      "sizes": [
+        "sevenInch",
+        "tenInch"
+      ],
+      "saved": true,
+      "allEightOrderVerifiedBeforeSave": true,
+      "firstAndLastReadBackPerSize": true
+    }
+  ],
+  "defaultNativeSet": {
+    "locale": "en-US",
+    "countPerSize": 4,
+    "allEightReadBack": true,
+    "needsLocalizedDesignReplacement": true
+  },
+  "complete": true,
+  "inProgress": null,
+  "localizedComplete": true,
+  "note": "All 51 localized sets saved into both tablet size fields. All eight positions checked before save; first and last file names and dimensions read back per size after save. Default en-US native-only set replaced with localized editorial composition."
+}

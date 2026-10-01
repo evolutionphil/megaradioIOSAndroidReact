@@ -1,0 +1,10 @@
+{
+  "details" : {
+    "delivery-uuid" : "9cc3ed3c-24a5-4abf-a869-f739b9bbbb61",
+    "transferred" : "46694630 bytes in 11.548 seconds (4.0MB/s, 32.347Mbps)"
+  },
+  "os-version" : "Version 26.6.2 (Build 25G83)",
+  "success-message" : "No errors uploading archive at '/tmp/megaradio-apple-release/ios-export/MegaRadio.ipa'.",
+  "tool-path" : "/Applications/Xcode.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources",
+  "tool-version" : "26.30.4 (173004)"
+}

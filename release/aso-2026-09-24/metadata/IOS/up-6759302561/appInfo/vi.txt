@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Nghe radio online";
+"subtitle" = "Đài FM, AM trực tiếp toàn cầu";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

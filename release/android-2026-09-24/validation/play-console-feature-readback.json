@@ -1,0 +1,268 @@
+{
+  "observedAt": "2026-09-24T23:05:49.895855+00:00",
+  "stage": "saved draft",
+  "verified": [
+    {
+      "locale": "it-IT",
+      "file": "MegaRadio-feature-it-IT.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "en-US",
+      "file": "MegaRadio-feature-en-US.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "de-DE",
+      "file": "MegaRadio-feature-de-DE.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "tr-TR",
+      "file": "MegaRadio-feature-tr-TR.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ar",
+      "file": "MegaRadio-feature-ar.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "bg",
+      "file": "MegaRadio-feature-bg.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "bn-BD",
+      "file": "MegaRadio-feature-bn-BD.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ca",
+      "file": "MegaRadio-feature-ca.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "cs-CZ",
+      "file": "MegaRadio-feature-cs-CZ.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "da-DK",
+      "file": "MegaRadio-feature-da-DK.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "el-GR",
+      "file": "MegaRadio-feature-el-GR.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "en-AU",
+      "file": "MegaRadio-feature-en-AU.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "en-CA",
+      "file": "MegaRadio-feature-en-CA.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "en-GB",
+      "file": "MegaRadio-feature-en-GB.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "es-419",
+      "file": "MegaRadio-feature-es-419.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "es-ES",
+      "file": "MegaRadio-feature-es-ES.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "fi-FI",
+      "file": "MegaRadio-feature-fi-FI.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "fr-CA",
+      "file": "MegaRadio-feature-fr-CA.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "MegaRadio-feature-fr-FR.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "gu",
+      "file": "MegaRadio-feature-gu.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "hi-IN",
+      "file": "MegaRadio-feature-hi-IN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "hr-HR",
+      "file": "MegaRadio-feature-hr-HR.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "hu-HU",
+      "file": "MegaRadio-feature-hu-HU.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "id",
+      "file": "MegaRadio-feature-id.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "iw-IL",
+      "file": "MegaRadio-feature-iw-IL.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ja-JP",
+      "file": "MegaRadio-feature-ja-JP.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "kn-IN",
+      "file": "MegaRadio-feature-kn-IN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ko-KR",
+      "file": "MegaRadio-feature-ko-KR.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ml-IN",
+      "file": "MegaRadio-feature-ml-IN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "mr-IN",
+      "file": "MegaRadio-feature-mr-IN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ms-MY",
+      "file": "MegaRadio-feature-ms-MY.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "MegaRadio-feature-nl-NL.png",
+      "dimensions": "1024x500",
+      "saved": true
+    },
+    {
+      "locale": "no-NO",
+      "file": "MegaRadio-feature-no-NO.png",
+      "dimensions": "1024x500",
+      "saved": true
+    },
+    {
+      "locale": "pa",
+      "file": "MegaRadio-feature-pa.png",
+      "dimensions": "1024x500",
+      "saved": true
+    },
+    {
+      "locale": "pl-PL",
+      "file": "MegaRadio-feature-pl-PL.png",
+      "dimensions": "1024x500",
+      "saved": true
+    },
+    {
+      "locale": "pt-BR",
+      "file": "MegaRadio-feature-pt-BR.png",
+      "dimensions": "1024x500",
+      "saved": true
+    },
+    {
+      "locale": "pt-PT",
+      "file": "MegaRadio-feature-pt-PT.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ro-RO",
+      "file": "MegaRadio-feature-ro-RO.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ru-RU",
+      "file": "MegaRadio-feature-ru-RU.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "sk-SK",
+      "file": "MegaRadio-feature-sk-SK.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "sl-SI",
+      "file": "MegaRadio-feature-sl-SI.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "sv-SE",
+      "file": "MegaRadio-feature-sv-SE.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ta-IN",
+      "file": "MegaRadio-feature-ta-IN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "te-IN",
+      "file": "MegaRadio-feature-te-IN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "th",
+      "file": "MegaRadio-feature-th.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "uk",
+      "file": "MegaRadio-feature-uk.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "ur",
+      "file": "MegaRadio-feature-ur.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "vi",
+      "file": "MegaRadio-feature-vi.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "zh-CN",
+      "file": "MegaRadio-feature-zh-CN.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "zh-HK",
+      "file": "MegaRadio-feature-zh-HK.png",
+      "dimensions": "1024x500"
+    },
+    {
+      "locale": "zh-TW",
+      "file": "MegaRadio-feature-zh-TW.png",
+      "dimensions": "1024x500"
+    }
+  ],
+  "remaining": [],
+  "complete": true
+}

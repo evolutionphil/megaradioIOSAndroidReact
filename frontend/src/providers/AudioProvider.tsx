@@ -4,7 +4,8 @@
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 
 import TrackPlayer, { 
-  Capability, 
+  Capability,
+  TrackType,
   State, 
   Event, 
   usePlaybackState, 
@@ -25,6 +26,7 @@ import { syncCompanionCatalog } from '../services/companionCatalogService';
 import { normalizeCompanionCountries } from '../utils/companionCountries';
 import watchService from '../services/watchService';
 import wearOSService from '../services/wearOSService';
+import { handleWearStationRequest } from '../services/wearStationRequest';
 import { adMobService } from '../services/adMobService';
 import { genreService } from '../services/genreService';
 import api from '../services/api';
@@ -179,7 +181,7 @@ async function doSetupTrackPlayer(): Promise<boolean> {
 // ============================================
 // PROVIDER COMPONENT
 // ============================================
-import { buildStreamCandidates, isPlaylistStream } from '../utils/streamSources';
+import { buildStreamCandidates, isPlaylistStream, isHlsStream } from '../utils/streamSources';
 
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
@@ -306,6 +308,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             await TrackPlayer.add({
               id: currentStation._id || `station_${Date.now()}`,
               url: nextUrl,
+              type: isHlsStream(nextUrl, currentStation) ? TrackType.HLS : TrackType.Default,
               title: currentStation.name || 'MegaRadio',
               artist: 'MegaRadio',
               album: getStationGenre(currentStation) || 'MegaRadio',
@@ -1067,6 +1070,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       await TrackPlayer.add({
         id: 'placeholder_previous',
         url: url,
+        type: isHlsStream(url, station) ? TrackType.HLS : TrackType.Default,
         title: 'Previous Station',
         artist: 'MegaRadio',
         album: safeAlbum,
@@ -1080,6 +1084,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       await TrackPlayer.add({
         id: safeId,
         url: url,
+        type: isHlsStream(url, station) ? TrackType.HLS : TrackType.Default,
         title: safeTitle,
         artist: 'MegaRadio',
         album: safeAlbum,
@@ -1093,6 +1098,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       await TrackPlayer.add({
         id: 'placeholder_next',
         url: url,
+        type: isHlsStream(url, station) ? TrackType.HLS : TrackType.Default,
         title: 'Next Station',
         artist: 'MegaRadio',
         album: safeAlbum,
@@ -1214,6 +1220,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           await TrackPlayer.add({
             id: station._id || `station_${Date.now()}`,
             url: nextUrl,
+            type: isHlsStream(nextUrl, station) ? TrackType.HLS : TrackType.Default,
             title: station.name || 'MegaRadio',
             artist: 'MegaRadio',
             album: getStationGenre(station) || 'MegaRadio',
@@ -1601,6 +1608,16 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           // Wear OS requests data refresh
           try {
             const data = command.data ? JSON.parse(command.data) : { type: 'all' };
+            if (await handleWearStationRequest(data, async genre => {
+              const { useLocationStore } = await import('../store/locationStore');
+              const location = useLocationStore.getState();
+              const result = await genreService.getGenreStations(genre, 1, 20,
+                location.countryEnglish || location.country, 'votes', 'desc', location.country);
+              return result.stations || [];
+            }, async country => {
+              const result = await stationService.getPopularStations(country, 30);
+              return result.stations || [];
+            }, (requestId, stations, error) => wearOSService.updateStations(stations, { requestId, error }))) break;
             if (data.type === 'genre_stations' && data.genreId) {
               await handleWatchCommand({ command: 'requestGenreStations', genreSlug: data.genreId });
             } else if (data.type === 'country_stations' && data.countryCode) {

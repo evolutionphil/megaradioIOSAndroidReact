@@ -1,0 +1,116 @@
+{
+  "observedAt": "2026-09-24T23:22:36.228494+00:00",
+  "builds": {
+    "phoneApk": {
+      "path": "frontend/android/app/build/outputs/apk/release/app-release.apk",
+      "bytes": 70267328,
+      "sha256": "6e8add9a0579c7b3ecd69c2d191ca1dbd0e47088a9b3e74d75df776d00b0b1df"
+    },
+    "phoneAab": {
+      "path": "frontend/android/app/build/outputs/bundle/release/app-release.aab",
+      "bytes": 75114357,
+      "sha256": "9625073d01929eac222a810a738c16ee3fa67c08c9a365793990215f0d32f904"
+    },
+    "tvAab": {
+      "path": "frontend/tvanddesktop/android-tv/app/build/outputs/bundle/release/app-release.aab",
+      "bytes": 4175571,
+      "sha256": "cd6868e753d61182f3e0db16252f69a7bdab24e8544c1a2ed1f2ee44d1ea5f82"
+    },
+    "wearAab": {
+      "path": "frontend/watch/android/wear/build/outputs/bundle/release/wear-release.aab",
+      "bytes": 16556091,
+      "sha256": "b7acb822a2f0ed51e0fb3fae38158c837e1b74bd6bc43682dbbf2d9eeb019ac5"
+    }
+  },
+  "phoneBuildLog": "/tmp/megaradio-phone-release-final-ui.log",
+  "phoneVersion": "1.0.70 (92)",
+  "tvVersion": "1.0.70 (93)",
+  "wearVersion": "1.0.70 (94)",
+  "releaseUploaded": true,
+  "phoneEmulator": {
+    "launchWithoutLocationPermission": true,
+    "publicCatalogLoaded": true,
+    "fallbackLogoObserved": "REYFM - #original",
+    "mp3Playing": "MANGORADIO",
+    "mp3NowPlayingMetadata": "Country Roads",
+    "hlsPlaying": "KRAL POP",
+    "hlsRegression": "API marks playlist.m3u as HLS; explicit TrackType.HLS fixes android-parsing-container-unsupported",
+    "adBehavior": "Test ad pauses playback; manual resume verified",
+    "backgroundAudioVerified": true,
+    "googleLoginVerified": false,
+    "billingVerified": false,
+    "hlsStabilityVerified": true,
+    "longHlsPauseFailureBeforeLatestPatch": "BehindLiveWindowException",
+    "latestNativeLiveEdgeFixBuilt": true,
+    "latestNativeLiveEdgeFixDeviceTest": "PASS: KRAL POP playback 00:59 to 01:05; pause 01:05:22 to 01:07:18; BUFFERING -> PLAYING at 01:07:19; no BehindLiveWindowException through 01:09",
+    "latestConsentBuildInstalled": true,
+    "backgroundEvidence": "Launcher was top activity while media_session remained PLAYING for KRAL POP; returned to active playback",
+    "umpConsentFormObserved": true,
+    "umpPersonalizationDeclined": true,
+    "privacyOptionsEntryVerified": true,
+    "privacyOptionsFormReopened": true,
+    "privacyDeclinedFromProfile": true,
+    "latestFinalUiBuildInstalled": true,
+    "carModeEnglishLabelsVerified": true,
+    "carModePlaybackVerified": true,
+    "searchVerified": {
+      "query": "jazz",
+      "resultExamples": [
+        "Jazz France",
+        "Adroit Jazz Underground",
+        "101 SMOOTH JAZZ"
+      ]
+    }
+  },
+  "tvDeviceTests": "pending",
+  "wearDeviceTests": "pending",
+  "latestPhoneBuildIncludesConsentGate": true,
+  "latestPhoneBuildIncludesCarModeLocalization": true,
+  "latestPhoneBuildIncludesPrivacyOptionsEntry": true,
+  "tabletEmulator": {
+    "avd": "MegaRadio_Tablet_API36",
+    "profile": "Pixel Tablet",
+    "resolution": "2560x1600",
+    "nativeReleaseInstall": "Success",
+    "uiChecks": "PASS: catalog, full player, now-playing metadata, genres and country selector; four native landscape captures saved",
+    "launchWithoutLocationPermission": true,
+    "umpPersonalizationDeclined": true,
+    "mp3Playing": "MANGORADIO",
+    "nowPlayingMetadata": "Ed Sheeran - Photograph",
+    "adClosedAndPlaybackContinued": true,
+    "captures": [
+      "01-discover.png",
+      "02-player.png",
+      "03-genres.png",
+      "04-country.png"
+    ]
+  },
+  "wearEmulator": {
+    "avd": "MegaRadio_Wear_API36",
+    "profile": "round 454x454",
+    "bootCompleted": true,
+    "releaseApkInstall": "Success",
+    "pairingVerified": false,
+    "applicationControlsVerified": false
+  },
+  "tvEmulator": {
+    "avd": "MegaRadio_TV_API36",
+    "hostRendererLauncherVisible": true,
+    "appNavigationVerified": false,
+    "limitation": "Android Studio input routing not verified; standalone emulator UI executable could not be bound by computer-use tool."
+  },
+  "publishing": {
+    "phoneVersion": "1.0.70 (92)",
+    "track": "internal testing",
+    "releaseId": "16",
+    "status": "Available to internal testers",
+    "publishedAtConsole": "2026-09-25 05:53 Europe/Vienna",
+    "productionPublished": false,
+    "tvUploaded": false,
+    "wearUploaded": false,
+    "productionSubmitted": true,
+    "productionReleaseId": "7",
+    "productionState": "In review; automatic release after approval",
+    "submissionEvidence": "play-production-submission-92.json"
+  }
+}

@@ -1,0 +1,27 @@
+"promotionalText" = "Magyar rádiók és új hangok a világból: hallgass élő műsort, böngéssz zenei műfajok között, és gyűjtsd egy helyre kedvenc állomásaidat.";
+"description" = "Hallgass online rádiót élőben a MegaRadióval. Keresd meg a magyar FM- és AM-adók internetes műsorát, fedezz fel külföldi állomásokat, és válassz zenét, híreket vagy beszélgetéseket. Keress név szerint, majd mentsd el kedvenceidet.
+
+RÁDIÓ A SAJÁT NAPIRENDEDHEZ
+Reggeli hírek, zene munka közben vagy egy beszélgetés az esti pihenéshez: válassz az adott pillanathoz illő adót. Magyarország kiválasztásával az ismerős hangok felől indulhatsz. Ha külföldön élsz, keress rá egy otthoni állomás internetes közvetítésére. Másik országra váltva új nyelveket és műsorokat is megismerhetsz.
+
+NEM KELL MINDEN DALT NEKED KIVÁLASZTANOD
+Pop, rock, retro, jazz, klasszikus és elektronikus zene is lehet a felfedezés kiindulópontja a katalógusban. Minden rádió a saját műsorát állítja össze, így a megszokott lejátszási listádon kívüli zenével is találkozhatsz. Hírek, sport és beszélgetések esetén is az adott adó műsorrendje számít. A kategóriák országonként eltérhetnek.
+
+KEDVENCEK, AMELYEKHEZ VISSZATÉRHETSZ
+Ments el egy állomást, ha később is hallgatnád. Gyűjtsd össze a reggeli tájékozódáshoz, munkához vagy hétvégi pihenéshez illő rádiókat. Így legközelebb nem kell újra keresned vagy minden nevet megjegyezned. A gyűjteményed a zenei ízléseddel együtt változhat.
+
+MIT MUTAT A LEJÁTSZÓ?
+Indítsd el vagy szüneteltesd az élő adást. A dal címe és előadója akkor jelenik meg, ha az állomás továbbítja az adatokat. Az FM és AM itt internetes rádióadást jelent, nem internet nélkül működő antennás vételt. Egyes streamek időszakosan vagy területi okból elérhetetlenné válhatnak.
+
+VÁLASZTHATÓ VÁSÁRLÁSOK
+Az app alkalmazáson belüli vásárlásokat kínál. Az előnyök, az időtartam és az ár a vásárlás előtt látható. Az app reklámjainak eltávolítása nem szünteti meg a rádió saját reklámjait. Az Apple-előfizetéseket az Apple-fiókodban kezelheted, a korábbi vásárlásokat az appban állíthatod vissza.
+
+Internetkapcsolat szükséges; mobiladat-díjak merülhetnek fel. Az adások és a számadatok elérhetősége adónként és régiónként eltér. A MegaRadio rádiókatalógus; a műsort az adók szolgáltatják.
+
+Hallgass rádiót a Macen munka vagy pihenés közben.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "hallgatás,internetes,magyar,magyarország,hírek,sport,jazz,klasszikus,pop,rock,kedvencek,zene,retro";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";

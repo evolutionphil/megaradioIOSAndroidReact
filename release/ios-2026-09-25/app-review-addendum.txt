@@ -1,0 +1,7 @@
+Guideline 5.1.2(i) correction — version 1.0.70, build 7
+
+The missing native AppTrackingTransparency integration and usage-description configuration have been corrected in this new binary. Advertising measurement is delayed, and the advertising SDK is not initialized while the ATT decision is missing or unresolved. Ad requests remain non-personalized. Firebase advertising storage, advertising user data and advertising personalization signals default to disabled.
+
+To see the permission request, launch MegaRadio on an iPhone or iPad with an undetermined tracking permission. After the launch screen closes and the app becomes active, the standard iOS App Tracking Transparency dialog is presented automatically, before advertising SDK initialization. No login or subscription is required. This ATT request is not restricted to a country or region. Any required Google consent form is handled separately before ad requests are allowed.
+
+If the device has already made a tracking decision, or Settings > Privacy & Security > Tracking disallows requests, iOS does not show the dialog again. MegaRadio respects that existing decision. Selecting Ask App Not to Track does not block radio playback or require a purchase. The system prompt and subsequent radio playback after declining tracking have been verified on an iPad simulator running iOS 26.4.

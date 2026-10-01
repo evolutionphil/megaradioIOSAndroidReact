@@ -1,0 +1,29 @@
+"promotionalText" = "Dansk netradio og nye stemmer fra verden: lyt live, gå på opdagelse i musikgenrer, og saml de stationer, du gerne vil vende tilbage til.";
+"description" = "Lyt til radio live med MegaRadio. Find danske radiokanaler online, udforsk FM- og AM-stationer fra andre lande, og vælg musik, nyheder eller samtaler til din dag. Søg på stationens navn, vælg en genre, og gem dine favoritter.
+
+EN RADIOKANAL TIL HVERDAGEN
+Nyheder til morgenmaden, musik mens du arbejder eller et program til en rolig aften: vælg det, der passer til øjeblikket. Start med Danmark i landevælgeren for at finde velkendte udsendelser. Bor du i udlandet, kan du søge efter en dansk stations internetstream og holde fast i lyden hjemmefra.
+
+GIV PLADS TIL ANDEN MUSIK
+Pop, rock, jazz, klassisk og elektronisk musik giver forskellige indgange til kataloget. Hver station vælger selv musik og værter, så du behøver ikke at sammensætte hvert nummer i en spilleliste. Du kan også lede efter nyheder, sport og debat. De tilgængelige genrer og programmer afhænger af land og station.
+
+GEM DET, DU VIL HØRE IGEN
+Føj en station til favoritter, når du har lyst til at vende tilbage. Saml en nyhedskanal, musik til arbejdet og nye opdagelser til weekenden. Favoritterne gør det lettere at finde tilbage uden at huske alle navne eller gentage søgningen.
+
+LIVE-UDSENDELSER VIA INTERNETTET
+Start eller sæt lyden på pause i afspilleren. Sangtitler og kunstnere vises, når stationen sender oplysningerne med. FM og AM henviser til stationernes online-udsendelser, ikke en indbygget antenne til radio uden internet. Streams kan være midlertidigt utilgængelige eller begrænset til bestemte områder.
+
+VALGFRIE KØB I APPEN
+Appen indeholder valgfrie køb. Funktioner, periode og pris vises inden køb. En løsning uden appreklamer fjerner ikke stationens egne reklameblokke. Administrer Apple-abonnementer på din Apple-konto, og gendan eksisterende køb i appen.
+
+Internetforbindelse er nødvendig. Der kan være udgifter til mobildata. Udsendelser og sangoplysninger afhænger af kanal og område. MegaRadio er en radioguide; kanalerne leverer indholdet.
+
+PÅ IPHONE OG IPAD
+Lyt i baggrunden, og styr afspilningen fra låseskærmen. Brug sleeptimeren til at stoppe senere. Biltilstanden har større afspilningsknapper. Vælg station, før du kører, og hold opmærksomheden på trafikken.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "lyt,webradio,fm,am,danmark,online,lokal,nyheder,sport,jazz,klassisk,pop,favoritter,rock,musik,retro";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Bedre genrelister, kanalbilleder og senest afspillede kanaler. Mere pålideligt login, kontoskift og gendannelse af abonnementer.";

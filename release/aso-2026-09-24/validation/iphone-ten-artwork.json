@@ -1,0 +1,13 @@
+{
+  "at": "2026-09-25T15:50:45.814131+00:00",
+  "additionalImages": 450,
+  "iphoneSets": 150,
+  "imagesPerSet": 10,
+  "errors": [],
+  "sourceBuild": "iOS Simulator 1.0.70 (7), real captures through Simulator Save Screen",
+  "nativeUIAltered": false,
+  "visualQA": [
+    "Turkish 6.9-inch contact sheet reviewed"
+  ],
+  "storeUploadStatus": "Not uploaded; all Apple submissions still waiting for review"
+}

@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio en vivo";
+"subtitle" = "Emisoras de México y el mundo";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

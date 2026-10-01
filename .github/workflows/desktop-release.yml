@@ -1,14 +1,12 @@
 name: Desktop Release (Win + Linux)
 
-# git tag v1.0.x atınca otomatik tetiklenir.
-# Windows ve Linux build'leri paralel çalışır; çıktılar GitHub Releases'e atılır.
-# macOS build'i lokal Mac'te yapıldığı için CI'a dahil değildir
-# (DMG + Mac App Store .pkg user'ın makinesinde imzalanıp Transporter ile yüklenir).
+# Build both operating systems before publishing a single release.
+# macOS uses its separately signed App Store/notarization distribution.
 
 on:
   push:
     tags: ['v*']
-  workflow_dispatch: {}   # manuel tetikleme de mümkün (Actions sekmesi)
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -29,32 +27,65 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: Install dependencies
-        run: yarn install --network-timeout 600000
+      - name: Install renderer dependencies
+        working-directory: frontend/tvanddesktop/apple-tv-and-macos/web-preview
+        run: yarn install --frozen-lockfile --network-timeout 600000
+
+      - name: Install desktop dependencies
+        run: npm ci
+
+      - name: Check desktop purchase integration
+        working-directory: .
+        # The same file also contains an iOS rating-modal test, which requires
+        # the separate React Native app dependencies.
+        run: node --test --test-name-pattern="receipt|purchase|transaction|restore" tests/apple-release-iap.test.cjs
 
       - name: Build (Windows)
         if: matrix.os == 'windows-latest'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn run electron-builder --win nsis portable --publish always
+        run: npm run build:win -- --publish never
 
       - name: Build (Linux)
         if: matrix.os == 'ubuntu-latest'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn run electron-builder --linux AppImage deb --publish always
+        run: npm run build:linux -- --publish never
 
       - name: Upload artifacts
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-dist
           path: |
             frontend/tvanddesktop/desktop/dist/*.exe
+            frontend/tvanddesktop/desktop/dist/*.blockmap
             frontend/tvanddesktop/desktop/dist/*.AppImage
             frontend/tvanddesktop/desktop/dist/*.deb
             frontend/tvanddesktop/desktop/dist/latest*.yml
-          if-no-files-found: ignore
+          if-no-files-found: error
           retention-days: 30
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*-dist'
+          merge-multiple: true
+          path: release-assets
+      - name: Prepare draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          version=$(node -p "require('./frontend/tvanddesktop/desktop/package.json').version")
+          tag="v${version}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            if [ "$(gh release view "$tag" --json isDraft --jq .isDraft)" != true ]; then
+              echo "Desktop release $tag is already public; preserving its verified installers and update metadata."
+              exit 0
+            fi
+          else
+            gh release create "$tag" --draft --target "$GITHUB_SHA" --title "MegaRadio ${version}" --notes "Windows and Linux desktop update with the shared TV interface and current CDN delivery."
+          fi
+          gh release upload "$tag" release-assets/* --clobber

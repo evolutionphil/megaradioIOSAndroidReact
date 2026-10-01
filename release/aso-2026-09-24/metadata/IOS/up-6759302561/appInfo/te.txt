@@ -1,0 +1,3 @@
+"name" = "MegaRadio: లైవ్ రేడియో";
+"subtitle" = "తెలుగు, ప్రపంచ FM, AM వినండి";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

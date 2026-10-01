@@ -1,0 +1,12 @@
+[
+  {
+    "platform": "MAC_OS",
+    "locale": "hr",
+    "device": "mac",
+    "count": 4,
+    "verified": true,
+    "setId": "8fcbc622-ce2e-4d3e-8924-12e01869865a",
+    "observedAt": "2026-09-24T11:01:02Z",
+    "localFingerprint": "215e4984660c9108cc93db8655df4499d1c2b55b699ffa586884db85475c014b"
+  }
+]

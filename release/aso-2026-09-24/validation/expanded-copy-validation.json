@@ -1,0 +1,1202 @@
+[
+  {
+    "locale": "tr",
+    "platform": "IOS",
+    "characters": 3027,
+    "promotionCharacters": 155,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "tr",
+    "platform": "MACOS",
+    "characters": 2758,
+    "promotionCharacters": 155,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "tr",
+    "platform": "TVOS",
+    "characters": 2789,
+    "promotionCharacters": 155,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "de-DE",
+    "platform": "IOS",
+    "characters": 3162,
+    "promotionCharacters": 163,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "de-DE",
+    "platform": "MACOS",
+    "characters": 2880,
+    "promotionCharacters": 163,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "de-DE",
+    "platform": "TVOS",
+    "characters": 2893,
+    "promotionCharacters": 163,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-US",
+    "platform": "IOS",
+    "characters": 3350,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-US",
+    "platform": "MACOS",
+    "characters": 3112,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-US",
+    "platform": "TVOS",
+    "characters": 3129,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fr-FR",
+    "platform": "IOS",
+    "characters": 2777,
+    "promotionCharacters": 153,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fr-FR",
+    "platform": "MACOS",
+    "characters": 2561,
+    "promotionCharacters": 153,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fr-FR",
+    "platform": "TVOS",
+    "characters": 2590,
+    "promotionCharacters": 153,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "es-ES",
+    "platform": "IOS",
+    "characters": 2664,
+    "promotionCharacters": 154,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "es-ES",
+    "platform": "MACOS",
+    "characters": 2452,
+    "promotionCharacters": 154,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "es-ES",
+    "platform": "TVOS",
+    "characters": 2480,
+    "promotionCharacters": 154,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "it",
+    "platform": "IOS",
+    "characters": 2794,
+    "promotionCharacters": 150,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "it",
+    "platform": "MACOS",
+    "characters": 2559,
+    "promotionCharacters": 150,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "it",
+    "platform": "TVOS",
+    "characters": 2588,
+    "promotionCharacters": 150,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pt-PT",
+    "platform": "IOS",
+    "characters": 2597,
+    "promotionCharacters": 149,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pt-PT",
+    "platform": "MACOS",
+    "characters": 2386,
+    "promotionCharacters": 149,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pt-PT",
+    "platform": "TVOS",
+    "characters": 2402,
+    "promotionCharacters": 149,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ru",
+    "platform": "IOS",
+    "characters": 2470,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ru",
+    "platform": "MACOS",
+    "characters": 2280,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ru",
+    "platform": "TVOS",
+    "characters": 2293,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ja",
+    "platform": "IOS",
+    "characters": 1329,
+    "promotionCharacters": 71,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ja",
+    "platform": "MACOS",
+    "characters": 1232,
+    "promotionCharacters": 71,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ja",
+    "platform": "TVOS",
+    "characters": 1245,
+    "promotionCharacters": 71,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "zh-Hant",
+    "platform": "IOS",
+    "characters": 1012,
+    "promotionCharacters": 54,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "zh-Hant",
+    "platform": "MACOS",
+    "characters": 950,
+    "promotionCharacters": 54,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "zh-Hant",
+    "platform": "TVOS",
+    "characters": 960,
+    "promotionCharacters": 54,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "he",
+    "platform": "IOS",
+    "characters": 1930,
+    "promotionCharacters": 111,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "he",
+    "platform": "MACOS",
+    "characters": 1802,
+    "promotionCharacters": 111,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "he",
+    "platform": "TVOS",
+    "characters": 1808,
+    "promotionCharacters": 111,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ar-SA",
+    "platform": "IOS",
+    "characters": 2352,
+    "promotionCharacters": 132,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ar-SA",
+    "platform": "MACOS",
+    "characters": 2222,
+    "promotionCharacters": 132,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ar-SA",
+    "platform": "TVOS",
+    "characters": 2234,
+    "promotionCharacters": 132,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-GB",
+    "platform": "IOS",
+    "characters": 3127,
+    "promotionCharacters": 163,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-GB",
+    "platform": "MACOS",
+    "characters": 2891,
+    "promotionCharacters": 163,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-GB",
+    "platform": "TVOS",
+    "characters": 2923,
+    "promotionCharacters": 163,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-AU",
+    "platform": "IOS",
+    "characters": 2816,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-AU",
+    "platform": "MACOS",
+    "characters": 2584,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-AU",
+    "platform": "TVOS",
+    "characters": 2598,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fr-CA",
+    "platform": "IOS",
+    "characters": 2694,
+    "promotionCharacters": 158,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fr-CA",
+    "platform": "MACOS",
+    "characters": 2486,
+    "promotionCharacters": 158,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fr-CA",
+    "platform": "TVOS",
+    "characters": 2529,
+    "promotionCharacters": 158,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "es-MX",
+    "platform": "IOS",
+    "characters": 2786,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "es-MX",
+    "platform": "MACOS",
+    "characters": 2587,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "es-MX",
+    "platform": "TVOS",
+    "characters": 2594,
+    "promotionCharacters": 156,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pt-BR",
+    "platform": "IOS",
+    "characters": 2800,
+    "promotionCharacters": 153,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pt-BR",
+    "platform": "MACOS",
+    "characters": 2617,
+    "promotionCharacters": 153,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pt-BR",
+    "platform": "TVOS",
+    "characters": 2622,
+    "promotionCharacters": 153,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "nl-NL",
+    "platform": "IOS",
+    "characters": 2501,
+    "promotionCharacters": 140,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "nl-NL",
+    "platform": "MACOS",
+    "characters": 2304,
+    "promotionCharacters": 140,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "nl-NL",
+    "platform": "TVOS",
+    "characters": 2327,
+    "promotionCharacters": 140,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sv",
+    "platform": "IOS",
+    "characters": 2310,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sv",
+    "platform": "MACOS",
+    "characters": 2116,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sv",
+    "platform": "TVOS",
+    "characters": 2143,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "no",
+    "platform": "IOS",
+    "characters": 2328,
+    "promotionCharacters": 141,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "no",
+    "platform": "MACOS",
+    "characters": 2156,
+    "promotionCharacters": 141,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "no",
+    "platform": "TVOS",
+    "characters": 2160,
+    "promotionCharacters": 141,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "da",
+    "platform": "IOS",
+    "characters": 2277,
+    "promotionCharacters": 136,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "da",
+    "platform": "MACOS",
+    "characters": 2100,
+    "promotionCharacters": 136,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "da",
+    "platform": "TVOS",
+    "characters": 2113,
+    "promotionCharacters": 136,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fi",
+    "platform": "IOS",
+    "characters": 2370,
+    "promotionCharacters": 151,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fi",
+    "platform": "MACOS",
+    "characters": 2191,
+    "promotionCharacters": 151,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "fi",
+    "platform": "TVOS",
+    "characters": 2210,
+    "promotionCharacters": 151,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pl",
+    "platform": "IOS",
+    "characters": 2349,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pl",
+    "platform": "MACOS",
+    "characters": 2172,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pl",
+    "platform": "TVOS",
+    "characters": 2180,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "cs",
+    "platform": "IOS",
+    "characters": 2240,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "cs",
+    "platform": "MACOS",
+    "characters": 2073,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "cs",
+    "platform": "TVOS",
+    "characters": 2096,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sk",
+    "platform": "IOS",
+    "characters": 2198,
+    "promotionCharacters": 133,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sk",
+    "platform": "MACOS",
+    "characters": 2035,
+    "promotionCharacters": 133,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sk",
+    "platform": "TVOS",
+    "characters": 2049,
+    "promotionCharacters": 133,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hu",
+    "platform": "IOS",
+    "characters": 2431,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hu",
+    "platform": "MACOS",
+    "characters": 2236,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hu",
+    "platform": "TVOS",
+    "characters": 2254,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ro",
+    "platform": "IOS",
+    "characters": 2424,
+    "promotionCharacters": 147,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ro",
+    "platform": "MACOS",
+    "characters": 2232,
+    "promotionCharacters": 147,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ro",
+    "platform": "TVOS",
+    "characters": 2251,
+    "promotionCharacters": 147,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hr",
+    "platform": "IOS",
+    "characters": 2238,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hr",
+    "platform": "MACOS",
+    "characters": 2060,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hr",
+    "platform": "TVOS",
+    "characters": 2089,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "el",
+    "platform": "IOS",
+    "characters": 2449,
+    "promotionCharacters": 139,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "el",
+    "platform": "MACOS",
+    "characters": 2239,
+    "promotionCharacters": 139,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "el",
+    "platform": "TVOS",
+    "characters": 2266,
+    "promotionCharacters": 139,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "uk",
+    "platform": "IOS",
+    "characters": 2294,
+    "promotionCharacters": 139,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "uk",
+    "platform": "MACOS",
+    "characters": 2118,
+    "promotionCharacters": 139,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "uk",
+    "platform": "TVOS",
+    "characters": 2122,
+    "promotionCharacters": 139,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ca",
+    "platform": "IOS",
+    "characters": 2442,
+    "promotionCharacters": 142,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ca",
+    "platform": "MACOS",
+    "characters": 2241,
+    "promotionCharacters": 142,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ca",
+    "platform": "TVOS",
+    "characters": 2263,
+    "promotionCharacters": 142,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "zh-Hans",
+    "platform": "IOS",
+    "characters": 1055,
+    "promotionCharacters": 51,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "zh-Hans",
+    "platform": "MACOS",
+    "characters": 992,
+    "promotionCharacters": 51,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "zh-Hans",
+    "platform": "TVOS",
+    "characters": 1000,
+    "promotionCharacters": 51,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ko",
+    "platform": "IOS",
+    "characters": 1477,
+    "promotionCharacters": 72,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ko",
+    "platform": "MACOS",
+    "characters": 1379,
+    "promotionCharacters": 72,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ko",
+    "platform": "TVOS",
+    "characters": 1392,
+    "promotionCharacters": 72,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "id",
+    "platform": "IOS",
+    "characters": 2684,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "id",
+    "platform": "MACOS",
+    "characters": 2496,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "id",
+    "platform": "TVOS",
+    "characters": 2518,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ms",
+    "platform": "IOS",
+    "characters": 2474,
+    "promotionCharacters": 144,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ms",
+    "platform": "MACOS",
+    "characters": 2291,
+    "promotionCharacters": 144,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ms",
+    "platform": "TVOS",
+    "characters": 2313,
+    "promotionCharacters": 144,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "th",
+    "platform": "IOS",
+    "characters": 2201,
+    "promotionCharacters": 116,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "th",
+    "platform": "MACOS",
+    "characters": 2062,
+    "promotionCharacters": 116,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "th",
+    "platform": "TVOS",
+    "characters": 2083,
+    "promotionCharacters": 116,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "vi",
+    "platform": "IOS",
+    "characters": 2388,
+    "promotionCharacters": 141,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "vi",
+    "platform": "MACOS",
+    "characters": 2241,
+    "promotionCharacters": 141,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "vi",
+    "platform": "TVOS",
+    "characters": 2253,
+    "promotionCharacters": 141,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hi",
+    "platform": "IOS",
+    "characters": 2518,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hi",
+    "platform": "MACOS",
+    "characters": 2346,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "hi",
+    "platform": "TVOS",
+    "characters": 2367,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-CA",
+    "platform": "IOS",
+    "characters": 2932,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-CA",
+    "platform": "MACOS",
+    "characters": 2741,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "en-CA",
+    "platform": "TVOS",
+    "characters": 2752,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "bn",
+    "platform": "IOS",
+    "characters": 2204,
+    "promotionCharacters": 135,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "bn",
+    "platform": "MACOS",
+    "characters": 2048,
+    "promotionCharacters": 135,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "bn",
+    "platform": "TVOS",
+    "characters": 2062,
+    "promotionCharacters": 135,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "gu",
+    "platform": "IOS",
+    "characters": 2129,
+    "promotionCharacters": 130,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "gu",
+    "platform": "MACOS",
+    "characters": 1974,
+    "promotionCharacters": 130,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "gu",
+    "platform": "TVOS",
+    "characters": 1988,
+    "promotionCharacters": 130,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "kn",
+    "platform": "IOS",
+    "characters": 2346,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "kn",
+    "platform": "MACOS",
+    "characters": 2181,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "kn",
+    "platform": "TVOS",
+    "characters": 2183,
+    "promotionCharacters": 131,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ml",
+    "platform": "IOS",
+    "characters": 2491,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ml",
+    "platform": "MACOS",
+    "characters": 2310,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ml",
+    "platform": "TVOS",
+    "characters": 2331,
+    "promotionCharacters": 145,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "mr",
+    "platform": "IOS",
+    "characters": 2219,
+    "promotionCharacters": 123,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "mr",
+    "platform": "MACOS",
+    "characters": 2066,
+    "promotionCharacters": 123,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "mr",
+    "platform": "TVOS",
+    "characters": 2082,
+    "promotionCharacters": 123,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "or",
+    "platform": "IOS",
+    "characters": 1937,
+    "promotionCharacters": 123,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "or",
+    "platform": "MACOS",
+    "characters": 1777,
+    "promotionCharacters": 123,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "or",
+    "platform": "TVOS",
+    "characters": 1786,
+    "promotionCharacters": 123,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pa",
+    "platform": "IOS",
+    "characters": 2050,
+    "promotionCharacters": 121,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pa",
+    "platform": "MACOS",
+    "characters": 1892,
+    "promotionCharacters": 121,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "pa",
+    "platform": "TVOS",
+    "characters": 1902,
+    "promotionCharacters": 121,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ta",
+    "platform": "IOS",
+    "characters": 2594,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ta",
+    "platform": "MACOS",
+    "characters": 2391,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ta",
+    "platform": "TVOS",
+    "characters": 2413,
+    "promotionCharacters": 148,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "te",
+    "platform": "IOS",
+    "characters": 2317,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "te",
+    "platform": "MACOS",
+    "characters": 2157,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "te",
+    "platform": "TVOS",
+    "characters": 2161,
+    "promotionCharacters": 137,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ur",
+    "platform": "IOS",
+    "characters": 2239,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ur",
+    "platform": "MACOS",
+    "characters": 2082,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "ur",
+    "platform": "TVOS",
+    "characters": 2104,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sl",
+    "platform": "IOS",
+    "characters": 2325,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sl",
+    "platform": "MACOS",
+    "characters": 2150,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  },
+  {
+    "locale": "sl",
+    "platform": "TVOS",
+    "characters": 2168,
+    "promotionCharacters": 134,
+    "brandUnchanged": true,
+    "review": "localized opening and market context; relevant features; no volume or rank claim"
+  }
+]

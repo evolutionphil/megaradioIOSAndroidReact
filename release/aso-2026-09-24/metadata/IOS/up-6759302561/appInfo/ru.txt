@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Радио онлайн";
+"subtitle" = "Прямой эфир FM и AM станций";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

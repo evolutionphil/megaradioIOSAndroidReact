@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Canlı Radyo";
+"subtitle" = "Türkiye ve dünyadan FM, AM";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

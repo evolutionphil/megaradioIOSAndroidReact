@@ -1,0 +1,3 @@
+"name" = "MegaRadio: Radio en direct";
+"subtitle" = "Stations du Québec et du monde";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";

@@ -1,0 +1,21 @@
+{
+  "versionCode": 98,
+  "versionName": "1.0.70",
+  "targetSdk": 36,
+  "sha256": "f77d9c4778875000b8b8ed35a1a6990780981ba2359abc882ca4fff60d5bdeb5",
+  "lint": "passed",
+  "unitTests": "5 passed",
+  "build": "passed",
+  "runtime": "Native Desktop API34 launch, maximize, intro Enter navigation, station playback and Genres navigation passed; see android-desktop98-runtime.json",
+  "playReason": "Desktop track requires target API 36; 97 is a superseded upload and was never published",
+  "time": "2026-09-25T14:11:39.172778+00:00",
+  "googlePlayInternal": {
+    "track": "4698601860782715379",
+    "release": "1",
+    "name": "1.0.70 (98) - Desktop",
+    "state": "Active",
+    "testerGroup": "Existing licence testersgey, 4 testers, saved",
+    "testUrl": "https://play.google.com/apps/internaltest/4698601860782715379",
+    "productionSubmitted": false
+  }
+}

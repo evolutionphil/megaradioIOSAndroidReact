@@ -1,0 +1,29 @@
+"promotionalText" = "Veus en català i sons d'arreu del món: escolta ràdio en directe, descobreix gèneres musicals i desa les emissores que voldràs tornar a sentir.";
+"description" = "Escolta ràdio en directe amb MegaRadio. Troba emissores en català, explora ràdios FM i AM per internet i descobreix música, notícies i conversa d'altres països. Cerca pel nom, tria un gènere i desa les teves preferides.
+
+LA RÀDIO AL TEU RITME
+Un informatiu al matí, música mentre treballes o una conversa al vespre: cada moment pot tenir la seva emissora. Cerca una ràdio coneguda pel nom o explora les opcions del país seleccionat. Si vius lluny de casa, un programa en català pot acostar-te veus familiars. Canvia de país quan vulguis sentir altres llengües i maneres de fer ràdio.
+
+MÉS ENLLÀ DE LA LLISTA DE SEMPRE
+Pop, rock, jazz, música clàssica i electrònica ofereixen diferents portes d'entrada al catàleg. Cada emissora decideix la seva programació; no cal que triïs totes les cançons. Presentadors, entrevistes i emissions en directe poden portar-te una descoberta inesperada. Els gèneres i programes disponibles varien segons el país i el mitjà.
+
+FAVORITES PER TORNAR-HI
+Desa una emissora quan vulguis escoltar-la de nou. Reuneix les notícies del matí, música per concentrar-te i descobertes per al cap de setmana. Així no hauràs de recordar cada nom ni repetir la cerca cada vegada que obris l'aplicació.
+
+EL DIRECTE A TRAVÉS D'INTERNET
+Inicia o pausa l'àudio al reproductor. El títol de la cançó i l'artista apareixen quan l'emissora facilita aquestes dades. FM i AM es refereixen a les emissions online, no a una recepció per antena sense connexió. Alguns fluxos poden no estar disponibles temporalment o en determinades regions.
+
+COMPRES OPCIONALS
+L'aplicació ofereix compres integrades opcionals. Les prestacions, la durada i el preu es mostren abans de comprar. Treure els anuncis de l'aplicació no treu la publicitat emesa per les ràdios. Gestiona les subscripcions Apple al compte Apple i restaura compres existents des de l'aplicació.
+
+Cal connexió a internet i es poden aplicar càrrecs de dades mòbils. La disponibilitat de les emissions i dels títols depèn de l'emissora i la regió. MegaRadio és un directori; les emissores proporcionen els continguts.
+
+A IPHONE I IPAD
+Escolta en segon pla i controla la reproducció des de la pantalla bloquejada. Programa l'aturada amb el temporitzador de son. El mode cotxe ofereix controls més grans. Tria l'emissora abans de conduir i mantén l'atenció a la carretera.
+
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://themegaradio.com/en/pages/privacy-policy";
+"keywords" = "escoltar,internet,online,català,catalunya,notícies,esports,jazz,clàssica,pop,rock,preferits,música";
+"supportUrl" = "https://themegaradio.com/en/contact";
+"marketingUrl" = "https://themegaradio.com";
+"whatsNew" = "Millores als gèneres, les imatges de les emissores i les escoltes recents. Més fiabilitat en iniciar sessió, canviar de compte i restaurar subscripcions.";

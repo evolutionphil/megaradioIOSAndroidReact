@@ -1,0 +1,9 @@
+{
+  "details" : {
+
+  },
+  "os-version" : "Version 26.6.2 (Build 25G83)",
+  "success-message" : "No errors validating archive at '/tmp/megaradio-apple-release/tvos-final-export/MegaRadioTV.ipa'.",
+  "tool-path" : "/Applications/Xcode.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources",
+  "tool-version" : "26.30.4 (173004)"
+}

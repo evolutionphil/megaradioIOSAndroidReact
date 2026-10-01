@@ -1,0 +1,3 @@
+"name" = "MegaRadio: רדיו בשידור חי";
+"subtitle" = "תחנות FM ו-AM מכל העולם";
+"privacyPolicyUrl" = "https://themegaradio.com/en/pages/privacy-policy";
