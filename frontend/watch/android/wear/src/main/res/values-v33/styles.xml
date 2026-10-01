@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MegaRadio.Starting" parent="Theme.MegaRadio.Starting.Base">
+        <!-- Show branding for launcher, companion and other cold-start entry points. -->
+        <item name="android:windowSplashScreenBehavior">icon_preferred</item>
+    </style>
+</resources>

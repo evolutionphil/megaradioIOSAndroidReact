@@ -6,19 +6,28 @@ package com.visiongo.megaradio.wear
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
+import com.visiongo.megaradio.wear.presentation.WearViewModel
 import com.visiongo.megaradio.wear.presentation.MegaRadioWearApp
 import com.visiongo.megaradio.wear.presentation.theme.MegaRadioWearTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var wearViewModel: WearViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
+        wearViewModel = ViewModelProvider(this)[WearViewModel::class.java]
         
         setContent {
             MegaRadioWearTheme {
-                MegaRadioWearApp()
+                MegaRadioWearApp(wearViewModel)
             }
         }
     }
+
+    override fun onStart() { super.onStart(); wearViewModel.startConnectionChecks() }
+    override fun onStop() { wearViewModel.stopConnectionChecks(); super.onStop() }
 }

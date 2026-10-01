@@ -26,31 +26,7 @@ class MegaRadioWearListenerService : WearableListenerService() {
 
                 Log.d(TAG, "Data changed at path: $path")
 
-                when (path) {
-                    "/megaradio/stations" -> {
-                        val json = dataMap.getString("data") ?: "[]"
-                        WearDataRepository.updateStations(json)
-                    }
-                    "/megaradio/favorites" -> {
-                        val json = dataMap.getString("data") ?: "[]"
-                        WearDataRepository.updateFavorites(json)
-                    }
-                    "/megaradio/genres" -> {
-                        val json = dataMap.getString("data") ?: "[]"
-                        WearDataRepository.updateGenres(json)
-                    }
-                    "/megaradio/countries" -> {
-                        val json = dataMap.getString("data") ?: "[]"
-                        WearDataRepository.updateCountries(json)
-                    }
-                    "/megaradio/now_playing" -> {
-                        val stationJson = dataMap.getString("station")
-                        val isPlaying = dataMap.getBoolean("isPlaying")
-                        val songTitle = dataMap.getString("songTitle") ?: ""
-                        val artistName = dataMap.getString("artistName") ?: ""
-                        WearDataRepository.updateNowPlaying(stationJson, isPlaying, songTitle, artistName)
-                    }
-                }
+                WearDataRepository.applyData(path, dataMap)
             }
         }
     }

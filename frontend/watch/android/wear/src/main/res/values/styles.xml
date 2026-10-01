@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MegaRadio" parent="android:style/Theme.DeviceDefault">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="Theme.MegaRadio.Starting" parent="Theme.MegaRadio.Starting.Base" />
+
+    <style name="Theme.MegaRadio.Starting.Base" parent="Theme.MegaRadio.Starting.Common" />
+
+    <style name="Theme.MegaRadio.Starting.Common" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen</item>
+        <item name="postSplashScreenTheme">@style/Theme.MegaRadio</item>
+    </style>
+</resources>

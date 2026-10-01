@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MegaRadio.Starting.Base" parent="Theme.MegaRadio.Starting.Common">
+        <!-- A distinct icon background prevents native enlargement of the 48dp icon.
+             It is fully covered by the circular launcher artwork. -->
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/ic_launcher_foreground</item>
+    </style>
+</resources>

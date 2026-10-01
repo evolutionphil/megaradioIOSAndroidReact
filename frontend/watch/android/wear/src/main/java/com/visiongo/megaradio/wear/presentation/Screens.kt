@@ -13,13 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -38,52 +41,28 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import com.visiongo.megaradio.wear.data.*
 import com.visiongo.megaradio.wear.presentation.theme.*
-import kotlinx.coroutines.delay
 
-// ========================================
-// SPLASH SCREEN
-// ========================================
+/** Keeps every scrollable watch screen and its native position indicator in sync. */
 @Composable
-fun SplashScreen(onTimeout: () -> Unit) {
-    LaunchedEffect(Unit) {
-        delay(2000)
-        onTimeout()
-    }
+private fun WearScrollableScreen(content: ScalingLazyListScope.() -> Unit) {
+    val listState = rememberScalingLazyListState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.MusicNote,
-                contentDescription = "Logo",
-                tint = AccentPink,
-                modifier = Modifier.size(48.dp)
+    Scaffold(
+        modifier = Modifier.fillMaxSize().background(BackgroundBlack),
+        positionIndicator = {
+            PositionIndicator(
+                scalingLazyListState = listState,
+                modifier = Modifier.testTag("wear-scroll-indicator")
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row {
-                Text(
-                    text = "mega",
-                    color = TextWhite,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "radio",
-                    color = AccentPink,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
         }
+    ) {
+        ScalingLazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize().testTag("wear-scroll-list"),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(top = 32.dp, bottom = 32.dp),
+            content = content
+        )
     }
 }
 
@@ -101,23 +80,16 @@ fun HomeScreen(
     onNowPlayingClick: () -> Unit,
     onRefreshClick: () -> Unit
 ) {
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(
-            top = 32.dp,
-            bottom = 32.dp
-        )
-    ) {
+    WearScrollableScreen {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "MegaRadio",
                     color = AccentPink,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 // Connection indicator
@@ -169,26 +141,31 @@ fun HomeScreen(
 
         if (!isPhoneConnected) {
             item {
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    onClick = onRefreshClick,
-                    modifier = Modifier.size(36.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
-                    shape = CircleShape
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = "Refresh",
-                        tint = TextGray,
-                        modifier = Modifier.size(18.dp)
+                    Button(
+                        onClick = onRefreshClick,
+                        modifier = Modifier.size(48.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
+                        shape = CircleShape
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = "Refresh connection",
+                            tint = TextGray,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Text(
+                        text = "Connect your Android phone and open MegaRadio",
+                        color = TextGray,
+                        fontSize = 12.sp,
+                        modifier = Modifier.fillMaxWidth(0.8f).padding(top = 6.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
-                Text(
-                    text = "No phone connection",
-                    color = TextGray,
-                    fontSize = 11.sp,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
             }
         }
     }
@@ -206,7 +183,7 @@ fun NowPlayingMiniCard(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(0.86f)
             .padding(vertical = 2.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFF1A1A2E)
@@ -263,19 +240,17 @@ fun GenresScreen(
     genres: List<Genre>,
     onGenreClick: (Genre) -> Unit
 ) {
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(top = 32.dp, bottom = 32.dp)
-    ) {
+    WearScrollableScreen {
         item {
             Text(
                 text = "Genres",
                 color = AccentPink,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth(0.76f),
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -301,19 +276,17 @@ fun CountriesScreen(
     countries: List<Country>,
     onCountryClick: (Country) -> Unit
 ) {
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(top = 32.dp, bottom = 32.dp)
-    ) {
+    WearScrollableScreen {
         item {
             Text(
                 text = "Country",
                 color = AccentPink,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth(0.76f),
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -339,25 +312,28 @@ fun StationsScreen(
     title: String,
     stations: List<Station>,
     isLoading: Boolean = false,
+    error: String? = null,
+    playError: String? = null,
     onStationClick: (Station) -> Unit
 ) {
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(top = 32.dp, bottom = 32.dp)
-    ) {
+    WearScrollableScreen {
         item {
             Text(
                 text = title,
                 color = AccentPink,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth(0.76f),
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
 
+        if (playError != null) {
+            item { PlaybackError(playError) }
+        }
         if (isLoading) {
             item {
                 CircularProgressIndicator(
@@ -368,6 +344,8 @@ fun StationsScreen(
                     strokeWidth = 3.dp
                 )
             }
+        } else if (error != null) {
+            item { EmptyState(text = error) }
         } else if (stations.isEmpty()) {
             item { EmptyState(text = "No stations found") }
         } else {
@@ -387,30 +365,32 @@ fun StationsScreen(
 @Composable
 fun FavoritesScreen(
     favorites: List<Station>,
+    playError: String? = null,
     onStationClick: (Station) -> Unit
 ) {
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(top = 32.dp, bottom = 32.dp)
-    ) {
+    WearScrollableScreen {
         item {
             Text(
                 text = "Favorites",
                 color = AccentPink,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth(0.76f),
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
 
+        if (playError != null) {
+            item { PlaybackError(playError) }
+        }
         if (favorites.isEmpty()) {
             item {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(top = 24.dp)
+                    modifier = Modifier.fillMaxWidth(0.76f).padding(top = 24.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.FavoriteBorder,
@@ -422,12 +402,14 @@ fun FavoritesScreen(
                     Text(
                         text = "No favorites yet",
                         color = TextGray,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
                     )
                     Text(
                         text = "Add from your phone",
                         color = TextGray,
-                        fontSize = 11.sp
+                        fontSize = 11.sp,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -440,6 +422,17 @@ fun FavoritesScreen(
             }
         }
     }
+}
+
+@Composable
+private fun PlaybackError(message: String) {
+    Text(
+        text = message,
+        color = TextGray,
+        fontSize = 12.sp,
+        modifier = Modifier.fillMaxWidth(0.76f),
+        textAlign = TextAlign.Center
+    )
 }
 
 // ========================================
@@ -455,115 +448,111 @@ fun NowPlayingScreen(
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // Station Logo Placeholder
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(AccentPink.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = station?.name?.take(2)?.uppercase() ?: "MR",
-                    color = AccentPink,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Station Name
-            Text(
-                text = station?.name ?: "No Station",
-                color = TextWhite,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            // Song Title (if available from metadata)
-            if (songTitle.isNotEmpty()) {
-                Text(
-                    text = songTitle,
-                    color = AccentPink,
-                    fontSize = 11.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
-
-            // Artist / Location
-            Text(
-                text = if (artistName.isNotEmpty()) artistName else station?.locationText ?: "",
-                color = TextGray,
-                fontSize = 11.sp,
-                maxLines = 1
-            )
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Playback Controls
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Previous Button
-                Button(
-                    onClick = onPreviousClick,
-                    modifier = Modifier.size(38.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
-                    shape = CircleShape
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val logoSize = if (maxHeight < 205.dp) 40.dp else 56.dp
+        // Center the metadata and controls together; the decorative logo can scroll above them.
+        WearScrollableScreen {
+            item {
+                Box(
+                    modifier = Modifier
+                        .size(logoSize)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(AccentPink.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.SkipPrevious,
-                        contentDescription = "Previous",
-                        tint = TextWhite,
-                        modifier = Modifier.size(18.dp)
+                    Text(
+                        text = station?.name?.take(2)?.uppercase() ?: "MR",
+                        color = AccentPink,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
                     )
                 }
-
-                // Play/Pause Button (larger, accent colored)
-                Button(
-                    onClick = onPlayPauseClick,
-                    modifier = Modifier.size(48.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = AccentPink),
-                    shape = CircleShape
+            }
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                        contentDescription = if (isPlaying) "Pause" else "Play",
-                        tint = TextWhite,
-                        modifier = Modifier.size(24.dp)
+                    Text(
+                        text = station?.name ?: "No Station",
+                        color = TextWhite,
+                        fontSize = 14.sp,
+                        lineHeight = 17.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.fillMaxWidth(0.76f),
+                        maxLines = 1,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis
                     )
-                }
-
-                // Next Button
-                Button(
-                    onClick = onNextClick,
-                    modifier = Modifier.size(38.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
-                    shape = CircleShape
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.SkipNext,
-                        contentDescription = "Next",
-                        tint = TextWhite,
-                        modifier = Modifier.size(18.dp)
+                    if (songTitle.isNotEmpty()) {
+                        Text(
+                            text = songTitle,
+                            color = AccentPink,
+                            fontSize = 12.sp,
+                            lineHeight = 14.sp,
+                            maxLines = 1,
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth(0.76f).padding(top = 2.dp)
+                        )
+                    }
+                    Text(
+                        text = if (artistName.isNotEmpty()) artistName else station?.locationText ?: "",
+                        color = TextGray,
+                        fontSize = 12.sp,
+                        lineHeight = 14.sp,
+                        modifier = Modifier.fillMaxWidth(0.76f),
+                        maxLines = 1,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis
                     )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.80f),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            onClick = onPreviousClick,
+                            modifier = Modifier.size(48.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.SkipPrevious,
+                                contentDescription = "Previous",
+                                tint = TextWhite,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                        Button(
+                            onClick = onPlayPauseClick,
+                            modifier = Modifier.size(48.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = AccentPink),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                                contentDescription = if (isPlaying) "Pause" else "Play",
+                                tint = TextWhite,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Button(
+                            onClick = onNextClick,
+                            modifier = Modifier.size(48.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.SkipNext,
+                                contentDescription = "Next",
+                                tint = TextWhite,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -578,7 +567,7 @@ fun NowPlayingScreen(
 fun EmptyState(text: String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 16.dp)
+        modifier = Modifier.fillMaxWidth(0.76f).padding(top = 16.dp)
     ) {
         Icon(
             imageVector = Icons.Filled.Info,
@@ -587,7 +576,7 @@ fun EmptyState(text: String) {
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.height(6.dp))
-        Text(text = text, color = TextGray, fontSize = 12.sp)
+        Text(text = text, color = TextGray, fontSize = 12.sp, textAlign = TextAlign.Center)
     }
 }
 
@@ -600,7 +589,7 @@ fun MenuButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(0.86f)
             .padding(vertical = 4.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
         shape = RoundedCornerShape(12.dp)
@@ -612,7 +601,7 @@ fun MenuButton(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
@@ -624,7 +613,10 @@ fun MenuButton(
                     text = text,
                     color = TextWhite,
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             Icon(
@@ -645,7 +637,7 @@ fun ListRowButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(0.86f)
             .padding(vertical = 3.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
         shape = RoundedCornerShape(10.dp)
@@ -661,7 +653,10 @@ fun ListRowButton(
                 text = text,
                 color = TextWhite,
                 fontSize = 13.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
@@ -681,7 +676,7 @@ fun StationRowButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(0.86f)
             .padding(vertical = 3.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = SurfaceDark),
         shape = RoundedCornerShape(10.dp)
@@ -722,7 +717,8 @@ fun StationRowButton(
                         text = station.locationText,
                         color = TextGray,
                         fontSize = 10.sp,
-                        maxLines = 1
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

@@ -9,10 +9,26 @@ import androidx.lifecycle.viewModelScope
 import com.visiongo.megaradio.wear.data.PhoneConnectivityService
 import com.visiongo.megaradio.wear.data.Station
 import com.visiongo.megaradio.wear.data.WearDataRepository
+import com.visiongo.megaradio.wear.data.awaitStationResponse
+import kotlinx.coroutines.Job
+import java.util.UUID
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+/** A successful dispatch permits navigation; playback state still comes from the phone. */
+internal suspend fun dispatchPlayRequest(
+    sendCommand: suspend () -> Boolean,
+    setError: (String?) -> Unit,
+): Boolean {
+    setError(null)
+    val dispatched = sendCommand()
+    if (!dispatched) {
+        setError("Open MegaRadio on your connected Android phone, then try again.")
+    }
+    return dispatched
+}
 
 class WearViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -37,29 +53,45 @@ class WearViewModel(application: Application) : AndroidViewModel(application) {
     private val _filteredStations = MutableStateFlow<List<Station>>(emptyList())
     val filteredStations: StateFlow<List<Station>> = _filteredStations
 
+    private var stationRequest: Job? = null
+    private var connectionChecks: Job? = null
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+    private val _playError = MutableStateFlow<String?>(null)
+    val playError: StateFlow<String?> = _playError
+
     init {
         // Check connection and request initial data
         viewModelScope.launch {
+            phoneService.loadCachedData()
             val connected = phoneService.checkPhoneConnection()
             if (connected) {
                 phoneService.requestAllData()
             }
         }
 
-        // Periodically check phone connection
-        viewModelScope.launch {
+    }
+
+    fun startConnectionChecks() {
+        refreshData()
+        connectionChecks?.cancel()
+        connectionChecks = viewModelScope.launch {
             while (true) {
                 delay(15_000) // every 15 seconds
-                phoneService.checkPhoneConnection()
+                val wasConnected = isPhoneConnected.value
+                if (phoneService.checkPhoneConnection() && !wasConnected) phoneService.requestAllData()
             }
         }
     }
 
-    fun playStation(station: Station) {
-        viewModelScope.launch {
-            phoneService.sendPlayCommand(station.id)
-        }
-    }
+    fun stopConnectionChecks() { connectionChecks?.cancel() }
+
+    suspend fun playStation(station: Station): Boolean = dispatchPlayRequest(
+        sendCommand = { phoneService.sendPlayCommand(station.id) },
+        setError = { _playError.value = it },
+    )
+
+    fun clearPlaybackError() { _playError.value = null }
 
     fun togglePlayPause() {
         viewModelScope.launch {
@@ -89,32 +121,45 @@ class WearViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun requestStationsByGenre(genreId: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _filteredStations.value = emptyList()
-            phoneService.requestStationsByGenre(genreId)
-            // Wait for data to arrive via DataLayer, with timeout
-            delay(3000)
-            _filteredStations.value = stations.value
-            _isLoading.value = false
-        }
+    fun requestStationsByGenre(genreId: String) = requestStations { id ->
+        phoneService.requestStationsByGenre(genreId, id)
     }
 
-    fun requestStationsByCountry(countryCode: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _filteredStations.value = emptyList()
-            phoneService.requestStationsByCountry(countryCode)
-            delay(3000)
-            _filteredStations.value = stations.value
+    fun requestStationsByCountry(countryName: String) = requestStations { id ->
+        phoneService.requestStationsByCountry(countryName, id)
+    }
+
+    private fun requestStations(send: suspend (String) -> Boolean) {
+        stationRequest?.cancel()
+        clearPlaybackError()
+        _isLoading.value = true
+        _error.value = null
+        _filteredStations.value = emptyList()
+        stationRequest = viewModelScope.launch {
+            val requestId = UUID.randomUUID().toString()
+            if (!send(requestId)) {
+                _error.value = "Open MegaRadio on your connected Android phone, then try again."
+            } else {
+                val response = awaitStationResponse(WearDataRepository.stationResponse, requestId)
+                if (response == null) {
+                    _error.value = "No response. Open or update MegaRadio on your phone, then try again."
+                } else if (response.error != null) {
+                    _error.value = "Stations could not be loaded. Please try again."
+                } else {
+                    _filteredStations.value = response.stations
+                }
+            }
             _isLoading.value = false
         }
     }
 
     fun refreshData() {
         viewModelScope.launch {
-            phoneService.requestAllData()
+            phoneService.loadCachedData()
+            if (phoneService.checkPhoneConnection()) {
+                clearPlaybackError()
+                phoneService.requestAllData()
+            }
         }
     }
 }

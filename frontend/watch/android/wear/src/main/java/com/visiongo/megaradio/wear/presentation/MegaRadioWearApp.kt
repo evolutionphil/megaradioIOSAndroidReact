@@ -20,11 +20,10 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.visiongo.megaradio.wear.presentation.theme.AccentPink
 import com.visiongo.megaradio.wear.presentation.theme.BackgroundBlack
 import com.visiongo.megaradio.wear.presentation.theme.TextWhite
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 // Navigation routes
 object Routes {
-    const val SPLASH = "splash"
     const val HOME = "home"
     const val GENRES = "genres"
     const val GENRE_STATIONS = "genre_stations/{genreId}/{genreName}"
@@ -49,22 +48,13 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
     val isPhoneConnected by viewModel.isPhoneConnected.collectAsState()
     val filteredStations by viewModel.filteredStations.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val playError by viewModel.playError.collectAsState()
 
     SwipeDismissableNavHost(
         navController = navController,
-        startDestination = Routes.SPLASH
+        startDestination = Routes.HOME
     ) {
-        // Splash Screen
-        composable(Routes.SPLASH) {
-            SplashScreen(
-                onTimeout = {
-                    navController.navigate(Routes.HOME) {
-                        popUpTo(Routes.SPLASH) { inclusive = true }
-                    }
-                }
-            )
-        }
-
         // Home Screen
         composable(Routes.HOME) {
             HomeScreen(
@@ -96,14 +86,18 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
 
         // Genre Stations
         composable(Routes.GENRE_STATIONS) { backStackEntry ->
+            val playScope = rememberCoroutineScope()
             val genreName = backStackEntry.arguments?.getString("genreName") ?: ""
             StationsScreen(
                 title = genreName,
                 stations = filteredStations,
                 isLoading = isLoading,
+                error = error,
+                playError = playError,
                 onStationClick = { station ->
-                    viewModel.playStation(station)
-                    navController.navigate(Routes.NOW_PLAYING)
+                    playScope.launch {
+                        if (viewModel.playStation(station)) navController.navigate(Routes.NOW_PLAYING)
+                    }
                 }
             )
         }
@@ -122,25 +116,33 @@ fun MegaRadioWearApp(viewModel: WearViewModel = viewModel()) {
 
         // Country Stations
         composable(Routes.COUNTRY_STATIONS) { backStackEntry ->
+            val playScope = rememberCoroutineScope()
             val countryName = backStackEntry.arguments?.getString("countryName") ?: ""
             StationsScreen(
                 title = countryName,
                 stations = filteredStations,
                 isLoading = isLoading,
+                error = error,
+                playError = playError,
                 onStationClick = { station ->
-                    viewModel.playStation(station)
-                    navController.navigate(Routes.NOW_PLAYING)
+                    playScope.launch {
+                        if (viewModel.playStation(station)) navController.navigate(Routes.NOW_PLAYING)
+                    }
                 }
             )
         }
 
         // Favorites
         composable(Routes.FAVORITES) {
+            val playScope = rememberCoroutineScope()
+            LaunchedEffect(Unit) { viewModel.clearPlaybackError() }
             FavoritesScreen(
                 favorites = favorites,
+                playError = playError,
                 onStationClick = { station ->
-                    viewModel.playStation(station)
-                    navController.navigate(Routes.NOW_PLAYING)
+                    playScope.launch {
+                        if (viewModel.playStation(station)) navController.navigate(Routes.NOW_PLAYING)
+                    }
                 }
             )
         }

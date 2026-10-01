@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Separate fixture process survives force-stop of the signed release under test. -->
+    <uses-feature android:name="android.hardware.type.watch" />
+    <queries><package android:name="com.megaradio" /></queries>
+    <application android:label="MegaRadio launch test" android:allowBackup="false" />
+</manifest>
